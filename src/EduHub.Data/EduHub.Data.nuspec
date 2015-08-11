@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>EduHub.Data</id>
+    <version>$version$</version>
+    <title>eduHub Data</title>
+    <authors>Gary Sharp</authors>
+    <owners>Gary Sharp</owners>
+    <licenseUrl>https://github.com/garysharp/EduHub.Data/blob/master/COPYING</licenseUrl>
+    <projectUrl>https://github.com/garysharp/EduHub.Data</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides strongly-typed object model for eduHub Data Sets</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2015 Gary Sharp</copyright>
+    <tags>eduHub</tags>
+  </metadata>
+</package>

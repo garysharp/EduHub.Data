@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace EduHub.Data.Entities
+{
+    /// <summary>
+    /// Exam Grid Data Set
+    /// </summary>
+    public sealed class TTEX_DataSet : SetBase<TTEX_Entity>
+    {
+        internal TTEX_DataSet(EduHubContext Context)
+            : base(Context)
+        {
+        }
+
+        public override string SetName { get { return "TTEX"; } }
+
+
+        
+        protected override Action<TTEX_Entity, string>[] BuildMapper(List<string> Headers)
+        {
+            var mapper = new Action<TTEX_Entity, string>[Headers.Count];
+
+            for (var i = 0; i < Headers.Count; i++) {
+                switch (Headers[i]) {
+                    case "TID":
+                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "GKEY":
+                        mapper[i] = (e, v) => e.GKEY = v;
+                        break;
+                    case "TTES_TID":
+                        mapper[i] = (e, v) => e.TTES_TID = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "EXAM_ROW":
+                        mapper[i] = (e, v) => e.EXAM_ROW = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "EXAM_COL":
+                        mapper[i] = (e, v) => e.EXAM_COL = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "EXAM_FIX_ROW":
+                        mapper[i] = (e, v) => e.EXAM_FIX_ROW = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "EXAM_FIX_COL":
+                        mapper[i] = (e, v) => e.EXAM_FIX_COL = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "EXAM_ROOM":
+                        mapper[i] = (e, v) => e.EXAM_ROOM = v;
+                        break;
+                    case "EXAM_DESCRIPTION":
+                        mapper[i] = (e, v) => e.EXAM_DESCRIPTION = v;
+                        break;
+                    case "LW_DATE":
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "LW_TIME":
+                        mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "LW_USER":
+                        mapper[i] = (e, v) => e.LW_USER = v;
+                        break;
+                    default:
+                        mapper[i] = MapperNoOp;
+                        break;
+                }
+            }
+
+            return mapper;
+        }
+    }
+}

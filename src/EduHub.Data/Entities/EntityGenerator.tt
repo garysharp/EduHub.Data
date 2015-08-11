@@ -1,0 +1,303 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ include file="..\..\packages\T4.TemplateFileManager.2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Data" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#
+    var manager = TemplateFileManager.Create(this);
+    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v55 Schema.xml"));
+    foreach (var entity in schema)
+    {
+        manager.StartNewFile(string.Format(@"{0}_DataSet.cs", entity.Name));
+        #>
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace EduHub.Data.Entities
+{
+    /// <summary>
+    /// <#= entity.Description #> Data Set
+    /// </summary>
+    public sealed class <#= entity.Name #>_DataSet : SetBase<<#= entity.Name #>_Entity>
+    {
+        internal <#= entity.Name #>_DataSet(EduHubContext Context)
+            : base(Context)
+        {
+<#
+        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        {
+#>
+            <#= field.Name #>_Index = new Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>>(() => this.ToDictionary(e => e.<#= field.Name #>));
+<#
+        }
+#>
+        }
+
+        public override string SetName { get { return "<#= entity.Name #>"; } }
+
+<#
+        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        {
+#>
+        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>> <#= field.Name #>_Index;
+<#
+        }
+#>
+
+<#
+        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        {
+#>
+        public <#= entity.Name #>_Entity FindBy<#= field.Name #>(<#= field.TypeName #> Key)
+        {
+            <#= entity.Name #>_Entity result;
+            if (<#= field.Name #>_Index.Value.TryGetValue(Key, out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("Key");
+            }
+        }
+        public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #>_Entity Value)
+        {
+            return <#= field.Name #>_Index.Value.TryGetValue(Key, out Value);
+        }
+        public <#= entity.Name #>_Entity TryFindBy<#= field.Name #>(<#= field.TypeName #> Key)
+        {
+            <#= entity.Name #>_Entity result;
+            if (<#= field.Name #>_Index.Value.TryGetValue(Key, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+<#
+        }
+#>
+        
+        protected override Action<<#= entity.Name #>_Entity, string>[] BuildMapper(List<string> Headers)
+        {
+            var mapper = new Action<<#= entity.Name #>_Entity, string>[Headers.Count];
+
+            for (var i = 0; i < Headers.Count; i++) {
+                switch (Headers[i]) {
+<#
+        foreach (var field in entity.Fields)
+        {
+#>
+                    case "<#= field.Name #>":
+                        mapper[i] = (e, v) => e.<#= field.Name #> = <#= DetermineMapperConversion(field.TypeName) #>
+                        break;
+<#
+        }
+#>
+                    default:
+                        mapper[i] = MapperNoOp;
+                        break;
+                }
+            }
+
+            return mapper;
+        }
+    }
+}
+<#
+        manager.EndBlock();
+        manager.StartNewFile(string.Format(@"{0}_Entity.cs", entity.Name));
+        #>
+using System;
+using System.Collections.Generic;
+
+namespace EduHub.Data.Entities
+{
+    /// <summary>
+    /// <#= entity.Description #>
+    /// </summary>
+    public class <#= entity.Name #>_Entity : EntityBase
+    {
+<#
+        foreach (var field in entity.Fields)
+        {
+#>
+        /// <summary>
+<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#> [<#=field.TypeDescription#>: <#=field.TypeKey#>]
+        /// </summary>
+        public <#=field.TypeName#> <#=field.Name#> { get; internal set; }
+<#
+            if (field.RelationshipEntity != null)
+            {
+#>
+        /// <summary>
+        /// Navigation property for [<#=field.Name#>] => [<#=field.RelationshipEntity#>_Entity].[<#=field.RelationshipField#>]
+<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#>
+        /// </summary>
+        public <#=field.RelationshipEntity#>_Entity <#=field.Name#>_<#=field.RelationshipEntity#> { get { <#=DetermineNavigationPropertyContent(field)#> } }
+<#
+            }
+        }
+#>
+        
+        
+    }
+}
+<#
+        manager.EndBlock();
+    }
+    manager.Process(true);
+#><#+
+    public class C7Entity
+    {
+        public string Name;
+        public string Description;
+        public List<C7Field> Fields;
+    }
+
+    public class C7Field
+    {
+        public string Name;
+        public string TypeKey;
+        public string Type;
+        public string TypeName;
+        public string TypeDescription;
+        public int TypePrecision;
+        public bool IsKey;
+        public string Description;
+        public string RelationshipEntity;
+        public string RelationshipField;
+    }
+
+    static string DetermineMapperConversion(string TypeName)
+    {
+        switch (TypeName)
+        {
+            case "string":
+                return "v;";
+            case "int":
+                return "int.Parse(v);";
+            case "int?":
+                return "v == null ? (int?)null : int.Parse(v);";
+            case "short":
+                return "short.Parse(v);";
+            case "short?":
+                return "v == null ? (short?)null : short.Parse(v);";
+            case "decimal":
+                return "decimal.Parse(v);";
+            case "decimal?":
+                return "v == null ? (decimal?)null : decimal.Parse(v);";
+            case "double":
+                return "double.Parse(v);";
+            case "double?":
+                return "v == null ? (double?)null : double.Parse(v);";
+            case "DateTime":
+                return "DateTime.Parse(v);";
+            case "DateTime?":
+                return "v == null ? (DateTime?)null : DateTime.Parse(v);";
+            case "byte[]":
+                return "null; // eduHub is not encoding byte arrays";
+            default:
+                throw new ArgumentException("Unsupported Type: " + TypeName);
+        }
+    }
+
+    static string DetermineNavigationPropertyContent(C7Field Field)
+    {
+        if (Field.TypeName.EndsWith("?"))
+        {
+            // Nullable Type
+            return string.Format("return {0}.HasValue ? Context.{1}.FindBy{2}({0}.Value) : null;", Field.Name, Field.RelationshipEntity, Field.RelationshipField);
+        }
+        else if (Field.TypeName == "string")
+        {
+            // String Reference Type
+            return string.Format("return {0} == null ? null : Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField);
+        }
+        else
+        {
+            // Others
+            return string.Format("return Context.{0}.FindBy{1}({2});", Field.RelationshipEntity, Field.RelationshipField, Field.Name);
+        }
+    }
+
+    static IEnumerable<C7Entity> RetrieveEntitiesFromSchema(string Filename)
+    {
+        return XElement.Load(Filename)
+            .Elements("Element")
+            .Select(e => new C7Entity()
+            {
+                Name = e.Attribute("Name").Value,
+                Description = e.Attribute("Description").Value,
+                Fields = e.Elements("Field").Select(f => new C7Field()
+                {
+                    Name = f.Attribute("Name").Value,
+                    TypeKey = f.Attribute("TypeKey").Value,
+                    Type = f.Attribute("Type").Value,
+                    TypeName = f.Attribute("TypeName").Value,
+                    TypeDescription = f.Attribute("TypeDescription").Value,
+                    TypePrecision = int.Parse(f.Attribute("TypePrecision").Value),
+                    IsKey = bool.Parse(f.Attribute("IsKey").Value),
+                    RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
+                    RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
+                    Description = f.Value
+                }).ToList()
+            }).ToList();
+    }
+
+    const string dbColumnsSql =
+@"SELECT t.TABLE_NAME, c.COLUMN_NAME, c.DATA_TYPE, c.IS_NULLABLE
+    FROM INFORMATION_SCHEMA.TABLES t
+        JOIN INFORMATION_SCHEMA.COLUMNS c ON c.TABLE_SCHEMA=t.TABLE_SCHEMA AND c.TABLE_CATALOG=t.TABLE_CATALOG AND c.TABLE_NAME=t.TABLE_NAME
+WHERE
+    t.TABLE_TYPE='BASE TABLE' AND
+    NOT t.TABLE_NAME LIKE 'CAZSYS_%'
+ORDER BY t.TABLE_NAME, c.ORDINAL_POSITION";
+
+    static IEnumerable<C7Entity> RetrieveTablesFromDatabase()
+    {
+        return RetrieveColumnsFromDatabase()
+            .GroupBy(c => c.Item1)
+            .Select(g => new C7Entity()
+            {
+                Name = g.Key,
+                Fields = g.Select(i => i.Item2).ToList()
+            });
+    }
+
+    static IEnumerable<Tuple<string, C7Field>> RetrieveColumnsFromDatabase()
+    {
+        using (var dbConnection = new SqlConnection("Data Source=(local);Initial Catalog=C21CLONE;Integrated Security=True;MultipleActiveResultSets=True"))
+        {
+            dbConnection.Open();
+            using (var dbCommand = new SqlCommand(dbColumnsSql, dbConnection))
+            {
+                using (var dbReader = dbCommand.ExecuteReader())
+                {
+                    while (dbReader.Read())
+                    {
+                        yield return Tuple.Create(dbReader.GetString(0), new C7Field()
+                        {
+                            Name = dbReader.GetString(1),
+                            TypeDescription = dbReader.GetString(2)
+                        });
+                    }
+                }
+            }
+            dbConnection.Close();
+        }
+    }
+#>

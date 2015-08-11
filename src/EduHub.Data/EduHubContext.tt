@@ -1,0 +1,124 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Data" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="System.Xml.Linq"#>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#
+    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"CASES21v55 Schema.xml"));
+#>
+using System;
+using System.Collections.Generic;
+using EduHub.Data.Entities;
+
+namespace EduHub.Data
+{
+    /// <summary>
+    /// eduHub Data Context
+    /// </summary>
+    public class EduHubContext : EduHubContextBase
+    {
+        /// <summary>
+        /// Creates an EduHubContext
+        /// </summary>
+        /// <param name="EduHubDirectory">Directory which contains the eduHub .csv data sets.</param>
+        /// <param name="EduHubSiteIdentifier">Data set suffix for each .csv file</param>
+        public EduHubContext(string EduHubDirectory, string EduHubSiteIdentifier)
+            : base (EduHubDirectory, EduHubSiteIdentifier)
+        {
+<#
+    foreach (var entity in schema)
+    {
+#>
+            _<#=entity.Name#> = new <#=entity.Name#>_DataSet(this);
+<#
+    }
+#>
+        }
+
+        /// <summary>
+        /// Creates an EduHubContext with a dynamically determined site identifier
+        /// </summary>
+        /// <param name="EduHubDirectory">Directory which contains the eduHub .csv data sets.</param>
+        public EduHubContext(string EduHubDirectory)
+            : this(EduHubDirectory, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates an EduHubContext with the default directory and dynamically determined site identifier
+        /// </summary>
+        public EduHubContext()
+            : this(null, null)
+        {
+        }
+<#
+    foreach (var entity in schema)
+    {
+#>
+
+        private <#=entity.Name#>_DataSet _<#=entity.Name#>;
+        /// <summary>
+        /// <#=entity.Description#>
+        /// </summary>
+        public <#=entity.Name#>_DataSet <#=entity.Name#> { get { return _<#=entity.Name#>; } }
+<#
+    }
+#>
+    }
+}
+<#+
+    public class C7Entity
+    {
+        public string Name;
+        public string Description;
+        public List<C7Field> Fields;
+    }
+
+    public class C7Field
+    {
+        public string Name;
+        public string TypeKey;
+        public string Type;
+        public string TypeName;
+        public string TypeDescription;
+        public int TypePrecision;
+        public bool IsKey;
+        public string Description;
+        public string RelationshipEntity;
+        public string RelationshipField;
+    }
+
+    static IEnumerable<C7Entity> RetrieveEntitiesFromSchema(string Filename)
+    {
+        return XElement.Load(Filename)
+            .Elements("Element")
+            .Select(e => new C7Entity()
+            {
+                Name = e.Attribute("Name").Value,
+                Description = e.Attribute("Description").Value,
+                Fields = e.Elements("Field").Select(f => new C7Field()
+                {
+                    Name = f.Attribute("Name").Value,
+                    TypeKey = f.Attribute("TypeKey").Value,
+                    Type = f.Attribute("Type").Value,
+                    TypeName = f.Attribute("TypeName").Value,
+                    TypeDescription = f.Attribute("TypeDescription").Value,
+                    TypePrecision = int.Parse(f.Attribute("TypePrecision").Value),
+                    IsKey = bool.Parse(f.Attribute("IsKey").Value),
+                    RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
+                    RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
+                    Description = f.Value
+                }).ToList()
+            }).ToList();
+    }
+#>
