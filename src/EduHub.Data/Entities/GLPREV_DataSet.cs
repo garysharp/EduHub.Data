@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLPREV_DataSet : SetBase<GLPREV_Entity>
     {
+        private Lazy<Dictionary<string, GLPREV_Entity>> CODE_Index;
+
         internal GLPREV_DataSet(EduHubContext Context)
             : base(Context)
         {
             CODE_Index = new Lazy<Dictionary<string, GLPREV_Entity>>(() => this.ToDictionary(e => e.CODE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLPREV"; } }
 
-        private Lazy<Dictionary<string, GLPREV_Entity>> CODE_Index;
-
+        /// <summary>
+        /// Find GLPREV by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GLPREV</param>
+        /// <returns>Related GLPREV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">CODE value didn't match any GLPREV entities</exception>
         public GLPREV_Entity FindByCODE(string Key)
         {
             GLPREV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLPREV by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GLPREV</param>
+        /// <param name="Value">Related GLPREV entity</param>
+        /// <returns>True if the GLPREV Entity is found</returns>
         public bool TryFindByCODE(string Key, out GLPREV_Entity Value)
         {
             return CODE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLPREV by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GLPREV</param>
+        /// <returns>Related GLPREV entity, or null if not found</returns>
         public GLPREV_Entity TryFindByCODE(string Key)
         {
             GLPREV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GLPREV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLPREV_Entity, string>[Headers.Count];

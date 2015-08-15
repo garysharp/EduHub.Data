@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class DF_DataSet : SetBase<DF_Entity>
     {
+        private Lazy<Dictionary<string, DF_Entity>> DFKEY_Index;
+
         internal DF_DataSet(EduHubContext Context)
             : base(Context)
         {
             DFKEY_Index = new Lazy<Dictionary<string, DF_Entity>>(() => this.ToDictionary(e => e.DFKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "DF"; } }
 
-        private Lazy<Dictionary<string, DF_Entity>> DFKEY_Index;
-
+        /// <summary>
+        /// Find DF by DFKEY key field
+        /// </summary>
+        /// <param name="Key">DFKEY value used to find DF</param>
+        /// <returns>Related DF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">DFKEY value didn't match any DF entities</exception>
         public DF_Entity FindByDFKEY(string Key)
         {
             DF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find DF by DFKEY key field
+        /// </summary>
+        /// <param name="Key">DFKEY value used to find DF</param>
+        /// <param name="Value">Related DF entity</param>
+        /// <returns>True if the DF Entity is found</returns>
         public bool TryFindByDFKEY(string Key, out DF_Entity Value)
         {
             return DFKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find DF by DFKEY key field
+        /// </summary>
+        /// <param name="Key">DFKEY value used to find DF</param>
+        /// <returns>Related DF entity, or null if not found</returns>
         public DF_Entity TryFindByDFKEY(string Key)
         {
             DF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<DF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DF_Entity, string>[Headers.Count];

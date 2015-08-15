@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCOHORT_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique ID for this record [Alphanumeric: a2]
         /// </summary>
@@ -36,7 +40,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

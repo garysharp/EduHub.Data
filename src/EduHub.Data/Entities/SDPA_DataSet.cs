@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SDPA_DataSet : SetBase<SDPA_Entity>
     {
+        private Lazy<Dictionary<int, SDPA_Entity>> TID_Index;
+
         internal SDPA_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, SDPA_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SDPA"; } }
 
-        private Lazy<Dictionary<int, SDPA_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find SDPA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SDPA</param>
+        /// <returns>Related SDPA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SDPA entities</exception>
         public SDPA_Entity FindByTID(int Key)
         {
             SDPA_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SDPA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SDPA</param>
+        /// <param name="Value">Related SDPA entity</param>
+        /// <returns>True if the SDPA Entity is found</returns>
         public bool TryFindByTID(int Key, out SDPA_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SDPA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SDPA</param>
+        /// <returns>Related SDPA entity, or null if not found</returns>
         public SDPA_Entity TryFindByTID(int Key)
         {
             SDPA_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SDPA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDPA_Entity, string>[Headers.Count];

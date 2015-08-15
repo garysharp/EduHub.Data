@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SXAB_DataSet : SetBase<SXAB_Entity>
     {
+        private Lazy<Dictionary<int, SXAB_Entity>> SXAB_ID_Index;
+
         internal SXAB_DataSet(EduHubContext Context)
             : base(Context)
         {
             SXAB_ID_Index = new Lazy<Dictionary<int, SXAB_Entity>>(() => this.ToDictionary(e => e.SXAB_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SXAB"; } }
 
-        private Lazy<Dictionary<int, SXAB_Entity>> SXAB_ID_Index;
-
+        /// <summary>
+        /// Find SXAB by SXAB_ID key field
+        /// </summary>
+        /// <param name="Key">SXAB_ID value used to find SXAB</param>
+        /// <returns>Related SXAB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SXAB_ID value didn't match any SXAB entities</exception>
         public SXAB_Entity FindBySXAB_ID(int Key)
         {
             SXAB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SXAB by SXAB_ID key field
+        /// </summary>
+        /// <param name="Key">SXAB_ID value used to find SXAB</param>
+        /// <param name="Value">Related SXAB entity</param>
+        /// <returns>True if the SXAB Entity is found</returns>
         public bool TryFindBySXAB_ID(int Key, out SXAB_Entity Value)
         {
             return SXAB_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SXAB by SXAB_ID key field
+        /// </summary>
+        /// <param name="Key">SXAB_ID value used to find SXAB</param>
+        /// <returns>Related SXAB entity, or null if not found</returns>
         public SXAB_Entity TryFindBySXAB_ID(int Key)
         {
             SXAB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SXAB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXAB_Entity, string>[Headers.Count];

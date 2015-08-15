@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class DRF_DataSet : SetBase<DRF_Entity>
     {
+        private Lazy<Dictionary<string, DRF_Entity>> TRREF_Index;
+
         internal DRF_DataSet(EduHubContext Context)
             : base(Context)
         {
             TRREF_Index = new Lazy<Dictionary<string, DRF_Entity>>(() => this.ToDictionary(e => e.TRREF));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "DRF"; } }
 
-        private Lazy<Dictionary<string, DRF_Entity>> TRREF_Index;
-
+        /// <summary>
+        /// Find DRF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find DRF</param>
+        /// <returns>Related DRF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any DRF entities</exception>
         public DRF_Entity FindByTRREF(string Key)
         {
             DRF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find DRF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find DRF</param>
+        /// <param name="Value">Related DRF entity</param>
+        /// <returns>True if the DRF Entity is found</returns>
         public bool TryFindByTRREF(string Key, out DRF_Entity Value)
         {
             return TRREF_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find DRF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find DRF</param>
+        /// <returns>Related DRF entity, or null if not found</returns>
         public DRF_Entity TryFindByTRREF(string Key)
         {
             DRF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<DRF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DRF_Entity, string>[Headers.Count];

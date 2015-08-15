@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SADW_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SAD_Entity _ACCIDENTID_SAD;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Sequence no of accident [Integer (32bit signed nullable): l]
         /// </summary>
         public int? ACCIDENTID { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ACCIDENTID] => [SAD_Entity].[SADKEY]
-        /// Sequence no of accident
-        /// </summary>
-        public SAD_Entity ACCIDENTID_SAD { get { return ACCIDENTID.HasValue ? Context.SAD.FindBySADKEY(ACCIDENTID.Value) : null; } }
         /// <summary>
         /// Type of person witnessing accident: ST=Student, SF=Staff member, DF=Family member, OT=Other [Uppercase Alphanumeric: u2]
         /// </summary>
@@ -61,7 +61,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ACCIDENTID] => [SAD_Entity].[SADKEY]
+        /// Sequence no of accident
+        /// </summary>
+        public SAD_Entity ACCIDENTID_SAD {
+            get
+            {
+                if (ACCIDENTID.HasValue)
+                {
+                    if (_ACCIDENTID_SAD == null)
+                    {
+                        _ACCIDENTID_SAD = Context.SAD.FindBySADKEY(ACCIDENTID.Value);
+                    }
+                    return _ACCIDENTID_SAD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

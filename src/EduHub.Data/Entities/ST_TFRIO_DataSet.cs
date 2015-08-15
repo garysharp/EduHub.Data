@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class ST_TFRIO_DataSet : SetBase<ST_TFRIO_Entity>
     {
+
         internal ST_TFRIO_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "ST_TFRIO"; } }
 
-
-        
         protected override Action<ST_TFRIO_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<ST_TFRIO_Entity, string>[Headers.Count];

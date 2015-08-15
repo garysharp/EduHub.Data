@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KAD_DataSet : SetBase<KAD_Entity>
     {
+        private Lazy<Dictionary<string, KAD_Entity>> KADKEY_Index;
+
         internal KAD_DataSet(EduHubContext Context)
             : base(Context)
         {
             KADKEY_Index = new Lazy<Dictionary<string, KAD_Entity>>(() => this.ToDictionary(e => e.KADKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KAD"; } }
 
-        private Lazy<Dictionary<string, KAD_Entity>> KADKEY_Index;
-
+        /// <summary>
+        /// Find KAD by KADKEY key field
+        /// </summary>
+        /// <param name="Key">KADKEY value used to find KAD</param>
+        /// <returns>Related KAD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KADKEY value didn't match any KAD entities</exception>
         public KAD_Entity FindByKADKEY(string Key)
         {
             KAD_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KAD by KADKEY key field
+        /// </summary>
+        /// <param name="Key">KADKEY value used to find KAD</param>
+        /// <param name="Value">Related KAD entity</param>
+        /// <returns>True if the KAD Entity is found</returns>
         public bool TryFindByKADKEY(string Key, out KAD_Entity Value)
         {
             return KADKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KAD by KADKEY key field
+        /// </summary>
+        /// <param name="Key">KADKEY value used to find KAD</param>
+        /// <returns>Related KAD entity, or null if not found</returns>
         public KAD_Entity TryFindByKADKEY(string Key)
         {
             KAD_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KAD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAD_Entity, string>[Headers.Count];

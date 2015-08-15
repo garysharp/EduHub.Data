@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAM_DataSet : SetBase<SAM_Entity>
     {
+        private Lazy<Dictionary<int, SAM_Entity>> SAMKEY_Index;
+
         internal SAM_DataSet(EduHubContext Context)
             : base(Context)
         {
             SAMKEY_Index = new Lazy<Dictionary<int, SAM_Entity>>(() => this.ToDictionary(e => e.SAMKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAM"; } }
 
-        private Lazy<Dictionary<int, SAM_Entity>> SAMKEY_Index;
-
+        /// <summary>
+        /// Find SAM by SAMKEY key field
+        /// </summary>
+        /// <param name="Key">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SAMKEY value didn't match any SAM entities</exception>
         public SAM_Entity FindBySAMKEY(int Key)
         {
             SAM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY key field
+        /// </summary>
+        /// <param name="Key">SAMKEY value used to find SAM</param>
+        /// <param name="Value">Related SAM entity</param>
+        /// <returns>True if the SAM Entity is found</returns>
         public bool TryFindBySAMKEY(int Key, out SAM_Entity Value)
         {
             return SAMKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY key field
+        /// </summary>
+        /// <param name="Key">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity, or null if not found</returns>
         public SAM_Entity TryFindBySAMKEY(int Key)
         {
             SAM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SAM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAM_Entity, string>[Headers.Count];

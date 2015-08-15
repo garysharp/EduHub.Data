@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SK_HRMST_DataSet : SetBase<SK_HRMST_Entity>
     {
+        private Lazy<Dictionary<int, SK_HRMST_Entity>> SEQ_Index;
+
         internal SK_HRMST_DataSet(EduHubContext Context)
             : base(Context)
         {
             SEQ_Index = new Lazy<Dictionary<int, SK_HRMST_Entity>>(() => this.ToDictionary(e => e.SEQ));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SK_HRMST"; } }
 
-        private Lazy<Dictionary<int, SK_HRMST_Entity>> SEQ_Index;
-
+        /// <summary>
+        /// Find SK_HRMST by SEQ key field
+        /// </summary>
+        /// <param name="Key">SEQ value used to find SK_HRMST</param>
+        /// <returns>Related SK_HRMST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SEQ value didn't match any SK_HRMST entities</exception>
         public SK_HRMST_Entity FindBySEQ(int Key)
         {
             SK_HRMST_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SK_HRMST by SEQ key field
+        /// </summary>
+        /// <param name="Key">SEQ value used to find SK_HRMST</param>
+        /// <param name="Value">Related SK_HRMST entity</param>
+        /// <returns>True if the SK_HRMST Entity is found</returns>
         public bool TryFindBySEQ(int Key, out SK_HRMST_Entity Value)
         {
             return SEQ_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SK_HRMST by SEQ key field
+        /// </summary>
+        /// <param name="Key">SEQ value used to find SK_HRMST</param>
+        /// <returns>Related SK_HRMST entity, or null if not found</returns>
         public SK_HRMST_Entity TryFindBySEQ(int Key)
         {
             SK_HRMST_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SK_HRMST_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SK_HRMST_Entity, string>[Headers.Count];

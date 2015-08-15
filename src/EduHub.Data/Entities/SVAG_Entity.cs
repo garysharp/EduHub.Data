@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SVAG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KCOHORT_Entity _COHORT_KCOHORT;
+        private KCY_Entity _SCHOOL_YEAR_KCY;
+        private KDI_Entity _VDIMENSION_KDI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique identification of record [Integer (32bit signed): l]
         /// </summary>
@@ -17,19 +24,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COHORT { get; internal set; }
         /// <summary>
-        /// Navigation property for [COHORT] => [KCOHORT_Entity].[COHORT]
-        /// Link to cohort
-        /// </summary>
-        public KCOHORT_Entity COHORT_KCOHORT { get { return COHORT == null ? null : Context.KCOHORT.FindByCOHORT(COHORT); } }
-        /// <summary>
         /// Year level of cohort [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCHOOL_YEAR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
-        /// Year level of cohort
-        /// </summary>
-        public KCY_Entity SCHOOL_YEAR_KCY { get { return SCHOOL_YEAR == null ? null : Context.KCY.FindByKCYKEY(SCHOOL_YEAR); } }
         /// <summary>
         /// Campus number of cohort [Integer (32bit signed nullable): l]
         /// </summary>
@@ -42,11 +39,6 @@ namespace EduHub.Data.Entities
         /// Link to dimension [Uppercase Alphanumeric: u10]
         /// </summary>
         public string VDIMENSION { get; internal set; }
-        /// <summary>
-        /// Navigation property for [VDIMENSION] => [KDI_Entity].[KDIKEY]
-        /// Link to dimension
-        /// </summary>
-        public KDI_Entity VDIMENSION_KDI { get { return VDIMENSION == null ? null : Context.KDI.FindByKDIKEY(VDIMENSION); } }
         /// <summary>
         /// Number of students with each dimension score [Integer (16bit signed nullable): i]
         /// </summary>
@@ -191,7 +183,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COHORT] => [KCOHORT_Entity].[COHORT]
+        /// Link to cohort
+        /// </summary>
+        public KCOHORT_Entity COHORT_KCOHORT {
+            get
+            {
+                if (COHORT != null)
+                {
+                    if (_COHORT_KCOHORT == null)
+                    {
+                        _COHORT_KCOHORT = Context.KCOHORT.FindByCOHORT(COHORT);
+                    }
+                    return _COHORT_KCOHORT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
+        /// Year level of cohort
+        /// </summary>
+        public KCY_Entity SCHOOL_YEAR_KCY {
+            get
+            {
+                if (SCHOOL_YEAR != null)
+                {
+                    if (_SCHOOL_YEAR_KCY == null)
+                    {
+                        _SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
+                    }
+                    return _SCHOOL_YEAR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [VDIMENSION] => [KDI_Entity].[KDIKEY]
+        /// Link to dimension
+        /// </summary>
+        public KDI_Entity VDIMENSION_KDI {
+            get
+            {
+                if (VDIMENSION != null)
+                {
+                    if (_VDIMENSION_KDI == null)
+                    {
+                        _VDIMENSION_KDI = Context.KDI.FindByKDIKEY(VDIMENSION);
+                    }
+                    return _VDIMENSION_KDI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

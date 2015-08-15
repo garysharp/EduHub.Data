@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class DFF_DataSet : SetBase<DFF_Entity>
     {
+
         internal DFF_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "DFF"; } }
 
-
-        
         protected override Action<DFF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DFF_Entity, string>[Headers.Count];

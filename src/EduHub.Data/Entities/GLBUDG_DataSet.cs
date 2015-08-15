@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLBUDG_DataSet : SetBase<GLBUDG_Entity>
     {
+        private Lazy<Dictionary<string, GLBUDG_Entity>> BUDGETKEY_Index;
+
         internal GLBUDG_DataSet(EduHubContext Context)
             : base(Context)
         {
             BUDGETKEY_Index = new Lazy<Dictionary<string, GLBUDG_Entity>>(() => this.ToDictionary(e => e.BUDGETKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLBUDG"; } }
 
-        private Lazy<Dictionary<string, GLBUDG_Entity>> BUDGETKEY_Index;
-
+        /// <summary>
+        /// Find GLBUDG by BUDGETKEY key field
+        /// </summary>
+        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
+        /// <returns>Related GLBUDG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">BUDGETKEY value didn't match any GLBUDG entities</exception>
         public GLBUDG_Entity FindByBUDGETKEY(string Key)
         {
             GLBUDG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by BUDGETKEY key field
+        /// </summary>
+        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
+        /// <param name="Value">Related GLBUDG entity</param>
+        /// <returns>True if the GLBUDG Entity is found</returns>
         public bool TryFindByBUDGETKEY(string Key, out GLBUDG_Entity Value)
         {
             return BUDGETKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by BUDGETKEY key field
+        /// </summary>
+        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
+        /// <returns>Related GLBUDG entity, or null if not found</returns>
         public GLBUDG_Entity TryFindByBUDGETKEY(string Key)
         {
             GLBUDG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GLBUDG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLBUDG_Entity, string>[Headers.Count];

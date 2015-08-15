@@ -8,6 +8,24 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class AR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private AKC_Entity _CATEGORY_AKC;
+        private AKT_Entity _ASSET_TYPE_AKT;
+        private AKR_Entity _RELEASE_TYPE_AKR;
+        private AKCT_Entity _TAX_CATEGORY_AKCT;
+        private AKL_Entity _LOCATION_AKL;
+        private AKD_Entity _DEPARTMENT_AKD;
+        private AKB_Entity _BRANCH_AKB;
+        private CR_Entity _ORIG_SUPPLIER_CR;
+        private CR_Entity _CURR_SUPPLIER_CR;
+        private GL_Entity _PTE_GLCODE_GL;
+        private KADM_Entity _AMETHOD_KADM;
+        private KADM_Entity _TMETHOD_KADM;
+        private AR_Entity _COMPONENT_OF_AR;
+        private SCI_Entity _CAMPUS_SCI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Prime Key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -33,64 +51,29 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CATEGORY { get; internal set; }
         /// <summary>
-        /// Navigation property for [CATEGORY] => [AKC_Entity].[CATEGORY]
-        /// Asset category
-        /// </summary>
-        public AKC_Entity CATEGORY_AKC { get { return CATEGORY == null ? null : Context.AKC.FindByCATEGORY(CATEGORY); } }
-        /// <summary>
         /// Asset type [Uppercase Alphanumeric: u2]
         /// </summary>
         public string ASSET_TYPE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ASSET_TYPE] => [AKT_Entity].[AKTKEY]
-        /// Asset type
-        /// </summary>
-        public AKT_Entity ASSET_TYPE_AKT { get { return ASSET_TYPE == null ? null : Context.AKT.FindByAKTKEY(ASSET_TYPE); } }
         /// <summary>
         /// Asset Release Type [Uppercase Alphanumeric: u2]
         /// </summary>
         public string RELEASE_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [RELEASE_TYPE] => [AKR_Entity].[AKRKEY]
-        /// Asset Release Type
-        /// </summary>
-        public AKR_Entity RELEASE_TYPE_AKR { get { return RELEASE_TYPE == null ? null : Context.AKR.FindByAKRKEY(RELEASE_TYPE); } }
-        /// <summary>
         /// Asset tax category [Uppercase Alphanumeric: u10]
         /// </summary>
         public string TAX_CATEGORY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TAX_CATEGORY] => [AKCT_Entity].[CATEGORY]
-        /// Asset tax category
-        /// </summary>
-        public AKCT_Entity TAX_CATEGORY_AKCT { get { return TAX_CATEGORY == null ? null : Context.AKCT.FindByCATEGORY(TAX_CATEGORY); } }
         /// <summary>
         /// Asset locations [Uppercase Alphanumeric: u10]
         /// </summary>
         public string LOCATION { get; internal set; }
         /// <summary>
-        /// Navigation property for [LOCATION] => [AKL_Entity].[LOCATION]
-        /// Asset locations
-        /// </summary>
-        public AKL_Entity LOCATION_AKL { get { return LOCATION == null ? null : Context.AKL.FindByLOCATION(LOCATION); } }
-        /// <summary>
         /// Departments [Uppercase Alphanumeric: u10]
         /// </summary>
         public string DEPARTMENT { get; internal set; }
         /// <summary>
-        /// Navigation property for [DEPARTMENT] => [AKD_Entity].[DEPARTMENT]
-        /// Departments
-        /// </summary>
-        public AKD_Entity DEPARTMENT_AKD { get { return DEPARTMENT == null ? null : Context.AKD.FindByDEPARTMENT(DEPARTMENT); } }
-        /// <summary>
         /// Sub Category [Uppercase Alphanumeric: u10]
         /// </summary>
         public string BRANCH { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BRANCH] => [AKB_Entity].[BRANCH]
-        /// Sub Category
-        /// </summary>
-        public AKB_Entity BRANCH_AKB { get { return BRANCH == null ? null : Context.AKB.FindByBRANCH(BRANCH); } }
         /// <summary>
         /// Lease start date [Date Time nullable: d]
         /// </summary>
@@ -108,19 +91,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ORIG_SUPPLIER { get; internal set; }
         /// <summary>
-        /// Navigation property for [ORIG_SUPPLIER] => [CR_Entity].[CRKEY]
-        /// Supplier
-        /// </summary>
-        public CR_Entity ORIG_SUPPLIER_CR { get { return ORIG_SUPPLIER == null ? null : Context.CR.FindByCRKEY(ORIG_SUPPLIER); } }
-        /// <summary>
         /// Default repairer [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CURR_SUPPLIER { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CURR_SUPPLIER] => [CR_Entity].[CRKEY]
-        /// Default repairer
-        /// </summary>
-        public CR_Entity CURR_SUPPLIER_CR { get { return CURR_SUPPLIER == null ? null : Context.CR.FindByCRKEY(CURR_SUPPLIER); } }
         /// <summary>
         /// Invoice number of original acquisition [Alphanumeric: a10]
         /// </summary>
@@ -153,11 +126,6 @@ namespace EduHub.Data.Entities
         /// GL acct where pte use % of depn will be posted [Uppercase Alphanumeric: u10]
         /// </summary>
         public string PTE_GLCODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PTE_GLCODE] => [GL_Entity].[CODE]
-        /// GL acct where pte use % of depn will be posted
-        /// </summary>
-        public GL_Entity PTE_GLCODE_GL { get { return PTE_GLCODE == null ? null : Context.GL.FindByCODE(PTE_GLCODE); } }
         /// <summary>
         /// Percentage of private use for accounting [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -240,11 +208,6 @@ namespace EduHub.Data.Entities
         /// method [Uppercase Alphanumeric: u1]
         /// </summary>
         public string AMETHOD { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AMETHOD] => [KADM_Entity].[KADMKEY]
-        /// method
-        /// </summary>
-        public KADM_Entity AMETHOD_KADM { get { return AMETHOD == null ? null : Context.KADM.FindByKADMKEY(AMETHOD); } }
         /// <summary>
         /// Estimated Life in Units [Integer (32bit signed nullable): l]
         /// </summary>
@@ -365,11 +328,6 @@ namespace EduHub.Data.Entities
         /// Depreciation method [Uppercase Alphanumeric: u1]
         /// </summary>
         public string TMETHOD { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TMETHOD] => [KADM_Entity].[KADMKEY]
-        /// Depreciation method
-        /// </summary>
-        public KADM_Entity TMETHOD_KADM { get { return TMETHOD == null ? null : Context.KADM.FindByKADMKEY(TMETHOD); } }
         /// <summary>
         /// Depreciation indicator [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -495,11 +453,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COMPONENT_OF { get; internal set; }
         /// <summary>
-        /// Navigation property for [COMPONENT_OF] => [AR_Entity].[ARKEY]
-        /// Asset that this is a component of, or related to
-        /// </summary>
-        public AR_Entity COMPONENT_OF_AR { get { return COMPONENT_OF == null ? null : Context.AR.FindByARKEY(COMPONENT_OF); } }
-        /// <summary>
         /// Picture of asset [Picture (byte array): bp]
         /// </summary>
         public byte[] ASSET_PIC { get; internal set; }
@@ -507,11 +460,6 @@ namespace EduHub.Data.Entities
         /// Campus number [Integer (32bit signed nullable): l]
         /// </summary>
         public int? CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Campus number
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -524,7 +472,303 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CATEGORY] => [AKC_Entity].[CATEGORY]
+        /// Asset category
+        /// </summary>
+        public AKC_Entity CATEGORY_AKC {
+            get
+            {
+                if (CATEGORY != null)
+                {
+                    if (_CATEGORY_AKC == null)
+                    {
+                        _CATEGORY_AKC = Context.AKC.FindByCATEGORY(CATEGORY);
+                    }
+                    return _CATEGORY_AKC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ASSET_TYPE] => [AKT_Entity].[AKTKEY]
+        /// Asset type
+        /// </summary>
+        public AKT_Entity ASSET_TYPE_AKT {
+            get
+            {
+                if (ASSET_TYPE != null)
+                {
+                    if (_ASSET_TYPE_AKT == null)
+                    {
+                        _ASSET_TYPE_AKT = Context.AKT.FindByAKTKEY(ASSET_TYPE);
+                    }
+                    return _ASSET_TYPE_AKT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [RELEASE_TYPE] => [AKR_Entity].[AKRKEY]
+        /// Asset Release Type
+        /// </summary>
+        public AKR_Entity RELEASE_TYPE_AKR {
+            get
+            {
+                if (RELEASE_TYPE != null)
+                {
+                    if (_RELEASE_TYPE_AKR == null)
+                    {
+                        _RELEASE_TYPE_AKR = Context.AKR.FindByAKRKEY(RELEASE_TYPE);
+                    }
+                    return _RELEASE_TYPE_AKR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TAX_CATEGORY] => [AKCT_Entity].[CATEGORY]
+        /// Asset tax category
+        /// </summary>
+        public AKCT_Entity TAX_CATEGORY_AKCT {
+            get
+            {
+                if (TAX_CATEGORY != null)
+                {
+                    if (_TAX_CATEGORY_AKCT == null)
+                    {
+                        _TAX_CATEGORY_AKCT = Context.AKCT.FindByCATEGORY(TAX_CATEGORY);
+                    }
+                    return _TAX_CATEGORY_AKCT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LOCATION] => [AKL_Entity].[LOCATION]
+        /// Asset locations
+        /// </summary>
+        public AKL_Entity LOCATION_AKL {
+            get
+            {
+                if (LOCATION != null)
+                {
+                    if (_LOCATION_AKL == null)
+                    {
+                        _LOCATION_AKL = Context.AKL.FindByLOCATION(LOCATION);
+                    }
+                    return _LOCATION_AKL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DEPARTMENT] => [AKD_Entity].[DEPARTMENT]
+        /// Departments
+        /// </summary>
+        public AKD_Entity DEPARTMENT_AKD {
+            get
+            {
+                if (DEPARTMENT != null)
+                {
+                    if (_DEPARTMENT_AKD == null)
+                    {
+                        _DEPARTMENT_AKD = Context.AKD.FindByDEPARTMENT(DEPARTMENT);
+                    }
+                    return _DEPARTMENT_AKD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BRANCH] => [AKB_Entity].[BRANCH]
+        /// Sub Category
+        /// </summary>
+        public AKB_Entity BRANCH_AKB {
+            get
+            {
+                if (BRANCH != null)
+                {
+                    if (_BRANCH_AKB == null)
+                    {
+                        _BRANCH_AKB = Context.AKB.FindByBRANCH(BRANCH);
+                    }
+                    return _BRANCH_AKB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ORIG_SUPPLIER] => [CR_Entity].[CRKEY]
+        /// Supplier
+        /// </summary>
+        public CR_Entity ORIG_SUPPLIER_CR {
+            get
+            {
+                if (ORIG_SUPPLIER != null)
+                {
+                    if (_ORIG_SUPPLIER_CR == null)
+                    {
+                        _ORIG_SUPPLIER_CR = Context.CR.FindByCRKEY(ORIG_SUPPLIER);
+                    }
+                    return _ORIG_SUPPLIER_CR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CURR_SUPPLIER] => [CR_Entity].[CRKEY]
+        /// Default repairer
+        /// </summary>
+        public CR_Entity CURR_SUPPLIER_CR {
+            get
+            {
+                if (CURR_SUPPLIER != null)
+                {
+                    if (_CURR_SUPPLIER_CR == null)
+                    {
+                        _CURR_SUPPLIER_CR = Context.CR.FindByCRKEY(CURR_SUPPLIER);
+                    }
+                    return _CURR_SUPPLIER_CR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PTE_GLCODE] => [GL_Entity].[CODE]
+        /// GL acct where pte use % of depn will be posted
+        /// </summary>
+        public GL_Entity PTE_GLCODE_GL {
+            get
+            {
+                if (PTE_GLCODE != null)
+                {
+                    if (_PTE_GLCODE_GL == null)
+                    {
+                        _PTE_GLCODE_GL = Context.GL.FindByCODE(PTE_GLCODE);
+                    }
+                    return _PTE_GLCODE_GL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AMETHOD] => [KADM_Entity].[KADMKEY]
+        /// method
+        /// </summary>
+        public KADM_Entity AMETHOD_KADM {
+            get
+            {
+                if (AMETHOD != null)
+                {
+                    if (_AMETHOD_KADM == null)
+                    {
+                        _AMETHOD_KADM = Context.KADM.FindByKADMKEY(AMETHOD);
+                    }
+                    return _AMETHOD_KADM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TMETHOD] => [KADM_Entity].[KADMKEY]
+        /// Depreciation method
+        /// </summary>
+        public KADM_Entity TMETHOD_KADM {
+            get
+            {
+                if (TMETHOD != null)
+                {
+                    if (_TMETHOD_KADM == null)
+                    {
+                        _TMETHOD_KADM = Context.KADM.FindByKADMKEY(TMETHOD);
+                    }
+                    return _TMETHOD_KADM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [COMPONENT_OF] => [AR_Entity].[ARKEY]
+        /// Asset that this is a component of, or related to
+        /// </summary>
+        public AR_Entity COMPONENT_OF_AR {
+            get
+            {
+                if (COMPONENT_OF != null)
+                {
+                    if (_COMPONENT_OF_AR == null)
+                    {
+                        _COMPONENT_OF_AR = Context.AR.FindByARKEY(COMPONENT_OF);
+                    }
+                    return _COMPONENT_OF_AR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Campus number
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

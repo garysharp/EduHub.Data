@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TCTQ_DataSet : SetBase<TCTQ_Entity>
     {
+        private Lazy<Dictionary<short, TCTQ_Entity>> COMPOSITE_Index;
+
         internal TCTQ_DataSet(EduHubContext Context)
             : base(Context)
         {
             COMPOSITE_Index = new Lazy<Dictionary<short, TCTQ_Entity>>(() => this.ToDictionary(e => e.COMPOSITE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TCTQ"; } }
 
-        private Lazy<Dictionary<short, TCTQ_Entity>> COMPOSITE_Index;
-
+        /// <summary>
+        /// Find TCTQ by COMPOSITE key field
+        /// </summary>
+        /// <param name="Key">COMPOSITE value used to find TCTQ</param>
+        /// <returns>Related TCTQ entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">COMPOSITE value didn't match any TCTQ entities</exception>
         public TCTQ_Entity FindByCOMPOSITE(short Key)
         {
             TCTQ_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TCTQ by COMPOSITE key field
+        /// </summary>
+        /// <param name="Key">COMPOSITE value used to find TCTQ</param>
+        /// <param name="Value">Related TCTQ entity</param>
+        /// <returns>True if the TCTQ Entity is found</returns>
         public bool TryFindByCOMPOSITE(short Key, out TCTQ_Entity Value)
         {
             return COMPOSITE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TCTQ by COMPOSITE key field
+        /// </summary>
+        /// <param name="Key">COMPOSITE value used to find TCTQ</param>
+        /// <returns>Related TCTQ entity, or null if not found</returns>
         public TCTQ_Entity TryFindByCOMPOSITE(short Key)
         {
             TCTQ_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TCTQ_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TCTQ_Entity, string>[Headers.Count];

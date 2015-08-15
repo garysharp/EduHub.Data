@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKT_DataSet : SetBase<AKT_Entity>
     {
+        private Lazy<Dictionary<string, AKT_Entity>> AKTKEY_Index;
+
         internal AKT_DataSet(EduHubContext Context)
             : base(Context)
         {
             AKTKEY_Index = new Lazy<Dictionary<string, AKT_Entity>>(() => this.ToDictionary(e => e.AKTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKT"; } }
 
-        private Lazy<Dictionary<string, AKT_Entity>> AKTKEY_Index;
-
+        /// <summary>
+        /// Find AKT by AKTKEY key field
+        /// </summary>
+        /// <param name="Key">AKTKEY value used to find AKT</param>
+        /// <returns>Related AKT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">AKTKEY value didn't match any AKT entities</exception>
         public AKT_Entity FindByAKTKEY(string Key)
         {
             AKT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKT by AKTKEY key field
+        /// </summary>
+        /// <param name="Key">AKTKEY value used to find AKT</param>
+        /// <param name="Value">Related AKT entity</param>
+        /// <returns>True if the AKT Entity is found</returns>
         public bool TryFindByAKTKEY(string Key, out AKT_Entity Value)
         {
             return AKTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKT by AKTKEY key field
+        /// </summary>
+        /// <param name="Key">AKTKEY value used to find AKT</param>
+        /// <returns>Related AKT entity, or null if not found</returns>
         public AKT_Entity TryFindByAKTKEY(string Key)
         {
             AKT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKT_Entity, string>[Headers.Count];

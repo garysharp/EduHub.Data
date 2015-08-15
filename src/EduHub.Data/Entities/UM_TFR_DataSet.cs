@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class UM_TFR_DataSet : SetBase<UM_TFR_Entity>
     {
+
         internal UM_TFR_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "UM_TFR"; } }
 
-
-        
         protected override Action<UM_TFR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<UM_TFR_Entity, string>[Headers.Count];

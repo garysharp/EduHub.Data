@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SGM_DataSet : SetBase<SGM_Entity>
     {
+        private Lazy<Dictionary<DateTime, SGM_Entity>> MEETING_DATE_Index;
+
         internal SGM_DataSet(EduHubContext Context)
             : base(Context)
         {
             MEETING_DATE_Index = new Lazy<Dictionary<DateTime, SGM_Entity>>(() => this.ToDictionary(e => e.MEETING_DATE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SGM"; } }
 
-        private Lazy<Dictionary<DateTime, SGM_Entity>> MEETING_DATE_Index;
-
+        /// <summary>
+        /// Find SGM by MEETING_DATE key field
+        /// </summary>
+        /// <param name="Key">MEETING_DATE value used to find SGM</param>
+        /// <returns>Related SGM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">MEETING_DATE value didn't match any SGM entities</exception>
         public SGM_Entity FindByMEETING_DATE(DateTime Key)
         {
             SGM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SGM by MEETING_DATE key field
+        /// </summary>
+        /// <param name="Key">MEETING_DATE value used to find SGM</param>
+        /// <param name="Value">Related SGM entity</param>
+        /// <returns>True if the SGM Entity is found</returns>
         public bool TryFindByMEETING_DATE(DateTime Key, out SGM_Entity Value)
         {
             return MEETING_DATE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SGM by MEETING_DATE key field
+        /// </summary>
+        /// <param name="Key">MEETING_DATE value used to find SGM</param>
+        /// <returns>Related SGM entity, or null if not found</returns>
         public SGM_Entity TryFindByMEETING_DATE(DateTime Key)
         {
             SGM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SGM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SGM_Entity, string>[Headers.Count];

@@ -8,6 +8,16 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PEF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PE_Entity _CODE_PE;
+        private PI_Entity _PAYITEM_PI;
+        private PC_Entity _TRCENTRE_PC;
+        private PS_Entity _PAY_STEP_PS;
+        private KGLSUB_Entity _SUBPROGRAM_KGLSUB;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,28 +27,13 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
-        /// Employee code
-        /// </summary>
-        public PE_Entity CODE_PE { get { return CODE == null ? null : Context.PE.FindByPEKEY(CODE); } }
-        /// <summary>
         /// Pay item code [Integer (16bit signed nullable): i]
         /// </summary>
         public short? PAYITEM { get; internal set; }
         /// <summary>
-        /// Navigation property for [PAYITEM] => [PI_Entity].[PIKEY]
-        /// Pay item code
-        /// </summary>
-        public PI_Entity PAYITEM_PI { get { return PAYITEM.HasValue ? Context.PI.FindByPIKEY(PAYITEM.Value) : null; } }
-        /// <summary>
         /// Cost centre [Uppercase Alphanumeric: u10]
         /// </summary>
         public string TRCENTRE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TRCENTRE] => [PC_Entity].[PCKEY]
-        /// Cost centre
-        /// </summary>
-        public PC_Entity TRCENTRE_PC { get { return TRCENTRE == null ? null : Context.PC.FindByPCKEY(TRCENTRE); } }
         /// <summary>
         /// E = Employee pay [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -128,11 +123,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? PAY_STEP { get; internal set; }
         /// <summary>
-        /// Navigation property for [PAY_STEP] => [PS_Entity].[PSKEY]
-        /// Pay Rate Step number
-        /// </summary>
-        public PS_Entity PAY_STEP_PS { get { return PAY_STEP.HasValue ? Context.PS.FindByPSKEY(PAY_STEP.Value) : null; } }
-        /// <summary>
         /// Not used (required for a financial table) [Currency (128bit scaled integer nullable): c]
         /// </summary>
         public decimal? TRNETT { get; internal set; }
@@ -169,11 +159,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
-        /// For every transaction there is a subprogram
-        /// </summary>
-        public KGLSUB_Entity SUBPROGRAM_KGLSUB { get { return SUBPROGRAM == null ? null : Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM); } }
-        /// <summary>
         /// A subprogram always belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GLPROGRAM { get; internal set; }
@@ -181,11 +166,6 @@ namespace EduHub.Data.Entities
         /// Transaction might belong to an Initiative [Uppercase Alphanumeric: u3]
         /// </summary>
         public string INITIATIVE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Transaction might belong to an Initiative
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
         /// <summary>
         /// Holiday pay split precentage, Normal or LPA.  Used for leave accruals [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -210,7 +190,135 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
+        /// Employee code
+        /// </summary>
+        public PE_Entity CODE_PE {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_PE == null)
+                    {
+                        _CODE_PE = Context.PE.FindByPEKEY(CODE);
+                    }
+                    return _CODE_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PAYITEM] => [PI_Entity].[PIKEY]
+        /// Pay item code
+        /// </summary>
+        public PI_Entity PAYITEM_PI {
+            get
+            {
+                if (PAYITEM.HasValue)
+                {
+                    if (_PAYITEM_PI == null)
+                    {
+                        _PAYITEM_PI = Context.PI.FindByPIKEY(PAYITEM.Value);
+                    }
+                    return _PAYITEM_PI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TRCENTRE] => [PC_Entity].[PCKEY]
+        /// Cost centre
+        /// </summary>
+        public PC_Entity TRCENTRE_PC {
+            get
+            {
+                if (TRCENTRE != null)
+                {
+                    if (_TRCENTRE_PC == null)
+                    {
+                        _TRCENTRE_PC = Context.PC.FindByPCKEY(TRCENTRE);
+                    }
+                    return _TRCENTRE_PC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PAY_STEP] => [PS_Entity].[PSKEY]
+        /// Pay Rate Step number
+        /// </summary>
+        public PS_Entity PAY_STEP_PS {
+            get
+            {
+                if (PAY_STEP.HasValue)
+                {
+                    if (_PAY_STEP_PS == null)
+                    {
+                        _PAY_STEP_PS = Context.PS.FindByPSKEY(PAY_STEP.Value);
+                    }
+                    return _PAY_STEP_PS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
+        /// For every transaction there is a subprogram
+        /// </summary>
+        public KGLSUB_Entity SUBPROGRAM_KGLSUB {
+            get
+            {
+                if (SUBPROGRAM != null)
+                {
+                    if (_SUBPROGRAM_KGLSUB == null)
+                    {
+                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                    }
+                    return _SUBPROGRAM_KGLSUB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Transaction might belong to an Initiative
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

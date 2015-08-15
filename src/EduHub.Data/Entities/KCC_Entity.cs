@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCC_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TH_Entity _CURRENT_QUILT_TH;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Date [Date Time: d]
         /// </summary>
@@ -53,11 +58,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CURRENT_QUILT { get; internal set; }
         /// <summary>
-        /// Navigation property for [CURRENT_QUILT] => [TH_Entity].[THKEY]
-        /// (Was QUILT) Code identifying current timetabling quilt
-        /// </summary>
-        public TH_Entity CURRENT_QUILT_TH { get { return CURRENT_QUILT == null ? null : Context.TH.FindByTHKEY(CURRENT_QUILT); } }
-        /// <summary>
         /// (Was ATT_LOADED) Generate half day attendances? (Y/N/U) [Uppercase Alphanumeric: u1]
         /// </summary>
         public string HALF_DAY_GENERATED { get; internal set; }
@@ -81,7 +81,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CURRENT_QUILT] => [TH_Entity].[THKEY]
+        /// (Was QUILT) Code identifying current timetabling quilt
+        /// </summary>
+        public TH_Entity CURRENT_QUILT_TH {
+            get
+            {
+                if (CURRENT_QUILT != null)
+                {
+                    if (_CURRENT_QUILT_TH == null)
+                    {
+                        _CURRENT_QUILT_TH = Context.TH.FindByTHKEY(CURRENT_QUILT);
+                    }
+                    return _CURRENT_QUILT_TH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

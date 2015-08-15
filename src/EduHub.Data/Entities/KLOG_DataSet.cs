@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KLOG_DataSet : SetBase<KLOG_Entity>
     {
+        private Lazy<Dictionary<int, KLOG_Entity>> TID_Index;
+
         internal KLOG_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, KLOG_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KLOG"; } }
 
-        private Lazy<Dictionary<int, KLOG_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find KLOG by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KLOG</param>
+        /// <returns>Related KLOG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KLOG entities</exception>
         public KLOG_Entity FindByTID(int Key)
         {
             KLOG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KLOG by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KLOG</param>
+        /// <param name="Value">Related KLOG entity</param>
+        /// <returns>True if the KLOG Entity is found</returns>
         public bool TryFindByTID(int Key, out KLOG_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KLOG by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KLOG</param>
+        /// <returns>Related KLOG entity, or null if not found</returns>
         public KLOG_Entity TryFindByTID(int Key)
         {
             KLOG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KLOG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KLOG_Entity, string>[Headers.Count];

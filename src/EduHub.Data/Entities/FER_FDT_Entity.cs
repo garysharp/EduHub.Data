@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class FER_FDT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _SOURCE_SKGS;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         ///  [Uppercase Alphanumeric: u8]
         /// </summary>
         public string SOURCE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SOURCE] => [SKGS_Entity].[SCHOOL]
-        /// 
-        /// </summary>
-        public SKGS_Entity SOURCE_SKGS { get { return SOURCE == null ? null : Context.SKGS.FindBySCHOOL(SOURCE); } }
         /// <summary>
         /// Prime Key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -973,7 +973,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SOURCE] => [SKGS_Entity].[SCHOOL]
+        /// 
+        /// </summary>
+        public SKGS_Entity SOURCE_SKGS {
+            get
+            {
+                if (SOURCE != null)
+                {
+                    if (_SOURCE_SKGS == null)
+                    {
+                        _SOURCE_SKGS = Context.SKGS.FindBySCHOOL(SOURCE);
+                    }
+                    return _SOURCE_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

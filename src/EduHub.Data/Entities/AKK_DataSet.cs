@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKK_DataSet : SetBase<AKK_Entity>
     {
+
         internal AKK_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKK"; } }
 
-
-        
         protected override Action<AKK_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKK_Entity, string>[Headers.Count];

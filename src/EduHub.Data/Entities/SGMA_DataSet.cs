@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SGMA_DataSet : SetBase<SGMA_Entity>
     {
+
         internal SGMA_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SGMA"; } }
 
-
-        
         protected override Action<SGMA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SGMA_Entity, string>[Headers.Count];

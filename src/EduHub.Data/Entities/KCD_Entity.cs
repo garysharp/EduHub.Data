@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCD_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Doctor code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -64,7 +68,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

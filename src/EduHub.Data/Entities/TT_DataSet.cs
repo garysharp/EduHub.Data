@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TT_DataSet : SetBase<TT_Entity>
     {
+        private Lazy<Dictionary<string, TT_Entity>> TTKEY_Index;
+
         internal TT_DataSet(EduHubContext Context)
             : base(Context)
         {
             TTKEY_Index = new Lazy<Dictionary<string, TT_Entity>>(() => this.ToDictionary(e => e.TTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TT"; } }
 
-        private Lazy<Dictionary<string, TT_Entity>> TTKEY_Index;
-
+        /// <summary>
+        /// Find TT by TTKEY key field
+        /// </summary>
+        /// <param name="Key">TTKEY value used to find TT</param>
+        /// <returns>Related TT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TTKEY value didn't match any TT entities</exception>
         public TT_Entity FindByTTKEY(string Key)
         {
             TT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TT by TTKEY key field
+        /// </summary>
+        /// <param name="Key">TTKEY value used to find TT</param>
+        /// <param name="Value">Related TT entity</param>
+        /// <returns>True if the TT Entity is found</returns>
         public bool TryFindByTTKEY(string Key, out TT_Entity Value)
         {
             return TTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TT by TTKEY key field
+        /// </summary>
+        /// <param name="Key">TTKEY value used to find TT</param>
+        /// <returns>Related TT entity, or null if not found</returns>
         public TT_Entity TryFindByTTKEY(string Key)
         {
             TT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TT_Entity, string>[Headers.Count];

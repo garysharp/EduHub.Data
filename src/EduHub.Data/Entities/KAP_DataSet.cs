@@ -10,6 +10,9 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KAP_DataSet : SetBase<KAP_Entity>
     {
+        private Lazy<Dictionary<string, KAP_Entity>> KAPKEY_Index;
+        private Lazy<Dictionary<string, KAP_Entity>> PLACE_NAME_Index;
+
         internal KAP_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -17,11 +20,17 @@ namespace EduHub.Data.Entities
             PLACE_NAME_Index = new Lazy<Dictionary<string, KAP_Entity>>(() => this.ToDictionary(e => e.PLACE_NAME));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KAP"; } }
 
-        private Lazy<Dictionary<string, KAP_Entity>> KAPKEY_Index;
-        private Lazy<Dictionary<string, KAP_Entity>> PLACE_NAME_Index;
-
+        /// <summary>
+        /// Find KAP by KAPKEY key field
+        /// </summary>
+        /// <param name="Key">KAPKEY value used to find KAP</param>
+        /// <returns>Related KAP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KAPKEY value didn't match any KAP entities</exception>
         public KAP_Entity FindByKAPKEY(string Key)
         {
             KAP_Entity result;
@@ -34,10 +43,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KAP by KAPKEY key field
+        /// </summary>
+        /// <param name="Key">KAPKEY value used to find KAP</param>
+        /// <param name="Value">Related KAP entity</param>
+        /// <returns>True if the KAP Entity is found</returns>
         public bool TryFindByKAPKEY(string Key, out KAP_Entity Value)
         {
             return KAPKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KAP by KAPKEY key field
+        /// </summary>
+        /// <param name="Key">KAPKEY value used to find KAP</param>
+        /// <returns>Related KAP entity, or null if not found</returns>
         public KAP_Entity TryFindByKAPKEY(string Key)
         {
             KAP_Entity result;
@@ -50,6 +72,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find KAP by PLACE_NAME key field
+        /// </summary>
+        /// <param name="Key">PLACE_NAME value used to find KAP</param>
+        /// <returns>Related KAP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PLACE_NAME value didn't match any KAP entities</exception>
         public KAP_Entity FindByPLACE_NAME(string Key)
         {
             KAP_Entity result;
@@ -62,10 +91,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KAP by PLACE_NAME key field
+        /// </summary>
+        /// <param name="Key">PLACE_NAME value used to find KAP</param>
+        /// <param name="Value">Related KAP entity</param>
+        /// <returns>True if the KAP Entity is found</returns>
         public bool TryFindByPLACE_NAME(string Key, out KAP_Entity Value)
         {
             return PLACE_NAME_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KAP by PLACE_NAME key field
+        /// </summary>
+        /// <param name="Key">PLACE_NAME value used to find KAP</param>
+        /// <returns>Related KAP entity, or null if not found</returns>
         public KAP_Entity TryFindByPLACE_NAME(string Key)
         {
             KAP_Entity result;
@@ -78,7 +120,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KAP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAP_Entity, string>[Headers.Count];

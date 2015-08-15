@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SMC_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _STUDENT_ST;
+        private KCM_Entity _MED_CONDITION_KCM;
+        private SCI_Entity _CAMPUS_SCI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -17,19 +24,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string STUDENT { get; internal set; }
         /// <summary>
-        /// Navigation property for [STUDENT] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity STUDENT_ST { get { return STUDENT == null ? null : Context.ST.FindBySTKEY(STUDENT); } }
-        /// <summary>
         /// Medical condition [Uppercase Alphanumeric: u10]
         /// </summary>
         public string MED_CONDITION { get; internal set; }
-        /// <summary>
-        /// Navigation property for [MED_CONDITION] => [KCM_Entity].[KCMKEY]
-        /// Medical condition
-        /// </summary>
-        public KCM_Entity MED_CONDITION_KCM { get { return MED_CONDITION == null ? null : Context.KCM.FindByKCMKEY(MED_CONDITION); } }
         /// <summary>
         /// Description of symptoms exhibited as a result of this condition [Memo: m]
         /// </summary>
@@ -147,11 +144,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? CAMPUS { get; internal set; }
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Dummy field necessary because table is an ACCOUNT table with a short name starting with SM
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
-        /// <summary>
         /// Dummy field necessary because table is an ACCOUNT table with a short name starting with SM [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FACULTY { get; internal set; }
@@ -179,7 +171,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [STUDENT] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity STUDENT_ST {
+            get
+            {
+                if (STUDENT != null)
+                {
+                    if (_STUDENT_ST == null)
+                    {
+                        _STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
+                    }
+                    return _STUDENT_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MED_CONDITION] => [KCM_Entity].[KCMKEY]
+        /// Medical condition
+        /// </summary>
+        public KCM_Entity MED_CONDITION_KCM {
+            get
+            {
+                if (MED_CONDITION != null)
+                {
+                    if (_MED_CONDITION_KCM == null)
+                    {
+                        _MED_CONDITION_KCM = Context.KCM.FindByKCMKEY(MED_CONDITION);
+                    }
+                    return _MED_CONDITION_KCM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Dummy field necessary because table is an ACCOUNT table with a short name starting with SM
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

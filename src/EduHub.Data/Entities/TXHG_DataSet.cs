@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TXHG_DataSet : SetBase<TXHG_Entity>
     {
+        private Lazy<Dictionary<int, TXHG_Entity>> TXHG_ID_Index;
+
         internal TXHG_DataSet(EduHubContext Context)
             : base(Context)
         {
             TXHG_ID_Index = new Lazy<Dictionary<int, TXHG_Entity>>(() => this.ToDictionary(e => e.TXHG_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TXHG"; } }
 
-        private Lazy<Dictionary<int, TXHG_Entity>> TXHG_ID_Index;
-
+        /// <summary>
+        /// Find TXHG by TXHG_ID key field
+        /// </summary>
+        /// <param name="Key">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TXHG_ID value didn't match any TXHG entities</exception>
         public TXHG_Entity FindByTXHG_ID(int Key)
         {
             TXHG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TXHG by TXHG_ID key field
+        /// </summary>
+        /// <param name="Key">TXHG_ID value used to find TXHG</param>
+        /// <param name="Value">Related TXHG entity</param>
+        /// <returns>True if the TXHG Entity is found</returns>
         public bool TryFindByTXHG_ID(int Key, out TXHG_Entity Value)
         {
             return TXHG_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TXHG by TXHG_ID key field
+        /// </summary>
+        /// <param name="Key">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity, or null if not found</returns>
         public TXHG_Entity TryFindByTXHG_ID(int Key)
         {
             TXHG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TXHG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TXHG_Entity, string>[Headers.Count];

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PESH_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PE_Entity _CODE_PE;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (unique) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Employee code [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
-        /// Employee code
-        /// </summary>
-        public PE_Entity CODE_PE { get { return CODE == null ? null : Context.PE.FindByPEKEY(CODE); } }
         /// <summary>
         /// "G" = SGC levy
         /// "U" = Personal super [Uppercase Alphanumeric: u1]
@@ -173,7 +173,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
+        /// Employee code
+        /// </summary>
+        public PE_Entity CODE_PE {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_PE == null)
+                    {
+                        _CODE_PE = Context.PE.FindByPEKEY(CODE);
+                    }
+                    return _CODE_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

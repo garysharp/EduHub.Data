@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class FINHIST_DataSet : SetBase<FINHIST_Entity>
     {
+        private Lazy<Dictionary<int, FINHIST_Entity>> ID_Index;
+
         internal FINHIST_DataSet(EduHubContext Context)
             : base(Context)
         {
             ID_Index = new Lazy<Dictionary<int, FINHIST_Entity>>(() => this.ToDictionary(e => e.ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "FINHIST"; } }
 
-        private Lazy<Dictionary<int, FINHIST_Entity>> ID_Index;
-
+        /// <summary>
+        /// Find FINHIST by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find FINHIST</param>
+        /// <returns>Related FINHIST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any FINHIST entities</exception>
         public FINHIST_Entity FindByID(int Key)
         {
             FINHIST_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find FINHIST by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find FINHIST</param>
+        /// <param name="Value">Related FINHIST entity</param>
+        /// <returns>True if the FINHIST Entity is found</returns>
         public bool TryFindByID(int Key, out FINHIST_Entity Value)
         {
             return ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find FINHIST by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find FINHIST</param>
+        /// <returns>Related FINHIST entity, or null if not found</returns>
         public FINHIST_Entity TryFindByID(int Key)
         {
             FINHIST_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<FINHIST_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<FINHIST_Entity, string>[Headers.Count];

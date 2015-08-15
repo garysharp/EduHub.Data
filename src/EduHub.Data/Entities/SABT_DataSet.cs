@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SABT_DataSet : SetBase<SABT_Entity>
     {
+
         internal SABT_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SABT"; } }
 
-
-        
         protected override Action<SABT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SABT_Entity, string>[Headers.Count];

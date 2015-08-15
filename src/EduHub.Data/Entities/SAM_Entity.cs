@@ -8,6 +8,14 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SAM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCA_Entity _ASSOC_NAME_SCA;
+        private SAP_Entity _ASSOC_POSN_SAP;
+        private UM_Entity _ADDRESSKEY_UM;
+        private UM_Entity _MAILKEY_UM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -57,37 +65,17 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ASSOC_NAME { get; internal set; }
         /// <summary>
-        /// Navigation property for [ASSOC_NAME] => [SCA_Entity].[SCAKEY]
-        /// Association name
-        /// </summary>
-        public SCA_Entity ASSOC_NAME_SCA { get { return ASSOC_NAME == null ? null : Context.SCA.FindBySCAKEY(ASSOC_NAME); } }
-        /// <summary>
         /// Position within association [Uppercase Alphanumeric: u25]
         /// </summary>
         public string ASSOC_POSN { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ASSOC_POSN] => [SAP_Entity].[SAPKEY]
-        /// Position within association
-        /// </summary>
-        public SAP_Entity ASSOC_POSN_SAP { get { return ASSOC_POSN == null ? null : Context.SAP.FindBySAPKEY(ASSOC_POSN); } }
         /// <summary>
         /// Actual address [Integer (32bit signed nullable): l]
         /// </summary>
         public int? ADDRESSKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [ADDRESSKEY] => [UM_Entity].[UMKEY]
-        /// Actual address
-        /// </summary>
-        public UM_Entity ADDRESSKEY_UM { get { return ADDRESSKEY.HasValue ? Context.UM.FindByUMKEY(ADDRESSKEY.Value) : null; } }
-        /// <summary>
         /// Postal address [Integer (32bit signed nullable): l]
         /// </summary>
         public int? MAILKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
-        /// Postal address
-        /// </summary>
-        public UM_Entity MAILKEY_UM { get { return MAILKEY.HasValue ? Context.UM.FindByUMKEY(MAILKEY.Value) : null; } }
         /// <summary>
         /// (Was HOME_EMAIL) Home e-mail [Alphanumeric: a60]
         /// </summary>
@@ -148,7 +136,93 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ASSOC_NAME] => [SCA_Entity].[SCAKEY]
+        /// Association name
+        /// </summary>
+        public SCA_Entity ASSOC_NAME_SCA {
+            get
+            {
+                if (ASSOC_NAME != null)
+                {
+                    if (_ASSOC_NAME_SCA == null)
+                    {
+                        _ASSOC_NAME_SCA = Context.SCA.FindBySCAKEY(ASSOC_NAME);
+                    }
+                    return _ASSOC_NAME_SCA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ASSOC_POSN] => [SAP_Entity].[SAPKEY]
+        /// Position within association
+        /// </summary>
+        public SAP_Entity ASSOC_POSN_SAP {
+            get
+            {
+                if (ASSOC_POSN != null)
+                {
+                    if (_ASSOC_POSN_SAP == null)
+                    {
+                        _ASSOC_POSN_SAP = Context.SAP.FindBySAPKEY(ASSOC_POSN);
+                    }
+                    return _ASSOC_POSN_SAP;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ADDRESSKEY] => [UM_Entity].[UMKEY]
+        /// Actual address
+        /// </summary>
+        public UM_Entity ADDRESSKEY_UM {
+            get
+            {
+                if (ADDRESSKEY.HasValue)
+                {
+                    if (_ADDRESSKEY_UM == null)
+                    {
+                        _ADDRESSKEY_UM = Context.UM.FindByUMKEY(ADDRESSKEY.Value);
+                    }
+                    return _ADDRESSKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
+        /// Postal address
+        /// </summary>
+        public UM_Entity MAILKEY_UM {
+            get
+            {
+                if (MAILKEY.HasValue)
+                {
+                    if (_MAILKEY_UM == null)
+                    {
+                        _MAILKEY_UM = Context.UM.FindByUMKEY(MAILKEY.Value);
+                    }
+                    return _MAILKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PELA_DataSet : SetBase<PELA_Entity>
     {
+
         internal PELA_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PELA"; } }
 
-
-        
         protected override Action<PELA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PELA_Entity, string>[Headers.Count];

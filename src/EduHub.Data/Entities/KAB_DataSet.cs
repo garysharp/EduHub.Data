@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KAB_DataSet : SetBase<KAB_Entity>
     {
+        private Lazy<Dictionary<string, KAB_Entity>> BSB_Index;
+
         internal KAB_DataSet(EduHubContext Context)
             : base(Context)
         {
             BSB_Index = new Lazy<Dictionary<string, KAB_Entity>>(() => this.ToDictionary(e => e.BSB));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KAB"; } }
 
-        private Lazy<Dictionary<string, KAB_Entity>> BSB_Index;
-
+        /// <summary>
+        /// Find KAB by BSB key field
+        /// </summary>
+        /// <param name="Key">BSB value used to find KAB</param>
+        /// <returns>Related KAB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">BSB value didn't match any KAB entities</exception>
         public KAB_Entity FindByBSB(string Key)
         {
             KAB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KAB by BSB key field
+        /// </summary>
+        /// <param name="Key">BSB value used to find KAB</param>
+        /// <param name="Value">Related KAB entity</param>
+        /// <returns>True if the KAB Entity is found</returns>
         public bool TryFindByBSB(string Key, out KAB_Entity Value)
         {
             return BSB_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KAB by BSB key field
+        /// </summary>
+        /// <param name="Key">BSB value used to find KAB</param>
+        /// <returns>Related KAB entity, or null if not found</returns>
         public KAB_Entity TryFindByBSB(string Key)
         {
             KAB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KAB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAB_Entity, string>[Headers.Count];

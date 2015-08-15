@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SAMA_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SAM_Entity _SAMAKEY_SAM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// ID of school association member [Integer (32bit signed nullable): l]
         /// </summary>
         public int? SAMAKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SAMAKEY] => [SAM_Entity].[SAMKEY]
-        /// ID of school association member
-        /// </summary>
-        public SAM_Entity SAMAKEY_SAM { get { return SAMAKEY.HasValue ? Context.SAM.FindBySAMKEY(SAMAKEY.Value) : null; } }
         /// <summary>
         /// ID of school association meeting [Integer (32bit signed nullable): l]
         /// </summary>
@@ -41,7 +41,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SAMAKEY] => [SAM_Entity].[SAMKEY]
+        /// ID of school association member
+        /// </summary>
+        public SAM_Entity SAMAKEY_SAM {
+            get
+            {
+                if (SAMAKEY.HasValue)
+                {
+                    if (_SAMAKEY_SAM == null)
+                    {
+                        _SAMAKEY_SAM = Context.SAM.FindBySAMKEY(SAMAKEY.Value);
+                    }
+                    return _SAMAKEY_SAM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

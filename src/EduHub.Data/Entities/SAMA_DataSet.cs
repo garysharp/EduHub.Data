@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAMA_DataSet : SetBase<SAMA_Entity>
     {
+
         internal SAMA_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAMA"; } }
 
-
-        
         protected override Action<SAMA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAMA_Entity, string>[Headers.Count];

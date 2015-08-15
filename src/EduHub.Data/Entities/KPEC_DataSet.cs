@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KPEC_DataSet : SetBase<KPEC_Entity>
     {
+        private Lazy<Dictionary<string, KPEC_Entity>> KPECKEY_Index;
+
         internal KPEC_DataSet(EduHubContext Context)
             : base(Context)
         {
             KPECKEY_Index = new Lazy<Dictionary<string, KPEC_Entity>>(() => this.ToDictionary(e => e.KPECKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KPEC"; } }
 
-        private Lazy<Dictionary<string, KPEC_Entity>> KPECKEY_Index;
-
+        /// <summary>
+        /// Find KPEC by KPECKEY key field
+        /// </summary>
+        /// <param name="Key">KPECKEY value used to find KPEC</param>
+        /// <returns>Related KPEC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KPECKEY value didn't match any KPEC entities</exception>
         public KPEC_Entity FindByKPECKEY(string Key)
         {
             KPEC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KPEC by KPECKEY key field
+        /// </summary>
+        /// <param name="Key">KPECKEY value used to find KPEC</param>
+        /// <param name="Value">Related KPEC entity</param>
+        /// <returns>True if the KPEC Entity is found</returns>
         public bool TryFindByKPECKEY(string Key, out KPEC_Entity Value)
         {
             return KPECKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KPEC by KPECKEY key field
+        /// </summary>
+        /// <param name="Key">KPECKEY value used to find KPEC</param>
+        /// <returns>Related KPEC entity, or null if not found</returns>
         public KPEC_Entity TryFindByKPECKEY(string Key)
         {
             KPEC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KPEC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPEC_Entity, string>[Headers.Count];

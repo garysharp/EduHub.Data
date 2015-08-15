@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KREPORT_DataSet : SetBase<KREPORT_Entity>
     {
+        private Lazy<Dictionary<string, KREPORT_Entity>> KREPORTKEY_Index;
+
         internal KREPORT_DataSet(EduHubContext Context)
             : base(Context)
         {
             KREPORTKEY_Index = new Lazy<Dictionary<string, KREPORT_Entity>>(() => this.ToDictionary(e => e.KREPORTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KREPORT"; } }
 
-        private Lazy<Dictionary<string, KREPORT_Entity>> KREPORTKEY_Index;
-
+        /// <summary>
+        /// Find KREPORT by KREPORTKEY key field
+        /// </summary>
+        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
+        /// <returns>Related KREPORT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KREPORTKEY value didn't match any KREPORT entities</exception>
         public KREPORT_Entity FindByKREPORTKEY(string Key)
         {
             KREPORT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KREPORT by KREPORTKEY key field
+        /// </summary>
+        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
+        /// <param name="Value">Related KREPORT entity</param>
+        /// <returns>True if the KREPORT Entity is found</returns>
         public bool TryFindByKREPORTKEY(string Key, out KREPORT_Entity Value)
         {
             return KREPORTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KREPORT by KREPORTKEY key field
+        /// </summary>
+        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
+        /// <returns>Related KREPORT entity, or null if not found</returns>
         public KREPORT_Entity TryFindByKREPORTKEY(string Key)
         {
             KREPORT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KREPORT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KREPORT_Entity, string>[Headers.Count];

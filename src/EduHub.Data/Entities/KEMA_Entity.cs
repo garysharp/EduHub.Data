@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KEMA_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique id number [Integer (32bit signed): l]
         /// </summary>
@@ -46,7 +50,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

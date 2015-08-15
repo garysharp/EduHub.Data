@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TEC_DataSet : SetBase<TEC_Entity>
     {
+        private Lazy<Dictionary<string, TEC_Entity>> CATEGORY_Index;
+
         internal TEC_DataSet(EduHubContext Context)
             : base(Context)
         {
             CATEGORY_Index = new Lazy<Dictionary<string, TEC_Entity>>(() => this.ToDictionary(e => e.CATEGORY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TEC"; } }
 
-        private Lazy<Dictionary<string, TEC_Entity>> CATEGORY_Index;
-
+        /// <summary>
+        /// Find TEC by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find TEC</param>
+        /// <returns>Related TEC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">CATEGORY value didn't match any TEC entities</exception>
         public TEC_Entity FindByCATEGORY(string Key)
         {
             TEC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TEC by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find TEC</param>
+        /// <param name="Value">Related TEC entity</param>
+        /// <returns>True if the TEC Entity is found</returns>
         public bool TryFindByCATEGORY(string Key, out TEC_Entity Value)
         {
             return CATEGORY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TEC by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find TEC</param>
+        /// <returns>Related TEC entity, or null if not found</returns>
         public TEC_Entity TryFindByCATEGORY(string Key)
         {
             TEC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TEC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TEC_Entity, string>[Headers.Count];

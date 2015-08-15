@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class BKH_DataSet : SetBase<BKH_Entity>
     {
+        private Lazy<Dictionary<string, BKH_Entity>> BKHKEY_Index;
+
         internal BKH_DataSet(EduHubContext Context)
             : base(Context)
         {
             BKHKEY_Index = new Lazy<Dictionary<string, BKH_Entity>>(() => this.ToDictionary(e => e.BKHKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "BKH"; } }
 
-        private Lazy<Dictionary<string, BKH_Entity>> BKHKEY_Index;
-
+        /// <summary>
+        /// Find BKH by BKHKEY key field
+        /// </summary>
+        /// <param name="Key">BKHKEY value used to find BKH</param>
+        /// <returns>Related BKH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">BKHKEY value didn't match any BKH entities</exception>
         public BKH_Entity FindByBKHKEY(string Key)
         {
             BKH_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find BKH by BKHKEY key field
+        /// </summary>
+        /// <param name="Key">BKHKEY value used to find BKH</param>
+        /// <param name="Value">Related BKH entity</param>
+        /// <returns>True if the BKH Entity is found</returns>
         public bool TryFindByBKHKEY(string Key, out BKH_Entity Value)
         {
             return BKHKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find BKH by BKHKEY key field
+        /// </summary>
+        /// <param name="Key">BKHKEY value used to find BKH</param>
+        /// <returns>Related BKH entity, or null if not found</returns>
         public BKH_Entity TryFindByBKHKEY(string Key)
         {
             BKH_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<BKH_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<BKH_Entity, string>[Headers.Count];

@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PELD_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PLT_Entity _PLTKEY_PLT;
+        private PE_Entity _PEKEY_PE;
+        private PLC_Entity _LEAVE_CODE_PLC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (unique) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,28 +24,13 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string PLTKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [PLTKEY] => [PLT_Entity].[PLTKEY]
-        /// PLT KEY
-        /// </summary>
-        public PLT_Entity PLTKEY_PLT { get { return PLTKEY == null ? null : Context.PLT.FindByPLTKEY(PLTKEY); } }
-        /// <summary>
         /// EMPLOYEE KEY [Uppercase Alphanumeric: u10]
         /// </summary>
         public string PEKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [PEKEY] => [PE_Entity].[PEKEY]
-        /// EMPLOYEE KEY
-        /// </summary>
-        public PE_Entity PEKEY_PE { get { return PEKEY == null ? null : Context.PE.FindByPEKEY(PEKEY); } }
-        /// <summary>
         /// Leave Type Code eg Sick,LSL,RDO [Uppercase Alphanumeric: u8]
         /// </summary>
         public string LEAVE_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
-        /// Leave Type Code eg Sick,LSL,RDO
-        /// </summary>
-        public PLC_Entity LEAVE_CODE_PLC { get { return LEAVE_CODE == null ? null : Context.PLC.FindByPLCKEY(LEAVE_CODE); } }
         /// <summary>
         /// Date the entitlement started
         /// Default is employee start date [Date Time nullable: d]
@@ -89,7 +81,72 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [PLTKEY] => [PLT_Entity].[PLTKEY]
+        /// PLT KEY
+        /// </summary>
+        public PLT_Entity PLTKEY_PLT {
+            get
+            {
+                if (PLTKEY != null)
+                {
+                    if (_PLTKEY_PLT == null)
+                    {
+                        _PLTKEY_PLT = Context.PLT.FindByPLTKEY(PLTKEY);
+                    }
+                    return _PLTKEY_PLT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PEKEY] => [PE_Entity].[PEKEY]
+        /// EMPLOYEE KEY
+        /// </summary>
+        public PE_Entity PEKEY_PE {
+            get
+            {
+                if (PEKEY != null)
+                {
+                    if (_PEKEY_PE == null)
+                    {
+                        _PEKEY_PE = Context.PE.FindByPEKEY(PEKEY);
+                    }
+                    return _PEKEY_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
+        /// Leave Type Code eg Sick,LSL,RDO
+        /// </summary>
+        public PLC_Entity LEAVE_CODE_PLC {
+            get
+            {
+                if (LEAVE_CODE != null)
+                {
+                    if (_LEAVE_CODE_PLC == null)
+                    {
+                        _LEAVE_CODE_PLC = Context.PLC.FindByPLCKEY(LEAVE_CODE);
+                    }
+                    return _LEAVE_CODE_PLC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

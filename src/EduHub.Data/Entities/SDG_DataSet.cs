@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SDG_DataSet : SetBase<SDG_Entity>
     {
+        private Lazy<Dictionary<string, SDG_Entity>> SDGKEY_Index;
+
         internal SDG_DataSet(EduHubContext Context)
             : base(Context)
         {
             SDGKEY_Index = new Lazy<Dictionary<string, SDG_Entity>>(() => this.ToDictionary(e => e.SDGKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SDG"; } }
 
-        private Lazy<Dictionary<string, SDG_Entity>> SDGKEY_Index;
-
+        /// <summary>
+        /// Find SDG by SDGKEY key field
+        /// </summary>
+        /// <param name="Key">SDGKEY value used to find SDG</param>
+        /// <returns>Related SDG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SDGKEY value didn't match any SDG entities</exception>
         public SDG_Entity FindBySDGKEY(string Key)
         {
             SDG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SDG by SDGKEY key field
+        /// </summary>
+        /// <param name="Key">SDGKEY value used to find SDG</param>
+        /// <param name="Value">Related SDG entity</param>
+        /// <returns>True if the SDG Entity is found</returns>
         public bool TryFindBySDGKEY(string Key, out SDG_Entity Value)
         {
             return SDGKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SDG by SDGKEY key field
+        /// </summary>
+        /// <param name="Key">SDGKEY value used to find SDG</param>
+        /// <returns>Related SDG entity, or null if not found</returns>
         public SDG_Entity TryFindBySDGKEY(string Key)
         {
             SDG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SDG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDG_Entity, string>[Headers.Count];

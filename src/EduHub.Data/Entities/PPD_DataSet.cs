@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PPD_DataSet : SetBase<PPD_Entity>
     {
+        private Lazy<Dictionary<string, PPD_Entity>> PPDKEY_Index;
+
         internal PPD_DataSet(EduHubContext Context)
             : base(Context)
         {
             PPDKEY_Index = new Lazy<Dictionary<string, PPD_Entity>>(() => this.ToDictionary(e => e.PPDKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PPD"; } }
 
-        private Lazy<Dictionary<string, PPD_Entity>> PPDKEY_Index;
-
+        /// <summary>
+        /// Find PPD by PPDKEY key field
+        /// </summary>
+        /// <param name="Key">PPDKEY value used to find PPD</param>
+        /// <returns>Related PPD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PPDKEY value didn't match any PPD entities</exception>
         public PPD_Entity FindByPPDKEY(string Key)
         {
             PPD_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PPD by PPDKEY key field
+        /// </summary>
+        /// <param name="Key">PPDKEY value used to find PPD</param>
+        /// <param name="Value">Related PPD entity</param>
+        /// <returns>True if the PPD Entity is found</returns>
         public bool TryFindByPPDKEY(string Key, out PPD_Entity Value)
         {
             return PPDKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PPD by PPDKEY key field
+        /// </summary>
+        /// <param name="Key">PPDKEY value used to find PPD</param>
+        /// <returns>Related PPD entity, or null if not found</returns>
         public PPD_Entity TryFindByPPDKEY(string Key)
         {
             PPD_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PPD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PPD_Entity, string>[Headers.Count];

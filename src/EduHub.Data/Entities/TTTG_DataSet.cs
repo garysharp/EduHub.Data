@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TTTG_DataSet : SetBase<TTTG_Entity>
     {
+        private Lazy<Dictionary<int, TTTG_Entity>> IDENT_Index;
+
         internal TTTG_DataSet(EduHubContext Context)
             : base(Context)
         {
             IDENT_Index = new Lazy<Dictionary<int, TTTG_Entity>>(() => this.ToDictionary(e => e.IDENT));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TTTG"; } }
 
-        private Lazy<Dictionary<int, TTTG_Entity>> IDENT_Index;
-
+        /// <summary>
+        /// Find TTTG by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find TTTG</param>
+        /// <returns>Related TTTG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">IDENT value didn't match any TTTG entities</exception>
         public TTTG_Entity FindByIDENT(int Key)
         {
             TTTG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TTTG by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find TTTG</param>
+        /// <param name="Value">Related TTTG entity</param>
+        /// <returns>True if the TTTG Entity is found</returns>
         public bool TryFindByIDENT(int Key, out TTTG_Entity Value)
         {
             return IDENT_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TTTG by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find TTTG</param>
+        /// <returns>Related TTTG entity, or null if not found</returns>
         public TTTG_Entity TryFindByIDENT(int Key)
         {
             TTTG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TTTG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TTTG_Entity, string>[Headers.Count];

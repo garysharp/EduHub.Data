@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGLINIT_DataSet : SetBase<KGLINIT_Entity>
     {
+        private Lazy<Dictionary<string, KGLINIT_Entity>> INITIATIVE_Index;
+
         internal KGLINIT_DataSet(EduHubContext Context)
             : base(Context)
         {
             INITIATIVE_Index = new Lazy<Dictionary<string, KGLINIT_Entity>>(() => this.ToDictionary(e => e.INITIATIVE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGLINIT"; } }
 
-        private Lazy<Dictionary<string, KGLINIT_Entity>> INITIATIVE_Index;
-
+        /// <summary>
+        /// Find KGLINIT by INITIATIVE key field
+        /// </summary>
+        /// <param name="Key">INITIATIVE value used to find KGLINIT</param>
+        /// <returns>Related KGLINIT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">INITIATIVE value didn't match any KGLINIT entities</exception>
         public KGLINIT_Entity FindByINITIATIVE(string Key)
         {
             KGLINIT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGLINIT by INITIATIVE key field
+        /// </summary>
+        /// <param name="Key">INITIATIVE value used to find KGLINIT</param>
+        /// <param name="Value">Related KGLINIT entity</param>
+        /// <returns>True if the KGLINIT Entity is found</returns>
         public bool TryFindByINITIATIVE(string Key, out KGLINIT_Entity Value)
         {
             return INITIATIVE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGLINIT by INITIATIVE key field
+        /// </summary>
+        /// <param name="Key">INITIATIVE value used to find KGLINIT</param>
+        /// <returns>Related KGLINIT entity, or null if not found</returns>
         public KGLINIT_Entity TryFindByINITIATIVE(string Key)
         {
             KGLINIT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGLINIT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLINIT_Entity, string>[Headers.Count];

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class GLPREV_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGLT_Entity _GL_TYPE_KGLT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// General Ledger code (Prime Key) [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -385,11 +390,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GL_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GL_TYPE] => [KGLT_Entity].[GL_TYPE]
-        /// Income/expense/Liabitiy etc
-        /// </summary>
-        public KGLT_Entity GL_TYPE_KGLT { get { return GL_TYPE == null ? null : Context.KGLT.FindByGL_TYPE(GL_TYPE); } }
-        /// <summary>
         /// Allow account to be used(Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
         public string ACTIVE { get; internal set; }
@@ -413,7 +413,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GL_TYPE] => [KGLT_Entity].[GL_TYPE]
+        /// Income/expense/Liabitiy etc
+        /// </summary>
+        public KGLT_Entity GL_TYPE_KGLT {
+            get
+            {
+                if (GL_TYPE != null)
+                {
+                    if (_GL_TYPE_KGLT == null)
+                    {
+                        _GL_TYPE_KGLT = Context.KGLT.FindByGL_TYPE(GL_TYPE);
+                    }
+                    return _GL_TYPE_KGLT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

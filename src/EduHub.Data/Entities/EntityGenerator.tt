@@ -14,6 +14,7 @@
 <#@ import namespace="System.Xml.Linq" #>
 <#
     var manager = TemplateFileManager.Create(this);
+    manager.IsAutoIndentEnabled = false;
     var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v55 Schema.xml"));
     foreach (var entity in schema)
     {
@@ -31,6 +32,15 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class <#= entity.Name #>_DataSet : SetBase<<#= entity.Name #>_Entity>
     {
+<#
+        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        {
+#>
+        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>> <#= field.Name #>_Index;
+<#
+        }
+#>
+
         internal <#= entity.Name #>_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -44,21 +54,21 @@ namespace EduHub.Data.Entities
 #>
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "<#= entity.Name #>"; } }
 
 <#
         foreach (var field in entity.Fields.Where(f => f.IsKey))
         {
 #>
-        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>> <#= field.Name #>_Index;
-<#
-        }
-#>
-
-<#
-        foreach (var field in entity.Fields.Where(f => f.IsKey))
-        {
-#>
+        /// <summary>
+        /// Find <#= entity.Name #> by <#= field.Name #> key field
+        /// </summary>
+        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
+        /// <returns>Related <#= entity.Name #> entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><#= field.Name #> value didn't match any <#= entity.Name #> entities</exception>
         public <#= entity.Name #>_Entity FindBy<#= field.Name #>(<#= field.TypeName #> Key)
         {
             <#= entity.Name #>_Entity result;
@@ -71,10 +81,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find <#= entity.Name #> by <#= field.Name #> key field
+        /// </summary>
+        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
+        /// <param name="Value">Related <#= entity.Name #> entity</param>
+        /// <returns>True if the <#= entity.Name #> Entity is found</returns>
         public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #>_Entity Value)
         {
             return <#= field.Name #>_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find <#= entity.Name #> by <#= field.Name #> key field
+        /// </summary>
+        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
+        /// <returns>Related <#= entity.Name #> entity, or null if not found</returns>
         public <#= entity.Name #>_Entity TryFindBy<#= field.Name #>(<#= field.TypeName #> Key)
         {
             <#= entity.Name #>_Entity result;
@@ -87,10 +110,10 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
 <#
         }
 #>
-        
         protected override Action<<#= entity.Name #>_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<<#= entity.Name #>_Entity, string>[Headers.Count];
@@ -131,6 +154,18 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class <#= entity.Name #>_Entity : EntityBase
     {
+#region Navigation Property Cache
+<#
+        foreach (var field in entity.Fields.Where(f => f.RelationshipEntity != null))
+        {
+#>
+        private <#=field.RelationshipEntity#>_Entity _<#=field.Name#>_<#=field.RelationshipEntity#>;
+<#
+        }
+#>
+#endregion
+
+#region Field Properties
 <#
         foreach (var field in entity.Fields)
         {
@@ -140,20 +175,29 @@ namespace EduHub.Data.Entities
         /// </summary>
         public <#=field.TypeName#> <#=field.Name#> { get; internal set; }
 <#
-            if (field.RelationshipEntity != null)
-            {
+        }
+#>
+#endregion
+
+#region Navigation Properties
+<#
+        foreach (var field in entity.Fields.Where(f => f.RelationshipEntity != null))
+        {
 #>
         /// <summary>
         /// Navigation property for [<#=field.Name#>] => [<#=field.RelationshipEntity#>_Entity].[<#=field.RelationshipField#>]
 <#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#>
         /// </summary>
-        public <#=field.RelationshipEntity#>_Entity <#=field.Name#>_<#=field.RelationshipEntity#> { get { <#=DetermineNavigationPropertyContent(field)#> } }
-<#
+        public <#=field.RelationshipEntity#>_Entity <#=field.Name#>_<#=field.RelationshipEntity#> {
+            get
+            {
+<#=DetermineNavigationPropertyContent(field)#>
             }
         }
+<#
+        }
 #>
-        
-        
+#endregion
     }
 }
 <#
@@ -217,21 +261,51 @@ namespace EduHub.Data.Entities
 
     static string DetermineNavigationPropertyContent(C7Field Field)
     {
-        if (Field.TypeName.EndsWith("?"))
+        StringBuilder content = new StringBuilder();
+
+        if (Field.TypeName.EndsWith("?")) // Nullable Type
         {
-            // Nullable Type
-            return string.Format("return {0}.HasValue ? Context.{1}.FindBy{2}({0}.Value) : null;", Field.Name, Field.RelationshipEntity, Field.RelationshipField);
+            content
+                .Append("                ").AppendLine(string.Format("if ({0}.HasValue)", Field.Name))
+                .Append("                ").AppendLine("{")
+                .Append("                ").AppendLine(string.Format("    if (_{0}_{1} == null)", Field.Name, Field.RelationshipEntity))
+                .Append("                ").AppendLine("    {")
+                .Append("                ").AppendLine(string.Format("        _{0}_{1} = Context.{1}.FindBy{2}({0}.Value);", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
+                .Append("                ").AppendLine("    }")
+                .Append("                ").AppendLine(string.Format("    return _{0}_{1};", Field.Name, Field.RelationshipEntity))
+                .Append("                ").AppendLine("}")
+                .Append("                ").AppendLine("else")
+                .Append("                ").AppendLine("{")
+                .Append("                ").AppendLine("    return null;")
+                .Append("                ").Append("}");
         }
-        else if (Field.TypeName == "string")
+        else if (Field.TypeName == "string") // String Reference Type
         {
-            // String Reference Type
-            return string.Format("return {0} == null ? null : Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField);
+            content
+                .Append("                ").AppendLine(string.Format("if ({0} != null)", Field.Name))
+                .Append("                ").AppendLine("{")
+                .Append("                ").AppendLine(string.Format("    if (_{0}_{1} == null)", Field.Name, Field.RelationshipEntity))
+                .Append("                ").AppendLine("    {")
+                .Append("                ").AppendLine(string.Format("        _{0}_{1} = Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
+                .Append("                ").AppendLine("    }")
+                .Append("                ").AppendLine(string.Format("    return _{0}_{1};", Field.Name, Field.RelationshipEntity))
+                .Append("                ").AppendLine("}")
+                .Append("                ").AppendLine("else")
+                .Append("                ").AppendLine("{")
+                .Append("                ").AppendLine("    return null;")
+                .Append("                ").Append("}");
         }
-        else
+        else // Others
         {
-            // Others
-            return string.Format("return Context.{0}.FindBy{1}({2});", Field.RelationshipEntity, Field.RelationshipField, Field.Name);
+            content
+                .Append("                ").AppendLine(string.Format("if (_{0}_{1} != null)", Field.Name, Field.RelationshipEntity))
+                .Append("                ").AppendLine("{")
+                .Append("                ").AppendLine(string.Format("    _{0}_{1} = Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
+                .Append("                ").AppendLine("}")
+                .Append("                ").Append(string.Format("return _{0}_{1};", Field.Name, Field.RelationshipEntity));
         }
+
+        return content.ToString();
     }
 
     static IEnumerable<C7Entity> RetrieveEntitiesFromSchema(string Filename)

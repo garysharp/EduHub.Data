@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGG_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Category Code [Uppercase Alphanumeric: u2]
         /// </summary>
@@ -24,7 +28,9 @@ namespace EduHub.Data.Entities
         /// Is this Category open or closed [Uppercase Alphanumeric: u1]
         /// </summary>
         public string OPEN_CLOSED { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

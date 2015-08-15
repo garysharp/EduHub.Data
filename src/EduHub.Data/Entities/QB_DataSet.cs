@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class QB_DataSet : SetBase<QB_Entity>
     {
+        private Lazy<Dictionary<int, QB_Entity>> QBKEY_Index;
+
         internal QB_DataSet(EduHubContext Context)
             : base(Context)
         {
             QBKEY_Index = new Lazy<Dictionary<int, QB_Entity>>(() => this.ToDictionary(e => e.QBKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "QB"; } }
 
-        private Lazy<Dictionary<int, QB_Entity>> QBKEY_Index;
-
+        /// <summary>
+        /// Find QB by QBKEY key field
+        /// </summary>
+        /// <param name="Key">QBKEY value used to find QB</param>
+        /// <returns>Related QB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">QBKEY value didn't match any QB entities</exception>
         public QB_Entity FindByQBKEY(int Key)
         {
             QB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find QB by QBKEY key field
+        /// </summary>
+        /// <param name="Key">QBKEY value used to find QB</param>
+        /// <param name="Value">Related QB entity</param>
+        /// <returns>True if the QB Entity is found</returns>
         public bool TryFindByQBKEY(int Key, out QB_Entity Value)
         {
             return QBKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find QB by QBKEY key field
+        /// </summary>
+        /// <param name="Key">QBKEY value used to find QB</param>
+        /// <returns>Related QB entity, or null if not found</returns>
         public QB_Entity TryFindByQBKEY(int Key)
         {
             QB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<QB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<QB_Entity, string>[Headers.Count];

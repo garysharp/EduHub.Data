@@ -24,10 +24,62 @@ namespace EduHub.Data.Entities
         public abstract string SetName { get; }
         protected abstract Action<T, string>[] BuildMapper(List<string> Headers);
 
+        /// <summary>
+        /// Data Set Location
+        /// </summary>
+        public string Filename
+        {
+            get
+            {
+                return Path.Combine(Context.EduHubDirectory, $"{SetName}_{Context.EduHubSiteIdentifier}.csv");
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the eduHub Directory contains this data set
+        /// </summary>
+        public bool IsAvailable
+        {
+            get
+            {
+                return File.Exists(Filename);
+            }
+        }
+
+        /// <summary>
+        /// Throws an exception if the set is unavailable
+        /// </summary>
+        public void EnsureAvailable()
+        {
+            if (!IsAvailable)
+            {
+                throw new EduHubDataSetNotFoundException(SetName, Filename);
+            }
+        }
+
+        /// <summary>
+        /// Data Set Age
+        /// </summary>
+        public DateTime? Age
+        {
+            get
+            {
+                var filename = Filename;
+                if (File.Exists(filename))
+                {
+                    return File.GetLastWriteTime(filename);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         private List<T> Parse()
         {
             List<T> items = new List<T>();
-            string filename = Path.Combine(Context.EduHubDirectory, $"{SetName}_{Context.EduHubSiteIdentifier}.csv");
+            string filename = Filename;
 
             if (!File.Exists(filename))
                 throw new EduHubDataSetNotFoundException(SetName, filename);

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PF_DataSet : SetBase<PF_Entity>
     {
+        private Lazy<Dictionary<string, PF_Entity>> PFKEY_Index;
+
         internal PF_DataSet(EduHubContext Context)
             : base(Context)
         {
             PFKEY_Index = new Lazy<Dictionary<string, PF_Entity>>(() => this.ToDictionary(e => e.PFKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PF"; } }
 
-        private Lazy<Dictionary<string, PF_Entity>> PFKEY_Index;
-
+        /// <summary>
+        /// Find PF by PFKEY key field
+        /// </summary>
+        /// <param name="Key">PFKEY value used to find PF</param>
+        /// <returns>Related PF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PFKEY value didn't match any PF entities</exception>
         public PF_Entity FindByPFKEY(string Key)
         {
             PF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PF by PFKEY key field
+        /// </summary>
+        /// <param name="Key">PFKEY value used to find PF</param>
+        /// <param name="Value">Related PF entity</param>
+        /// <returns>True if the PF Entity is found</returns>
         public bool TryFindByPFKEY(string Key, out PF_Entity Value)
         {
             return PFKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PF by PFKEY key field
+        /// </summary>
+        /// <param name="Key">PFKEY value used to find PF</param>
+        /// <returns>Related PF entity, or null if not found</returns>
         public PF_Entity TryFindByPFKEY(string Key)
         {
             PF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PF_Entity, string>[Headers.Count];

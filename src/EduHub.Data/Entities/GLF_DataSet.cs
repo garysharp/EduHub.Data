@@ -10,6 +10,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLF_DataSet : SetBase<GLF_Entity>
     {
+        private Lazy<Dictionary<string, GLF_Entity>> TRREF_Index;
+        private Lazy<Dictionary<string, GLF_Entity>> GST_BOX_Index;
+        private Lazy<Dictionary<string, GLF_Entity>> GST_SALE_PURCH_Index;
+
         internal GLF_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -18,12 +22,17 @@ namespace EduHub.Data.Entities
             GST_SALE_PURCH_Index = new Lazy<Dictionary<string, GLF_Entity>>(() => this.ToDictionary(e => e.GST_SALE_PURCH));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLF"; } }
 
-        private Lazy<Dictionary<string, GLF_Entity>> TRREF_Index;
-        private Lazy<Dictionary<string, GLF_Entity>> GST_BOX_Index;
-        private Lazy<Dictionary<string, GLF_Entity>> GST_SALE_PURCH_Index;
-
+        /// <summary>
+        /// Find GLF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLF</param>
+        /// <returns>Related GLF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any GLF entities</exception>
         public GLF_Entity FindByTRREF(string Key)
         {
             GLF_Entity result;
@@ -36,10 +45,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLF</param>
+        /// <param name="Value">Related GLF entity</param>
+        /// <returns>True if the GLF Entity is found</returns>
         public bool TryFindByTRREF(string Key, out GLF_Entity Value)
         {
             return TRREF_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLF</param>
+        /// <returns>Related GLF entity, or null if not found</returns>
         public GLF_Entity TryFindByTRREF(string Key)
         {
             GLF_Entity result;
@@ -52,6 +74,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find GLF by GST_BOX key field
+        /// </summary>
+        /// <param name="Key">GST_BOX value used to find GLF</param>
+        /// <returns>Related GLF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">GST_BOX value didn't match any GLF entities</exception>
         public GLF_Entity FindByGST_BOX(string Key)
         {
             GLF_Entity result;
@@ -64,10 +93,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_BOX key field
+        /// </summary>
+        /// <param name="Key">GST_BOX value used to find GLF</param>
+        /// <param name="Value">Related GLF entity</param>
+        /// <returns>True if the GLF Entity is found</returns>
         public bool TryFindByGST_BOX(string Key, out GLF_Entity Value)
         {
             return GST_BOX_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_BOX key field
+        /// </summary>
+        /// <param name="Key">GST_BOX value used to find GLF</param>
+        /// <returns>Related GLF entity, or null if not found</returns>
         public GLF_Entity TryFindByGST_BOX(string Key)
         {
             GLF_Entity result;
@@ -80,6 +122,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find GLF by GST_SALE_PURCH key field
+        /// </summary>
+        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
+        /// <returns>Related GLF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">GST_SALE_PURCH value didn't match any GLF entities</exception>
         public GLF_Entity FindByGST_SALE_PURCH(string Key)
         {
             GLF_Entity result;
@@ -92,10 +141,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_SALE_PURCH key field
+        /// </summary>
+        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
+        /// <param name="Value">Related GLF entity</param>
+        /// <returns>True if the GLF Entity is found</returns>
         public bool TryFindByGST_SALE_PURCH(string Key, out GLF_Entity Value)
         {
             return GST_SALE_PURCH_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_SALE_PURCH key field
+        /// </summary>
+        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
+        /// <returns>Related GLF entity, or null if not found</returns>
         public GLF_Entity TryFindByGST_SALE_PURCH(string Key)
         {
             GLF_Entity result;
@@ -108,7 +170,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GLF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLF_Entity, string>[Headers.Count];

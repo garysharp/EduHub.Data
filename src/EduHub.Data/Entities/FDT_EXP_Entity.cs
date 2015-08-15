@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class FDT_EXP_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _DEST_SKGS;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         ///  [Uppercase Alphanumeric: u8]
         /// </summary>
         public string DEST { get; internal set; }
-        /// <summary>
-        /// Navigation property for [DEST] => [SKGS_Entity].[SCHOOL]
-        /// 
-        /// </summary>
-        public SKGS_Entity DEST_SKGS { get { return DEST == null ? null : Context.SKGS.FindBySCHOOL(DEST); } }
         /// <summary>
         ///  [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -57,7 +57,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [DEST] => [SKGS_Entity].[SCHOOL]
+        /// 
+        /// </summary>
+        public SKGS_Entity DEST_SKGS {
+            get
+            {
+                if (DEST != null)
+                {
+                    if (_DEST_SKGS == null)
+                    {
+                        _DEST_SKGS = Context.SKGS.FindBySCHOOL(DEST);
+                    }
+                    return _DEST_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

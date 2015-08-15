@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SID_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KCB_Entity _INCIDENT_TYPE_KCB;
+        private SCI_Entity _CAMPUS_SCI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -25,11 +31,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string INCIDENT_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [INCIDENT_TYPE] => [KCB_Entity].[KCBKEY]
-        /// Type of incident
-        /// </summary>
-        public KCB_Entity INCIDENT_TYPE_KCB { get { return INCIDENT_TYPE == null ? null : Context.KCB.FindByKCBKEY(INCIDENT_TYPE); } }
-        /// <summary>
         /// Description of incident [Memo: m]
         /// </summary>
         public string INCIDENT_DESC { get; internal set; }
@@ -41,11 +42,6 @@ namespace EduHub.Data.Entities
         /// School campus at which incident took place [Integer (32bit signed nullable): l]
         /// </summary>
         public int? CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// School campus at which incident took place
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
         /// <summary>
         /// Address at which incident took place (if not at school) [Memo: m]
         /// </summary>
@@ -74,7 +70,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [INCIDENT_TYPE] => [KCB_Entity].[KCBKEY]
+        /// Type of incident
+        /// </summary>
+        public KCB_Entity INCIDENT_TYPE_KCB {
+            get
+            {
+                if (INCIDENT_TYPE != null)
+                {
+                    if (_INCIDENT_TYPE_KCB == null)
+                    {
+                        _INCIDENT_TYPE_KCB = Context.KCB.FindByKCBKEY(INCIDENT_TYPE);
+                    }
+                    return _INCIDENT_TYPE_KCB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// School campus at which incident took place
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

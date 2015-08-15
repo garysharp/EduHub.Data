@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKL_DataSet : SetBase<AKL_Entity>
     {
+        private Lazy<Dictionary<string, AKL_Entity>> LOCATION_Index;
+
         internal AKL_DataSet(EduHubContext Context)
             : base(Context)
         {
             LOCATION_Index = new Lazy<Dictionary<string, AKL_Entity>>(() => this.ToDictionary(e => e.LOCATION));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKL"; } }
 
-        private Lazy<Dictionary<string, AKL_Entity>> LOCATION_Index;
-
+        /// <summary>
+        /// Find AKL by LOCATION key field
+        /// </summary>
+        /// <param name="Key">LOCATION value used to find AKL</param>
+        /// <returns>Related AKL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">LOCATION value didn't match any AKL entities</exception>
         public AKL_Entity FindByLOCATION(string Key)
         {
             AKL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKL by LOCATION key field
+        /// </summary>
+        /// <param name="Key">LOCATION value used to find AKL</param>
+        /// <param name="Value">Related AKL entity</param>
+        /// <returns>True if the AKL Entity is found</returns>
         public bool TryFindByLOCATION(string Key, out AKL_Entity Value)
         {
             return LOCATION_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKL by LOCATION key field
+        /// </summary>
+        /// <param name="Key">LOCATION value used to find AKL</param>
+        /// <returns>Related AKL entity, or null if not found</returns>
         public AKL_Entity TryFindByLOCATION(string Key)
         {
             AKL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKL_Entity, string>[Headers.Count];

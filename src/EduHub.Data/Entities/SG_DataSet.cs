@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SG_DataSet : SetBase<SG_Entity>
     {
+        private Lazy<Dictionary<string, SG_Entity>> SGKEY_Index;
+
         internal SG_DataSet(EduHubContext Context)
             : base(Context)
         {
             SGKEY_Index = new Lazy<Dictionary<string, SG_Entity>>(() => this.ToDictionary(e => e.SGKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SG"; } }
 
-        private Lazy<Dictionary<string, SG_Entity>> SGKEY_Index;
-
+        /// <summary>
+        /// Find SG by SGKEY key field
+        /// </summary>
+        /// <param name="Key">SGKEY value used to find SG</param>
+        /// <returns>Related SG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SGKEY value didn't match any SG entities</exception>
         public SG_Entity FindBySGKEY(string Key)
         {
             SG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SG by SGKEY key field
+        /// </summary>
+        /// <param name="Key">SGKEY value used to find SG</param>
+        /// <param name="Value">Related SG entity</param>
+        /// <returns>True if the SG Entity is found</returns>
         public bool TryFindBySGKEY(string Key, out SG_Entity Value)
         {
             return SGKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SG by SGKEY key field
+        /// </summary>
+        /// <param name="Key">SGKEY value used to find SG</param>
+        /// <returns>Related SG entity, or null if not found</returns>
         public SG_Entity TryFindBySGKEY(string Key)
         {
             SG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SG_Entity, string>[Headers.Count];

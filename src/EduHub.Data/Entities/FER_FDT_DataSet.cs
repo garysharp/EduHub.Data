@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class FER_FDT_DataSet : SetBase<FER_FDT_Entity>
     {
+        private Lazy<Dictionary<int, FER_FDT_Entity>> TID_Index;
+
         internal FER_FDT_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, FER_FDT_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "FER_FDT"; } }
 
-        private Lazy<Dictionary<int, FER_FDT_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find FER_FDT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find FER_FDT</param>
+        /// <returns>Related FER_FDT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any FER_FDT entities</exception>
         public FER_FDT_Entity FindByTID(int Key)
         {
             FER_FDT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find FER_FDT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find FER_FDT</param>
+        /// <param name="Value">Related FER_FDT entity</param>
+        /// <returns>True if the FER_FDT Entity is found</returns>
         public bool TryFindByTID(int Key, out FER_FDT_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find FER_FDT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find FER_FDT</param>
+        /// <returns>Related FER_FDT entity, or null if not found</returns>
         public FER_FDT_Entity TryFindByTID(int Key)
         {
             FER_FDT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<FER_FDT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<FER_FDT_Entity, string>[Headers.Count];

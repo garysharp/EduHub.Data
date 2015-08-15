@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KADM_DataSet : SetBase<KADM_Entity>
     {
+        private Lazy<Dictionary<string, KADM_Entity>> KADMKEY_Index;
+
         internal KADM_DataSet(EduHubContext Context)
             : base(Context)
         {
             KADMKEY_Index = new Lazy<Dictionary<string, KADM_Entity>>(() => this.ToDictionary(e => e.KADMKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KADM"; } }
 
-        private Lazy<Dictionary<string, KADM_Entity>> KADMKEY_Index;
-
+        /// <summary>
+        /// Find KADM by KADMKEY key field
+        /// </summary>
+        /// <param name="Key">KADMKEY value used to find KADM</param>
+        /// <returns>Related KADM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KADMKEY value didn't match any KADM entities</exception>
         public KADM_Entity FindByKADMKEY(string Key)
         {
             KADM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KADM by KADMKEY key field
+        /// </summary>
+        /// <param name="Key">KADMKEY value used to find KADM</param>
+        /// <param name="Value">Related KADM entity</param>
+        /// <returns>True if the KADM Entity is found</returns>
         public bool TryFindByKADMKEY(string Key, out KADM_Entity Value)
         {
             return KADMKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KADM by KADMKEY key field
+        /// </summary>
+        /// <param name="Key">KADMKEY value used to find KADM</param>
+        /// <returns>Related KADM entity, or null if not found</returns>
         public KADM_Entity TryFindByKADMKEY(string Key)
         {
             KADM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KADM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KADM_Entity, string>[Headers.Count];

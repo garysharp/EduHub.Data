@@ -8,6 +8,14 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class GLCFPREV_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GLPREV_Entity _CODE_GLPREV;
+        private KGST_Entity _GST_TYPE_KGST;
+        private KGLSUB_Entity _SUBPROGRAM_KGLSUB;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +24,6 @@ namespace EduHub.Data.Entities
         /// General Ledger Code [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [GLPREV_Entity].[CODE]
-        /// General Ledger Code
-        /// </summary>
-        public GLPREV_Entity CODE_GLPREV { get { return CODE == null ? null : Context.GLPREV.FindByCODE(CODE); } }
         /// <summary>
         /// Optional Family Code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -159,11 +162,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GST_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
-        /// What type of GST
-        /// </summary>
-        public KGST_Entity GST_TYPE_KGST { get { return GST_TYPE == null ? null : Context.KGST.FindByKGSTKEY(GST_TYPE); } }
-        /// <summary>
         /// Is this being claimed [Uppercase Alphanumeric: u1]
         /// </summary>
         public string GST_RECLAIM { get; internal set; }
@@ -286,11 +284,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
-        /// For every transaction there is a subprogram
-        /// </summary>
-        public KGLSUB_Entity SUBPROGRAM_KGLSUB { get { return SUBPROGRAM == null ? null : Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM); } }
-        /// <summary>
         /// A subprogram always belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GLPROGRAM { get; internal set; }
@@ -298,11 +291,6 @@ namespace EduHub.Data.Entities
         /// Transaction might belong to an Initiative [Uppercase Alphanumeric: u3]
         /// </summary>
         public string INITIATIVE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Transaction might belong to an Initiative
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -315,7 +303,93 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [GLPREV_Entity].[CODE]
+        /// General Ledger Code
+        /// </summary>
+        public GLPREV_Entity CODE_GLPREV {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_GLPREV == null)
+                    {
+                        _CODE_GLPREV = Context.GLPREV.FindByCODE(CODE);
+                    }
+                    return _CODE_GLPREV;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
+        /// What type of GST
+        /// </summary>
+        public KGST_Entity GST_TYPE_KGST {
+            get
+            {
+                if (GST_TYPE != null)
+                {
+                    if (_GST_TYPE_KGST == null)
+                    {
+                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                    }
+                    return _GST_TYPE_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
+        /// For every transaction there is a subprogram
+        /// </summary>
+        public KGLSUB_Entity SUBPROGRAM_KGLSUB {
+            get
+            {
+                if (SUBPROGRAM != null)
+                {
+                    if (_SUBPROGRAM_KGLSUB == null)
+                    {
+                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                    }
+                    return _SUBPROGRAM_KGLSUB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Transaction might belong to an Initiative
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PX_NEW_DataSet : SetBase<PX_NEW_Entity>
     {
+        private Lazy<Dictionary<short, PX_NEW_Entity>> PXKEY_Index;
+
         internal PX_NEW_DataSet(EduHubContext Context)
             : base(Context)
         {
             PXKEY_Index = new Lazy<Dictionary<short, PX_NEW_Entity>>(() => this.ToDictionary(e => e.PXKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PX_NEW"; } }
 
-        private Lazy<Dictionary<short, PX_NEW_Entity>> PXKEY_Index;
-
+        /// <summary>
+        /// Find PX_NEW by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX_NEW</param>
+        /// <returns>Related PX_NEW entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PXKEY value didn't match any PX_NEW entities</exception>
         public PX_NEW_Entity FindByPXKEY(short Key)
         {
             PX_NEW_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PX_NEW by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX_NEW</param>
+        /// <param name="Value">Related PX_NEW entity</param>
+        /// <returns>True if the PX_NEW Entity is found</returns>
         public bool TryFindByPXKEY(short Key, out PX_NEW_Entity Value)
         {
             return PXKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PX_NEW by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX_NEW</param>
+        /// <returns>Related PX_NEW entity, or null if not found</returns>
         public PX_NEW_Entity TryFindByPXKEY(short Key)
         {
             PX_NEW_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PX_NEW_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PX_NEW_Entity, string>[Headers.Count];

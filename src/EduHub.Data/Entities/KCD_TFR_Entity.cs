@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCD_TFR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _ORIG_SCHOOL_SKGS;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Orignating School [Uppercase Alphanumeric: u8]
         /// </summary>
         public string ORIG_SCHOOL { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ORIG_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// Orignating School
-        /// </summary>
-        public SKGS_Entity ORIG_SCHOOL_SKGS { get { return ORIG_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(ORIG_SCHOOL); } }
         /// <summary>
         /// Unique DF Transfer ID [Uppercase Alphanumeric: u30]
         /// </summary>
@@ -97,7 +97,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ORIG_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// Orignating School
+        /// </summary>
+        public SKGS_Entity ORIG_SCHOOL_SKGS {
+            get
+            {
+                if (ORIG_SCHOOL != null)
+                {
+                    if (_ORIG_SCHOOL_SKGS == null)
+                    {
+                        _ORIG_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(ORIG_SCHOOL);
+                    }
+                    return _ORIG_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

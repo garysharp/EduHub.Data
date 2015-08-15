@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PLC_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Leave Group Identifier [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -36,7 +40,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PELD_DataSet : SetBase<PELD_Entity>
     {
+
         internal PELD_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PELD"; } }
 
-
-        
         protected override Action<PELD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PELD_Entity, string>[Headers.Count];

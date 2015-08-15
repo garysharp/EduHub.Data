@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class CRFTC_DataSet : SetBase<CRFTC_Entity>
     {
+        private Lazy<Dictionary<string, CRFTC_Entity>> TRREF_Index;
+
         internal CRFTC_DataSet(EduHubContext Context)
             : base(Context)
         {
             TRREF_Index = new Lazy<Dictionary<string, CRFTC_Entity>>(() => this.ToDictionary(e => e.TRREF));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "CRFTC"; } }
 
-        private Lazy<Dictionary<string, CRFTC_Entity>> TRREF_Index;
-
+        /// <summary>
+        /// Find CRFTC by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find CRFTC</param>
+        /// <returns>Related CRFTC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any CRFTC entities</exception>
         public CRFTC_Entity FindByTRREF(string Key)
         {
             CRFTC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find CRFTC</param>
+        /// <param name="Value">Related CRFTC entity</param>
+        /// <returns>True if the CRFTC Entity is found</returns>
         public bool TryFindByTRREF(string Key, out CRFTC_Entity Value)
         {
             return TRREF_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find CRFTC</param>
+        /// <returns>Related CRFTC entity, or null if not found</returns>
         public CRFTC_Entity TryFindByTRREF(string Key)
         {
             CRFTC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<CRFTC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<CRFTC_Entity, string>[Headers.Count];

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GL_Entity _GLCODE_GL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Super fund key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Super GL clearing account [Uppercase Alphanumeric: u10]
         /// </summary>
         public string GLCODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [GLCODE] => [GL_Entity].[CODE]
-        /// Super GL clearing account
-        /// </summary>
-        public GL_Entity GLCODE_GL { get { return GLCODE == null ? null : Context.GL.FindByCODE(GLCODE); } }
         /// <summary>
         /// Create Export File (AEGIS 7247) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GLCODE] => [GL_Entity].[CODE]
+        /// Super GL clearing account
+        /// </summary>
+        public GL_Entity GLCODE_GL {
+            get
+            {
+                if (GLCODE != null)
+                {
+                    if (_GLCODE_GL == null)
+                    {
+                        _GLCODE_GL = Context.GL.FindByCODE(GLCODE);
+                    }
+                    return _GLCODE_GL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGLINIT_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Type key, eg I [Uppercase Alphanumeric: u3]
         /// </summary>
@@ -32,7 +36,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

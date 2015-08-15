@@ -10,6 +10,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class ST_DataSet : SetBase<ST_Entity>
     {
+        private Lazy<Dictionary<string, ST_Entity>> STKEY_Index;
+        private Lazy<Dictionary<int, ST_Entity>> REGISTRATION_Index;
+        private Lazy<Dictionary<string, ST_Entity>> TAG_Index;
+
         internal ST_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -18,12 +22,17 @@ namespace EduHub.Data.Entities
             TAG_Index = new Lazy<Dictionary<string, ST_Entity>>(() => this.ToDictionary(e => e.TAG));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "ST"; } }
 
-        private Lazy<Dictionary<string, ST_Entity>> STKEY_Index;
-        private Lazy<Dictionary<int, ST_Entity>> REGISTRATION_Index;
-        private Lazy<Dictionary<string, ST_Entity>> TAG_Index;
-
+        /// <summary>
+        /// Find ST by STKEY key field
+        /// </summary>
+        /// <param name="Key">STKEY value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">STKEY value didn't match any ST entities</exception>
         public ST_Entity FindBySTKEY(string Key)
         {
             ST_Entity result;
@@ -36,10 +45,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY key field
+        /// </summary>
+        /// <param name="Key">STKEY value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the ST Entity is found</returns>
         public bool TryFindBySTKEY(string Key, out ST_Entity Value)
         {
             return STKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY key field
+        /// </summary>
+        /// <param name="Key">STKEY value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
         public ST_Entity TryFindBySTKEY(string Key)
         {
             ST_Entity result;
@@ -52,6 +74,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find ST by REGISTRATION key field
+        /// </summary>
+        /// <param name="Key">REGISTRATION value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">REGISTRATION value didn't match any ST entities</exception>
         public ST_Entity FindByREGISTRATION(int Key)
         {
             ST_Entity result;
@@ -64,10 +93,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION key field
+        /// </summary>
+        /// <param name="Key">REGISTRATION value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the ST Entity is found</returns>
         public bool TryFindByREGISTRATION(int Key, out ST_Entity Value)
         {
             return REGISTRATION_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION key field
+        /// </summary>
+        /// <param name="Key">REGISTRATION value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
         public ST_Entity TryFindByREGISTRATION(int Key)
         {
             ST_Entity result;
@@ -80,6 +122,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find ST by TAG key field
+        /// </summary>
+        /// <param name="Key">TAG value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TAG value didn't match any ST entities</exception>
         public ST_Entity FindByTAG(string Key)
         {
             ST_Entity result;
@@ -92,10 +141,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find ST by TAG key field
+        /// </summary>
+        /// <param name="Key">TAG value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the ST Entity is found</returns>
         public bool TryFindByTAG(string Key, out ST_Entity Value)
         {
             return TAG_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find ST by TAG key field
+        /// </summary>
+        /// <param name="Key">TAG value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
         public ST_Entity TryFindByTAG(string Key)
         {
             ST_Entity result;
@@ -108,7 +170,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<ST_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<ST_Entity, string>[Headers.Count];

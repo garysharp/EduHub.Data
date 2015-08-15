@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SSHG_DataSet : SetBase<SSHG_Entity>
     {
+
         internal SSHG_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SSHG"; } }
 
-
-        
         protected override Action<SSHG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SSHG_Entity, string>[Headers.Count];

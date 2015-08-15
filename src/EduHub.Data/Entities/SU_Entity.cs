@@ -8,6 +8,14 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SU_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KSF_Entity _FACULTY_KSF;
+        private SU_Entity _PROMOTE_SU;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR_KCY;
+        private SA_Entity _FEE_CODE_SA;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Subject code [Uppercase Alphanumeric: u5]
         /// </summary>
@@ -25,19 +33,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FACULTY { get; internal set; }
         /// <summary>
-        /// Navigation property for [FACULTY] => [KSF_Entity].[KSFKEY]
-        /// Faculty
-        /// </summary>
-        public KSF_Entity FACULTY_KSF { get { return FACULTY == null ? null : Context.KSF.FindByKSFKEY(FACULTY); } }
-        /// <summary>
         /// Subject that normally follows this subject in a course (eg Physics 11 is followed by Physics 12) [Uppercase Alphanumeric: u5]
         /// </summary>
         public string PROMOTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PROMOTE] => [SU_Entity].[SUKEY]
-        /// Subject that normally follows this subject in a course (eg Physics 11 is followed by Physics 12)
-        /// </summary>
-        public SU_Entity PROMOTE_SU { get { return PROMOTE == null ? null : Context.SU.FindBySUKEY(PROMOTE); } }
         /// <summary>
         /// Description of subject for parents [Memo: m]
         /// </summary>
@@ -50,11 +48,6 @@ namespace EduHub.Data.Entities
         /// (Was ACADEMIC_YEAR) Offered to students at this year level: if blank or matches one of the values in a TT record, the subject is eligible for that template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR] => [KCY_Entity].[KCYKEY]
-        /// (Was ACADEMIC_YEAR) Offered to students at this year level: if blank or matches one of the values in a TT record, the subject is eligible for that template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR_KCY { get { return SUBJECT_ACADEMIC_YEAR == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR); } }
         /// <summary>
         /// (Was SEMESTER_OFFERED) Semester/term/quarter in which offered: if 0 or matches the value in a TT record, the subject is eligible for that template [Integer (16bit signed nullable): i]
         /// </summary>
@@ -84,11 +77,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FEE_CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
-        /// Fee code
-        /// </summary>
-        public SA_Entity FEE_CODE_SA { get { return FEE_CODE == null ? null : Context.SA.FindBySAKEY(FEE_CODE); } }
-        /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -100,7 +88,93 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FACULTY] => [KSF_Entity].[KSFKEY]
+        /// Faculty
+        /// </summary>
+        public KSF_Entity FACULTY_KSF {
+            get
+            {
+                if (FACULTY != null)
+                {
+                    if (_FACULTY_KSF == null)
+                    {
+                        _FACULTY_KSF = Context.KSF.FindByKSFKEY(FACULTY);
+                    }
+                    return _FACULTY_KSF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PROMOTE] => [SU_Entity].[SUKEY]
+        /// Subject that normally follows this subject in a course (eg Physics 11 is followed by Physics 12)
+        /// </summary>
+        public SU_Entity PROMOTE_SU {
+            get
+            {
+                if (PROMOTE != null)
+                {
+                    if (_PROMOTE_SU == null)
+                    {
+                        _PROMOTE_SU = Context.SU.FindBySUKEY(PROMOTE);
+                    }
+                    return _PROMOTE_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR] => [KCY_Entity].[KCYKEY]
+        /// (Was ACADEMIC_YEAR) Offered to students at this year level: if blank or matches one of the values in a TT record, the subject is eligible for that template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
+        /// Fee code
+        /// </summary>
+        public SA_Entity FEE_CODE_SA {
+            get
+            {
+                if (FEE_CODE != null)
+                {
+                    if (_FEE_CODE_SA == null)
+                    {
+                        _FEE_CODE_SA = Context.SA.FindBySAKEY(FEE_CODE);
+                    }
+                    return _FEE_CODE_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

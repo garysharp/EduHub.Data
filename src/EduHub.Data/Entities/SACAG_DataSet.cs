@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SACAG_DataSet : SetBase<SACAG_Entity>
     {
+        private Lazy<Dictionary<int, SACAG_Entity>> SACAG_ID_Index;
+
         internal SACAG_DataSet(EduHubContext Context)
             : base(Context)
         {
             SACAG_ID_Index = new Lazy<Dictionary<int, SACAG_Entity>>(() => this.ToDictionary(e => e.SACAG_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SACAG"; } }
 
-        private Lazy<Dictionary<int, SACAG_Entity>> SACAG_ID_Index;
-
+        /// <summary>
+        /// Find SACAG by SACAG_ID key field
+        /// </summary>
+        /// <param name="Key">SACAG_ID value used to find SACAG</param>
+        /// <returns>Related SACAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SACAG_ID value didn't match any SACAG entities</exception>
         public SACAG_Entity FindBySACAG_ID(int Key)
         {
             SACAG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SACAG by SACAG_ID key field
+        /// </summary>
+        /// <param name="Key">SACAG_ID value used to find SACAG</param>
+        /// <param name="Value">Related SACAG entity</param>
+        /// <returns>True if the SACAG Entity is found</returns>
         public bool TryFindBySACAG_ID(int Key, out SACAG_Entity Value)
         {
             return SACAG_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SACAG by SACAG_ID key field
+        /// </summary>
+        /// <param name="Key">SACAG_ID value used to find SACAG</param>
+        /// <returns>Related SACAG entity, or null if not found</returns>
         public SACAG_Entity TryFindBySACAG_ID(int Key)
         {
             SACAG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SACAG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SACAG_Entity, string>[Headers.Count];

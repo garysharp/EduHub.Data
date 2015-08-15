@@ -8,6 +8,28 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGL_Entity _NATIVE_LANG_A_KGL;
+        private KGL_Entity _OTHER_LANG_A_KGL;
+        private KGT_Entity _BIRTH_COUNTRY_A_KGT;
+        private KGL_Entity _LOTE_HOME_CODE_A_KGL;
+        private KGL_Entity _NATIVE_LANG_B_KGL;
+        private KGL_Entity _OTHER_LANG_B_KGL;
+        private KGT_Entity _BIRTH_COUNTRY_B_KGT;
+        private KGL_Entity _LOTE_HOME_CODE_B_KGL;
+        private KGL_Entity _PREF_NOTICE_LANG_KGL;
+        private UM_Entity _HOMEKEY_UM;
+        private UM_Entity _MAILKEY_UM;
+        private UM_Entity _BILLINGKEY_UM;
+        private KCD_Entity _DOCTOR_KCD;
+        private KGL_Entity _EMERG_LANG01_KGL;
+        private KGL_Entity _EMERG_LANG02_KGL;
+        private KGL_Entity _EMERG_LANG03_KGL;
+        private KGL_Entity _EMERG_LANG04_KGL;
+        private KGL_Entity _HOME_LANG_KGL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Family ID [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -41,19 +63,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string NATIVE_LANG_A { get; internal set; }
         /// <summary>
-        /// Navigation property for [NATIVE_LANG_A] => [KGL_Entity].[KGLKEY]
-        /// (Was MNATIVE_LANG) Parent/guardian A native language
-        /// </summary>
-        public KGL_Entity NATIVE_LANG_A_KGL { get { return NATIVE_LANG_A == null ? null : Context.KGL.FindByKGLKEY(NATIVE_LANG_A); } }
-        /// <summary>
         /// (Was M_OTHER_LANG) Parent/guardian A other language [Uppercase Alphanumeric: u7]
         /// </summary>
         public string OTHER_LANG_A { get; internal set; }
-        /// <summary>
-        /// Navigation property for [OTHER_LANG_A] => [KGL_Entity].[KGLKEY]
-        /// (Was M_OTHER_LANG) Parent/guardian A other language
-        /// </summary>
-        public KGL_Entity OTHER_LANG_A_KGL { get { return OTHER_LANG_A == null ? null : Context.KGL.FindByKGLKEY(OTHER_LANG_A); } }
         /// <summary>
         /// (Was M_INTERPRETER) Parent/guardian A requires interpreter? Y=Yes, N=No, S=Sometimes [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -62,11 +74,6 @@ namespace EduHub.Data.Entities
         /// (Was MBIRTH_COUNTRY) Parent/guardian A country of birth [Uppercase Alphanumeric: u6]
         /// </summary>
         public string BIRTH_COUNTRY_A { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY_A] => [KGT_Entity].[COUNTRY]
-        /// (Was MBIRTH_COUNTRY) Parent/guardian A country of birth
-        /// </summary>
-        public KGT_Entity BIRTH_COUNTRY_A_KGT { get { return BIRTH_COUNTRY_A == null ? null : Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY_A); } }
         /// <summary>
         /// Parent/guardian A at home during business hours? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -116,11 +123,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string LOTE_HOME_CODE_A { get; internal set; }
         /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE_A] => [KGL_Entity].[KGLKEY]
-        /// The Language other than English spoken at home by parent/guardian A
-        /// </summary>
-        public KGL_Entity LOTE_HOME_CODE_A_KGL { get { return LOTE_HOME_CODE_A == null ? null : Context.KGL.FindByKGLKEY(LOTE_HOME_CODE_A); } }
-        /// <summary>
         /// (Was FNAME) Parent/guardian B first given name [Alphanumeric: a30]
         /// </summary>
         public string NAME_B { get; internal set; }
@@ -149,19 +151,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string NATIVE_LANG_B { get; internal set; }
         /// <summary>
-        /// Navigation property for [NATIVE_LANG_B] => [KGL_Entity].[KGLKEY]
-        /// (Was FNATIVE_LANG) Parent/guardian B native language
-        /// </summary>
-        public KGL_Entity NATIVE_LANG_B_KGL { get { return NATIVE_LANG_B == null ? null : Context.KGL.FindByKGLKEY(NATIVE_LANG_B); } }
-        /// <summary>
         /// (Was F_OTHER_LANG) Parent/guardian B other language [Uppercase Alphanumeric: u7]
         /// </summary>
         public string OTHER_LANG_B { get; internal set; }
-        /// <summary>
-        /// Navigation property for [OTHER_LANG_B] => [KGL_Entity].[KGLKEY]
-        /// (Was F_OTHER_LANG) Parent/guardian B other language
-        /// </summary>
-        public KGL_Entity OTHER_LANG_B_KGL { get { return OTHER_LANG_B == null ? null : Context.KGL.FindByKGLKEY(OTHER_LANG_B); } }
         /// <summary>
         /// (Was F_INTERPRETER) Parent/guardian B requires interpreter? Y=Yes, N=No, S=Sometimes [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -170,11 +162,6 @@ namespace EduHub.Data.Entities
         /// (Was FBIRTH_COUNTRY) Parent/guardian B country of birth [Uppercase Alphanumeric: u6]
         /// </summary>
         public string BIRTH_COUNTRY_B { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY_B] => [KGT_Entity].[COUNTRY]
-        /// (Was FBIRTH_COUNTRY) Parent/guardian B country of birth
-        /// </summary>
-        public KGT_Entity BIRTH_COUNTRY_B_KGT { get { return BIRTH_COUNTRY_B == null ? null : Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY_B); } }
         /// <summary>
         /// Parent/guardian B at home during business hours? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -224,19 +211,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string LOTE_HOME_CODE_B { get; internal set; }
         /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE_B] => [KGL_Entity].[KGLKEY]
-        /// The Language other than English spoken at home by parent/guardian B
-        /// </summary>
-        public KGL_Entity LOTE_HOME_CODE_B_KGL { get { return LOTE_HOME_CODE_B == null ? null : Context.KGL.FindByKGLKEY(LOTE_HOME_CODE_B); } }
-        /// <summary>
         /// Preferred language for notices [Uppercase Alphanumeric: u7]
         /// </summary>
         public string PREF_NOTICE_LANG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PREF_NOTICE_LANG] => [KGL_Entity].[KGLKEY]
-        /// Preferred language for notices
-        /// </summary>
-        public KGL_Entity PREF_NOTICE_LANG_KGL { get { return PREF_NOTICE_LANG == null ? null : Context.KGL.FindByKGLKEY(PREF_NOTICE_LANG); } }
         /// <summary>
         /// (Was SG_PARTICIPATION) Special group participation: 1=Adult A, 2=Adult B, B=Both [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -254,11 +231,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? HOMEKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [HOMEKEY] => [UM_Entity].[UMKEY]
-        /// Home address ID
-        /// </summary>
-        public UM_Entity HOMEKEY_UM { get { return HOMEKEY.HasValue ? Context.UM.FindByUMKEY(HOMEKEY.Value) : null; } }
-        /// <summary>
         /// Mail addressee [Titlecase: t30]
         /// </summary>
         public string MAILTITLE { get; internal set; }
@@ -267,11 +239,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? MAILKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
-        /// Mail address ID
-        /// </summary>
-        public UM_Entity MAILKEY_UM { get { return MAILKEY.HasValue ? Context.UM.FindByUMKEY(MAILKEY.Value) : null; } }
-        /// <summary>
         /// Billing name [Titlecase: t40]
         /// </summary>
         public string BILLINGTITLE { get; internal set; }
@@ -279,11 +246,6 @@ namespace EduHub.Data.Entities
         /// Billing address ID [Integer (32bit signed nullable): l]
         /// </summary>
         public int? BILLINGKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BILLINGKEY] => [UM_Entity].[UMKEY]
-        /// Billing address ID
-        /// </summary>
-        public UM_Entity BILLINGKEY_UM { get { return BILLINGKEY.HasValue ? Context.UM.FindByUMKEY(BILLINGKEY.Value) : null; } }
         /// <summary>
         /// Billing memo [Memo: m]
         /// </summary>
@@ -369,11 +331,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DOCTOR { get; internal set; }
         /// <summary>
-        /// Navigation property for [DOCTOR] => [KCD_Entity].[KCDKEY]
-        /// Reference to local doctor (default for each student)
-        /// </summary>
-        public KCD_Entity DOCTOR_KCD { get { return DOCTOR == null ? null : Context.KCD.FindByKCDKEY(DOCTOR); } }
-        /// <summary>
         /// Name(s) of person(s) to contact in an emergency [Titlecase: t30]
         /// </summary>
         public string EMERG_NAME01 { get; internal set; }
@@ -410,37 +367,17 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string EMERG_LANG01 { get; internal set; }
         /// <summary>
-        /// Navigation property for [EMERG_LANG01] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG01_KGL { get { return EMERG_LANG01 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG01); } }
-        /// <summary>
         /// Language spoken by person(s) to contact in an emergency [Uppercase Alphanumeric: u7]
         /// </summary>
         public string EMERG_LANG02 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [EMERG_LANG02] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG02_KGL { get { return EMERG_LANG02 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG02); } }
         /// <summary>
         /// Language spoken by person(s) to contact in an emergency [Uppercase Alphanumeric: u7]
         /// </summary>
         public string EMERG_LANG03 { get; internal set; }
         /// <summary>
-        /// Navigation property for [EMERG_LANG03] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG03_KGL { get { return EMERG_LANG03 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG03); } }
-        /// <summary>
         /// Language spoken by person(s) to contact in an emergency [Uppercase Alphanumeric: u7]
         /// </summary>
         public string EMERG_LANG04 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [EMERG_LANG04] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG04_KGL { get { return EMERG_LANG04 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG04); } }
         /// <summary>
         /// Contact details for each person to contact in an emergency [Memo: m]
         /// </summary>
@@ -473,11 +410,6 @@ namespace EduHub.Data.Entities
         /// The language spoken at home [Uppercase Alphanumeric: u7]
         /// </summary>
         public string HOME_LANG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
-        /// The language spoken at home
-        /// </summary>
-        public KGL_Entity HOME_LANG_KGL { get { return HOME_LANG == null ? null : Context.KGL.FindByKGLKEY(HOME_LANG); } }
         /// <summary>
         /// Cheque Account Name [Alphanumeric: a30]
         /// </summary>
@@ -570,7 +502,387 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [NATIVE_LANG_A] => [KGL_Entity].[KGLKEY]
+        /// (Was MNATIVE_LANG) Parent/guardian A native language
+        /// </summary>
+        public KGL_Entity NATIVE_LANG_A_KGL {
+            get
+            {
+                if (NATIVE_LANG_A != null)
+                {
+                    if (_NATIVE_LANG_A_KGL == null)
+                    {
+                        _NATIVE_LANG_A_KGL = Context.KGL.FindByKGLKEY(NATIVE_LANG_A);
+                    }
+                    return _NATIVE_LANG_A_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [OTHER_LANG_A] => [KGL_Entity].[KGLKEY]
+        /// (Was M_OTHER_LANG) Parent/guardian A other language
+        /// </summary>
+        public KGL_Entity OTHER_LANG_A_KGL {
+            get
+            {
+                if (OTHER_LANG_A != null)
+                {
+                    if (_OTHER_LANG_A_KGL == null)
+                    {
+                        _OTHER_LANG_A_KGL = Context.KGL.FindByKGLKEY(OTHER_LANG_A);
+                    }
+                    return _OTHER_LANG_A_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BIRTH_COUNTRY_A] => [KGT_Entity].[COUNTRY]
+        /// (Was MBIRTH_COUNTRY) Parent/guardian A country of birth
+        /// </summary>
+        public KGT_Entity BIRTH_COUNTRY_A_KGT {
+            get
+            {
+                if (BIRTH_COUNTRY_A != null)
+                {
+                    if (_BIRTH_COUNTRY_A_KGT == null)
+                    {
+                        _BIRTH_COUNTRY_A_KGT = Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY_A);
+                    }
+                    return _BIRTH_COUNTRY_A_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LOTE_HOME_CODE_A] => [KGL_Entity].[KGLKEY]
+        /// The Language other than English spoken at home by parent/guardian A
+        /// </summary>
+        public KGL_Entity LOTE_HOME_CODE_A_KGL {
+            get
+            {
+                if (LOTE_HOME_CODE_A != null)
+                {
+                    if (_LOTE_HOME_CODE_A_KGL == null)
+                    {
+                        _LOTE_HOME_CODE_A_KGL = Context.KGL.FindByKGLKEY(LOTE_HOME_CODE_A);
+                    }
+                    return _LOTE_HOME_CODE_A_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [NATIVE_LANG_B] => [KGL_Entity].[KGLKEY]
+        /// (Was FNATIVE_LANG) Parent/guardian B native language
+        /// </summary>
+        public KGL_Entity NATIVE_LANG_B_KGL {
+            get
+            {
+                if (NATIVE_LANG_B != null)
+                {
+                    if (_NATIVE_LANG_B_KGL == null)
+                    {
+                        _NATIVE_LANG_B_KGL = Context.KGL.FindByKGLKEY(NATIVE_LANG_B);
+                    }
+                    return _NATIVE_LANG_B_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [OTHER_LANG_B] => [KGL_Entity].[KGLKEY]
+        /// (Was F_OTHER_LANG) Parent/guardian B other language
+        /// </summary>
+        public KGL_Entity OTHER_LANG_B_KGL {
+            get
+            {
+                if (OTHER_LANG_B != null)
+                {
+                    if (_OTHER_LANG_B_KGL == null)
+                    {
+                        _OTHER_LANG_B_KGL = Context.KGL.FindByKGLKEY(OTHER_LANG_B);
+                    }
+                    return _OTHER_LANG_B_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BIRTH_COUNTRY_B] => [KGT_Entity].[COUNTRY]
+        /// (Was FBIRTH_COUNTRY) Parent/guardian B country of birth
+        /// </summary>
+        public KGT_Entity BIRTH_COUNTRY_B_KGT {
+            get
+            {
+                if (BIRTH_COUNTRY_B != null)
+                {
+                    if (_BIRTH_COUNTRY_B_KGT == null)
+                    {
+                        _BIRTH_COUNTRY_B_KGT = Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY_B);
+                    }
+                    return _BIRTH_COUNTRY_B_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LOTE_HOME_CODE_B] => [KGL_Entity].[KGLKEY]
+        /// The Language other than English spoken at home by parent/guardian B
+        /// </summary>
+        public KGL_Entity LOTE_HOME_CODE_B_KGL {
+            get
+            {
+                if (LOTE_HOME_CODE_B != null)
+                {
+                    if (_LOTE_HOME_CODE_B_KGL == null)
+                    {
+                        _LOTE_HOME_CODE_B_KGL = Context.KGL.FindByKGLKEY(LOTE_HOME_CODE_B);
+                    }
+                    return _LOTE_HOME_CODE_B_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PREF_NOTICE_LANG] => [KGL_Entity].[KGLKEY]
+        /// Preferred language for notices
+        /// </summary>
+        public KGL_Entity PREF_NOTICE_LANG_KGL {
+            get
+            {
+                if (PREF_NOTICE_LANG != null)
+                {
+                    if (_PREF_NOTICE_LANG_KGL == null)
+                    {
+                        _PREF_NOTICE_LANG_KGL = Context.KGL.FindByKGLKEY(PREF_NOTICE_LANG);
+                    }
+                    return _PREF_NOTICE_LANG_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOMEKEY] => [UM_Entity].[UMKEY]
+        /// Home address ID
+        /// </summary>
+        public UM_Entity HOMEKEY_UM {
+            get
+            {
+                if (HOMEKEY.HasValue)
+                {
+                    if (_HOMEKEY_UM == null)
+                    {
+                        _HOMEKEY_UM = Context.UM.FindByUMKEY(HOMEKEY.Value);
+                    }
+                    return _HOMEKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
+        /// Mail address ID
+        /// </summary>
+        public UM_Entity MAILKEY_UM {
+            get
+            {
+                if (MAILKEY.HasValue)
+                {
+                    if (_MAILKEY_UM == null)
+                    {
+                        _MAILKEY_UM = Context.UM.FindByUMKEY(MAILKEY.Value);
+                    }
+                    return _MAILKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BILLINGKEY] => [UM_Entity].[UMKEY]
+        /// Billing address ID
+        /// </summary>
+        public UM_Entity BILLINGKEY_UM {
+            get
+            {
+                if (BILLINGKEY.HasValue)
+                {
+                    if (_BILLINGKEY_UM == null)
+                    {
+                        _BILLINGKEY_UM = Context.UM.FindByUMKEY(BILLINGKEY.Value);
+                    }
+                    return _BILLINGKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DOCTOR] => [KCD_Entity].[KCDKEY]
+        /// Reference to local doctor (default for each student)
+        /// </summary>
+        public KCD_Entity DOCTOR_KCD {
+            get
+            {
+                if (DOCTOR != null)
+                {
+                    if (_DOCTOR_KCD == null)
+                    {
+                        _DOCTOR_KCD = Context.KCD.FindByKCDKEY(DOCTOR);
+                    }
+                    return _DOCTOR_KCD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG01] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG01_KGL {
+            get
+            {
+                if (EMERG_LANG01 != null)
+                {
+                    if (_EMERG_LANG01_KGL == null)
+                    {
+                        _EMERG_LANG01_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG01);
+                    }
+                    return _EMERG_LANG01_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG02] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG02_KGL {
+            get
+            {
+                if (EMERG_LANG02 != null)
+                {
+                    if (_EMERG_LANG02_KGL == null)
+                    {
+                        _EMERG_LANG02_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG02);
+                    }
+                    return _EMERG_LANG02_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG03] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG03_KGL {
+            get
+            {
+                if (EMERG_LANG03 != null)
+                {
+                    if (_EMERG_LANG03_KGL == null)
+                    {
+                        _EMERG_LANG03_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG03);
+                    }
+                    return _EMERG_LANG03_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG04] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG04_KGL {
+            get
+            {
+                if (EMERG_LANG04 != null)
+                {
+                    if (_EMERG_LANG04_KGL == null)
+                    {
+                        _EMERG_LANG04_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG04);
+                    }
+                    return _EMERG_LANG04_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
+        /// The language spoken at home
+        /// </summary>
+        public KGL_Entity HOME_LANG_KGL {
+            get
+            {
+                if (HOME_LANG != null)
+                {
+                    if (_HOME_LANG_KGL == null)
+                    {
+                        _HOME_LANG_KGL = Context.KGL.FindByKGLKEY(HOME_LANG);
+                    }
+                    return _HOME_LANG_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

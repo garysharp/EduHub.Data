@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TCTR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TC_Entity _TCTRKEY_TC;
+        private SF_Entity _TEACH_SF;
+        private SM_Entity _ROOM_SM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,11 +24,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public DateTime? TCTRKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TCTRKEY] => [TC_Entity].[TCKEY]
-        /// Replacement date
-        /// </summary>
-        public TC_Entity TCTRKEY_TC { get { return TCTRKEY.HasValue ? Context.TC.FindByTCKEY(TCTRKEY.Value) : null; } }
-        /// <summary>
         /// TCTQ record that the replacement is for [Integer (32bit signed nullable): l]
         /// </summary>
         public int? TCTQ_TID { get; internal set; }
@@ -30,19 +32,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string TEACH { get; internal set; }
         /// <summary>
-        /// Navigation property for [TEACH] => [SF_Entity].[SFKEY]
-        /// Replacement teacher
-        /// </summary>
-        public SF_Entity TEACH_SF { get { return TEACH == null ? null : Context.SF.FindBySFKEY(TEACH); } }
-        /// <summary>
         /// Replacement room [Uppercase Alphanumeric: u4]
         /// </summary>
         public string ROOM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
-        /// Replacement room
-        /// </summary>
-        public SM_Entity ROOM_SM { get { return ROOM == null ? null : Context.SM.FindByROOM(ROOM); } }
         /// <summary>
         /// Comments [Memo: m]
         /// </summary>
@@ -79,7 +71,72 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TCTRKEY] => [TC_Entity].[TCKEY]
+        /// Replacement date
+        /// </summary>
+        public TC_Entity TCTRKEY_TC {
+            get
+            {
+                if (TCTRKEY.HasValue)
+                {
+                    if (_TCTRKEY_TC == null)
+                    {
+                        _TCTRKEY_TC = Context.TC.FindByTCKEY(TCTRKEY.Value);
+                    }
+                    return _TCTRKEY_TC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TEACH] => [SF_Entity].[SFKEY]
+        /// Replacement teacher
+        /// </summary>
+        public SF_Entity TEACH_SF {
+            get
+            {
+                if (TEACH != null)
+                {
+                    if (_TEACH_SF == null)
+                    {
+                        _TEACH_SF = Context.SF.FindBySFKEY(TEACH);
+                    }
+                    return _TEACH_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
+        /// Replacement room
+        /// </summary>
+        public SM_Entity ROOM_SM {
+            get
+            {
+                if (ROOM != null)
+                {
+                    if (_ROOM_SM == null)
+                    {
+                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
+                    }
+                    return _ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

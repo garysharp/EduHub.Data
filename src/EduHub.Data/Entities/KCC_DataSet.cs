@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCC_DataSet : SetBase<KCC_Entity>
     {
+        private Lazy<Dictionary<DateTime, KCC_Entity>> KCCKEY_Index;
+
         internal KCC_DataSet(EduHubContext Context)
             : base(Context)
         {
             KCCKEY_Index = new Lazy<Dictionary<DateTime, KCC_Entity>>(() => this.ToDictionary(e => e.KCCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCC"; } }
 
-        private Lazy<Dictionary<DateTime, KCC_Entity>> KCCKEY_Index;
-
+        /// <summary>
+        /// Find KCC by KCCKEY key field
+        /// </summary>
+        /// <param name="Key">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KCCKEY value didn't match any KCC entities</exception>
         public KCC_Entity FindByKCCKEY(DateTime Key)
         {
             KCC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY key field
+        /// </summary>
+        /// <param name="Key">KCCKEY value used to find KCC</param>
+        /// <param name="Value">Related KCC entity</param>
+        /// <returns>True if the KCC Entity is found</returns>
         public bool TryFindByKCCKEY(DateTime Key, out KCC_Entity Value)
         {
             return KCCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY key field
+        /// </summary>
+        /// <param name="Key">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity, or null if not found</returns>
         public KCC_Entity TryFindByKCCKEY(DateTime Key)
         {
             KCC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KCC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCC_Entity, string>[Headers.Count];

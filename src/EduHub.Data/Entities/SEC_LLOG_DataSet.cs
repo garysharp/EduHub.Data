@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SEC_LLOG_DataSet : SetBase<SEC_LLOG_Entity>
     {
+        private Lazy<Dictionary<int, SEC_LLOG_Entity>> LOGINLOGID_Index;
+
         internal SEC_LLOG_DataSet(EduHubContext Context)
             : base(Context)
         {
             LOGINLOGID_Index = new Lazy<Dictionary<int, SEC_LLOG_Entity>>(() => this.ToDictionary(e => e.LOGINLOGID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SEC_LLOG"; } }
 
-        private Lazy<Dictionary<int, SEC_LLOG_Entity>> LOGINLOGID_Index;
-
+        /// <summary>
+        /// Find SEC_LLOG by LOGINLOGID key field
+        /// </summary>
+        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <returns>Related SEC_LLOG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">LOGINLOGID value didn't match any SEC_LLOG entities</exception>
         public SEC_LLOG_Entity FindByLOGINLOGID(int Key)
         {
             SEC_LLOG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SEC_LLOG by LOGINLOGID key field
+        /// </summary>
+        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <param name="Value">Related SEC_LLOG entity</param>
+        /// <returns>True if the SEC_LLOG Entity is found</returns>
         public bool TryFindByLOGINLOGID(int Key, out SEC_LLOG_Entity Value)
         {
             return LOGINLOGID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SEC_LLOG by LOGINLOGID key field
+        /// </summary>
+        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <returns>Related SEC_LLOG entity, or null if not found</returns>
         public SEC_LLOG_Entity TryFindByLOGINLOGID(int Key)
         {
             SEC_LLOG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SEC_LLOG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_LLOG_Entity, string>[Headers.Count];

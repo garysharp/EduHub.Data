@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SCSF_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// CSF Outcome Code [Uppercase Alphanumeric: u5]
         /// </summary>
@@ -52,7 +56,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

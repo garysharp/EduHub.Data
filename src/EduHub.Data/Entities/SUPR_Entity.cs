@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SUPR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SU_Entity _SUPRKEY_SU;
+        private SU_Entity _PREREQUISITE_SU;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUPRKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUPRKEY] => [SU_Entity].[SUKEY]
-        /// Subject code of this subject
-        /// </summary>
-        public SU_Entity SUPRKEY_SU { get { return SUPRKEY == null ? null : Context.SU.FindBySUKEY(SUPRKEY); } }
-        /// <summary>
         /// Subject code of this subject's prerequisite [Uppercase Alphanumeric: u5]
         /// </summary>
         public string PREREQUISITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PREREQUISITE] => [SU_Entity].[SUKEY]
-        /// Subject code of this subject's prerequisite
-        /// </summary>
-        public SU_Entity PREREQUISITE_SU { get { return PREREQUISITE == null ? null : Context.SU.FindBySUKEY(PREREQUISITE); } }
         /// <summary>
         /// Result as prerequisite (not implemented) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -46,7 +42,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SUPRKEY] => [SU_Entity].[SUKEY]
+        /// Subject code of this subject
+        /// </summary>
+        public SU_Entity SUPRKEY_SU {
+            get
+            {
+                if (SUPRKEY != null)
+                {
+                    if (_SUPRKEY_SU == null)
+                    {
+                        _SUPRKEY_SU = Context.SU.FindBySUKEY(SUPRKEY);
+                    }
+                    return _SUPRKEY_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PREREQUISITE] => [SU_Entity].[SUKEY]
+        /// Subject code of this subject's prerequisite
+        /// </summary>
+        public SU_Entity PREREQUISITE_SU {
+            get
+            {
+                if (PREREQUISITE != null)
+                {
+                    if (_PREREQUISITE_SU == null)
+                    {
+                        _PREREQUISITE_SU = Context.SU.FindBySUKEY(PREREQUISITE);
+                    }
+                    return _PREREQUISITE_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

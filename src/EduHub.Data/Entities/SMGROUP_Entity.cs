@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SMGROUP_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SM_Entity _GROUPKEY_SM;
+        private SM_Entity _ROOM_SM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GROUPKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [GROUPKEY] => [SM_Entity].[ROOM]
-        /// Group key in SM
-        /// </summary>
-        public SM_Entity GROUPKEY_SM { get { return GROUPKEY == null ? null : Context.SM.FindByROOM(GROUPKEY); } }
-        /// <summary>
         /// Room in the group [Uppercase Alphanumeric: u4]
         /// </summary>
         public string ROOM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
-        /// Room in the group
-        /// </summary>
-        public SM_Entity ROOM_SM { get { return ROOM == null ? null : Context.SM.FindByROOM(ROOM); } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -42,7 +38,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GROUPKEY] => [SM_Entity].[ROOM]
+        /// Group key in SM
+        /// </summary>
+        public SM_Entity GROUPKEY_SM {
+            get
+            {
+                if (GROUPKEY != null)
+                {
+                    if (_GROUPKEY_SM == null)
+                    {
+                        _GROUPKEY_SM = Context.SM.FindByROOM(GROUPKEY);
+                    }
+                    return _GROUPKEY_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
+        /// Room in the group
+        /// </summary>
+        public SM_Entity ROOM_SM {
+            get
+            {
+                if (ROOM != null)
+                {
+                    if (_ROOM_SM == null)
+                    {
+                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
+                    }
+                    return _ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

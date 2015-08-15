@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KN_DataSet : SetBase<KN_Entity>
     {
+        private Lazy<Dictionary<string, KN_Entity>> NOTE_ID_Index;
+
         internal KN_DataSet(EduHubContext Context)
             : base(Context)
         {
             NOTE_ID_Index = new Lazy<Dictionary<string, KN_Entity>>(() => this.ToDictionary(e => e.NOTE_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KN"; } }
 
-        private Lazy<Dictionary<string, KN_Entity>> NOTE_ID_Index;
-
+        /// <summary>
+        /// Find KN by NOTE_ID key field
+        /// </summary>
+        /// <param name="Key">NOTE_ID value used to find KN</param>
+        /// <returns>Related KN entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">NOTE_ID value didn't match any KN entities</exception>
         public KN_Entity FindByNOTE_ID(string Key)
         {
             KN_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KN by NOTE_ID key field
+        /// </summary>
+        /// <param name="Key">NOTE_ID value used to find KN</param>
+        /// <param name="Value">Related KN entity</param>
+        /// <returns>True if the KN Entity is found</returns>
         public bool TryFindByNOTE_ID(string Key, out KN_Entity Value)
         {
             return NOTE_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KN by NOTE_ID key field
+        /// </summary>
+        /// <param name="Key">NOTE_ID value used to find KN</param>
+        /// <returns>Related KN entity, or null if not found</returns>
         public KN_Entity TryFindByNOTE_ID(string Key)
         {
             KN_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KN_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KN_Entity, string>[Headers.Count];

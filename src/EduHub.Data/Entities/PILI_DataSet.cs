@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PILI_DataSet : SetBase<PILI_Entity>
     {
+
         internal PILI_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PILI"; } }
 
-
-        
         protected override Action<PILI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PILI_Entity, string>[Headers.Count];

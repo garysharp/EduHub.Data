@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SMAV_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SM_Entity _ROOM_SM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Room key [Uppercase Alphanumeric: u4]
         /// </summary>
         public string ROOM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
-        /// Room key
-        /// </summary>
-        public SM_Entity ROOM_SM { get { return ROOM == null ? null : Context.SM.FindByROOM(ROOM); } }
         /// <summary>
         /// Day of timetable cycle [Integer (16bit signed nullable): i]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
+        /// Room key
+        /// </summary>
+        public SM_Entity ROOM_SM {
+            get
+            {
+                if (ROOM != null)
+                {
+                    if (_ROOM_SM == null)
+                    {
+                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
+                    }
+                    return _ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

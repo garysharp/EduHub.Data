@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PPD_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGT_Entity _COUNTRY_KGT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Payer code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -69,11 +74,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country
-        /// </summary>
-        public KGT_Entity COUNTRY_KGT { get { return COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(COUNTRY); } }
-        /// <summary>
         /// Contact Name [Uppercase Alphanumeric: u25]
         /// </summary>
         public string CONTACT_NAME { get; internal set; }
@@ -101,7 +101,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country
+        /// </summary>
+        public KGT_Entity COUNTRY_KGT {
+            get
+            {
+                if (COUNTRY != null)
+                {
+                    if (_COUNTRY_KGT == null)
+                    {
+                        _COUNTRY_KGT = Context.KGT.FindByCOUNTRY(COUNTRY);
+                    }
+                    return _COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

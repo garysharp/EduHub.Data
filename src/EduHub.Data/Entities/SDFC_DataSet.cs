@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SDFC_DataSet : SetBase<SDFC_Entity>
     {
+        private Lazy<Dictionary<string, SDFC_Entity>> SDFCKEY_Index;
+
         internal SDFC_DataSet(EduHubContext Context)
             : base(Context)
         {
             SDFCKEY_Index = new Lazy<Dictionary<string, SDFC_Entity>>(() => this.ToDictionary(e => e.SDFCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SDFC"; } }
 
-        private Lazy<Dictionary<string, SDFC_Entity>> SDFCKEY_Index;
-
+        /// <summary>
+        /// Find SDFC by SDFCKEY key field
+        /// </summary>
+        /// <param name="Key">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SDFCKEY value didn't match any SDFC entities</exception>
         public SDFC_Entity FindBySDFCKEY(string Key)
         {
             SDFC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY key field
+        /// </summary>
+        /// <param name="Key">SDFCKEY value used to find SDFC</param>
+        /// <param name="Value">Related SDFC entity</param>
+        /// <returns>True if the SDFC Entity is found</returns>
         public bool TryFindBySDFCKEY(string Key, out SDFC_Entity Value)
         {
             return SDFCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY key field
+        /// </summary>
+        /// <param name="Key">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity, or null if not found</returns>
         public SDFC_Entity TryFindBySDFCKEY(string Key)
         {
             SDFC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SDFC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDFC_Entity, string>[Headers.Count];

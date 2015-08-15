@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SAD_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCI_Entity _CAMPUS_SCI;
+        private SM_Entity _ROOM_SM;
+        private SF_Entity _AREA_DUTY_TEACHER_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -53,11 +60,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? CAMPUS { get; internal set; }
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Campus on which accident occured
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
-        /// <summary>
         /// Location of accident if not on campus [Memo: m]
         /// </summary>
         public string EXTERNAL_ADDRESS { get; internal set; }
@@ -66,19 +68,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ROOM { get; internal set; }
         /// <summary>
-        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
-        /// Room where accident occurred (if any)
-        /// </summary>
-        public SM_Entity ROOM_SM { get { return ROOM == null ? null : Context.SM.FindByROOM(ROOM); } }
-        /// <summary>
         /// Staff code of senior duty teacher in area of accident at the time [Uppercase Alphanumeric: u4]
         /// </summary>
         public string AREA_DUTY_TEACHER { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AREA_DUTY_TEACHER] => [SF_Entity].[SFKEY]
-        /// Staff code of senior duty teacher in area of accident at the time
-        /// </summary>
-        public SF_Entity AREA_DUTY_TEACHER_SF { get { return AREA_DUTY_TEACHER == null ? null : Context.SF.FindBySFKEY(AREA_DUTY_TEACHER); } }
         /// <summary>
         /// Full name of senior duty teacher in area of accident at the time [Alphanumeric: a64]
         /// </summary>
@@ -111,7 +103,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Campus on which accident occured
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ROOM] => [SM_Entity].[ROOM]
+        /// Room where accident occurred (if any)
+        /// </summary>
+        public SM_Entity ROOM_SM {
+            get
+            {
+                if (ROOM != null)
+                {
+                    if (_ROOM_SM == null)
+                    {
+                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
+                    }
+                    return _ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AREA_DUTY_TEACHER] => [SF_Entity].[SFKEY]
+        /// Staff code of senior duty teacher in area of accident at the time
+        /// </summary>
+        public SF_Entity AREA_DUTY_TEACHER_SF {
+            get
+            {
+                if (AREA_DUTY_TEACHER != null)
+                {
+                    if (_AREA_DUTY_TEACHER_SF == null)
+                    {
+                        _AREA_DUTY_TEACHER_SF = Context.SF.FindBySFKEY(AREA_DUTY_TEACHER);
+                    }
+                    return _AREA_DUTY_TEACHER_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

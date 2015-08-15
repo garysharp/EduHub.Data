@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SCSFAG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCSF_Entity _SCSFKEY_SCSF;
+        private KCY_Entity _ST_YEAR_LEVEL_KCY;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// CSF Outcome Code (identifies KLA and Strand) [Uppercase Alphanumeric: u5]
         /// </summary>
         public string SCSFKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCSFKEY] => [SCSF_Entity].[SCSFKEY]
-        /// CSF Outcome Code (identifies KLA and Strand)
-        /// </summary>
-        public SCSF_Entity SCSFKEY_SCSF { get { return SCSFKEY == null ? null : Context.SCSF.FindBySCSFKEY(SCSFKEY); } }
         /// <summary>
         /// Year and semester during which test administered (eg 2000.1) [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -33,11 +34,6 @@ namespace EduHub.Data.Entities
         /// Year level of assessed students [Uppercase Alphanumeric: u4]
         /// </summary>
         public string ST_YEAR_LEVEL { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ST_YEAR_LEVEL] => [KCY_Entity].[KCYKEY]
-        /// Year level of assessed students
-        /// </summary>
-        public KCY_Entity ST_YEAR_LEVEL_KCY { get { return ST_YEAR_LEVEL == null ? null : Context.KCY.FindByKCYKEY(ST_YEAR_LEVEL); } }
         /// <summary>
         /// Category of this group [Uppercase Alphanumeric: u2]
         /// </summary>
@@ -194,7 +190,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SCSFKEY] => [SCSF_Entity].[SCSFKEY]
+        /// CSF Outcome Code (identifies KLA and Strand)
+        /// </summary>
+        public SCSF_Entity SCSFKEY_SCSF {
+            get
+            {
+                if (SCSFKEY != null)
+                {
+                    if (_SCSFKEY_SCSF == null)
+                    {
+                        _SCSFKEY_SCSF = Context.SCSF.FindBySCSFKEY(SCSFKEY);
+                    }
+                    return _SCSFKEY_SCSF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ST_YEAR_LEVEL] => [KCY_Entity].[KCYKEY]
+        /// Year level of assessed students
+        /// </summary>
+        public KCY_Entity ST_YEAR_LEVEL_KCY {
+            get
+            {
+                if (ST_YEAR_LEVEL != null)
+                {
+                    if (_ST_YEAR_LEVEL_KCY == null)
+                    {
+                        _ST_YEAR_LEVEL_KCY = Context.KCY.FindByKCYKEY(ST_YEAR_LEVEL);
+                    }
+                    return _ST_YEAR_LEVEL_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

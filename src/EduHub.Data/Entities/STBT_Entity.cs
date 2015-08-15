@@ -8,6 +8,32 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class STBT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _STBTKEY_ST;
+        private KCR_Entity _ROUTE_KCR;
+        private SCI_Entity _AM1_SD_SITE_SCI;
+        private KCR_Entity _AM1_ROUTE_KCR;
+        private SCI_Entity _PM1_PU_SITE_SCI;
+        private KCR_Entity _PM1_ROUTE_KCR;
+        private SCI_Entity _AM2_SD_SITE_SCI;
+        private KCR_Entity _AM2_ROUTE_KCR;
+        private SCI_Entity _PM2_PU_SITE_SCI;
+        private KCR_Entity _PM2_ROUTE_KCR;
+        private SCI_Entity _AM3_SD_SITE_SCI;
+        private KCR_Entity _AM3_ROUTE_KCR;
+        private SCI_Entity _PM3_PU_SITE_SCI;
+        private KCR_Entity _PM3_ROUTE_KCR;
+        private SCI_Entity _AM4_SD_SITE_SCI;
+        private KCR_Entity _AM4_ROUTE_KCR;
+        private SCI_Entity _PM4_PU_SITE_SCI;
+        private KCR_Entity _PM4_ROUTE_KCR;
+        private SCI_Entity _AM5_SD_SITE_SCI;
+        private KCR_Entity _AM5_ROUTE_KCR;
+        private SCI_Entity _PM5_PU_SITE_SCI;
+        private KCR_Entity _PM5_ROUTE_KCR;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +43,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string STBTKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [STBTKEY] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity STBTKEY_ST { get { return STBTKEY == null ? null : Context.ST.FindBySTKEY(STBTKEY); } }
-        /// <summary>
         /// Transport route or stop used [Uppercase Alphanumeric: u6]
         /// </summary>
         public string ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route or stop used
-        /// </summary>
-        public KCR_Entity ROUTE_KCR { get { return ROUTE == null ? null : Context.KCR.FindByKCRKEY(ROUTE); } }
         /// <summary>
         /// Mon - Fri << What is actually stored in this field? [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -79,19 +95,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? AM1_SD_SITE { get; internal set; }
         /// <summary>
-        /// Navigation property for [AM1_SD_SITE] => [SCI_Entity].[SCIKEY]
-        /// Set-down campus on Day 1
-        /// </summary>
-        public SCI_Entity AM1_SD_SITE_SCI { get { return AM1_SD_SITE.HasValue ? Context.SCI.FindBySCIKEY(AM1_SD_SITE.Value) : null; } }
-        /// <summary>
         /// Transport route/stop used in the morning on Day 1 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string AM1_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AM1_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the morning on Day 1
-        /// </summary>
-        public KCR_Entity AM1_ROUTE_KCR { get { return AM1_ROUTE == null ? null : Context.KCR.FindByKCRKEY(AM1_ROUTE); } }
         /// <summary>
         /// Afternoon pickup time on Day 1 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -100,11 +106,6 @@ namespace EduHub.Data.Entities
         /// Pick-up campus on Day 1 [Integer (32bit signed nullable): l]
         /// </summary>
         public int? PM1_PU_SITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM1_PU_SITE] => [SCI_Entity].[SCIKEY]
-        /// Pick-up campus on Day 1
-        /// </summary>
-        public SCI_Entity PM1_PU_SITE_SCI { get { return PM1_PU_SITE.HasValue ? Context.SCI.FindBySCIKEY(PM1_PU_SITE.Value) : null; } }
         /// <summary>
         /// Afternoon arrival time on Day 1 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -117,11 +118,6 @@ namespace EduHub.Data.Entities
         /// Transport route/stop used in the afternoon on Day 1 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string PM1_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM1_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the afternoon on Day 1
-        /// </summary>
-        public KCR_Entity PM1_ROUTE_KCR { get { return PM1_ROUTE == null ? null : Context.KCR.FindByKCRKEY(PM1_ROUTE); } }
         /// <summary>
         /// Morning pick-up time on Day 2 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -139,19 +135,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? AM2_SD_SITE { get; internal set; }
         /// <summary>
-        /// Navigation property for [AM2_SD_SITE] => [SCI_Entity].[SCIKEY]
-        /// Set-down campus on Day 2
-        /// </summary>
-        public SCI_Entity AM2_SD_SITE_SCI { get { return AM2_SD_SITE.HasValue ? Context.SCI.FindBySCIKEY(AM2_SD_SITE.Value) : null; } }
-        /// <summary>
         /// Transport route/stop used in the morning on Day 2 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string AM2_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AM2_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the morning on Day 2
-        /// </summary>
-        public KCR_Entity AM2_ROUTE_KCR { get { return AM2_ROUTE == null ? null : Context.KCR.FindByKCRKEY(AM2_ROUTE); } }
         /// <summary>
         /// Afternoon pickup time on Day 2 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -160,11 +146,6 @@ namespace EduHub.Data.Entities
         /// Pick-up campus on Day 2 [Integer (32bit signed nullable): l]
         /// </summary>
         public int? PM2_PU_SITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM2_PU_SITE] => [SCI_Entity].[SCIKEY]
-        /// Pick-up campus on Day 2
-        /// </summary>
-        public SCI_Entity PM2_PU_SITE_SCI { get { return PM2_PU_SITE.HasValue ? Context.SCI.FindBySCIKEY(PM2_PU_SITE.Value) : null; } }
         /// <summary>
         /// Afternoon arrival time on Day 2 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -177,11 +158,6 @@ namespace EduHub.Data.Entities
         /// Transport route/stop used in the afternoon on Day 2 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string PM2_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM2_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the afternoon on Day 2
-        /// </summary>
-        public KCR_Entity PM2_ROUTE_KCR { get { return PM2_ROUTE == null ? null : Context.KCR.FindByKCRKEY(PM2_ROUTE); } }
         /// <summary>
         /// Morning pick-up time on Day 3 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -199,19 +175,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? AM3_SD_SITE { get; internal set; }
         /// <summary>
-        /// Navigation property for [AM3_SD_SITE] => [SCI_Entity].[SCIKEY]
-        /// Set-down campus on Day 3
-        /// </summary>
-        public SCI_Entity AM3_SD_SITE_SCI { get { return AM3_SD_SITE.HasValue ? Context.SCI.FindBySCIKEY(AM3_SD_SITE.Value) : null; } }
-        /// <summary>
         /// Transport route/stop used in the morning on Day 3 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string AM3_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AM3_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the morning on Day 3
-        /// </summary>
-        public KCR_Entity AM3_ROUTE_KCR { get { return AM3_ROUTE == null ? null : Context.KCR.FindByKCRKEY(AM3_ROUTE); } }
         /// <summary>
         /// Afternoon pickup time on Day 3 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -220,11 +186,6 @@ namespace EduHub.Data.Entities
         /// Pick-up campus on Day 3 [Integer (32bit signed nullable): l]
         /// </summary>
         public int? PM3_PU_SITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM3_PU_SITE] => [SCI_Entity].[SCIKEY]
-        /// Pick-up campus on Day 3
-        /// </summary>
-        public SCI_Entity PM3_PU_SITE_SCI { get { return PM3_PU_SITE.HasValue ? Context.SCI.FindBySCIKEY(PM3_PU_SITE.Value) : null; } }
         /// <summary>
         /// Afternoon arrival time on Day 3 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -237,11 +198,6 @@ namespace EduHub.Data.Entities
         /// Transport route/stop used in the afternoon on Day 3 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string PM3_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM3_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the afternoon on Day 3
-        /// </summary>
-        public KCR_Entity PM3_ROUTE_KCR { get { return PM3_ROUTE == null ? null : Context.KCR.FindByKCRKEY(PM3_ROUTE); } }
         /// <summary>
         /// Morning pick-up time on Day 4 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -259,19 +215,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? AM4_SD_SITE { get; internal set; }
         /// <summary>
-        /// Navigation property for [AM4_SD_SITE] => [SCI_Entity].[SCIKEY]
-        /// Set-down campus on Day 4
-        /// </summary>
-        public SCI_Entity AM4_SD_SITE_SCI { get { return AM4_SD_SITE.HasValue ? Context.SCI.FindBySCIKEY(AM4_SD_SITE.Value) : null; } }
-        /// <summary>
         /// Transport route/stop used in the morning on Day 4 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string AM4_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AM4_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the morning on Day 4
-        /// </summary>
-        public KCR_Entity AM4_ROUTE_KCR { get { return AM4_ROUTE == null ? null : Context.KCR.FindByKCRKEY(AM4_ROUTE); } }
         /// <summary>
         /// Afternoon pickup time on Day 4 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -280,11 +226,6 @@ namespace EduHub.Data.Entities
         /// Pick-up campus on Day 4 [Integer (32bit signed nullable): l]
         /// </summary>
         public int? PM4_PU_SITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM4_PU_SITE] => [SCI_Entity].[SCIKEY]
-        /// Pick-up campus on Day 4
-        /// </summary>
-        public SCI_Entity PM4_PU_SITE_SCI { get { return PM4_PU_SITE.HasValue ? Context.SCI.FindBySCIKEY(PM4_PU_SITE.Value) : null; } }
         /// <summary>
         /// Afternoon arrival time on Day 4 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -297,11 +238,6 @@ namespace EduHub.Data.Entities
         /// Transport route/stop used in the afternoon on Day 4 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string PM4_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM4_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the afternoon on Day 4
-        /// </summary>
-        public KCR_Entity PM4_ROUTE_KCR { get { return PM4_ROUTE == null ? null : Context.KCR.FindByKCRKEY(PM4_ROUTE); } }
         /// <summary>
         /// Morning pick-up time on Day 5 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -319,19 +255,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? AM5_SD_SITE { get; internal set; }
         /// <summary>
-        /// Navigation property for [AM5_SD_SITE] => [SCI_Entity].[SCIKEY]
-        /// Set-down campus on Day 5
-        /// </summary>
-        public SCI_Entity AM5_SD_SITE_SCI { get { return AM5_SD_SITE.HasValue ? Context.SCI.FindBySCIKEY(AM5_SD_SITE.Value) : null; } }
-        /// <summary>
         /// Transport route/stop used in the morning on Day 5 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string AM5_ROUTE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AM5_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the morning on Day 5
-        /// </summary>
-        public KCR_Entity AM5_ROUTE_KCR { get { return AM5_ROUTE == null ? null : Context.KCR.FindByKCRKEY(AM5_ROUTE); } }
         /// <summary>
         /// Afternoon pickup time on Day 5 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -340,11 +266,6 @@ namespace EduHub.Data.Entities
         /// Pick-up campus on Day 5 [Integer (32bit signed nullable): l]
         /// </summary>
         public int? PM5_PU_SITE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PM5_PU_SITE] => [SCI_Entity].[SCIKEY]
-        /// Pick-up campus on Day 5
-        /// </summary>
-        public SCI_Entity PM5_PU_SITE_SCI { get { return PM5_PU_SITE.HasValue ? Context.SCI.FindBySCIKEY(PM5_PU_SITE.Value) : null; } }
         /// <summary>
         /// Afternoon arrival time on Day 5 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -358,11 +279,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string PM5_ROUTE { get; internal set; }
         /// <summary>
-        /// Navigation property for [PM5_ROUTE] => [KCR_Entity].[KCRKEY]
-        /// Transport route/stop used in the afternoon on Day 5
-        /// </summary>
-        public KCR_Entity PM5_ROUTE_KCR { get { return PM5_ROUTE == null ? null : Context.KCR.FindByKCRKEY(PM5_ROUTE); } }
-        /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -374,7 +290,471 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [STBTKEY] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity STBTKEY_ST {
+            get
+            {
+                if (STBTKEY != null)
+                {
+                    if (_STBTKEY_ST == null)
+                    {
+                        _STBTKEY_ST = Context.ST.FindBySTKEY(STBTKEY);
+                    }
+                    return _STBTKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route or stop used
+        /// </summary>
+        public KCR_Entity ROUTE_KCR {
+            get
+            {
+                if (ROUTE != null)
+                {
+                    if (_ROUTE_KCR == null)
+                    {
+                        _ROUTE_KCR = Context.KCR.FindByKCRKEY(ROUTE);
+                    }
+                    return _ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM1_SD_SITE] => [SCI_Entity].[SCIKEY]
+        /// Set-down campus on Day 1
+        /// </summary>
+        public SCI_Entity AM1_SD_SITE_SCI {
+            get
+            {
+                if (AM1_SD_SITE.HasValue)
+                {
+                    if (_AM1_SD_SITE_SCI == null)
+                    {
+                        _AM1_SD_SITE_SCI = Context.SCI.FindBySCIKEY(AM1_SD_SITE.Value);
+                    }
+                    return _AM1_SD_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM1_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the morning on Day 1
+        /// </summary>
+        public KCR_Entity AM1_ROUTE_KCR {
+            get
+            {
+                if (AM1_ROUTE != null)
+                {
+                    if (_AM1_ROUTE_KCR == null)
+                    {
+                        _AM1_ROUTE_KCR = Context.KCR.FindByKCRKEY(AM1_ROUTE);
+                    }
+                    return _AM1_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM1_PU_SITE] => [SCI_Entity].[SCIKEY]
+        /// Pick-up campus on Day 1
+        /// </summary>
+        public SCI_Entity PM1_PU_SITE_SCI {
+            get
+            {
+                if (PM1_PU_SITE.HasValue)
+                {
+                    if (_PM1_PU_SITE_SCI == null)
+                    {
+                        _PM1_PU_SITE_SCI = Context.SCI.FindBySCIKEY(PM1_PU_SITE.Value);
+                    }
+                    return _PM1_PU_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM1_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the afternoon on Day 1
+        /// </summary>
+        public KCR_Entity PM1_ROUTE_KCR {
+            get
+            {
+                if (PM1_ROUTE != null)
+                {
+                    if (_PM1_ROUTE_KCR == null)
+                    {
+                        _PM1_ROUTE_KCR = Context.KCR.FindByKCRKEY(PM1_ROUTE);
+                    }
+                    return _PM1_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM2_SD_SITE] => [SCI_Entity].[SCIKEY]
+        /// Set-down campus on Day 2
+        /// </summary>
+        public SCI_Entity AM2_SD_SITE_SCI {
+            get
+            {
+                if (AM2_SD_SITE.HasValue)
+                {
+                    if (_AM2_SD_SITE_SCI == null)
+                    {
+                        _AM2_SD_SITE_SCI = Context.SCI.FindBySCIKEY(AM2_SD_SITE.Value);
+                    }
+                    return _AM2_SD_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM2_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the morning on Day 2
+        /// </summary>
+        public KCR_Entity AM2_ROUTE_KCR {
+            get
+            {
+                if (AM2_ROUTE != null)
+                {
+                    if (_AM2_ROUTE_KCR == null)
+                    {
+                        _AM2_ROUTE_KCR = Context.KCR.FindByKCRKEY(AM2_ROUTE);
+                    }
+                    return _AM2_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM2_PU_SITE] => [SCI_Entity].[SCIKEY]
+        /// Pick-up campus on Day 2
+        /// </summary>
+        public SCI_Entity PM2_PU_SITE_SCI {
+            get
+            {
+                if (PM2_PU_SITE.HasValue)
+                {
+                    if (_PM2_PU_SITE_SCI == null)
+                    {
+                        _PM2_PU_SITE_SCI = Context.SCI.FindBySCIKEY(PM2_PU_SITE.Value);
+                    }
+                    return _PM2_PU_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM2_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the afternoon on Day 2
+        /// </summary>
+        public KCR_Entity PM2_ROUTE_KCR {
+            get
+            {
+                if (PM2_ROUTE != null)
+                {
+                    if (_PM2_ROUTE_KCR == null)
+                    {
+                        _PM2_ROUTE_KCR = Context.KCR.FindByKCRKEY(PM2_ROUTE);
+                    }
+                    return _PM2_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM3_SD_SITE] => [SCI_Entity].[SCIKEY]
+        /// Set-down campus on Day 3
+        /// </summary>
+        public SCI_Entity AM3_SD_SITE_SCI {
+            get
+            {
+                if (AM3_SD_SITE.HasValue)
+                {
+                    if (_AM3_SD_SITE_SCI == null)
+                    {
+                        _AM3_SD_SITE_SCI = Context.SCI.FindBySCIKEY(AM3_SD_SITE.Value);
+                    }
+                    return _AM3_SD_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM3_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the morning on Day 3
+        /// </summary>
+        public KCR_Entity AM3_ROUTE_KCR {
+            get
+            {
+                if (AM3_ROUTE != null)
+                {
+                    if (_AM3_ROUTE_KCR == null)
+                    {
+                        _AM3_ROUTE_KCR = Context.KCR.FindByKCRKEY(AM3_ROUTE);
+                    }
+                    return _AM3_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM3_PU_SITE] => [SCI_Entity].[SCIKEY]
+        /// Pick-up campus on Day 3
+        /// </summary>
+        public SCI_Entity PM3_PU_SITE_SCI {
+            get
+            {
+                if (PM3_PU_SITE.HasValue)
+                {
+                    if (_PM3_PU_SITE_SCI == null)
+                    {
+                        _PM3_PU_SITE_SCI = Context.SCI.FindBySCIKEY(PM3_PU_SITE.Value);
+                    }
+                    return _PM3_PU_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM3_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the afternoon on Day 3
+        /// </summary>
+        public KCR_Entity PM3_ROUTE_KCR {
+            get
+            {
+                if (PM3_ROUTE != null)
+                {
+                    if (_PM3_ROUTE_KCR == null)
+                    {
+                        _PM3_ROUTE_KCR = Context.KCR.FindByKCRKEY(PM3_ROUTE);
+                    }
+                    return _PM3_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM4_SD_SITE] => [SCI_Entity].[SCIKEY]
+        /// Set-down campus on Day 4
+        /// </summary>
+        public SCI_Entity AM4_SD_SITE_SCI {
+            get
+            {
+                if (AM4_SD_SITE.HasValue)
+                {
+                    if (_AM4_SD_SITE_SCI == null)
+                    {
+                        _AM4_SD_SITE_SCI = Context.SCI.FindBySCIKEY(AM4_SD_SITE.Value);
+                    }
+                    return _AM4_SD_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM4_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the morning on Day 4
+        /// </summary>
+        public KCR_Entity AM4_ROUTE_KCR {
+            get
+            {
+                if (AM4_ROUTE != null)
+                {
+                    if (_AM4_ROUTE_KCR == null)
+                    {
+                        _AM4_ROUTE_KCR = Context.KCR.FindByKCRKEY(AM4_ROUTE);
+                    }
+                    return _AM4_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM4_PU_SITE] => [SCI_Entity].[SCIKEY]
+        /// Pick-up campus on Day 4
+        /// </summary>
+        public SCI_Entity PM4_PU_SITE_SCI {
+            get
+            {
+                if (PM4_PU_SITE.HasValue)
+                {
+                    if (_PM4_PU_SITE_SCI == null)
+                    {
+                        _PM4_PU_SITE_SCI = Context.SCI.FindBySCIKEY(PM4_PU_SITE.Value);
+                    }
+                    return _PM4_PU_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM4_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the afternoon on Day 4
+        /// </summary>
+        public KCR_Entity PM4_ROUTE_KCR {
+            get
+            {
+                if (PM4_ROUTE != null)
+                {
+                    if (_PM4_ROUTE_KCR == null)
+                    {
+                        _PM4_ROUTE_KCR = Context.KCR.FindByKCRKEY(PM4_ROUTE);
+                    }
+                    return _PM4_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM5_SD_SITE] => [SCI_Entity].[SCIKEY]
+        /// Set-down campus on Day 5
+        /// </summary>
+        public SCI_Entity AM5_SD_SITE_SCI {
+            get
+            {
+                if (AM5_SD_SITE.HasValue)
+                {
+                    if (_AM5_SD_SITE_SCI == null)
+                    {
+                        _AM5_SD_SITE_SCI = Context.SCI.FindBySCIKEY(AM5_SD_SITE.Value);
+                    }
+                    return _AM5_SD_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AM5_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the morning on Day 5
+        /// </summary>
+        public KCR_Entity AM5_ROUTE_KCR {
+            get
+            {
+                if (AM5_ROUTE != null)
+                {
+                    if (_AM5_ROUTE_KCR == null)
+                    {
+                        _AM5_ROUTE_KCR = Context.KCR.FindByKCRKEY(AM5_ROUTE);
+                    }
+                    return _AM5_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM5_PU_SITE] => [SCI_Entity].[SCIKEY]
+        /// Pick-up campus on Day 5
+        /// </summary>
+        public SCI_Entity PM5_PU_SITE_SCI {
+            get
+            {
+                if (PM5_PU_SITE.HasValue)
+                {
+                    if (_PM5_PU_SITE_SCI == null)
+                    {
+                        _PM5_PU_SITE_SCI = Context.SCI.FindBySCIKEY(PM5_PU_SITE.Value);
+                    }
+                    return _PM5_PU_SITE_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PM5_ROUTE] => [KCR_Entity].[KCRKEY]
+        /// Transport route/stop used in the afternoon on Day 5
+        /// </summary>
+        public KCR_Entity PM5_ROUTE_KCR {
+            get
+            {
+                if (PM5_ROUTE != null)
+                {
+                    if (_PM5_ROUTE_KCR == null)
+                    {
+                        _PM5_ROUTE_KCR = Context.KCR.FindByKCRKEY(PM5_ROUTE);
+                    }
+                    return _PM5_ROUTE_KCR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KFTC_DataSet : SetBase<KFTC_Entity>
     {
+        private Lazy<Dictionary<string, KFTC_Entity>> KFTCKEY_Index;
+
         internal KFTC_DataSet(EduHubContext Context)
             : base(Context)
         {
             KFTCKEY_Index = new Lazy<Dictionary<string, KFTC_Entity>>(() => this.ToDictionary(e => e.KFTCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KFTC"; } }
 
-        private Lazy<Dictionary<string, KFTC_Entity>> KFTCKEY_Index;
-
+        /// <summary>
+        /// Find KFTC by KFTCKEY key field
+        /// </summary>
+        /// <param name="Key">KFTCKEY value used to find KFTC</param>
+        /// <returns>Related KFTC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KFTCKEY value didn't match any KFTC entities</exception>
         public KFTC_Entity FindByKFTCKEY(string Key)
         {
             KFTC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KFTC by KFTCKEY key field
+        /// </summary>
+        /// <param name="Key">KFTCKEY value used to find KFTC</param>
+        /// <param name="Value">Related KFTC entity</param>
+        /// <returns>True if the KFTC Entity is found</returns>
         public bool TryFindByKFTCKEY(string Key, out KFTC_Entity Value)
         {
             return KFTCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KFTC by KFTCKEY key field
+        /// </summary>
+        /// <param name="Key">KFTCKEY value used to find KFTC</param>
+        /// <returns>Related KFTC entity, or null if not found</returns>
         public KFTC_Entity TryFindByKFTCKEY(string Key)
         {
             KFTC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KFTC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KFTC_Entity, string>[Headers.Count];

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KERROR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SPOUT_Entity _SPOUTKEY_SPOUT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// prime key [Integer (32bit signed): l]
         /// </summary>
@@ -72,12 +77,30 @@ namespace EduHub.Data.Entities
         /// Unique user session ID [Alphanumeric: a100]
         /// </summary>
         public string SPOUTKEY { get; internal set; }
+#endregion
+
+#region Navigation Properties
         /// <summary>
         /// Navigation property for [SPOUTKEY] => [SPOUT_Entity].[SPOUTKEY]
         /// Unique user session ID
         /// </summary>
-        public SPOUT_Entity SPOUTKEY_SPOUT { get { return SPOUTKEY == null ? null : Context.SPOUT.FindBySPOUTKEY(SPOUTKEY); } }
-        
-        
+        public SPOUT_Entity SPOUTKEY_SPOUT {
+            get
+            {
+                if (SPOUTKEY != null)
+                {
+                    if (_SPOUTKEY_SPOUT == null)
+                    {
+                        _SPOUTKEY_SPOUT = Context.SPOUT.FindBySPOUTKEY(SPOUTKEY);
+                    }
+                    return _SPOUTKEY_SPOUT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

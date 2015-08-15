@@ -8,6 +8,15 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SAB_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SA_Entity _FEE_CODE_1ST_SA;
+        private SA_Entity _FEE_CODE_2ND_SA;
+        private SA_Entity _FEE_CODE_3RD_SA;
+        private SA_Entity _FEE_CODE_4TH_SA;
+        private SA_Entity _FEE_CODE_KG_SA;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Billing key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -45,46 +54,21 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FEE_CODE_1ST { get; internal set; }
         /// <summary>
-        /// Navigation property for [FEE_CODE_1ST] => [SA_Entity].[SAKEY]
-        /// Fee code for the 1st child
-        /// </summary>
-        public SA_Entity FEE_CODE_1ST_SA { get { return FEE_CODE_1ST == null ? null : Context.SA.FindBySAKEY(FEE_CODE_1ST); } }
-        /// <summary>
         /// Fee code for the 2nd child [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FEE_CODE_2ND { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FEE_CODE_2ND] => [SA_Entity].[SAKEY]
-        /// Fee code for the 2nd child
-        /// </summary>
-        public SA_Entity FEE_CODE_2ND_SA { get { return FEE_CODE_2ND == null ? null : Context.SA.FindBySAKEY(FEE_CODE_2ND); } }
         /// <summary>
         /// Fee code for the 3rd child [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FEE_CODE_3RD { get; internal set; }
         /// <summary>
-        /// Navigation property for [FEE_CODE_3RD] => [SA_Entity].[SAKEY]
-        /// Fee code for the 3rd child
-        /// </summary>
-        public SA_Entity FEE_CODE_3RD_SA { get { return FEE_CODE_3RD == null ? null : Context.SA.FindBySAKEY(FEE_CODE_3RD); } }
-        /// <summary>
         /// Fee code for the 4th child [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FEE_CODE_4TH { get; internal set; }
         /// <summary>
-        /// Navigation property for [FEE_CODE_4TH] => [SA_Entity].[SAKEY]
-        /// Fee code for the 4th child
-        /// </summary>
-        public SA_Entity FEE_CODE_4TH_SA { get { return FEE_CODE_4TH == null ? null : Context.SA.FindBySAKEY(FEE_CODE_4TH); } }
-        /// <summary>
         /// Fee code for the Kindergarten child [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FEE_CODE_KG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FEE_CODE_KG] => [SA_Entity].[SAKEY]
-        /// Fee code for the Kindergarten child
-        /// </summary>
-        public SA_Entity FEE_CODE_KG_SA { get { return FEE_CODE_KG == null ? null : Context.SA.FindBySAKEY(FEE_CODE_KG); } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -97,7 +81,114 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FEE_CODE_1ST] => [SA_Entity].[SAKEY]
+        /// Fee code for the 1st child
+        /// </summary>
+        public SA_Entity FEE_CODE_1ST_SA {
+            get
+            {
+                if (FEE_CODE_1ST != null)
+                {
+                    if (_FEE_CODE_1ST_SA == null)
+                    {
+                        _FEE_CODE_1ST_SA = Context.SA.FindBySAKEY(FEE_CODE_1ST);
+                    }
+                    return _FEE_CODE_1ST_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE_2ND] => [SA_Entity].[SAKEY]
+        /// Fee code for the 2nd child
+        /// </summary>
+        public SA_Entity FEE_CODE_2ND_SA {
+            get
+            {
+                if (FEE_CODE_2ND != null)
+                {
+                    if (_FEE_CODE_2ND_SA == null)
+                    {
+                        _FEE_CODE_2ND_SA = Context.SA.FindBySAKEY(FEE_CODE_2ND);
+                    }
+                    return _FEE_CODE_2ND_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE_3RD] => [SA_Entity].[SAKEY]
+        /// Fee code for the 3rd child
+        /// </summary>
+        public SA_Entity FEE_CODE_3RD_SA {
+            get
+            {
+                if (FEE_CODE_3RD != null)
+                {
+                    if (_FEE_CODE_3RD_SA == null)
+                    {
+                        _FEE_CODE_3RD_SA = Context.SA.FindBySAKEY(FEE_CODE_3RD);
+                    }
+                    return _FEE_CODE_3RD_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE_4TH] => [SA_Entity].[SAKEY]
+        /// Fee code for the 4th child
+        /// </summary>
+        public SA_Entity FEE_CODE_4TH_SA {
+            get
+            {
+                if (FEE_CODE_4TH != null)
+                {
+                    if (_FEE_CODE_4TH_SA == null)
+                    {
+                        _FEE_CODE_4TH_SA = Context.SA.FindBySAKEY(FEE_CODE_4TH);
+                    }
+                    return _FEE_CODE_4TH_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE_KG] => [SA_Entity].[SAKEY]
+        /// Fee code for the Kindergarten child
+        /// </summary>
+        public SA_Entity FEE_CODE_KG_SA {
+            get
+            {
+                if (FEE_CODE_KG != null)
+                {
+                    if (_FEE_CODE_KG_SA == null)
+                    {
+                        _FEE_CODE_KG_SA = Context.SA.FindBySAKEY(FEE_CODE_KG);
+                    }
+                    return _FEE_CODE_KG_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

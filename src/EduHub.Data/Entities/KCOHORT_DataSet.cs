@@ -10,6 +10,9 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCOHORT_DataSet : SetBase<KCOHORT_Entity>
     {
+        private Lazy<Dictionary<string, KCOHORT_Entity>> COHORT_Index;
+        private Lazy<Dictionary<string, KCOHORT_Entity>> DESCRIPTION_Index;
+
         internal KCOHORT_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -17,11 +20,17 @@ namespace EduHub.Data.Entities
             DESCRIPTION_Index = new Lazy<Dictionary<string, KCOHORT_Entity>>(() => this.ToDictionary(e => e.DESCRIPTION));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCOHORT"; } }
 
-        private Lazy<Dictionary<string, KCOHORT_Entity>> COHORT_Index;
-        private Lazy<Dictionary<string, KCOHORT_Entity>> DESCRIPTION_Index;
-
+        /// <summary>
+        /// Find KCOHORT by COHORT key field
+        /// </summary>
+        /// <param name="Key">COHORT value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">COHORT value didn't match any KCOHORT entities</exception>
         public KCOHORT_Entity FindByCOHORT(string Key)
         {
             KCOHORT_Entity result;
@@ -34,10 +43,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by COHORT key field
+        /// </summary>
+        /// <param name="Key">COHORT value used to find KCOHORT</param>
+        /// <param name="Value">Related KCOHORT entity</param>
+        /// <returns>True if the KCOHORT Entity is found</returns>
         public bool TryFindByCOHORT(string Key, out KCOHORT_Entity Value)
         {
             return COHORT_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by COHORT key field
+        /// </summary>
+        /// <param name="Key">COHORT value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity, or null if not found</returns>
         public KCOHORT_Entity TryFindByCOHORT(string Key)
         {
             KCOHORT_Entity result;
@@ -50,6 +72,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find KCOHORT by DESCRIPTION key field
+        /// </summary>
+        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">DESCRIPTION value didn't match any KCOHORT entities</exception>
         public KCOHORT_Entity FindByDESCRIPTION(string Key)
         {
             KCOHORT_Entity result;
@@ -62,10 +91,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by DESCRIPTION key field
+        /// </summary>
+        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
+        /// <param name="Value">Related KCOHORT entity</param>
+        /// <returns>True if the KCOHORT Entity is found</returns>
         public bool TryFindByDESCRIPTION(string Key, out KCOHORT_Entity Value)
         {
             return DESCRIPTION_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by DESCRIPTION key field
+        /// </summary>
+        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity, or null if not found</returns>
         public KCOHORT_Entity TryFindByDESCRIPTION(string Key)
         {
             KCOHORT_Entity result;
@@ -78,7 +120,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KCOHORT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCOHORT_Entity, string>[Headers.Count];

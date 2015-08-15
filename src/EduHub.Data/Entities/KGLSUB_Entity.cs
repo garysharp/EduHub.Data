@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGLSUB_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGLPROG_Entity _GL_PROGRAM_KGLPROG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Type key, eg I [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Each subprogram belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GL_PROGRAM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [GL_PROGRAM] => [KGLPROG_Entity].[GLPROGRAM]
-        /// Each subprogram belongs to a program
-        /// </summary>
-        public KGLPROG_Entity GL_PROGRAM_KGLPROG { get { return GL_PROGRAM == null ? null : Context.KGLPROG.FindByGLPROGRAM(GL_PROGRAM); } }
         /// <summary>
         /// Allow account to be used(Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GL_PROGRAM] => [KGLPROG_Entity].[GLPROGRAM]
+        /// Each subprogram belongs to a program
+        /// </summary>
+        public KGLPROG_Entity GL_PROGRAM_KGLPROG {
+            get
+            {
+                if (GL_PROGRAM != null)
+                {
+                    if (_GL_PROGRAM_KGLPROG == null)
+                    {
+                        _GL_PROGRAM_KGLPROG = Context.KGLPROG.FindByGLPROGRAM(GL_PROGRAM);
+                    }
+                    return _GL_PROGRAM_KGLPROG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

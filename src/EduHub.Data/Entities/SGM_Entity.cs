@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SGM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SG_Entity _SGMKEY_SG;
+        private SM_Entity _MEETING_ROOM_SM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// Code of group holding this meeting [Uppercase Alphanumeric: u12]
         /// </summary>
         public string SGMKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SGMKEY] => [SG_Entity].[SGKEY]
-        /// Code of group holding this meeting
-        /// </summary>
-        public SG_Entity SGMKEY_SG { get { return SGMKEY == null ? null : Context.SG.FindBySGKEY(SGMKEY); } }
         /// <summary>
         /// Date of meeting [Date Time: d]
         /// </summary>
@@ -42,11 +43,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string MEETING_ROOM { get; internal set; }
         /// <summary>
-        /// Navigation property for [MEETING_ROOM] => [SM_Entity].[ROOM]
-        /// Room in which the meeting is held
-        /// </summary>
-        public SM_Entity MEETING_ROOM_SM { get { return MEETING_ROOM == null ? null : Context.SM.FindByROOM(MEETING_ROOM); } }
-        /// <summary>
         /// Minutes of the meeting [Memo: m]
         /// </summary>
         public string MINUTES_MEMO { get; internal set; }
@@ -62,7 +58,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SGMKEY] => [SG_Entity].[SGKEY]
+        /// Code of group holding this meeting
+        /// </summary>
+        public SG_Entity SGMKEY_SG {
+            get
+            {
+                if (SGMKEY != null)
+                {
+                    if (_SGMKEY_SG == null)
+                    {
+                        _SGMKEY_SG = Context.SG.FindBySGKEY(SGMKEY);
+                    }
+                    return _SGMKEY_SG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MEETING_ROOM] => [SM_Entity].[ROOM]
+        /// Room in which the meeting is held
+        /// </summary>
+        public SM_Entity MEETING_ROOM_SM {
+            get
+            {
+                if (MEETING_ROOM != null)
+                {
+                    if (_MEETING_ROOM_SM == null)
+                    {
+                        _MEETING_ROOM_SM = Context.SM.FindByROOM(MEETING_ROOM);
+                    }
+                    return _MEETING_ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

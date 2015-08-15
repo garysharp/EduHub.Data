@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SDP_DataSet : SetBase<SDP_Entity>
     {
+        private Lazy<Dictionary<int, SDP_Entity>> SDPKEY_Index;
+
         internal SDP_DataSet(EduHubContext Context)
             : base(Context)
         {
             SDPKEY_Index = new Lazy<Dictionary<int, SDP_Entity>>(() => this.ToDictionary(e => e.SDPKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SDP"; } }
 
-        private Lazy<Dictionary<int, SDP_Entity>> SDPKEY_Index;
-
+        /// <summary>
+        /// Find SDP by SDPKEY key field
+        /// </summary>
+        /// <param name="Key">SDPKEY value used to find SDP</param>
+        /// <returns>Related SDP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SDPKEY value didn't match any SDP entities</exception>
         public SDP_Entity FindBySDPKEY(int Key)
         {
             SDP_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SDP by SDPKEY key field
+        /// </summary>
+        /// <param name="Key">SDPKEY value used to find SDP</param>
+        /// <param name="Value">Related SDP entity</param>
+        /// <returns>True if the SDP Entity is found</returns>
         public bool TryFindBySDPKEY(int Key, out SDP_Entity Value)
         {
             return SDPKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SDP by SDPKEY key field
+        /// </summary>
+        /// <param name="Key">SDPKEY value used to find SDP</param>
+        /// <returns>Related SDP entity, or null if not found</returns>
         public SDP_Entity TryFindBySDPKEY(int Key)
         {
             SDP_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SDP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDP_Entity, string>[Headers.Count];

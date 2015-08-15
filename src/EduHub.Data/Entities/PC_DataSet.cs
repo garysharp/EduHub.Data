@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PC_DataSet : SetBase<PC_Entity>
     {
+        private Lazy<Dictionary<string, PC_Entity>> PCKEY_Index;
+
         internal PC_DataSet(EduHubContext Context)
             : base(Context)
         {
             PCKEY_Index = new Lazy<Dictionary<string, PC_Entity>>(() => this.ToDictionary(e => e.PCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PC"; } }
 
-        private Lazy<Dictionary<string, PC_Entity>> PCKEY_Index;
-
+        /// <summary>
+        /// Find PC by PCKEY key field
+        /// </summary>
+        /// <param name="Key">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PCKEY value didn't match any PC entities</exception>
         public PC_Entity FindByPCKEY(string Key)
         {
             PC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY key field
+        /// </summary>
+        /// <param name="Key">PCKEY value used to find PC</param>
+        /// <param name="Value">Related PC entity</param>
+        /// <returns>True if the PC Entity is found</returns>
         public bool TryFindByPCKEY(string Key, out PC_Entity Value)
         {
             return PCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY key field
+        /// </summary>
+        /// <param name="Key">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity, or null if not found</returns>
         public PC_Entity TryFindByPCKEY(string Key)
         {
             PC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PC_Entity, string>[Headers.Count];

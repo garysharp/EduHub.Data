@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCI_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Religious Instruction Curriculum code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -28,7 +32,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

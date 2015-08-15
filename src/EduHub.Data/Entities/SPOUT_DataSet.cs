@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SPOUT_DataSet : SetBase<SPOUT_Entity>
     {
+        private Lazy<Dictionary<string, SPOUT_Entity>> SPOUTKEY_Index;
+
         internal SPOUT_DataSet(EduHubContext Context)
             : base(Context)
         {
             SPOUTKEY_Index = new Lazy<Dictionary<string, SPOUT_Entity>>(() => this.ToDictionary(e => e.SPOUTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SPOUT"; } }
 
-        private Lazy<Dictionary<string, SPOUT_Entity>> SPOUTKEY_Index;
-
+        /// <summary>
+        /// Find SPOUT by SPOUTKEY key field
+        /// </summary>
+        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
+        /// <returns>Related SPOUT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SPOUTKEY value didn't match any SPOUT entities</exception>
         public SPOUT_Entity FindBySPOUTKEY(string Key)
         {
             SPOUT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SPOUT by SPOUTKEY key field
+        /// </summary>
+        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
+        /// <param name="Value">Related SPOUT entity</param>
+        /// <returns>True if the SPOUT Entity is found</returns>
         public bool TryFindBySPOUTKEY(string Key, out SPOUT_Entity Value)
         {
             return SPOUTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SPOUT by SPOUTKEY key field
+        /// </summary>
+        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
+        /// <returns>Related SPOUT entity, or null if not found</returns>
         public SPOUT_Entity TryFindBySPOUTKEY(string Key)
         {
             SPOUT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SPOUT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPOUT_Entity, string>[Headers.Count];

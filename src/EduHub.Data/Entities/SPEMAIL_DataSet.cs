@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SPEMAIL_DataSet : SetBase<SPEMAIL_Entity>
     {
+        private Lazy<Dictionary<string, SPEMAIL_Entity>> SPEMAILKEY_Index;
+
         internal SPEMAIL_DataSet(EduHubContext Context)
             : base(Context)
         {
             SPEMAILKEY_Index = new Lazy<Dictionary<string, SPEMAIL_Entity>>(() => this.ToDictionary(e => e.SPEMAILKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SPEMAIL"; } }
 
-        private Lazy<Dictionary<string, SPEMAIL_Entity>> SPEMAILKEY_Index;
-
+        /// <summary>
+        /// Find SPEMAIL by SPEMAILKEY key field
+        /// </summary>
+        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SPEMAILKEY value didn't match any SPEMAIL entities</exception>
         public SPEMAIL_Entity FindBySPEMAILKEY(string Key)
         {
             SPEMAIL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY key field
+        /// </summary>
+        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <param name="Value">Related SPEMAIL entity</param>
+        /// <returns>True if the SPEMAIL Entity is found</returns>
         public bool TryFindBySPEMAILKEY(string Key, out SPEMAIL_Entity Value)
         {
             return SPEMAILKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY key field
+        /// </summary>
+        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity, or null if not found</returns>
         public SPEMAIL_Entity TryFindBySPEMAILKEY(string Key)
         {
             SPEMAIL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SPEMAIL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPEMAIL_Entity, string>[Headers.Count];

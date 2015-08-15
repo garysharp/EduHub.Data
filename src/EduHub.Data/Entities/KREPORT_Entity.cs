@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KREPORT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KROLE_Entity _ROLE_CODE_KROLE;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Report name [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Role for the code [Uppercase Alphanumeric: u2]
         /// </summary>
         public string ROLE_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ROLE_CODE] => [KROLE_Entity].[KROLEKEY]
-        /// Role for the code
-        /// </summary>
-        public KROLE_Entity ROLE_CODE_KROLE { get { return ROLE_CODE == null ? null : Context.KROLE.FindByKROLEKEY(ROLE_CODE); } }
         /// <summary>
         ///  [Alphanumeric: a80]
         /// </summary>
@@ -41,7 +41,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ROLE_CODE] => [KROLE_Entity].[KROLEKEY]
+        /// Role for the code
+        /// </summary>
+        public KROLE_Entity ROLE_CODE_KROLE {
+            get
+            {
+                if (ROLE_CODE != null)
+                {
+                    if (_ROLE_CODE_KROLE == null)
+                    {
+                        _ROLE_CODE_KROLE = Context.KROLE.FindByKROLEKEY(ROLE_CODE);
+                    }
+                    return _ROLE_CODE_KROLE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

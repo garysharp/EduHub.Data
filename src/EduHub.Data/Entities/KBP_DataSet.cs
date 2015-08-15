@@ -10,6 +10,9 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KBP_DataSet : SetBase<KBP_Entity>
     {
+        private Lazy<Dictionary<int, KBP_Entity>> TID_Index;
+        private Lazy<Dictionary<string, KBP_Entity>> REFERENCE_NO_Index;
+
         internal KBP_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -17,11 +20,17 @@ namespace EduHub.Data.Entities
             REFERENCE_NO_Index = new Lazy<Dictionary<string, KBP_Entity>>(() => this.ToDictionary(e => e.REFERENCE_NO));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KBP"; } }
 
-        private Lazy<Dictionary<int, KBP_Entity>> TID_Index;
-        private Lazy<Dictionary<string, KBP_Entity>> REFERENCE_NO_Index;
-
+        /// <summary>
+        /// Find KBP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBP</param>
+        /// <returns>Related KBP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KBP entities</exception>
         public KBP_Entity FindByTID(int Key)
         {
             KBP_Entity result;
@@ -34,10 +43,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KBP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBP</param>
+        /// <param name="Value">Related KBP entity</param>
+        /// <returns>True if the KBP Entity is found</returns>
         public bool TryFindByTID(int Key, out KBP_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KBP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBP</param>
+        /// <returns>Related KBP entity, or null if not found</returns>
         public KBP_Entity TryFindByTID(int Key)
         {
             KBP_Entity result;
@@ -50,6 +72,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find KBP by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
+        /// <returns>Related KBP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">REFERENCE_NO value didn't match any KBP entities</exception>
         public KBP_Entity FindByREFERENCE_NO(string Key)
         {
             KBP_Entity result;
@@ -62,10 +91,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KBP by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
+        /// <param name="Value">Related KBP entity</param>
+        /// <returns>True if the KBP Entity is found</returns>
         public bool TryFindByREFERENCE_NO(string Key, out KBP_Entity Value)
         {
             return REFERENCE_NO_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KBP by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
+        /// <returns>Related KBP entity, or null if not found</returns>
         public KBP_Entity TryFindByREFERENCE_NO(string Key)
         {
             KBP_Entity result;
@@ -78,7 +120,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KBP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBP_Entity, string>[Headers.Count];

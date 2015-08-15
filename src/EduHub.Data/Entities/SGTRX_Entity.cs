@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SGTRX_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SG_Entity _SGTRXKEY_SG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Code of new group [Uppercase Alphanumeric: u12]
         /// </summary>
         public string SGTRXKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SGTRXKEY] => [SG_Entity].[SGKEY]
-        /// Code of new group
-        /// </summary>
-        public SG_Entity SGTRXKEY_SG { get { return SGTRXKEY == null ? null : Context.SG.FindBySGKEY(SGTRXKEY); } }
         /// <summary>
         /// Transaction table: One of SGSC, SGHG or SGSG [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -57,7 +57,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SGTRXKEY] => [SG_Entity].[SGKEY]
+        /// Code of new group
+        /// </summary>
+        public SG_Entity SGTRXKEY_SG {
+            get
+            {
+                if (SGTRXKEY != null)
+                {
+                    if (_SGTRXKEY_SG == null)
+                    {
+                        _SGTRXKEY_SG = Context.SG.FindBySGKEY(SGTRXKEY);
+                    }
+                    return _SGTRXKEY_SG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class CR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KAB_Entity _BSB_KAB;
+        private PPD_Entity _PPDKEY_PPD;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Prime Key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -143,11 +149,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BSB { get; internal set; }
         /// <summary>
-        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
-        /// Bank/State/Branch number
-        /// </summary>
-        public KAB_Entity BSB_KAB { get { return BSB == null ? null : Context.KAB.FindByBSB(BSB); } }
-        /// <summary>
         /// Bank Account Number [Alphanumeric: a15]
         /// </summary>
         public string ACCOUNT_NO { get; internal set; }
@@ -220,11 +221,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string PPDKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [PPDKEY] => [PPD_Entity].[PPDKEY]
-        /// Payer code in PPD
-        /// </summary>
-        public PPD_Entity PPDKEY_PPD { get { return PPDKEY == null ? null : Context.PPD.FindByPPDKEY(PPDKEY); } }
-        /// <summary>
         /// Is this a PRMS creditor [Uppercase Alphanumeric: u1]
         /// </summary>
         public string PRMS_FLAG { get; internal set; }
@@ -244,7 +240,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
+        /// Bank/State/Branch number
+        /// </summary>
+        public KAB_Entity BSB_KAB {
+            get
+            {
+                if (BSB != null)
+                {
+                    if (_BSB_KAB == null)
+                    {
+                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
+                    }
+                    return _BSB_KAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PPDKEY] => [PPD_Entity].[PPDKEY]
+        /// Payer code in PPD
+        /// </summary>
+        public PPD_Entity PPDKEY_PPD {
+            get
+            {
+                if (PPDKEY != null)
+                {
+                    if (_PPDKEY_PPD == null)
+                    {
+                        _PPDKEY_PPD = Context.PPD.FindByPPDKEY(PPDKEY);
+                    }
+                    return _PPDKEY_PPD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

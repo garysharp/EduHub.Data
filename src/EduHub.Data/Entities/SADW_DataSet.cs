@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SADW_DataSet : SetBase<SADW_Entity>
     {
+
         internal SADW_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SADW"; } }
 
-
-        
         protected override Action<SADW_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SADW_Entity, string>[Headers.Count];

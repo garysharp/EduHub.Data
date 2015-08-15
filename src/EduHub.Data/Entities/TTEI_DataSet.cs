@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TTEI_DataSet : SetBase<TTEI_Entity>
     {
+        private Lazy<Dictionary<int, TTEI_Entity>> TID_Index;
+
         internal TTEI_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, TTEI_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TTEI"; } }
 
-        private Lazy<Dictionary<int, TTEI_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find TTEI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TTEI</param>
+        /// <returns>Related TTEI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any TTEI entities</exception>
         public TTEI_Entity FindByTID(int Key)
         {
             TTEI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TTEI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TTEI</param>
+        /// <param name="Value">Related TTEI entity</param>
+        /// <returns>True if the TTEI Entity is found</returns>
         public bool TryFindByTID(int Key, out TTEI_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TTEI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TTEI</param>
+        /// <returns>Related TTEI entity, or null if not found</returns>
         public TTEI_Entity TryFindByTID(int Key)
         {
             TTEI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TTEI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TTEI_Entity, string>[Headers.Count];

@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TETE_DataSet : SetBase<TETE_Entity>
     {
+
         internal TETE_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TETE"; } }
 
-
-        
         protected override Action<TETE_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TETE_Entity, string>[Headers.Count];

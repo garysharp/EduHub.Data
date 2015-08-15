@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGCHI_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGC_Entity _KGCKEY_KGC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Home group code (dynamic link that gets updated whenever KGC.KGCKEY is also updated) [Uppercase Alphanumeric: u3]
         /// </summary>
         public string KGCKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [KGCKEY] => [KGC_Entity].[KGCKEY]
-        /// Home group code (dynamic link that gets updated whenever KGC.KGCKEY is also updated)
-        /// </summary>
-        public KGC_Entity KGCKEY_KGC { get { return KGCKEY == null ? null : Context.KGC.FindByKGCKEY(KGCKEY); } }
         /// <summary>
         /// User ID of person creating the record [Uppercase Alphanumeric: u128]
         /// </summary>
@@ -65,7 +65,30 @@ namespace EduHub.Data.Entities
         /// Change made to last record to produce this one [Alphanumeric: a40]
         /// </summary>
         public string CHANGE_MADE { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [KGCKEY] => [KGC_Entity].[KGCKEY]
+        /// Home group code (dynamic link that gets updated whenever KGC.KGCKEY is also updated)
+        /// </summary>
+        public KGC_Entity KGCKEY_KGC {
+            get
+            {
+                if (KGCKEY != null)
+                {
+                    if (_KGCKEY_KGC == null)
+                    {
+                        _KGCKEY_KGC = Context.KGC.FindByKGCKEY(KGCKEY);
+                    }
+                    return _KGCKEY_KGC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

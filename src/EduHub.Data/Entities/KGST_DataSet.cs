@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGST_DataSet : SetBase<KGST_Entity>
     {
+        private Lazy<Dictionary<string, KGST_Entity>> KGSTKEY_Index;
+
         internal KGST_DataSet(EduHubContext Context)
             : base(Context)
         {
             KGSTKEY_Index = new Lazy<Dictionary<string, KGST_Entity>>(() => this.ToDictionary(e => e.KGSTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGST"; } }
 
-        private Lazy<Dictionary<string, KGST_Entity>> KGSTKEY_Index;
-
+        /// <summary>
+        /// Find KGST by KGSTKEY key field
+        /// </summary>
+        /// <param name="Key">KGSTKEY value used to find KGST</param>
+        /// <returns>Related KGST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KGSTKEY value didn't match any KGST entities</exception>
         public KGST_Entity FindByKGSTKEY(string Key)
         {
             KGST_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGST by KGSTKEY key field
+        /// </summary>
+        /// <param name="Key">KGSTKEY value used to find KGST</param>
+        /// <param name="Value">Related KGST entity</param>
+        /// <returns>True if the KGST Entity is found</returns>
         public bool TryFindByKGSTKEY(string Key, out KGST_Entity Value)
         {
             return KGSTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGST by KGSTKEY key field
+        /// </summary>
+        /// <param name="Key">KGSTKEY value used to find KGST</param>
+        /// <returns>Related KGST entity, or null if not found</returns>
         public KGST_Entity TryFindByKGSTKEY(string Key)
         {
             KGST_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGST_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGST_Entity, string>[Headers.Count];

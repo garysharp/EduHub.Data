@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class AKCT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KADM_Entity _DEPN_TMETHOD_KADM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Prime Key (formerly GROUP) [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Default deprn method for taxation [Uppercase Alphanumeric: u1]
         /// </summary>
         public string DEPN_TMETHOD { get; internal set; }
-        /// <summary>
-        /// Navigation property for [DEPN_TMETHOD] => [KADM_Entity].[KADMKEY]
-        /// Default deprn method for taxation
-        /// </summary>
-        public KADM_Entity DEPN_TMETHOD_KADM { get { return DEPN_TMETHOD == null ? null : Context.KADM.FindByKADMKEY(DEPN_TMETHOD); } }
         /// <summary>
         /// Default deprn rate for taxation [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -41,7 +41,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [DEPN_TMETHOD] => [KADM_Entity].[KADMKEY]
+        /// Default deprn method for taxation
+        /// </summary>
+        public KADM_Entity DEPN_TMETHOD_KADM {
+            get
+            {
+                if (DEPN_TMETHOD != null)
+                {
+                    if (_DEPN_TMETHOD_KADM == null)
+                    {
+                        _DEPN_TMETHOD_KADM = Context.KADM.FindByKADMKEY(DEPN_TMETHOD);
+                    }
+                    return _DEPN_TMETHOD_KADM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

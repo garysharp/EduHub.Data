@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SGAM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SG_Entity _SGAMKEY_SG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Code of Group/Excursion/Position to which this person belongs [Uppercase Alphanumeric: u12]
         /// </summary>
         public string SGAMKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SGAMKEY] => [SG_Entity].[SGKEY]
-        /// Code of Group/Excursion/Position to which this person belongs
-        /// </summary>
-        public SG_Entity SGAMKEY_SG { get { return SGAMKEY == null ? null : Context.SG.FindBySGKEY(SGAMKEY); } }
         /// <summary>
         /// Is this person a staff member or a parent/guardian? SF=Staff Member, DF=Parent/guardian [Uppercase Alphanumeric: u2]
         /// </summary>
@@ -73,7 +73,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SGAMKEY] => [SG_Entity].[SGKEY]
+        /// Code of Group/Excursion/Position to which this person belongs
+        /// </summary>
+        public SG_Entity SGAMKEY_SG {
+            get
+            {
+                if (SGAMKEY != null)
+                {
+                    if (_SGAMKEY_SG == null)
+                    {
+                        _SGAMKEY_SG = Context.SG.FindBySGKEY(SGAMKEY);
+                    }
+                    return _SGAMKEY_SG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

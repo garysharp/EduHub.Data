@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KPRMS_DataSet : SetBase<KPRMS_Entity>
     {
+        private Lazy<Dictionary<int, KPRMS_Entity>> TID_Index;
+
         internal KPRMS_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, KPRMS_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KPRMS"; } }
 
-        private Lazy<Dictionary<int, KPRMS_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find KPRMS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KPRMS</param>
+        /// <returns>Related KPRMS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KPRMS entities</exception>
         public KPRMS_Entity FindByTID(int Key)
         {
             KPRMS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KPRMS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KPRMS</param>
+        /// <param name="Value">Related KPRMS entity</param>
+        /// <returns>True if the KPRMS Entity is found</returns>
         public bool TryFindByTID(int Key, out KPRMS_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KPRMS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KPRMS</param>
+        /// <returns>Related KPRMS entity, or null if not found</returns>
         public KPRMS_Entity TryFindByTID(int Key)
         {
             KPRMS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KPRMS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPRMS_Entity, string>[Headers.Count];

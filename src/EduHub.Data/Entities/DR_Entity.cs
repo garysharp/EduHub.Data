@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SA_Entity _DRTABLEA_SA;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Prime Key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -83,11 +88,6 @@ namespace EduHub.Data.Entities
         /// Table [Uppercase Alphanumeric: u10]
         /// </summary>
         public string DRTABLEA { get; internal set; }
-        /// <summary>
-        /// Navigation property for [DRTABLEA] => [SA_Entity].[SAKEY]
-        /// Table
-        /// </summary>
-        public SA_Entity DRTABLEA_SA { get { return DRTABLEA == null ? null : Context.SA.FindBySAKEY(DRTABLEA); } }
         /// <summary>
         /// Business name [Alphanumeric: a30]
         /// </summary>
@@ -219,7 +219,30 @@ namespace EduHub.Data.Entities
         /// Last user name [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [DRTABLEA] => [SA_Entity].[SAKEY]
+        /// Table
+        /// </summary>
+        public SA_Entity DRTABLEA_SA {
+            get
+            {
+                if (DRTABLEA != null)
+                {
+                    if (_DRTABLEA_SA == null)
+                    {
+                        _DRTABLEA_SA = Context.SA.FindBySAKEY(DRTABLEA);
+                    }
+                    return _DRTABLEA_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

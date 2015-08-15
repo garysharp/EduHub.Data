@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SCI_DataSet : SetBase<SCI_Entity>
     {
+        private Lazy<Dictionary<int, SCI_Entity>> SCIKEY_Index;
+
         internal SCI_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCIKEY_Index = new Lazy<Dictionary<int, SCI_Entity>>(() => this.ToDictionary(e => e.SCIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SCI"; } }
 
-        private Lazy<Dictionary<int, SCI_Entity>> SCIKEY_Index;
-
+        /// <summary>
+        /// Find SCI by SCIKEY key field
+        /// </summary>
+        /// <param name="Key">SCIKEY value used to find SCI</param>
+        /// <returns>Related SCI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCIKEY value didn't match any SCI entities</exception>
         public SCI_Entity FindBySCIKEY(int Key)
         {
             SCI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SCI by SCIKEY key field
+        /// </summary>
+        /// <param name="Key">SCIKEY value used to find SCI</param>
+        /// <param name="Value">Related SCI entity</param>
+        /// <returns>True if the SCI Entity is found</returns>
         public bool TryFindBySCIKEY(int Key, out SCI_Entity Value)
         {
             return SCIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SCI by SCIKEY key field
+        /// </summary>
+        /// <param name="Key">SCIKEY value used to find SCI</param>
+        /// <returns>Related SCI entity, or null if not found</returns>
         public SCI_Entity TryFindBySCIKEY(int Key)
         {
             SCI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SCI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCI_Entity, string>[Headers.Count];

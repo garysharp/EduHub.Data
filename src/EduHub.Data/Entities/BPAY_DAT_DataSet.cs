@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class BPAY_DAT_DataSet : SetBase<BPAY_DAT_Entity>
     {
+        private Lazy<Dictionary<int, BPAY_DAT_Entity>> TID_Index;
+
         internal BPAY_DAT_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, BPAY_DAT_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "BPAY_DAT"; } }
 
-        private Lazy<Dictionary<int, BPAY_DAT_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find BPAY_DAT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find BPAY_DAT</param>
+        /// <returns>Related BPAY_DAT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any BPAY_DAT entities</exception>
         public BPAY_DAT_Entity FindByTID(int Key)
         {
             BPAY_DAT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find BPAY_DAT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find BPAY_DAT</param>
+        /// <param name="Value">Related BPAY_DAT entity</param>
+        /// <returns>True if the BPAY_DAT Entity is found</returns>
         public bool TryFindByTID(int Key, out BPAY_DAT_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find BPAY_DAT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find BPAY_DAT</param>
+        /// <returns>Related BPAY_DAT entity, or null if not found</returns>
         public BPAY_DAT_Entity TryFindByTID(int Key)
         {
             BPAY_DAT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<BPAY_DAT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<BPAY_DAT_Entity, string>[Headers.Count];

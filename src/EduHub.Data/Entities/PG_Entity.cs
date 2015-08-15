@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PG_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// PAYG Payment summary Box [Integer (16bit signed): i]
         /// </summary>
@@ -29,7 +33,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SPEPRINT_DataSet : SetBase<SPEPRINT_Entity>
     {
+        private Lazy<Dictionary<int, SPEPRINT_Entity>> TID_Index;
+
         internal SPEPRINT_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, SPEPRINT_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SPEPRINT"; } }
 
-        private Lazy<Dictionary<int, SPEPRINT_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find SPEPRINT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SPEPRINT</param>
+        /// <returns>Related SPEPRINT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SPEPRINT entities</exception>
         public SPEPRINT_Entity FindByTID(int Key)
         {
             SPEPRINT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SPEPRINT</param>
+        /// <param name="Value">Related SPEPRINT entity</param>
+        /// <returns>True if the SPEPRINT Entity is found</returns>
         public bool TryFindByTID(int Key, out SPEPRINT_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SPEPRINT</param>
+        /// <returns>Related SPEPRINT entity, or null if not found</returns>
         public SPEPRINT_Entity TryFindByTID(int Key)
         {
             SPEPRINT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SPEPRINT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPEPRINT_Entity, string>[Headers.Count];

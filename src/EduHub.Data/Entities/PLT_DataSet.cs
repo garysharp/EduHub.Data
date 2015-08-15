@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PLT_DataSet : SetBase<PLT_Entity>
     {
+        private Lazy<Dictionary<string, PLT_Entity>> PLTKEY_Index;
+
         internal PLT_DataSet(EduHubContext Context)
             : base(Context)
         {
             PLTKEY_Index = new Lazy<Dictionary<string, PLT_Entity>>(() => this.ToDictionary(e => e.PLTKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PLT"; } }
 
-        private Lazy<Dictionary<string, PLT_Entity>> PLTKEY_Index;
-
+        /// <summary>
+        /// Find PLT by PLTKEY key field
+        /// </summary>
+        /// <param name="Key">PLTKEY value used to find PLT</param>
+        /// <returns>Related PLT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PLTKEY value didn't match any PLT entities</exception>
         public PLT_Entity FindByPLTKEY(string Key)
         {
             PLT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PLT by PLTKEY key field
+        /// </summary>
+        /// <param name="Key">PLTKEY value used to find PLT</param>
+        /// <param name="Value">Related PLT entity</param>
+        /// <returns>True if the PLT Entity is found</returns>
         public bool TryFindByPLTKEY(string Key, out PLT_Entity Value)
         {
             return PLTKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PLT by PLTKEY key field
+        /// </summary>
+        /// <param name="Key">PLTKEY value used to find PLT</param>
+        /// <returns>Related PLT entity, or null if not found</returns>
         public PLT_Entity TryFindByPLTKEY(string Key)
         {
             PLT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PLT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PLT_Entity, string>[Headers.Count];

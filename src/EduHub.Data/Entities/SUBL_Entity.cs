@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SUBL_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SU_Entity _BLKEY_SU;
+        private BKH_Entity _BOOK_BKH;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BLKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [BLKEY] => [SU_Entity].[SUKEY]
-        /// Subject code
-        /// </summary>
-        public SU_Entity BLKEY_SU { get { return BLKEY == null ? null : Context.SU.FindBySUKEY(BLKEY); } }
-        /// <summary>
         /// Book ISBN identifier [Uppercase Alphanumeric: u13]
         /// </summary>
         public string BOOK { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BOOK] => [BKH_Entity].[BKHKEY]
-        /// Book ISBN identifier
-        /// </summary>
-        public BKH_Entity BOOK_BKH { get { return BOOK == null ? null : Context.BKH.FindByBKHKEY(BOOK); } }
         /// <summary>
         /// Timetabling year/semester (eg 1998S1, 1998) [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -58,7 +54,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [BLKEY] => [SU_Entity].[SUKEY]
+        /// Subject code
+        /// </summary>
+        public SU_Entity BLKEY_SU {
+            get
+            {
+                if (BLKEY != null)
+                {
+                    if (_BLKEY_SU == null)
+                    {
+                        _BLKEY_SU = Context.SU.FindBySUKEY(BLKEY);
+                    }
+                    return _BLKEY_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BOOK] => [BKH_Entity].[BKHKEY]
+        /// Book ISBN identifier
+        /// </summary>
+        public BKH_Entity BOOK_BKH {
+            get
+            {
+                if (BOOK != null)
+                {
+                    if (_BOOK_BKH == null)
+                    {
+                        _BOOK_BKH = Context.BKH.FindByBKHKEY(BOOK);
+                    }
+                    return _BOOK_BKH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

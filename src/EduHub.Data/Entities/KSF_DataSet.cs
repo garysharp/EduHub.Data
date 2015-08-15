@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KSF_DataSet : SetBase<KSF_Entity>
     {
+        private Lazy<Dictionary<string, KSF_Entity>> KSFKEY_Index;
+
         internal KSF_DataSet(EduHubContext Context)
             : base(Context)
         {
             KSFKEY_Index = new Lazy<Dictionary<string, KSF_Entity>>(() => this.ToDictionary(e => e.KSFKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KSF"; } }
 
-        private Lazy<Dictionary<string, KSF_Entity>> KSFKEY_Index;
-
+        /// <summary>
+        /// Find KSF by KSFKEY key field
+        /// </summary>
+        /// <param name="Key">KSFKEY value used to find KSF</param>
+        /// <returns>Related KSF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KSFKEY value didn't match any KSF entities</exception>
         public KSF_Entity FindByKSFKEY(string Key)
         {
             KSF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KSF by KSFKEY key field
+        /// </summary>
+        /// <param name="Key">KSFKEY value used to find KSF</param>
+        /// <param name="Value">Related KSF entity</param>
+        /// <returns>True if the KSF Entity is found</returns>
         public bool TryFindByKSFKEY(string Key, out KSF_Entity Value)
         {
             return KSFKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KSF by KSFKEY key field
+        /// </summary>
+        /// <param name="Key">KSFKEY value used to find KSF</param>
+        /// <returns>Related KSF entity, or null if not found</returns>
         public KSF_Entity TryFindByKSFKEY(string Key)
         {
             KSF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KSF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSF_Entity, string>[Headers.Count];

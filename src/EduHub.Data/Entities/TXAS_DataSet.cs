@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TXAS_DataSet : SetBase<TXAS_Entity>
     {
+        private Lazy<Dictionary<int, TXAS_Entity>> TID_Index;
+
         internal TXAS_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, TXAS_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TXAS"; } }
 
-        private Lazy<Dictionary<int, TXAS_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find TXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TXAS</param>
+        /// <returns>Related TXAS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any TXAS entities</exception>
         public TXAS_Entity FindByTID(int Key)
         {
             TXAS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TXAS</param>
+        /// <param name="Value">Related TXAS entity</param>
+        /// <returns>True if the TXAS Entity is found</returns>
         public bool TryFindByTID(int Key, out TXAS_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find TXAS</param>
+        /// <returns>Related TXAS entity, or null if not found</returns>
         public TXAS_Entity TryFindByTID(int Key)
         {
             TXAS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TXAS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TXAS_Entity, string>[Headers.Count];

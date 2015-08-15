@@ -9,15 +9,6 @@ namespace EduHub.Data
     public abstract class EduHubContextBase
     {
         /// <summary>
-        /// eduHub Data Set Directory
-        /// </summary>
-        public string EduHubDirectory { get; private set; }
-        /// <summary>
-        /// Data Set CSV Suffix
-        /// </summary>
-        public string EduHubSiteIdentifier { get; private set; }
-
-        /// <summary>
         /// Default directory used when creating a context if none is provided to the constructor
         /// </summary>
         public static string DefaultEduHubDirectory { get; set; } = @"D:\eduHub";
@@ -28,10 +19,20 @@ namespace EduHub.Data
         public static string DefaultEduHubSiteIdentifier { get; set; } = null;
 
         /// <summary>
+        /// eduHub Data Set Directory
+        /// </summary>
+        public string EduHubDirectory { get; private set; }
+        /// <summary>
+        /// Data Set CSV Suffix
+        /// </summary>
+        public string EduHubSiteIdentifier { get; private set; }
+
+        /// <summary>
         /// Creates an EduHubContextBase
         /// </summary>
         /// <param name="EduHubDirectory">Directory which contains the eduHub CSV Data Sets</param>
         /// <param name="EduHubSiteIdentifier">Data Set Suffix for each CSV file</param>
+        /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
         protected EduHubContextBase(string EduHubDirectory, string EduHubSiteIdentifier)
         {
             // Use default directory if none provided
@@ -57,6 +58,60 @@ namespace EduHub.Data
             this.EduHubDirectory = EduHubDirectory;
             this.EduHubSiteIdentifier = EduHubSiteIdentifier;
         }
+
+        /// <summary>
+        /// Age of newest eduHub Data Set
+        /// </summary>
+        public DateTime? Age
+        {
+            get
+            {
+                return Files
+                    .Max(f => (DateTime?)File.GetLastWriteTime(f));
+            }
+        }
+
+        /// <summary>
+        /// Filenames of all available eduHub Data Sets
+        /// </summary>
+        public IEnumerable<string> Files
+        {
+            get
+            {
+                // Valid Sets
+                var sets = new HashSet<string>(SetNames, StringComparer.OrdinalIgnoreCase);
+
+                foreach (var file in Directory.EnumerateFiles(EduHubDirectory, $"*_{EduHubSiteIdentifier}.csv"))
+                {
+                    var filename = Path.GetFileName(file);
+                    var fileSet = filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
+                    if (sets.Contains(fileSet))
+                    {
+                        yield return file;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Names of available Data Sets
+        /// </summary>
+        public IEnumerable<string> AvailableSets
+        {
+            get
+            {
+                foreach (var file in Files)
+                {
+                    var filename = Path.GetFileName(file);
+                    yield return filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Names of all Data Sets
+        /// </summary>
+        public abstract IEnumerable<string> SetNames { get; }
 
         /// <summary>
         /// Determines site identifiers which are present in the eduHub directory

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SID_DataSet : SetBase<SID_Entity>
     {
+        private Lazy<Dictionary<int, SID_Entity>> SIDKEY_Index;
+
         internal SID_DataSet(EduHubContext Context)
             : base(Context)
         {
             SIDKEY_Index = new Lazy<Dictionary<int, SID_Entity>>(() => this.ToDictionary(e => e.SIDKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SID"; } }
 
-        private Lazy<Dictionary<int, SID_Entity>> SIDKEY_Index;
-
+        /// <summary>
+        /// Find SID by SIDKEY key field
+        /// </summary>
+        /// <param name="Key">SIDKEY value used to find SID</param>
+        /// <returns>Related SID entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SIDKEY value didn't match any SID entities</exception>
         public SID_Entity FindBySIDKEY(int Key)
         {
             SID_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SID by SIDKEY key field
+        /// </summary>
+        /// <param name="Key">SIDKEY value used to find SID</param>
+        /// <param name="Value">Related SID entity</param>
+        /// <returns>True if the SID Entity is found</returns>
         public bool TryFindBySIDKEY(int Key, out SID_Entity Value)
         {
             return SIDKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SID by SIDKEY key field
+        /// </summary>
+        /// <param name="Key">SIDKEY value used to find SID</param>
+        /// <returns>Related SID entity, or null if not found</returns>
         public SID_Entity TryFindBySIDKEY(int Key)
         {
             SID_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SID_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SID_Entity, string>[Headers.Count];

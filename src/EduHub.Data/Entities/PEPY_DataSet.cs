@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PEPY_DataSet : SetBase<PEPY_Entity>
     {
+
         internal PEPY_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PEPY"; } }
 
-
-        
         protected override Action<PEPY_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PEPY_Entity, string>[Headers.Count];

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SXHI_DataSet : SetBase<SXHI_Entity>
     {
+        private Lazy<Dictionary<int, SXHI_Entity>> TID_Index;
+
         internal SXHI_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, SXHI_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SXHI"; } }
 
-        private Lazy<Dictionary<int, SXHI_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find SXHI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SXHI entities</exception>
         public SXHI_Entity FindByTID(int Key)
         {
             SXHI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXHI</param>
+        /// <param name="Value">Related SXHI entity</param>
+        /// <returns>True if the SXHI Entity is found</returns>
         public bool TryFindByTID(int Key, out SXHI_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity, or null if not found</returns>
         public SXHI_Entity TryFindByTID(int Key)
         {
             SXHI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SXHI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXHI_Entity, string>[Headers.Count];

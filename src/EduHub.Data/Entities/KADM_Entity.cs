@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KADM_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Method Code [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -41,7 +45,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

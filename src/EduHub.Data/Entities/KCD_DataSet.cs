@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCD_DataSet : SetBase<KCD_Entity>
     {
+        private Lazy<Dictionary<string, KCD_Entity>> KCDKEY_Index;
+
         internal KCD_DataSet(EduHubContext Context)
             : base(Context)
         {
             KCDKEY_Index = new Lazy<Dictionary<string, KCD_Entity>>(() => this.ToDictionary(e => e.KCDKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCD"; } }
 
-        private Lazy<Dictionary<string, KCD_Entity>> KCDKEY_Index;
-
+        /// <summary>
+        /// Find KCD by KCDKEY key field
+        /// </summary>
+        /// <param name="Key">KCDKEY value used to find KCD</param>
+        /// <returns>Related KCD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KCDKEY value didn't match any KCD entities</exception>
         public KCD_Entity FindByKCDKEY(string Key)
         {
             KCD_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCD by KCDKEY key field
+        /// </summary>
+        /// <param name="Key">KCDKEY value used to find KCD</param>
+        /// <param name="Value">Related KCD entity</param>
+        /// <returns>True if the KCD Entity is found</returns>
         public bool TryFindByKCDKEY(string Key, out KCD_Entity Value)
         {
             return KCDKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCD by KCDKEY key field
+        /// </summary>
+        /// <param name="Key">KCDKEY value used to find KCD</param>
+        /// <returns>Related KCD entity, or null if not found</returns>
         public KCD_Entity TryFindByKCDKEY(string Key)
         {
             KCD_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KCD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCD_Entity, string>[Headers.Count];

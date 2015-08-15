@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLFBUDG_DataSet : SetBase<GLFBUDG_Entity>
     {
+
         internal GLFBUDG_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLFBUDG"; } }
 
-
-        
         protected override Action<GLFBUDG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLFBUDG_Entity, string>[Headers.Count];

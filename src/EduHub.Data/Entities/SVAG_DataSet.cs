@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SVAG_DataSet : SetBase<SVAG_Entity>
     {
+        private Lazy<Dictionary<int, SVAG_Entity>> SVAGKEY_Index;
+
         internal SVAG_DataSet(EduHubContext Context)
             : base(Context)
         {
             SVAGKEY_Index = new Lazy<Dictionary<int, SVAG_Entity>>(() => this.ToDictionary(e => e.SVAGKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SVAG"; } }
 
-        private Lazy<Dictionary<int, SVAG_Entity>> SVAGKEY_Index;
-
+        /// <summary>
+        /// Find SVAG by SVAGKEY key field
+        /// </summary>
+        /// <param name="Key">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SVAGKEY value didn't match any SVAG entities</exception>
         public SVAG_Entity FindBySVAGKEY(int Key)
         {
             SVAG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY key field
+        /// </summary>
+        /// <param name="Key">SVAGKEY value used to find SVAG</param>
+        /// <param name="Value">Related SVAG entity</param>
+        /// <returns>True if the SVAG Entity is found</returns>
         public bool TryFindBySVAGKEY(int Key, out SVAG_Entity Value)
         {
             return SVAGKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY key field
+        /// </summary>
+        /// <param name="Key">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity, or null if not found</returns>
         public SVAG_Entity TryFindBySVAGKEY(int Key)
         {
             SVAG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SVAG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SVAG_Entity, string>[Headers.Count];

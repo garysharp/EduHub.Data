@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKB_DataSet : SetBase<AKB_Entity>
     {
+        private Lazy<Dictionary<string, AKB_Entity>> BRANCH_Index;
+
         internal AKB_DataSet(EduHubContext Context)
             : base(Context)
         {
             BRANCH_Index = new Lazy<Dictionary<string, AKB_Entity>>(() => this.ToDictionary(e => e.BRANCH));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKB"; } }
 
-        private Lazy<Dictionary<string, AKB_Entity>> BRANCH_Index;
-
+        /// <summary>
+        /// Find AKB by BRANCH key field
+        /// </summary>
+        /// <param name="Key">BRANCH value used to find AKB</param>
+        /// <returns>Related AKB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">BRANCH value didn't match any AKB entities</exception>
         public AKB_Entity FindByBRANCH(string Key)
         {
             AKB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKB by BRANCH key field
+        /// </summary>
+        /// <param name="Key">BRANCH value used to find AKB</param>
+        /// <param name="Value">Related AKB entity</param>
+        /// <returns>True if the AKB Entity is found</returns>
         public bool TryFindByBRANCH(string Key, out AKB_Entity Value)
         {
             return BRANCH_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKB by BRANCH key field
+        /// </summary>
+        /// <param name="Key">BRANCH value used to find AKB</param>
+        /// <returns>Related AKB entity, or null if not found</returns>
         public AKB_Entity TryFindByBRANCH(string Key)
         {
             AKB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKB_Entity, string>[Headers.Count];

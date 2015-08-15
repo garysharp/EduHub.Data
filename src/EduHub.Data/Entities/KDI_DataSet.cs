@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KDI_DataSet : SetBase<KDI_Entity>
     {
+        private Lazy<Dictionary<string, KDI_Entity>> KDIKEY_Index;
+
         internal KDI_DataSet(EduHubContext Context)
             : base(Context)
         {
             KDIKEY_Index = new Lazy<Dictionary<string, KDI_Entity>>(() => this.ToDictionary(e => e.KDIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KDI"; } }
 
-        private Lazy<Dictionary<string, KDI_Entity>> KDIKEY_Index;
-
+        /// <summary>
+        /// Find KDI by KDIKEY key field
+        /// </summary>
+        /// <param name="Key">KDIKEY value used to find KDI</param>
+        /// <returns>Related KDI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KDIKEY value didn't match any KDI entities</exception>
         public KDI_Entity FindByKDIKEY(string Key)
         {
             KDI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KDI by KDIKEY key field
+        /// </summary>
+        /// <param name="Key">KDIKEY value used to find KDI</param>
+        /// <param name="Value">Related KDI entity</param>
+        /// <returns>True if the KDI Entity is found</returns>
         public bool TryFindByKDIKEY(string Key, out KDI_Entity Value)
         {
             return KDIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KDI by KDIKEY key field
+        /// </summary>
+        /// <param name="Key">KDIKEY value used to find KDI</param>
+        /// <returns>Related KDI entity, or null if not found</returns>
         public KDI_Entity TryFindByKDIKEY(string Key)
         {
             KDI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KDI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KDI_Entity, string>[Headers.Count];

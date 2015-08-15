@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PS_DataSet : SetBase<PS_Entity>
     {
+        private Lazy<Dictionary<short, PS_Entity>> PSKEY_Index;
+
         internal PS_DataSet(EduHubContext Context)
             : base(Context)
         {
             PSKEY_Index = new Lazy<Dictionary<short, PS_Entity>>(() => this.ToDictionary(e => e.PSKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PS"; } }
 
-        private Lazy<Dictionary<short, PS_Entity>> PSKEY_Index;
-
+        /// <summary>
+        /// Find PS by PSKEY key field
+        /// </summary>
+        /// <param name="Key">PSKEY value used to find PS</param>
+        /// <returns>Related PS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PSKEY value didn't match any PS entities</exception>
         public PS_Entity FindByPSKEY(short Key)
         {
             PS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PS by PSKEY key field
+        /// </summary>
+        /// <param name="Key">PSKEY value used to find PS</param>
+        /// <param name="Value">Related PS entity</param>
+        /// <returns>True if the PS Entity is found</returns>
         public bool TryFindByPSKEY(short Key, out PS_Entity Value)
         {
             return PSKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PS by PSKEY key field
+        /// </summary>
+        /// <param name="Key">PSKEY value used to find PS</param>
+        /// <returns>Related PS entity, or null if not found</returns>
         public PS_Entity TryFindByPSKEY(short Key)
         {
             PS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PS_Entity, string>[Headers.Count];

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KROLE_DataSet : SetBase<KROLE_Entity>
     {
+        private Lazy<Dictionary<string, KROLE_Entity>> KROLEKEY_Index;
+
         internal KROLE_DataSet(EduHubContext Context)
             : base(Context)
         {
             KROLEKEY_Index = new Lazy<Dictionary<string, KROLE_Entity>>(() => this.ToDictionary(e => e.KROLEKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KROLE"; } }
 
-        private Lazy<Dictionary<string, KROLE_Entity>> KROLEKEY_Index;
-
+        /// <summary>
+        /// Find KROLE by KROLEKEY key field
+        /// </summary>
+        /// <param name="Key">KROLEKEY value used to find KROLE</param>
+        /// <returns>Related KROLE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KROLEKEY value didn't match any KROLE entities</exception>
         public KROLE_Entity FindByKROLEKEY(string Key)
         {
             KROLE_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KROLE by KROLEKEY key field
+        /// </summary>
+        /// <param name="Key">KROLEKEY value used to find KROLE</param>
+        /// <param name="Value">Related KROLE entity</param>
+        /// <returns>True if the KROLE Entity is found</returns>
         public bool TryFindByKROLEKEY(string Key, out KROLE_Entity Value)
         {
             return KROLEKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KROLE by KROLEKEY key field
+        /// </summary>
+        /// <param name="Key">KROLEKEY value used to find KROLE</param>
+        /// <returns>Related KROLE entity, or null if not found</returns>
         public KROLE_Entity TryFindByKROLEKEY(string Key)
         {
             KROLE_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KROLE_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KROLE_Entity, string>[Headers.Count];

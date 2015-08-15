@@ -30,6 +30,22 @@ namespace EduHub.Data.Samples
             // Create an EduHubContext
             var Context = new EduHubContext();
 
+            // Ensure availability of data sets
+            Context.CRF.EnsureAvailable();
+            Context.GLF.EnsureAvailable();
+            Context.GLBUDG.EnsureAvailable();
+            Context.KGLSUB.EnsureAvailable();            
+            if (!Context.AR.IsAvailable)
+            {
+                ForegroundColor = ConsoleColor.Red;
+                WriteLine("Warning: AR Data Set is unavailable, query may fail");
+            }
+            if (!Context.AKC.IsAvailable)
+            {
+                ForegroundColor = ConsoleColor.Red;
+                WriteLine("Warning: AKC Data Set is unavailable, query may fail");
+            }
+
             // Build Query
             int TransactionPeriod = DateTime.Now.Year * 100;
 

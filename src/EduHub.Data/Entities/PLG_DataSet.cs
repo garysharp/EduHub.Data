@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PLG_DataSet : SetBase<PLG_Entity>
     {
+        private Lazy<Dictionary<string, PLG_Entity>> LEAVE_GROUP_Index;
+
         internal PLG_DataSet(EduHubContext Context)
             : base(Context)
         {
             LEAVE_GROUP_Index = new Lazy<Dictionary<string, PLG_Entity>>(() => this.ToDictionary(e => e.LEAVE_GROUP));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PLG"; } }
 
-        private Lazy<Dictionary<string, PLG_Entity>> LEAVE_GROUP_Index;
-
+        /// <summary>
+        /// Find PLG by LEAVE_GROUP key field
+        /// </summary>
+        /// <param name="Key">LEAVE_GROUP value used to find PLG</param>
+        /// <returns>Related PLG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">LEAVE_GROUP value didn't match any PLG entities</exception>
         public PLG_Entity FindByLEAVE_GROUP(string Key)
         {
             PLG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PLG by LEAVE_GROUP key field
+        /// </summary>
+        /// <param name="Key">LEAVE_GROUP value used to find PLG</param>
+        /// <param name="Value">Related PLG entity</param>
+        /// <returns>True if the PLG Entity is found</returns>
         public bool TryFindByLEAVE_GROUP(string Key, out PLG_Entity Value)
         {
             return LEAVE_GROUP_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PLG by LEAVE_GROUP key field
+        /// </summary>
+        /// <param name="Key">LEAVE_GROUP value used to find PLG</param>
+        /// <returns>Related PLG entity, or null if not found</returns>
         public PLG_Entity TryFindByLEAVE_GROUP(string Key)
         {
             PLG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PLG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PLG_Entity, string>[Headers.Count];

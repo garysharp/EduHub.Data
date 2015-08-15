@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SRAG_DataSet : SetBase<SRAG_Entity>
     {
+        private Lazy<Dictionary<int, SRAG_Entity>> SRAG_ID_Index;
+
         internal SRAG_DataSet(EduHubContext Context)
             : base(Context)
         {
             SRAG_ID_Index = new Lazy<Dictionary<int, SRAG_Entity>>(() => this.ToDictionary(e => e.SRAG_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SRAG"; } }
 
-        private Lazy<Dictionary<int, SRAG_Entity>> SRAG_ID_Index;
-
+        /// <summary>
+        /// Find SRAG by SRAG_ID key field
+        /// </summary>
+        /// <param name="Key">SRAG_ID value used to find SRAG</param>
+        /// <returns>Related SRAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SRAG_ID value didn't match any SRAG entities</exception>
         public SRAG_Entity FindBySRAG_ID(int Key)
         {
             SRAG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SRAG by SRAG_ID key field
+        /// </summary>
+        /// <param name="Key">SRAG_ID value used to find SRAG</param>
+        /// <param name="Value">Related SRAG entity</param>
+        /// <returns>True if the SRAG Entity is found</returns>
         public bool TryFindBySRAG_ID(int Key, out SRAG_Entity Value)
         {
             return SRAG_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SRAG by SRAG_ID key field
+        /// </summary>
+        /// <param name="Key">SRAG_ID value used to find SRAG</param>
+        /// <returns>Related SRAG entity, or null if not found</returns>
         public SRAG_Entity TryFindBySRAG_ID(int Key)
         {
             SRAG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SRAG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SRAG_Entity, string>[Headers.Count];

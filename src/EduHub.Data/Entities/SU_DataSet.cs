@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SU_DataSet : SetBase<SU_Entity>
     {
+        private Lazy<Dictionary<string, SU_Entity>> SUKEY_Index;
+
         internal SU_DataSet(EduHubContext Context)
             : base(Context)
         {
             SUKEY_Index = new Lazy<Dictionary<string, SU_Entity>>(() => this.ToDictionary(e => e.SUKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SU"; } }
 
-        private Lazy<Dictionary<string, SU_Entity>> SUKEY_Index;
-
+        /// <summary>
+        /// Find SU by SUKEY key field
+        /// </summary>
+        /// <param name="Key">SUKEY value used to find SU</param>
+        /// <returns>Related SU entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SUKEY value didn't match any SU entities</exception>
         public SU_Entity FindBySUKEY(string Key)
         {
             SU_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SU by SUKEY key field
+        /// </summary>
+        /// <param name="Key">SUKEY value used to find SU</param>
+        /// <param name="Value">Related SU entity</param>
+        /// <returns>True if the SU Entity is found</returns>
         public bool TryFindBySUKEY(string Key, out SU_Entity Value)
         {
             return SUKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SU by SUKEY key field
+        /// </summary>
+        /// <param name="Key">SUKEY value used to find SU</param>
+        /// <returns>Related SU entity, or null if not found</returns>
         public SU_Entity TryFindBySUKEY(string Key)
         {
             SU_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SU_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SU_Entity, string>[Headers.Count];

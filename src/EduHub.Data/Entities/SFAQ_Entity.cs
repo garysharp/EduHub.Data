@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SFAQ_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SF_Entity _SFAQKEY_SF;
+        private TH_Entity _QKEY_TH;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SFAQKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [SFAQKEY] => [SF_Entity].[SFKEY]
-        /// Staff key
-        /// </summary>
-        public SF_Entity SFAQKEY_SF { get { return SFAQKEY == null ? null : Context.SF.FindBySFKEY(SFAQKEY); } }
-        /// <summary>
         /// Quilt [Uppercase Alphanumeric: u8]
         /// </summary>
         public string QKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
-        /// Quilt
-        /// </summary>
-        public TH_Entity QKEY_TH { get { return QKEY == null ? null : Context.TH.FindByTHKEY(QKEY); } }
         /// <summary>
         /// Day of the timetable cycle [Integer (16bit signed nullable): i]
         /// </summary>
@@ -54,7 +50,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SFAQKEY] => [SF_Entity].[SFKEY]
+        /// Staff key
+        /// </summary>
+        public SF_Entity SFAQKEY_SF {
+            get
+            {
+                if (SFAQKEY != null)
+                {
+                    if (_SFAQKEY_SF == null)
+                    {
+                        _SFAQKEY_SF = Context.SF.FindBySFKEY(SFAQKEY);
+                    }
+                    return _SFAQKEY_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
+        /// Quilt
+        /// </summary>
+        public TH_Entity QKEY_TH {
+            get
+            {
+                if (QKEY != null)
+                {
+                    if (_QKEY_TH == null)
+                    {
+                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                    }
+                    return _QKEY_TH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

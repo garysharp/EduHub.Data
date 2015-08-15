@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SUPR_DataSet : SetBase<SUPR_Entity>
     {
+
         internal SUPR_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SUPR"; } }
 
-
-        
         protected override Action<SUPR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SUPR_Entity, string>[Headers.Count];

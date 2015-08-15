@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class ST_TFR_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _ORIG_SCHOOL_SKGS;
+        private KCY_Entity _SCHOOL_YEAR_NEW_KCY;
+        private KGC_Entity _HOME_GROUP_NEW_KGC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -20,11 +27,6 @@ namespace EduHub.Data.Entities
         /// Orignating School [Uppercase Alphanumeric: u8]
         /// </summary>
         public string ORIG_SCHOOL { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ORIG_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// Orignating School
-        /// </summary>
-        public SKGS_Entity ORIG_SCHOOL_SKGS { get { return ORIG_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(ORIG_SCHOOL); } }
         /// <summary>
         /// Student ID [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -230,19 +232,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SCHOOL_YEAR_NEW { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR_NEW] => [KCY_Entity].[KCYKEY]
-        /// New Year level
-        /// </summary>
-        public KCY_Entity SCHOOL_YEAR_NEW_KCY { get { return SCHOOL_YEAR_NEW == null ? null : Context.KCY.FindByKCYKEY(SCHOOL_YEAR_NEW); } }
-        /// <summary>
         /// New Home Group [Uppercase Alphanumeric: u3]
         /// </summary>
         public string HOME_GROUP_NEW { get; internal set; }
-        /// <summary>
-        /// Navigation property for [HOME_GROUP_NEW] => [KGC_Entity].[KGCKEY]
-        /// New Home Group
-        /// </summary>
-        public KGC_Entity HOME_GROUP_NEW_KGC { get { return HOME_GROUP_NEW == null ? null : Context.KGC.FindByKGCKEY(HOME_GROUP_NEW); } }
         /// <summary>
         /// Religion [Uppercase Alphanumeric: u12]
         /// </summary>
@@ -443,7 +435,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ORIG_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// Orignating School
+        /// </summary>
+        public SKGS_Entity ORIG_SCHOOL_SKGS {
+            get
+            {
+                if (ORIG_SCHOOL != null)
+                {
+                    if (_ORIG_SCHOOL_SKGS == null)
+                    {
+                        _ORIG_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(ORIG_SCHOOL);
+                    }
+                    return _ORIG_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCHOOL_YEAR_NEW] => [KCY_Entity].[KCYKEY]
+        /// New Year level
+        /// </summary>
+        public KCY_Entity SCHOOL_YEAR_NEW_KCY {
+            get
+            {
+                if (SCHOOL_YEAR_NEW != null)
+                {
+                    if (_SCHOOL_YEAR_NEW_KCY == null)
+                    {
+                        _SCHOOL_YEAR_NEW_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR_NEW);
+                    }
+                    return _SCHOOL_YEAR_NEW_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOME_GROUP_NEW] => [KGC_Entity].[KGCKEY]
+        /// New Home Group
+        /// </summary>
+        public KGC_Entity HOME_GROUP_NEW_KGC {
+            get
+            {
+                if (HOME_GROUP_NEW != null)
+                {
+                    if (_HOME_GROUP_NEW_KGC == null)
+                    {
+                        _HOME_GROUP_NEW_KGC = Context.KGC.FindByKGCKEY(HOME_GROUP_NEW);
+                    }
+                    return _HOME_GROUP_NEW_KGC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

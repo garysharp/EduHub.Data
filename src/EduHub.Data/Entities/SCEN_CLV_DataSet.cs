@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SCEN_CLV_DataSet : SetBase<SCEN_CLV_Entity>
     {
+        private Lazy<Dictionary<int, SCEN_CLV_Entity>> ID_Index;
+
         internal SCEN_CLV_DataSet(EduHubContext Context)
             : base(Context)
         {
             ID_Index = new Lazy<Dictionary<int, SCEN_CLV_Entity>>(() => this.ToDictionary(e => e.ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SCEN_CLV"; } }
 
-        private Lazy<Dictionary<int, SCEN_CLV_Entity>> ID_Index;
-
+        /// <summary>
+        /// Find SCEN_CLV by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find SCEN_CLV</param>
+        /// <returns>Related SCEN_CLV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any SCEN_CLV entities</exception>
         public SCEN_CLV_Entity FindByID(int Key)
         {
             SCEN_CLV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SCEN_CLV by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find SCEN_CLV</param>
+        /// <param name="Value">Related SCEN_CLV entity</param>
+        /// <returns>True if the SCEN_CLV Entity is found</returns>
         public bool TryFindByID(int Key, out SCEN_CLV_Entity Value)
         {
             return ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SCEN_CLV by ID key field
+        /// </summary>
+        /// <param name="Key">ID value used to find SCEN_CLV</param>
+        /// <returns>Related SCEN_CLV entity, or null if not found</returns>
         public SCEN_CLV_Entity TryFindByID(int Key)
         {
             SCEN_CLV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SCEN_CLV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCEN_CLV_Entity, string>[Headers.Count];

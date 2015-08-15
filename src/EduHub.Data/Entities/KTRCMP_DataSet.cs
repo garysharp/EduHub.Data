@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KTRCMP_DataSet : SetBase<KTRCMP_Entity>
     {
+        private Lazy<Dictionary<int, KTRCMP_Entity>> COMPANY_ID_Index;
+
         internal KTRCMP_DataSet(EduHubContext Context)
             : base(Context)
         {
             COMPANY_ID_Index = new Lazy<Dictionary<int, KTRCMP_Entity>>(() => this.ToDictionary(e => e.COMPANY_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KTRCMP"; } }
 
-        private Lazy<Dictionary<int, KTRCMP_Entity>> COMPANY_ID_Index;
-
+        /// <summary>
+        /// Find KTRCMP by COMPANY_ID key field
+        /// </summary>
+        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">COMPANY_ID value didn't match any KTRCMP entities</exception>
         public KTRCMP_Entity FindByCOMPANY_ID(int Key)
         {
             KTRCMP_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID key field
+        /// </summary>
+        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
+        /// <param name="Value">Related KTRCMP entity</param>
+        /// <returns>True if the KTRCMP Entity is found</returns>
         public bool TryFindByCOMPANY_ID(int Key, out KTRCMP_Entity Value)
         {
             return COMPANY_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID key field
+        /// </summary>
+        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity, or null if not found</returns>
         public KTRCMP_Entity TryFindByCOMPANY_ID(int Key)
         {
             KTRCMP_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KTRCMP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KTRCMP_Entity, string>[Headers.Count];

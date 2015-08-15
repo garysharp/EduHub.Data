@@ -8,6 +8,18 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCI_Entity _FROM_CAMPUS_SCI;
+        private SCI_Entity _TO_CAMPUS_SCI;
+        private KCY_Entity _CAND_FIRST_YR_KCY;
+        private KCY_Entity _CAND_LAST_YR_KCY;
+        private KCY_Entity _FUT_FIRST_YR_KCY;
+        private KCY_Entity _FUT_LAST_YR_KCY;
+        private KGH_Entity _HOUSE_KGH;
+        private KCT_Entity _ABS_TYPE_KCT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Student Grouping code [Uppercase Alphanumeric: u12]
         /// </summary>
@@ -65,55 +77,25 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? FROM_CAMPUS { get; internal set; }
         /// <summary>
-        /// Navigation property for [FROM_CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Minimum qualifying campus
-        /// </summary>
-        public SCI_Entity FROM_CAMPUS_SCI { get { return FROM_CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(FROM_CAMPUS.Value) : null; } }
-        /// <summary>
         /// Maximum qualifying campus [Integer (32bit signed nullable): l]
         /// </summary>
         public int? TO_CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TO_CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Maximum qualifying campus
-        /// </summary>
-        public SCI_Entity TO_CAMPUS_SCI { get { return TO_CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(TO_CAMPUS.Value) : null; } }
         /// <summary>
         /// Minimum qualifying year level [Uppercase Alphanumeric: u4]
         /// </summary>
         public string CAND_FIRST_YR { get; internal set; }
         /// <summary>
-        /// Navigation property for [CAND_FIRST_YR] => [KCY_Entity].[KCYKEY]
-        /// Minimum qualifying year level
-        /// </summary>
-        public KCY_Entity CAND_FIRST_YR_KCY { get { return CAND_FIRST_YR == null ? null : Context.KCY.FindByKCYKEY(CAND_FIRST_YR); } }
-        /// <summary>
         /// Maximum qualifying year level [Uppercase Alphanumeric: u4]
         /// </summary>
         public string CAND_LAST_YR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAND_LAST_YR] => [KCY_Entity].[KCYKEY]
-        /// Maximum qualifying year level
-        /// </summary>
-        public KCY_Entity CAND_LAST_YR_KCY { get { return CAND_LAST_YR == null ? null : Context.KCY.FindByKCYKEY(CAND_LAST_YR); } }
         /// <summary>
         /// Minimum qualifying year fo FUT students [Uppercase Alphanumeric: u4]
         /// </summary>
         public string FUT_FIRST_YR { get; internal set; }
         /// <summary>
-        /// Navigation property for [FUT_FIRST_YR] => [KCY_Entity].[KCYKEY]
-        /// Minimum qualifying year fo FUT students
-        /// </summary>
-        public KCY_Entity FUT_FIRST_YR_KCY { get { return FUT_FIRST_YR == null ? null : Context.KCY.FindByKCYKEY(FUT_FIRST_YR); } }
-        /// <summary>
         /// Maximum qualifying year fo FUT students [Uppercase Alphanumeric: u4]
         /// </summary>
         public string FUT_LAST_YR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FUT_LAST_YR] => [KCY_Entity].[KCYKEY]
-        /// Maximum qualifying year fo FUT students
-        /// </summary>
-        public KCY_Entity FUT_LAST_YR_KCY { get { return FUT_LAST_YR == null ? null : Context.KCY.FindByKCYKEY(FUT_LAST_YR); } }
         /// <summary>
         /// Minimum qualifying age [Integer (16bit signed nullable): i]
         /// </summary>
@@ -147,11 +129,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HOUSE { get; internal set; }
         /// <summary>
-        /// Navigation property for [HOUSE] => [KGH_Entity].[KGHKEY]
-        /// Qualifying House (if any)
-        /// </summary>
-        public KGH_Entity HOUSE_KGH { get { return HOUSE == null ? null : Context.KGH.FindByKGHKEY(HOUSE); } }
-        /// <summary>
         /// First day of excursion [Date Time nullable: d]
         /// </summary>
         public DateTime? DAYONE { get; internal set; }
@@ -179,11 +156,6 @@ namespace EduHub.Data.Entities
         /// Attendance Type for Excursion [Integer (16bit signed nullable): i]
         /// </summary>
         public short? ABS_TYPE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ABS_TYPE] => [KCT_Entity].[KCTKEY]
-        /// Attendance Type for Excursion
-        /// </summary>
-        public KCT_Entity ABS_TYPE_KCT { get { return ABS_TYPE.HasValue ? Context.KCT.FindByKCTKEY(ABS_TYPE.Value) : null; } }
         /// <summary>
         /// Copy of previous absence code - used in SG11032 [Integer (16bit signed nullable): i]
         /// </summary>
@@ -284,7 +256,177 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FROM_CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Minimum qualifying campus
+        /// </summary>
+        public SCI_Entity FROM_CAMPUS_SCI {
+            get
+            {
+                if (FROM_CAMPUS.HasValue)
+                {
+                    if (_FROM_CAMPUS_SCI == null)
+                    {
+                        _FROM_CAMPUS_SCI = Context.SCI.FindBySCIKEY(FROM_CAMPUS.Value);
+                    }
+                    return _FROM_CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TO_CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Maximum qualifying campus
+        /// </summary>
+        public SCI_Entity TO_CAMPUS_SCI {
+            get
+            {
+                if (TO_CAMPUS.HasValue)
+                {
+                    if (_TO_CAMPUS_SCI == null)
+                    {
+                        _TO_CAMPUS_SCI = Context.SCI.FindBySCIKEY(TO_CAMPUS.Value);
+                    }
+                    return _TO_CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAND_FIRST_YR] => [KCY_Entity].[KCYKEY]
+        /// Minimum qualifying year level
+        /// </summary>
+        public KCY_Entity CAND_FIRST_YR_KCY {
+            get
+            {
+                if (CAND_FIRST_YR != null)
+                {
+                    if (_CAND_FIRST_YR_KCY == null)
+                    {
+                        _CAND_FIRST_YR_KCY = Context.KCY.FindByKCYKEY(CAND_FIRST_YR);
+                    }
+                    return _CAND_FIRST_YR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAND_LAST_YR] => [KCY_Entity].[KCYKEY]
+        /// Maximum qualifying year level
+        /// </summary>
+        public KCY_Entity CAND_LAST_YR_KCY {
+            get
+            {
+                if (CAND_LAST_YR != null)
+                {
+                    if (_CAND_LAST_YR_KCY == null)
+                    {
+                        _CAND_LAST_YR_KCY = Context.KCY.FindByKCYKEY(CAND_LAST_YR);
+                    }
+                    return _CAND_LAST_YR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FUT_FIRST_YR] => [KCY_Entity].[KCYKEY]
+        /// Minimum qualifying year fo FUT students
+        /// </summary>
+        public KCY_Entity FUT_FIRST_YR_KCY {
+            get
+            {
+                if (FUT_FIRST_YR != null)
+                {
+                    if (_FUT_FIRST_YR_KCY == null)
+                    {
+                        _FUT_FIRST_YR_KCY = Context.KCY.FindByKCYKEY(FUT_FIRST_YR);
+                    }
+                    return _FUT_FIRST_YR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FUT_LAST_YR] => [KCY_Entity].[KCYKEY]
+        /// Maximum qualifying year fo FUT students
+        /// </summary>
+        public KCY_Entity FUT_LAST_YR_KCY {
+            get
+            {
+                if (FUT_LAST_YR != null)
+                {
+                    if (_FUT_LAST_YR_KCY == null)
+                    {
+                        _FUT_LAST_YR_KCY = Context.KCY.FindByKCYKEY(FUT_LAST_YR);
+                    }
+                    return _FUT_LAST_YR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOUSE] => [KGH_Entity].[KGHKEY]
+        /// Qualifying House (if any)
+        /// </summary>
+        public KGH_Entity HOUSE_KGH {
+            get
+            {
+                if (HOUSE != null)
+                {
+                    if (_HOUSE_KGH == null)
+                    {
+                        _HOUSE_KGH = Context.KGH.FindByKGHKEY(HOUSE);
+                    }
+                    return _HOUSE_KGH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ABS_TYPE] => [KCT_Entity].[KCTKEY]
+        /// Attendance Type for Excursion
+        /// </summary>
+        public KCT_Entity ABS_TYPE_KCT {
+            get
+            {
+                if (ABS_TYPE.HasValue)
+                {
+                    if (_ABS_TYPE_KCT == null)
+                    {
+                        _ABS_TYPE_KCT = Context.KCT.FindByKCTKEY(ABS_TYPE.Value);
+                    }
+                    return _ABS_TYPE_KCT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

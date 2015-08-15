@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PESP_DataSet : SetBase<PESP_Entity>
     {
+
         internal PESP_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PESP"; } }
 
-
-        
         protected override Action<PESP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PESP_Entity, string>[Headers.Count];

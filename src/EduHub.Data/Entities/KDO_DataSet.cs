@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KDO_DataSet : SetBase<KDO_Entity>
     {
+        private Lazy<Dictionary<string, KDO_Entity>> KDOKEY_Index;
+
         internal KDO_DataSet(EduHubContext Context)
             : base(Context)
         {
             KDOKEY_Index = new Lazy<Dictionary<string, KDO_Entity>>(() => this.ToDictionary(e => e.KDOKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KDO"; } }
 
-        private Lazy<Dictionary<string, KDO_Entity>> KDOKEY_Index;
-
+        /// <summary>
+        /// Find KDO by KDOKEY key field
+        /// </summary>
+        /// <param name="Key">KDOKEY value used to find KDO</param>
+        /// <returns>Related KDO entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KDOKEY value didn't match any KDO entities</exception>
         public KDO_Entity FindByKDOKEY(string Key)
         {
             KDO_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KDO by KDOKEY key field
+        /// </summary>
+        /// <param name="Key">KDOKEY value used to find KDO</param>
+        /// <param name="Value">Related KDO entity</param>
+        /// <returns>True if the KDO Entity is found</returns>
         public bool TryFindByKDOKEY(string Key, out KDO_Entity Value)
         {
             return KDOKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KDO by KDOKEY key field
+        /// </summary>
+        /// <param name="Key">KDOKEY value used to find KDO</param>
+        /// <returns>Related KDO entity, or null if not found</returns>
         public KDO_Entity TryFindByKDOKEY(string Key)
         {
             KDO_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KDO_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KDO_Entity, string>[Headers.Count];

@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PETP_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PE_Entity _CODE_PE;
+        private PI_Entity _PAYITEM_PI;
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
-        /// Employee code
-        /// </summary>
-        public PE_Entity CODE_PE { get { return CODE == null ? null : Context.PE.FindByPEKEY(CODE); } }
-        /// <summary>
         /// Pay item code [Integer (16bit signed nullable): i]
         /// </summary>
         public short? PAYITEM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PAYITEM] => [PI_Entity].[PIKEY]
-        /// Pay item code
-        /// </summary>
-        public PI_Entity PAYITEM_PI { get { return PAYITEM.HasValue ? Context.PI.FindByPIKEY(PAYITEM.Value) : null; } }
         /// <summary>
         /// Link to PEF.TID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -76,7 +72,51 @@ namespace EduHub.Data.Entities
         /// Last operator (u8) in VS3a [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
+        /// Employee code
+        /// </summary>
+        public PE_Entity CODE_PE {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_PE == null)
+                    {
+                        _CODE_PE = Context.PE.FindByPEKEY(CODE);
+                    }
+                    return _CODE_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PAYITEM] => [PI_Entity].[PIKEY]
+        /// Pay item code
+        /// </summary>
+        public PI_Entity PAYITEM_PI {
+            get
+            {
+                if (PAYITEM.HasValue)
+                {
+                    if (_PAYITEM_PI == null)
+                    {
+                        _PAYITEM_PI = Context.PI.FindByPIKEY(PAYITEM.Value);
+                    }
+                    return _PAYITEM_PI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

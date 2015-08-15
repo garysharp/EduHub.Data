@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SFQA_DataSet : SetBase<SFQA_Entity>
     {
+
         internal SFQA_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SFQA"; } }
 
-
-        
         protected override Action<SFQA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SFQA_Entity, string>[Headers.Count];

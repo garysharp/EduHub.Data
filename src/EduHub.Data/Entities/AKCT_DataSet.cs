@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKCT_DataSet : SetBase<AKCT_Entity>
     {
+        private Lazy<Dictionary<string, AKCT_Entity>> CATEGORY_Index;
+
         internal AKCT_DataSet(EduHubContext Context)
             : base(Context)
         {
             CATEGORY_Index = new Lazy<Dictionary<string, AKCT_Entity>>(() => this.ToDictionary(e => e.CATEGORY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKCT"; } }
 
-        private Lazy<Dictionary<string, AKCT_Entity>> CATEGORY_Index;
-
+        /// <summary>
+        /// Find AKCT by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find AKCT</param>
+        /// <returns>Related AKCT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">CATEGORY value didn't match any AKCT entities</exception>
         public AKCT_Entity FindByCATEGORY(string Key)
         {
             AKCT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKCT by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find AKCT</param>
+        /// <param name="Value">Related AKCT entity</param>
+        /// <returns>True if the AKCT Entity is found</returns>
         public bool TryFindByCATEGORY(string Key, out AKCT_Entity Value)
         {
             return CATEGORY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKCT by CATEGORY key field
+        /// </summary>
+        /// <param name="Key">CATEGORY value used to find AKCT</param>
+        /// <returns>Related AKCT entity, or null if not found</returns>
         public AKCT_Entity TryFindByCATEGORY(string Key)
         {
             AKCT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKCT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKCT_Entity, string>[Headers.Count];

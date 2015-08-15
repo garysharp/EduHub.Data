@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KEMA_DataSet : SetBase<KEMA_Entity>
     {
+        private Lazy<Dictionary<int, KEMA_Entity>> TID_Index;
+
         internal KEMA_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, KEMA_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KEMA"; } }
 
-        private Lazy<Dictionary<int, KEMA_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find KEMA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KEMA</param>
+        /// <returns>Related KEMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KEMA entities</exception>
         public KEMA_Entity FindByTID(int Key)
         {
             KEMA_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KEMA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KEMA</param>
+        /// <param name="Value">Related KEMA entity</param>
+        /// <returns>True if the KEMA Entity is found</returns>
         public bool TryFindByTID(int Key, out KEMA_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KEMA by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KEMA</param>
+        /// <returns>Related KEMA entity, or null if not found</returns>
         public KEMA_Entity TryFindByTID(int Key)
         {
             KEMA_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KEMA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KEMA_Entity, string>[Headers.Count];

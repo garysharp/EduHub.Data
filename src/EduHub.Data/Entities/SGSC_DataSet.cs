@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SGSC_DataSet : SetBase<SGSC_Entity>
     {
+
         internal SGSC_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SGSC"; } }
 
-
-        
         protected override Action<SGSC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SGSC_Entity, string>[Headers.Count];

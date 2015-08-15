@@ -18,6 +18,13 @@ namespace EduHub.Data.Samples
             // Create an EduHubContext
             var Context = new EduHubContext();
 
+            // Test for availability of data set
+            Context.ST.EnsureAvailable();
+
+            // Data Updated
+            ForegroundColor = ConsoleColor.Cyan;
+            WriteLine("eduHub Students Updated: {0:G}", Context.ST.Age);
+
             // Build using Query Syntax
             var activeStudents = (
                 from st in Context.ST

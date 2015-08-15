@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class A_DECRYP_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed): l]
         /// </summary>
@@ -24,7 +28,9 @@ namespace EduHub.Data.Entities
         /// Last write date [Date Time nullable: d]
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PSF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PS_Entity _PSKEY_PS;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// TID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Pay Step or Pay Class code [Integer (16bit signed nullable): i]
         /// </summary>
         public short? PSKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PSKEY] => [PS_Entity].[PSKEY]
-        /// Pay Step or Pay Class code
-        /// </summary>
-        public PS_Entity PSKEY_PS { get { return PSKEY.HasValue ? Context.PS.FindByPSKEY(PSKEY.Value) : null; } }
         /// <summary>
         /// Date from which this step/class
         /// will be current. Does not automatically
@@ -51,7 +51,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [PSKEY] => [PS_Entity].[PSKEY]
+        /// Pay Step or Pay Class code
+        /// </summary>
+        public PS_Entity PSKEY_PS {
+            get
+            {
+                if (PSKEY.HasValue)
+                {
+                    if (_PSKEY_PS == null)
+                    {
+                        _PSKEY_PS = Context.PS.FindByPSKEY(PSKEY.Value);
+                    }
+                    return _PSKEY_PS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

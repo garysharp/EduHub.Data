@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PLT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PLG_Entity _LEAVE_GROUP_PLG;
+        private PLC_Entity _LEAVE_CODE_PLC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Leave Type Key [Uppercase Alphanumeric: u16]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string LEAVE_GROUP { get; internal set; }
         /// <summary>
-        /// Navigation property for [LEAVE_GROUP] => [PLG_Entity].[LEAVE_GROUP]
-        /// Leave Group Identifier
-        /// </summary>
-        public PLG_Entity LEAVE_GROUP_PLG { get { return LEAVE_GROUP == null ? null : Context.PLG.FindByLEAVE_GROUP(LEAVE_GROUP); } }
-        /// <summary>
         /// Leave Type Code [Uppercase Alphanumeric: u8]
         /// </summary>
         public string LEAVE_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
-        /// Leave Type Code
-        /// </summary>
-        public PLC_Entity LEAVE_CODE_PLC { get { return LEAVE_CODE == null ? null : Context.PLC.FindByPLCKEY(LEAVE_CODE); } }
         /// <summary>
         /// Entitlement calculation method [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -185,7 +181,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [LEAVE_GROUP] => [PLG_Entity].[LEAVE_GROUP]
+        /// Leave Group Identifier
+        /// </summary>
+        public PLG_Entity LEAVE_GROUP_PLG {
+            get
+            {
+                if (LEAVE_GROUP != null)
+                {
+                    if (_LEAVE_GROUP_PLG == null)
+                    {
+                        _LEAVE_GROUP_PLG = Context.PLG.FindByLEAVE_GROUP(LEAVE_GROUP);
+                    }
+                    return _LEAVE_GROUP_PLG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
+        /// Leave Type Code
+        /// </summary>
+        public PLC_Entity LEAVE_CODE_PLC {
+            get
+            {
+                if (LEAVE_CODE != null)
+                {
+                    if (_LEAVE_CODE_PLC == null)
+                    {
+                        _LEAVE_CODE_PLC = Context.PLC.FindByPLCKEY(LEAVE_CODE);
+                    }
+                    return _LEAVE_CODE_PLC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

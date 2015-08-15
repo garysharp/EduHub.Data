@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KPC_DataSet : SetBase<KPC_Entity>
     {
+        private Lazy<Dictionary<string, KPC_Entity>> KPCKEY_Index;
+
         internal KPC_DataSet(EduHubContext Context)
             : base(Context)
         {
             KPCKEY_Index = new Lazy<Dictionary<string, KPC_Entity>>(() => this.ToDictionary(e => e.KPCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KPC"; } }
 
-        private Lazy<Dictionary<string, KPC_Entity>> KPCKEY_Index;
-
+        /// <summary>
+        /// Find KPC by KPCKEY key field
+        /// </summary>
+        /// <param name="Key">KPCKEY value used to find KPC</param>
+        /// <returns>Related KPC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KPCKEY value didn't match any KPC entities</exception>
         public KPC_Entity FindByKPCKEY(string Key)
         {
             KPC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KPC by KPCKEY key field
+        /// </summary>
+        /// <param name="Key">KPCKEY value used to find KPC</param>
+        /// <param name="Value">Related KPC entity</param>
+        /// <returns>True if the KPC Entity is found</returns>
         public bool TryFindByKPCKEY(string Key, out KPC_Entity Value)
         {
             return KPCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KPC by KPCKEY key field
+        /// </summary>
+        /// <param name="Key">KPCKEY value used to find KPC</param>
+        /// <returns>Related KPC entity, or null if not found</returns>
         public KPC_Entity TryFindByKPCKEY(string Key)
         {
             KPC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KPC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPC_Entity, string>[Headers.Count];

@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCY_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SF_Entity _TEACHER_SF;
+        private SF_Entity _TEACHER_B_SF;
+        private KCY_Entity _NEXT_YR_KCY;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Year level code [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -29,28 +36,13 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string TEACHER { get; internal set; }
         /// <summary>
-        /// Navigation property for [TEACHER] => [SF_Entity].[SFKEY]
-        /// Staff code of first or only year level Coordinator
-        /// </summary>
-        public SF_Entity TEACHER_SF { get { return TEACHER == null ? null : Context.SF.FindBySFKEY(TEACHER); } }
-        /// <summary>
         /// Staff code of second year level Coordinator (if any) [Uppercase Alphanumeric: u4]
         /// </summary>
         public string TEACHER_B { get; internal set; }
         /// <summary>
-        /// Navigation property for [TEACHER_B] => [SF_Entity].[SFKEY]
-        /// Staff code of second year level Coordinator (if any)
-        /// </summary>
-        public SF_Entity TEACHER_B_SF { get { return TEACHER_B == null ? null : Context.SF.FindBySFKEY(TEACHER_B); } }
-        /// <summary>
         /// Year level to which promoted from this year level [Uppercase Alphanumeric: u4]
         /// </summary>
         public string NEXT_YR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [NEXT_YR] => [KCY_Entity].[KCYKEY]
-        /// Year level to which promoted from this year level
-        /// </summary>
-        public KCY_Entity NEXT_YR_KCY { get { return NEXT_YR == null ? null : Context.KCY.FindByKCYKEY(NEXT_YR); } }
         /// <summary>
         /// This year level is final year level at school? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -79,7 +71,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TEACHER] => [SF_Entity].[SFKEY]
+        /// Staff code of first or only year level Coordinator
+        /// </summary>
+        public SF_Entity TEACHER_SF {
+            get
+            {
+                if (TEACHER != null)
+                {
+                    if (_TEACHER_SF == null)
+                    {
+                        _TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
+                    }
+                    return _TEACHER_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TEACHER_B] => [SF_Entity].[SFKEY]
+        /// Staff code of second year level Coordinator (if any)
+        /// </summary>
+        public SF_Entity TEACHER_B_SF {
+            get
+            {
+                if (TEACHER_B != null)
+                {
+                    if (_TEACHER_B_SF == null)
+                    {
+                        _TEACHER_B_SF = Context.SF.FindBySFKEY(TEACHER_B);
+                    }
+                    return _TEACHER_B_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [NEXT_YR] => [KCY_Entity].[KCYKEY]
+        /// Year level to which promoted from this year level
+        /// </summary>
+        public KCY_Entity NEXT_YR_KCY {
+            get
+            {
+                if (NEXT_YR != null)
+                {
+                    if (_NEXT_YR_KCY == null)
+                    {
+                        _NEXT_YR_KCY = Context.KCY.FindByKCYKEY(NEXT_YR);
+                    }
+                    return _NEXT_YR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

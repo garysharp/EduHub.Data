@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class STBT_DataSet : SetBase<STBT_Entity>
     {
+
         internal STBT_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "STBT"; } }
 
-
-        
         protected override Action<STBT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STBT_Entity, string>[Headers.Count];

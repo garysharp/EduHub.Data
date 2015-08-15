@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TRSTACC_DataSet : SetBase<TRSTACC_Entity>
     {
+        private Lazy<Dictionary<int, TRSTACC_Entity>> STACCKEY_Index;
+
         internal TRSTACC_DataSet(EduHubContext Context)
             : base(Context)
         {
             STACCKEY_Index = new Lazy<Dictionary<int, TRSTACC_Entity>>(() => this.ToDictionary(e => e.STACCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TRSTACC"; } }
 
-        private Lazy<Dictionary<int, TRSTACC_Entity>> STACCKEY_Index;
-
+        /// <summary>
+        /// Find TRSTACC by STACCKEY key field
+        /// </summary>
+        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
+        /// <returns>Related TRSTACC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">STACCKEY value didn't match any TRSTACC entities</exception>
         public TRSTACC_Entity FindBySTACCKEY(int Key)
         {
             TRSTACC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TRSTACC by STACCKEY key field
+        /// </summary>
+        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
+        /// <param name="Value">Related TRSTACC entity</param>
+        /// <returns>True if the TRSTACC Entity is found</returns>
         public bool TryFindBySTACCKEY(int Key, out TRSTACC_Entity Value)
         {
             return STACCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TRSTACC by STACCKEY key field
+        /// </summary>
+        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
+        /// <returns>Related TRSTACC entity, or null if not found</returns>
         public TRSTACC_Entity TryFindBySTACCKEY(int Key)
         {
             TRSTACC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TRSTACC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TRSTACC_Entity, string>[Headers.Count];

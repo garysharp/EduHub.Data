@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class STSP_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _SPKEY_ST;
+        private SF_Entity _REF_TEACHERA_SF;
+        private SF_Entity _REF_TEACHERB_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +23,6 @@ namespace EduHub.Data.Entities
         /// Student ID [Uppercase Alphanumeric: u10]
         /// </summary>
         public string SPKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SPKEY] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity SPKEY_ST { get { return SPKEY == null ? null : Context.ST.FindBySTKEY(SPKEY); } }
         /// <summary>
         /// Date record of suspension was created [Date Time nullable: d]
         /// </summary>
@@ -34,19 +36,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string REF_TEACHERA { get; internal set; }
         /// <summary>
-        /// Navigation property for [REF_TEACHERA] => [SF_Entity].[SFKEY]
-        /// Staff code of first or only teacher involved
-        /// </summary>
-        public SF_Entity REF_TEACHERA_SF { get { return REF_TEACHERA == null ? null : Context.SF.FindBySFKEY(REF_TEACHERA); } }
-        /// <summary>
         /// Staff code of second teacher involved (if any) [Uppercase Alphanumeric: u4]
         /// </summary>
         public string REF_TEACHERB { get; internal set; }
-        /// <summary>
-        /// Navigation property for [REF_TEACHERB] => [SF_Entity].[SFKEY]
-        /// Staff code of second teacher involved (if any)
-        /// </summary>
-        public SF_Entity REF_TEACHERB_SF { get { return REF_TEACHERB == null ? null : Context.SF.FindBySFKEY(REF_TEACHERB); } }
         /// <summary>
         /// Number of days this suspension [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -187,7 +179,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SPKEY] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity SPKEY_ST {
+            get
+            {
+                if (SPKEY != null)
+                {
+                    if (_SPKEY_ST == null)
+                    {
+                        _SPKEY_ST = Context.ST.FindBySTKEY(SPKEY);
+                    }
+                    return _SPKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [REF_TEACHERA] => [SF_Entity].[SFKEY]
+        /// Staff code of first or only teacher involved
+        /// </summary>
+        public SF_Entity REF_TEACHERA_SF {
+            get
+            {
+                if (REF_TEACHERA != null)
+                {
+                    if (_REF_TEACHERA_SF == null)
+                    {
+                        _REF_TEACHERA_SF = Context.SF.FindBySFKEY(REF_TEACHERA);
+                    }
+                    return _REF_TEACHERA_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [REF_TEACHERB] => [SF_Entity].[SFKEY]
+        /// Staff code of second teacher involved (if any)
+        /// </summary>
+        public SF_Entity REF_TEACHERB_SF {
+            get
+            {
+                if (REF_TEACHERB != null)
+                {
+                    if (_REF_TEACHERB_SF == null)
+                    {
+                        _REF_TEACHERB_SF = Context.SF.FindBySFKEY(REF_TEACHERB);
+                    }
+                    return _REF_TEACHERB_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

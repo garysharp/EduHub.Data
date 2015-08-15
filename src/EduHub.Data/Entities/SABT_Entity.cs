@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SABT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SAB_Entity _SABTKEY_SAB;
+        private SA_Entity _FEE_CODE_SA;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,11 +23,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SABTKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [SABTKEY] => [SAB_Entity].[SABKEY]
-        /// Key
-        /// </summary>
-        public SAB_Entity SABTKEY_SAB { get { return SABTKEY == null ? null : Context.SAB.FindBySABKEY(SABTKEY); } }
-        /// <summary>
         /// Link [Uppercase Alphanumeric: u10]
         /// </summary>
         public string LINKKEY { get; internal set; }
@@ -29,11 +30,6 @@ namespace EduHub.Data.Entities
         /// Fee code for the student [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FEE_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
-        /// Fee code for the student
-        /// </summary>
-        public SA_Entity FEE_CODE_SA { get { return FEE_CODE == null ? null : Context.SA.FindBySAKEY(FEE_CODE); } }
         /// <summary>
         /// Description [Alphanumeric: a30]
         /// </summary>
@@ -50,7 +46,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SABTKEY] => [SAB_Entity].[SABKEY]
+        /// Key
+        /// </summary>
+        public SAB_Entity SABTKEY_SAB {
+            get
+            {
+                if (SABTKEY != null)
+                {
+                    if (_SABTKEY_SAB == null)
+                    {
+                        _SABTKEY_SAB = Context.SAB.FindBySABKEY(SABTKEY);
+                    }
+                    return _SABTKEY_SAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
+        /// Fee code for the student
+        /// </summary>
+        public SA_Entity FEE_CODE_SA {
+            get
+            {
+                if (FEE_CODE != null)
+                {
+                    if (_FEE_CODE_SA == null)
+                    {
+                        _FEE_CODE_SA = Context.SA.FindBySAKEY(FEE_CODE);
+                    }
+                    return _FEE_CODE_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

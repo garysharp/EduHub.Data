@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class UM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGT_Entity _COUNTRY_KGT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Address ID [Integer (32bit signed): l]
         /// </summary>
@@ -57,11 +62,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country (default '1101' code for Australia)
-        /// </summary>
-        public KGT_Entity COUNTRY_KGT { get { return COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(COUNTRY); } }
-        /// <summary>
         /// Australia Post address identifier [Integer (32bit signed nullable): l]
         /// </summary>
         public int? DPID { get; internal set; }
@@ -81,7 +81,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country (default '1101' code for Australia)
+        /// </summary>
+        public KGT_Entity COUNTRY_KGT {
+            get
+            {
+                if (COUNTRY != null)
+                {
+                    if (_COUNTRY_KGT == null)
+                    {
+                        _COUNTRY_KGT = Context.KGT.FindByCOUNTRY(COUNTRY);
+                    }
+                    return _COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

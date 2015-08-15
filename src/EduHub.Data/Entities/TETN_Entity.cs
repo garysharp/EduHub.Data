@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TETN_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TE_Entity _TETNKEY_TE;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Event number [Integer (32bit signed nullable): l]
         /// </summary>
         public int? TETNKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TETNKEY] => [TE_Entity].[TEKEY]
-        /// Event number
-        /// </summary>
-        public TE_Entity TETNKEY_TE { get { return TETNKEY.HasValue ? Context.TE.FindByTEKEY(TETNKEY.Value) : null; } }
         /// <summary>
         /// Link to TID of an event instance [Integer (32bit signed nullable): l]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TETNKEY] => [TE_Entity].[TEKEY]
+        /// Event number
+        /// </summary>
+        public TE_Entity TETNKEY_TE {
+            get
+            {
+                if (TETNKEY.HasValue)
+                {
+                    if (_TETNKEY_TE == null)
+                    {
+                        _TETNKEY_TE = Context.TE.FindByTEKEY(TETNKEY.Value);
+                    }
+                    return _TETNKEY_TE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

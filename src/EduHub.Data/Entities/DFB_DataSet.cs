@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class DFB_DataSet : SetBase<DFB_Entity>
     {
+        private Lazy<Dictionary<string, DFB_Entity>> REFERENCE_NO_Index;
+
         internal DFB_DataSet(EduHubContext Context)
             : base(Context)
         {
             REFERENCE_NO_Index = new Lazy<Dictionary<string, DFB_Entity>>(() => this.ToDictionary(e => e.REFERENCE_NO));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "DFB"; } }
 
-        private Lazy<Dictionary<string, DFB_Entity>> REFERENCE_NO_Index;
-
+        /// <summary>
+        /// Find DFB by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
+        /// <returns>Related DFB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">REFERENCE_NO value didn't match any DFB entities</exception>
         public DFB_Entity FindByREFERENCE_NO(string Key)
         {
             DFB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find DFB by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
+        /// <param name="Value">Related DFB entity</param>
+        /// <returns>True if the DFB Entity is found</returns>
         public bool TryFindByREFERENCE_NO(string Key, out DFB_Entity Value)
         {
             return REFERENCE_NO_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find DFB by REFERENCE_NO key field
+        /// </summary>
+        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
+        /// <returns>Related DFB entity, or null if not found</returns>
         public DFB_Entity TryFindByREFERENCE_NO(string Key)
         {
             DFB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<DFB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DFB_Entity, string>[Headers.Count];

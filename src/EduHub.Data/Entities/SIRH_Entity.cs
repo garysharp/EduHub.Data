@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SIRH_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Uppercase Alphanumeric: u20]
         /// </summary>
@@ -92,7 +96,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

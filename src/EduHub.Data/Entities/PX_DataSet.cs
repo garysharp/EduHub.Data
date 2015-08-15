@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PX_DataSet : SetBase<PX_Entity>
     {
+        private Lazy<Dictionary<short, PX_Entity>> PXKEY_Index;
+
         internal PX_DataSet(EduHubContext Context)
             : base(Context)
         {
             PXKEY_Index = new Lazy<Dictionary<short, PX_Entity>>(() => this.ToDictionary(e => e.PXKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PX"; } }
 
-        private Lazy<Dictionary<short, PX_Entity>> PXKEY_Index;
-
+        /// <summary>
+        /// Find PX by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX</param>
+        /// <returns>Related PX entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PXKEY value didn't match any PX entities</exception>
         public PX_Entity FindByPXKEY(short Key)
         {
             PX_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PX by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX</param>
+        /// <param name="Value">Related PX entity</param>
+        /// <returns>True if the PX Entity is found</returns>
         public bool TryFindByPXKEY(short Key, out PX_Entity Value)
         {
             return PXKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PX by PXKEY key field
+        /// </summary>
+        /// <param name="Key">PXKEY value used to find PX</param>
+        /// <returns>Related PX entity, or null if not found</returns>
         public PX_Entity TryFindByPXKEY(short Key)
         {
             PX_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PX_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PX_Entity, string>[Headers.Count];

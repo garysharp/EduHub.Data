@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SEC_LLOG_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed): l]
         /// </summary>
@@ -64,7 +68,9 @@ namespace EduHub.Data.Entities
         ///  [Integer (16bit signed nullable): i]
         /// </summary>
         public short? LOGGEDPERIOD { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

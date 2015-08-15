@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TH_DataSet : SetBase<TH_Entity>
     {
+        private Lazy<Dictionary<string, TH_Entity>> THKEY_Index;
+
         internal TH_DataSet(EduHubContext Context)
             : base(Context)
         {
             THKEY_Index = new Lazy<Dictionary<string, TH_Entity>>(() => this.ToDictionary(e => e.THKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TH"; } }
 
-        private Lazy<Dictionary<string, TH_Entity>> THKEY_Index;
-
+        /// <summary>
+        /// Find TH by THKEY key field
+        /// </summary>
+        /// <param name="Key">THKEY value used to find TH</param>
+        /// <returns>Related TH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">THKEY value didn't match any TH entities</exception>
         public TH_Entity FindByTHKEY(string Key)
         {
             TH_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY key field
+        /// </summary>
+        /// <param name="Key">THKEY value used to find TH</param>
+        /// <param name="Value">Related TH entity</param>
+        /// <returns>True if the TH Entity is found</returns>
         public bool TryFindByTHKEY(string Key, out TH_Entity Value)
         {
             return THKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY key field
+        /// </summary>
+        /// <param name="Key">THKEY value used to find TH</param>
+        /// <returns>Related TH entity, or null if not found</returns>
         public TH_Entity TryFindByTHKEY(string Key)
         {
             TH_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TH_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TH_Entity, string>[Headers.Count];

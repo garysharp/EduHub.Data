@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SAII_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SAI_Entity _INVOLVEMENTID_SAI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Sequence no of accident involvement [Integer (32bit signed nullable): l]
         /// </summary>
         public int? INVOLVEMENTID { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INVOLVEMENTID] => [SAI_Entity].[SAIKEY]
-        /// Sequence no of accident involvement
-        /// </summary>
-        public SAI_Entity INVOLVEMENTID_SAI { get { return INVOLVEMENTID.HasValue ? Context.SAI.FindBySAIKEY(INVOLVEMENTID.Value) : null; } }
         /// <summary>
         /// Code identifying Injury Severity [Integer (16bit signed nullable): i]
         /// </summary>
@@ -53,7 +53,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [INVOLVEMENTID] => [SAI_Entity].[SAIKEY]
+        /// Sequence no of accident involvement
+        /// </summary>
+        public SAI_Entity INVOLVEMENTID_SAI {
+            get
+            {
+                if (INVOLVEMENTID.HasValue)
+                {
+                    if (_INVOLVEMENTID_SAI == null)
+                    {
+                        _INVOLVEMENTID_SAI = Context.SAI.FindBySAIKEY(INVOLVEMENTID.Value);
+                    }
+                    return _INVOLVEMENTID_SAI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

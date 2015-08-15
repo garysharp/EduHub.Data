@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TETN_DataSet : SetBase<TETN_Entity>
     {
+
         internal TETN_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TETN"; } }
 
-
-        
         protected override Action<TETN_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TETN_Entity, string>[Headers.Count];

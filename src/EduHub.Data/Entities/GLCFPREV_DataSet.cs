@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLCFPREV_DataSet : SetBase<GLCFPREV_Entity>
     {
+        private Lazy<Dictionary<string, GLCFPREV_Entity>> TRREF_Index;
+
         internal GLCFPREV_DataSet(EduHubContext Context)
             : base(Context)
         {
             TRREF_Index = new Lazy<Dictionary<string, GLCFPREV_Entity>>(() => this.ToDictionary(e => e.TRREF));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLCFPREV"; } }
 
-        private Lazy<Dictionary<string, GLCFPREV_Entity>> TRREF_Index;
-
+        /// <summary>
+        /// Find GLCFPREV by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLCFPREV</param>
+        /// <returns>Related GLCFPREV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any GLCFPREV entities</exception>
         public GLCFPREV_Entity FindByTRREF(string Key)
         {
             GLCFPREV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLCFPREV</param>
+        /// <param name="Value">Related GLCFPREV entity</param>
+        /// <returns>True if the GLCFPREV Entity is found</returns>
         public bool TryFindByTRREF(string Key, out GLCFPREV_Entity Value)
         {
             return TRREF_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find GLCFPREV</param>
+        /// <returns>Related GLCFPREV entity, or null if not found</returns>
         public GLCFPREV_Entity TryFindByTRREF(string Key)
         {
             GLCFPREV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GLCFPREV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLCFPREV_Entity, string>[Headers.Count];

@@ -18,6 +18,18 @@ namespace EduHub.Data.Samples
             // Create an EduHubContext
             var Context = new EduHubContext();
 
+            // Test for availability of data sets
+            if (!Context.ST.IsAvailable || !Context.DF.IsAvailable || !Context.UM.IsAvailable)
+            {
+                ForegroundColor = ConsoleColor.Red;
+                WriteLine("The ST, DF and UM Data Sets must be available to complete this query");
+                return;
+            }
+
+            // Data Updated
+            ForegroundColor = ConsoleColor.Cyan;
+            WriteLine("eduHub Updated: {0:G}", Context.Age);
+
             // Build Query
             var activeStudentTowns = (
                 from st in Context.ST

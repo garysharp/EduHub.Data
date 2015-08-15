@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAP_DataSet : SetBase<SAP_Entity>
     {
+        private Lazy<Dictionary<string, SAP_Entity>> SAPKEY_Index;
+
         internal SAP_DataSet(EduHubContext Context)
             : base(Context)
         {
             SAPKEY_Index = new Lazy<Dictionary<string, SAP_Entity>>(() => this.ToDictionary(e => e.SAPKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAP"; } }
 
-        private Lazy<Dictionary<string, SAP_Entity>> SAPKEY_Index;
-
+        /// <summary>
+        /// Find SAP by SAPKEY key field
+        /// </summary>
+        /// <param name="Key">SAPKEY value used to find SAP</param>
+        /// <returns>Related SAP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SAPKEY value didn't match any SAP entities</exception>
         public SAP_Entity FindBySAPKEY(string Key)
         {
             SAP_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SAP by SAPKEY key field
+        /// </summary>
+        /// <param name="Key">SAPKEY value used to find SAP</param>
+        /// <param name="Value">Related SAP entity</param>
+        /// <returns>True if the SAP Entity is found</returns>
         public bool TryFindBySAPKEY(string Key, out SAP_Entity Value)
         {
             return SAPKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SAP by SAPKEY key field
+        /// </summary>
+        /// <param name="Key">SAPKEY value used to find SAP</param>
+        /// <returns>Related SAP entity, or null if not found</returns>
         public SAP_Entity TryFindBySAPKEY(string Key)
         {
             SAP_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SAP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAP_Entity, string>[Headers.Count];

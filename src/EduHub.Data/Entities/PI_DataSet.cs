@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PI_DataSet : SetBase<PI_Entity>
     {
+        private Lazy<Dictionary<short, PI_Entity>> PIKEY_Index;
+
         internal PI_DataSet(EduHubContext Context)
             : base(Context)
         {
             PIKEY_Index = new Lazy<Dictionary<short, PI_Entity>>(() => this.ToDictionary(e => e.PIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PI"; } }
 
-        private Lazy<Dictionary<short, PI_Entity>> PIKEY_Index;
-
+        /// <summary>
+        /// Find PI by PIKEY key field
+        /// </summary>
+        /// <param name="Key">PIKEY value used to find PI</param>
+        /// <returns>Related PI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PIKEY value didn't match any PI entities</exception>
         public PI_Entity FindByPIKEY(short Key)
         {
             PI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PI by PIKEY key field
+        /// </summary>
+        /// <param name="Key">PIKEY value used to find PI</param>
+        /// <param name="Value">Related PI entity</param>
+        /// <returns>True if the PI Entity is found</returns>
         public bool TryFindByPIKEY(short Key, out PI_Entity Value)
         {
             return PIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PI by PIKEY key field
+        /// </summary>
+        /// <param name="Key">PIKEY value used to find PI</param>
+        /// <returns>Related PI entity, or null if not found</returns>
         public PI_Entity TryFindByPIKEY(short Key)
         {
             PI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PI_Entity, string>[Headers.Count];

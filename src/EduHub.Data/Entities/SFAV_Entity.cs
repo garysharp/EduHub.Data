@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SFAV_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SF_Entity _TEACH_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Staff key [Uppercase Alphanumeric: u4]
         /// </summary>
         public string TEACH { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TEACH] => [SF_Entity].[SFKEY]
-        /// Staff key
-        /// </summary>
-        public SF_Entity TEACH_SF { get { return TEACH == null ? null : Context.SF.FindBySFKEY(TEACH); } }
         /// <summary>
         /// Day of the timetable cycle [Integer (16bit signed nullable): i]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TEACH] => [SF_Entity].[SFKEY]
+        /// Staff key
+        /// </summary>
+        public SF_Entity TEACH_SF {
+            get
+            {
+                if (TEACH != null)
+                {
+                    if (_TEACH_SF == null)
+                    {
+                        _TEACH_SF = Context.SF.FindBySFKEY(TEACH);
+                    }
+                    return _TEACH_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

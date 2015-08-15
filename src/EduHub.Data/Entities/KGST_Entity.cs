@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGST_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GL_Entity _GLGST_CODE_GL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Key [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -33,11 +38,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GLGST_CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GLGST_CODE] => [GL_Entity].[CODE]
-        /// GST posting account
-        /// </summary>
-        public GL_Entity GLGST_CODE_GL { get { return GLGST_CODE == null ? null : Context.GL.FindByCODE(GLGST_CODE); } }
-        /// <summary>
         /// Input Claimed? [Uppercase Alphanumeric: u1]
         /// </summary>
         public string GST_RECLAIM { get; internal set; }
@@ -57,7 +57,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GLGST_CODE] => [GL_Entity].[CODE]
+        /// GST posting account
+        /// </summary>
+        public GL_Entity GLGST_CODE_GL {
+            get
+            {
+                if (GLGST_CODE != null)
+                {
+                    if (_GLGST_CODE_GL == null)
+                    {
+                        _GLGST_CODE_GL = Context.GL.FindByCODE(GLGST_CODE);
+                    }
+                    return _GLGST_CODE_GL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

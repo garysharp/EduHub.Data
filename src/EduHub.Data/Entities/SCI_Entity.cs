@@ -8,6 +8,30 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SCI_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _SCHOOL_LINK_SKGS;
+        private SF_Entity _SCH_PRINCIPAL_SF;
+        private SF_Entity _SF_OIC_SF;
+        private SF_Entity _SF_VPRIN_SF;
+        private SF_Entity _SF_2VPRIN_SF;
+        private SF_Entity _SF_3VPRIN_SF;
+        private SF_Entity _SF_APRIN_SF;
+        private SF_Entity _SF_BMANAGER_SF;
+        private SF_Entity _SF_VAC_CONTACT_SF;
+        private SF_Entity _SF_EMERG_CONTACT_SF;
+        private SAM_Entity _SAM_SCH_COUNCIL_SAM;
+        private TH_Entity _CURRENT_QUILT_TH;
+        private KCI_Entity _REL_INSTR_KCI;
+        private SKGS_Entity _DESTINATION_SCHOOL_SKGS;
+        private SF_Entity _SCH_AOIC_SF;
+        private SF_Entity _SCH_VPRIN_SF;
+        private SF_Entity _SCH_BMANAGER_SF;
+        private SF_Entity _SCH_VAC_CONTACT_SF;
+        private SF_Entity _SCH_EMERG_CONTACT_SF;
+        private SAM_Entity _SCH_COUNCIL_PRES_SAM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -24,11 +48,6 @@ namespace EduHub.Data.Entities
         /// School ID [Uppercase Alphanumeric: u8]
         /// </summary>
         public string SCHOOL_LINK { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCHOOL_LINK] => [SKGS_Entity].[SCHOOL]
-        /// School ID
-        /// </summary>
-        public SKGS_Entity SCHOOL_LINK_SKGS { get { return SCHOOL_LINK == null ? null : Context.SKGS.FindBySCHOOL(SCHOOL_LINK); } }
         /// <summary>
         /// School type: Primary, Secondary, etc [Alphanumeric: a10]
         /// </summary>
@@ -50,91 +69,41 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SCH_PRINCIPAL { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCH_PRINCIPAL] => [SF_Entity].[SFKEY]
-        /// Staff code for Principal of School
-        /// </summary>
-        public SF_Entity SCH_PRINCIPAL_SF { get { return SCH_PRINCIPAL == null ? null : Context.SF.FindBySFKEY(SCH_PRINCIPAL); } }
-        /// <summary>
         /// Staff code for Principal of Campus [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_OIC { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SF_OIC] => [SF_Entity].[SFKEY]
-        /// Staff code for Principal of Campus
-        /// </summary>
-        public SF_Entity SF_OIC_SF { get { return SF_OIC == null ? null : Context.SF.FindBySFKEY(SF_OIC); } }
         /// <summary>
         /// Staff code for Vice-Principal of School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_VPRIN { get; internal set; }
         /// <summary>
-        /// Navigation property for [SF_VPRIN] => [SF_Entity].[SFKEY]
-        /// Staff code for Vice-Principal of School
-        /// </summary>
-        public SF_Entity SF_VPRIN_SF { get { return SF_VPRIN == null ? null : Context.SF.FindBySFKEY(SF_VPRIN); } }
-        /// <summary>
         /// Staff code for 2nd Vice-Principal of School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_2VPRIN { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SF_2VPRIN] => [SF_Entity].[SFKEY]
-        /// Staff code for 2nd Vice-Principal of School
-        /// </summary>
-        public SF_Entity SF_2VPRIN_SF { get { return SF_2VPRIN == null ? null : Context.SF.FindBySFKEY(SF_2VPRIN); } }
         /// <summary>
         /// Staff code for 3rd Vice-Principal of School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_3VPRIN { get; internal set; }
         /// <summary>
-        /// Navigation property for [SF_3VPRIN] => [SF_Entity].[SFKEY]
-        /// Staff code for 3rd Vice-Principal of School
-        /// </summary>
-        public SF_Entity SF_3VPRIN_SF { get { return SF_3VPRIN == null ? null : Context.SF.FindBySFKEY(SF_3VPRIN); } }
-        /// <summary>
         /// Staff code for Acting Principal of School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_APRIN { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SF_APRIN] => [SF_Entity].[SFKEY]
-        /// Staff code for Acting Principal of School
-        /// </summary>
-        public SF_Entity SF_APRIN_SF { get { return SF_APRIN == null ? null : Context.SF.FindBySFKEY(SF_APRIN); } }
         /// <summary>
         /// Staff code for Business Manager of School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_BMANAGER { get; internal set; }
         /// <summary>
-        /// Navigation property for [SF_BMANAGER] => [SF_Entity].[SFKEY]
-        /// Staff code for Business Manager of School
-        /// </summary>
-        public SF_Entity SF_BMANAGER_SF { get { return SF_BMANAGER == null ? null : Context.SF.FindBySFKEY(SF_BMANAGER); } }
-        /// <summary>
         /// Staff code for Vacation contact person for School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_VAC_CONTACT { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SF_VAC_CONTACT] => [SF_Entity].[SFKEY]
-        /// Staff code for Vacation contact person for School
-        /// </summary>
-        public SF_Entity SF_VAC_CONTACT_SF { get { return SF_VAC_CONTACT == null ? null : Context.SF.FindBySFKEY(SF_VAC_CONTACT); } }
         /// <summary>
         /// Staff code for Emergency contact person for School [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SF_EMERG_CONTACT { get; internal set; }
         /// <summary>
-        /// Navigation property for [SF_EMERG_CONTACT] => [SF_Entity].[SFKEY]
-        /// Staff code for Emergency contact person for School
-        /// </summary>
-        public SF_Entity SF_EMERG_CONTACT_SF { get { return SF_EMERG_CONTACT == null ? null : Context.SF.FindBySFKEY(SF_EMERG_CONTACT); } }
-        /// <summary>
         /// ID of School Council representative for School [Integer (32bit signed nullable): l]
         /// </summary>
         public int? SAM_SCH_COUNCIL { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SAM_SCH_COUNCIL] => [SAM_Entity].[SAMKEY]
-        /// ID of School Council representative for School
-        /// </summary>
-        public SAM_Entity SAM_SCH_COUNCIL_SAM { get { return SAM_SCH_COUNCIL.HasValue ? Context.SAM.FindBySAMKEY(SAM_SCH_COUNCIL.Value) : null; } }
         /// <summary>
         /// DEECD platform identification. [Alphanumeric: a5]
         /// </summary>
@@ -172,11 +141,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CURRENT_QUILT { get; internal set; }
         /// <summary>
-        /// Navigation property for [CURRENT_QUILT] => [TH_Entity].[THKEY]
-        /// Code of current quilt
-        /// </summary>
-        public TH_Entity CURRENT_QUILT_TH { get { return CURRENT_QUILT == null ? null : Context.TH.FindByTHKEY(CURRENT_QUILT); } }
-        /// <summary>
         /// Semester currently in operation, eg 1998S1 [Uppercase Alphanumeric: u6]
         /// </summary>
         public string CURRENT_SEMESTER { get; internal set; }
@@ -204,11 +168,6 @@ namespace EduHub.Data.Entities
         /// Default religious instruction course [Uppercase Alphanumeric: u10]
         /// </summary>
         public string REL_INSTR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [REL_INSTR] => [KCI_Entity].[KCIKEY]
-        /// Default religious instruction course
-        /// </summary>
-        public KCI_Entity REL_INSTR_KCI { get { return REL_INSTR == null ? null : Context.KCI.FindByKCIKEY(REL_INSTR); } }
         /// <summary>
         /// Consecutive absent day count [Integer (16bit signed nullable): i]
         /// </summary>
@@ -318,11 +277,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DESTINATION_SCHOOL { get; internal set; }
         /// <summary>
-        /// Navigation property for [DESTINATION_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// Default destination for graduating students
-        /// </summary>
-        public SKGS_Entity DESTINATION_SCHOOL_SKGS { get { return DESTINATION_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(DESTINATION_SCHOOL); } }
-        /// <summary>
         /// Email address of campus contact [Alphanumeric: a60]
         /// </summary>
         public string CAMPUS_EMAIL_CONTACT { get; internal set; }
@@ -331,55 +285,25 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SCH_AOIC { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCH_AOIC] => [SF_Entity].[SFKEY]
-        /// SFKEY of the staff member that is the Acting School Principal / OIC
-        /// </summary>
-        public SF_Entity SCH_AOIC_SF { get { return SCH_AOIC == null ? null : Context.SF.FindBySFKEY(SCH_AOIC); } }
-        /// <summary>
         /// SFKEY of the staff member that is the Assistant School Principal i.e. Vice Principal [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCH_VPRIN { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCH_VPRIN] => [SF_Entity].[SFKEY]
-        /// SFKEY of the staff member that is the Assistant School Principal i.e. Vice Principal
-        /// </summary>
-        public SF_Entity SCH_VPRIN_SF { get { return SCH_VPRIN == null ? null : Context.SF.FindBySFKEY(SCH_VPRIN); } }
         /// <summary>
         /// SFKEY of the staff member that is the School Business Manager [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCH_BMANAGER { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCH_BMANAGER] => [SF_Entity].[SFKEY]
-        /// SFKEY of the staff member that is the School Business Manager
-        /// </summary>
-        public SF_Entity SCH_BMANAGER_SF { get { return SCH_BMANAGER == null ? null : Context.SF.FindBySFKEY(SCH_BMANAGER); } }
-        /// <summary>
         /// SFKEY of the staff member that is the School Vacation contact [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCH_VAC_CONTACT { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCH_VAC_CONTACT] => [SF_Entity].[SFKEY]
-        /// SFKEY of the staff member that is the School Vacation contact
-        /// </summary>
-        public SF_Entity SCH_VAC_CONTACT_SF { get { return SCH_VAC_CONTACT == null ? null : Context.SF.FindBySFKEY(SCH_VAC_CONTACT); } }
         /// <summary>
         /// SFKEY of the staff member that is the School Emergency contact [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCH_EMERG_CONTACT { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCH_EMERG_CONTACT] => [SF_Entity].[SFKEY]
-        /// SFKEY of the staff member that is the School Emergency contact
-        /// </summary>
-        public SF_Entity SCH_EMERG_CONTACT_SF { get { return SCH_EMERG_CONTACT == null ? null : Context.SF.FindBySFKEY(SCH_EMERG_CONTACT); } }
-        /// <summary>
         /// Link to the school council representative for the school [Integer (32bit signed nullable): l]
         /// </summary>
         public int? SCH_COUNCIL_PRES { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SCH_COUNCIL_PRES] => [SAM_Entity].[SAMKEY]
-        /// Link to the school council representative for the school
-        /// </summary>
-        public SAM_Entity SCH_COUNCIL_PRES_SAM { get { return SCH_COUNCIL_PRES.HasValue ? Context.SAM.FindBySAMKEY(SCH_COUNCIL_PRES.Value) : null; } }
         /// <summary>
         /// Master key for the school [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -416,7 +340,429 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SCHOOL_LINK] => [SKGS_Entity].[SCHOOL]
+        /// School ID
+        /// </summary>
+        public SKGS_Entity SCHOOL_LINK_SKGS {
+            get
+            {
+                if (SCHOOL_LINK != null)
+                {
+                    if (_SCHOOL_LINK_SKGS == null)
+                    {
+                        _SCHOOL_LINK_SKGS = Context.SKGS.FindBySCHOOL(SCHOOL_LINK);
+                    }
+                    return _SCHOOL_LINK_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_PRINCIPAL] => [SF_Entity].[SFKEY]
+        /// Staff code for Principal of School
+        /// </summary>
+        public SF_Entity SCH_PRINCIPAL_SF {
+            get
+            {
+                if (SCH_PRINCIPAL != null)
+                {
+                    if (_SCH_PRINCIPAL_SF == null)
+                    {
+                        _SCH_PRINCIPAL_SF = Context.SF.FindBySFKEY(SCH_PRINCIPAL);
+                    }
+                    return _SCH_PRINCIPAL_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_OIC] => [SF_Entity].[SFKEY]
+        /// Staff code for Principal of Campus
+        /// </summary>
+        public SF_Entity SF_OIC_SF {
+            get
+            {
+                if (SF_OIC != null)
+                {
+                    if (_SF_OIC_SF == null)
+                    {
+                        _SF_OIC_SF = Context.SF.FindBySFKEY(SF_OIC);
+                    }
+                    return _SF_OIC_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_VPRIN] => [SF_Entity].[SFKEY]
+        /// Staff code for Vice-Principal of School
+        /// </summary>
+        public SF_Entity SF_VPRIN_SF {
+            get
+            {
+                if (SF_VPRIN != null)
+                {
+                    if (_SF_VPRIN_SF == null)
+                    {
+                        _SF_VPRIN_SF = Context.SF.FindBySFKEY(SF_VPRIN);
+                    }
+                    return _SF_VPRIN_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_2VPRIN] => [SF_Entity].[SFKEY]
+        /// Staff code for 2nd Vice-Principal of School
+        /// </summary>
+        public SF_Entity SF_2VPRIN_SF {
+            get
+            {
+                if (SF_2VPRIN != null)
+                {
+                    if (_SF_2VPRIN_SF == null)
+                    {
+                        _SF_2VPRIN_SF = Context.SF.FindBySFKEY(SF_2VPRIN);
+                    }
+                    return _SF_2VPRIN_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_3VPRIN] => [SF_Entity].[SFKEY]
+        /// Staff code for 3rd Vice-Principal of School
+        /// </summary>
+        public SF_Entity SF_3VPRIN_SF {
+            get
+            {
+                if (SF_3VPRIN != null)
+                {
+                    if (_SF_3VPRIN_SF == null)
+                    {
+                        _SF_3VPRIN_SF = Context.SF.FindBySFKEY(SF_3VPRIN);
+                    }
+                    return _SF_3VPRIN_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_APRIN] => [SF_Entity].[SFKEY]
+        /// Staff code for Acting Principal of School
+        /// </summary>
+        public SF_Entity SF_APRIN_SF {
+            get
+            {
+                if (SF_APRIN != null)
+                {
+                    if (_SF_APRIN_SF == null)
+                    {
+                        _SF_APRIN_SF = Context.SF.FindBySFKEY(SF_APRIN);
+                    }
+                    return _SF_APRIN_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_BMANAGER] => [SF_Entity].[SFKEY]
+        /// Staff code for Business Manager of School
+        /// </summary>
+        public SF_Entity SF_BMANAGER_SF {
+            get
+            {
+                if (SF_BMANAGER != null)
+                {
+                    if (_SF_BMANAGER_SF == null)
+                    {
+                        _SF_BMANAGER_SF = Context.SF.FindBySFKEY(SF_BMANAGER);
+                    }
+                    return _SF_BMANAGER_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_VAC_CONTACT] => [SF_Entity].[SFKEY]
+        /// Staff code for Vacation contact person for School
+        /// </summary>
+        public SF_Entity SF_VAC_CONTACT_SF {
+            get
+            {
+                if (SF_VAC_CONTACT != null)
+                {
+                    if (_SF_VAC_CONTACT_SF == null)
+                    {
+                        _SF_VAC_CONTACT_SF = Context.SF.FindBySFKEY(SF_VAC_CONTACT);
+                    }
+                    return _SF_VAC_CONTACT_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SF_EMERG_CONTACT] => [SF_Entity].[SFKEY]
+        /// Staff code for Emergency contact person for School
+        /// </summary>
+        public SF_Entity SF_EMERG_CONTACT_SF {
+            get
+            {
+                if (SF_EMERG_CONTACT != null)
+                {
+                    if (_SF_EMERG_CONTACT_SF == null)
+                    {
+                        _SF_EMERG_CONTACT_SF = Context.SF.FindBySFKEY(SF_EMERG_CONTACT);
+                    }
+                    return _SF_EMERG_CONTACT_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SAM_SCH_COUNCIL] => [SAM_Entity].[SAMKEY]
+        /// ID of School Council representative for School
+        /// </summary>
+        public SAM_Entity SAM_SCH_COUNCIL_SAM {
+            get
+            {
+                if (SAM_SCH_COUNCIL.HasValue)
+                {
+                    if (_SAM_SCH_COUNCIL_SAM == null)
+                    {
+                        _SAM_SCH_COUNCIL_SAM = Context.SAM.FindBySAMKEY(SAM_SCH_COUNCIL.Value);
+                    }
+                    return _SAM_SCH_COUNCIL_SAM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CURRENT_QUILT] => [TH_Entity].[THKEY]
+        /// Code of current quilt
+        /// </summary>
+        public TH_Entity CURRENT_QUILT_TH {
+            get
+            {
+                if (CURRENT_QUILT != null)
+                {
+                    if (_CURRENT_QUILT_TH == null)
+                    {
+                        _CURRENT_QUILT_TH = Context.TH.FindByTHKEY(CURRENT_QUILT);
+                    }
+                    return _CURRENT_QUILT_TH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [REL_INSTR] => [KCI_Entity].[KCIKEY]
+        /// Default religious instruction course
+        /// </summary>
+        public KCI_Entity REL_INSTR_KCI {
+            get
+            {
+                if (REL_INSTR != null)
+                {
+                    if (_REL_INSTR_KCI == null)
+                    {
+                        _REL_INSTR_KCI = Context.KCI.FindByKCIKEY(REL_INSTR);
+                    }
+                    return _REL_INSTR_KCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DESTINATION_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// Default destination for graduating students
+        /// </summary>
+        public SKGS_Entity DESTINATION_SCHOOL_SKGS {
+            get
+            {
+                if (DESTINATION_SCHOOL != null)
+                {
+                    if (_DESTINATION_SCHOOL_SKGS == null)
+                    {
+                        _DESTINATION_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(DESTINATION_SCHOOL);
+                    }
+                    return _DESTINATION_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_AOIC] => [SF_Entity].[SFKEY]
+        /// SFKEY of the staff member that is the Acting School Principal / OIC
+        /// </summary>
+        public SF_Entity SCH_AOIC_SF {
+            get
+            {
+                if (SCH_AOIC != null)
+                {
+                    if (_SCH_AOIC_SF == null)
+                    {
+                        _SCH_AOIC_SF = Context.SF.FindBySFKEY(SCH_AOIC);
+                    }
+                    return _SCH_AOIC_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_VPRIN] => [SF_Entity].[SFKEY]
+        /// SFKEY of the staff member that is the Assistant School Principal i.e. Vice Principal
+        /// </summary>
+        public SF_Entity SCH_VPRIN_SF {
+            get
+            {
+                if (SCH_VPRIN != null)
+                {
+                    if (_SCH_VPRIN_SF == null)
+                    {
+                        _SCH_VPRIN_SF = Context.SF.FindBySFKEY(SCH_VPRIN);
+                    }
+                    return _SCH_VPRIN_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_BMANAGER] => [SF_Entity].[SFKEY]
+        /// SFKEY of the staff member that is the School Business Manager
+        /// </summary>
+        public SF_Entity SCH_BMANAGER_SF {
+            get
+            {
+                if (SCH_BMANAGER != null)
+                {
+                    if (_SCH_BMANAGER_SF == null)
+                    {
+                        _SCH_BMANAGER_SF = Context.SF.FindBySFKEY(SCH_BMANAGER);
+                    }
+                    return _SCH_BMANAGER_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_VAC_CONTACT] => [SF_Entity].[SFKEY]
+        /// SFKEY of the staff member that is the School Vacation contact
+        /// </summary>
+        public SF_Entity SCH_VAC_CONTACT_SF {
+            get
+            {
+                if (SCH_VAC_CONTACT != null)
+                {
+                    if (_SCH_VAC_CONTACT_SF == null)
+                    {
+                        _SCH_VAC_CONTACT_SF = Context.SF.FindBySFKEY(SCH_VAC_CONTACT);
+                    }
+                    return _SCH_VAC_CONTACT_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_EMERG_CONTACT] => [SF_Entity].[SFKEY]
+        /// SFKEY of the staff member that is the School Emergency contact
+        /// </summary>
+        public SF_Entity SCH_EMERG_CONTACT_SF {
+            get
+            {
+                if (SCH_EMERG_CONTACT != null)
+                {
+                    if (_SCH_EMERG_CONTACT_SF == null)
+                    {
+                        _SCH_EMERG_CONTACT_SF = Context.SF.FindBySFKEY(SCH_EMERG_CONTACT);
+                    }
+                    return _SCH_EMERG_CONTACT_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCH_COUNCIL_PRES] => [SAM_Entity].[SAMKEY]
+        /// Link to the school council representative for the school
+        /// </summary>
+        public SAM_Entity SCH_COUNCIL_PRES_SAM {
+            get
+            {
+                if (SCH_COUNCIL_PRES.HasValue)
+                {
+                    if (_SCH_COUNCIL_PRES_SAM == null)
+                    {
+                        _SCH_COUNCIL_PRES_SAM = Context.SAM.FindBySAMKEY(SCH_COUNCIL_PRES.Value);
+                    }
+                    return _SCH_COUNCIL_PRES_SAM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

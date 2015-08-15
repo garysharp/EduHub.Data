@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PML_DataSet : SetBase<PML_Entity>
     {
+        private Lazy<Dictionary<short, PML_Entity>> SCALE_Index;
+
         internal PML_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCALE_Index = new Lazy<Dictionary<short, PML_Entity>>(() => this.ToDictionary(e => e.SCALE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PML"; } }
 
-        private Lazy<Dictionary<short, PML_Entity>> SCALE_Index;
-
+        /// <summary>
+        /// Find PML by SCALE key field
+        /// </summary>
+        /// <param name="Key">SCALE value used to find PML</param>
+        /// <returns>Related PML entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCALE value didn't match any PML entities</exception>
         public PML_Entity FindBySCALE(short Key)
         {
             PML_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PML by SCALE key field
+        /// </summary>
+        /// <param name="Key">SCALE value used to find PML</param>
+        /// <param name="Value">Related PML entity</param>
+        /// <returns>True if the PML Entity is found</returns>
         public bool TryFindBySCALE(short Key, out PML_Entity Value)
         {
             return SCALE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PML by SCALE key field
+        /// </summary>
+        /// <param name="Key">SCALE value used to find PML</param>
+        /// <returns>Related PML entity, or null if not found</returns>
         public PML_Entity TryFindBySCALE(short Key)
         {
             PML_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PML_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PML_Entity, string>[Headers.Count];

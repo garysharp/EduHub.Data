@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SCSF_DataSet : SetBase<SCSF_Entity>
     {
+        private Lazy<Dictionary<string, SCSF_Entity>> SCSFKEY_Index;
+
         internal SCSF_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCSFKEY_Index = new Lazy<Dictionary<string, SCSF_Entity>>(() => this.ToDictionary(e => e.SCSFKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SCSF"; } }
 
-        private Lazy<Dictionary<string, SCSF_Entity>> SCSFKEY_Index;
-
+        /// <summary>
+        /// Find SCSF by SCSFKEY key field
+        /// </summary>
+        /// <param name="Key">SCSFKEY value used to find SCSF</param>
+        /// <returns>Related SCSF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCSFKEY value didn't match any SCSF entities</exception>
         public SCSF_Entity FindBySCSFKEY(string Key)
         {
             SCSF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SCSF by SCSFKEY key field
+        /// </summary>
+        /// <param name="Key">SCSFKEY value used to find SCSF</param>
+        /// <param name="Value">Related SCSF entity</param>
+        /// <returns>True if the SCSF Entity is found</returns>
         public bool TryFindBySCSFKEY(string Key, out SCSF_Entity Value)
         {
             return SCSFKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SCSF by SCSFKEY key field
+        /// </summary>
+        /// <param name="Key">SCSFKEY value used to find SCSF</param>
+        /// <returns>Related SCSF entity, or null if not found</returns>
         public SCSF_Entity TryFindBySCSFKEY(string Key)
         {
             SCSF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SCSF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCSF_Entity, string>[Headers.Count];

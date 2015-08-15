@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCM_TFR_DataSet : SetBase<KCM_TFR_Entity>
     {
+
         internal KCM_TFR_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCM_TFR"; } }
 
-
-        
         protected override Action<KCM_TFR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCM_TFR_Entity, string>[Headers.Count];

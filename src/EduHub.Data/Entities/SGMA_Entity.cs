@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SGMA_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SG_Entity _SGMAKEY_SG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Code of group holding this meeting [Uppercase Alphanumeric: u12]
         /// </summary>
         public string SGMAKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SGMAKEY] => [SG_Entity].[SGKEY]
-        /// Code of group holding this meeting
-        /// </summary>
-        public SG_Entity SGMAKEY_SG { get { return SGMAKEY == null ? null : Context.SG.FindBySGKEY(SGMAKEY); } }
         /// <summary>
         /// TID of the meeting [Integer (32bit signed nullable): l]
         /// </summary>
@@ -53,7 +53,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SGMAKEY] => [SG_Entity].[SGKEY]
+        /// Code of group holding this meeting
+        /// </summary>
+        public SG_Entity SGMAKEY_SG {
+            get
+            {
+                if (SGMAKEY != null)
+                {
+                    if (_SGMAKEY_SG == null)
+                    {
+                        _SGMAKEY_SG = Context.SG.FindBySGKEY(SGMAKEY);
+                    }
+                    return _SGMAKEY_SG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

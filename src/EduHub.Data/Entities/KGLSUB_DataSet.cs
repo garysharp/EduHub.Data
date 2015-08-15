@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGLSUB_DataSet : SetBase<KGLSUB_Entity>
     {
+        private Lazy<Dictionary<string, KGLSUB_Entity>> SUBPROGRAM_Index;
+
         internal KGLSUB_DataSet(EduHubContext Context)
             : base(Context)
         {
             SUBPROGRAM_Index = new Lazy<Dictionary<string, KGLSUB_Entity>>(() => this.ToDictionary(e => e.SUBPROGRAM));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGLSUB"; } }
 
-        private Lazy<Dictionary<string, KGLSUB_Entity>> SUBPROGRAM_Index;
-
+        /// <summary>
+        /// Find KGLSUB by SUBPROGRAM key field
+        /// </summary>
+        /// <param name="Key">SUBPROGRAM value used to find KGLSUB</param>
+        /// <returns>Related KGLSUB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SUBPROGRAM value didn't match any KGLSUB entities</exception>
         public KGLSUB_Entity FindBySUBPROGRAM(string Key)
         {
             KGLSUB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGLSUB by SUBPROGRAM key field
+        /// </summary>
+        /// <param name="Key">SUBPROGRAM value used to find KGLSUB</param>
+        /// <param name="Value">Related KGLSUB entity</param>
+        /// <returns>True if the KGLSUB Entity is found</returns>
         public bool TryFindBySUBPROGRAM(string Key, out KGLSUB_Entity Value)
         {
             return SUBPROGRAM_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGLSUB by SUBPROGRAM key field
+        /// </summary>
+        /// <param name="Key">SUBPROGRAM value used to find KGLSUB</param>
+        /// <returns>Related KGLSUB entity, or null if not found</returns>
         public KGLSUB_Entity TryFindBySUBPROGRAM(string Key)
         {
             KGLSUB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGLSUB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLSUB_Entity, string>[Headers.Count];

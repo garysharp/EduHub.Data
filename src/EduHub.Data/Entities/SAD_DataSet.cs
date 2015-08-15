@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAD_DataSet : SetBase<SAD_Entity>
     {
+        private Lazy<Dictionary<int, SAD_Entity>> SADKEY_Index;
+
         internal SAD_DataSet(EduHubContext Context)
             : base(Context)
         {
             SADKEY_Index = new Lazy<Dictionary<int, SAD_Entity>>(() => this.ToDictionary(e => e.SADKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAD"; } }
 
-        private Lazy<Dictionary<int, SAD_Entity>> SADKEY_Index;
-
+        /// <summary>
+        /// Find SAD by SADKEY key field
+        /// </summary>
+        /// <param name="Key">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SADKEY value didn't match any SAD entities</exception>
         public SAD_Entity FindBySADKEY(int Key)
         {
             SAD_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SAD by SADKEY key field
+        /// </summary>
+        /// <param name="Key">SADKEY value used to find SAD</param>
+        /// <param name="Value">Related SAD entity</param>
+        /// <returns>True if the SAD Entity is found</returns>
         public bool TryFindBySADKEY(int Key, out SAD_Entity Value)
         {
             return SADKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SAD by SADKEY key field
+        /// </summary>
+        /// <param name="Key">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity, or null if not found</returns>
         public SAD_Entity TryFindBySADKEY(int Key)
         {
             SAD_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SAD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAD_Entity, string>[Headers.Count];

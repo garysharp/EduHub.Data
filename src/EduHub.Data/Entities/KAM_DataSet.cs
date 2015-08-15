@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KAM_DataSet : SetBase<KAM_Entity>
     {
+        private Lazy<Dictionary<string, KAM_Entity>> KAMKEY_Index;
+
         internal KAM_DataSet(EduHubContext Context)
             : base(Context)
         {
             KAMKEY_Index = new Lazy<Dictionary<string, KAM_Entity>>(() => this.ToDictionary(e => e.KAMKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KAM"; } }
 
-        private Lazy<Dictionary<string, KAM_Entity>> KAMKEY_Index;
-
+        /// <summary>
+        /// Find KAM by KAMKEY key field
+        /// </summary>
+        /// <param name="Key">KAMKEY value used to find KAM</param>
+        /// <returns>Related KAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KAMKEY value didn't match any KAM entities</exception>
         public KAM_Entity FindByKAMKEY(string Key)
         {
             KAM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KAM by KAMKEY key field
+        /// </summary>
+        /// <param name="Key">KAMKEY value used to find KAM</param>
+        /// <param name="Value">Related KAM entity</param>
+        /// <returns>True if the KAM Entity is found</returns>
         public bool TryFindByKAMKEY(string Key, out KAM_Entity Value)
         {
             return KAMKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KAM by KAMKEY key field
+        /// </summary>
+        /// <param name="Key">KAMKEY value used to find KAM</param>
+        /// <returns>Related KAM entity, or null if not found</returns>
         public KAM_Entity TryFindByKAMKEY(string Key)
         {
             KAM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KAM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAM_Entity, string>[Headers.Count];

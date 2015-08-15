@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class STTRIPS_DataSet : SetBase<STTRIPS_Entity>
     {
+
         internal STTRIPS_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "STTRIPS"; } }
 
-
-        
         protected override Action<STTRIPS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STTRIPS_Entity, string>[Headers.Count];

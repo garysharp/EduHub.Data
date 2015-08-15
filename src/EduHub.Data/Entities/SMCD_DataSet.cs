@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SMCD_DataSet : SetBase<SMCD_Entity>
     {
+
         internal SMCD_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SMCD"; } }
 
-
-        
         protected override Action<SMCD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMCD_Entity, string>[Headers.Count];

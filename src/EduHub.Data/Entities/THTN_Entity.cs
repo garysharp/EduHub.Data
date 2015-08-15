@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class THTN_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TH_Entity _QKEY_TH;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Link to Timetable Quilt Header [Uppercase Alphanumeric: u8]
         /// </summary>
         public string QKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
-        /// Link to Timetable Quilt Header
-        /// </summary>
-        public TH_Entity QKEY_TH { get { return QKEY == null ? null : Context.TH.FindByTHKEY(QKEY); } }
         /// <summary>
         /// Number > 0 for quilt label,< 0 extra labels [Integer (16bit signed nullable): i]
         /// </summary>
@@ -49,7 +49,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
+        /// Link to Timetable Quilt Header
+        /// </summary>
+        public TH_Entity QKEY_TH {
+            get
+            {
+                if (QKEY != null)
+                {
+                    if (_QKEY_TH == null)
+                    {
+                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                    }
+                    return _QKEY_TH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

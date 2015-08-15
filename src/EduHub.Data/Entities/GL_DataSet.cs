@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GL_DataSet : SetBase<GL_Entity>
     {
+        private Lazy<Dictionary<string, GL_Entity>> CODE_Index;
+
         internal GL_DataSet(EduHubContext Context)
             : base(Context)
         {
             CODE_Index = new Lazy<Dictionary<string, GL_Entity>>(() => this.ToDictionary(e => e.CODE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GL"; } }
 
-        private Lazy<Dictionary<string, GL_Entity>> CODE_Index;
-
+        /// <summary>
+        /// Find GL by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GL</param>
+        /// <returns>Related GL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">CODE value didn't match any GL entities</exception>
         public GL_Entity FindByCODE(string Key)
         {
             GL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GL by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GL</param>
+        /// <param name="Value">Related GL entity</param>
+        /// <returns>True if the GL Entity is found</returns>
         public bool TryFindByCODE(string Key, out GL_Entity Value)
         {
             return CODE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GL by CODE key field
+        /// </summary>
+        /// <param name="Key">CODE value used to find GL</param>
+        /// <returns>Related GL entity, or null if not found</returns>
         public GL_Entity TryFindByCODE(string Key)
         {
             GL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GL_Entity, string>[Headers.Count];

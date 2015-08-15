@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SADP_DataSet : SetBase<SADP_Entity>
     {
+
         internal SADP_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SADP"; } }
 
-
-        
         protected override Action<SADP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SADP_Entity, string>[Headers.Count];

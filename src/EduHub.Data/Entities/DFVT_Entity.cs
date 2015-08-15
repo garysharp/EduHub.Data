@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DFVT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private DF_Entity _FAMILY_DF;
+        private KGST_Entity _GST_TYPE_KGST;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// Family key [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FAMILY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FAMILY] => [DF_Entity].[DFKEY]
-        /// Family key
-        /// </summary>
-        public DF_Entity FAMILY_DF { get { return FAMILY == null ? null : Context.DF.FindByDFKEY(FAMILY); } }
         /// <summary>
         /// Batch number [Integer (32bit signed nullable): l]
         /// </summary>
@@ -59,11 +60,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GST_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
-        /// Relate to KGST
-        /// </summary>
-        public KGST_Entity GST_TYPE_KGST { get { return GST_TYPE == null ? null : Context.KGST.FindByKGSTKEY(GST_TYPE); } }
-        /// <summary>
         /// Rate of GST [Floating Point Number (precision 15 nullable): r]
         /// </summary>
         public double? GST_RATE { get; internal set; }
@@ -100,7 +96,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FAMILY] => [DF_Entity].[DFKEY]
+        /// Family key
+        /// </summary>
+        public DF_Entity FAMILY_DF {
+            get
+            {
+                if (FAMILY != null)
+                {
+                    if (_FAMILY_DF == null)
+                    {
+                        _FAMILY_DF = Context.DF.FindByDFKEY(FAMILY);
+                    }
+                    return _FAMILY_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
+        /// Relate to KGST
+        /// </summary>
+        public KGST_Entity GST_TYPE_KGST {
+            get
+            {
+                if (GST_TYPE != null)
+                {
+                    if (_GST_TYPE_KGST == null)
+                    {
+                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                    }
+                    return _GST_TYPE_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

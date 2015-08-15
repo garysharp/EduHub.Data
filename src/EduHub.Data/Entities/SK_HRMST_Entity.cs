@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SK_HRMST_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Seq [Integer (32bit signed): l]
         /// </summary>
@@ -132,7 +136,9 @@ namespace EduHub.Data.Entities
         /// Finish Date [Date Time nullable: d]
         /// </summary>
         public DateTime? FINISH_DATE { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

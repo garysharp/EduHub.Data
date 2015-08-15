@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SMAV_DataSet : SetBase<SMAV_Entity>
     {
+
         internal SMAV_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SMAV"; } }
 
-
-        
         protected override Action<SMAV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMAV_Entity, string>[Headers.Count];

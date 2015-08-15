@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SPOUT_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique identifier consisting of school number,user name and timestamp [Alphanumeric: a100]
         /// </summary>
@@ -84,7 +88,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

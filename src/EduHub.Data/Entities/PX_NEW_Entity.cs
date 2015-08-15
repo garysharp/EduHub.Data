@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PX_NEW_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Tax scale number [Integer (16bit signed): i]
         /// </summary>
@@ -280,7 +284,9 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

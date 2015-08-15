@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TRPROUT_DataSet : SetBase<TRPROUT_Entity>
     {
+        private Lazy<Dictionary<int, TRPROUT_Entity>> ROUTE_ID_Index;
+
         internal TRPROUT_DataSet(EduHubContext Context)
             : base(Context)
         {
             ROUTE_ID_Index = new Lazy<Dictionary<int, TRPROUT_Entity>>(() => this.ToDictionary(e => e.ROUTE_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TRPROUT"; } }
 
-        private Lazy<Dictionary<int, TRPROUT_Entity>> ROUTE_ID_Index;
-
+        /// <summary>
+        /// Find TRPROUT by ROUTE_ID key field
+        /// </summary>
+        /// <param name="Key">ROUTE_ID value used to find TRPROUT</param>
+        /// <returns>Related TRPROUT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ROUTE_ID value didn't match any TRPROUT entities</exception>
         public TRPROUT_Entity FindByROUTE_ID(int Key)
         {
             TRPROUT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TRPROUT by ROUTE_ID key field
+        /// </summary>
+        /// <param name="Key">ROUTE_ID value used to find TRPROUT</param>
+        /// <param name="Value">Related TRPROUT entity</param>
+        /// <returns>True if the TRPROUT Entity is found</returns>
         public bool TryFindByROUTE_ID(int Key, out TRPROUT_Entity Value)
         {
             return ROUTE_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TRPROUT by ROUTE_ID key field
+        /// </summary>
+        /// <param name="Key">ROUTE_ID value used to find TRPROUT</param>
+        /// <returns>Related TRPROUT entity, or null if not found</returns>
         public TRPROUT_Entity TryFindByROUTE_ID(int Key)
         {
             TRPROUT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TRPROUT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TRPROUT_Entity, string>[Headers.Count];

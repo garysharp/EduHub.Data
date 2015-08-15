@@ -8,6 +8,35 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class ST_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private DF_Entity _FAMILY_DF;
+        private DF_Entity _FAMB_DF;
+        private DF_Entity _FAMC_DF;
+        private SKGS_Entity _PREVIOUS_SCHOOL_SKGS;
+        private KGC_Entity _HOME_GROUP_KGC;
+        private KGC_Entity _NEXT_HG_KGC;
+        private KCY_Entity _SCHOOL_YEAR_KCY;
+        private KGH_Entity _HOUSE_KGH;
+        private SCI_Entity _CAMPUS_SCI;
+        private KGR_Entity _RELIGION_KGR;
+        private KCI_Entity _REL_INSTR_KCI;
+        private KCV_Entity _VISA_SUBCLASS_KCV;
+        private KGT_Entity _BIRTH_COUNTRY_KGT;
+        private KGL_Entity _HOME_LANG_KGL;
+        private KCD_Entity _DOCTOR_KCD;
+        private KGL_Entity _EMERG_LANG01_KGL;
+        private KGL_Entity _EMERG_LANG02_KGL;
+        private KGL_Entity _LANGUAGE_PREVIOUS_SCHOOLING_KGL;
+        private SKGS_Entity _NEXT_SCHOOL_SKGS;
+        private KGG_Entity _EXIT_CAT01_KGG;
+        private KGG_Entity _EXIT_CAT02_KGG;
+        private KGD_Entity _EXIT_DEST01_KGD;
+        private KGD_Entity _EXIT_DEST02_KGD;
+        private KCT_Entity _INAC_ABS_CODE_KCT;
+        private KGL_Entity _LOTE_HOME_CODE_KGL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Student ID [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -37,11 +66,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FAMILY { get; internal set; }
         /// <summary>
-        /// Navigation property for [FAMILY] => [DF_Entity].[DFKEY]
-        /// Student's prime family
-        /// </summary>
-        public DF_Entity FAMILY_DF { get { return FAMILY == null ? null : Context.DF.FindByDFKEY(FAMILY); } }
-        /// <summary>
         /// Does the prime family receive academic reports? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
         public string ACADEMIC_A { get; internal set; }
@@ -66,11 +90,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FAMB { get; internal set; }
         /// <summary>
-        /// Navigation property for [FAMB] => [DF_Entity].[DFKEY]
-        /// Student's alternative family
-        /// </summary>
-        public DF_Entity FAMB_DF { get { return FAMB == null ? null : Context.DF.FindByDFKEY(FAMB); } }
-        /// <summary>
         /// Does the alternative family receive academic reports? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
         public string ACADEMIC_B { get; internal set; }
@@ -94,11 +113,6 @@ namespace EduHub.Data.Entities
         /// Student's additional contact family [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FAMC { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FAMC] => [DF_Entity].[DFKEY]
-        /// Student's additional contact family
-        /// </summary>
-        public DF_Entity FAMC_DF { get { return FAMC == null ? null : Context.DF.FindByDFKEY(FAMC); } }
         /// <summary>
         /// Does the additional contact family receive academic reports? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -224,11 +238,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string PREVIOUS_SCHOOL { get; internal set; }
         /// <summary>
-        /// Navigation property for [PREVIOUS_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// (Was PREVIOUS) Previous school attended
-        /// </summary>
-        public SKGS_Entity PREVIOUS_SCHOOL_SKGS { get { return PREVIOUS_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(PREVIOUS_SCHOOL); } }
-        /// <summary>
         /// Order in family (automatically maintained by software) [Integer (16bit signed nullable): i]
         /// </summary>
         public short? FAM_ORDER { get; internal set; }
@@ -277,46 +286,21 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HOME_GROUP { get; internal set; }
         /// <summary>
-        /// Navigation property for [HOME_GROUP] => [KGC_Entity].[KGCKEY]
-        /// (Was FORM) Student's home group
-        /// </summary>
-        public KGC_Entity HOME_GROUP_KGC { get { return HOME_GROUP == null ? null : Context.KGC.FindByKGCKEY(HOME_GROUP); } }
-        /// <summary>
         /// Anticipated next home group [Uppercase Alphanumeric: u3]
         /// </summary>
         public string NEXT_HG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [NEXT_HG] => [KGC_Entity].[KGCKEY]
-        /// Anticipated next home group
-        /// </summary>
-        public KGC_Entity NEXT_HG_KGC { get { return NEXT_HG == null ? null : Context.KGC.FindByKGCKEY(NEXT_HG); } }
         /// <summary>
         /// Year level [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SCHOOL_YEAR { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
-        /// Year level
-        /// </summary>
-        public KCY_Entity SCHOOL_YEAR_KCY { get { return SCHOOL_YEAR == null ? null : Context.KCY.FindByKCYKEY(SCHOOL_YEAR); } }
-        /// <summary>
         /// Student's house group [Uppercase Alphanumeric: u10]
         /// </summary>
         public string HOUSE { get; internal set; }
         /// <summary>
-        /// Navigation property for [HOUSE] => [KGH_Entity].[KGHKEY]
-        /// Student's house group
-        /// </summary>
-        public KGH_Entity HOUSE_KGH { get { return HOUSE == null ? null : Context.KGH.FindByKGHKEY(HOUSE); } }
-        /// <summary>
         /// Student's home campus [Integer (32bit signed nullable): l]
         /// </summary>
         public int? CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Student's home campus
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
         /// <summary>
         ///  [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -326,19 +310,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string RELIGION { get; internal set; }
         /// <summary>
-        /// Navigation property for [RELIGION] => [KGR_Entity].[RELIGION]
-        /// Religion
-        /// </summary>
-        public KGR_Entity RELIGION_KGR { get { return RELIGION == null ? null : Context.KGR.FindByRELIGION(RELIGION); } }
-        /// <summary>
         /// Link to Religious Instruction Course [Uppercase Alphanumeric: u10]
         /// </summary>
         public string REL_INSTR { get; internal set; }
-        /// <summary>
-        /// Navigation property for [REL_INSTR] => [KCI_Entity].[KCIKEY]
-        /// Link to Religious Instruction Course
-        /// </summary>
-        public KCI_Entity REL_INSTR_KCI { get { return REL_INSTR == null ? null : Context.KCI.FindByKCIKEY(REL_INSTR); } }
         /// <summary>
         /// External exam code (BoS no): possibly not required [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -347,11 +321,6 @@ namespace EduHub.Data.Entities
         /// Visa Sub-class [Uppercase Alphanumeric: u3]
         /// </summary>
         public string VISA_SUBCLASS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [VISA_SUBCLASS] => [KCV_Entity].[VISA_SUBCLASS]
-        /// Visa Sub-class
-        /// </summary>
-        public KCV_Entity VISA_SUBCLASS_KCV { get { return VISA_SUBCLASS == null ? null : Context.KCV.FindByVISA_SUBCLASS(VISA_SUBCLASS); } }
         /// <summary>
         /// Visa statistical code [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -369,11 +338,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BIRTH_COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country of birth
-        /// </summary>
-        public KGT_Entity BIRTH_COUNTRY_KGT { get { return BIRTH_COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY); } }
-        /// <summary>
         /// Student speaks English? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
         public string ENG_SPEAK { get; internal set; }
@@ -381,11 +345,6 @@ namespace EduHub.Data.Entities
         /// The language spoken at home: copied from DF record of family with whom student lives most [Uppercase Alphanumeric: u7]
         /// </summary>
         public string HOME_LANG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
-        /// The language spoken at home: copied from DF record of family with whom student lives most
-        /// </summary>
-        public KGL_Entity HOME_LANG_KGL { get { return HOME_LANG == null ? null : Context.KGL.FindByKGLKEY(HOME_LANG); } }
         /// <summary>
         /// Born overseas? (Y/N): set to Y if ST.BIRTH_COUNTRY <> "1101": if Y then ARRIVAL is requested [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -427,11 +386,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DOCTOR { get; internal set; }
         /// <summary>
-        /// Navigation property for [DOCTOR] => [KCD_Entity].[KCDKEY]
-        /// Student's regular medical practitioner
-        /// </summary>
-        public KCD_Entity DOCTOR_KCD { get { return DOCTOR == null ? null : Context.KCD.FindByKCDKEY(DOCTOR); } }
-        /// <summary>
         /// Name(s) of person(s) to contact in an emergency [Titlecase: t30]
         /// </summary>
         public string EMERG_NAME01 { get; internal set; }
@@ -444,19 +398,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string EMERG_LANG01 { get; internal set; }
         /// <summary>
-        /// Navigation property for [EMERG_LANG01] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG01_KGL { get { return EMERG_LANG01 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG01); } }
-        /// <summary>
         /// Language spoken by person(s) to contact in an emergency [Uppercase Alphanumeric: u7]
         /// </summary>
         public string EMERG_LANG02 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [EMERG_LANG02] => [KGL_Entity].[KGLKEY]
-        /// Language spoken by person(s) to contact in an emergency
-        /// </summary>
-        public KGL_Entity EMERG_LANG02_KGL { get { return EMERG_LANG02 == null ? null : Context.KGL.FindByKGLKEY(EMERG_LANG02); } }
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency [Alphanumeric: a11]
         /// </summary>
@@ -638,55 +582,25 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string LANGUAGE_PREVIOUS_SCHOOLING { get; internal set; }
         /// <summary>
-        /// Navigation property for [LANGUAGE_PREVIOUS_SCHOOLING] => [KGL_Entity].[KGLKEY]
-        /// Language of previous schooling
-        /// </summary>
-        public KGL_Entity LANGUAGE_PREVIOUS_SCHOOLING_KGL { get { return LANGUAGE_PREVIOUS_SCHOOLING == null ? null : Context.KGL.FindByKGLKEY(LANGUAGE_PREVIOUS_SCHOOLING); } }
-        /// <summary>
         /// School to which departed student has gone (if any) [Uppercase Alphanumeric: u8]
         /// </summary>
         public string NEXT_SCHOOL { get; internal set; }
-        /// <summary>
-        /// Navigation property for [NEXT_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// School to which departed student has gone (if any)
-        /// </summary>
-        public SKGS_Entity NEXT_SCHOOL_SKGS { get { return NEXT_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(NEXT_SCHOOL); } }
         /// <summary>
         /// EXIT Category [Uppercase Alphanumeric: u2]
         /// </summary>
         public string EXIT_CAT01 { get; internal set; }
         /// <summary>
-        /// Navigation property for [EXIT_CAT01] => [KGG_Entity].[KGGKEY]
-        /// EXIT Category
-        /// </summary>
-        public KGG_Entity EXIT_CAT01_KGG { get { return EXIT_CAT01 == null ? null : Context.KGG.FindByKGGKEY(EXIT_CAT01); } }
-        /// <summary>
         /// EXIT Category [Uppercase Alphanumeric: u2]
         /// </summary>
         public string EXIT_CAT02 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [EXIT_CAT02] => [KGG_Entity].[KGGKEY]
-        /// EXIT Category
-        /// </summary>
-        public KGG_Entity EXIT_CAT02_KGG { get { return EXIT_CAT02 == null ? null : Context.KGG.FindByKGGKEY(EXIT_CAT02); } }
         /// <summary>
         /// EXIT Destination [Uppercase Alphanumeric: u6]
         /// </summary>
         public string EXIT_DEST01 { get; internal set; }
         /// <summary>
-        /// Navigation property for [EXIT_DEST01] => [KGD_Entity].[KGDKEY]
-        /// EXIT Destination
-        /// </summary>
-        public KGD_Entity EXIT_DEST01_KGD { get { return EXIT_DEST01 == null ? null : Context.KGD.FindByKGDKEY(EXIT_DEST01); } }
-        /// <summary>
         /// EXIT Destination [Uppercase Alphanumeric: u6]
         /// </summary>
         public string EXIT_DEST02 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [EXIT_DEST02] => [KGD_Entity].[KGDKEY]
-        /// EXIT Destination
-        /// </summary>
-        public KGD_Entity EXIT_DEST02_KGD { get { return EXIT_DEST02 == null ? null : Context.KGD.FindByKGDKEY(EXIT_DEST02); } }
         /// <summary>
         /// Last write date of EXIT_CAT and EXIT_DEST [Date Time nullable: d]
         /// </summary>
@@ -768,19 +682,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? INAC_ABS_CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [INAC_ABS_CODE] => [KCT_Entity].[KCTKEY]
-        /// Code used to populate attendance records whilst status is INACtive.
-        /// </summary>
-        public KCT_Entity INAC_ABS_CODE_KCT { get { return INAC_ABS_CODE.HasValue ? Context.KCT.FindByKCTKEY(INAC_ABS_CODE.Value) : null; } }
-        /// <summary>
         /// The Language other than English spoken at home by student [Uppercase Alphanumeric: u7]
         /// </summary>
         public string LOTE_HOME_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE] => [KGL_Entity].[KGLKEY]
-        /// The Language other than English spoken at home by student
-        /// </summary>
-        public KGL_Entity LOTE_HOME_CODE_KGL { get { return LOTE_HOME_CODE == null ? null : Context.KGL.FindByKGLKEY(LOTE_HOME_CODE); } }
         /// <summary>
         /// Victorian Studant Number [Uppercase Alphanumeric: u12]
         /// </summary>
@@ -809,7 +713,534 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FAMILY] => [DF_Entity].[DFKEY]
+        /// Student's prime family
+        /// </summary>
+        public DF_Entity FAMILY_DF {
+            get
+            {
+                if (FAMILY != null)
+                {
+                    if (_FAMILY_DF == null)
+                    {
+                        _FAMILY_DF = Context.DF.FindByDFKEY(FAMILY);
+                    }
+                    return _FAMILY_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FAMB] => [DF_Entity].[DFKEY]
+        /// Student's alternative family
+        /// </summary>
+        public DF_Entity FAMB_DF {
+            get
+            {
+                if (FAMB != null)
+                {
+                    if (_FAMB_DF == null)
+                    {
+                        _FAMB_DF = Context.DF.FindByDFKEY(FAMB);
+                    }
+                    return _FAMB_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FAMC] => [DF_Entity].[DFKEY]
+        /// Student's additional contact family
+        /// </summary>
+        public DF_Entity FAMC_DF {
+            get
+            {
+                if (FAMC != null)
+                {
+                    if (_FAMC_DF == null)
+                    {
+                        _FAMC_DF = Context.DF.FindByDFKEY(FAMC);
+                    }
+                    return _FAMC_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PREVIOUS_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// (Was PREVIOUS) Previous school attended
+        /// </summary>
+        public SKGS_Entity PREVIOUS_SCHOOL_SKGS {
+            get
+            {
+                if (PREVIOUS_SCHOOL != null)
+                {
+                    if (_PREVIOUS_SCHOOL_SKGS == null)
+                    {
+                        _PREVIOUS_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(PREVIOUS_SCHOOL);
+                    }
+                    return _PREVIOUS_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOME_GROUP] => [KGC_Entity].[KGCKEY]
+        /// (Was FORM) Student's home group
+        /// </summary>
+        public KGC_Entity HOME_GROUP_KGC {
+            get
+            {
+                if (HOME_GROUP != null)
+                {
+                    if (_HOME_GROUP_KGC == null)
+                    {
+                        _HOME_GROUP_KGC = Context.KGC.FindByKGCKEY(HOME_GROUP);
+                    }
+                    return _HOME_GROUP_KGC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [NEXT_HG] => [KGC_Entity].[KGCKEY]
+        /// Anticipated next home group
+        /// </summary>
+        public KGC_Entity NEXT_HG_KGC {
+            get
+            {
+                if (NEXT_HG != null)
+                {
+                    if (_NEXT_HG_KGC == null)
+                    {
+                        _NEXT_HG_KGC = Context.KGC.FindByKGCKEY(NEXT_HG);
+                    }
+                    return _NEXT_HG_KGC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
+        /// Year level
+        /// </summary>
+        public KCY_Entity SCHOOL_YEAR_KCY {
+            get
+            {
+                if (SCHOOL_YEAR != null)
+                {
+                    if (_SCHOOL_YEAR_KCY == null)
+                    {
+                        _SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
+                    }
+                    return _SCHOOL_YEAR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOUSE] => [KGH_Entity].[KGHKEY]
+        /// Student's house group
+        /// </summary>
+        public KGH_Entity HOUSE_KGH {
+            get
+            {
+                if (HOUSE != null)
+                {
+                    if (_HOUSE_KGH == null)
+                    {
+                        _HOUSE_KGH = Context.KGH.FindByKGHKEY(HOUSE);
+                    }
+                    return _HOUSE_KGH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Student's home campus
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [RELIGION] => [KGR_Entity].[RELIGION]
+        /// Religion
+        /// </summary>
+        public KGR_Entity RELIGION_KGR {
+            get
+            {
+                if (RELIGION != null)
+                {
+                    if (_RELIGION_KGR == null)
+                    {
+                        _RELIGION_KGR = Context.KGR.FindByRELIGION(RELIGION);
+                    }
+                    return _RELIGION_KGR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [REL_INSTR] => [KCI_Entity].[KCIKEY]
+        /// Link to Religious Instruction Course
+        /// </summary>
+        public KCI_Entity REL_INSTR_KCI {
+            get
+            {
+                if (REL_INSTR != null)
+                {
+                    if (_REL_INSTR_KCI == null)
+                    {
+                        _REL_INSTR_KCI = Context.KCI.FindByKCIKEY(REL_INSTR);
+                    }
+                    return _REL_INSTR_KCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [VISA_SUBCLASS] => [KCV_Entity].[VISA_SUBCLASS]
+        /// Visa Sub-class
+        /// </summary>
+        public KCV_Entity VISA_SUBCLASS_KCV {
+            get
+            {
+                if (VISA_SUBCLASS != null)
+                {
+                    if (_VISA_SUBCLASS_KCV == null)
+                    {
+                        _VISA_SUBCLASS_KCV = Context.KCV.FindByVISA_SUBCLASS(VISA_SUBCLASS);
+                    }
+                    return _VISA_SUBCLASS_KCV;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BIRTH_COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country of birth
+        /// </summary>
+        public KGT_Entity BIRTH_COUNTRY_KGT {
+            get
+            {
+                if (BIRTH_COUNTRY != null)
+                {
+                    if (_BIRTH_COUNTRY_KGT == null)
+                    {
+                        _BIRTH_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY);
+                    }
+                    return _BIRTH_COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
+        /// The language spoken at home: copied from DF record of family with whom student lives most
+        /// </summary>
+        public KGL_Entity HOME_LANG_KGL {
+            get
+            {
+                if (HOME_LANG != null)
+                {
+                    if (_HOME_LANG_KGL == null)
+                    {
+                        _HOME_LANG_KGL = Context.KGL.FindByKGLKEY(HOME_LANG);
+                    }
+                    return _HOME_LANG_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DOCTOR] => [KCD_Entity].[KCDKEY]
+        /// Student's regular medical practitioner
+        /// </summary>
+        public KCD_Entity DOCTOR_KCD {
+            get
+            {
+                if (DOCTOR != null)
+                {
+                    if (_DOCTOR_KCD == null)
+                    {
+                        _DOCTOR_KCD = Context.KCD.FindByKCDKEY(DOCTOR);
+                    }
+                    return _DOCTOR_KCD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG01] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG01_KGL {
+            get
+            {
+                if (EMERG_LANG01 != null)
+                {
+                    if (_EMERG_LANG01_KGL == null)
+                    {
+                        _EMERG_LANG01_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG01);
+                    }
+                    return _EMERG_LANG01_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EMERG_LANG02] => [KGL_Entity].[KGLKEY]
+        /// Language spoken by person(s) to contact in an emergency
+        /// </summary>
+        public KGL_Entity EMERG_LANG02_KGL {
+            get
+            {
+                if (EMERG_LANG02 != null)
+                {
+                    if (_EMERG_LANG02_KGL == null)
+                    {
+                        _EMERG_LANG02_KGL = Context.KGL.FindByKGLKEY(EMERG_LANG02);
+                    }
+                    return _EMERG_LANG02_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LANGUAGE_PREVIOUS_SCHOOLING] => [KGL_Entity].[KGLKEY]
+        /// Language of previous schooling
+        /// </summary>
+        public KGL_Entity LANGUAGE_PREVIOUS_SCHOOLING_KGL {
+            get
+            {
+                if (LANGUAGE_PREVIOUS_SCHOOLING != null)
+                {
+                    if (_LANGUAGE_PREVIOUS_SCHOOLING_KGL == null)
+                    {
+                        _LANGUAGE_PREVIOUS_SCHOOLING_KGL = Context.KGL.FindByKGLKEY(LANGUAGE_PREVIOUS_SCHOOLING);
+                    }
+                    return _LANGUAGE_PREVIOUS_SCHOOLING_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [NEXT_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// School to which departed student has gone (if any)
+        /// </summary>
+        public SKGS_Entity NEXT_SCHOOL_SKGS {
+            get
+            {
+                if (NEXT_SCHOOL != null)
+                {
+                    if (_NEXT_SCHOOL_SKGS == null)
+                    {
+                        _NEXT_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(NEXT_SCHOOL);
+                    }
+                    return _NEXT_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EXIT_CAT01] => [KGG_Entity].[KGGKEY]
+        /// EXIT Category
+        /// </summary>
+        public KGG_Entity EXIT_CAT01_KGG {
+            get
+            {
+                if (EXIT_CAT01 != null)
+                {
+                    if (_EXIT_CAT01_KGG == null)
+                    {
+                        _EXIT_CAT01_KGG = Context.KGG.FindByKGGKEY(EXIT_CAT01);
+                    }
+                    return _EXIT_CAT01_KGG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EXIT_CAT02] => [KGG_Entity].[KGGKEY]
+        /// EXIT Category
+        /// </summary>
+        public KGG_Entity EXIT_CAT02_KGG {
+            get
+            {
+                if (EXIT_CAT02 != null)
+                {
+                    if (_EXIT_CAT02_KGG == null)
+                    {
+                        _EXIT_CAT02_KGG = Context.KGG.FindByKGGKEY(EXIT_CAT02);
+                    }
+                    return _EXIT_CAT02_KGG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EXIT_DEST01] => [KGD_Entity].[KGDKEY]
+        /// EXIT Destination
+        /// </summary>
+        public KGD_Entity EXIT_DEST01_KGD {
+            get
+            {
+                if (EXIT_DEST01 != null)
+                {
+                    if (_EXIT_DEST01_KGD == null)
+                    {
+                        _EXIT_DEST01_KGD = Context.KGD.FindByKGDKEY(EXIT_DEST01);
+                    }
+                    return _EXIT_DEST01_KGD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [EXIT_DEST02] => [KGD_Entity].[KGDKEY]
+        /// EXIT Destination
+        /// </summary>
+        public KGD_Entity EXIT_DEST02_KGD {
+            get
+            {
+                if (EXIT_DEST02 != null)
+                {
+                    if (_EXIT_DEST02_KGD == null)
+                    {
+                        _EXIT_DEST02_KGD = Context.KGD.FindByKGDKEY(EXIT_DEST02);
+                    }
+                    return _EXIT_DEST02_KGD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INAC_ABS_CODE] => [KCT_Entity].[KCTKEY]
+        /// Code used to populate attendance records whilst status is INACtive.
+        /// </summary>
+        public KCT_Entity INAC_ABS_CODE_KCT {
+            get
+            {
+                if (INAC_ABS_CODE.HasValue)
+                {
+                    if (_INAC_ABS_CODE_KCT == null)
+                    {
+                        _INAC_ABS_CODE_KCT = Context.KCT.FindByKCTKEY(INAC_ABS_CODE.Value);
+                    }
+                    return _INAC_ABS_CODE_KCT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LOTE_HOME_CODE] => [KGL_Entity].[KGLKEY]
+        /// The Language other than English spoken at home by student
+        /// </summary>
+        public KGL_Entity LOTE_HOME_CODE_KGL {
+            get
+            {
+                if (LOTE_HOME_CODE != null)
+                {
+                    if (_LOTE_HOME_CODE_KGL == null)
+                    {
+                        _LOTE_HOME_CODE_KGL = Context.KGL.FindByKGLKEY(LOTE_HOME_CODE);
+                    }
+                    return _LOTE_HOME_CODE_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

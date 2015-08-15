@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class CRFTC_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private CR_Entity _CODE_CR;
+        private KFTC_Entity _FTC_CODE_KFTC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// System transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// Creditor key [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [CR_Entity].[CRKEY]
-        /// Creditor key
-        /// </summary>
-        public CR_Entity CODE_CR { get { return CODE == null ? null : Context.CR.FindByCRKEY(CODE); } }
         /// <summary>
         /// Transaction date [Date Time nullable: d]
         /// </summary>
@@ -41,11 +42,6 @@ namespace EduHub.Data.Entities
         /// Fuel Tax Credit code [Uppercase Alphanumeric: u3]
         /// </summary>
         public string FTC_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FTC_CODE] => [KFTC_Entity].[KFTCKEY]
-        /// Fuel Tax Credit code
-        /// </summary>
-        public KFTC_Entity FTC_CODE_KFTC { get { return FTC_CODE == null ? null : Context.KFTC.FindByKFTCKEY(FTC_CODE); } }
         /// <summary>
         /// Total litres purchased [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -82,7 +78,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [CR_Entity].[CRKEY]
+        /// Creditor key
+        /// </summary>
+        public CR_Entity CODE_CR {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_CR == null)
+                    {
+                        _CODE_CR = Context.CR.FindByCRKEY(CODE);
+                    }
+                    return _CODE_CR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FTC_CODE] => [KFTC_Entity].[KFTCKEY]
+        /// Fuel Tax Credit code
+        /// </summary>
+        public KFTC_Entity FTC_CODE_KFTC {
+            get
+            {
+                if (FTC_CODE != null)
+                {
+                    if (_FTC_CODE_KFTC == null)
+                    {
+                        _FTC_CODE_KFTC = Context.KFTC.FindByKFTCKEY(FTC_CODE);
+                    }
+                    return _FTC_CODE_KFTC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

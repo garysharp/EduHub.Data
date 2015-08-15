@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class ST_TFRIO_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SKGS_Entity _DEST_SCHOOL_SKGS;
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed nullable): l]
         /// </summary>
@@ -41,11 +46,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DEST_SCHOOL { get; internal set; }
         /// <summary>
-        /// Navigation property for [DEST_SCHOOL] => [SKGS_Entity].[SCHOOL]
-        /// Destination school ID
-        /// </summary>
-        public SKGS_Entity DEST_SCHOOL_SKGS { get { return DEST_SCHOOL == null ? null : Context.SKGS.FindBySCHOOL(DEST_SCHOOL); } }
-        /// <summary>
         /// Y or blank, confirmation of receipt at destination [Uppercase Alphanumeric: u1]
         /// </summary>
         public string RECD_AT_DEST { get; internal set; }
@@ -73,7 +73,30 @@ namespace EduHub.Data.Entities
         /// Last Write User [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [DEST_SCHOOL] => [SKGS_Entity].[SCHOOL]
+        /// Destination school ID
+        /// </summary>
+        public SKGS_Entity DEST_SCHOOL_SKGS {
+            get
+            {
+                if (DEST_SCHOOL != null)
+                {
+                    if (_DEST_SCHOOL_SKGS == null)
+                    {
+                        _DEST_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(DEST_SCHOOL);
+                    }
+                    return _DEST_SCHOOL_SKGS;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

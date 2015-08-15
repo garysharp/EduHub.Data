@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PPS_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGT_Entity _COUNTRY_KGT;
+        private KGT_Entity _POSTAL_COUNTRY_KGT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Supplier code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -61,11 +67,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country
-        /// </summary>
-        public KGT_Entity COUNTRY_KGT { get { return COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(COUNTRY); } }
-        /// <summary>
         /// Supplier postal address line 1 [Uppercase Alphanumeric: u38]
         /// </summary>
         public string POSTAL_L1_ADD { get; internal set; }
@@ -90,11 +91,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string POSTAL_COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [POSTAL_COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Supplier postal Country
-        /// </summary>
-        public KGT_Entity POSTAL_COUNTRY_KGT { get { return POSTAL_COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(POSTAL_COUNTRY); } }
-        /// <summary>
         /// Supplier e-mail address [Alphanumeric: a76]
         /// </summary>
         public string EMAIL_ADDRESS { get; internal set; }
@@ -110,7 +106,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country
+        /// </summary>
+        public KGT_Entity COUNTRY_KGT {
+            get
+            {
+                if (COUNTRY != null)
+                {
+                    if (_COUNTRY_KGT == null)
+                    {
+                        _COUNTRY_KGT = Context.KGT.FindByCOUNTRY(COUNTRY);
+                    }
+                    return _COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [POSTAL_COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Supplier postal Country
+        /// </summary>
+        public KGT_Entity POSTAL_COUNTRY_KGT {
+            get
+            {
+                if (POSTAL_COUNTRY != null)
+                {
+                    if (_POSTAL_COUNTRY_KGT == null)
+                    {
+                        _POSTAL_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(POSTAL_COUNTRY);
+                    }
+                    return _POSTAL_COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DFHI_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private DF_Entity _FKEY_DF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Family ID (dynamic link that gets updated whenever DF.DFKEY is also updated) [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FKEY] => [DF_Entity].[DFKEY]
-        /// Family ID (dynamic link that gets updated whenever DF.DFKEY is also updated)
-        /// </summary>
-        public DF_Entity FKEY_DF { get { return FKEY == null ? null : Context.DF.FindByDFKEY(FKEY); } }
         /// <summary>
         /// User ID of person creating the record [Uppercase Alphanumeric: u128]
         /// </summary>
@@ -113,7 +113,30 @@ namespace EduHub.Data.Entities
         /// Change made to last record to produce this one [Alphanumeric: a80]
         /// </summary>
         public string CHANGE_MADE { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FKEY] => [DF_Entity].[DFKEY]
+        /// Family ID (dynamic link that gets updated whenever DF.DFKEY is also updated)
+        /// </summary>
+        public DF_Entity FKEY_DF {
+            get
+            {
+                if (FKEY != null)
+                {
+                    if (_FKEY_DF == null)
+                    {
+                        _FKEY_DF = Context.DF.FindByDFKEY(FKEY);
+                    }
+                    return _FKEY_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

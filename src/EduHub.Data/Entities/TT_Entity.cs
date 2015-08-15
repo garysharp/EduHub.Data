@@ -8,6 +8,20 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCI_Entity _CAMPUS_SCI;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR01_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR02_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR03_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR04_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR05_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR06_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR07_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR08_KCY;
+        private KCY_Entity _SUBJECT_ACADEMIC_YEAR09_KCY;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Template code [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -24,11 +38,6 @@ namespace EduHub.Data.Entities
         /// Campus [Integer (32bit signed nullable): l]
         /// </summary>
         public int? CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Campus
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
         /// <summary>
         /// Timetable reference tags [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -78,82 +87,37 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR01 { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR01] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR01_KCY { get { return SUBJECT_ACADEMIC_YEAR01 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR01); } }
-        /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR02 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR02] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR02_KCY { get { return SUBJECT_ACADEMIC_YEAR02 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR02); } }
         /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR03 { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR03] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR03_KCY { get { return SUBJECT_ACADEMIC_YEAR03 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR03); } }
-        /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR04 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR04] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR04_KCY { get { return SUBJECT_ACADEMIC_YEAR04 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR04); } }
         /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR05 { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR05] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR05_KCY { get { return SUBJECT_ACADEMIC_YEAR05 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR05); } }
-        /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR06 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR06] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR06_KCY { get { return SUBJECT_ACADEMIC_YEAR06 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR06); } }
         /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR07 { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR07] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR07_KCY { get { return SUBJECT_ACADEMIC_YEAR07 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR07); } }
-        /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR08 { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR08] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR08_KCY { get { return SUBJECT_ACADEMIC_YEAR08 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR08); } }
-        /// <summary>
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR09 { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR09] => [KCY_Entity].[KCYKEY]
-        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
-        /// </summary>
-        public KCY_Entity SUBJECT_ACADEMIC_YEAR09_KCY { get { return SUBJECT_ACADEMIC_YEAR09 == null ? null : Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR09); } }
         /// <summary>
         /// Semester/term/quarter: if SEMESTER in an SU record is zero or matches this value, the subject is eligible for this template [Integer (16bit signed nullable): i]
         /// </summary>
@@ -290,7 +254,219 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Campus
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR01] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR01_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR01 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR01_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR01_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR01);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR01_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR02] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR02_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR02 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR02_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR02_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR02);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR02_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR03] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR03_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR03 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR03_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR03_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR03);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR03_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR04] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR04_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR04 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR04_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR04_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR04);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR04_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR05] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR05_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR05 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR05_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR05_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR05);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR05_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR06] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR06_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR06 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR06_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR06_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR06);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR06_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR07] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR07_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR07 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR07_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR07_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR07);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR07_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR08] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR08_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR08 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR08_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR08_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR08);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR08_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT_ACADEMIC_YEAR09] => [KCY_Entity].[KCYKEY]
+        /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
+        /// </summary>
+        public KCY_Entity SUBJECT_ACADEMIC_YEAR09_KCY {
+            get
+            {
+                if (SUBJECT_ACADEMIC_YEAR09 != null)
+                {
+                    if (_SUBJECT_ACADEMIC_YEAR09_KCY == null)
+                    {
+                        _SUBJECT_ACADEMIC_YEAR09_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR09);
+                    }
+                    return _SUBJECT_ACADEMIC_YEAR09_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

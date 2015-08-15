@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class A_DECRYP_DataSet : SetBase<A_DECRYP_Entity>
     {
+        private Lazy<Dictionary<int, A_DECRYP_Entity>> TID_Index;
+
         internal A_DECRYP_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, A_DECRYP_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "A_DECRYP"; } }
 
-        private Lazy<Dictionary<int, A_DECRYP_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find A_DECRYP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find A_DECRYP</param>
+        /// <returns>Related A_DECRYP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any A_DECRYP entities</exception>
         public A_DECRYP_Entity FindByTID(int Key)
         {
             A_DECRYP_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find A_DECRYP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find A_DECRYP</param>
+        /// <param name="Value">Related A_DECRYP entity</param>
+        /// <returns>True if the A_DECRYP Entity is found</returns>
         public bool TryFindByTID(int Key, out A_DECRYP_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find A_DECRYP by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find A_DECRYP</param>
+        /// <returns>Related A_DECRYP entity, or null if not found</returns>
         public A_DECRYP_Entity TryFindByTID(int Key)
         {
             A_DECRYP_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<A_DECRYP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<A_DECRYP_Entity, string>[Headers.Count];

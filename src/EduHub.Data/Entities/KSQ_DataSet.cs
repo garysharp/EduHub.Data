@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KSQ_DataSet : SetBase<KSQ_Entity>
     {
+        private Lazy<Dictionary<string, KSQ_Entity>> KSQKEY_Index;
+
         internal KSQ_DataSet(EduHubContext Context)
             : base(Context)
         {
             KSQKEY_Index = new Lazy<Dictionary<string, KSQ_Entity>>(() => this.ToDictionary(e => e.KSQKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KSQ"; } }
 
-        private Lazy<Dictionary<string, KSQ_Entity>> KSQKEY_Index;
-
+        /// <summary>
+        /// Find KSQ by KSQKEY key field
+        /// </summary>
+        /// <param name="Key">KSQKEY value used to find KSQ</param>
+        /// <returns>Related KSQ entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KSQKEY value didn't match any KSQ entities</exception>
         public KSQ_Entity FindByKSQKEY(string Key)
         {
             KSQ_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KSQ by KSQKEY key field
+        /// </summary>
+        /// <param name="Key">KSQKEY value used to find KSQ</param>
+        /// <param name="Value">Related KSQ entity</param>
+        /// <returns>True if the KSQ Entity is found</returns>
         public bool TryFindByKSQKEY(string Key, out KSQ_Entity Value)
         {
             return KSQKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KSQ by KSQKEY key field
+        /// </summary>
+        /// <param name="Key">KSQKEY value used to find KSQ</param>
+        /// <returns>Related KSQ entity, or null if not found</returns>
         public KSQ_Entity TryFindByKSQKEY(string Key)
         {
             KSQ_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KSQ_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSQ_Entity, string>[Headers.Count];

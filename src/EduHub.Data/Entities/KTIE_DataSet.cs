@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KTIE_DataSet : SetBase<KTIE_Entity>
     {
+        private Lazy<Dictionary<int, KTIE_Entity>> RECORD_ID_Index;
+
         internal KTIE_DataSet(EduHubContext Context)
             : base(Context)
         {
             RECORD_ID_Index = new Lazy<Dictionary<int, KTIE_Entity>>(() => this.ToDictionary(e => e.RECORD_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KTIE"; } }
 
-        private Lazy<Dictionary<int, KTIE_Entity>> RECORD_ID_Index;
-
+        /// <summary>
+        /// Find KTIE by RECORD_ID key field
+        /// </summary>
+        /// <param name="Key">RECORD_ID value used to find KTIE</param>
+        /// <returns>Related KTIE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">RECORD_ID value didn't match any KTIE entities</exception>
         public KTIE_Entity FindByRECORD_ID(int Key)
         {
             KTIE_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KTIE by RECORD_ID key field
+        /// </summary>
+        /// <param name="Key">RECORD_ID value used to find KTIE</param>
+        /// <param name="Value">Related KTIE entity</param>
+        /// <returns>True if the KTIE Entity is found</returns>
         public bool TryFindByRECORD_ID(int Key, out KTIE_Entity Value)
         {
             return RECORD_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KTIE by RECORD_ID key field
+        /// </summary>
+        /// <param name="Key">RECORD_ID value used to find KTIE</param>
+        /// <returns>Related KTIE entity, or null if not found</returns>
         public KTIE_Entity TryFindByRECORD_ID(int Key)
         {
             KTIE_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KTIE_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KTIE_Entity, string>[Headers.Count];

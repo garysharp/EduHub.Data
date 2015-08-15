@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SCSFAG_DataSet : SetBase<SCSFAG_Entity>
     {
+
         internal SCSFAG_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SCSFAG"; } }
 
-
-        
         protected override Action<SCSFAG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCSFAG_Entity, string>[Headers.Count];

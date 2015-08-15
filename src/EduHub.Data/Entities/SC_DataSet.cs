@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SC_DataSet : SetBase<SC_Entity>
     {
+        private Lazy<Dictionary<string, SC_Entity>> COURSE_Index;
+
         internal SC_DataSet(EduHubContext Context)
             : base(Context)
         {
             COURSE_Index = new Lazy<Dictionary<string, SC_Entity>>(() => this.ToDictionary(e => e.COURSE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SC"; } }
 
-        private Lazy<Dictionary<string, SC_Entity>> COURSE_Index;
-
+        /// <summary>
+        /// Find SC by COURSE key field
+        /// </summary>
+        /// <param name="Key">COURSE value used to find SC</param>
+        /// <returns>Related SC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">COURSE value didn't match any SC entities</exception>
         public SC_Entity FindByCOURSE(string Key)
         {
             SC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SC by COURSE key field
+        /// </summary>
+        /// <param name="Key">COURSE value used to find SC</param>
+        /// <param name="Value">Related SC entity</param>
+        /// <returns>True if the SC Entity is found</returns>
         public bool TryFindByCOURSE(string Key, out SC_Entity Value)
         {
             return COURSE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SC by COURSE key field
+        /// </summary>
+        /// <param name="Key">COURSE value used to find SC</param>
+        /// <returns>Related SC entity, or null if not found</returns>
         public SC_Entity TryFindByCOURSE(string Key)
         {
             SC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SC_Entity, string>[Headers.Count];

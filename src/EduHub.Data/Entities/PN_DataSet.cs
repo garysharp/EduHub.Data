@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PN_DataSet : SetBase<PN_Entity>
     {
+        private Lazy<Dictionary<short, PN_Entity>> PNKEY_Index;
+
         internal PN_DataSet(EduHubContext Context)
             : base(Context)
         {
             PNKEY_Index = new Lazy<Dictionary<short, PN_Entity>>(() => this.ToDictionary(e => e.PNKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PN"; } }
 
-        private Lazy<Dictionary<short, PN_Entity>> PNKEY_Index;
-
+        /// <summary>
+        /// Find PN by PNKEY key field
+        /// </summary>
+        /// <param name="Key">PNKEY value used to find PN</param>
+        /// <returns>Related PN entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PNKEY value didn't match any PN entities</exception>
         public PN_Entity FindByPNKEY(short Key)
         {
             PN_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PN by PNKEY key field
+        /// </summary>
+        /// <param name="Key">PNKEY value used to find PN</param>
+        /// <param name="Value">Related PN entity</param>
+        /// <returns>True if the PN Entity is found</returns>
         public bool TryFindByPNKEY(short Key, out PN_Entity Value)
         {
             return PNKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PN by PNKEY key field
+        /// </summary>
+        /// <param name="Key">PNKEY value used to find PN</param>
+        /// <returns>Related PN entity, or null if not found</returns>
         public PN_Entity TryFindByPNKEY(short Key)
         {
             PN_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PN_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PN_Entity, string>[Headers.Count];

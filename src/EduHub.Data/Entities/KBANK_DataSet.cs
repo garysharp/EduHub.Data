@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KBANK_DataSet : SetBase<KBANK_Entity>
     {
+        private Lazy<Dictionary<string, KBANK_Entity>> GLCODE_Index;
+
         internal KBANK_DataSet(EduHubContext Context)
             : base(Context)
         {
             GLCODE_Index = new Lazy<Dictionary<string, KBANK_Entity>>(() => this.ToDictionary(e => e.GLCODE));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KBANK"; } }
 
-        private Lazy<Dictionary<string, KBANK_Entity>> GLCODE_Index;
-
+        /// <summary>
+        /// Find KBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find KBANK</param>
+        /// <returns>Related KBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">GLCODE value didn't match any KBANK entities</exception>
         public KBANK_Entity FindByGLCODE(string Key)
         {
             KBANK_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find KBANK</param>
+        /// <param name="Value">Related KBANK entity</param>
+        /// <returns>True if the KBANK Entity is found</returns>
         public bool TryFindByGLCODE(string Key, out KBANK_Entity Value)
         {
             return GLCODE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find KBANK</param>
+        /// <returns>Related KBANK entity, or null if not found</returns>
         public KBANK_Entity TryFindByGLCODE(string Key)
         {
             KBANK_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KBANK_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBANK_Entity, string>[Headers.Count];

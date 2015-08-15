@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class STPO_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _STPOKEY_ST;
+        private SG_Entity _SGLINK_SG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string STPOKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [STPOKEY] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity STPOKEY_ST { get { return STPOKEY == null ? null : Context.ST.FindBySTKEY(STPOKEY); } }
-        /// <summary>
         /// Position or Group code [Uppercase Alphanumeric: u12]
         /// </summary>
         public string SGLINK { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SGLINK] => [SG_Entity].[SGKEY]
-        /// Position or Group code
-        /// </summary>
-        public SG_Entity SGLINK_SG { get { return SGLINK == null ? null : Context.SG.FindBySGKEY(SGLINK); } }
         /// <summary>
         /// Date of joining group [Date Time nullable: d]
         /// </summary>
@@ -82,7 +78,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [STPOKEY] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity STPOKEY_ST {
+            get
+            {
+                if (STPOKEY != null)
+                {
+                    if (_STPOKEY_ST == null)
+                    {
+                        _STPOKEY_ST = Context.ST.FindBySTKEY(STPOKEY);
+                    }
+                    return _STPOKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SGLINK] => [SG_Entity].[SGKEY]
+        /// Position or Group code
+        /// </summary>
+        public SG_Entity SGLINK_SG {
+            get
+            {
+                if (SGLINK != null)
+                {
+                    if (_SGLINK_SG == null)
+                    {
+                        _SGLINK_SG = Context.SG.FindBySGKEY(SGLINK);
+                    }
+                    return _SGLINK_SG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

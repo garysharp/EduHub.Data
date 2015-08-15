@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KSI_DataSet : SetBase<KSI_Entity>
     {
+        private Lazy<Dictionary<string, KSI_Entity>> KSIKEY_Index;
+
         internal KSI_DataSet(EduHubContext Context)
             : base(Context)
         {
             KSIKEY_Index = new Lazy<Dictionary<string, KSI_Entity>>(() => this.ToDictionary(e => e.KSIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KSI"; } }
 
-        private Lazy<Dictionary<string, KSI_Entity>> KSIKEY_Index;
-
+        /// <summary>
+        /// Find KSI by KSIKEY key field
+        /// </summary>
+        /// <param name="Key">KSIKEY value used to find KSI</param>
+        /// <returns>Related KSI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KSIKEY value didn't match any KSI entities</exception>
         public KSI_Entity FindByKSIKEY(string Key)
         {
             KSI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KSI by KSIKEY key field
+        /// </summary>
+        /// <param name="Key">KSIKEY value used to find KSI</param>
+        /// <param name="Value">Related KSI entity</param>
+        /// <returns>True if the KSI Entity is found</returns>
         public bool TryFindByKSIKEY(string Key, out KSI_Entity Value)
         {
             return KSIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KSI by KSIKEY key field
+        /// </summary>
+        /// <param name="Key">KSIKEY value used to find KSI</param>
+        /// <returns>Related KSI entity, or null if not found</returns>
         public KSI_Entity TryFindByKSIKEY(string Key)
         {
             KSI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KSI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSI_Entity, string>[Headers.Count];

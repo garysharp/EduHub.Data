@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SDGM_DataSet : SetBase<SDGM_Entity>
     {
+
         internal SDGM_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SDGM"; } }
 
-
-        
         protected override Action<SDGM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDGM_Entity, string>[Headers.Count];

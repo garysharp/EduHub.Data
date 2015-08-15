@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PLC_DataSet : SetBase<PLC_Entity>
     {
+        private Lazy<Dictionary<string, PLC_Entity>> PLCKEY_Index;
+
         internal PLC_DataSet(EduHubContext Context)
             : base(Context)
         {
             PLCKEY_Index = new Lazy<Dictionary<string, PLC_Entity>>(() => this.ToDictionary(e => e.PLCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PLC"; } }
 
-        private Lazy<Dictionary<string, PLC_Entity>> PLCKEY_Index;
-
+        /// <summary>
+        /// Find PLC by PLCKEY key field
+        /// </summary>
+        /// <param name="Key">PLCKEY value used to find PLC</param>
+        /// <returns>Related PLC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PLCKEY value didn't match any PLC entities</exception>
         public PLC_Entity FindByPLCKEY(string Key)
         {
             PLC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PLC by PLCKEY key field
+        /// </summary>
+        /// <param name="Key">PLCKEY value used to find PLC</param>
+        /// <param name="Value">Related PLC entity</param>
+        /// <returns>True if the PLC Entity is found</returns>
         public bool TryFindByPLCKEY(string Key, out PLC_Entity Value)
         {
             return PLCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PLC by PLCKEY key field
+        /// </summary>
+        /// <param name="Key">PLCKEY value used to find PLC</param>
+        /// <returns>Related PLC entity, or null if not found</returns>
         public PLC_Entity TryFindByPLCKEY(string Key)
         {
             PLC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PLC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PLC_Entity, string>[Headers.Count];

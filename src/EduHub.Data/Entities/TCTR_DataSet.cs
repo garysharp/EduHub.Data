@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TCTR_DataSet : SetBase<TCTR_Entity>
     {
+
         internal TCTR_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TCTR"; } }
 
-
-        
         protected override Action<TCTR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TCTR_Entity, string>[Headers.Count];

@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SCEN_AST_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed): l]
         /// </summary>
@@ -536,7 +540,9 @@ namespace EduHub.Data.Entities
         ///  [Uppercase Alphanumeric: u30]
         /// </summary>
         public string ADDRESS_C { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

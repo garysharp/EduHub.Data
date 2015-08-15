@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SMC_DataSet : SetBase<SMC_Entity>
     {
+        private Lazy<Dictionary<int, SMC_Entity>> SMCKEY_Index;
+
         internal SMC_DataSet(EduHubContext Context)
             : base(Context)
         {
             SMCKEY_Index = new Lazy<Dictionary<int, SMC_Entity>>(() => this.ToDictionary(e => e.SMCKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SMC"; } }
 
-        private Lazy<Dictionary<int, SMC_Entity>> SMCKEY_Index;
-
+        /// <summary>
+        /// Find SMC by SMCKEY key field
+        /// </summary>
+        /// <param name="Key">SMCKEY value used to find SMC</param>
+        /// <returns>Related SMC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SMCKEY value didn't match any SMC entities</exception>
         public SMC_Entity FindBySMCKEY(int Key)
         {
             SMC_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SMC by SMCKEY key field
+        /// </summary>
+        /// <param name="Key">SMCKEY value used to find SMC</param>
+        /// <param name="Value">Related SMC entity</param>
+        /// <returns>True if the SMC Entity is found</returns>
         public bool TryFindBySMCKEY(int Key, out SMC_Entity Value)
         {
             return SMCKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SMC by SMCKEY key field
+        /// </summary>
+        /// <param name="Key">SMCKEY value used to find SMC</param>
+        /// <returns>Related SMC entity, or null if not found</returns>
         public SMC_Entity TryFindBySMCKEY(int Key)
         {
             SMC_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SMC_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMC_Entity, string>[Headers.Count];

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKD_DataSet : SetBase<AKD_Entity>
     {
+        private Lazy<Dictionary<string, AKD_Entity>> DEPARTMENT_Index;
+
         internal AKD_DataSet(EduHubContext Context)
             : base(Context)
         {
             DEPARTMENT_Index = new Lazy<Dictionary<string, AKD_Entity>>(() => this.ToDictionary(e => e.DEPARTMENT));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKD"; } }
 
-        private Lazy<Dictionary<string, AKD_Entity>> DEPARTMENT_Index;
-
+        /// <summary>
+        /// Find AKD by DEPARTMENT key field
+        /// </summary>
+        /// <param name="Key">DEPARTMENT value used to find AKD</param>
+        /// <returns>Related AKD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">DEPARTMENT value didn't match any AKD entities</exception>
         public AKD_Entity FindByDEPARTMENT(string Key)
         {
             AKD_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKD by DEPARTMENT key field
+        /// </summary>
+        /// <param name="Key">DEPARTMENT value used to find AKD</param>
+        /// <param name="Value">Related AKD entity</param>
+        /// <returns>True if the AKD Entity is found</returns>
         public bool TryFindByDEPARTMENT(string Key, out AKD_Entity Value)
         {
             return DEPARTMENT_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKD by DEPARTMENT key field
+        /// </summary>
+        /// <param name="Key">DEPARTMENT value used to find AKD</param>
+        /// <returns>Related AKD entity, or null if not found</returns>
         public AKD_Entity TryFindByDEPARTMENT(string Key)
         {
             AKD_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKD_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKD_Entity, string>[Headers.Count];

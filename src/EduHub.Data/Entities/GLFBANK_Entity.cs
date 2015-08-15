@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class GLFBANK_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GLBANK_Entity _CODE_GLBANK;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Owner account [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [GLBANK_Entity].[GLCODE]
-        /// Owner account
-        /// </summary>
-        public GLBANK_Entity CODE_GLBANK { get { return CODE == null ? null : Context.GLBANK.FindByGLCODE(CODE); } }
         /// <summary>
         /// Unique identifier per committed fund [Integer (16bit signed nullable): i]
         /// </summary>
@@ -65,7 +65,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [GLBANK_Entity].[GLCODE]
+        /// Owner account
+        /// </summary>
+        public GLBANK_Entity CODE_GLBANK {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_GLBANK == null)
+                    {
+                        _CODE_GLBANK = Context.GLBANK.FindByGLCODE(CODE);
+                    }
+                    return _CODE_GLBANK;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

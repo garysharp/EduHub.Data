@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class STRA_DataSet : SetBase<STRA_Entity>
     {
+
         internal STRA_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "STRA"; } }
 
-
-        
         protected override Action<STRA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STRA_Entity, string>[Headers.Count];

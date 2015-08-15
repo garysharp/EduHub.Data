@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGL_DataSet : SetBase<KGL_Entity>
     {
+        private Lazy<Dictionary<string, KGL_Entity>> KGLKEY_Index;
+
         internal KGL_DataSet(EduHubContext Context)
             : base(Context)
         {
             KGLKEY_Index = new Lazy<Dictionary<string, KGL_Entity>>(() => this.ToDictionary(e => e.KGLKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGL"; } }
 
-        private Lazy<Dictionary<string, KGL_Entity>> KGLKEY_Index;
-
+        /// <summary>
+        /// Find KGL by KGLKEY key field
+        /// </summary>
+        /// <param name="Key">KGLKEY value used to find KGL</param>
+        /// <returns>Related KGL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KGLKEY value didn't match any KGL entities</exception>
         public KGL_Entity FindByKGLKEY(string Key)
         {
             KGL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGL by KGLKEY key field
+        /// </summary>
+        /// <param name="Key">KGLKEY value used to find KGL</param>
+        /// <param name="Value">Related KGL entity</param>
+        /// <returns>True if the KGL Entity is found</returns>
         public bool TryFindByKGLKEY(string Key, out KGL_Entity Value)
         {
             return KGLKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGL by KGLKEY key field
+        /// </summary>
+        /// <param name="Key">KGLKEY value used to find KGL</param>
+        /// <returns>Related KGL entity, or null if not found</returns>
         public KGL_Entity TryFindByKGLKEY(string Key)
         {
             KGL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGL_Entity, string>[Headers.Count];

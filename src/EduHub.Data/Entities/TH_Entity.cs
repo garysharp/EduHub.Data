@@ -8,6 +8,23 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TH_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TT_Entity _TT01KEY_TT;
+        private TT_Entity _TT02KEY_TT;
+        private TT_Entity _TT03KEY_TT;
+        private TT_Entity _TT04KEY_TT;
+        private TT_Entity _TT05KEY_TT;
+        private TT_Entity _TT06KEY_TT;
+        private TT_Entity _TT07KEY_TT;
+        private TT_Entity _TT08KEY_TT;
+        private TT_Entity _TT09KEY_TT;
+        private TT_Entity _TT10KEY_TT;
+        private TT_Entity _TT11KEY_TT;
+        private TT_Entity _TT12KEY_TT;
+        private TT_Entity _TT13KEY_TT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Quilt code [Uppercase Alphanumeric: u8]
         /// </summary>
@@ -189,118 +206,53 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string TT01KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT01KEY] => [TT_Entity].[TTKEY]
-        /// Link to 1st template in timetable
-        /// </summary>
-        public TT_Entity TT01KEY_TT { get { return TT01KEY == null ? null : Context.TT.FindByTTKEY(TT01KEY); } }
-        /// <summary>
         /// Link to 2nd template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT02KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT02KEY] => [TT_Entity].[TTKEY]
-        /// Link to 2nd template in timetable
-        /// </summary>
-        public TT_Entity TT02KEY_TT { get { return TT02KEY == null ? null : Context.TT.FindByTTKEY(TT02KEY); } }
         /// <summary>
         /// Link to 3rd template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT03KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT03KEY] => [TT_Entity].[TTKEY]
-        /// Link to 3rd template in timetable
-        /// </summary>
-        public TT_Entity TT03KEY_TT { get { return TT03KEY == null ? null : Context.TT.FindByTTKEY(TT03KEY); } }
-        /// <summary>
         /// Link to 4th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT04KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT04KEY] => [TT_Entity].[TTKEY]
-        /// Link to 4th template in timetable
-        /// </summary>
-        public TT_Entity TT04KEY_TT { get { return TT04KEY == null ? null : Context.TT.FindByTTKEY(TT04KEY); } }
         /// <summary>
         /// Link to 5th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT05KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT05KEY] => [TT_Entity].[TTKEY]
-        /// Link to 5th template in timetable
-        /// </summary>
-        public TT_Entity TT05KEY_TT { get { return TT05KEY == null ? null : Context.TT.FindByTTKEY(TT05KEY); } }
-        /// <summary>
         /// Link to 6th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT06KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT06KEY] => [TT_Entity].[TTKEY]
-        /// Link to 6th template in timetable
-        /// </summary>
-        public TT_Entity TT06KEY_TT { get { return TT06KEY == null ? null : Context.TT.FindByTTKEY(TT06KEY); } }
         /// <summary>
         /// Link to 7th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT07KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT07KEY] => [TT_Entity].[TTKEY]
-        /// Link to 7th template in timetable
-        /// </summary>
-        public TT_Entity TT07KEY_TT { get { return TT07KEY == null ? null : Context.TT.FindByTTKEY(TT07KEY); } }
-        /// <summary>
         /// Link to 8th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT08KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT08KEY] => [TT_Entity].[TTKEY]
-        /// Link to 8th template in timetable
-        /// </summary>
-        public TT_Entity TT08KEY_TT { get { return TT08KEY == null ? null : Context.TT.FindByTTKEY(TT08KEY); } }
         /// <summary>
         /// Link to 9th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT09KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT09KEY] => [TT_Entity].[TTKEY]
-        /// Link to 9th template in timetable
-        /// </summary>
-        public TT_Entity TT09KEY_TT { get { return TT09KEY == null ? null : Context.TT.FindByTTKEY(TT09KEY); } }
-        /// <summary>
         /// Link to 10th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT10KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT10KEY] => [TT_Entity].[TTKEY]
-        /// Link to 10th template in timetable
-        /// </summary>
-        public TT_Entity TT10KEY_TT { get { return TT10KEY == null ? null : Context.TT.FindByTTKEY(TT10KEY); } }
         /// <summary>
         /// Link to 11th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT11KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT11KEY] => [TT_Entity].[TTKEY]
-        /// Link to 11th template in timetable
-        /// </summary>
-        public TT_Entity TT11KEY_TT { get { return TT11KEY == null ? null : Context.TT.FindByTTKEY(TT11KEY); } }
-        /// <summary>
         /// Link to 12th template in timetable [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT12KEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TT12KEY] => [TT_Entity].[TTKEY]
-        /// Link to 12th template in timetable
-        /// </summary>
-        public TT_Entity TT12KEY_TT { get { return TT12KEY == null ? null : Context.TT.FindByTTKEY(TT12KEY); } }
-        /// <summary>
         /// Link to 13th template in timetable (maximum) [Uppercase Alphanumeric: u8]
         /// </summary>
         public string TT13KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TT13KEY] => [TT_Entity].[TTKEY]
-        /// Link to 13th template in timetable (maximum)
-        /// </summary>
-        public TT_Entity TT13KEY_TT { get { return TT13KEY == null ? null : Context.TT.FindByTTKEY(TT13KEY); } }
         /// <summary>
         /// Which templates displayed when editing in Quilts [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -545,7 +497,282 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TT01KEY] => [TT_Entity].[TTKEY]
+        /// Link to 1st template in timetable
+        /// </summary>
+        public TT_Entity TT01KEY_TT {
+            get
+            {
+                if (TT01KEY != null)
+                {
+                    if (_TT01KEY_TT == null)
+                    {
+                        _TT01KEY_TT = Context.TT.FindByTTKEY(TT01KEY);
+                    }
+                    return _TT01KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT02KEY] => [TT_Entity].[TTKEY]
+        /// Link to 2nd template in timetable
+        /// </summary>
+        public TT_Entity TT02KEY_TT {
+            get
+            {
+                if (TT02KEY != null)
+                {
+                    if (_TT02KEY_TT == null)
+                    {
+                        _TT02KEY_TT = Context.TT.FindByTTKEY(TT02KEY);
+                    }
+                    return _TT02KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT03KEY] => [TT_Entity].[TTKEY]
+        /// Link to 3rd template in timetable
+        /// </summary>
+        public TT_Entity TT03KEY_TT {
+            get
+            {
+                if (TT03KEY != null)
+                {
+                    if (_TT03KEY_TT == null)
+                    {
+                        _TT03KEY_TT = Context.TT.FindByTTKEY(TT03KEY);
+                    }
+                    return _TT03KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT04KEY] => [TT_Entity].[TTKEY]
+        /// Link to 4th template in timetable
+        /// </summary>
+        public TT_Entity TT04KEY_TT {
+            get
+            {
+                if (TT04KEY != null)
+                {
+                    if (_TT04KEY_TT == null)
+                    {
+                        _TT04KEY_TT = Context.TT.FindByTTKEY(TT04KEY);
+                    }
+                    return _TT04KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT05KEY] => [TT_Entity].[TTKEY]
+        /// Link to 5th template in timetable
+        /// </summary>
+        public TT_Entity TT05KEY_TT {
+            get
+            {
+                if (TT05KEY != null)
+                {
+                    if (_TT05KEY_TT == null)
+                    {
+                        _TT05KEY_TT = Context.TT.FindByTTKEY(TT05KEY);
+                    }
+                    return _TT05KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT06KEY] => [TT_Entity].[TTKEY]
+        /// Link to 6th template in timetable
+        /// </summary>
+        public TT_Entity TT06KEY_TT {
+            get
+            {
+                if (TT06KEY != null)
+                {
+                    if (_TT06KEY_TT == null)
+                    {
+                        _TT06KEY_TT = Context.TT.FindByTTKEY(TT06KEY);
+                    }
+                    return _TT06KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT07KEY] => [TT_Entity].[TTKEY]
+        /// Link to 7th template in timetable
+        /// </summary>
+        public TT_Entity TT07KEY_TT {
+            get
+            {
+                if (TT07KEY != null)
+                {
+                    if (_TT07KEY_TT == null)
+                    {
+                        _TT07KEY_TT = Context.TT.FindByTTKEY(TT07KEY);
+                    }
+                    return _TT07KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT08KEY] => [TT_Entity].[TTKEY]
+        /// Link to 8th template in timetable
+        /// </summary>
+        public TT_Entity TT08KEY_TT {
+            get
+            {
+                if (TT08KEY != null)
+                {
+                    if (_TT08KEY_TT == null)
+                    {
+                        _TT08KEY_TT = Context.TT.FindByTTKEY(TT08KEY);
+                    }
+                    return _TT08KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT09KEY] => [TT_Entity].[TTKEY]
+        /// Link to 9th template in timetable
+        /// </summary>
+        public TT_Entity TT09KEY_TT {
+            get
+            {
+                if (TT09KEY != null)
+                {
+                    if (_TT09KEY_TT == null)
+                    {
+                        _TT09KEY_TT = Context.TT.FindByTTKEY(TT09KEY);
+                    }
+                    return _TT09KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT10KEY] => [TT_Entity].[TTKEY]
+        /// Link to 10th template in timetable
+        /// </summary>
+        public TT_Entity TT10KEY_TT {
+            get
+            {
+                if (TT10KEY != null)
+                {
+                    if (_TT10KEY_TT == null)
+                    {
+                        _TT10KEY_TT = Context.TT.FindByTTKEY(TT10KEY);
+                    }
+                    return _TT10KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT11KEY] => [TT_Entity].[TTKEY]
+        /// Link to 11th template in timetable
+        /// </summary>
+        public TT_Entity TT11KEY_TT {
+            get
+            {
+                if (TT11KEY != null)
+                {
+                    if (_TT11KEY_TT == null)
+                    {
+                        _TT11KEY_TT = Context.TT.FindByTTKEY(TT11KEY);
+                    }
+                    return _TT11KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT12KEY] => [TT_Entity].[TTKEY]
+        /// Link to 12th template in timetable
+        /// </summary>
+        public TT_Entity TT12KEY_TT {
+            get
+            {
+                if (TT12KEY != null)
+                {
+                    if (_TT12KEY_TT == null)
+                    {
+                        _TT12KEY_TT = Context.TT.FindByTTKEY(TT12KEY);
+                    }
+                    return _TT12KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TT13KEY] => [TT_Entity].[TTKEY]
+        /// Link to 13th template in timetable (maximum)
+        /// </summary>
+        public TT_Entity TT13KEY_TT {
+            get
+            {
+                if (TT13KEY != null)
+                {
+                    if (_TT13KEY_TT == null)
+                    {
+                        _TT13KEY_TT = Context.TT.FindByTTKEY(TT13KEY);
+                    }
+                    return _TT13KEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

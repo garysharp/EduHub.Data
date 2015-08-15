@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class AKK_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private AR_Entity _CODE_AR;
+        private SF_Entity _STAFF_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [CODE] => [AR_Entity].[ARKEY]
-        /// Asset code
-        /// </summary>
-        public AR_Entity CODE_AR { get { return CODE == null ? null : Context.AR.FindByARKEY(CODE); } }
-        /// <summary>
         /// Staff [Uppercase Alphanumeric: u4]
         /// </summary>
         public string STAFF { get; internal set; }
-        /// <summary>
-        /// Navigation property for [STAFF] => [SF_Entity].[SFKEY]
-        /// Staff
-        /// </summary>
-        public SF_Entity STAFF_SF { get { return STAFF == null ? null : Context.SF.FindBySFKEY(STAFF); } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -42,7 +38,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [AR_Entity].[ARKEY]
+        /// Asset code
+        /// </summary>
+        public AR_Entity CODE_AR {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_AR == null)
+                    {
+                        _CODE_AR = Context.AR.FindByARKEY(CODE);
+                    }
+                    return _CODE_AR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [STAFF] => [SF_Entity].[SFKEY]
+        /// Staff
+        /// </summary>
+        public SF_Entity STAFF_SF {
+            get
+            {
+                if (STAFF != null)
+                {
+                    if (_STAFF_SF == null)
+                    {
+                        _STAFF_SF = Context.SF.FindBySFKEY(STAFF);
+                    }
+                    return _STAFF_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AR_DataSet : SetBase<AR_Entity>
     {
+        private Lazy<Dictionary<string, AR_Entity>> ARKEY_Index;
+
         internal AR_DataSet(EduHubContext Context)
             : base(Context)
         {
             ARKEY_Index = new Lazy<Dictionary<string, AR_Entity>>(() => this.ToDictionary(e => e.ARKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AR"; } }
 
-        private Lazy<Dictionary<string, AR_Entity>> ARKEY_Index;
-
+        /// <summary>
+        /// Find AR by ARKEY key field
+        /// </summary>
+        /// <param name="Key">ARKEY value used to find AR</param>
+        /// <returns>Related AR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ARKEY value didn't match any AR entities</exception>
         public AR_Entity FindByARKEY(string Key)
         {
             AR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AR by ARKEY key field
+        /// </summary>
+        /// <param name="Key">ARKEY value used to find AR</param>
+        /// <param name="Value">Related AR entity</param>
+        /// <returns>True if the AR Entity is found</returns>
         public bool TryFindByARKEY(string Key, out AR_Entity Value)
         {
             return ARKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AR by ARKEY key field
+        /// </summary>
+        /// <param name="Key">ARKEY value used to find AR</param>
+        /// <returns>Related AR entity, or null if not found</returns>
         public AR_Entity TryFindByARKEY(string Key)
         {
             AR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AR_Entity, string>[Headers.Count];

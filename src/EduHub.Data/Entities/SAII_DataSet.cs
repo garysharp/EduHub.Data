@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAII_DataSet : SetBase<SAII_Entity>
     {
+
         internal SAII_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAII"; } }
 
-
-        
         protected override Action<SAII_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAII_Entity, string>[Headers.Count];

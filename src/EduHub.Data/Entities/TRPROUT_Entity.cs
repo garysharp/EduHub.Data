@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TRPROUT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TRPMODE_Entity _TRANSPORT_MODE_ID_TRPMODE;
+        private KTRCMP_Entity _TRANSPORT_COMPANY_ID_KTRCMP;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Route_ID - System Generated [Integer (32bit signed): l]
         /// </summary>
@@ -21,19 +27,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? TRANSPORT_MODE_ID { get; internal set; }
         /// <summary>
-        /// Navigation property for [TRANSPORT_MODE_ID] => [TRPMODE_Entity].[TRANSPORT_MODE_ID]
-        /// Transport Modes
-        /// </summary>
-        public TRPMODE_Entity TRANSPORT_MODE_ID_TRPMODE { get { return TRANSPORT_MODE_ID.HasValue ? Context.TRPMODE.FindByTRANSPORT_MODE_ID(TRANSPORT_MODE_ID.Value) : null; } }
-        /// <summary>
         /// Company ID [Integer (32bit signed nullable): l]
         /// </summary>
         public int? TRANSPORT_COMPANY_ID { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TRANSPORT_COMPANY_ID] => [KTRCMP_Entity].[COMPANY_ID]
-        /// Company ID
-        /// </summary>
-        public KTRCMP_Entity TRANSPORT_COMPANY_ID_KTRCMP { get { return TRANSPORT_COMPANY_ID.HasValue ? Context.KTRCMP.FindByCOMPANY_ID(TRANSPORT_COMPANY_ID.Value) : null; } }
         /// <summary>
         /// Contract No [Alphanumeric: a20]
         /// </summary>
@@ -82,7 +78,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TRANSPORT_MODE_ID] => [TRPMODE_Entity].[TRANSPORT_MODE_ID]
+        /// Transport Modes
+        /// </summary>
+        public TRPMODE_Entity TRANSPORT_MODE_ID_TRPMODE {
+            get
+            {
+                if (TRANSPORT_MODE_ID.HasValue)
+                {
+                    if (_TRANSPORT_MODE_ID_TRPMODE == null)
+                    {
+                        _TRANSPORT_MODE_ID_TRPMODE = Context.TRPMODE.FindByTRANSPORT_MODE_ID(TRANSPORT_MODE_ID.Value);
+                    }
+                    return _TRANSPORT_MODE_ID_TRPMODE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TRANSPORT_COMPANY_ID] => [KTRCMP_Entity].[COMPANY_ID]
+        /// Company ID
+        /// </summary>
+        public KTRCMP_Entity TRANSPORT_COMPANY_ID_KTRCMP {
+            get
+            {
+                if (TRANSPORT_COMPANY_ID.HasValue)
+                {
+                    if (_TRANSPORT_COMPANY_ID_KTRCMP == null)
+                    {
+                        _TRANSPORT_COMPANY_ID_KTRCMP = Context.KTRCMP.FindByCOMPANY_ID(TRANSPORT_COMPANY_ID.Value);
+                    }
+                    return _TRANSPORT_COMPANY_ID_KTRCMP;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -8,6 +8,18 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class OSCS_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGT_Entity _ADULT_A_COUNTRY_KGT;
+        private KGT_Entity _ADULT_B_COUNTRY_KGT;
+        private KGG_Entity _ZEROMTH_CAT_KGG;
+        private KGD_Entity _ZEROMTH_CAT_DEST_KGD;
+        private KGT_Entity _BIRTH_COUNTRY_KGT;
+        private KGL_Entity _HOME_LANG_KGL;
+        private KGG_Entity _SIXMTH_CAT_KGG;
+        private KGD_Entity _SIXMTH_CAT_DEST_KGD;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -169,11 +181,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ADULT_A_COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [ADULT_A_COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// (Was M_COUNTRY) Country of birth of first parent/guardian of this student
-        /// </summary>
-        public KGT_Entity ADULT_A_COUNTRY_KGT { get { return ADULT_A_COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(ADULT_A_COUNTRY); } }
-        /// <summary>
         /// (Was M_RELATION) Relationship of first parent/guardian to this student [Alphanumeric: a20]
         /// </summary>
         public string ADULT_A_RELATION { get; internal set; }
@@ -189,11 +196,6 @@ namespace EduHub.Data.Entities
         /// Country of birth of second parent/guardian of this student [Uppercase Alphanumeric: u6]
         /// </summary>
         public string ADULT_B_COUNTRY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ADULT_B_COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country of birth of second parent/guardian of this student
-        /// </summary>
-        public KGT_Entity ADULT_B_COUNTRY_KGT { get { return ADULT_B_COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(ADULT_B_COUNTRY); } }
         /// <summary>
         /// Relationship of second parent/guardian to this student [Alphanumeric: a20]
         /// </summary>
@@ -235,11 +237,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ZEROMTH_CAT { get; internal set; }
         /// <summary>
-        /// Navigation property for [ZEROMTH_CAT] => [KGG_Entity].[KGGKEY]
-        /// MIPS Destination Category on exit
-        /// </summary>
-        public KGG_Entity ZEROMTH_CAT_KGG { get { return ZEROMTH_CAT == null ? null : Context.KGG.FindByKGGKEY(ZEROMTH_CAT); } }
-        /// <summary>
         /// MIPS Destination on exit [Uppercase Alphanumeric: u4]
         /// </summary>
         public string ZEROMTH_DEST { get; internal set; }
@@ -247,11 +244,6 @@ namespace EduHub.Data.Entities
         /// MIPS Category & Destination on exit [Uppercase Alphanumeric: u6]
         /// </summary>
         public string ZEROMTH_CAT_DEST { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ZEROMTH_CAT_DEST] => [KGD_Entity].[KGDKEY]
-        /// MIPS Category & Destination on exit
-        /// </summary>
-        public KGD_Entity ZEROMTH_CAT_DEST_KGD { get { return ZEROMTH_CAT_DEST == null ? null : Context.KGD.FindByKGDKEY(ZEROMTH_CAT_DEST); } }
         /// <summary>
         /// Date MIPS Destination & Category Updated [Date Time nullable: d]
         /// </summary>
@@ -341,11 +333,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BIRTH_COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Country of birth
-        /// </summary>
-        public KGT_Entity BIRTH_COUNTRY_KGT { get { return BIRTH_COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY); } }
-        /// <summary>
         /// Date of arrival in Australia [Date Time nullable: d]
         /// </summary>
         public DateTime? ARRIVAL { get; internal set; }
@@ -361,11 +348,6 @@ namespace EduHub.Data.Entities
         /// The language spoken at home [Uppercase Alphanumeric: u7]
         /// </summary>
         public string HOME_LANG { get; internal set; }
-        /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
-        /// The language spoken at home
-        /// </summary>
-        public KGL_Entity HOME_LANG_KGL { get { return HOME_LANG == null ? null : Context.KGL.FindByKGLKEY(HOME_LANG); } }
         /// <summary>
         /// Was this student an applicant for, or in receipt of, EMA? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -487,11 +469,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SIXMTH_CAT { get; internal set; }
         /// <summary>
-        /// Navigation property for [SIXMTH_CAT] => [KGG_Entity].[KGGKEY]
-        /// MIPS Destination Category after 6 months
-        /// </summary>
-        public KGG_Entity SIXMTH_CAT_KGG { get { return SIXMTH_CAT == null ? null : Context.KGG.FindByKGGKEY(SIXMTH_CAT); } }
-        /// <summary>
         /// MIPS Destination after 6 months [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SIXMTH_DEST { get; internal set; }
@@ -499,11 +476,6 @@ namespace EduHub.Data.Entities
         /// MIPS Category & Destination after six month [Uppercase Alphanumeric: u6]
         /// </summary>
         public string SIXMTH_CAT_DEST { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SIXMTH_CAT_DEST] => [KGD_Entity].[KGDKEY]
-        /// MIPS Category & Destination after six month
-        /// </summary>
-        public KGD_Entity SIXMTH_CAT_DEST_KGD { get { return SIXMTH_CAT_DEST == null ? null : Context.KGD.FindByKGDKEY(SIXMTH_CAT_DEST); } }
         /// <summary>
         /// Date 6 months MIPS Destination & Category Updated [Date Time nullable: d]
         /// </summary>
@@ -540,7 +512,177 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [ADULT_A_COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// (Was M_COUNTRY) Country of birth of first parent/guardian of this student
+        /// </summary>
+        public KGT_Entity ADULT_A_COUNTRY_KGT {
+            get
+            {
+                if (ADULT_A_COUNTRY != null)
+                {
+                    if (_ADULT_A_COUNTRY_KGT == null)
+                    {
+                        _ADULT_A_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(ADULT_A_COUNTRY);
+                    }
+                    return _ADULT_A_COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ADULT_B_COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country of birth of second parent/guardian of this student
+        /// </summary>
+        public KGT_Entity ADULT_B_COUNTRY_KGT {
+            get
+            {
+                if (ADULT_B_COUNTRY != null)
+                {
+                    if (_ADULT_B_COUNTRY_KGT == null)
+                    {
+                        _ADULT_B_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(ADULT_B_COUNTRY);
+                    }
+                    return _ADULT_B_COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ZEROMTH_CAT] => [KGG_Entity].[KGGKEY]
+        /// MIPS Destination Category on exit
+        /// </summary>
+        public KGG_Entity ZEROMTH_CAT_KGG {
+            get
+            {
+                if (ZEROMTH_CAT != null)
+                {
+                    if (_ZEROMTH_CAT_KGG == null)
+                    {
+                        _ZEROMTH_CAT_KGG = Context.KGG.FindByKGGKEY(ZEROMTH_CAT);
+                    }
+                    return _ZEROMTH_CAT_KGG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ZEROMTH_CAT_DEST] => [KGD_Entity].[KGDKEY]
+        /// MIPS Category & Destination on exit
+        /// </summary>
+        public KGD_Entity ZEROMTH_CAT_DEST_KGD {
+            get
+            {
+                if (ZEROMTH_CAT_DEST != null)
+                {
+                    if (_ZEROMTH_CAT_DEST_KGD == null)
+                    {
+                        _ZEROMTH_CAT_DEST_KGD = Context.KGD.FindByKGDKEY(ZEROMTH_CAT_DEST);
+                    }
+                    return _ZEROMTH_CAT_DEST_KGD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BIRTH_COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Country of birth
+        /// </summary>
+        public KGT_Entity BIRTH_COUNTRY_KGT {
+            get
+            {
+                if (BIRTH_COUNTRY != null)
+                {
+                    if (_BIRTH_COUNTRY_KGT == null)
+                    {
+                        _BIRTH_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(BIRTH_COUNTRY);
+                    }
+                    return _BIRTH_COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOME_LANG] => [KGL_Entity].[KGLKEY]
+        /// The language spoken at home
+        /// </summary>
+        public KGL_Entity HOME_LANG_KGL {
+            get
+            {
+                if (HOME_LANG != null)
+                {
+                    if (_HOME_LANG_KGL == null)
+                    {
+                        _HOME_LANG_KGL = Context.KGL.FindByKGLKEY(HOME_LANG);
+                    }
+                    return _HOME_LANG_KGL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SIXMTH_CAT] => [KGG_Entity].[KGGKEY]
+        /// MIPS Destination Category after 6 months
+        /// </summary>
+        public KGG_Entity SIXMTH_CAT_KGG {
+            get
+            {
+                if (SIXMTH_CAT != null)
+                {
+                    if (_SIXMTH_CAT_KGG == null)
+                    {
+                        _SIXMTH_CAT_KGG = Context.KGG.FindByKGGKEY(SIXMTH_CAT);
+                    }
+                    return _SIXMTH_CAT_KGG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SIXMTH_CAT_DEST] => [KGD_Entity].[KGDKEY]
+        /// MIPS Category & Destination after six month
+        /// </summary>
+        public KGD_Entity SIXMTH_CAT_DEST_KGD {
+            get
+            {
+                if (SIXMTH_CAT_DEST != null)
+                {
+                    if (_SIXMTH_CAT_DEST_KGD == null)
+                    {
+                        _SIXMTH_CAT_DEST_KGD = Context.KGD.FindByKGDKEY(SIXMTH_CAT_DEST);
+                    }
+                    return _SIXMTH_CAT_DEST_KGD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

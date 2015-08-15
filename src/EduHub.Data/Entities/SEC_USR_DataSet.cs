@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SEC_USR_DataSet : SetBase<SEC_USR_Entity>
     {
+        private Lazy<Dictionary<int, SEC_USR_Entity>> ROWID_Index;
+
         internal SEC_USR_DataSet(EduHubContext Context)
             : base(Context)
         {
             ROWID_Index = new Lazy<Dictionary<int, SEC_USR_Entity>>(() => this.ToDictionary(e => e.ROWID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SEC_USR"; } }
 
-        private Lazy<Dictionary<int, SEC_USR_Entity>> ROWID_Index;
-
+        /// <summary>
+        /// Find SEC_USR by ROWID key field
+        /// </summary>
+        /// <param name="Key">ROWID value used to find SEC_USR</param>
+        /// <returns>Related SEC_USR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ROWID value didn't match any SEC_USR entities</exception>
         public SEC_USR_Entity FindByROWID(int Key)
         {
             SEC_USR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SEC_USR by ROWID key field
+        /// </summary>
+        /// <param name="Key">ROWID value used to find SEC_USR</param>
+        /// <param name="Value">Related SEC_USR entity</param>
+        /// <returns>True if the SEC_USR Entity is found</returns>
         public bool TryFindByROWID(int Key, out SEC_USR_Entity Value)
         {
             return ROWID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SEC_USR by ROWID key field
+        /// </summary>
+        /// <param name="Key">ROWID value used to find SEC_USR</param>
+        /// <returns>Related SEC_USR entity, or null if not found</returns>
         public SEC_USR_Entity TryFindByROWID(int Key)
         {
             SEC_USR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SEC_USR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_USR_Entity, string>[Headers.Count];

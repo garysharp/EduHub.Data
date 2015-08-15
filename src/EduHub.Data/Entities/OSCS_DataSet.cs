@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class OSCS_DataSet : SetBase<OSCS_Entity>
     {
+        private Lazy<Dictionary<int, OSCS_Entity>> OSCSKEY_Index;
+
         internal OSCS_DataSet(EduHubContext Context)
             : base(Context)
         {
             OSCSKEY_Index = new Lazy<Dictionary<int, OSCS_Entity>>(() => this.ToDictionary(e => e.OSCSKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "OSCS"; } }
 
-        private Lazy<Dictionary<int, OSCS_Entity>> OSCSKEY_Index;
-
+        /// <summary>
+        /// Find OSCS by OSCSKEY key field
+        /// </summary>
+        /// <param name="Key">OSCSKEY value used to find OSCS</param>
+        /// <returns>Related OSCS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">OSCSKEY value didn't match any OSCS entities</exception>
         public OSCS_Entity FindByOSCSKEY(int Key)
         {
             OSCS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find OSCS by OSCSKEY key field
+        /// </summary>
+        /// <param name="Key">OSCSKEY value used to find OSCS</param>
+        /// <param name="Value">Related OSCS entity</param>
+        /// <returns>True if the OSCS Entity is found</returns>
         public bool TryFindByOSCSKEY(int Key, out OSCS_Entity Value)
         {
             return OSCSKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find OSCS by OSCSKEY key field
+        /// </summary>
+        /// <param name="Key">OSCSKEY value used to find OSCS</param>
+        /// <returns>Related OSCS entity, or null if not found</returns>
         public OSCS_Entity TryFindByOSCSKEY(int Key)
         {
             OSCS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<OSCS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<OSCS_Entity, string>[Headers.Count];

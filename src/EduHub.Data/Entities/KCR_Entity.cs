@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KCR_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Route/Stop code [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -104,7 +108,9 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

@@ -8,6 +8,18 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PE_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGT_Entity _COUNTRY_KGT;
+        private UM_Entity _HOMEKEY_UM;
+        private UM_Entity _MAILKEY_UM;
+        private UM_Entity _LEAVEKEY_UM;
+        private PN_Entity _PAYCODE_PN;
+        private PX_Entity _TAXCODE_PX;
+        private PD_Entity _DEPARTMENT_PD;
+        private PLG_Entity _LEAVE_GROUP_PLG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Employee key [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -69,11 +81,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COUNTRY { get; internal set; }
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
-        /// Overseas Country
-        /// </summary>
-        public KGT_Entity COUNTRY_KGT { get { return COUNTRY == null ? null : Context.KGT.FindByCOUNTRY(COUNTRY); } }
-        /// <summary>
         /// Home telephone number [Alphanumeric: a15]
         /// </summary>
         public string HOMEPHONE { get; internal set; }
@@ -114,55 +121,25 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? HOMEKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [HOMEKEY] => [UM_Entity].[UMKEY]
-        /// Home    address
-        /// </summary>
-        public UM_Entity HOMEKEY_UM { get { return HOMEKEY.HasValue ? Context.UM.FindByUMKEY(HOMEKEY.Value) : null; } }
-        /// <summary>
         /// Mailing address [Integer (32bit signed nullable): l]
         /// </summary>
         public int? MAILKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
-        /// Mailing address
-        /// </summary>
-        public UM_Entity MAILKEY_UM { get { return MAILKEY.HasValue ? Context.UM.FindByUMKEY(MAILKEY.Value) : null; } }
         /// <summary>
         /// Holiday address [Integer (32bit signed nullable): l]
         /// </summary>
         public int? LEAVEKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [LEAVEKEY] => [UM_Entity].[UMKEY]
-        /// Holiday address
-        /// </summary>
-        public UM_Entity LEAVEKEY_UM { get { return LEAVEKEY.HasValue ? Context.UM.FindByUMKEY(LEAVEKEY.Value) : null; } }
-        /// <summary>
         /// Payroll group [Integer (16bit signed nullable): i]
         /// </summary>
         public short? PAYCODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [PAYCODE] => [PN_Entity].[PNKEY]
-        /// Payroll group
-        /// </summary>
-        public PN_Entity PAYCODE_PN { get { return PAYCODE.HasValue ? Context.PN.FindByPNKEY(PAYCODE.Value) : null; } }
         /// <summary>
         /// Tax code [Integer (16bit signed nullable): i]
         /// </summary>
         public short? TAXCODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [TAXCODE] => [PX_Entity].[PXKEY]
-        /// Tax code
-        /// </summary>
-        public PX_Entity TAXCODE_PX { get { return TAXCODE.HasValue ? Context.PX.FindByPXKEY(TAXCODE.Value) : null; } }
-        /// <summary>
         /// Department [Uppercase Alphanumeric: u10]
         /// </summary>
         public string DEPARTMENT { get; internal set; }
-        /// <summary>
-        /// Navigation property for [DEPARTMENT] => [PD_Entity].[PDKEY]
-        /// Department
-        /// </summary>
-        public PD_Entity DEPARTMENT_PD { get { return DEPARTMENT == null ? null : Context.PD.FindByPDKEY(DEPARTMENT); } }
         /// <summary>
         /// Payroll number [Integer (32bit signed nullable): l]
         /// </summary>
@@ -201,11 +178,6 @@ namespace EduHub.Data.Entities
         /// Leave Management Group [Uppercase Alphanumeric: u8]
         /// </summary>
         public string LEAVE_GROUP { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LEAVE_GROUP] => [PLG_Entity].[LEAVE_GROUP]
-        /// Leave Management Group
-        /// </summary>
-        public PLG_Entity LEAVE_GROUP_PLG { get { return LEAVE_GROUP == null ? null : Context.PLG.FindByLEAVE_GROUP(LEAVE_GROUP); } }
         /// <summary>
         /// PAY_TYPE [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -592,7 +564,177 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COUNTRY] => [KGT_Entity].[COUNTRY]
+        /// Overseas Country
+        /// </summary>
+        public KGT_Entity COUNTRY_KGT {
+            get
+            {
+                if (COUNTRY != null)
+                {
+                    if (_COUNTRY_KGT == null)
+                    {
+                        _COUNTRY_KGT = Context.KGT.FindByCOUNTRY(COUNTRY);
+                    }
+                    return _COUNTRY_KGT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [HOMEKEY] => [UM_Entity].[UMKEY]
+        /// Home    address
+        /// </summary>
+        public UM_Entity HOMEKEY_UM {
+            get
+            {
+                if (HOMEKEY.HasValue)
+                {
+                    if (_HOMEKEY_UM == null)
+                    {
+                        _HOMEKEY_UM = Context.UM.FindByUMKEY(HOMEKEY.Value);
+                    }
+                    return _HOMEKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MAILKEY] => [UM_Entity].[UMKEY]
+        /// Mailing address
+        /// </summary>
+        public UM_Entity MAILKEY_UM {
+            get
+            {
+                if (MAILKEY.HasValue)
+                {
+                    if (_MAILKEY_UM == null)
+                    {
+                        _MAILKEY_UM = Context.UM.FindByUMKEY(MAILKEY.Value);
+                    }
+                    return _MAILKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LEAVEKEY] => [UM_Entity].[UMKEY]
+        /// Holiday address
+        /// </summary>
+        public UM_Entity LEAVEKEY_UM {
+            get
+            {
+                if (LEAVEKEY.HasValue)
+                {
+                    if (_LEAVEKEY_UM == null)
+                    {
+                        _LEAVEKEY_UM = Context.UM.FindByUMKEY(LEAVEKEY.Value);
+                    }
+                    return _LEAVEKEY_UM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [PAYCODE] => [PN_Entity].[PNKEY]
+        /// Payroll group
+        /// </summary>
+        public PN_Entity PAYCODE_PN {
+            get
+            {
+                if (PAYCODE.HasValue)
+                {
+                    if (_PAYCODE_PN == null)
+                    {
+                        _PAYCODE_PN = Context.PN.FindByPNKEY(PAYCODE.Value);
+                    }
+                    return _PAYCODE_PN;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TAXCODE] => [PX_Entity].[PXKEY]
+        /// Tax code
+        /// </summary>
+        public PX_Entity TAXCODE_PX {
+            get
+            {
+                if (TAXCODE.HasValue)
+                {
+                    if (_TAXCODE_PX == null)
+                    {
+                        _TAXCODE_PX = Context.PX.FindByPXKEY(TAXCODE.Value);
+                    }
+                    return _TAXCODE_PX;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DEPARTMENT] => [PD_Entity].[PDKEY]
+        /// Department
+        /// </summary>
+        public PD_Entity DEPARTMENT_PD {
+            get
+            {
+                if (DEPARTMENT != null)
+                {
+                    if (_DEPARTMENT_PD == null)
+                    {
+                        _DEPARTMENT_PD = Context.PD.FindByPDKEY(DEPARTMENT);
+                    }
+                    return _DEPARTMENT_PD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LEAVE_GROUP] => [PLG_Entity].[LEAVE_GROUP]
+        /// Leave Management Group
+        /// </summary>
+        public PLG_Entity LEAVE_GROUP_PLG {
+            get
+            {
+                if (LEAVE_GROUP != null)
+                {
+                    if (_LEAVE_GROUP_PLG == null)
+                    {
+                        _LEAVE_GROUP_PLG = Context.PLG.FindByLEAVE_GROUP(LEAVE_GROUP);
+                    }
+                    return _LEAVE_GROUP_PLG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

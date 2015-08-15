@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class CR_DataSet : SetBase<CR_Entity>
     {
+        private Lazy<Dictionary<string, CR_Entity>> CRKEY_Index;
+
         internal CR_DataSet(EduHubContext Context)
             : base(Context)
         {
             CRKEY_Index = new Lazy<Dictionary<string, CR_Entity>>(() => this.ToDictionary(e => e.CRKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "CR"; } }
 
-        private Lazy<Dictionary<string, CR_Entity>> CRKEY_Index;
-
+        /// <summary>
+        /// Find CR by CRKEY key field
+        /// </summary>
+        /// <param name="Key">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">CRKEY value didn't match any CR entities</exception>
         public CR_Entity FindByCRKEY(string Key)
         {
             CR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY key field
+        /// </summary>
+        /// <param name="Key">CRKEY value used to find CR</param>
+        /// <param name="Value">Related CR entity</param>
+        /// <returns>True if the CR Entity is found</returns>
         public bool TryFindByCRKEY(string Key, out CR_Entity Value)
         {
             return CRKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY key field
+        /// </summary>
+        /// <param name="Key">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity, or null if not found</returns>
         public CR_Entity TryFindByCRKEY(string Key)
         {
             CR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<CR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<CR_Entity, string>[Headers.Count];

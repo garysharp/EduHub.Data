@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGH_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SCI_Entity _CAMPUS_SCI;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// (Was HOUSE) House code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Campus [Integer (32bit signed nullable): l]
         /// </summary>
         public int? CAMPUS { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// Campus
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
         /// <summary>
         /// Active house? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -213,7 +213,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// Campus
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

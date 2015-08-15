@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class THTN_DataSet : SetBase<THTN_Entity>
     {
+
         internal THTN_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "THTN"; } }
 
-
-        
         protected override Action<THTN_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<THTN_Entity, string>[Headers.Count];

@@ -8,6 +8,19 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DFF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private DF_Entity _CODE_DF;
+        private ST_Entity _TRSTUD_ST;
+        private ST_Entity _STUDENT_ST;
+        private KGST_Entity _GST_TYPE_KGST;
+        private KAB_Entity _BSB_KAB;
+        private SA_Entity _FEE_CODE_SA;
+        private SU_Entity _SUBJECT_SU;
+        private KGLSUB_Entity _SUBPROGRAM_KGLSUB;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,28 +30,13 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [CODE] => [DF_Entity].[DFKEY]
-        /// Family key
-        /// </summary>
-        public DF_Entity CODE_DF { get { return CODE == null ? null : Context.DF.FindByDFKEY(CODE); } }
-        /// <summary>
         /// Student key - only used for split billing [Uppercase Alphanumeric: u10]
         /// </summary>
         public string TRSTUD { get; internal set; }
         /// <summary>
-        /// Navigation property for [TRSTUD] => [ST_Entity].[STKEY]
-        /// Student key - only used for split billing
-        /// </summary>
-        public ST_Entity TRSTUD_ST { get { return TRSTUD == null ? null : Context.ST.FindBySTKEY(TRSTUD); } }
-        /// <summary>
         /// Student key [Uppercase Alphanumeric: u10]
         /// </summary>
         public string STUDENT { get; internal set; }
-        /// <summary>
-        /// Navigation property for [STUDENT] => [ST_Entity].[STKEY]
-        /// Student key
-        /// </summary>
-        public ST_Entity STUDENT_ST { get { return STUDENT == null ? null : Context.ST.FindBySTKEY(STUDENT); } }
         /// <summary>
         /// BPAY reference number [Alphanumeric: a20]
         /// </summary>
@@ -141,11 +139,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GST_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
-        /// Relate to KGST
-        /// </summary>
-        public KGST_Entity GST_TYPE_KGST { get { return GST_TYPE == null ? null : Context.KGST.FindByKGSTKEY(GST_TYPE); } }
-        /// <summary>
         /// Rate of GST [Floating Point Number (precision 15 nullable): r]
         /// </summary>
         public double? GST_RATE { get; internal set; }
@@ -167,11 +160,6 @@ namespace EduHub.Data.Entities
         /// Cheque BSB number [Alphanumeric: a6]
         /// </summary>
         public string BSB { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
-        /// Cheque BSB number
-        /// </summary>
-        public KAB_Entity BSB_KAB { get { return BSB == null ? null : Context.KAB.FindByBSB(BSB); } }
         /// <summary>
         /// Bank description [Alphanumeric: a20]
         /// </summary>
@@ -198,11 +186,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FEE_CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
-        /// Fee code
-        /// </summary>
-        public SA_Entity FEE_CODE_SA { get { return FEE_CODE == null ? null : Context.SA.FindBySAKEY(FEE_CODE); } }
-        /// <summary>
         /// Transaction method [Uppercase Alphanumeric: u1]
         /// </summary>
         public string TRMETHOD { get; internal set; }
@@ -220,12 +203,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBJECT { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBJECT] => [SU_Entity].[SUKEY]
-        /// Subject with fee (levy)
-        /// 
-        /// </summary>
-        public SU_Entity SUBJECT_SU { get { return SUBJECT == null ? null : Context.SU.FindBySUKEY(SUBJECT); } }
-        /// <summary>
         /// Line number in the batch [Integer (32bit signed nullable): l]
         /// </summary>
         public int? LINE_NO { get; internal set; }
@@ -240,11 +217,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
-        /// For every transaction there is a subprogram
-        /// </summary>
-        public KGLSUB_Entity SUBPROGRAM_KGLSUB { get { return SUBPROGRAM == null ? null : Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM); } }
-        /// <summary>
         /// A subprogram always belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GLPROGRAM { get; internal set; }
@@ -252,11 +224,6 @@ namespace EduHub.Data.Entities
         /// Transaction might belong to an Initiative [Uppercase Alphanumeric: u3]
         /// </summary>
         public string INITIATIVE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Transaction might belong to an Initiative
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
         /// <summary>
         /// Is this a voluntary or compulsory charge [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -326,7 +293,199 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [DF_Entity].[DFKEY]
+        /// Family key
+        /// </summary>
+        public DF_Entity CODE_DF {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_DF == null)
+                    {
+                        _CODE_DF = Context.DF.FindByDFKEY(CODE);
+                    }
+                    return _CODE_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TRSTUD] => [ST_Entity].[STKEY]
+        /// Student key - only used for split billing
+        /// </summary>
+        public ST_Entity TRSTUD_ST {
+            get
+            {
+                if (TRSTUD != null)
+                {
+                    if (_TRSTUD_ST == null)
+                    {
+                        _TRSTUD_ST = Context.ST.FindBySTKEY(TRSTUD);
+                    }
+                    return _TRSTUD_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [STUDENT] => [ST_Entity].[STKEY]
+        /// Student key
+        /// </summary>
+        public ST_Entity STUDENT_ST {
+            get
+            {
+                if (STUDENT != null)
+                {
+                    if (_STUDENT_ST == null)
+                    {
+                        _STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
+                    }
+                    return _STUDENT_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
+        /// Relate to KGST
+        /// </summary>
+        public KGST_Entity GST_TYPE_KGST {
+            get
+            {
+                if (GST_TYPE != null)
+                {
+                    if (_GST_TYPE_KGST == null)
+                    {
+                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                    }
+                    return _GST_TYPE_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
+        /// Cheque BSB number
+        /// </summary>
+        public KAB_Entity BSB_KAB {
+            get
+            {
+                if (BSB != null)
+                {
+                    if (_BSB_KAB == null)
+                    {
+                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
+                    }
+                    return _BSB_KAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [FEE_CODE] => [SA_Entity].[SAKEY]
+        /// Fee code
+        /// </summary>
+        public SA_Entity FEE_CODE_SA {
+            get
+            {
+                if (FEE_CODE != null)
+                {
+                    if (_FEE_CODE_SA == null)
+                    {
+                        _FEE_CODE_SA = Context.SA.FindBySAKEY(FEE_CODE);
+                    }
+                    return _FEE_CODE_SA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJECT] => [SU_Entity].[SUKEY]
+        /// Subject with fee (levy)
+        /// 
+        /// </summary>
+        public SU_Entity SUBJECT_SU {
+            get
+            {
+                if (SUBJECT != null)
+                {
+                    if (_SUBJECT_SU == null)
+                    {
+                        _SUBJECT_SU = Context.SU.FindBySUKEY(SUBJECT);
+                    }
+                    return _SUBJECT_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
+        /// For every transaction there is a subprogram
+        /// </summary>
+        public KGLSUB_Entity SUBPROGRAM_KGLSUB {
+            get
+            {
+                if (SUBPROGRAM != null)
+                {
+                    if (_SUBPROGRAM_KGLSUB == null)
+                    {
+                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                    }
+                    return _SUBPROGRAM_KGLSUB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Transaction might belong to an Initiative
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAI_DataSet : SetBase<SAI_Entity>
     {
+        private Lazy<Dictionary<int, SAI_Entity>> SAIKEY_Index;
+
         internal SAI_DataSet(EduHubContext Context)
             : base(Context)
         {
             SAIKEY_Index = new Lazy<Dictionary<int, SAI_Entity>>(() => this.ToDictionary(e => e.SAIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAI"; } }
 
-        private Lazy<Dictionary<int, SAI_Entity>> SAIKEY_Index;
-
+        /// <summary>
+        /// Find SAI by SAIKEY key field
+        /// </summary>
+        /// <param name="Key">SAIKEY value used to find SAI</param>
+        /// <returns>Related SAI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SAIKEY value didn't match any SAI entities</exception>
         public SAI_Entity FindBySAIKEY(int Key)
         {
             SAI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SAI by SAIKEY key field
+        /// </summary>
+        /// <param name="Key">SAIKEY value used to find SAI</param>
+        /// <param name="Value">Related SAI entity</param>
+        /// <returns>True if the SAI Entity is found</returns>
         public bool TryFindBySAIKEY(int Key, out SAI_Entity Value)
         {
             return SAIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SAI by SAIKEY key field
+        /// </summary>
+        /// <param name="Key">SAIKEY value used to find SAI</param>
+        /// <returns>Related SAI entity, or null if not found</returns>
         public SAI_Entity TryFindBySAIKEY(int Key)
         {
             SAI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SAI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAI_Entity, string>[Headers.Count];

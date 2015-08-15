@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGCHI_DataSet : SetBase<KGCHI_Entity>
     {
+        private Lazy<Dictionary<int, KGCHI_Entity>> KGCHIKEY_Index;
+
         internal KGCHI_DataSet(EduHubContext Context)
             : base(Context)
         {
             KGCHIKEY_Index = new Lazy<Dictionary<int, KGCHI_Entity>>(() => this.ToDictionary(e => e.KGCHIKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGCHI"; } }
 
-        private Lazy<Dictionary<int, KGCHI_Entity>> KGCHIKEY_Index;
-
+        /// <summary>
+        /// Find KGCHI by KGCHIKEY key field
+        /// </summary>
+        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
+        /// <returns>Related KGCHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KGCHIKEY value didn't match any KGCHI entities</exception>
         public KGCHI_Entity FindByKGCHIKEY(int Key)
         {
             KGCHI_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCHIKEY key field
+        /// </summary>
+        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
+        /// <param name="Value">Related KGCHI entity</param>
+        /// <returns>True if the KGCHI Entity is found</returns>
         public bool TryFindByKGCHIKEY(int Key, out KGCHI_Entity Value)
         {
             return KGCHIKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCHIKEY key field
+        /// </summary>
+        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
+        /// <returns>Related KGCHI entity, or null if not found</returns>
         public KGCHI_Entity TryFindByKGCHIKEY(int Key)
         {
             KGCHI_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGCHI_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGCHI_Entity, string>[Headers.Count];

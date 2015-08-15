@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PEPM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PE_Entity _CODE_PE;
+        private KAB_Entity _BSB_KAB;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (unique) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// Employee code [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
-        /// Employee code
-        /// </summary>
-        public PE_Entity CODE_PE { get { return CODE == null ? null : Context.PE.FindByPEKEY(CODE); } }
         /// <summary>
         /// Bank Account name [Uppercase Alphanumeric: u30]
         /// </summary>
@@ -52,11 +53,6 @@ namespace EduHub.Data.Entities
         /// Bank-state-branch as BBBBBB [Alphanumeric: a6]
         /// </summary>
         public string BSB { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
-        /// Bank-state-branch as BBBBBB
-        /// </summary>
-        public KAB_Entity BSB_KAB { get { return BSB == null ? null : Context.KAB.FindByBSB(BSB); } }
         /// <summary>
         /// Account number [Alphanumeric: a15]
         /// </summary>
@@ -91,7 +87,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [PE_Entity].[PEKEY]
+        /// Employee code
+        /// </summary>
+        public PE_Entity CODE_PE {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_PE == null)
+                    {
+                        _CODE_PE = Context.PE.FindByPEKEY(CODE);
+                    }
+                    return _CODE_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
+        /// Bank-state-branch as BBBBBB
+        /// </summary>
+        public KAB_Entity BSB_KAB {
+            get
+            {
+                if (BSB != null)
+                {
+                    if (_BSB_KAB == null)
+                    {
+                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
+                    }
+                    return _BSB_KAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

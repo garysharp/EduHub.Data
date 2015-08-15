@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class DR_DataSet : SetBase<DR_Entity>
     {
+        private Lazy<Dictionary<string, DR_Entity>> DRKEY_Index;
+
         internal DR_DataSet(EduHubContext Context)
             : base(Context)
         {
             DRKEY_Index = new Lazy<Dictionary<string, DR_Entity>>(() => this.ToDictionary(e => e.DRKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "DR"; } }
 
-        private Lazy<Dictionary<string, DR_Entity>> DRKEY_Index;
-
+        /// <summary>
+        /// Find DR by DRKEY key field
+        /// </summary>
+        /// <param name="Key">DRKEY value used to find DR</param>
+        /// <returns>Related DR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">DRKEY value didn't match any DR entities</exception>
         public DR_Entity FindByDRKEY(string Key)
         {
             DR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find DR by DRKEY key field
+        /// </summary>
+        /// <param name="Key">DRKEY value used to find DR</param>
+        /// <param name="Value">Related DR entity</param>
+        /// <returns>True if the DR Entity is found</returns>
         public bool TryFindByDRKEY(string Key, out DR_Entity Value)
         {
             return DRKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find DR by DRKEY key field
+        /// </summary>
+        /// <param name="Key">DRKEY value used to find DR</param>
+        /// <returns>Related DR entity, or null if not found</returns>
         public DR_Entity TryFindByDRKEY(string Key)
         {
             DR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<DR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DR_Entity, string>[Headers.Count];

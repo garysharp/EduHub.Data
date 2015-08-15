@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SAB_DataSet : SetBase<SAB_Entity>
     {
+        private Lazy<Dictionary<string, SAB_Entity>> SABKEY_Index;
+
         internal SAB_DataSet(EduHubContext Context)
             : base(Context)
         {
             SABKEY_Index = new Lazy<Dictionary<string, SAB_Entity>>(() => this.ToDictionary(e => e.SABKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SAB"; } }
 
-        private Lazy<Dictionary<string, SAB_Entity>> SABKEY_Index;
-
+        /// <summary>
+        /// Find SAB by SABKEY key field
+        /// </summary>
+        /// <param name="Key">SABKEY value used to find SAB</param>
+        /// <returns>Related SAB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SABKEY value didn't match any SAB entities</exception>
         public SAB_Entity FindBySABKEY(string Key)
         {
             SAB_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SAB by SABKEY key field
+        /// </summary>
+        /// <param name="Key">SABKEY value used to find SAB</param>
+        /// <param name="Value">Related SAB entity</param>
+        /// <returns>True if the SAB Entity is found</returns>
         public bool TryFindBySABKEY(string Key, out SAB_Entity Value)
         {
             return SABKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SAB by SABKEY key field
+        /// </summary>
+        /// <param name="Key">SABKEY value used to find SAB</param>
+        /// <returns>Related SAB entity, or null if not found</returns>
         public SAB_Entity TryFindBySABKEY(string Key)
         {
             SAB_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SAB_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAB_Entity, string>[Headers.Count];

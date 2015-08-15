@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SKGS_DataSet : SetBase<SKGS_Entity>
     {
+        private Lazy<Dictionary<string, SKGS_Entity>> SCHOOL_Index;
+
         internal SKGS_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCHOOL_Index = new Lazy<Dictionary<string, SKGS_Entity>>(() => this.ToDictionary(e => e.SCHOOL));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SKGS"; } }
 
-        private Lazy<Dictionary<string, SKGS_Entity>> SCHOOL_Index;
-
+        /// <summary>
+        /// Find SKGS by SCHOOL key field
+        /// </summary>
+        /// <param name="Key">SCHOOL value used to find SKGS</param>
+        /// <returns>Related SKGS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCHOOL value didn't match any SKGS entities</exception>
         public SKGS_Entity FindBySCHOOL(string Key)
         {
             SKGS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SKGS by SCHOOL key field
+        /// </summary>
+        /// <param name="Key">SCHOOL value used to find SKGS</param>
+        /// <param name="Value">Related SKGS entity</param>
+        /// <returns>True if the SKGS Entity is found</returns>
         public bool TryFindBySCHOOL(string Key, out SKGS_Entity Value)
         {
             return SCHOOL_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SKGS by SCHOOL key field
+        /// </summary>
+        /// <param name="Key">SCHOOL value used to find SKGS</param>
+        /// <returns>Related SKGS entity, or null if not found</returns>
         public SKGS_Entity TryFindBySCHOOL(string Key)
         {
             SKGS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SKGS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SKGS_Entity, string>[Headers.Count];

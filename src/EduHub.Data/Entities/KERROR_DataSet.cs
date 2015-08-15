@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KERROR_DataSet : SetBase<KERROR_Entity>
     {
+        private Lazy<Dictionary<int, KERROR_Entity>> KERROR_ID_Index;
+
         internal KERROR_DataSet(EduHubContext Context)
             : base(Context)
         {
             KERROR_ID_Index = new Lazy<Dictionary<int, KERROR_Entity>>(() => this.ToDictionary(e => e.KERROR_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KERROR"; } }
 
-        private Lazy<Dictionary<int, KERROR_Entity>> KERROR_ID_Index;
-
+        /// <summary>
+        /// Find KERROR by KERROR_ID key field
+        /// </summary>
+        /// <param name="Key">KERROR_ID value used to find KERROR</param>
+        /// <returns>Related KERROR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KERROR_ID value didn't match any KERROR entities</exception>
         public KERROR_Entity FindByKERROR_ID(int Key)
         {
             KERROR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KERROR by KERROR_ID key field
+        /// </summary>
+        /// <param name="Key">KERROR_ID value used to find KERROR</param>
+        /// <param name="Value">Related KERROR entity</param>
+        /// <returns>True if the KERROR Entity is found</returns>
         public bool TryFindByKERROR_ID(int Key, out KERROR_Entity Value)
         {
             return KERROR_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KERROR by KERROR_ID key field
+        /// </summary>
+        /// <param name="Key">KERROR_ID value used to find KERROR</param>
+        /// <returns>Related KERROR entity, or null if not found</returns>
         public KERROR_Entity TryFindByKERROR_ID(int Key)
         {
             KERROR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KERROR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KERROR_Entity, string>[Headers.Count];

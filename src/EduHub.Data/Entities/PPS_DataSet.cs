@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PPS_DataSet : SetBase<PPS_Entity>
     {
+        private Lazy<Dictionary<string, PPS_Entity>> PPSKEY_Index;
+
         internal PPS_DataSet(EduHubContext Context)
             : base(Context)
         {
             PPSKEY_Index = new Lazy<Dictionary<string, PPS_Entity>>(() => this.ToDictionary(e => e.PPSKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PPS"; } }
 
-        private Lazy<Dictionary<string, PPS_Entity>> PPSKEY_Index;
-
+        /// <summary>
+        /// Find PPS by PPSKEY key field
+        /// </summary>
+        /// <param name="Key">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">PPSKEY value didn't match any PPS entities</exception>
         public PPS_Entity FindByPPSKEY(string Key)
         {
             PPS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY key field
+        /// </summary>
+        /// <param name="Key">PPSKEY value used to find PPS</param>
+        /// <param name="Value">Related PPS entity</param>
+        /// <returns>True if the PPS Entity is found</returns>
         public bool TryFindByPPSKEY(string Key, out PPS_Entity Value)
         {
             return PPSKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY key field
+        /// </summary>
+        /// <param name="Key">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity, or null if not found</returns>
         public PPS_Entity TryFindByPPSKEY(string Key)
         {
             PPS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<PPS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PPS_Entity, string>[Headers.Count];

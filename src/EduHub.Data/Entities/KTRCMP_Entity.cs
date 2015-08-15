@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KTRCMP_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Company ID [Integer (32bit signed): l]
         /// </summary>
@@ -72,7 +76,9 @@ namespace EduHub.Data.Entities
         /// Last write time [Integer (16bit signed nullable): i]
         /// </summary>
         public short? LW_TIME { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

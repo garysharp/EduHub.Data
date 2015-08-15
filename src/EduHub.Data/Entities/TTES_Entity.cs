@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TTES_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TT_Entity _GKEY_TT;
+        private SU_Entity _SUBJ_SU;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,11 +23,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
-        /// Grid involved in exam
-        /// </summary>
-        public TT_Entity GKEY_TT { get { return GKEY == null ? null : Context.TT.FindByTTKEY(GKEY); } }
-        /// <summary>
         /// Exam grid to which this subject belongs [Integer (32bit signed nullable): l]
         /// </summary>
         public int? TTEI_TID { get; internal set; }
@@ -29,11 +30,6 @@ namespace EduHub.Data.Entities
         /// Subject [Uppercase Alphanumeric: u5]
         /// </summary>
         public string SUBJ { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJ] => [SU_Entity].[SUKEY]
-        /// Subject
-        /// </summary>
-        public SU_Entity SUBJ_SU { get { return SUBJ == null ? null : Context.SU.FindBySUKEY(SUBJ); } }
         /// <summary>
         /// Number of times examined [Integer (16bit signed nullable): i]
         /// </summary>
@@ -110,7 +106,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
+        /// Grid involved in exam
+        /// </summary>
+        public TT_Entity GKEY_TT {
+            get
+            {
+                if (GKEY != null)
+                {
+                    if (_GKEY_TT == null)
+                    {
+                        _GKEY_TT = Context.TT.FindByTTKEY(GKEY);
+                    }
+                    return _GKEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJ] => [SU_Entity].[SUKEY]
+        /// Subject
+        /// </summary>
+        public SU_Entity SUBJ_SU {
+            get
+            {
+                if (SUBJ != null)
+                {
+                    if (_SUBJ_SU == null)
+                    {
+                        _SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
+                    }
+                    return _SUBJ_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

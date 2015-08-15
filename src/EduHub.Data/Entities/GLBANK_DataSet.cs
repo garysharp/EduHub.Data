@@ -10,6 +10,9 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class GLBANK_DataSet : SetBase<GLBANK_Entity>
     {
+        private Lazy<Dictionary<string, GLBANK_Entity>> GLCODE_Index;
+        private Lazy<Dictionary<int, GLBANK_Entity>> GLBANKKEY_Index;
+
         internal GLBANK_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -17,11 +20,17 @@ namespace EduHub.Data.Entities
             GLBANKKEY_Index = new Lazy<Dictionary<int, GLBANK_Entity>>(() => this.ToDictionary(e => e.GLBANKKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "GLBANK"; } }
 
-        private Lazy<Dictionary<string, GLBANK_Entity>> GLCODE_Index;
-        private Lazy<Dictionary<int, GLBANK_Entity>> GLBANKKEY_Index;
-
+        /// <summary>
+        /// Find GLBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">GLCODE value didn't match any GLBANK entities</exception>
         public GLBANK_Entity FindByGLCODE(string Key)
         {
             GLBANK_Entity result;
@@ -34,10 +43,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find GLBANK</param>
+        /// <param name="Value">Related GLBANK entity</param>
+        /// <returns>True if the GLBANK Entity is found</returns>
         public bool TryFindByGLCODE(string Key, out GLBANK_Entity Value)
         {
             return GLCODE_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLCODE key field
+        /// </summary>
+        /// <param name="Key">GLCODE value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity, or null if not found</returns>
         public GLBANK_Entity TryFindByGLCODE(string Key)
         {
             GLBANK_Entity result;
@@ -50,6 +72,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find GLBANK by GLBANKKEY key field
+        /// </summary>
+        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">GLBANKKEY value didn't match any GLBANK entities</exception>
         public GLBANK_Entity FindByGLBANKKEY(int Key)
         {
             GLBANK_Entity result;
@@ -62,10 +91,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY key field
+        /// </summary>
+        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
+        /// <param name="Value">Related GLBANK entity</param>
+        /// <returns>True if the GLBANK Entity is found</returns>
         public bool TryFindByGLBANKKEY(int Key, out GLBANK_Entity Value)
         {
             return GLBANKKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY key field
+        /// </summary>
+        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity, or null if not found</returns>
         public GLBANK_Entity TryFindByGLBANKKEY(int Key)
         {
             GLBANK_Entity result;
@@ -78,7 +120,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<GLBANK_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLBANK_Entity, string>[Headers.Count];

@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SCEN_ACV_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         ///  [Integer (32bit signed): l]
         /// </summary>
@@ -44,7 +48,9 @@ namespace EduHub.Data.Entities
         ///  [Date Time nullable: d]
         /// </summary>
         public DateTime? LUPDATED { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

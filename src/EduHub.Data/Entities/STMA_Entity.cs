@@ -8,6 +8,14 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class STMA_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _SKEY_ST;
+        private SU_Entity _MKEY_SU;
+        private SC_Entity _CKEY_SC;
+        private KCY_Entity _SCHOOL_YEAR_KCY;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,28 +25,13 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [SKEY] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity SKEY_ST { get { return SKEY == null ? null : Context.ST.FindBySTKEY(SKEY); } }
-        /// <summary>
         /// Subject code [Uppercase Alphanumeric: u5]
         /// </summary>
         public string MKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [MKEY] => [SU_Entity].[SUKEY]
-        /// Subject code
-        /// </summary>
-        public SU_Entity MKEY_SU { get { return MKEY == null ? null : Context.SU.FindBySUKEY(MKEY); } }
-        /// <summary>
         /// Course code [Uppercase Alphanumeric: u5]
         /// </summary>
         public string CKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CKEY] => [SC_Entity].[COURSE]
-        /// Course code
-        /// </summary>
-        public SC_Entity CKEY_SC { get { return CKEY == null ? null : Context.SC.FindByCOURSE(CKEY); } }
         /// <summary>
         /// student's priority for this subject choice [Integer (16bit signed nullable): i]
         /// </summary>
@@ -116,11 +109,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SCHOOL_YEAR { get; internal set; }
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
-        /// Specific year level: (V) (NRM)
-        /// </summary>
-        public KCY_Entity SCHOOL_YEAR_KCY { get { return SCHOOL_YEAR == null ? null : Context.KCY.FindByKCYKEY(SCHOOL_YEAR); } }
-        /// <summary>
         /// No of periods class ran [Integer (16bit signed nullable): i]
         /// </summary>
         public short? TOT_CLASS_PERIODS { get; internal set; }
@@ -148,7 +136,93 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SKEY] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity SKEY_ST {
+            get
+            {
+                if (SKEY != null)
+                {
+                    if (_SKEY_ST == null)
+                    {
+                        _SKEY_ST = Context.ST.FindBySTKEY(SKEY);
+                    }
+                    return _SKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [MKEY] => [SU_Entity].[SUKEY]
+        /// Subject code
+        /// </summary>
+        public SU_Entity MKEY_SU {
+            get
+            {
+                if (MKEY != null)
+                {
+                    if (_MKEY_SU == null)
+                    {
+                        _MKEY_SU = Context.SU.FindBySUKEY(MKEY);
+                    }
+                    return _MKEY_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CKEY] => [SC_Entity].[COURSE]
+        /// Course code
+        /// </summary>
+        public SC_Entity CKEY_SC {
+            get
+            {
+                if (CKEY != null)
+                {
+                    if (_CKEY_SC == null)
+                    {
+                        _CKEY_SC = Context.SC.FindByCOURSE(CKEY);
+                    }
+                    return _CKEY_SC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SCHOOL_YEAR] => [KCY_Entity].[KCYKEY]
+        /// Specific year level: (V) (NRM)
+        /// </summary>
+        public KCY_Entity SCHOOL_YEAR_KCY {
+            get
+            {
+                if (SCHOOL_YEAR != null)
+                {
+                    if (_SCHOOL_YEAR_KCY == null)
+                    {
+                        _SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
+                    }
+                    return _SCHOOL_YEAR_KCY;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

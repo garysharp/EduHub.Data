@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class GLFBUDG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GLBUDG_Entity _BKEY_GLBUDG;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// GLBUDG link [Uppercase Alphanumeric: u15]
         /// </summary>
         public string BKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [BKEY] => [GLBUDG_Entity].[BUDGETKEY]
-        /// GLBUDG link
-        /// </summary>
-        public GLBUDG_Entity BKEY_GLBUDG { get { return BKEY == null ? null : Context.GLBUDG.FindByBUDGETKEY(BKEY); } }
         /// <summary>
         /// Batch number [Integer (32bit signed nullable): l]
         /// </summary>
@@ -41,7 +41,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [BKEY] => [GLBUDG_Entity].[BUDGETKEY]
+        /// GLBUDG link
+        /// </summary>
+        public GLBUDG_Entity BKEY_GLBUDG {
+            get
+            {
+                if (BKEY != null)
+                {
+                    if (_BKEY_GLBUDG == null)
+                    {
+                        _BKEY_GLBUDG = Context.GLBUDG.FindByBUDGETKEY(BKEY);
+                    }
+                    return _BKEY_GLBUDG;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

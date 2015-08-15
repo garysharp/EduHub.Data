@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class TE_DataSet : SetBase<TE_Entity>
     {
+        private Lazy<Dictionary<int, TE_Entity>> TEKEY_Index;
+
         internal TE_DataSet(EduHubContext Context)
             : base(Context)
         {
             TEKEY_Index = new Lazy<Dictionary<int, TE_Entity>>(() => this.ToDictionary(e => e.TEKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "TE"; } }
 
-        private Lazy<Dictionary<int, TE_Entity>> TEKEY_Index;
-
+        /// <summary>
+        /// Find TE by TEKEY key field
+        /// </summary>
+        /// <param name="Key">TEKEY value used to find TE</param>
+        /// <returns>Related TE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TEKEY value didn't match any TE entities</exception>
         public TE_Entity FindByTEKEY(int Key)
         {
             TE_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find TE by TEKEY key field
+        /// </summary>
+        /// <param name="Key">TEKEY value used to find TE</param>
+        /// <param name="Value">Related TE entity</param>
+        /// <returns>True if the TE Entity is found</returns>
         public bool TryFindByTEKEY(int Key, out TE_Entity Value)
         {
             return TEKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find TE by TEKEY key field
+        /// </summary>
+        /// <param name="Key">TEKEY value used to find TE</param>
+        /// <returns>Related TE entity, or null if not found</returns>
         public TE_Entity TryFindByTEKEY(int Key)
         {
             TE_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<TE_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TE_Entity, string>[Headers.Count];

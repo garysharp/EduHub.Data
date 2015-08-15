@@ -8,6 +8,13 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SM_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KSF_Entity _FACULTY_KSF;
+        private SCI_Entity _CAMPUS_SCI;
+        private SF_Entity _STAFF_CODE_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Room code [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -33,11 +40,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FACULTY { get; internal set; }
         /// <summary>
-        /// Navigation property for [FACULTY] => [KSF_Entity].[KSFKEY]
-        /// Code of the faculty responsible for this room
-        /// </summary>
-        public KSF_Entity FACULTY_KSF { get { return FACULTY == null ? null : Context.KSF.FindByKSFKEY(FACULTY); } }
-        /// <summary>
         /// (V) (NRM) << What exactly is this field for? [Uppercase Alphanumeric: u4]
         /// </summary>
         public string AREA_CODE { get; internal set; }
@@ -46,19 +48,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? CAMPUS { get; internal set; }
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
-        /// ID of the campus on which this room is located
-        /// </summary>
-        public SCI_Entity CAMPUS_SCI { get { return CAMPUS.HasValue ? Context.SCI.FindBySCIKEY(CAMPUS.Value) : null; } }
-        /// <summary>
         /// Code of the staff member responsible for this room (V) (NRM) [Uppercase Alphanumeric: u4]
         /// </summary>
         public string STAFF_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [STAFF_CODE] => [SF_Entity].[SFKEY]
-        /// Code of the staff member responsible for this room (V) (NRM)
-        /// </summary>
-        public SF_Entity STAFF_CODE_SF { get { return STAFF_CODE == null ? null : Context.SF.FindBySFKEY(STAFF_CODE); } }
         /// <summary>
         ///  [Memo: m]
         /// </summary>
@@ -91,7 +83,72 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FACULTY] => [KSF_Entity].[KSFKEY]
+        /// Code of the faculty responsible for this room
+        /// </summary>
+        public KSF_Entity FACULTY_KSF {
+            get
+            {
+                if (FACULTY != null)
+                {
+                    if (_FACULTY_KSF == null)
+                    {
+                        _FACULTY_KSF = Context.KSF.FindByKSFKEY(FACULTY);
+                    }
+                    return _FACULTY_KSF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [CAMPUS] => [SCI_Entity].[SCIKEY]
+        /// ID of the campus on which this room is located
+        /// </summary>
+        public SCI_Entity CAMPUS_SCI {
+            get
+            {
+                if (CAMPUS.HasValue)
+                {
+                    if (_CAMPUS_SCI == null)
+                    {
+                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                    }
+                    return _CAMPUS_SCI;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [STAFF_CODE] => [SF_Entity].[SFKEY]
+        /// Code of the staff member responsible for this room (V) (NRM)
+        /// </summary>
+        public SF_Entity STAFF_CODE_SF {
+            get
+            {
+                if (STAFF_CODE != null)
+                {
+                    if (_STAFF_CODE_SF == null)
+                    {
+                        _STAFF_CODE_SF = Context.SF.FindBySFKEY(STAFF_CODE);
+                    }
+                    return _STAFF_CODE_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

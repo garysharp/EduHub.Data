@@ -8,6 +8,16 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TTTG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TT_Entity _GKEY_TT;
+        private SU_Entity _SUBJ_SU;
+        private SF_Entity _T1TEACH_SF;
+        private SF_Entity _T2TEACH_SF;
+        private SM_Entity _R1ROOM_SM;
+        private SM_Entity _R2ROOM_SM;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +27,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
-        /// Link to Timetable Grid Template
-        /// </summary>
-        public TT_Entity GKEY_TT { get { return GKEY == null ? null : Context.TT.FindByTTKEY(GKEY); } }
-        /// <summary>
         /// Link to Subject [Uppercase Alphanumeric: u5]
         /// </summary>
         public string SUBJ { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBJ] => [SU_Entity].[SUKEY]
-        /// Link to Subject
-        /// </summary>
-        public SU_Entity SUBJ_SU { get { return SUBJ == null ? null : Context.SU.FindBySUKEY(SUBJ); } }
         /// <summary>
         /// Set [Integer (16bit signed nullable): i]
         /// </summary>
@@ -83,37 +83,17 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string T1TEACH { get; internal set; }
         /// <summary>
-        /// Navigation property for [T1TEACH] => [SF_Entity].[SFKEY]
-        /// Staff code of first or only teacher for this period
-        /// </summary>
-        public SF_Entity T1TEACH_SF { get { return T1TEACH == null ? null : Context.SF.FindBySFKEY(T1TEACH); } }
-        /// <summary>
         /// Staff code of second teacher for this period (if any) [Uppercase Alphanumeric: u4]
         /// </summary>
         public string T2TEACH { get; internal set; }
-        /// <summary>
-        /// Navigation property for [T2TEACH] => [SF_Entity].[SFKEY]
-        /// Staff code of second teacher for this period (if any)
-        /// </summary>
-        public SF_Entity T2TEACH_SF { get { return T2TEACH == null ? null : Context.SF.FindBySFKEY(T2TEACH); } }
         /// <summary>
         /// Room code of first or only room for this period [Uppercase Alphanumeric: u4]
         /// </summary>
         public string R1ROOM { get; internal set; }
         /// <summary>
-        /// Navigation property for [R1ROOM] => [SM_Entity].[ROOM]
-        /// Room code of first or only room for this period
-        /// </summary>
-        public SM_Entity R1ROOM_SM { get { return R1ROOM == null ? null : Context.SM.FindByROOM(R1ROOM); } }
-        /// <summary>
         /// Room code of second room for this period (if any) [Uppercase Alphanumeric: u4]
         /// </summary>
         public string R2ROOM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [R2ROOM] => [SM_Entity].[ROOM]
-        /// Room code of second room for this period (if any)
-        /// </summary>
-        public SM_Entity R2ROOM_SM { get { return R2ROOM == null ? null : Context.SM.FindByROOM(R2ROOM); } }
         /// <summary>
         /// Resources [Uppercase Alphanumeric: u4]
         /// </summary>
@@ -218,7 +198,135 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
+        /// Link to Timetable Grid Template
+        /// </summary>
+        public TT_Entity GKEY_TT {
+            get
+            {
+                if (GKEY != null)
+                {
+                    if (_GKEY_TT == null)
+                    {
+                        _GKEY_TT = Context.TT.FindByTTKEY(GKEY);
+                    }
+                    return _GKEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBJ] => [SU_Entity].[SUKEY]
+        /// Link to Subject
+        /// </summary>
+        public SU_Entity SUBJ_SU {
+            get
+            {
+                if (SUBJ != null)
+                {
+                    if (_SUBJ_SU == null)
+                    {
+                        _SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
+                    }
+                    return _SUBJ_SU;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [T1TEACH] => [SF_Entity].[SFKEY]
+        /// Staff code of first or only teacher for this period
+        /// </summary>
+        public SF_Entity T1TEACH_SF {
+            get
+            {
+                if (T1TEACH != null)
+                {
+                    if (_T1TEACH_SF == null)
+                    {
+                        _T1TEACH_SF = Context.SF.FindBySFKEY(T1TEACH);
+                    }
+                    return _T1TEACH_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [T2TEACH] => [SF_Entity].[SFKEY]
+        /// Staff code of second teacher for this period (if any)
+        /// </summary>
+        public SF_Entity T2TEACH_SF {
+            get
+            {
+                if (T2TEACH != null)
+                {
+                    if (_T2TEACH_SF == null)
+                    {
+                        _T2TEACH_SF = Context.SF.FindBySFKEY(T2TEACH);
+                    }
+                    return _T2TEACH_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [R1ROOM] => [SM_Entity].[ROOM]
+        /// Room code of first or only room for this period
+        /// </summary>
+        public SM_Entity R1ROOM_SM {
+            get
+            {
+                if (R1ROOM != null)
+                {
+                    if (_R1ROOM_SM == null)
+                    {
+                        _R1ROOM_SM = Context.SM.FindByROOM(R1ROOM);
+                    }
+                    return _R1ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [R2ROOM] => [SM_Entity].[ROOM]
+        /// Room code of second room for this period (if any)
+        /// </summary>
+        public SM_Entity R2ROOM_SM {
+            get
+            {
+                if (R2ROOM != null)
+                {
+                    if (_R2ROOM_SM == null)
+                    {
+                        _R2ROOM_SM = Context.SM.FindByROOM(R2ROOM);
+                    }
+                    return _R2ROOM_SM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

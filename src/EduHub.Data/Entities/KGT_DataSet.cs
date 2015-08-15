@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KGT_DataSet : SetBase<KGT_Entity>
     {
+        private Lazy<Dictionary<string, KGT_Entity>> COUNTRY_Index;
+
         internal KGT_DataSet(EduHubContext Context)
             : base(Context)
         {
             COUNTRY_Index = new Lazy<Dictionary<string, KGT_Entity>>(() => this.ToDictionary(e => e.COUNTRY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KGT"; } }
 
-        private Lazy<Dictionary<string, KGT_Entity>> COUNTRY_Index;
-
+        /// <summary>
+        /// Find KGT by COUNTRY key field
+        /// </summary>
+        /// <param name="Key">COUNTRY value used to find KGT</param>
+        /// <returns>Related KGT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">COUNTRY value didn't match any KGT entities</exception>
         public KGT_Entity FindByCOUNTRY(string Key)
         {
             KGT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KGT by COUNTRY key field
+        /// </summary>
+        /// <param name="Key">COUNTRY value used to find KGT</param>
+        /// <param name="Value">Related KGT entity</param>
+        /// <returns>True if the KGT Entity is found</returns>
         public bool TryFindByCOUNTRY(string Key, out KGT_Entity Value)
         {
             return COUNTRY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KGT by COUNTRY key field
+        /// </summary>
+        /// <param name="Key">COUNTRY value used to find KGT</param>
+        /// <returns>Related KGT entity, or null if not found</returns>
         public KGT_Entity TryFindByCOUNTRY(string Key)
         {
             KGT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KGT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGT_Entity, string>[Headers.Count];

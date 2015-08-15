@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SPEMAIL_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KREPORT_Entity _REPORT_KREPORT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Key [Uppercase Alphanumeric: u15]
         /// </summary>
@@ -21,12 +26,6 @@ namespace EduHub.Data.Entities
         ///  [Uppercase Alphanumeric: u10]
         /// </summary>
         public string REPORT { get; internal set; }
-        /// <summary>
-        /// Navigation property for [REPORT] => [KREPORT_Entity].[KREPORTKEY]
-        /// Report file name (without  extension)
-        /// 
-        /// </summary>
-        public KREPORT_Entity REPORT_KREPORT { get { return REPORT == null ? null : Context.KREPORT.FindByKREPORTKEY(REPORT); } }
         /// <summary>
         /// Default path of printout [Alphanumeric: a128]
         /// </summary>
@@ -72,7 +71,31 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [REPORT] => [KREPORT_Entity].[KREPORTKEY]
+        /// Report file name (without  extension)
+        /// 
+        /// </summary>
+        public KREPORT_Entity REPORT_KREPORT {
+            get
+            {
+                if (REPORT != null)
+                {
+                    if (_REPORT_KREPORT == null)
+                    {
+                        _REPORT_KREPORT = Context.KREPORT.FindByKREPORTKEY(REPORT);
+                    }
+                    return _REPORT_KREPORT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

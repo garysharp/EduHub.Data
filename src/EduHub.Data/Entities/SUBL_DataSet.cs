@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SUBL_DataSet : SetBase<SUBL_Entity>
     {
+
         internal SUBL_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SUBL"; } }
 
-
-        
         protected override Action<SUBL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SUBL_Entity, string>[Headers.Count];

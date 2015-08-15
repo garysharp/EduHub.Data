@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class UM_DataSet : SetBase<UM_Entity>
     {
+        private Lazy<Dictionary<int, UM_Entity>> UMKEY_Index;
+
         internal UM_DataSet(EduHubContext Context)
             : base(Context)
         {
             UMKEY_Index = new Lazy<Dictionary<int, UM_Entity>>(() => this.ToDictionary(e => e.UMKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "UM"; } }
 
-        private Lazy<Dictionary<int, UM_Entity>> UMKEY_Index;
-
+        /// <summary>
+        /// Find UM by UMKEY key field
+        /// </summary>
+        /// <param name="Key">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">UMKEY value didn't match any UM entities</exception>
         public UM_Entity FindByUMKEY(int Key)
         {
             UM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find UM by UMKEY key field
+        /// </summary>
+        /// <param name="Key">UMKEY value used to find UM</param>
+        /// <param name="Value">Related UM entity</param>
+        /// <returns>True if the UM Entity is found</returns>
         public bool TryFindByUMKEY(int Key, out UM_Entity Value)
         {
             return UMKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find UM by UMKEY key field
+        /// </summary>
+        /// <param name="Key">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity, or null if not found</returns>
         public UM_Entity TryFindByUMKEY(int Key)
         {
             UM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<UM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<UM_Entity, string>[Headers.Count];

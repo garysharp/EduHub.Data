@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class DFB_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private DF_Entity _FAM_CODE_DF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Family key [Uppercase Alphanumeric: u10]
         /// </summary>
         public string FAM_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [FAM_CODE] => [DF_Entity].[DFKEY]
-        /// Family key
-        /// </summary>
-        public DF_Entity FAM_CODE_DF { get { return FAM_CODE == null ? null : Context.DF.FindByDFKEY(FAM_CODE); } }
         /// <summary>
         /// Unique payment reference number [Alphanumeric: a21]
         /// </summary>
@@ -75,7 +75,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [FAM_CODE] => [DF_Entity].[DFKEY]
+        /// Family key
+        /// </summary>
+        public DF_Entity FAM_CODE_DF {
+            get
+            {
+                if (FAM_CODE != null)
+                {
+                    if (_FAM_CODE_DF == null)
+                    {
+                        _FAM_CODE_DF = Context.DF.FindByDFKEY(FAM_CODE);
+                    }
+                    return _FAM_CODE_DF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

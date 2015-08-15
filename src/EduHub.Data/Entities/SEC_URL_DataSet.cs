@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SEC_URL_DataSet : SetBase<SEC_URL_Entity>
     {
+        private Lazy<Dictionary<int, SEC_URL_Entity>> SCHOOLURLID_Index;
+
         internal SEC_URL_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCHOOLURLID_Index = new Lazy<Dictionary<int, SEC_URL_Entity>>(() => this.ToDictionary(e => e.SCHOOLURLID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SEC_URL"; } }
 
-        private Lazy<Dictionary<int, SEC_URL_Entity>> SCHOOLURLID_Index;
-
+        /// <summary>
+        /// Find SEC_URL by SCHOOLURLID key field
+        /// </summary>
+        /// <param name="Key">SCHOOLURLID value used to find SEC_URL</param>
+        /// <returns>Related SEC_URL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCHOOLURLID value didn't match any SEC_URL entities</exception>
         public SEC_URL_Entity FindBySCHOOLURLID(int Key)
         {
             SEC_URL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SEC_URL by SCHOOLURLID key field
+        /// </summary>
+        /// <param name="Key">SCHOOLURLID value used to find SEC_URL</param>
+        /// <param name="Value">Related SEC_URL entity</param>
+        /// <returns>True if the SEC_URL Entity is found</returns>
         public bool TryFindBySCHOOLURLID(int Key, out SEC_URL_Entity Value)
         {
             return SCHOOLURLID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SEC_URL by SCHOOLURLID key field
+        /// </summary>
+        /// <param name="Key">SCHOOLURLID value used to find SEC_URL</param>
+        /// <returns>Related SEC_URL entity, or null if not found</returns>
         public SEC_URL_Entity TryFindBySCHOOLURLID(int Key)
         {
             SEC_URL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SEC_URL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_URL_Entity, string>[Headers.Count];

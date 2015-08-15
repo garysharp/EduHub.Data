@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KBPT_DataSet : SetBase<KBPT_Entity>
     {
+        private Lazy<Dictionary<int, KBPT_Entity>> TID_Index;
+
         internal KBPT_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, KBPT_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KBPT"; } }
 
-        private Lazy<Dictionary<int, KBPT_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find KBPT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBPT</param>
+        /// <returns>Related KBPT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KBPT entities</exception>
         public KBPT_Entity FindByTID(int Key)
         {
             KBPT_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KBPT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBPT</param>
+        /// <param name="Value">Related KBPT entity</param>
+        /// <returns>True if the KBPT Entity is found</returns>
         public bool TryFindByTID(int Key, out KBPT_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KBPT by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find KBPT</param>
+        /// <returns>Related KBPT entity, or null if not found</returns>
         public KBPT_Entity TryFindByTID(int Key)
         {
             KBPT_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KBPT_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBPT_Entity, string>[Headers.Count];

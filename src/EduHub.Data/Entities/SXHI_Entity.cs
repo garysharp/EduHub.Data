@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SXHI_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _SKEY_ST;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed): l]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// Student ID (dynamic link that gets updated whenever ST.STKEY is also updated) [Uppercase Alphanumeric: u10]
         /// </summary>
         public string SKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SKEY] => [ST_Entity].[STKEY]
-        /// Student ID (dynamic link that gets updated whenever ST.STKEY is also updated)
-        /// </summary>
-        public ST_Entity SKEY_ST { get { return SKEY == null ? null : Context.ST.FindBySTKEY(SKEY); } }
         /// <summary>
         /// Student ID (static link that retains its value even if ST.STKEY is updated) [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -173,7 +173,30 @@ namespace EduHub.Data.Entities
         /// Change made to last record to produce this one [Alphanumeric: a80]
         /// </summary>
         public string CHANGE_MADE { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [SKEY] => [ST_Entity].[STKEY]
+        /// Student ID (dynamic link that gets updated whenever ST.STKEY is also updated)
+        /// </summary>
+        public ST_Entity SKEY_ST {
+            get
+            {
+                if (SKEY != null)
+                {
+                    if (_SKEY_ST == null)
+                    {
+                        _SKEY_ST = Context.ST.FindBySTKEY(SKEY);
+                    }
+                    return _SKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

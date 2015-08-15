@@ -10,6 +10,9 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class STMA_DataSet : SetBase<STMA_Entity>
     {
+        private Lazy<Dictionary<int, STMA_Entity>> IDENT_Index;
+        private Lazy<Dictionary<string, STMA_Entity>> TTPERIOD_Index;
+
         internal STMA_DataSet(EduHubContext Context)
             : base(Context)
         {
@@ -17,11 +20,17 @@ namespace EduHub.Data.Entities
             TTPERIOD_Index = new Lazy<Dictionary<string, STMA_Entity>>(() => this.ToDictionary(e => e.TTPERIOD));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "STMA"; } }
 
-        private Lazy<Dictionary<int, STMA_Entity>> IDENT_Index;
-        private Lazy<Dictionary<string, STMA_Entity>> TTPERIOD_Index;
-
+        /// <summary>
+        /// Find STMA by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find STMA</param>
+        /// <returns>Related STMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">IDENT value didn't match any STMA entities</exception>
         public STMA_Entity FindByIDENT(int Key)
         {
             STMA_Entity result;
@@ -34,10 +43,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find STMA by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find STMA</param>
+        /// <param name="Value">Related STMA entity</param>
+        /// <returns>True if the STMA Entity is found</returns>
         public bool TryFindByIDENT(int Key, out STMA_Entity Value)
         {
             return IDENT_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find STMA by IDENT key field
+        /// </summary>
+        /// <param name="Key">IDENT value used to find STMA</param>
+        /// <returns>Related STMA entity, or null if not found</returns>
         public STMA_Entity TryFindByIDENT(int Key)
         {
             STMA_Entity result;
@@ -50,6 +72,13 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find STMA by TTPERIOD key field
+        /// </summary>
+        /// <param name="Key">TTPERIOD value used to find STMA</param>
+        /// <returns>Related STMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TTPERIOD value didn't match any STMA entities</exception>
         public STMA_Entity FindByTTPERIOD(string Key)
         {
             STMA_Entity result;
@@ -62,10 +91,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find STMA by TTPERIOD key field
+        /// </summary>
+        /// <param name="Key">TTPERIOD value used to find STMA</param>
+        /// <param name="Value">Related STMA entity</param>
+        /// <returns>True if the STMA Entity is found</returns>
         public bool TryFindByTTPERIOD(string Key, out STMA_Entity Value)
         {
             return TTPERIOD_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find STMA by TTPERIOD key field
+        /// </summary>
+        /// <param name="Key">TTPERIOD value used to find STMA</param>
+        /// <returns>Related STMA entity, or null if not found</returns>
         public STMA_Entity TryFindByTTPERIOD(string Key)
         {
             STMA_Entity result;
@@ -78,7 +120,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<STMA_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STMA_Entity, string>[Headers.Count];

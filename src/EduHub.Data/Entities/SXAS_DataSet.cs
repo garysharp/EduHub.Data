@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SXAS_DataSet : SetBase<SXAS_Entity>
     {
+        private Lazy<Dictionary<int, SXAS_Entity>> TID_Index;
+
         internal SXAS_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, SXAS_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SXAS"; } }
 
-        private Lazy<Dictionary<int, SXAS_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find SXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXAS</param>
+        /// <returns>Related SXAS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SXAS entities</exception>
         public SXAS_Entity FindByTID(int Key)
         {
             SXAS_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXAS</param>
+        /// <param name="Value">Related SXAS entity</param>
+        /// <returns>True if the SXAS Entity is found</returns>
         public bool TryFindByTID(int Key, out SXAS_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SXAS by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SXAS</param>
+        /// <returns>Related SXAS entity, or null if not found</returns>
         public SXAS_Entity TryFindByTID(int Key)
         {
             SXAS_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SXAS_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXAS_Entity, string>[Headers.Count];

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SCL_DataSet : SetBase<SCL_Entity>
     {
+        private Lazy<Dictionary<string, SCL_Entity>> SCLKEY_Index;
+
         internal SCL_DataSet(EduHubContext Context)
             : base(Context)
         {
             SCLKEY_Index = new Lazy<Dictionary<string, SCL_Entity>>(() => this.ToDictionary(e => e.SCLKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SCL"; } }
 
-        private Lazy<Dictionary<string, SCL_Entity>> SCLKEY_Index;
-
+        /// <summary>
+        /// Find SCL by SCLKEY key field
+        /// </summary>
+        /// <param name="Key">SCLKEY value used to find SCL</param>
+        /// <returns>Related SCL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SCLKEY value didn't match any SCL entities</exception>
         public SCL_Entity FindBySCLKEY(string Key)
         {
             SCL_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SCL by SCLKEY key field
+        /// </summary>
+        /// <param name="Key">SCLKEY value used to find SCL</param>
+        /// <param name="Value">Related SCL entity</param>
+        /// <returns>True if the SCL Entity is found</returns>
         public bool TryFindBySCLKEY(string Key, out SCL_Entity Value)
         {
             return SCLKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SCL by SCLKEY key field
+        /// </summary>
+        /// <param name="Key">SCLKEY value used to find SCL</param>
+        /// <returns>Related SCL entity, or null if not found</returns>
         public SCL_Entity TryFindBySCLKEY(string Key)
         {
             SCL_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SCL_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCL_Entity, string>[Headers.Count];

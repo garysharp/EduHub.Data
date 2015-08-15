@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SPEPRINT_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SPEMAIL_Entity _CODE_SPEMAIL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Email Key [Uppercase Alphanumeric: u15]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [SPEMAIL_Entity].[SPEMAILKEY]
-        /// Email Key
-        /// </summary>
-        public SPEMAIL_Entity CODE_SPEMAIL { get { return CODE == null ? null : Context.SPEMAIL.FindBySPEMAILKEY(CODE); } }
         /// <summary>
         /// printed Date [Date Time nullable: d]
         /// </summary>
@@ -90,7 +90,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [SPEMAIL_Entity].[SPEMAILKEY]
+        /// Email Key
+        /// </summary>
+        public SPEMAIL_Entity CODE_SPEMAIL {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_SPEMAIL == null)
+                    {
+                        _CODE_SPEMAIL = Context.SPEMAIL.FindBySPEMAILKEY(CODE);
+                    }
+                    return _CODE_SPEMAIL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SXABCONV_DataSet : SetBase<SXABCONV_Entity>
     {
+        private Lazy<Dictionary<int, SXABCONV_Entity>> SXABCONV_ID_Index;
+
         internal SXABCONV_DataSet(EduHubContext Context)
             : base(Context)
         {
             SXABCONV_ID_Index = new Lazy<Dictionary<int, SXABCONV_Entity>>(() => this.ToDictionary(e => e.SXABCONV_ID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SXABCONV"; } }
 
-        private Lazy<Dictionary<int, SXABCONV_Entity>> SXABCONV_ID_Index;
-
+        /// <summary>
+        /// Find SXABCONV by SXABCONV_ID key field
+        /// </summary>
+        /// <param name="Key">SXABCONV_ID value used to find SXABCONV</param>
+        /// <returns>Related SXABCONV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SXABCONV_ID value didn't match any SXABCONV entities</exception>
         public SXABCONV_Entity FindBySXABCONV_ID(int Key)
         {
             SXABCONV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by SXABCONV_ID key field
+        /// </summary>
+        /// <param name="Key">SXABCONV_ID value used to find SXABCONV</param>
+        /// <param name="Value">Related SXABCONV entity</param>
+        /// <returns>True if the SXABCONV Entity is found</returns>
         public bool TryFindBySXABCONV_ID(int Key, out SXABCONV_Entity Value)
         {
             return SXABCONV_ID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by SXABCONV_ID key field
+        /// </summary>
+        /// <param name="Key">SXABCONV_ID value used to find SXABCONV</param>
+        /// <returns>Related SXABCONV entity, or null if not found</returns>
         public SXABCONV_Entity TryFindBySXABCONV_ID(int Key)
         {
             SXABCONV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SXABCONV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXABCONV_Entity, string>[Headers.Count];

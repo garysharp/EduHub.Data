@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SF_DataSet : SetBase<SF_Entity>
     {
+        private Lazy<Dictionary<string, SF_Entity>> SFKEY_Index;
+
         internal SF_DataSet(EduHubContext Context)
             : base(Context)
         {
             SFKEY_Index = new Lazy<Dictionary<string, SF_Entity>>(() => this.ToDictionary(e => e.SFKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SF"; } }
 
-        private Lazy<Dictionary<string, SF_Entity>> SFKEY_Index;
-
+        /// <summary>
+        /// Find SF by SFKEY key field
+        /// </summary>
+        /// <param name="Key">SFKEY value used to find SF</param>
+        /// <returns>Related SF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SFKEY value didn't match any SF entities</exception>
         public SF_Entity FindBySFKEY(string Key)
         {
             SF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SF by SFKEY key field
+        /// </summary>
+        /// <param name="Key">SFKEY value used to find SF</param>
+        /// <param name="Value">Related SF entity</param>
+        /// <returns>True if the SF Entity is found</returns>
         public bool TryFindBySFKEY(string Key, out SF_Entity Value)
         {
             return SFKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SF by SFKEY key field
+        /// </summary>
+        /// <param name="Key">SFKEY value used to find SF</param>
+        /// <returns>Related SF entity, or null if not found</returns>
         public SF_Entity TryFindBySFKEY(string Key)
         {
             SF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SF_Entity, string>[Headers.Count];

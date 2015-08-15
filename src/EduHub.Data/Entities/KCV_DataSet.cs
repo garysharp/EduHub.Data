@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCV_DataSet : SetBase<KCV_Entity>
     {
+        private Lazy<Dictionary<string, KCV_Entity>> VISA_SUBCLASS_Index;
+
         internal KCV_DataSet(EduHubContext Context)
             : base(Context)
         {
             VISA_SUBCLASS_Index = new Lazy<Dictionary<string, KCV_Entity>>(() => this.ToDictionary(e => e.VISA_SUBCLASS));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCV"; } }
 
-        private Lazy<Dictionary<string, KCV_Entity>> VISA_SUBCLASS_Index;
-
+        /// <summary>
+        /// Find KCV by VISA_SUBCLASS key field
+        /// </summary>
+        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
+        /// <returns>Related KCV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">VISA_SUBCLASS value didn't match any KCV entities</exception>
         public KCV_Entity FindByVISA_SUBCLASS(string Key)
         {
             KCV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCV by VISA_SUBCLASS key field
+        /// </summary>
+        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
+        /// <param name="Value">Related KCV entity</param>
+        /// <returns>True if the KCV Entity is found</returns>
         public bool TryFindByVISA_SUBCLASS(string Key, out KCV_Entity Value)
         {
             return VISA_SUBCLASS_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCV by VISA_SUBCLASS key field
+        /// </summary>
+        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
+        /// <returns>Related KCV entity, or null if not found</returns>
         public KCV_Entity TryFindByVISA_SUBCLASS(string Key)
         {
             KCV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KCV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCV_Entity, string>[Headers.Count];

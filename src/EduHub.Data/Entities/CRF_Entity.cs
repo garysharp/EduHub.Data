@@ -8,6 +8,18 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class CRF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private CR_Entity _CODE_CR;
+        private KGST_Entity _GST_TYPE_KGST;
+        private KAB_Entity _BSB_KAB;
+        private KAD_Entity _DEL_CODE_KAD;
+        private AR_Entity _ATKEY_AR;
+        private KGST_Entity _INVOICEGST_KGST;
+        private KGLSUB_Entity _SUBPROGRAM_KGLSUB;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// System transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -21,11 +33,6 @@ namespace EduHub.Data.Entities
         /// Creditor key [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [CR_Entity].[CRKEY]
-        /// Creditor key
-        /// </summary>
-        public CR_Entity CODE_CR { get { return CODE == null ? null : Context.CR.FindByCRKEY(CODE); } }
         /// <summary>
         /// Batch number [Integer (32bit signed nullable): l]
         /// </summary>
@@ -205,11 +212,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GST_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
-        /// Relate to KGST
-        /// </summary>
-        public KGST_Entity GST_TYPE_KGST { get { return GST_TYPE == null ? null : Context.KGST.FindByKGSTKEY(GST_TYPE); } }
-        /// <summary>
         /// Rate of GST [Floating Point Number (precision 15 nullable): r]
         /// </summary>
         public double? GST_RATE { get; internal set; }
@@ -245,11 +247,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BSB { get; internal set; }
         /// <summary>
-        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
-        /// BSB number of cheque
-        /// </summary>
-        public KAB_Entity BSB_KAB { get { return BSB == null ? null : Context.KAB.FindByBSB(BSB); } }
-        /// <summary>
         /// Bank of cheque [Alphanumeric: a20]
         /// </summary>
         public string BANK { get; internal set; }
@@ -270,11 +267,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DEL_CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [DEL_CODE] => [KAD_Entity].[KADKEY]
-        /// Delivery address code
-        /// </summary>
-        public KAD_Entity DEL_CODE_KAD { get { return DEL_CODE == null ? null : Context.KAD.FindByKADKEY(DEL_CODE); } }
-        /// <summary>
         /// Delivery docket number
         ///  [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -283,11 +275,6 @@ namespace EduHub.Data.Entities
         ///  [Uppercase Alphanumeric: u10]
         /// </summary>
         public string ATKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [ATKEY] => [AR_Entity].[ARKEY]
-        /// 
-        /// </summary>
-        public AR_Entity ATKEY_AR { get { return ATKEY == null ? null : Context.AR.FindByARKEY(ATKEY); } }
         /// <summary>
         /// Y/N field used in creditors asset invoice [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -353,19 +340,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string INVOICEGST { get; internal set; }
         /// <summary>
-        /// Navigation property for [INVOICEGST] => [KGST_Entity].[KGSTKEY]
-        /// Used in Reverse Payments to obtain the invoice GST type.
-        /// </summary>
-        public KGST_Entity INVOICEGST_KGST { get { return INVOICEGST == null ? null : Context.KGST.FindByKGSTKEY(INVOICEGST); } }
-        /// <summary>
         /// For every transaction there is a subprogram [Uppercase Alphanumeric: u4]
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
-        /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
-        /// For every transaction there is a subprogram
-        /// </summary>
-        public KGLSUB_Entity SUBPROGRAM_KGLSUB { get { return SUBPROGRAM == null ? null : Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM); } }
         /// <summary>
         /// A subprogram always belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
@@ -374,11 +351,6 @@ namespace EduHub.Data.Entities
         /// Transaction might belong to an Initiative [Uppercase Alphanumeric: u3]
         /// </summary>
         public string INITIATIVE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Transaction might belong to an Initiative
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
         /// <summary>
         /// Only filled in for cancelled payment/receipt [Uppercase Alphanumeric: u3]
         /// </summary>
@@ -399,7 +371,177 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [CR_Entity].[CRKEY]
+        /// Creditor key
+        /// </summary>
+        public CR_Entity CODE_CR {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_CR == null)
+                    {
+                        _CODE_CR = Context.CR.FindByCRKEY(CODE);
+                    }
+                    return _CODE_CR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
+        /// Relate to KGST
+        /// </summary>
+        public KGST_Entity GST_TYPE_KGST {
+            get
+            {
+                if (GST_TYPE != null)
+                {
+                    if (_GST_TYPE_KGST == null)
+                    {
+                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                    }
+                    return _GST_TYPE_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
+        /// BSB number of cheque
+        /// </summary>
+        public KAB_Entity BSB_KAB {
+            get
+            {
+                if (BSB != null)
+                {
+                    if (_BSB_KAB == null)
+                    {
+                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
+                    }
+                    return _BSB_KAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [DEL_CODE] => [KAD_Entity].[KADKEY]
+        /// Delivery address code
+        /// </summary>
+        public KAD_Entity DEL_CODE_KAD {
+            get
+            {
+                if (DEL_CODE != null)
+                {
+                    if (_DEL_CODE_KAD == null)
+                    {
+                        _DEL_CODE_KAD = Context.KAD.FindByKADKEY(DEL_CODE);
+                    }
+                    return _DEL_CODE_KAD;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ATKEY] => [AR_Entity].[ARKEY]
+        /// 
+        /// </summary>
+        public AR_Entity ATKEY_AR {
+            get
+            {
+                if (ATKEY != null)
+                {
+                    if (_ATKEY_AR == null)
+                    {
+                        _ATKEY_AR = Context.AR.FindByARKEY(ATKEY);
+                    }
+                    return _ATKEY_AR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INVOICEGST] => [KGST_Entity].[KGSTKEY]
+        /// Used in Reverse Payments to obtain the invoice GST type.
+        /// </summary>
+        public KGST_Entity INVOICEGST_KGST {
+            get
+            {
+                if (INVOICEGST != null)
+                {
+                    if (_INVOICEGST_KGST == null)
+                    {
+                        _INVOICEGST_KGST = Context.KGST.FindByKGSTKEY(INVOICEGST);
+                    }
+                    return _INVOICEGST_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
+        /// For every transaction there is a subprogram
+        /// </summary>
+        public KGLSUB_Entity SUBPROGRAM_KGLSUB {
+            get
+            {
+                if (SUBPROGRAM != null)
+                {
+                    if (_SUBPROGRAM_KGLSUB == null)
+                    {
+                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                    }
+                    return _SUBPROGRAM_KGLSUB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Transaction might belong to an Initiative
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

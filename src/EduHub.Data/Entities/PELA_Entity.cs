@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class PELA_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private PE_Entity _PEKEY_PE;
+        private PLC_Entity _LEAVE_CODE_PLC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string PEKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [PEKEY] => [PE_Entity].[PEKEY]
-        /// Employee identification code
-        /// </summary>
-        public PE_Entity PEKEY_PE { get { return PEKEY == null ? null : Context.PE.FindByPEKEY(PEKEY); } }
-        /// <summary>
         /// Leave type code [Uppercase Alphanumeric: u8]
         /// </summary>
         public string LEAVE_CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
-        /// Leave type code
-        /// </summary>
-        public PLC_Entity LEAVE_CODE_PLC { get { return LEAVE_CODE == null ? null : Context.PLC.FindByPLCKEY(LEAVE_CODE); } }
         /// <summary>
         /// Hours (from PEF) [Floating Point Number (precision 15 nullable): r]
         /// </summary>
@@ -94,7 +90,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [PEKEY] => [PE_Entity].[PEKEY]
+        /// Employee identification code
+        /// </summary>
+        public PE_Entity PEKEY_PE {
+            get
+            {
+                if (PEKEY != null)
+                {
+                    if (_PEKEY_PE == null)
+                    {
+                        _PEKEY_PE = Context.PE.FindByPEKEY(PEKEY);
+                    }
+                    return _PEKEY_PE;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LEAVE_CODE] => [PLC_Entity].[PLCKEY]
+        /// Leave type code
+        /// </summary>
+        public PLC_Entity LEAVE_CODE_PLC {
+            get
+            {
+                if (LEAVE_CODE != null)
+                {
+                    if (_LEAVE_CODE_PLC == null)
+                    {
+                        _LEAVE_CODE_PLC = Context.PLC.FindByPLCKEY(LEAVE_CODE);
+                    }
+                    return _LEAVE_CODE_PLC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

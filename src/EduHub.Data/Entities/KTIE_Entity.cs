@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KTIE_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// prime key [Integer (32bit signed): l]
         /// </summary>
@@ -24,7 +28,9 @@ namespace EduHub.Data.Entities
         /// not found,not available, bad tag [Alphanumeric: a60]
         /// </summary>
         public string ERROR_TEXT { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

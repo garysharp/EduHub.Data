@@ -8,6 +8,19 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class ARF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private AR_Entity _CODE_AR;
+        private KAB_Entity _BSB_KAB;
+        private KGST_Entity _GST_TYPE_KGST;
+        private KADM_Entity _AMETHOD_KADM;
+        private KADM_Entity _TMETHOD_KADM;
+        private KGLSUB_Entity _SUBPROGRAM_KGLSUB;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+        private AKR_Entity _RELEASE_TYPE_AKR;
+        private AKL_Entity _LOCATION_AKL;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID (internal) [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +29,6 @@ namespace EduHub.Data.Entities
         /// Asset code [Uppercase Alphanumeric: u10]
         /// </summary>
         public string CODE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [CODE] => [AR_Entity].[ARKEY]
-        /// Asset code
-        /// </summary>
-        public AR_Entity CODE_AR { get { return CODE == null ? null : Context.AR.FindByARKEY(CODE); } }
         /// <summary>
         /// Transaction reference [Alphanumeric: a10]
         /// </summary>
@@ -89,11 +97,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BSB { get; internal set; }
         /// <summary>
-        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
-        /// Cheque BSB number
-        /// </summary>
-        public KAB_Entity BSB_KAB { get { return BSB == null ? null : Context.KAB.FindByBSB(BSB); } }
-        /// <summary>
         /// Bank [Alphanumeric: a20]
         /// </summary>
         public string BANK { get; internal set; }
@@ -152,11 +155,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GST_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
-        /// Relate to KGST
-        /// </summary>
-        public KGST_Entity GST_TYPE_KGST { get { return GST_TYPE == null ? null : Context.KGST.FindByKGSTKEY(GST_TYPE); } }
-        /// <summary>
         /// Rate of GST [Floating Point Number (precision 15 nullable): r]
         /// </summary>
         public double? GST_RATE { get; internal set; }
@@ -205,11 +203,6 @@ namespace EduHub.Data.Entities
         /// Method of depreciation [Uppercase Alphanumeric: u1]
         /// </summary>
         public string AMETHOD { get; internal set; }
-        /// <summary>
-        /// Navigation property for [AMETHOD] => [KADM_Entity].[KADMKEY]
-        /// Method of depreciation
-        /// </summary>
-        public KADM_Entity AMETHOD_KADM { get { return AMETHOD == null ? null : Context.KADM.FindByKADMKEY(AMETHOD); } }
         /// <summary>
         /// Posting to Actuals: Revaluation Adjustments [Currency (128bit scaled integer nullable): c]
         /// </summary>
@@ -267,11 +260,6 @@ namespace EduHub.Data.Entities
         /// Method of depreciation [Uppercase Alphanumeric: u1]
         /// </summary>
         public string TMETHOD { get; internal set; }
-        /// <summary>
-        /// Navigation property for [TMETHOD] => [KADM_Entity].[KADMKEY]
-        /// Method of depreciation
-        /// </summary>
-        public KADM_Entity TMETHOD_KADM { get { return TMETHOD == null ? null : Context.KADM.FindByKADMKEY(TMETHOD); } }
         /// <summary>
         /// Tax consideration [Currency (128bit scaled integer nullable): c]
         /// </summary>
@@ -332,11 +320,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
-        /// For every transaction there is a subprogram
-        /// </summary>
-        public KGLSUB_Entity SUBPROGRAM_KGLSUB { get { return SUBPROGRAM == null ? null : Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM); } }
-        /// <summary>
         /// A subprogram always belongs to a program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GLPROGRAM { get; internal set; }
@@ -345,19 +328,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string INITIATIVE { get; internal set; }
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Transaction might belong to an Initiative
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
-        /// <summary>
         /// Asset Release Type [Uppercase Alphanumeric: u2]
         /// </summary>
         public string RELEASE_TYPE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [RELEASE_TYPE] => [AKR_Entity].[AKRKEY]
-        /// Asset Release Type
-        /// </summary>
-        public AKR_Entity RELEASE_TYPE_AKR { get { return RELEASE_TYPE == null ? null : Context.AKR.FindByAKRKEY(RELEASE_TYPE); } }
         /// <summary>
         /// Who the money was received from [Alphanumeric: a50]
         /// </summary>
@@ -366,11 +339,6 @@ namespace EduHub.Data.Entities
         /// Asset location [Uppercase Alphanumeric: u10]
         /// </summary>
         public string LOCATION { get; internal set; }
-        /// <summary>
-        /// Navigation property for [LOCATION] => [AKL_Entity].[LOCATION]
-        /// Asset location
-        /// </summary>
-        public AKL_Entity LOCATION_AKL { get { return LOCATION == null ? null : Context.AKL.FindByLOCATION(LOCATION); } }
         /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
@@ -383,7 +351,198 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [AR_Entity].[ARKEY]
+        /// Asset code
+        /// </summary>
+        public AR_Entity CODE_AR {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_AR == null)
+                    {
+                        _CODE_AR = Context.AR.FindByARKEY(CODE);
+                    }
+                    return _CODE_AR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [BSB] => [KAB_Entity].[BSB]
+        /// Cheque BSB number
+        /// </summary>
+        public KAB_Entity BSB_KAB {
+            get
+            {
+                if (BSB != null)
+                {
+                    if (_BSB_KAB == null)
+                    {
+                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
+                    }
+                    return _BSB_KAB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [GST_TYPE] => [KGST_Entity].[KGSTKEY]
+        /// Relate to KGST
+        /// </summary>
+        public KGST_Entity GST_TYPE_KGST {
+            get
+            {
+                if (GST_TYPE != null)
+                {
+                    if (_GST_TYPE_KGST == null)
+                    {
+                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                    }
+                    return _GST_TYPE_KGST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [AMETHOD] => [KADM_Entity].[KADMKEY]
+        /// Method of depreciation
+        /// </summary>
+        public KADM_Entity AMETHOD_KADM {
+            get
+            {
+                if (AMETHOD != null)
+                {
+                    if (_AMETHOD_KADM == null)
+                    {
+                        _AMETHOD_KADM = Context.KADM.FindByKADMKEY(AMETHOD);
+                    }
+                    return _AMETHOD_KADM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [TMETHOD] => [KADM_Entity].[KADMKEY]
+        /// Method of depreciation
+        /// </summary>
+        public KADM_Entity TMETHOD_KADM {
+            get
+            {
+                if (TMETHOD != null)
+                {
+                    if (_TMETHOD_KADM == null)
+                    {
+                        _TMETHOD_KADM = Context.KADM.FindByKADMKEY(TMETHOD);
+                    }
+                    return _TMETHOD_KADM;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [SUBPROGRAM] => [KGLSUB_Entity].[SUBPROGRAM]
+        /// For every transaction there is a subprogram
+        /// </summary>
+        public KGLSUB_Entity SUBPROGRAM_KGLSUB {
+            get
+            {
+                if (SUBPROGRAM != null)
+                {
+                    if (_SUBPROGRAM_KGLSUB == null)
+                    {
+                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                    }
+                    return _SUBPROGRAM_KGLSUB;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Transaction might belong to an Initiative
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [RELEASE_TYPE] => [AKR_Entity].[AKRKEY]
+        /// Asset Release Type
+        /// </summary>
+        public AKR_Entity RELEASE_TYPE_AKR {
+            get
+            {
+                if (RELEASE_TYPE != null)
+                {
+                    if (_RELEASE_TYPE_AKR == null)
+                    {
+                        _RELEASE_TYPE_AKR = Context.AKR.FindByAKRKEY(RELEASE_TYPE);
+                    }
+                    return _RELEASE_TYPE_AKR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [LOCATION] => [AKL_Entity].[LOCATION]
+        /// Asset location
+        /// </summary>
+        public AKL_Entity LOCATION_AKL {
+            get
+            {
+                if (LOCATION != null)
+                {
+                    if (_LOCATION_AKL == null)
+                    {
+                        _LOCATION_AKL = Context.AKL.FindByLOCATION(LOCATION);
+                    }
+                    return _LOCATION_AKL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

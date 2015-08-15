@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SIDV_DataSet : SetBase<SIDV_Entity>
     {
+        private Lazy<Dictionary<int, SIDV_Entity>> TID_Index;
+
         internal SIDV_DataSet(EduHubContext Context)
             : base(Context)
         {
             TID_Index = new Lazy<Dictionary<int, SIDV_Entity>>(() => this.ToDictionary(e => e.TID));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SIDV"; } }
 
-        private Lazy<Dictionary<int, SIDV_Entity>> TID_Index;
-
+        /// <summary>
+        /// Find SIDV by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SIDV</param>
+        /// <returns>Related SIDV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SIDV entities</exception>
         public SIDV_Entity FindByTID(int Key)
         {
             SIDV_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SIDV by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SIDV</param>
+        /// <param name="Value">Related SIDV entity</param>
+        /// <returns>True if the SIDV Entity is found</returns>
         public bool TryFindByTID(int Key, out SIDV_Entity Value)
         {
             return TID_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SIDV by TID key field
+        /// </summary>
+        /// <param name="Key">TID value used to find SIDV</param>
+        /// <returns>Related SIDV entity, or null if not found</returns>
         public SIDV_Entity TryFindByTID(int Key)
         {
             SIDV_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SIDV_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SIDV_Entity, string>[Headers.Count];

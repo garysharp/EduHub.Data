@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class STRA_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private ST_Entity _STKEY_ST;
+        private KCT_Entity _ABS_TYPE_KCT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique ID for this record [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +22,6 @@ namespace EduHub.Data.Entities
         /// Student ID [Uppercase Alphanumeric: u10]
         /// </summary>
         public string STKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [STKEY] => [ST_Entity].[STKEY]
-        /// Student ID
-        /// </summary>
-        public ST_Entity STKEY_ST { get { return STKEY == null ? null : Context.ST.FindBySTKEY(STKEY); } }
         /// <summary>
         /// Date of first day of period of absence [Date Time nullable: d]
         /// </summary>
@@ -46,11 +47,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? ABS_TYPE { get; internal set; }
         /// <summary>
-        /// Navigation property for [ABS_TYPE] => [KCT_Entity].[KCTKEY]
-        /// Type of absence if known
-        /// </summary>
-        public KCT_Entity ABS_TYPE_KCT { get { return ABS_TYPE.HasValue ? Context.KCT.FindByKCTKEY(ABS_TYPE.Value) : null; } }
-        /// <summary>
         /// First absent period (period absences) [Integer (16bit signed nullable): i]
         /// </summary>
         public short? START_PERIOD { get; internal set; }
@@ -74,7 +70,51 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [STKEY] => [ST_Entity].[STKEY]
+        /// Student ID
+        /// </summary>
+        public ST_Entity STKEY_ST {
+            get
+            {
+                if (STKEY != null)
+                {
+                    if (_STKEY_ST == null)
+                    {
+                        _STKEY_ST = Context.ST.FindBySTKEY(STKEY);
+                    }
+                    return _STKEY_ST;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [ABS_TYPE] => [KCT_Entity].[KCTKEY]
+        /// Type of absence if known
+        /// </summary>
+        public KCT_Entity ABS_TYPE_KCT {
+            get
+            {
+                if (ABS_TYPE.HasValue)
+                {
+                    if (_ABS_TYPE_KCT == null)
+                    {
+                        _ABS_TYPE_KCT = Context.KCT.FindByKCTKEY(ABS_TYPE.Value);
+                    }
+                    return _ABS_TYPE_KCT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

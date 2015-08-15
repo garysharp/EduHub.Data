@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TXHG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private KGC_Entity _HOME_GROUP_KGC;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Unique ID for this record [Integer (32bit signed): l]
         /// </summary>
@@ -20,11 +25,6 @@ namespace EduHub.Data.Entities
         /// The home group to which this record applies [Uppercase Alphanumeric: u3]
         /// </summary>
         public string HOME_GROUP { get; internal set; }
-        /// <summary>
-        /// Navigation property for [HOME_GROUP] => [KGC_Entity].[KGCKEY]
-        /// The home group to which this record applies
-        /// </summary>
-        public KGC_Entity HOME_GROUP_KGC { get { return HOME_GROUP == null ? null : Context.KGC.FindByKGCKEY(HOME_GROUP); } }
         /// <summary>
         /// Has the AM roll been marked? (Y/N) [Uppercase Alphanumeric: u1]
         /// </summary>
@@ -45,7 +45,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [HOME_GROUP] => [KGC_Entity].[KGCKEY]
+        /// The home group to which this record applies
+        /// </summary>
+        public KGC_Entity HOME_GROUP_KGC {
+            get
+            {
+                if (HOME_GROUP != null)
+                {
+                    if (_HOME_GROUP_KGC == null)
+                    {
+                        _HOME_GROUP_KGC = Context.KGC.FindByKGCKEY(HOME_GROUP);
+                    }
+                    return _HOME_GROUP_KGC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SMGROUP_DataSet : SetBase<SMGROUP_Entity>
     {
+
         internal SMGROUP_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SMGROUP"; } }
 
-
-        
         protected override Action<SMGROUP_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMGROUP_Entity, string>[Headers.Count];

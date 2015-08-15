@@ -10,15 +10,17 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class PSF_DataSet : SetBase<PSF_Entity>
     {
+
         internal PSF_DataSet(EduHubContext Context)
             : base(Context)
         {
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "PSF"; } }
 
-
-        
         protected override Action<PSF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PSF_Entity, string>[Headers.Count];

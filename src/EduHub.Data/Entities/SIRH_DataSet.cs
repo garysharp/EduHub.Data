@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SIRH_DataSet : SetBase<SIRH_Entity>
     {
+        private Lazy<Dictionary<string, SIRH_Entity>> SIRHKEY_Index;
+
         internal SIRH_DataSet(EduHubContext Context)
             : base(Context)
         {
             SIRHKEY_Index = new Lazy<Dictionary<string, SIRH_Entity>>(() => this.ToDictionary(e => e.SIRHKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SIRH"; } }
 
-        private Lazy<Dictionary<string, SIRH_Entity>> SIRHKEY_Index;
-
+        /// <summary>
+        /// Find SIRH by SIRHKEY key field
+        /// </summary>
+        /// <param name="Key">SIRHKEY value used to find SIRH</param>
+        /// <returns>Related SIRH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">SIRHKEY value didn't match any SIRH entities</exception>
         public SIRH_Entity FindBySIRHKEY(string Key)
         {
             SIRH_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SIRH by SIRHKEY key field
+        /// </summary>
+        /// <param name="Key">SIRHKEY value used to find SIRH</param>
+        /// <param name="Value">Related SIRH entity</param>
+        /// <returns>True if the SIRH Entity is found</returns>
         public bool TryFindBySIRHKEY(string Key, out SIRH_Entity Value)
         {
             return SIRHKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SIRH by SIRHKEY key field
+        /// </summary>
+        /// <param name="Key">SIRHKEY value used to find SIRH</param>
+        /// <returns>Related SIRH entity, or null if not found</returns>
         public SIRH_Entity TryFindBySIRHKEY(string Key)
         {
             SIRH_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SIRH_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SIRH_Entity, string>[Headers.Count];

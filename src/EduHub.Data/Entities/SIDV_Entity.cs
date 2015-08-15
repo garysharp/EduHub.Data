@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class SIDV_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SID_Entity _INCIDENT_KEY_SID;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Sequence no [Integer (32bit signed): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Number of the incident that the victim/recipient was involved in [Integer (32bit signed nullable): l]
         /// </summary>
         public int? INCIDENT_KEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INCIDENT_KEY] => [SID_Entity].[SIDKEY]
-        /// Number of the incident that the victim/recipient was involved in
-        /// </summary>
-        public SID_Entity INCIDENT_KEY_SID { get { return INCIDENT_KEY.HasValue ? Context.SID.FindBySIDKEY(INCIDENT_KEY.Value) : null; } }
         /// <summary>
         /// Type of person affected by the incident: ST=Student, SF=Staff member, null=Other [Uppercase Alphanumeric: u2]
         /// </summary>
@@ -57,7 +57,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [INCIDENT_KEY] => [SID_Entity].[SIDKEY]
+        /// Number of the incident that the victim/recipient was involved in
+        /// </summary>
+        public SID_Entity INCIDENT_KEY_SID {
+            get
+            {
+                if (INCIDENT_KEY.HasValue)
+                {
+                    if (_INCIDENT_KEY_SID == null)
+                    {
+                        _INCIDENT_KEY_SID = Context.SID.FindBySIDKEY(INCIDENT_KEY.Value);
+                    }
+                    return _INCIDENT_KEY_SID;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

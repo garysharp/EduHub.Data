@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class AKR_DataSet : SetBase<AKR_Entity>
     {
+        private Lazy<Dictionary<string, AKR_Entity>> AKRKEY_Index;
+
         internal AKR_DataSet(EduHubContext Context)
             : base(Context)
         {
             AKRKEY_Index = new Lazy<Dictionary<string, AKR_Entity>>(() => this.ToDictionary(e => e.AKRKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "AKR"; } }
 
-        private Lazy<Dictionary<string, AKR_Entity>> AKRKEY_Index;
-
+        /// <summary>
+        /// Find AKR by AKRKEY key field
+        /// </summary>
+        /// <param name="Key">AKRKEY value used to find AKR</param>
+        /// <returns>Related AKR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">AKRKEY value didn't match any AKR entities</exception>
         public AKR_Entity FindByAKRKEY(string Key)
         {
             AKR_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find AKR by AKRKEY key field
+        /// </summary>
+        /// <param name="Key">AKRKEY value used to find AKR</param>
+        /// <param name="Value">Related AKR entity</param>
+        /// <returns>True if the AKR Entity is found</returns>
         public bool TryFindByAKRKEY(string Key, out AKR_Entity Value)
         {
             return AKRKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find AKR by AKRKEY key field
+        /// </summary>
+        /// <param name="Key">AKRKEY value used to find AKR</param>
+        /// <returns>Related AKR entity, or null if not found</returns>
         public AKR_Entity TryFindByAKRKEY(string Key)
         {
             AKR_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<AKR_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKR_Entity, string>[Headers.Count];

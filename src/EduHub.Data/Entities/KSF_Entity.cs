@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KSF_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private SF_Entity _COORDINATOR_SF;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Faculty code [Uppercase Alphanumeric: u10]
         /// </summary>
@@ -21,11 +26,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string COORDINATOR { get; internal set; }
         /// <summary>
-        /// Navigation property for [COORDINATOR] => [SF_Entity].[SFKEY]
-        /// Staff code of KLA co-ordinator
-        /// </summary>
-        public SF_Entity COORDINATOR_SF { get { return COORDINATOR == null ? null : Context.SF.FindBySFKEY(COORDINATOR); } }
-        /// <summary>
         /// Last write date [Date Time nullable: d]
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -37,7 +37,30 @@ namespace EduHub.Data.Entities
         /// Last write operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [COORDINATOR] => [SF_Entity].[SFKEY]
+        /// Staff code of KLA co-ordinator
+        /// </summary>
+        public SF_Entity COORDINATOR_SF {
+            get
+            {
+                if (COORDINATOR != null)
+                {
+                    if (_COORDINATOR_SF == null)
+                    {
+                        _COORDINATOR_SF = Context.SF.FindBySFKEY(COORDINATOR);
+                    }
+                    return _COORDINATOR_SF;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

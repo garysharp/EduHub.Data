@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class KCY_DataSet : SetBase<KCY_Entity>
     {
+        private Lazy<Dictionary<string, KCY_Entity>> KCYKEY_Index;
+
         internal KCY_DataSet(EduHubContext Context)
             : base(Context)
         {
             KCYKEY_Index = new Lazy<Dictionary<string, KCY_Entity>>(() => this.ToDictionary(e => e.KCYKEY));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "KCY"; } }
 
-        private Lazy<Dictionary<string, KCY_Entity>> KCYKEY_Index;
-
+        /// <summary>
+        /// Find KCY by KCYKEY key field
+        /// </summary>
+        /// <param name="Key">KCYKEY value used to find KCY</param>
+        /// <returns>Related KCY entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">KCYKEY value didn't match any KCY entities</exception>
         public KCY_Entity FindByKCYKEY(string Key)
         {
             KCY_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find KCY by KCYKEY key field
+        /// </summary>
+        /// <param name="Key">KCYKEY value used to find KCY</param>
+        /// <param name="Value">Related KCY entity</param>
+        /// <returns>True if the KCY Entity is found</returns>
         public bool TryFindByKCYKEY(string Key, out KCY_Entity Value)
         {
             return KCYKEY_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find KCY by KCYKEY key field
+        /// </summary>
+        /// <param name="Key">KCYKEY value used to find KCY</param>
+        /// <returns>Related KCY entity, or null if not found</returns>
         public KCY_Entity TryFindByKCYKEY(string Key)
         {
             KCY_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<KCY_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCY_Entity, string>[Headers.Count];

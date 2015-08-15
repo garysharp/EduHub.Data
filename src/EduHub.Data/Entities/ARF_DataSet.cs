@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class ARF_DataSet : SetBase<ARF_Entity>
     {
+        private Lazy<Dictionary<string, ARF_Entity>> TRREF_Index;
+
         internal ARF_DataSet(EduHubContext Context)
             : base(Context)
         {
             TRREF_Index = new Lazy<Dictionary<string, ARF_Entity>>(() => this.ToDictionary(e => e.TRREF));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "ARF"; } }
 
-        private Lazy<Dictionary<string, ARF_Entity>> TRREF_Index;
-
+        /// <summary>
+        /// Find ARF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find ARF</param>
+        /// <returns>Related ARF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any ARF entities</exception>
         public ARF_Entity FindByTRREF(string Key)
         {
             ARF_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find ARF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find ARF</param>
+        /// <param name="Value">Related ARF entity</param>
+        /// <returns>True if the ARF Entity is found</returns>
         public bool TryFindByTRREF(string Key, out ARF_Entity Value)
         {
             return TRREF_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find ARF by TRREF key field
+        /// </summary>
+        /// <param name="Key">TRREF value used to find ARF</param>
+        /// <returns>Related ARF entity, or null if not found</returns>
         public ARF_Entity TryFindByTRREF(string Key)
         {
             ARF_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<ARF_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<ARF_Entity, string>[Headers.Count];

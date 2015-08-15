@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class GLBUDG_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private GL_Entity _CODE_GL;
+        private KGLINIT_Entity _INITIATIVE_KGLINIT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Combination of subprog,prog,code,init [Uppercase Alphanumeric: u15]
         /// </summary>
@@ -25,11 +31,6 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CODE { get; internal set; }
         /// <summary>
-        /// Navigation property for [CODE] => [GL_Entity].[CODE]
-        /// GL Account
-        /// </summary>
-        public GL_Entity CODE_GL { get { return CODE == null ? null : Context.GL.FindByCODE(CODE); } }
-        /// <summary>
         /// Program [Uppercase Alphanumeric: u3]
         /// </summary>
         public string GL_PROGRAM { get; internal set; }
@@ -37,11 +38,6 @@ namespace EduHub.Data.Entities
         /// Not mandatory [Uppercase Alphanumeric: u3]
         /// </summary>
         public string INITIATIVE { get; internal set; }
-        /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
-        /// Not mandatory
-        /// </summary>
-        public KGLINIT_Entity INITIATIVE_KGLINIT { get { return INITIATIVE == null ? null : Context.KGLINIT.FindByINITIATIVE(INITIATIVE); } }
         /// <summary>
         /// Not used but required fields [Currency (128bit scaled integer nullable): c]
         /// </summary>
@@ -314,7 +310,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [CODE] => [GL_Entity].[CODE]
+        /// GL Account
+        /// </summary>
+        public GL_Entity CODE_GL {
+            get
+            {
+                if (CODE != null)
+                {
+                    if (_CODE_GL == null)
+                    {
+                        _CODE_GL = Context.GL.FindByCODE(CODE);
+                    }
+                    return _CODE_GL;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [INITIATIVE] => [KGLINIT_Entity].[INITIATIVE]
+        /// Not mandatory
+        /// </summary>
+        public KGLINIT_Entity INITIATIVE_KGLINIT {
+            get
+            {
+                if (INITIATIVE != null)
+                {
+                    if (_INITIATIVE_KGLINIT == null)
+                    {
+                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                    }
+                    return _INITIATIVE_KGLINIT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

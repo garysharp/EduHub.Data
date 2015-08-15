@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SM_DataSet : SetBase<SM_Entity>
     {
+        private Lazy<Dictionary<string, SM_Entity>> ROOM_Index;
+
         internal SM_DataSet(EduHubContext Context)
             : base(Context)
         {
             ROOM_Index = new Lazy<Dictionary<string, SM_Entity>>(() => this.ToDictionary(e => e.ROOM));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SM"; } }
 
-        private Lazy<Dictionary<string, SM_Entity>> ROOM_Index;
-
+        /// <summary>
+        /// Find SM by ROOM key field
+        /// </summary>
+        /// <param name="Key">ROOM value used to find SM</param>
+        /// <returns>Related SM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ROOM value didn't match any SM entities</exception>
         public SM_Entity FindByROOM(string Key)
         {
             SM_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SM by ROOM key field
+        /// </summary>
+        /// <param name="Key">ROOM value used to find SM</param>
+        /// <param name="Value">Related SM entity</param>
+        /// <returns>True if the SM Entity is found</returns>
         public bool TryFindByROOM(string Key, out SM_Entity Value)
         {
             return ROOM_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SM by ROOM key field
+        /// </summary>
+        /// <param name="Key">ROOM value used to find SM</param>
+        /// <returns>Related SM entity, or null if not found</returns>
         public SM_Entity TryFindByROOM(string Key)
         {
             SM_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SM_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SM_Entity, string>[Headers.Count];

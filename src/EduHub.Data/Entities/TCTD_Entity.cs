@@ -8,6 +8,12 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TCTD_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TC_Entity _TCTDKEY_TC;
+        private TH_Entity _QKEY_TH;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -17,19 +23,9 @@ namespace EduHub.Data.Entities
         /// </summary>
         public DateTime? TCTDKEY { get; internal set; }
         /// <summary>
-        /// Navigation property for [TCTDKEY] => [TC_Entity].[TCKEY]
-        /// Owner relation
-        /// </summary>
-        public TC_Entity TCTDKEY_TC { get { return TCTDKEY.HasValue ? Context.TC.FindByTCKEY(TCTDKEY.Value) : null; } }
-        /// <summary>
         /// Associated Quilt [Uppercase Alphanumeric: u8]
         /// </summary>
         public string QKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
-        /// Associated Quilt
-        /// </summary>
-        public TH_Entity QKEY_TH { get { return QKEY == null ? null : Context.TH.FindByTHKEY(QKEY); } }
         /// <summary>
         /// Time slot number [Integer (16bit signed nullable): i]
         /// </summary>
@@ -62,7 +58,51 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [TCTDKEY] => [TC_Entity].[TCKEY]
+        /// Owner relation
+        /// </summary>
+        public TC_Entity TCTDKEY_TC {
+            get
+            {
+                if (TCTDKEY.HasValue)
+                {
+                    if (_TCTDKEY_TC == null)
+                    {
+                        _TCTDKEY_TC = Context.TC.FindByTCKEY(TCTDKEY.Value);
+                    }
+                    return _TCTDKEY_TC;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary>
+        /// Navigation property for [QKEY] => [TH_Entity].[THKEY]
+        /// Associated Quilt
+        /// </summary>
+        public TH_Entity QKEY_TH {
+            get
+            {
+                if (QKEY != null)
+                {
+                    if (_QKEY_TH == null)
+                    {
+                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                    }
+                    return _QKEY_TH;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

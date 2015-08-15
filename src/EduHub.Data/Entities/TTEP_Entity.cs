@@ -8,6 +8,11 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class TTEP_Entity : EntityBase
     {
+#region Navigation Property Cache
+        private TT_Entity _GKEY_TT;
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Transaction ID [Integer (32bit signed nullable): l]
         /// </summary>
@@ -16,11 +21,6 @@ namespace EduHub.Data.Entities
         /// Grid involved in exam [Uppercase Alphanumeric: u8]
         /// </summary>
         public string GKEY { get; internal set; }
-        /// <summary>
-        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
-        /// Grid involved in exam
-        /// </summary>
-        public TT_Entity GKEY_TT { get { return GKEY == null ? null : Context.TT.FindByTTKEY(GKEY); } }
         /// <summary>
         /// Exam grid to which this period belongs [Integer (32bit signed nullable): l]
         /// </summary>
@@ -53,7 +53,30 @@ namespace EduHub.Data.Entities
         /// Last operator [Uppercase Alphanumeric: u128]
         /// </summary>
         public string LW_USER { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+        /// <summary>
+        /// Navigation property for [GKEY] => [TT_Entity].[TTKEY]
+        /// Grid involved in exam
+        /// </summary>
+        public TT_Entity GKEY_TT {
+            get
+            {
+                if (GKEY != null)
+                {
+                    if (_GKEY_TT == null)
+                    {
+                        _GKEY_TT = Context.TT.FindByTTKEY(GKEY);
+                    }
+                    return _GKEY_TT;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

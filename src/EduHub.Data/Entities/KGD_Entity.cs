@@ -8,6 +8,10 @@ namespace EduHub.Data.Entities
     /// </summary>
     public class KGD_Entity : EntityBase
     {
+#region Navigation Property Cache
+#endregion
+
+#region Field Properties
         /// <summary>
         /// Combination of KGG.KGGKEY and Destination [Uppercase Alphanumeric: u6]
         /// </summary>
@@ -24,7 +28,9 @@ namespace EduHub.Data.Entities
         /// Is this Destination open or closed [Uppercase Alphanumeric: u1]
         /// </summary>
         public string OPEN_CLOSED { get; internal set; }
-        
-        
+#endregion
+
+#region Navigation Properties
+#endregion
     }
 }

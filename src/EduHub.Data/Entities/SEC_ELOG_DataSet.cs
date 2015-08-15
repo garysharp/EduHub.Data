@@ -10,16 +10,25 @@ namespace EduHub.Data.Entities
     /// </summary>
     public sealed class SEC_ELOG_DataSet : SetBase<SEC_ELOG_Entity>
     {
+        private Lazy<Dictionary<int, SEC_ELOG_Entity>> ERRORCOUNT_Index;
+
         internal SEC_ELOG_DataSet(EduHubContext Context)
             : base(Context)
         {
             ERRORCOUNT_Index = new Lazy<Dictionary<int, SEC_ELOG_Entity>>(() => this.ToDictionary(e => e.ERRORCOUNT));
         }
 
+        /// <summary>
+        /// Data Set Name
+        /// </summary>
         public override string SetName { get { return "SEC_ELOG"; } }
 
-        private Lazy<Dictionary<int, SEC_ELOG_Entity>> ERRORCOUNT_Index;
-
+        /// <summary>
+        /// Find SEC_ELOG by ERRORCOUNT key field
+        /// </summary>
+        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <returns>Related SEC_ELOG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">ERRORCOUNT value didn't match any SEC_ELOG entities</exception>
         public SEC_ELOG_Entity FindByERRORCOUNT(int Key)
         {
             SEC_ELOG_Entity result;
@@ -32,10 +41,23 @@ namespace EduHub.Data.Entities
                 throw new ArgumentOutOfRangeException("Key");
             }
         }
+
+        /// <summary>
+        /// Attempt to find SEC_ELOG by ERRORCOUNT key field
+        /// </summary>
+        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <param name="Value">Related SEC_ELOG entity</param>
+        /// <returns>True if the SEC_ELOG Entity is found</returns>
         public bool TryFindByERRORCOUNT(int Key, out SEC_ELOG_Entity Value)
         {
             return ERRORCOUNT_Index.Value.TryGetValue(Key, out Value);
         }
+
+        /// <summary>
+        /// Attempt to find SEC_ELOG by ERRORCOUNT key field
+        /// </summary>
+        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <returns>Related SEC_ELOG entity, or null if not found</returns>
         public SEC_ELOG_Entity TryFindByERRORCOUNT(int Key)
         {
             SEC_ELOG_Entity result;
@@ -48,7 +70,7 @@ namespace EduHub.Data.Entities
                 return null;
             }
         }
-        
+
         protected override Action<SEC_ELOG_Entity, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_ELOG_Entity, string>[Headers.Count];
