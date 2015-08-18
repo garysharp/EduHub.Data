@@ -15,7 +15,7 @@ A .NET (C#, Visual Basic.NET, etc) strongly-typed object model which provides in
 USAGE
 -----
 
-#### Simple Query
+#### Simple Query (C#)
 
 All active students
 
@@ -31,13 +31,12 @@ var activeStudents = (
     {
         StudentCode = st.STKEY,
         Name = $"{st.SURNAME}, {st.FIRST_NAME}",
-        Surname = st.SURNAME,
         HomeGroup = st.HOME_GROUP,
         YearLevel = st.SCHOOL_YEAR
     });
 ```
 
-#### Navigation Properties
+#### Navigation Properties (C#)
 
 Data set relationships can be navigated with additional data sets automatically loaded when needed
 
@@ -49,6 +48,8 @@ var Context = new EduHubContext();
 // ST.FAMILY_DF and DF.HOMEKEY_UM navigation properties used
 var activeStudentTowns = (
     from st in Context.ST
+    let family = st.FAMILY_DF
+    let home = family.HOMEKEY_UM
     where st.STATUS == "ACTV"
     orderby st.SCHOOL_YEAR, st.HOME_GROUP
     select new
@@ -56,7 +57,32 @@ var activeStudentTowns = (
         StudentCode = st.STKEY,
         HomeGroup = st.HOME_GROUP,
         YearLevel = st.SCHOOL_YEAR,
-        Town = st.FAMILY_DF.HOMEKEY_UM.ADDRESS03,
-        PostCode = st.FAMILY_DF.HOMEKEY_UM.POSTCODE
+        Town = home.ADDRESS03,
+        PostCode = home.POSTCODE
     });
+```
+
+#### PowerShell Example
+
+```PowerShell
+Add-Type -Path "EduHub.Data.dll";
+
+$eduHubContext = New-Object EduHub.Data.EduHubContext;
+
+$studentAddresses = $eduHubContext.ST `
+    | Where-Object { $_.STATUS -eq "ACTV" } `
+    | Select-Object -Property `
+        STKEY,
+        SURNAME,
+        FIRST_NAME,
+        HOME_GROUP,
+        SCHOOL_YEAR,
+        @{ Name = "BILLINGTITLE"; Expression = { $_.FAMILY_DF.BILLINGTITLE } },
+        @{ Name = "ADDRESS01";    Expression = { $_.FAMILY_DF.BILLINGKEY_UM.ADDRESS01 } },
+        @{ Name = "ADDRESS02";    Expression = { $_.FAMILY_DF.BILLINGKEY_UM.ADDRESS02 } },
+        @{ Name = "ADDRESS03";    Expression = { $_.FAMILY_DF.BILLINGKEY_UM.ADDRESS03 } },
+        @{ Name = "STATE";        Expression = { $_.FAMILY_DF.BILLINGKEY_UM.STATE } },
+        @{ Name = "COUNTRY";      Expression = { $_.FAMILY_DF.BILLINGKEY_UM.COUNTRY_KGT.DESCRIPTION } };
+
+$studentAddresses | Export-Csv StudentAddresses.csv -NoTypeInformation
 ```

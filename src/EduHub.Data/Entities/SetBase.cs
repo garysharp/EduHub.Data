@@ -21,7 +21,7 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Data Set Name
         /// </summary>
-        public abstract string SetName { get; }
+        public abstract string Name { get; }
         protected abstract Action<T, string>[] BuildMapper(List<string> Headers);
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                return Path.Combine(Context.EduHubDirectory, $"{SetName}_{Context.EduHubSiteIdentifier}.csv");
+                return Path.Combine(Context.EduHubDirectory, $"{Name}_{Context.EduHubSiteIdentifier}.csv");
             }
         }
 
@@ -53,7 +53,7 @@ namespace EduHub.Data.Entities
         {
             if (!IsAvailable)
             {
-                throw new EduHubDataSetNotFoundException(SetName, Filename);
+                throw new EduHubDataSetNotFoundException(Name, Filename);
             }
         }
 
@@ -82,7 +82,7 @@ namespace EduHub.Data.Entities
             string filename = Filename;
 
             if (!File.Exists(filename))
-                throw new EduHubDataSetNotFoundException(SetName, filename);
+                throw new EduHubDataSetNotFoundException(Name, filename);
 
             // Create temporary file
             var fileTemp = Path.GetTempFileName();

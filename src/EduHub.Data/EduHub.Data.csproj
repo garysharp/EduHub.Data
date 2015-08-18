@@ -49,154 +49,154 @@
     </Compile>
     <Compile Include="EduHubContextBase.cs" />
     <Compile Include="EduHubDataSetNotFoundException.cs" />
-    <Compile Include="Entities\AKB_DataSet.cs">
+    <Compile Include="Entities\AKB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKB_Entity.cs">
+    <Compile Include="Entities\AKBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKCT_DataSet.cs">
+    <Compile Include="Entities\AKC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKCT_Entity.cs">
+    <Compile Include="Entities\AKCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKC_DataSet.cs">
+    <Compile Include="Entities\AKCT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKC_Entity.cs">
+    <Compile Include="Entities\AKCTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKD_DataSet.cs">
+    <Compile Include="Entities\AKD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKD_Entity.cs">
+    <Compile Include="Entities\AKDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKK_DataSet.cs">
+    <Compile Include="Entities\AKK.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKK_Entity.cs">
+    <Compile Include="Entities\AKKDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKL_DataSet.cs">
+    <Compile Include="Entities\AKL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKL_Entity.cs">
+    <Compile Include="Entities\AKLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKR_DataSet.cs">
+    <Compile Include="Entities\AKR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKR_Entity.cs">
+    <Compile Include="Entities\AKRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKT_DataSet.cs">
+    <Compile Include="Entities\AKT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AKT_Entity.cs">
+    <Compile Include="Entities\AKTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ARF_DataSet.cs">
+    <Compile Include="Entities\AR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ARF_Entity.cs">
+    <Compile Include="Entities\ARDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AR_DataSet.cs">
+    <Compile Include="Entities\ARF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\AR_Entity.cs">
+    <Compile Include="Entities\ARFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\A_DECRYP_DataSet.cs">
+    <Compile Include="Entities\A_DECRYP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\A_DECRYP_Entity.cs">
+    <Compile Include="Entities\A_DECRYPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BKHR_DataSet.cs">
+    <Compile Include="Entities\BKH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BKHR_Entity.cs">
+    <Compile Include="Entities\BKHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BKH_DataSet.cs">
+    <Compile Include="Entities\BKHR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BKH_Entity.cs">
+    <Compile Include="Entities\BKHRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BPAY_DAT_DataSet.cs">
+    <Compile Include="Entities\BPAY_DAT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\BPAY_DAT_Entity.cs">
+    <Compile Include="Entities\BPAY_DATDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRFTC_DataSet.cs">
+    <Compile Include="Entities\CR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRFTC_Entity.cs">
+    <Compile Include="Entities\CRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRF_DataSet.cs">
+    <Compile Include="Entities\CRF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRF_Entity.cs">
+    <Compile Include="Entities\CRFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CR_DataSet.cs">
+    <Compile Include="Entities\CRFTC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CR_Entity.cs">
+    <Compile Include="Entities\CRFTCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFB_DataSet.cs">
+    <Compile Include="Entities\DF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFB_Entity.cs">
+    <Compile Include="Entities\DFB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFF_DataSet.cs">
+    <Compile Include="Entities\DFBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFF_Entity.cs">
+    <Compile Include="Entities\DFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFHI_DataSet.cs">
+    <Compile Include="Entities\DFF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFHI_Entity.cs">
+    <Compile Include="Entities\DFFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFVT_DataSet.cs">
+    <Compile Include="Entities\DFHI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFVT_Entity.cs">
+    <Compile Include="Entities\DFHIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DF_DataSet.cs">
+    <Compile Include="Entities\DFVT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DF_Entity.cs">
+    <Compile Include="Entities\DFVTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DF_TFR_DataSet.cs">
+    <Compile Include="Entities\DF_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DF_TFR_Entity.cs">
+    <Compile Include="Entities\DF_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DRF_DataSet.cs">
+    <Compile Include="Entities\DR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DRF_Entity.cs">
+    <Compile Include="Entities\DRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DR_DataSet.cs">
+    <Compile Include="Entities\DRF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DR_Entity.cs">
+    <Compile Include="Entities\DRFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\EntityBase.cs" />
@@ -205,1433 +205,1433 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FDT_EXP_DataSet.cs">
+    <Compile Include="Entities\FDT_EXP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FDT_EXP_Entity.cs">
+    <Compile Include="Entities\FDT_EXPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FDT_IMP_DataSet.cs">
+    <Compile Include="Entities\FDT_IMP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FDT_IMP_Entity.cs">
+    <Compile Include="Entities\FDT_IMPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FER_FDT_DataSet.cs">
+    <Compile Include="Entities\FER_FDT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FER_FDT_Entity.cs">
+    <Compile Include="Entities\FER_FDTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FINHIST_DataSet.cs">
+    <Compile Include="Entities\FINHIST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\FINHIST_Entity.cs">
+    <Compile Include="Entities\FINHISTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLBANK_DataSet.cs">
+    <Compile Include="Entities\GL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLBANK_Entity.cs">
+    <Compile Include="Entities\GLBANK.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLBUDG_DataSet.cs">
+    <Compile Include="Entities\GLBANKDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLBUDG_Entity.cs">
+    <Compile Include="Entities\GLBUDG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLCFPREV_DataSet.cs">
+    <Compile Include="Entities\GLBUDGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLCFPREV_Entity.cs">
+    <Compile Include="Entities\GLCF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLCF_DataSet.cs">
+    <Compile Include="Entities\GLCFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLCF_Entity.cs">
+    <Compile Include="Entities\GLCFPREV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFBANK_DataSet.cs">
+    <Compile Include="Entities\GLCFPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFBANK_Entity.cs">
+    <Compile Include="Entities\GLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFBUDG_DataSet.cs">
+    <Compile Include="Entities\GLF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFBUDG_Entity.cs">
+    <Compile Include="Entities\GLFBANK.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFPREV_DataSet.cs">
+    <Compile Include="Entities\GLFBANKDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFPREV_Entity.cs">
+    <Compile Include="Entities\GLFBUDG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLF_DataSet.cs">
+    <Compile Include="Entities\GLFBUDGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLF_Entity.cs">
+    <Compile Include="Entities\GLFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLPREV_DataSet.cs">
+    <Compile Include="Entities\GLFPREV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLPREV_Entity.cs">
+    <Compile Include="Entities\GLFPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GL_DataSet.cs">
+    <Compile Include="Entities\GLPREV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GL_Entity.cs">
+    <Compile Include="Entities\GLPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAB_DataSet.cs">
+    <Compile Include="Entities\KAB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAB_Entity.cs">
+    <Compile Include="Entities\KABDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KADM_DataSet.cs">
+    <Compile Include="Entities\KAD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KADM_Entity.cs">
+    <Compile Include="Entities\KADDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAD_DataSet.cs">
+    <Compile Include="Entities\KADM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAD_Entity.cs">
+    <Compile Include="Entities\KADMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAM_DataSet.cs">
+    <Compile Include="Entities\KAM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAM_Entity.cs">
+    <Compile Include="Entities\KAMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAP_DataSet.cs">
+    <Compile Include="Entities\KAP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KAP_Entity.cs">
+    <Compile Include="Entities\KAPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBANK_DataSet.cs">
+    <Compile Include="Entities\KBANK.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBANK_Entity.cs">
+    <Compile Include="Entities\KBANKDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBPT_DataSet.cs">
+    <Compile Include="Entities\KBP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBPT_Entity.cs">
+    <Compile Include="Entities\KBPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBP_DataSet.cs">
+    <Compile Include="Entities\KBPT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KBP_Entity.cs">
+    <Compile Include="Entities\KBPTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCB_DataSet.cs">
+    <Compile Include="Entities\KCB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCB_Entity.cs">
+    <Compile Include="Entities\KCBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCC_DataSet.cs">
+    <Compile Include="Entities\KCC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCC_Entity.cs">
+    <Compile Include="Entities\KCCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCD_DataSet.cs">
+    <Compile Include="Entities\KCD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCD_Entity.cs">
+    <Compile Include="Entities\KCDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCD_TFR_DataSet.cs">
+    <Compile Include="Entities\KCD_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCD_TFR_Entity.cs">
+    <Compile Include="Entities\KCD_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCI_DataSet.cs">
+    <Compile Include="Entities\KCI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCI_Entity.cs">
+    <Compile Include="Entities\KCIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCM_DataSet.cs">
+    <Compile Include="Entities\KCM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCM_Entity.cs">
+    <Compile Include="Entities\KCMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCM_TFR_DataSet.cs">
+    <Compile Include="Entities\KCM_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCM_TFR_Entity.cs">
+    <Compile Include="Entities\KCM_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCOHORT_DataSet.cs">
+    <Compile Include="Entities\KCOHORT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCOHORT_Entity.cs">
+    <Compile Include="Entities\KCOHORTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCR_DataSet.cs">
+    <Compile Include="Entities\KCR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCR_Entity.cs">
+    <Compile Include="Entities\KCRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCT_DataSet.cs">
+    <Compile Include="Entities\KCT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCT_Entity.cs">
+    <Compile Include="Entities\KCTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCV_DataSet.cs">
+    <Compile Include="Entities\KCV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCV_Entity.cs">
+    <Compile Include="Entities\KCVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCY_DataSet.cs">
+    <Compile Include="Entities\KCY.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KCY_Entity.cs">
+    <Compile Include="Entities\KCYDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDELETE_DataSet.cs">
+    <Compile Include="Entities\KDELETE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDELETE_Entity.cs">
+    <Compile Include="Entities\KDELETEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDI_DataSet.cs">
+    <Compile Include="Entities\KDI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDI_Entity.cs">
+    <Compile Include="Entities\KDIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDO_DataSet.cs">
+    <Compile Include="Entities\KDO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KDO_Entity.cs">
+    <Compile Include="Entities\KDODataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KEMA_DataSet.cs">
+    <Compile Include="Entities\KEMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KEMA_Entity.cs">
+    <Compile Include="Entities\KEMADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KERROR_DataSet.cs">
+    <Compile Include="Entities\KERROR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KERROR_Entity.cs">
+    <Compile Include="Entities\KERRORDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KFTC_DataSet.cs">
+    <Compile Include="Entities\KFTC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KFTC_Entity.cs">
+    <Compile Include="Entities\KFTCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGCHI_DataSet.cs">
+    <Compile Include="Entities\KGC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGCHI_Entity.cs">
+    <Compile Include="Entities\KGCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGC_DataSet.cs">
+    <Compile Include="Entities\KGCHI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGC_Entity.cs">
+    <Compile Include="Entities\KGCHIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGD_DataSet.cs">
+    <Compile Include="Entities\KGD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGD_Entity.cs">
+    <Compile Include="Entities\KGDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGG_DataSet.cs">
+    <Compile Include="Entities\KGG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGG_Entity.cs">
+    <Compile Include="Entities\KGGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGH_DataSet.cs">
+    <Compile Include="Entities\KGH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGH_Entity.cs">
+    <Compile Include="Entities\KGHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLINIT_DataSet.cs">
+    <Compile Include="Entities\KGL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLINIT_Entity.cs">
+    <Compile Include="Entities\KGLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLPROG_DataSet.cs">
+    <Compile Include="Entities\KGLINIT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLPROG_Entity.cs">
+    <Compile Include="Entities\KGLINITDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLSUB_DataSet.cs">
+    <Compile Include="Entities\KGLPROG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLSUB_Entity.cs">
+    <Compile Include="Entities\KGLPROGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLT_DataSet.cs">
+    <Compile Include="Entities\KGLSUB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGLT_Entity.cs">
+    <Compile Include="Entities\KGLSUBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGL_DataSet.cs">
+    <Compile Include="Entities\KGLT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGL_Entity.cs">
+    <Compile Include="Entities\KGLTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGR_DataSet.cs">
+    <Compile Include="Entities\KGR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGR_Entity.cs">
+    <Compile Include="Entities\KGRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGST_DataSet.cs">
+    <Compile Include="Entities\KGST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGST_Entity.cs">
+    <Compile Include="Entities\KGSTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGT_DataSet.cs">
+    <Compile Include="Entities\KGT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGT_Entity.cs">
+    <Compile Include="Entities\KGTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGW_DataSet.cs">
+    <Compile Include="Entities\KGW.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KGW_Entity.cs">
+    <Compile Include="Entities\KGWDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KLOG_DataSet.cs">
+    <Compile Include="Entities\KLOG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KLOG_Entity.cs">
+    <Compile Include="Entities\KLOGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KNFS_DataSet.cs">
+    <Compile Include="Entities\KN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KNFS_Entity.cs">
+    <Compile Include="Entities\KNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KN_DataSet.cs">
+    <Compile Include="Entities\KNFS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KN_Entity.cs">
+    <Compile Include="Entities\KNFSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPCL_DataSet.cs">
+    <Compile Include="Entities\KPC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPCL_Entity.cs">
+    <Compile Include="Entities\KPCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPCR_DataSet.cs">
+    <Compile Include="Entities\KPCL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPCR_Entity.cs">
+    <Compile Include="Entities\KPCLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPC_DataSet.cs">
+    <Compile Include="Entities\KPCR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPC_Entity.cs">
+    <Compile Include="Entities\KPCRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPEC_DataSet.cs">
+    <Compile Include="Entities\KPEC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPEC_Entity.cs">
+    <Compile Include="Entities\KPECDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPN_DataSet.cs">
+    <Compile Include="Entities\KPN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPN_Entity.cs">
+    <Compile Include="Entities\KPNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPRMS_DataSet.cs">
+    <Compile Include="Entities\KPRMS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KPRMS_Entity.cs">
+    <Compile Include="Entities\KPRMSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KREPORT_DataSet.cs">
+    <Compile Include="Entities\KREPORT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KREPORT_Entity.cs">
+    <Compile Include="Entities\KREPORTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KROLE_DataSet.cs">
+    <Compile Include="Entities\KROLE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KROLE_Entity.cs">
+    <Compile Include="Entities\KROLEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSA_DataSet.cs">
+    <Compile Include="Entities\KSA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSA_Entity.cs">
+    <Compile Include="Entities\KSADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSC_DataSet.cs">
+    <Compile Include="Entities\KSC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSC_Entity.cs">
+    <Compile Include="Entities\KSCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSF_DataSet.cs">
+    <Compile Include="Entities\KSF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSF_Entity.cs">
+    <Compile Include="Entities\KSFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSI_DataSet.cs">
+    <Compile Include="Entities\KSI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSI_Entity.cs">
+    <Compile Include="Entities\KSIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSQ_DataSet.cs">
+    <Compile Include="Entities\KSQ.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KSQ_Entity.cs">
+    <Compile Include="Entities\KSQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KTIE_DataSet.cs">
+    <Compile Include="Entities\KTIE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KTIE_Entity.cs">
+    <Compile Include="Entities\KTIEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KTRCMP_DataSet.cs">
+    <Compile Include="Entities\KTRCMP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\KTRCMP_Entity.cs">
+    <Compile Include="Entities\KTRCMPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\OSCS_DataSet.cs">
+    <Compile Include="Entities\OSCS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\OSCS_Entity.cs">
+    <Compile Include="Entities\OSCSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PC_DataSet.cs">
+    <Compile Include="Entities\PC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PC_Entity.cs">
+    <Compile Include="Entities\PCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PD_DataSet.cs">
+    <Compile Include="Entities\PD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PD_Entity.cs">
+    <Compile Include="Entities\PDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEFH_DataSet.cs">
+    <Compile Include="Entities\PE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEFH_Entity.cs">
+    <Compile Include="Entities\PEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEF_DataSet.cs">
+    <Compile Include="Entities\PEF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEF_Entity.cs">
+    <Compile Include="Entities\PEFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PELA_DataSet.cs">
+    <Compile Include="Entities\PEFH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PELA_Entity.cs">
+    <Compile Include="Entities\PEFHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PELD_DataSet.cs">
+    <Compile Include="Entities\PELA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PELD_Entity.cs">
+    <Compile Include="Entities\PELADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEM_DataSet.cs">
+    <Compile Include="Entities\PELD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEM_Entity.cs">
+    <Compile Include="Entities\PELDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPM_DataSet.cs">
+    <Compile Include="Entities\PEM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPM_Entity.cs">
+    <Compile Include="Entities\PEMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPS_DataSet.cs">
+    <Compile Include="Entities\PEPM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPS_Entity.cs">
+    <Compile Include="Entities\PEPMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPUH_DataSet.cs">
+    <Compile Include="Entities\PEPS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPUH_Entity.cs">
+    <Compile Include="Entities\PEPSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPU_DataSet.cs">
+    <Compile Include="Entities\PEPU.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPU_Entity.cs">
+    <Compile Include="Entities\PEPUDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPY_DataSet.cs">
+    <Compile Include="Entities\PEPUH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PEPY_Entity.cs">
+    <Compile Include="Entities\PEPUHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PESH_DataSet.cs">
+    <Compile Include="Entities\PEPY.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PESH_Entity.cs">
+    <Compile Include="Entities\PEPYDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PESP_DataSet.cs">
+    <Compile Include="Entities\PESH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PESP_Entity.cs">
+    <Compile Include="Entities\PESHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PETP_DataSet.cs">
+    <Compile Include="Entities\PESP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PETP_Entity.cs">
+    <Compile Include="Entities\PESPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PE_DataSet.cs">
+    <Compile Include="Entities\PETP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PE_Entity.cs">
+    <Compile Include="Entities\PETPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PF_DataSet.cs">
+    <Compile Include="Entities\PF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PF_Entity.cs">
+    <Compile Include="Entities\PFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PG_DataSet.cs">
+    <Compile Include="Entities\PG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PG_Entity.cs">
+    <Compile Include="Entities\PGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PILI_DataSet.cs">
+    <Compile Include="Entities\PI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PILI_Entity.cs">
+    <Compile Include="Entities\PIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PI_DataSet.cs">
+    <Compile Include="Entities\PILI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PI_Entity.cs">
+    <Compile Include="Entities\PILIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLC_DataSet.cs">
+    <Compile Include="Entities\PLC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLC_Entity.cs">
+    <Compile Include="Entities\PLCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLG_DataSet.cs">
+    <Compile Include="Entities\PLG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLG_Entity.cs">
+    <Compile Include="Entities\PLGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLT_DataSet.cs">
+    <Compile Include="Entities\PLT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PLT_Entity.cs">
+    <Compile Include="Entities\PLTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PML_DataSet.cs">
+    <Compile Include="Entities\PML.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PML_Entity.cs">
+    <Compile Include="Entities\PMLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PML_NEW_DataSet.cs">
+    <Compile Include="Entities\PML_NEW.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PML_NEW_Entity.cs">
+    <Compile Include="Entities\PML_NEWDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PN_DataSet.cs">
+    <Compile Include="Entities\PN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PN_Entity.cs">
+    <Compile Include="Entities\PNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PPD_DataSet.cs">
+    <Compile Include="Entities\PPD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PPD_Entity.cs">
+    <Compile Include="Entities\PPDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PPS_DataSet.cs">
+    <Compile Include="Entities\PPS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PPS_Entity.cs">
+    <Compile Include="Entities\PPSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PSA_DataSet.cs">
+    <Compile Include="Entities\PS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PSA_Entity.cs">
+    <Compile Include="Entities\PSA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PSF_DataSet.cs">
+    <Compile Include="Entities\PSADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PSF_Entity.cs">
+    <Compile Include="Entities\PSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PS_DataSet.cs">
+    <Compile Include="Entities\PSF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PS_Entity.cs">
+    <Compile Include="Entities\PSFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PX_DataSet.cs">
+    <Compile Include="Entities\PX.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PX_Entity.cs">
+    <Compile Include="Entities\PXDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PX_NEW_DataSet.cs">
+    <Compile Include="Entities\PX_NEW.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\PX_NEW_Entity.cs">
+    <Compile Include="Entities\PX_NEWDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\QB_DataSet.cs">
+    <Compile Include="Entities\QB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\QB_Entity.cs">
+    <Compile Include="Entities\QBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\QS_DataSet.cs">
+    <Compile Include="Entities\QS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\QS_Entity.cs">
+    <Compile Include="Entities\QSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SABT_DataSet.cs">
+    <Compile Include="Entities\SA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SABT_Entity.cs">
+    <Compile Include="Entities\SAB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAB_DataSet.cs">
+    <Compile Include="Entities\SABDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAB_Entity.cs">
+    <Compile Include="Entities\SABT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SACAG_DataSet.cs">
+    <Compile Include="Entities\SABTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SACAG_Entity.cs">
+    <Compile Include="Entities\SACAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADAG_DataSet.cs">
+    <Compile Include="Entities\SACAGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADAG_Entity.cs">
+    <Compile Include="Entities\SAD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADP_DataSet.cs">
+    <Compile Include="Entities\SADAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADP_Entity.cs">
+    <Compile Include="Entities\SADAGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADW_DataSet.cs">
+    <Compile Include="Entities\SADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SADW_Entity.cs">
+    <Compile Include="Entities\SADDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAD_DataSet.cs">
+    <Compile Include="Entities\SADP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAD_Entity.cs">
+    <Compile Include="Entities\SADPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAII_DataSet.cs">
+    <Compile Include="Entities\SADW.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAII_Entity.cs">
+    <Compile Include="Entities\SADWDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAIM_DataSet.cs">
+    <Compile Include="Entities\SAI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAIM_Entity.cs">
+    <Compile Include="Entities\SAIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAI_DataSet.cs">
+    <Compile Include="Entities\SAII.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAI_Entity.cs">
+    <Compile Include="Entities\SAIIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAMA_DataSet.cs">
+    <Compile Include="Entities\SAIM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAMA_Entity.cs">
+    <Compile Include="Entities\SAIMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAM_DataSet.cs">
+    <Compile Include="Entities\SAM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAM_Entity.cs">
+    <Compile Include="Entities\SAMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAP_DataSet.cs">
+    <Compile Include="Entities\SAMADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SAP_Entity.cs">
+    <Compile Include="Entities\SAMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SA_DataSet.cs">
+    <Compile Include="Entities\SAP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SA_Entity.cs">
+    <Compile Include="Entities\SAPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCAM_DataSet.cs">
+    <Compile Include="Entities\SC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCAM_Entity.cs">
+    <Compile Include="Entities\SCA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCA_DataSet.cs">
+    <Compile Include="Entities\SCADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCA_Entity.cs">
+    <Compile Include="Entities\SCAM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ACL_DataSet.cs">
+    <Compile Include="Entities\SCAMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ACL_Entity.cs">
+    <Compile Include="Entities\SCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ACV_DataSet.cs">
+    <Compile Include="Entities\SCEN_ACL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ACV_Entity.cs">
+    <Compile Include="Entities\SCEN_ACLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_APP_DataSet.cs">
+    <Compile Include="Entities\SCEN_ACV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_APP_Entity.cs">
+    <Compile Include="Entities\SCEN_ACVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ASE_DataSet.cs">
+    <Compile Include="Entities\SCEN_APP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ASE_Entity.cs">
+    <Compile Include="Entities\SCEN_APPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_AST_DataSet.cs">
+    <Compile Include="Entities\SCEN_ASE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_AST_Entity.cs">
+    <Compile Include="Entities\SCEN_ASEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ASV_DataSet.cs">
+    <Compile Include="Entities\SCEN_AST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ASV_Entity.cs">
+    <Compile Include="Entities\SCEN_ASTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CLV_DataSet.cs">
+    <Compile Include="Entities\SCEN_ASV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CLV_Entity.cs">
+    <Compile Include="Entities\SCEN_ASVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CL_DataSet.cs">
+    <Compile Include="Entities\SCEN_CL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CL_Entity.cs">
+    <Compile Include="Entities\SCEN_CLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CVT_DataSet.cs">
+    <Compile Include="Entities\SCEN_CLV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_CVT_Entity.cs">
+    <Compile Include="Entities\SCEN_CLVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RFD_DataSet.cs">
+    <Compile Include="Entities\SCEN_CVT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RFD_Entity.cs">
+    <Compile Include="Entities\SCEN_CVTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RPT_DataSet.cs">
+    <Compile Include="Entities\SCEN_RFD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RPT_Entity.cs">
+    <Compile Include="Entities\SCEN_RFDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RTN_DataSet.cs">
+    <Compile Include="Entities\SCEN_RPT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_RTN_Entity.cs">
+    <Compile Include="Entities\SCEN_RPTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_SCD_DataSet.cs">
+    <Compile Include="Entities\SCEN_RTN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_SCD_Entity.cs">
+    <Compile Include="Entities\SCEN_RTNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_STE_DataSet.cs">
+    <Compile Include="Entities\SCEN_SCD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_STE_Entity.cs">
+    <Compile Include="Entities\SCEN_SCDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_STV_DataSet.cs">
+    <Compile Include="Entities\SCEN_ST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_STV_Entity.cs">
+    <Compile Include="Entities\SCEN_STDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ST_DataSet.cs">
+    <Compile Include="Entities\SCEN_STE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_ST_Entity.cs">
+    <Compile Include="Entities\SCEN_STEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_SVT_DataSet.cs">
+    <Compile Include="Entities\SCEN_STV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCEN_SVT_Entity.cs">
+    <Compile Include="Entities\SCEN_STVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCI_DataSet.cs">
+    <Compile Include="Entities\SCEN_SVT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCI_Entity.cs">
+    <Compile Include="Entities\SCEN_SVTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCL_DataSet.cs">
+    <Compile Include="Entities\SCI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCL_Entity.cs">
+    <Compile Include="Entities\SCIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCSFAG_DataSet.cs">
+    <Compile Include="Entities\SCL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCSFAG_Entity.cs">
+    <Compile Include="Entities\SCLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCSF_DataSet.cs">
+    <Compile Include="Entities\SCSF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SCSF_Entity.cs">
+    <Compile Include="Entities\SCSFAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SC_DataSet.cs">
+    <Compile Include="Entities\SCSFAGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SC_Entity.cs">
+    <Compile Include="Entities\SCSFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDFC_DataSet.cs">
+    <Compile Include="Entities\SDFC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDFC_Entity.cs">
+    <Compile Include="Entities\SDFCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDGM_DataSet.cs">
+    <Compile Include="Entities\SDG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDGM_Entity.cs">
+    <Compile Include="Entities\SDGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDG_DataSet.cs">
+    <Compile Include="Entities\SDGM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDG_Entity.cs">
+    <Compile Include="Entities\SDGMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDPA_DataSet.cs">
+    <Compile Include="Entities\SDP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDPA_Entity.cs">
+    <Compile Include="Entities\SDPA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDP_DataSet.cs">
+    <Compile Include="Entities\SDPADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SDP_Entity.cs">
+    <Compile Include="Entities\SDPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_ELOG_DataSet.cs">
+    <Compile Include="Entities\SEC_ELOG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_ELOG_Entity.cs">
+    <Compile Include="Entities\SEC_ELOGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_LLOG_DataSet.cs">
+    <Compile Include="Entities\SEC_LLOG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_LLOG_Entity.cs">
+    <Compile Include="Entities\SEC_LLOGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_MSG_DataSet.cs">
+    <Compile Include="Entities\SEC_MSG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_MSG_Entity.cs">
+    <Compile Include="Entities\SEC_MSGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_URL_DataSet.cs">
+    <Compile Include="Entities\SEC_URL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_URL_Entity.cs">
+    <Compile Include="Entities\SEC_URLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_USR_DataSet.cs">
+    <Compile Include="Entities\SEC_USR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SEC_USR_Entity.cs">
+    <Compile Include="Entities\SEC_USRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\SetBase.cs" />
-    <Compile Include="Entities\SFAQ_DataSet.cs">
+    <Compile Include="Entities\SF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SFAQ_Entity.cs">
+    <Compile Include="Entities\SFAQ.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SFAV_DataSet.cs">
+    <Compile Include="Entities\SFAQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SFAV_Entity.cs">
+    <Compile Include="Entities\SFAV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SFQA_DataSet.cs">
+    <Compile Include="Entities\SFAVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SFQA_Entity.cs">
+    <Compile Include="Entities\SFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SF_DataSet.cs">
+    <Compile Include="Entities\SFQA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SF_Entity.cs">
+    <Compile Include="Entities\SFQADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGAM_DataSet.cs">
+    <Compile Include="Entities\SG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGAM_Entity.cs">
+    <Compile Include="Entities\SGAM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGHG_DataSet.cs">
+    <Compile Include="Entities\SGAMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGHG_Entity.cs">
+    <Compile Include="Entities\SGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGMA_DataSet.cs">
+    <Compile Include="Entities\SGHG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGMA_Entity.cs">
+    <Compile Include="Entities\SGHGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGM_DataSet.cs">
+    <Compile Include="Entities\SGM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGM_Entity.cs">
+    <Compile Include="Entities\SGMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGSC_DataSet.cs">
+    <Compile Include="Entities\SGMADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGSC_Entity.cs">
+    <Compile Include="Entities\SGMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGSG_DataSet.cs">
+    <Compile Include="Entities\SGSC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGSG_Entity.cs">
+    <Compile Include="Entities\SGSCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGTRX_DataSet.cs">
+    <Compile Include="Entities\SGSG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SGTRX_Entity.cs">
+    <Compile Include="Entities\SGSGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SG_DataSet.cs">
+    <Compile Include="Entities\SGTRX.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SG_Entity.cs">
+    <Compile Include="Entities\SGTRXDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SIDV_DataSet.cs">
+    <Compile Include="Entities\SID.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SIDV_Entity.cs">
+    <Compile Include="Entities\SIDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SID_DataSet.cs">
+    <Compile Include="Entities\SIDV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SID_Entity.cs">
+    <Compile Include="Entities\SIDVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SIRH_DataSet.cs">
+    <Compile Include="Entities\SIRH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SIRH_Entity.cs">
+    <Compile Include="Entities\SIRHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SKGS_DataSet.cs">
+    <Compile Include="Entities\SKGS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SKGS_Entity.cs">
+    <Compile Include="Entities\SKGSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SK_HRMST_DataSet.cs">
+    <Compile Include="Entities\SK_HRMS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SK_HRMST_Entity.cs">
+    <Compile Include="Entities\SK_HRMSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SK_HRMS_DataSet.cs">
+    <Compile Include="Entities\SK_HRMST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SK_HRMS_Entity.cs">
+    <Compile Include="Entities\SK_HRMSTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMAQ_DataSet.cs">
+    <Compile Include="Entities\SM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMAQ_Entity.cs">
+    <Compile Include="Entities\SMAQ.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMAV_DataSet.cs">
+    <Compile Include="Entities\SMAQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMAV_Entity.cs">
+    <Compile Include="Entities\SMAV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMCD_DataSet.cs">
+    <Compile Include="Entities\SMAVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMCD_Entity.cs">
+    <Compile Include="Entities\SMC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMC_DataSet.cs">
+    <Compile Include="Entities\SMCD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMC_Entity.cs">
+    <Compile Include="Entities\SMCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMC_TFR_DataSet.cs">
+    <Compile Include="Entities\SMCDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMC_TFR_Entity.cs">
+    <Compile Include="Entities\SMC_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMGROUP_DataSet.cs">
+    <Compile Include="Entities\SMC_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SMGROUP_Entity.cs">
+    <Compile Include="Entities\SMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SM_DataSet.cs">
+    <Compile Include="Entities\SMGROUP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SM_Entity.cs">
+    <Compile Include="Entities\SMGROUPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPEMAIL_DataSet.cs">
+    <Compile Include="Entities\SPEMAIL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPEMAIL_Entity.cs">
+    <Compile Include="Entities\SPEMAILDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPEPRINT_DataSet.cs">
+    <Compile Include="Entities\SPEPRINT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPEPRINT_Entity.cs">
+    <Compile Include="Entities\SPEPRINTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPOUT_DataSet.cs">
+    <Compile Include="Entities\SPOUT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPOUT_Entity.cs">
+    <Compile Include="Entities\SPOUTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPU_DataSet.cs">
+    <Compile Include="Entities\SPU.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SPU_Entity.cs">
+    <Compile Include="Entities\SPUDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SRAG_DataSet.cs">
+    <Compile Include="Entities\SRAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SRAG_Entity.cs">
+    <Compile Include="Entities\SRAGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SSHG_DataSet.cs">
+    <Compile Include="Entities\SS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SSHG_Entity.cs">
+    <Compile Include="Entities\SSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SS_DataSet.cs">
+    <Compile Include="Entities\SSHG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SS_Entity.cs">
+    <Compile Include="Entities\SSHGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STBT_DataSet.cs">
+    <Compile Include="Entities\ST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STBT_Entity.cs">
+    <Compile Include="Entities\STBT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STMA_DataSet.cs">
+    <Compile Include="Entities\STBTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STMA_Entity.cs">
+    <Compile Include="Entities\STDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STMB_DataSet.cs">
+    <Compile Include="Entities\STMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STMB_Entity.cs">
+    <Compile Include="Entities\STMADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STPO_DataSet.cs">
+    <Compile Include="Entities\STMB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STPO_Entity.cs">
+    <Compile Include="Entities\STMBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STPT_DataSet.cs">
+    <Compile Include="Entities\STPO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STPT_Entity.cs">
+    <Compile Include="Entities\STPODataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STRA_DataSet.cs">
+    <Compile Include="Entities\STPT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STRA_Entity.cs">
+    <Compile Include="Entities\STPTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STRE_DataSet.cs">
+    <Compile Include="Entities\STRA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STRE_Entity.cs">
+    <Compile Include="Entities\STRADataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STSB_DataSet.cs">
+    <Compile Include="Entities\STRE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STSB_Entity.cs">
+    <Compile Include="Entities\STREDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STSP_DataSet.cs">
+    <Compile Include="Entities\STSB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STSP_Entity.cs">
+    <Compile Include="Entities\STSBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STTRIPS_DataSet.cs">
+    <Compile Include="Entities\STSP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STTRIPS_Entity.cs">
+    <Compile Include="Entities\STSPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STVDI_DataSet.cs">
+    <Compile Include="Entities\STTRIPS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STVDI_Entity.cs">
+    <Compile Include="Entities\STTRIPSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STVDO_DataSet.cs">
+    <Compile Include="Entities\STVDI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\STVDO_Entity.cs">
+    <Compile Include="Entities\STVDIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_DataSet.cs">
+    <Compile Include="Entities\STVDO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_Entity.cs">
+    <Compile Include="Entities\STVDODataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_TFRIO_DataSet.cs">
+    <Compile Include="Entities\ST_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_TFRIO_Entity.cs">
+    <Compile Include="Entities\ST_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_TFR_DataSet.cs">
+    <Compile Include="Entities\ST_TFRIO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\ST_TFR_Entity.cs">
+    <Compile Include="Entities\ST_TFRIODataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SUBL_DataSet.cs">
+    <Compile Include="Entities\SU.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SUBL_Entity.cs">
+    <Compile Include="Entities\SUBL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SUPR_DataSet.cs">
+    <Compile Include="Entities\SUBLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SUPR_Entity.cs">
+    <Compile Include="Entities\SUDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SU_DataSet.cs">
+    <Compile Include="Entities\SUPR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SU_Entity.cs">
+    <Compile Include="Entities\SUPRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SVAG_DataSet.cs">
+    <Compile Include="Entities\SVAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SVAG_Entity.cs">
+    <Compile Include="Entities\SVAGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXABCONV_DataSet.cs">
+    <Compile Include="Entities\SXAB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXABCONV_Entity.cs">
+    <Compile Include="Entities\SXABCONV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXAB_DataSet.cs">
+    <Compile Include="Entities\SXABCONVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXAB_Entity.cs">
+    <Compile Include="Entities\SXABDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXAS_DataSet.cs">
+    <Compile Include="Entities\SXAS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXAS_Entity.cs">
+    <Compile Include="Entities\SXASDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXHI_DataSet.cs">
+    <Compile Include="Entities\SXHI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SXHI_Entity.cs">
+    <Compile Include="Entities\SXHIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCAT_DataSet.cs">
+    <Compile Include="Entities\TC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCAT_Entity.cs">
+    <Compile Include="Entities\TCAT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTB_DataSet.cs">
+    <Compile Include="Entities\TCATDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTB_Entity.cs">
+    <Compile Include="Entities\TCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTD_DataSet.cs">
+    <Compile Include="Entities\TCTB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTD_Entity.cs">
+    <Compile Include="Entities\TCTBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTQ_DataSet.cs">
+    <Compile Include="Entities\TCTD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTQ_Entity.cs">
+    <Compile Include="Entities\TCTDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTR_DataSet.cs">
+    <Compile Include="Entities\TCTQ.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TCTR_Entity.cs">
+    <Compile Include="Entities\TCTQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TC_DataSet.cs">
+    <Compile Include="Entities\TCTR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TC_Entity.cs">
+    <Compile Include="Entities\TCTRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TEC_DataSet.cs">
+    <Compile Include="Entities\TE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TEC_Entity.cs">
+    <Compile Include="Entities\TEC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TETE_DataSet.cs">
+    <Compile Include="Entities\TECDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TETE_Entity.cs">
+    <Compile Include="Entities\TEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TETN_DataSet.cs">
+    <Compile Include="Entities\TETE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TETN_Entity.cs">
+    <Compile Include="Entities\TETEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TE_DataSet.cs">
+    <Compile Include="Entities\TETN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TE_Entity.cs">
+    <Compile Include="Entities\TETNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\THTN_DataSet.cs">
+    <Compile Include="Entities\TH.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\THTN_Entity.cs">
+    <Compile Include="Entities\THDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\THTQ_DataSet.cs">
+    <Compile Include="Entities\THTN.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\THTQ_Entity.cs">
+    <Compile Include="Entities\THTNDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TH_DataSet.cs">
+    <Compile Include="Entities\THTQ.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TH_Entity.cs">
+    <Compile Include="Entities\THTQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRPMODE_DataSet.cs">
+    <Compile Include="Entities\TRPMODE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRPMODE_Entity.cs">
+    <Compile Include="Entities\TRPMODEDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRPROUT_DataSet.cs">
+    <Compile Include="Entities\TRPROUT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRPROUT_Entity.cs">
+    <Compile Include="Entities\TRPROUTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRSTACC_DataSet.cs">
+    <Compile Include="Entities\TRSTACC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TRSTACC_Entity.cs">
+    <Compile Include="Entities\TRSTACCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEF_DataSet.cs">
+    <Compile Include="Entities\TT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEF_Entity.cs">
+    <Compile Include="Entities\TTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEI_DataSet.cs">
+    <Compile Include="Entities\TTEF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEI_Entity.cs">
+    <Compile Include="Entities\TTEFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEP_DataSet.cs">
+    <Compile Include="Entities\TTEI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEP_Entity.cs">
+    <Compile Include="Entities\TTEIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTES_DataSet.cs">
+    <Compile Include="Entities\TTEP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTES_Entity.cs">
+    <Compile Include="Entities\TTEPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEX_DataSet.cs">
+    <Compile Include="Entities\TTES.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTEX_Entity.cs">
+    <Compile Include="Entities\TTESDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTTG_DataSet.cs">
+    <Compile Include="Entities\TTEX.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TTTG_Entity.cs">
+    <Compile Include="Entities\TTEXDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TT_DataSet.cs">
+    <Compile Include="Entities\TTTG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TT_Entity.cs">
+    <Compile Include="Entities\TTTGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TXAS_DataSet.cs">
+    <Compile Include="Entities\TXAS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TXAS_Entity.cs">
+    <Compile Include="Entities\TXASDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TXHG_DataSet.cs">
+    <Compile Include="Entities\TXHG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\TXHG_Entity.cs">
+    <Compile Include="Entities\TXHGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UM_DataSet.cs">
+    <Compile Include="Entities\UM.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UM_Entity.cs">
+    <Compile Include="Entities\UMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UM_TFR_DataSet.cs">
+    <Compile Include="Entities\UM_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UM_TFR_Entity.cs">
+    <Compile Include="Entities\UM_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

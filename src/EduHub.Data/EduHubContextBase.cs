@@ -66,7 +66,7 @@ namespace EduHub.Data
         {
             get
             {
-                return Files
+                return GetAvailableFiles()
                     .Max(f => (DateTime?)File.GetLastWriteTime(f));
             }
         }
@@ -74,21 +74,18 @@ namespace EduHub.Data
         /// <summary>
         /// Filenames of all available eduHub Data Sets
         /// </summary>
-        public IEnumerable<string> Files
+        public IEnumerable<string> GetAvailableFiles()
         {
-            get
-            {
-                // Valid Sets
-                var sets = new HashSet<string>(SetNames, StringComparer.OrdinalIgnoreCase);
+            // Valid Sets
+            var sets = new HashSet<string>(GetNames(), StringComparer.OrdinalIgnoreCase);
 
-                foreach (var file in Directory.EnumerateFiles(EduHubDirectory, $"*_{EduHubSiteIdentifier}.csv"))
+            foreach (var file in Directory.EnumerateFiles(EduHubDirectory, $"*_{EduHubSiteIdentifier}.csv"))
+            {
+                var filename = Path.GetFileName(file);
+                var fileSet = filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
+                if (sets.Contains(fileSet))
                 {
-                    var filename = Path.GetFileName(file);
-                    var fileSet = filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
-                    if (sets.Contains(fileSet))
-                    {
-                        yield return file;
-                    }
+                    yield return file;
                 }
             }
         }
@@ -96,22 +93,19 @@ namespace EduHub.Data
         /// <summary>
         /// Names of available Data Sets
         /// </summary>
-        public IEnumerable<string> AvailableSets
+        public IEnumerable<string> GetAvailableSets()
         {
-            get
+            foreach (var file in GetAvailableFiles())
             {
-                foreach (var file in Files)
-                {
-                    var filename = Path.GetFileName(file);
-                    yield return filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
-                }
+                var filename = Path.GetFileName(file);
+                yield return filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
             }
         }
 
         /// <summary>
         /// Names of all Data Sets
         /// </summary>
-        public abstract IEnumerable<string> SetNames { get; }
+        public abstract IEnumerable<string> GetNames();
 
         /// <summary>
         /// Determines site identifiers which are present in the eduHub directory

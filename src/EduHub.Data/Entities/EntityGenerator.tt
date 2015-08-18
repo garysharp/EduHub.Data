@@ -18,7 +18,7 @@
     var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v55 Schema.xml"));
     foreach (var entity in schema)
     {
-        manager.StartNewFile(string.Format(@"{0}_DataSet.cs", entity.Name));
+        manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
         #>
 using System;
 using System.Collections.Generic;
@@ -30,25 +30,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #> Data Set
     /// </summary>
-    public sealed class <#= entity.Name #>_DataSet : SetBase<<#= entity.Name #>_Entity>
+    public sealed class <#= entity.Name #>DataSet : SetBase<<#= entity.Name #>>
     {
 <#
         foreach (var field in entity.Fields.Where(f => f.IsKey))
         {
 #>
-        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>> <#= field.Name #>_Index;
+        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>> <#= field.Name #>Index;
 <#
         }
 #>
 
-        internal <#= entity.Name #>_DataSet(EduHubContext Context)
+        internal <#= entity.Name #>DataSet(EduHubContext Context)
             : base(Context)
         {
 <#
         foreach (var field in entity.Fields.Where(f => f.IsKey))
         {
 #>
-            <#= field.Name #>_Index = new Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>_Entity>>(() => this.ToDictionary(e => e.<#= field.Name #>));
+            <#= field.Name #>Index = new Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>>(() => this.ToDictionary(e => e.<#= field.Name #>));
 <#
         }
 #>
@@ -57,7 +57,7 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Data Set Name
         /// </summary>
-        public override string SetName { get { return "<#= entity.Name #>"; } }
+        public override string Name { get { return "<#= entity.Name #>"; } }
 
 <#
         foreach (var field in entity.Fields.Where(f => f.IsKey))
@@ -69,10 +69,10 @@ namespace EduHub.Data.Entities
         /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
         /// <returns>Related <#= entity.Name #> entity</returns>
         /// <exception cref="ArgumentOutOfRangeException"><#= field.Name #> value didn't match any <#= entity.Name #> entities</exception>
-        public <#= entity.Name #>_Entity FindBy<#= field.Name #>(<#= field.TypeName #> Key)
+        public <#= entity.Name #> FindBy<#= field.Name #>(<#= field.TypeName #> Key)
         {
-            <#= entity.Name #>_Entity result;
-            if (<#= field.Name #>_Index.Value.TryGetValue(Key, out result))
+            <#= entity.Name #> result;
+            if (<#= field.Name #>Index.Value.TryGetValue(Key, out result))
             {
                 return result;
             }
@@ -88,9 +88,9 @@ namespace EduHub.Data.Entities
         /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
         /// <param name="Value">Related <#= entity.Name #> entity</param>
         /// <returns>True if the <#= entity.Name #> Entity is found</returns>
-        public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #>_Entity Value)
+        public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #> Value)
         {
-            return <#= field.Name #>_Index.Value.TryGetValue(Key, out Value);
+            return <#= field.Name #>Index.Value.TryGetValue(Key, out Value);
         }
 
         /// <summary>
@@ -98,10 +98,10 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
         /// <returns>Related <#= entity.Name #> entity, or null if not found</returns>
-        public <#= entity.Name #>_Entity TryFindBy<#= field.Name #>(<#= field.TypeName #> Key)
+        public <#= entity.Name #> TryFindBy<#= field.Name #>(<#= field.TypeName #> Key)
         {
-            <#= entity.Name #>_Entity result;
-            if (<#= field.Name #>_Index.Value.TryGetValue(Key, out result))
+            <#= entity.Name #> result;
+            if (<#= field.Name #>Index.Value.TryGetValue(Key, out result))
             {
                 return result;
             }
@@ -114,9 +114,9 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
-        protected override Action<<#= entity.Name #>_Entity, string>[] BuildMapper(List<string> Headers)
+        protected override Action<<#= entity.Name #>, string>[] BuildMapper(List<string> Headers)
         {
-            var mapper = new Action<<#= entity.Name #>_Entity, string>[Headers.Count];
+            var mapper = new Action<<#= entity.Name #>, string>[Headers.Count];
 
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
@@ -142,7 +142,7 @@ namespace EduHub.Data.Entities
 }
 <#
         manager.EndBlock();
-        manager.StartNewFile(string.Format(@"{0}_Entity.cs", entity.Name));
+        manager.StartNewFile(string.Format(@"{0}.cs", entity.Name));
         #>
 using System;
 using System.Collections.Generic;
@@ -152,14 +152,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #>
     /// </summary>
-    public class <#= entity.Name #>_Entity : EntityBase
+    public class <#= entity.Name #> : EntityBase
     {
 #region Navigation Property Cache
 <#
         foreach (var field in entity.Fields.Where(f => f.RelationshipEntity != null))
         {
 #>
-        private <#=field.RelationshipEntity#>_Entity _<#=field.Name#>_<#=field.RelationshipEntity#>;
+        private <#=field.RelationshipEntity#> _<#=field.Name#>_<#=field.RelationshipEntity#>;
 <#
         }
 #>
@@ -171,7 +171,9 @@ namespace EduHub.Data.Entities
         {
 #>
         /// <summary>
-<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#> [<#=field.TypeDescription#>: <#=field.TypeKey#>]
+<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim())) #>
+<# if (field.TypeName == "string") { #>        /// [<#=field.TypeDescription#><# if (field.TypePrecision != 0) { #> (<#=field.TypePrecision#>)<#}#>]
+<#} #>
         /// </summary>
         public <#=field.TypeName#> <#=field.Name#> { get; internal set; }
 <#
@@ -185,10 +187,10 @@ namespace EduHub.Data.Entities
         {
 #>
         /// <summary>
-        /// Navigation property for [<#=field.Name#>] => [<#=field.RelationshipEntity#>_Entity].[<#=field.RelationshipField#>]
+        /// Navigation property for [<#=field.Name#>] => [<#=field.RelationshipEntity#>].[<#=field.RelationshipField#>]
 <#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#>
         /// </summary>
-        public <#=field.RelationshipEntity#>_Entity <#=field.Name#>_<#=field.RelationshipEntity#> {
+        public <#=field.RelationshipEntity#> <#=field.Name#>_<#=field.RelationshipEntity#> {
             get
             {
 <#=DetermineNavigationPropertyContent(field)#>

@@ -32,7 +32,7 @@ namespace EduHub.Data
     foreach (var entity in schema)
     {
 #>
-        private <#=entity.Name#>_DataSet _<#=entity.Name#>;
+        private <#=entity.Name#>DataSet _<#=entity.Name#>;
 <#
     }
 #>
@@ -51,7 +51,7 @@ namespace EduHub.Data
     foreach (var entity in schema)
     {
 #>
-            _<#=entity.Name#> = new <#=entity.Name#>_DataSet(this);
+            _<#=entity.Name#> = new <#=entity.Name#>DataSet(this);
 <#
     }
 #>
@@ -79,19 +79,16 @@ namespace EduHub.Data
         /// <summary>
         /// Names of all Data Sets
         /// </summary>
-        public override IEnumerable<string> SetNames
+        public override IEnumerable<string> GetNames()
         {
-            get
-            {
 <#
     foreach (var entity in schema)
     {
 #>
-                yield return "<#= entity.Name #>";
+            yield return "<#= entity.Name #>";
 <#
     }
 #>
-            }
         }
 <#
     foreach (var entity in schema)
@@ -101,7 +98,7 @@ namespace EduHub.Data
         /// <summary>
         /// <#=entity.Description#>
         /// </summary>
-        public <#=entity.Name#>_DataSet <#=entity.Name#> { get { return _<#=entity.Name#>; } }
+        public <#=entity.Name#>DataSet <#=entity.Name#> { get { return _<#=entity.Name#>; } }
 <#
     }
 #>

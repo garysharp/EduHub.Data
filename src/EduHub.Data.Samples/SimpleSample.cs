@@ -33,7 +33,6 @@ namespace EduHub.Data.Samples
                 {
                     StudentCode = st.STKEY,
                     Name = $"{st.SURNAME}, {st.FIRST_NAME}",
-                    Surname = st.SURNAME,
                     HomeGroup = st.HOME_GROUP,
                     YearLevel = st.SCHOOL_YEAR
                 });

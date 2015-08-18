@@ -33,6 +33,8 @@ namespace EduHub.Data.Samples
             // Build Query
             var activeStudentTowns = (
                 from st in Context.ST
+                let family = st.FAMILY_DF
+                let home = family.HOMEKEY_UM
                 where st.STATUS == "ACTV"
                 orderby st.SCHOOL_YEAR, st.HOME_GROUP
                 select new
@@ -40,8 +42,8 @@ namespace EduHub.Data.Samples
                     StudentCode = st.STKEY,
                     HomeGroup = st.HOME_GROUP,
                     YearLevel = st.SCHOOL_YEAR,
-                    Town = st.FAMILY_DF.HOMEKEY_UM.ADDRESS03,
-                    PostCode = st.FAMILY_DF.HOMEKEY_UM.POSTCODE
+                    Town = home.ADDRESS03,
+                    PostCode = home.POSTCODE
                 });
 
             // Write Headers to Console
