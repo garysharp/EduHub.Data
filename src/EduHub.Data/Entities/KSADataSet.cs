@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KSAKEY value used to find KSA</param>
         /// <param name="Value">Related KSA entity</param>
-        /// <returns>True if the KSA Entity is found</returns>
+        /// <returns>True if the KSA entity is found</returns>
         public bool TryFindByKSAKEY(string Key, out KSA Value)
         {
             return KSAKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KSA" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KSA" /> fields for each CSV column header</returns>
         protected override Action<KSA, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSA, string>[Headers.Count];

@@ -6,7 +6,7 @@ using System.Linq;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// Subject Selections & Marks Data Set
+    /// Subject Selections &amp; Marks Data Set
     /// </summary>
     public sealed class STMADataSet : SetBase<STMA>
     {
@@ -49,7 +49,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">IDENT value used to find STMA</param>
         /// <param name="Value">Related STMA entity</param>
-        /// <returns>True if the STMA Entity is found</returns>
+        /// <returns>True if the STMA entity is found</returns>
         public bool TryFindByIDENT(int Key, out STMA Value)
         {
             return IDENTIndex.Value.TryGetValue(Key, out Value);
@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TTPERIOD value used to find STMA</param>
         /// <param name="Value">Related STMA entity</param>
-        /// <returns>True if the STMA Entity is found</returns>
+        /// <returns>True if the STMA entity is found</returns>
         public bool TryFindByTTPERIOD(string Key, out STMA Value)
         {
             return TTPERIODIndex.Value.TryGetValue(Key, out Value);
@@ -121,6 +121,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="STMA" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="STMA" /> fields for each CSV column header</returns>
         protected override Action<STMA, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STMA, string>[Headers.Count];

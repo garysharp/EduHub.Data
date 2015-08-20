@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KSQKEY value used to find KSQ</param>
         /// <param name="Value">Related KSQ entity</param>
-        /// <returns>True if the KSQ Entity is found</returns>
+        /// <returns>True if the KSQ entity is found</returns>
         public bool TryFindByKSQKEY(string Key, out KSQ Value)
         {
             return KSQKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KSQ" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KSQ" /> fields for each CSV column header</returns>
         protected override Action<KSQ, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSQ, string>[Headers.Count];

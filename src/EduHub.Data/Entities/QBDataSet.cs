@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">QBKEY value used to find QB</param>
         /// <param name="Value">Related QB entity</param>
-        /// <returns>True if the QB Entity is found</returns>
+        /// <returns>True if the QB entity is found</returns>
         public bool TryFindByQBKEY(int Key, out QB Value)
         {
             return QBKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="QB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="QB" /> fields for each CSV column header</returns>
         protected override Action<QB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<QB, string>[Headers.Count];

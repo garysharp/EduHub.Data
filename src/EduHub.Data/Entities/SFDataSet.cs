@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SFKEY value used to find SF</param>
         /// <param name="Value">Related SF entity</param>
-        /// <returns>True if the SF Entity is found</returns>
+        /// <returns>True if the SF entity is found</returns>
         public bool TryFindBySFKEY(string Key, out SF Value)
         {
             return SFKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SF" /> fields for each CSV column header</returns>
         protected override Action<SF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SF, string>[Headers.Count];

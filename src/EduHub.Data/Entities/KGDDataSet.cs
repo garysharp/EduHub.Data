@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KGDKEY value used to find KGD</param>
         /// <param name="Value">Related KGD entity</param>
-        /// <returns>True if the KGD Entity is found</returns>
+        /// <returns>True if the KGD entity is found</returns>
         public bool TryFindByKGDKEY(string Key, out KGD Value)
         {
             return KGDKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGD" /> fields for each CSV column header</returns>
         protected override Action<KGD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGD, string>[Headers.Count];

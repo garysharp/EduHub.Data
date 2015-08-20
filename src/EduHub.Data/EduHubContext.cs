@@ -1924,7 +1924,7 @@ namespace EduHub.Data
         public STBTDataSet STBT { get { return _STBT; } }
 
         /// <summary>
-        /// Subject Selections & Marks
+        /// Subject Selections &amp; Marks
         /// </summary>
         public STMADataSet STMA { get { return _STMA; } }
 

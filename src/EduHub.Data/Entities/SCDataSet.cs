@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">COURSE value used to find SC</param>
         /// <param name="Value">Related SC entity</param>
-        /// <returns>True if the SC Entity is found</returns>
+        /// <returns>True if the SC entity is found</returns>
         public bool TryFindByCOURSE(string Key, out SC Value)
         {
             return COURSEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SC" /> fields for each CSV column header</returns>
         protected override Action<SC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SC, string>[Headers.Count];

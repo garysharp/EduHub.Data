@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find BPAY_DAT</param>
         /// <param name="Value">Related BPAY_DAT entity</param>
-        /// <returns>True if the BPAY_DAT Entity is found</returns>
+        /// <returns>True if the BPAY_DAT entity is found</returns>
         public bool TryFindByTID(int Key, out BPAY_DAT Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="BPAY_DAT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="BPAY_DAT" /> fields for each CSV column header</returns>
         protected override Action<BPAY_DAT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<BPAY_DAT, string>[Headers.Count];

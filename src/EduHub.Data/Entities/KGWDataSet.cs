@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">AWARD value used to find KGW</param>
         /// <param name="Value">Related KGW entity</param>
-        /// <returns>True if the KGW Entity is found</returns>
+        /// <returns>True if the KGW entity is found</returns>
         public bool TryFindByAWARD(string Key, out KGW Value)
         {
             return AWARDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGW" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGW" /> fields for each CSV column header</returns>
         protected override Action<KGW, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGW, string>[Headers.Count];

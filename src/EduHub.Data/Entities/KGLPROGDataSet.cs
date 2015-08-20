@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GLPROGRAM value used to find KGLPROG</param>
         /// <param name="Value">Related KGLPROG entity</param>
-        /// <returns>True if the KGLPROG Entity is found</returns>
+        /// <returns>True if the KGLPROG entity is found</returns>
         public bool TryFindByGLPROGRAM(string Key, out KGLPROG Value)
         {
             return GLPROGRAMIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGLPROG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGLPROG" /> fields for each CSV column header</returns>
         protected override Action<KGLPROG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLPROG, string>[Headers.Count];

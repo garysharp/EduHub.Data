@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCLKEY value used to find SCL</param>
         /// <param name="Value">Related SCL entity</param>
-        /// <returns>True if the SCL Entity is found</returns>
+        /// <returns>True if the SCL entity is found</returns>
         public bool TryFindBySCLKEY(string Key, out SCL Value)
         {
             return SCLKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SCL" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SCL" /> fields for each CSV column header</returns>
         protected override Action<SCL, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCL, string>[Headers.Count];

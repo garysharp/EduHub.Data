@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ID value used to find FINHIST</param>
         /// <param name="Value">Related FINHIST entity</param>
-        /// <returns>True if the FINHIST Entity is found</returns>
+        /// <returns>True if the FINHIST entity is found</returns>
         public bool TryFindByID(int Key, out FINHIST Value)
         {
             return IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="FINHIST" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="FINHIST" /> fields for each CSV column header</returns>
         protected override Action<FINHIST, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<FINHIST, string>[Headers.Count];

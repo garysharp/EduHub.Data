@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
         /// <param name="Value">Related SEC_LLOG entity</param>
-        /// <returns>True if the SEC_LLOG Entity is found</returns>
+        /// <returns>True if the SEC_LLOG entity is found</returns>
         public bool TryFindByLOGINLOGID(int Key, out SEC_LLOG Value)
         {
             return LOGINLOGIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_LLOG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SEC_LLOG" /> fields for each CSV column header</returns>
         protected override Action<SEC_LLOG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_LLOG, string>[Headers.Count];

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KDIKEY value used to find KDI</param>
         /// <param name="Value">Related KDI entity</param>
-        /// <returns>True if the KDI Entity is found</returns>
+        /// <returns>True if the KDI entity is found</returns>
         public bool TryFindByKDIKEY(string Key, out KDI Value)
         {
             return KDIKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KDI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KDI" /> fields for each CSV column header</returns>
         protected override Action<KDI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KDI, string>[Headers.Count];

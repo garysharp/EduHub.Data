@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PPDKEY value used to find PPD</param>
         /// <param name="Value">Related PPD entity</param>
-        /// <returns>True if the PPD Entity is found</returns>
+        /// <returns>True if the PPD entity is found</returns>
         public bool TryFindByPPDKEY(string Key, out PPD Value)
         {
             return PPDKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PPD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PPD" /> fields for each CSV column header</returns>
         protected override Action<PPD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PPD, string>[Headers.Count];

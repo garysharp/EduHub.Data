@@ -45,7 +45,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FACULTY { get; internal set; }
         /// <summary>
-        /// (V) (NRM) << What exactly is this field for?
+        /// (V) (NRM) &lt;&lt; What exactly is this field for?
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string AREA_CODE { get; internal set; }

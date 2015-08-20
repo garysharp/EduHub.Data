@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">STACCKEY value used to find TRSTACC</param>
         /// <param name="Value">Related TRSTACC entity</param>
-        /// <returns>True if the TRSTACC Entity is found</returns>
+        /// <returns>True if the TRSTACC entity is found</returns>
         public bool TryFindBySTACCKEY(int Key, out TRSTACC Value)
         {
             return STACCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TRSTACC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TRSTACC" /> fields for each CSV column header</returns>
         protected override Action<TRSTACC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TRSTACC, string>[Headers.Count];

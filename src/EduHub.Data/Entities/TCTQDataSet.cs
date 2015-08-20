@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">COMPOSITE value used to find TCTQ</param>
         /// <param name="Value">Related TCTQ entity</param>
-        /// <returns>True if the TCTQ Entity is found</returns>
+        /// <returns>True if the TCTQ entity is found</returns>
         public bool TryFindByCOMPOSITE(short Key, out TCTQ Value)
         {
             return COMPOSITEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TCTQ" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TCTQ" /> fields for each CSV column header</returns>
         protected override Action<TCTQ, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TCTQ, string>[Headers.Count];

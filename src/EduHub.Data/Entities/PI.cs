@@ -75,7 +75,7 @@ namespace EduHub.Data.Entities
         /// Is Pay item based on (in respect to KPHR table)
         /// H = Hourly pay rate
         /// T = Hourly tool rate
-        /// F = Daily fares & travel rate
+        /// F = Daily fares &amp; travel rate
         /// O = Other
         /// [Uppercase Alphanumeric (1)]
         /// </summary>

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KPNKEY value used to find KPN</param>
         /// <param name="Value">Related KPN entity</param>
-        /// <returns>True if the KPN Entity is found</returns>
+        /// <returns>True if the KPN entity is found</returns>
         public bool TryFindByKPNKEY(string Key, out KPN Value)
         {
             return KPNKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KPN" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KPN" /> fields for each CSV column header</returns>
         protected override Action<KPN, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPN, string>[Headers.Count];

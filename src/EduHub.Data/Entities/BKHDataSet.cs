@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">BKHKEY value used to find BKH</param>
         /// <param name="Value">Related BKH entity</param>
-        /// <returns>True if the BKH Entity is found</returns>
+        /// <returns>True if the BKH entity is found</returns>
         public bool TryFindByBKHKEY(string Key, out BKH Value)
         {
             return BKHKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="BKH" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="BKH" /> fields for each CSV column header</returns>
         protected override Action<BKH, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<BKH, string>[Headers.Count];

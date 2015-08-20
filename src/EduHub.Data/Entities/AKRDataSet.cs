@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">AKRKEY value used to find AKR</param>
         /// <param name="Value">Related AKR entity</param>
-        /// <returns>True if the AKR Entity is found</returns>
+        /// <returns>True if the AKR entity is found</returns>
         public bool TryFindByAKRKEY(string Key, out AKR Value)
         {
             return AKRKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="AKR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="AKR" /> fields for each CSV column header</returns>
         protected override Action<AKR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKR, string>[Headers.Count];

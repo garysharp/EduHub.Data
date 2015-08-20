@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
         /// <param name="Value">Related KTRCMP entity</param>
-        /// <returns>True if the KTRCMP Entity is found</returns>
+        /// <returns>True if the KTRCMP entity is found</returns>
         public bool TryFindByCOMPANY_ID(int Key, out KTRCMP Value)
         {
             return COMPANY_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KTRCMP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KTRCMP" /> fields for each CSV column header</returns>
         protected override Action<KTRCMP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KTRCMP, string>[Headers.Count];

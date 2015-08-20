@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find TTEI</param>
         /// <param name="Value">Related TTEI entity</param>
-        /// <returns>True if the TTEI Entity is found</returns>
+        /// <returns>True if the TTEI entity is found</returns>
         public bool TryFindByTID(int Key, out TTEI Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TTEI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TTEI" /> fields for each CSV column header</returns>
         protected override Action<TTEI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TTEI, string>[Headers.Count];

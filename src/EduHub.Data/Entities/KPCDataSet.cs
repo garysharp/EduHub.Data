@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KPCKEY value used to find KPC</param>
         /// <param name="Value">Related KPC entity</param>
-        /// <returns>True if the KPC Entity is found</returns>
+        /// <returns>True if the KPC entity is found</returns>
         public bool TryFindByKPCKEY(string Key, out KPC Value)
         {
             return KPCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KPC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KPC" /> fields for each CSV column header</returns>
         protected override Action<KPC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPC, string>[Headers.Count];

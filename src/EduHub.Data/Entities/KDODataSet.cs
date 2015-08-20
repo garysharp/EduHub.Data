@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KDOKEY value used to find KDO</param>
         /// <param name="Value">Related KDO entity</param>
-        /// <returns>True if the KDO Entity is found</returns>
+        /// <returns>True if the KDO entity is found</returns>
         public bool TryFindByKDOKEY(string Key, out KDO Value)
         {
             return KDOKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KDO" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KDO" /> fields for each CSV column header</returns>
         protected override Action<KDO, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KDO, string>[Headers.Count];

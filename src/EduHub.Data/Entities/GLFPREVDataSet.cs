@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TRREF value used to find GLFPREV</param>
         /// <param name="Value">Related GLFPREV entity</param>
-        /// <returns>True if the GLFPREV Entity is found</returns>
+        /// <returns>True if the GLFPREV entity is found</returns>
         public bool TryFindByTRREF(string Key, out GLFPREV Value)
         {
             return TRREFIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="GLFPREV" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="GLFPREV" /> fields for each CSV column header</returns>
         protected override Action<GLFPREV, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLFPREV, string>[Headers.Count];

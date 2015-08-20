@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SADKEY value used to find SAD</param>
         /// <param name="Value">Related SAD entity</param>
-        /// <returns>True if the SAD Entity is found</returns>
+        /// <returns>True if the SAD entity is found</returns>
         public bool TryFindBySADKEY(int Key, out SAD Value)
         {
             return SADKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SAD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SAD" /> fields for each CSV column header</returns>
         protected override Action<SAD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAD, string>[Headers.Count];

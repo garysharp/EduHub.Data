@@ -54,7 +54,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GL_REVALS_BS { get; internal set; }
         /// <summary>
-        /// GL Asset Revaluations put to P & L
+        /// GL Asset Revaluations put to P &amp; L
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string GL_REVALS_PL { get; internal set; }
@@ -113,7 +113,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? EXPECTED_LIFE { get; internal set; }
         /// <summary>
-        /// Send to DE&T Flag
+        /// Send to DE&amp;T Flag
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string SEND_TO_FLAG { get; internal set; }
@@ -229,7 +229,7 @@ namespace EduHub.Data.Entities
         }
         /// <summary>
         /// Navigation property for [GL_REVALS_PL] => [GL].[CODE]
-        /// GL Asset Revaluations put to P & L
+        /// GL Asset Revaluations put to P &amp; L
         /// </summary>
         public GL GL_REVALS_PL_GL {
             get

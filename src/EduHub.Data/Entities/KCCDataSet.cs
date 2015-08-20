@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KCCKEY value used to find KCC</param>
         /// <param name="Value">Related KCC entity</param>
-        /// <returns>True if the KCC Entity is found</returns>
+        /// <returns>True if the KCC entity is found</returns>
         public bool TryFindByKCCKEY(DateTime Key, out KCC Value)
         {
             return KCCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCC" /> fields for each CSV column header</returns>
         protected override Action<KCC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCC, string>[Headers.Count];

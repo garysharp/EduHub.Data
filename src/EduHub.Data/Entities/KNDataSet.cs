@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">NOTE_ID value used to find KN</param>
         /// <param name="Value">Related KN entity</param>
-        /// <returns>True if the KN Entity is found</returns>
+        /// <returns>True if the KN entity is found</returns>
         public bool TryFindByNOTE_ID(string Key, out KN Value)
         {
             return NOTE_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KN" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KN" /> fields for each CSV column header</returns>
         protected override Action<KN, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KN, string>[Headers.Count];

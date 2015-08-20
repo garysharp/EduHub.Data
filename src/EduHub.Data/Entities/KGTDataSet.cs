@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">COUNTRY value used to find KGT</param>
         /// <param name="Value">Related KGT entity</param>
-        /// <returns>True if the KGT Entity is found</returns>
+        /// <returns>True if the KGT entity is found</returns>
         public bool TryFindByCOUNTRY(string Key, out KGT Value)
         {
             return COUNTRYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGT" /> fields for each CSV column header</returns>
         protected override Action<KGT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGT, string>[Headers.Count];

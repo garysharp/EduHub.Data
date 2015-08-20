@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SEQ value used to find SK_HRMST</param>
         /// <param name="Value">Related SK_HRMST entity</param>
-        /// <returns>True if the SK_HRMST Entity is found</returns>
+        /// <returns>True if the SK_HRMST entity is found</returns>
         public bool TryFindBySEQ(int Key, out SK_HRMST Value)
         {
             return SEQIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SK_HRMST" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SK_HRMST" /> fields for each CSV column header</returns>
         protected override Action<SK_HRMST, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SK_HRMST, string>[Headers.Count];

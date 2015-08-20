@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PAYG_BOX value used to find PG</param>
         /// <param name="Value">Related PG entity</param>
-        /// <returns>True if the PG Entity is found</returns>
+        /// <returns>True if the PG entity is found</returns>
         public bool TryFindByPAYG_BOX(short Key, out PG Value)
         {
             return PAYG_BOXIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PG" /> fields for each CSV column header</returns>
         protected override Action<PG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PG, string>[Headers.Count];

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ID value used to find SCEN_AST</param>
         /// <param name="Value">Related SCEN_AST entity</param>
-        /// <returns>True if the SCEN_AST Entity is found</returns>
+        /// <returns>True if the SCEN_AST entity is found</returns>
         public bool TryFindByID(int Key, out SCEN_AST Value)
         {
             return IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SCEN_AST" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SCEN_AST" /> fields for each CSV column header</returns>
         protected override Action<SCEN_AST, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCEN_AST, string>[Headers.Count];

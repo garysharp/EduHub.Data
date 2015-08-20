@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TEKEY value used to find TE</param>
         /// <param name="Value">Related TE entity</param>
-        /// <returns>True if the TE Entity is found</returns>
+        /// <returns>True if the TE entity is found</returns>
         public bool TryFindByTEKEY(int Key, out TE Value)
         {
             return TEKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TE" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TE" /> fields for each CSV column header</returns>
         protected override Action<TE, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TE, string>[Headers.Count];

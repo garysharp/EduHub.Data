@@ -49,7 +49,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KAPKEY value used to find KAP</param>
         /// <param name="Value">Related KAP entity</param>
-        /// <returns>True if the KAP Entity is found</returns>
+        /// <returns>True if the KAP entity is found</returns>
         public bool TryFindByKAPKEY(string Key, out KAP Value)
         {
             return KAPKEYIndex.Value.TryGetValue(Key, out Value);
@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PLACE_NAME value used to find KAP</param>
         /// <param name="Value">Related KAP entity</param>
-        /// <returns>True if the KAP Entity is found</returns>
+        /// <returns>True if the KAP entity is found</returns>
         public bool TryFindByPLACE_NAME(string Key, out KAP Value)
         {
             return PLACE_NAMEIndex.Value.TryGetValue(Key, out Value);
@@ -121,6 +121,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KAP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KAP" /> fields for each CSV column header</returns>
         protected override Action<KAP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAP, string>[Headers.Count];

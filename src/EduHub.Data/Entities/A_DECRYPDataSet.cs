@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find A_DECRYP</param>
         /// <param name="Value">Related A_DECRYP entity</param>
-        /// <returns>True if the A_DECRYP Entity is found</returns>
+        /// <returns>True if the A_DECRYP entity is found</returns>
         public bool TryFindByTID(int Key, out A_DECRYP Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="A_DECRYP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="A_DECRYP" /> fields for each CSV column header</returns>
         protected override Action<A_DECRYP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<A_DECRYP, string>[Headers.Count];

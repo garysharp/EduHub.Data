@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "STBT"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="STBT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="STBT" /> fields for each CSV column header</returns>
         protected override Action<STBT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<STBT, string>[Headers.Count];

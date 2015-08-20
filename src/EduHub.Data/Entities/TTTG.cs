@@ -172,7 +172,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BLOCK { get; internal set; }
         /// <summary>
-        /// Lock status on grid line: 0=Unlock, 1=Lock subject, 2=Lock line, 3=Lock both line & subject
+        /// Lock status on grid line: 0=Unlock, 1=Lock subject, 2=Lock line, 3=Lock both line &amp; subject
         /// </summary>
         public short? LOCK { get; internal set; }
         /// <summary>
@@ -201,7 +201,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ROW_GROUP { get; internal set; }
         /// <summary>
-        /// # Double periods. Applies if Unit value > 1
+        /// # Double periods. Applies if Unit value &gt; 1
         /// </summary>
         public short? DOUBLE_PERIODS { get; internal set; }
         /// <summary>

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">CODE value used to find GL</param>
         /// <param name="Value">Related GL entity</param>
-        /// <returns>True if the GL Entity is found</returns>
+        /// <returns>True if the GL entity is found</returns>
         public bool TryFindByCODE(string Key, out GL Value)
         {
             return CODEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="GL" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="GL" /> fields for each CSV column header</returns>
         protected override Action<GL, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GL, string>[Headers.Count];

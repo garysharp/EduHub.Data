@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PCKEY value used to find PC</param>
         /// <param name="Value">Related PC entity</param>
-        /// <returns>True if the PC Entity is found</returns>
+        /// <returns>True if the PC entity is found</returns>
         public bool TryFindByPCKEY(string Key, out PC Value)
         {
             return PCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PC" /> fields for each CSV column header</returns>
         protected override Action<PC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PC, string>[Headers.Count];

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">INITIATIVE value used to find KGLINIT</param>
         /// <param name="Value">Related KGLINIT entity</param>
-        /// <returns>True if the KGLINIT Entity is found</returns>
+        /// <returns>True if the KGLINIT entity is found</returns>
         public bool TryFindByINITIATIVE(string Key, out KGLINIT Value)
         {
             return INITIATIVEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGLINIT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGLINIT" /> fields for each CSV column header</returns>
         protected override Action<KGLINIT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLINIT, string>[Headers.Count];

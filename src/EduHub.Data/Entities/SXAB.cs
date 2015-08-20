@@ -24,7 +24,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int SXAB_ID { get; internal set; }
         /// <summary>
-        /// TID of corresponding Home Group Daily Attendance record << may require referential integrity controls
+        /// TID of corresponding Home Group Daily Attendance record &lt;&lt; may require referential integrity controls
         /// </summary>
         public int? TXHG_TID { get; internal set; }
         /// <summary>
@@ -136,7 +136,7 @@ namespace EduHub.Data.Entities
 #region Navigation Properties
         /// <summary>
         /// Navigation property for [TXHG_TID] => [TXHG].[TXHG_ID]
-        /// TID of corresponding Home Group Daily Attendance record << may require referential integrity controls
+        /// TID of corresponding Home Group Daily Attendance record &lt;&lt; may require referential integrity controls
         /// </summary>
         public TXHG TXHG_TID_TXHG {
             get

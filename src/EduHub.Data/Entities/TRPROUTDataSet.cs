@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ROUTE_ID value used to find TRPROUT</param>
         /// <param name="Value">Related TRPROUT entity</param>
-        /// <returns>True if the TRPROUT Entity is found</returns>
+        /// <returns>True if the TRPROUT entity is found</returns>
         public bool TryFindByROUTE_ID(int Key, out TRPROUT Value)
         {
             return ROUTE_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TRPROUT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TRPROUT" /> fields for each CSV column header</returns>
         protected override Action<TRPROUT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TRPROUT, string>[Headers.Count];

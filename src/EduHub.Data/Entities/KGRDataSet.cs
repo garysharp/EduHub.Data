@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">RELIGION value used to find KGR</param>
         /// <param name="Value">Related KGR entity</param>
-        /// <returns>True if the KGR Entity is found</returns>
+        /// <returns>True if the KGR entity is found</returns>
         public bool TryFindByRELIGION(string Key, out KGR Value)
         {
             return RELIGIONIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGR" /> fields for each CSV column header</returns>
         protected override Action<KGR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGR, string>[Headers.Count];

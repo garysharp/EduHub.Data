@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KGHKEY value used to find KGH</param>
         /// <param name="Value">Related KGH entity</param>
-        /// <returns>True if the KGH Entity is found</returns>
+        /// <returns>True if the KGH entity is found</returns>
         public bool TryFindByKGHKEY(string Key, out KGH Value)
         {
             return KGHKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGH" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGH" /> fields for each CSV column header</returns>
         protected override Action<KGH, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGH, string>[Headers.Count];

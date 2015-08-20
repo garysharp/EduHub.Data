@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find KBPT</param>
         /// <param name="Value">Related KBPT entity</param>
-        /// <returns>True if the KBPT Entity is found</returns>
+        /// <returns>True if the KBPT entity is found</returns>
         public bool TryFindByTID(int Key, out KBPT Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KBPT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KBPT" /> fields for each CSV column header</returns>
         protected override Action<KBPT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBPT, string>[Headers.Count];

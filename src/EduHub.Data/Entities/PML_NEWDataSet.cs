@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCALE value used to find PML_NEW</param>
         /// <param name="Value">Related PML_NEW entity</param>
-        /// <returns>True if the PML_NEW Entity is found</returns>
+        /// <returns>True if the PML_NEW entity is found</returns>
         public bool TryFindBySCALE(short Key, out PML_NEW Value)
         {
             return SCALEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PML_NEW" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PML_NEW" /> fields for each CSV column header</returns>
         protected override Action<PML_NEW, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PML_NEW, string>[Headers.Count];

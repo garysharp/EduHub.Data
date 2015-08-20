@@ -49,27 +49,27 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ROUTE { get; internal set; }
         /// <summary>
-        /// Mon - Fri << What is actually stored in this field?
+        /// Mon - Fri &lt;&lt; What is actually stored in this field?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYS_USED01 { get; internal set; }
         /// <summary>
-        /// Mon - Fri << What is actually stored in this field?
+        /// Mon - Fri &lt;&lt; What is actually stored in this field?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYS_USED02 { get; internal set; }
         /// <summary>
-        /// Mon - Fri << What is actually stored in this field?
+        /// Mon - Fri &lt;&lt; What is actually stored in this field?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYS_USED03 { get; internal set; }
         /// <summary>
-        /// Mon - Fri << What is actually stored in this field?
+        /// Mon - Fri &lt;&lt; What is actually stored in this field?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYS_USED04 { get; internal set; }
         /// <summary>
-        /// Mon - Fri << What is actually stored in this field?
+        /// Mon - Fri &lt;&lt; What is actually stored in this field?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYS_USED05 { get; internal set; }

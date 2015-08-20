@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SIRHKEY value used to find SIRH</param>
         /// <param name="Value">Related SIRH entity</param>
-        /// <returns>True if the SIRH Entity is found</returns>
+        /// <returns>True if the SIRH entity is found</returns>
         public bool TryFindBySIRHKEY(string Key, out SIRH Value)
         {
             return SIRHKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SIRH" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SIRH" /> fields for each CSV column header</returns>
         protected override Action<SIRH, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SIRH, string>[Headers.Count];

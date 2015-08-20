@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find SPEPRINT</param>
         /// <param name="Value">Related SPEPRINT entity</param>
-        /// <returns>True if the SPEPRINT Entity is found</returns>
+        /// <returns>True if the SPEPRINT entity is found</returns>
         public bool TryFindByTID(int Key, out SPEPRINT Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SPEPRINT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SPEPRINT" /> fields for each CSV column header</returns>
         protected override Action<SPEPRINT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPEPRINT, string>[Headers.Count];

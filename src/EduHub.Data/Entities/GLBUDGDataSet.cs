@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
         /// <param name="Value">Related GLBUDG entity</param>
-        /// <returns>True if the GLBUDG Entity is found</returns>
+        /// <returns>True if the GLBUDG entity is found</returns>
         public bool TryFindByBUDGETKEY(string Key, out GLBUDG Value)
         {
             return BUDGETKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="GLBUDG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="GLBUDG" /> fields for each CSV column header</returns>
         protected override Action<GLBUDG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLBUDG, string>[Headers.Count];

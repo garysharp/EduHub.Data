@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KPECKEY value used to find KPEC</param>
         /// <param name="Value">Related KPEC entity</param>
-        /// <returns>True if the KPEC Entity is found</returns>
+        /// <returns>True if the KPEC entity is found</returns>
         public bool TryFindByKPECKEY(string Key, out KPEC Value)
         {
             return KPECKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KPEC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KPEC" /> fields for each CSV column header</returns>
         protected override Action<KPEC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPEC, string>[Headers.Count];

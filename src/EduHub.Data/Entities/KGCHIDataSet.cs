@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
         /// <param name="Value">Related KGCHI entity</param>
-        /// <returns>True if the KGCHI Entity is found</returns>
+        /// <returns>True if the KGCHI entity is found</returns>
         public bool TryFindByKGCHIKEY(int Key, out KGCHI Value)
         {
             return KGCHIKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGCHI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGCHI" /> fields for each CSV column header</returns>
         protected override Action<KGCHI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGCHI, string>[Headers.Count];

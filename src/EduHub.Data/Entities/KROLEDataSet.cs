@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KROLEKEY value used to find KROLE</param>
         /// <param name="Value">Related KROLE entity</param>
-        /// <returns>True if the KROLE Entity is found</returns>
+        /// <returns>True if the KROLE entity is found</returns>
         public bool TryFindByKROLEKEY(string Key, out KROLE Value)
         {
             return KROLEKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KROLE" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KROLE" /> fields for each CSV column header</returns>
         protected override Action<KROLE, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KROLE, string>[Headers.Count];

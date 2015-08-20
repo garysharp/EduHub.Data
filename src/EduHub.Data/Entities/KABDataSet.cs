@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">BSB value used to find KAB</param>
         /// <param name="Value">Related KAB entity</param>
-        /// <returns>True if the KAB Entity is found</returns>
+        /// <returns>True if the KAB entity is found</returns>
         public bool TryFindByBSB(string Key, out KAB Value)
         {
             return BSBIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KAB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KAB" /> fields for each CSV column header</returns>
         protected override Action<KAB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAB, string>[Headers.Count];

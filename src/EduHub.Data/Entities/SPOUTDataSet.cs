@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
         /// <param name="Value">Related SPOUT entity</param>
-        /// <returns>True if the SPOUT Entity is found</returns>
+        /// <returns>True if the SPOUT entity is found</returns>
         public bool TryFindBySPOUTKEY(string Key, out SPOUT Value)
         {
             return SPOUTKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SPOUT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SPOUT" /> fields for each CSV column header</returns>
         protected override Action<SPOUT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPOUT, string>[Headers.Count];

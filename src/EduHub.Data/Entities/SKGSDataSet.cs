@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCHOOL value used to find SKGS</param>
         /// <param name="Value">Related SKGS entity</param>
-        /// <returns>True if the SKGS Entity is found</returns>
+        /// <returns>True if the SKGS entity is found</returns>
         public bool TryFindBySCHOOL(string Key, out SKGS Value)
         {
             return SCHOOLIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SKGS" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SKGS" /> fields for each CSV column header</returns>
         protected override Action<SKGS, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SKGS, string>[Headers.Count];

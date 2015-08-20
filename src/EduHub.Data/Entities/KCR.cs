@@ -28,7 +28,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DESCRIPTION { get; internal set; }
         /// <summary>
-        /// Transport route code << What exactly is this field for?
+        /// Transport route code &lt;&lt; What exactly is this field for?
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string ROUTE_CODE { get; internal set; }
@@ -38,27 +38,27 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string STOP_DESCRIP { get; internal set; }
         /// <summary>
-        /// Day(s) of week << What exactly are these fields for?
+        /// Day(s) of week &lt;&lt; What exactly are these fields for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYOFWK01 { get; internal set; }
         /// <summary>
-        /// Day(s) of week << What exactly are these fields for?
+        /// Day(s) of week &lt;&lt; What exactly are these fields for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYOFWK02 { get; internal set; }
         /// <summary>
-        /// Day(s) of week << What exactly are these fields for?
+        /// Day(s) of week &lt;&lt; What exactly are these fields for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYOFWK03 { get; internal set; }
         /// <summary>
-        /// Day(s) of week << What exactly are these fields for?
+        /// Day(s) of week &lt;&lt; What exactly are these fields for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYOFWK04 { get; internal set; }
         /// <summary>
-        /// Day(s) of week << What exactly are these fields for?
+        /// Day(s) of week &lt;&lt; What exactly are these fields for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DAYOFWK05 { get; internal set; }

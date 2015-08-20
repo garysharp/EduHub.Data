@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SPUKEY value used to find SPU</param>
         /// <param name="Value">Related SPU entity</param>
-        /// <returns>True if the SPU Entity is found</returns>
+        /// <returns>True if the SPU entity is found</returns>
         public bool TryFindBySPUKEY(string Key, out SPU Value)
         {
             return SPUKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SPU" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SPU" /> fields for each CSV column header</returns>
         protected override Action<SPU, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPU, string>[Headers.Count];

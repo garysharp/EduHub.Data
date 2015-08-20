@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "TCTR"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TCTR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TCTR" /> fields for each CSV column header</returns>
         protected override Action<TCTR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TCTR, string>[Headers.Count];

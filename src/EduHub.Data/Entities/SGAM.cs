@@ -61,7 +61,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string GROUP_ROLE { get; internal set; }
         /// <summary>
-        /// Group type: S=Special Group, E=Excursion Group << What exactly is this field for?
+        /// Group type: S=Special Group, E=Excursion Group &lt;&lt; What exactly is this field for?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string SG_TYPE { get; internal set; }

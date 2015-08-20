@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
         /// <param name="Value">Related SEC_ELOG entity</param>
-        /// <returns>True if the SEC_ELOG Entity is found</returns>
+        /// <returns>True if the SEC_ELOG entity is found</returns>
         public bool TryFindByERRORCOUNT(int Key, out SEC_ELOG Value)
         {
             return ERRORCOUNTIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_ELOG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SEC_ELOG" /> fields for each CSV column header</returns>
         protected override Action<SEC_ELOG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_ELOG, string>[Headers.Count];

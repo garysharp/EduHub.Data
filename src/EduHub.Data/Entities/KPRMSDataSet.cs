@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find KPRMS</param>
         /// <param name="Value">Related KPRMS entity</param>
-        /// <returns>True if the KPRMS Entity is found</returns>
+        /// <returns>True if the KPRMS entity is found</returns>
         public bool TryFindByTID(int Key, out KPRMS Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KPRMS" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KPRMS" /> fields for each CSV column header</returns>
         protected override Action<KPRMS, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPRMS, string>[Headers.Count];

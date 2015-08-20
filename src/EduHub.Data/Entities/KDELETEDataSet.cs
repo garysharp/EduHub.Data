@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ID value used to find KDELETE</param>
         /// <param name="Value">Related KDELETE entity</param>
-        /// <returns>True if the KDELETE Entity is found</returns>
+        /// <returns>True if the KDELETE entity is found</returns>
         public bool TryFindByID(int Key, out KDELETE Value)
         {
             return IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KDELETE" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KDELETE" /> fields for each CSV column header</returns>
         protected override Action<KDELETE, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KDELETE, string>[Headers.Count];

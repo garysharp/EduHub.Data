@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GL_TYPE value used to find KGLT</param>
         /// <param name="Value">Related KGLT entity</param>
-        /// <returns>True if the KGLT Entity is found</returns>
+        /// <returns>True if the KGLT entity is found</returns>
         public bool TryFindByGL_TYPE(string Key, out KGLT Value)
         {
             return GL_TYPEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGLT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGLT" /> fields for each CSV column header</returns>
         protected override Action<KGLT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLT, string>[Headers.Count];

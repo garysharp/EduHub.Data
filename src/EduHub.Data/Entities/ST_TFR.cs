@@ -320,7 +320,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HOME_LANG { get; internal set; }
         /// <summary>
-        /// Born overseas? (Y/N): set to Y if ST.BIRTH_COUNTRY <> "1101": if Y then ARRIVAL is requested
+        /// Born overseas? (Y/N): set to Y if ST.BIRTH_COUNTRY &lt;&gt; "1101": if Y then ARRIVAL is requested
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string OVERSEAS { get; internal set; }

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PXKEY value used to find PX</param>
         /// <param name="Value">Related PX entity</param>
-        /// <returns>True if the PX Entity is found</returns>
+        /// <returns>True if the PX entity is found</returns>
         public bool TryFindByPXKEY(short Key, out PX Value)
         {
             return PXKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PX" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PX" /> fields for each CSV column header</returns>
         protected override Action<PX, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PX, string>[Headers.Count];

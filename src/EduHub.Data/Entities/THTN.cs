@@ -23,7 +23,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string QKEY { get; internal set; }
         /// <summary>
-        /// Number > 0 for quilt label,< 0 extra labels
+        /// Number &gt; 0 for quilt label,&lt; 0 extra labels
         /// </summary>
         public short? LABEL_NUMBER { get; internal set; }
         /// <summary>

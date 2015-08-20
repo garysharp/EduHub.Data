@@ -49,7 +49,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">COHORT value used to find KCOHORT</param>
         /// <param name="Value">Related KCOHORT entity</param>
-        /// <returns>True if the KCOHORT Entity is found</returns>
+        /// <returns>True if the KCOHORT entity is found</returns>
         public bool TryFindByCOHORT(string Key, out KCOHORT Value)
         {
             return COHORTIndex.Value.TryGetValue(Key, out Value);
@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
         /// <param name="Value">Related KCOHORT entity</param>
-        /// <returns>True if the KCOHORT Entity is found</returns>
+        /// <returns>True if the KCOHORT entity is found</returns>
         public bool TryFindByDESCRIPTION(string Key, out KCOHORT Value)
         {
             return DESCRIPTIONIndex.Value.TryGetValue(Key, out Value);
@@ -121,6 +121,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCOHORT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCOHORT" /> fields for each CSV column header</returns>
         protected override Action<KCOHORT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCOHORT, string>[Headers.Count];

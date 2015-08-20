@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SVAGKEY value used to find SVAG</param>
         /// <param name="Value">Related SVAG entity</param>
-        /// <returns>True if the SVAG Entity is found</returns>
+        /// <returns>True if the SVAG entity is found</returns>
         public bool TryFindBySVAGKEY(int Key, out SVAG Value)
         {
             return SVAGKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SVAG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SVAG" /> fields for each CSV column header</returns>
         protected override Action<SVAG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SVAG, string>[Headers.Count];

@@ -46,7 +46,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public decimal? AMOUNT { get; internal set; }
         /// <summary>
-        /// Added for DE&T AEGIS 5695
+        /// Added for DE&amp;T AEGIS 5695
         /// </summary>
         public decimal? GROSS_AMOUNT { get; internal set; }
         /// <summary>

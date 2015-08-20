@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SAPKEY value used to find SAP</param>
         /// <param name="Value">Related SAP entity</param>
-        /// <returns>True if the SAP Entity is found</returns>
+        /// <returns>True if the SAP entity is found</returns>
         public bool TryFindBySAPKEY(string Key, out SAP Value)
         {
             return SAPKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SAP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SAP" /> fields for each CSV column header</returns>
         protected override Action<SAP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAP, string>[Headers.Count];

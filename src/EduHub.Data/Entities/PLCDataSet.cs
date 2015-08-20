@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PLCKEY value used to find PLC</param>
         /// <param name="Value">Related PLC entity</param>
-        /// <returns>True if the PLC Entity is found</returns>
+        /// <returns>True if the PLC entity is found</returns>
         public bool TryFindByPLCKEY(string Key, out PLC Value)
         {
             return PLCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PLC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PLC" /> fields for each CSV column header</returns>
         protected override Action<PLC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PLC, string>[Headers.Count];

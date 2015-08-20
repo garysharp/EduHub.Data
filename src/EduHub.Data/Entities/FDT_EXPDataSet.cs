@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find FDT_EXP</param>
         /// <param name="Value">Related FDT_EXP entity</param>
-        /// <returns>True if the FDT_EXP Entity is found</returns>
+        /// <returns>True if the FDT_EXP entity is found</returns>
         public bool TryFindByTID(int Key, out FDT_EXP Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="FDT_EXP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="FDT_EXP" /> fields for each CSV column header</returns>
         protected override Action<FDT_EXP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<FDT_EXP, string>[Headers.Count];

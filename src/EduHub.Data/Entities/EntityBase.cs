@@ -1,5 +1,8 @@
 ﻿namespace EduHub.Data.Entities
 {
+    /// <summary>
+    /// Base object for EduHub Entities
+    /// </summary>
     public abstract class EntityBase
     {
         internal EntityBase()

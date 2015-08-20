@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">DEPARTMENT value used to find AKD</param>
         /// <param name="Value">Related AKD entity</param>
-        /// <returns>True if the AKD Entity is found</returns>
+        /// <returns>True if the AKD entity is found</returns>
         public bool TryFindByDEPARTMENT(string Key, out AKD Value)
         {
             return DEPARTMENTIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="AKD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="AKD" /> fields for each CSV column header</returns>
         protected override Action<AKD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKD, string>[Headers.Count];

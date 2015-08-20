@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TRANSPORT_MODE_ID value used to find TRPMODE</param>
         /// <param name="Value">Related TRPMODE entity</param>
-        /// <returns>True if the TRPMODE Entity is found</returns>
+        /// <returns>True if the TRPMODE entity is found</returns>
         public bool TryFindByTRANSPORT_MODE_ID(int Key, out TRPMODE Value)
         {
             return TRANSPORT_MODE_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TRPMODE" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TRPMODE" /> fields for each CSV column header</returns>
         protected override Action<TRPMODE, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TRPMODE, string>[Headers.Count];

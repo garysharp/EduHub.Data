@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KSIKEY value used to find KSI</param>
         /// <param name="Value">Related KSI entity</param>
-        /// <returns>True if the KSI Entity is found</returns>
+        /// <returns>True if the KSI entity is found</returns>
         public bool TryFindByKSIKEY(string Key, out KSI Value)
         {
             return KSIKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KSI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KSI" /> fields for each CSV column header</returns>
         protected override Action<KSI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSI, string>[Headers.Count];

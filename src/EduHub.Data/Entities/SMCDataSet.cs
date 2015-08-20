@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SMCKEY value used to find SMC</param>
         /// <param name="Value">Related SMC entity</param>
-        /// <returns>True if the SMC Entity is found</returns>
+        /// <returns>True if the SMC entity is found</returns>
         public bool TryFindBySMCKEY(int Key, out SMC Value)
         {
             return SMCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SMC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SMC" /> fields for each CSV column header</returns>
         protected override Action<SMC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMC, string>[Headers.Count];

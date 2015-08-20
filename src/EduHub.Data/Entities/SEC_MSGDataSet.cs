@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCHOOLMSGID value used to find SEC_MSG</param>
         /// <param name="Value">Related SEC_MSG entity</param>
-        /// <returns>True if the SEC_MSG Entity is found</returns>
+        /// <returns>True if the SEC_MSG entity is found</returns>
         public bool TryFindBySCHOOLMSGID(int Key, out SEC_MSG Value)
         {
             return SCHOOLMSGIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_MSG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SEC_MSG" /> fields for each CSV column header</returns>
         protected override Action<SEC_MSG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_MSG, string>[Headers.Count];

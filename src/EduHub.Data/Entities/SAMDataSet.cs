@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SAMKEY value used to find SAM</param>
         /// <param name="Value">Related SAM entity</param>
-        /// <returns>True if the SAM Entity is found</returns>
+        /// <returns>True if the SAM entity is found</returns>
         public bool TryFindBySAMKEY(int Key, out SAM Value)
         {
             return SAMKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SAM" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SAM" /> fields for each CSV column header</returns>
         protected override Action<SAM, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAM, string>[Headers.Count];

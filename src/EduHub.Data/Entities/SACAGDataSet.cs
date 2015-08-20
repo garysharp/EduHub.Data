@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SACAG_ID value used to find SACAG</param>
         /// <param name="Value">Related SACAG entity</param>
-        /// <returns>True if the SACAG Entity is found</returns>
+        /// <returns>True if the SACAG entity is found</returns>
         public bool TryFindBySACAG_ID(int Key, out SACAG Value)
         {
             return SACAG_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SACAG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SACAG" /> fields for each CSV column header</returns>
         protected override Action<SACAG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SACAG, string>[Headers.Count];

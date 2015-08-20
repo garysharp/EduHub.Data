@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">LEAVE_GROUP value used to find PLG</param>
         /// <param name="Value">Related PLG entity</param>
-        /// <returns>True if the PLG Entity is found</returns>
+        /// <returns>True if the PLG entity is found</returns>
         public bool TryFindByLEAVE_GROUP(string Key, out PLG Value)
         {
             return LEAVE_GROUPIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PLG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PLG" /> fields for each CSV column header</returns>
         protected override Action<PLG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PLG, string>[Headers.Count];

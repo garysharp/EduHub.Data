@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "SMGROUP"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SMGROUP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SMGROUP" /> fields for each CSV column header</returns>
         protected override Action<SMGROUP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SMGROUP, string>[Headers.Count];

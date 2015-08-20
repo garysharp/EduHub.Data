@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SUBPROGRAM value used to find KGLSUB</param>
         /// <param name="Value">Related KGLSUB entity</param>
-        /// <returns>True if the KGLSUB Entity is found</returns>
+        /// <returns>True if the KGLSUB entity is found</returns>
         public bool TryFindBySUBPROGRAM(string Key, out KGLSUB Value)
         {
             return SUBPROGRAMIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KGLSUB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KGLSUB" /> fields for each CSV column header</returns>
         protected override Action<KGLSUB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KGLSUB, string>[Headers.Count];

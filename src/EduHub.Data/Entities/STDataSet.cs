@@ -51,7 +51,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">STKEY value used to find ST</param>
         /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST Entity is found</returns>
+        /// <returns>True if the ST entity is found</returns>
         public bool TryFindBySTKEY(string Key, out ST Value)
         {
             return STKEYIndex.Value.TryGetValue(Key, out Value);
@@ -99,7 +99,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">REGISTRATION value used to find ST</param>
         /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST Entity is found</returns>
+        /// <returns>True if the ST entity is found</returns>
         public bool TryFindByREGISTRATION(int Key, out ST Value)
         {
             return REGISTRATIONIndex.Value.TryGetValue(Key, out Value);
@@ -147,7 +147,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TAG value used to find ST</param>
         /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST Entity is found</returns>
+        /// <returns>True if the ST entity is found</returns>
         public bool TryFindByTAG(string Key, out ST Value)
         {
             return TAGIndex.Value.TryGetValue(Key, out Value);
@@ -171,6 +171,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="ST" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="ST" /> fields for each CSV column header</returns>
         protected override Action<ST, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<ST, string>[Headers.Count];

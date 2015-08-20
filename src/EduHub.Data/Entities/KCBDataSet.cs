@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KCBKEY value used to find KCB</param>
         /// <param name="Value">Related KCB entity</param>
-        /// <returns>True if the KCB Entity is found</returns>
+        /// <returns>True if the KCB entity is found</returns>
         public bool TryFindByKCBKEY(string Key, out KCB Value)
         {
             return KCBKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCB" /> fields for each CSV column header</returns>
         protected override Action<KCB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCB, string>[Headers.Count];

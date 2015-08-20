@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "PELD"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PELD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PELD" /> fields for each CSV column header</returns>
         protected override Action<PELD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PELD, string>[Headers.Count];

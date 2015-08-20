@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GLCODE value used to find KBANK</param>
         /// <param name="Value">Related KBANK entity</param>
-        /// <returns>True if the KBANK Entity is found</returns>
+        /// <returns>True if the KBANK entity is found</returns>
         public bool TryFindByGLCODE(string Key, out KBANK Value)
         {
             return GLCODEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KBANK" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KBANK" /> fields for each CSV column header</returns>
         protected override Action<KBANK, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBANK, string>[Headers.Count];

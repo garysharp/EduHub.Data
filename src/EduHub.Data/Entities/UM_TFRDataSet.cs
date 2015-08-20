@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "UM_TFR"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="UM_TFR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="UM_TFR" /> fields for each CSV column header</returns>
         protected override Action<UM_TFR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<UM_TFR, string>[Headers.Count];

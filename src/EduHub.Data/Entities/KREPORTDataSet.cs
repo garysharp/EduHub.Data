@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
         /// <param name="Value">Related KREPORT entity</param>
-        /// <returns>True if the KREPORT Entity is found</returns>
+        /// <returns>True if the KREPORT entity is found</returns>
         public bool TryFindByKREPORTKEY(string Key, out KREPORT Value)
         {
             return KREPORTKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KREPORT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KREPORT" /> fields for each CSV column header</returns>
         protected override Action<KREPORT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KREPORT, string>[Headers.Count];

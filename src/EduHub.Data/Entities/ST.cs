@@ -409,7 +409,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HOME_LANG { get; internal set; }
         /// <summary>
-        /// Born overseas? (Y/N): set to Y if ST.BIRTH_COUNTRY <> "1101": if Y then ARRIVAL is requested
+        /// Born overseas? (Y/N): set to Y if ST.BIRTH_COUNTRY &lt;&gt; "1101": if Y then ARRIVAL is requested
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string OVERSEAS { get; internal set; }
@@ -419,7 +419,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string KOORIE { get; internal set; }
         /// <summary>
-        /// Youth allowance (<25)
+        /// Youth allowance (&lt;25)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string YOUTH_ALLOW { get; internal set; }
@@ -584,7 +584,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string IMMUNIZE { get; internal set; }
         /// <summary>
-        /// Disability type & adjustment level assessed? (Y/N) - Default value: blank
+        /// Disability type &amp; adjustment level assessed? (Y/N) - Default value: blank
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DISABILITY_ADJUSTMENT_ASSESSED { get; internal set; }
@@ -680,7 +680,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CLEAR6_FLAG { get; internal set; }
         /// <summary>
-        /// Progress of AR check on student leaving: -1=in progress, 0=OK, 1=error: receipt not posted to GL, 2=error: outstanding transactions, 3=1 & 2
+        /// Progress of AR check on student leaving: -1=in progress, 0=OK, 1=error: receipt not posted to GL, 2=error: outstanding transactions, 3=1 &amp; 2
         /// </summary>
         public short? AR_STATUS { get; internal set; }
         /// <summary>

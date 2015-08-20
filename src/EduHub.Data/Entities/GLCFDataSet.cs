@@ -51,7 +51,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TRREF value used to find GLCF</param>
         /// <param name="Value">Related GLCF entity</param>
-        /// <returns>True if the GLCF Entity is found</returns>
+        /// <returns>True if the GLCF entity is found</returns>
         public bool TryFindByTRREF(string Key, out GLCF Value)
         {
             return TRREFIndex.Value.TryGetValue(Key, out Value);
@@ -99,7 +99,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GST_BOX value used to find GLCF</param>
         /// <param name="Value">Related GLCF entity</param>
-        /// <returns>True if the GLCF Entity is found</returns>
+        /// <returns>True if the GLCF entity is found</returns>
         public bool TryFindByGST_BOX(string Key, out GLCF Value)
         {
             return GST_BOXIndex.Value.TryGetValue(Key, out Value);
@@ -147,7 +147,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GST_SALE_PURCH value used to find GLCF</param>
         /// <param name="Value">Related GLCF entity</param>
-        /// <returns>True if the GLCF Entity is found</returns>
+        /// <returns>True if the GLCF entity is found</returns>
         public bool TryFindByGST_SALE_PURCH(string Key, out GLCF Value)
         {
             return GST_SALE_PURCHIndex.Value.TryGetValue(Key, out Value);
@@ -171,6 +171,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="GLCF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="GLCF" /> fields for each CSV column header</returns>
         protected override Action<GLCF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLCF, string>[Headers.Count];

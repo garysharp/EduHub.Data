@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KADKEY value used to find KAD</param>
         /// <param name="Value">Related KAD entity</param>
-        /// <returns>True if the KAD Entity is found</returns>
+        /// <returns>True if the KAD entity is found</returns>
         public bool TryFindByKADKEY(string Key, out KAD Value)
         {
             return KADKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KAD" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KAD" /> fields for each CSV column header</returns>
         protected override Action<KAD, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KAD, string>[Headers.Count];

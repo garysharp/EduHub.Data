@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TRREF value used to find CRFTC</param>
         /// <param name="Value">Related CRFTC entity</param>
-        /// <returns>True if the CRFTC Entity is found</returns>
+        /// <returns>True if the CRFTC entity is found</returns>
         public bool TryFindByTRREF(string Key, out CRFTC Value)
         {
             return TRREFIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="CRFTC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="CRFTC" /> fields for each CSV column header</returns>
         protected override Action<CRFTC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<CRFTC, string>[Headers.Count];

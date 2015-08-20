@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">BRANCH value used to find AKB</param>
         /// <param name="Value">Related AKB entity</param>
-        /// <returns>True if the AKB Entity is found</returns>
+        /// <returns>True if the AKB entity is found</returns>
         public bool TryFindByBRANCH(string Key, out AKB Value)
         {
             return BRANCHIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="AKB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="AKB" /> fields for each CSV column header</returns>
         protected override Action<AKB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKB, string>[Headers.Count];

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SDGKEY value used to find SDG</param>
         /// <param name="Value">Related SDG entity</param>
-        /// <returns>True if the SDG Entity is found</returns>
+        /// <returns>True if the SDG entity is found</returns>
         public bool TryFindBySDGKEY(string Key, out SDG Value)
         {
             return SDGKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SDG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SDG" /> fields for each CSV column header</returns>
         protected override Action<SDG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDG, string>[Headers.Count];

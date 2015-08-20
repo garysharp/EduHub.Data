@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SAIKEY value used to find SAI</param>
         /// <param name="Value">Related SAI entity</param>
-        /// <returns>True if the SAI Entity is found</returns>
+        /// <returns>True if the SAI entity is found</returns>
         public bool TryFindBySAIKEY(int Key, out SAI Value)
         {
             return SAIKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SAI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SAI" /> fields for each CSV column header</returns>
         protected override Action<SAI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAI, string>[Headers.Count];

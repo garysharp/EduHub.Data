@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">IDENT value used to find THTQ</param>
         /// <param name="Value">Related THTQ entity</param>
-        /// <returns>True if the THTQ Entity is found</returns>
+        /// <returns>True if the THTQ entity is found</returns>
         public bool TryFindByIDENT(int Key, out THTQ Value)
         {
             return IDENTIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="THTQ" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="THTQ" /> fields for each CSV column header</returns>
         protected override Action<THTQ, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<THTQ, string>[Headers.Count];

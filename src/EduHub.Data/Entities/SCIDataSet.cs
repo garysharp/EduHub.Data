@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCIKEY value used to find SCI</param>
         /// <param name="Value">Related SCI entity</param>
-        /// <returns>True if the SCI Entity is found</returns>
+        /// <returns>True if the SCI entity is found</returns>
         public bool TryFindBySCIKEY(int Key, out SCI Value)
         {
             return SCIKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SCI" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SCI" /> fields for each CSV column header</returns>
         protected override Action<SCI, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCI, string>[Headers.Count];

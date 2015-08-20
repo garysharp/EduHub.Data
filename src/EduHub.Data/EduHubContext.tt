@@ -133,7 +133,7 @@ namespace EduHub.Data
             .Select(e => new C7Entity()
             {
                 Name = e.Attribute("Name").Value,
-                Description = e.Attribute("Description").Value,
+                Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
                 Fields = e.Elements("Field").Select(f => new C7Field()
                 {
                     Name = f.Attribute("Name").Value,
@@ -145,7 +145,7 @@ namespace EduHub.Data
                     IsKey = bool.Parse(f.Attribute("IsKey").Value),
                     RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
                     RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
-                    Description = f.Value
+                    Description = f.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
                 }).ToList()
             }).ToList();
     }

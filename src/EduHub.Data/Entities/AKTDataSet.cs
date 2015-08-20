@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">AKTKEY value used to find AKT</param>
         /// <param name="Value">Related AKT entity</param>
-        /// <returns>True if the AKT Entity is found</returns>
+        /// <returns>True if the AKT entity is found</returns>
         public bool TryFindByAKTKEY(string Key, out AKT Value)
         {
             return AKTKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="AKT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="AKT" /> fields for each CSV column header</returns>
         protected override Action<AKT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKT, string>[Headers.Count];

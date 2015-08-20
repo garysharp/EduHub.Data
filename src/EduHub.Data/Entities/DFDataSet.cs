@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">DFKEY value used to find DF</param>
         /// <param name="Value">Related DF entity</param>
-        /// <returns>True if the DF Entity is found</returns>
+        /// <returns>True if the DF entity is found</returns>
         public bool TryFindByDFKEY(string Key, out DF Value)
         {
             return DFKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="DF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="DF" /> fields for each CSV column header</returns>
         protected override Action<DF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<DF, string>[Headers.Count];

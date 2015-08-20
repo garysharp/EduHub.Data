@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCSFKEY value used to find SCSF</param>
         /// <param name="Value">Related SCSF entity</param>
-        /// <returns>True if the SCSF Entity is found</returns>
+        /// <returns>True if the SCSF entity is found</returns>
         public bool TryFindBySCSFKEY(string Key, out SCSF Value)
         {
             return SCSFKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SCSF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SCSF" /> fields for each CSV column header</returns>
         protected override Action<SCSF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SCSF, string>[Headers.Count];

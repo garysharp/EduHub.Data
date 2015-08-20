@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KPCRKEY value used to find KPCR</param>
         /// <param name="Value">Related KPCR entity</param>
-        /// <returns>True if the KPCR Entity is found</returns>
+        /// <returns>True if the KPCR entity is found</returns>
         public bool TryFindByKPCRKEY(string Key, out KPCR Value)
         {
             return KPCRKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KPCR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KPCR" /> fields for each CSV column header</returns>
         protected override Action<KPCR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KPCR, string>[Headers.Count];

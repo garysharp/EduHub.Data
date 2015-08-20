@@ -49,7 +49,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GLCODE value used to find GLBANK</param>
         /// <param name="Value">Related GLBANK entity</param>
-        /// <returns>True if the GLBANK Entity is found</returns>
+        /// <returns>True if the GLBANK entity is found</returns>
         public bool TryFindByGLCODE(string Key, out GLBANK Value)
         {
             return GLCODEIndex.Value.TryGetValue(Key, out Value);
@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
         /// <param name="Value">Related GLBANK entity</param>
-        /// <returns>True if the GLBANK Entity is found</returns>
+        /// <returns>True if the GLBANK entity is found</returns>
         public bool TryFindByGLBANKKEY(int Key, out GLBANK Value)
         {
             return GLBANKKEYIndex.Value.TryGetValue(Key, out Value);
@@ -121,6 +121,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="GLBANK" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="GLBANK" /> fields for each CSV column header</returns>
         protected override Action<GLBANK, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<GLBANK, string>[Headers.Count];

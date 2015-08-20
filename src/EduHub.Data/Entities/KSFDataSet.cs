@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KSFKEY value used to find KSF</param>
         /// <param name="Value">Related KSF entity</param>
-        /// <returns>True if the KSF Entity is found</returns>
+        /// <returns>True if the KSF entity is found</returns>
         public bool TryFindByKSFKEY(string Key, out KSF Value)
         {
             return KSFKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KSF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KSF" /> fields for each CSV column header</returns>
         protected override Action<KSF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KSF, string>[Headers.Count];

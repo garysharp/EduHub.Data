@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KADMKEY value used to find KADM</param>
         /// <param name="Value">Related KADM entity</param>
-        /// <returns>True if the KADM Entity is found</returns>
+        /// <returns>True if the KADM entity is found</returns>
         public bool TryFindByKADMKEY(string Key, out KADM Value)
         {
             return KADMKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KADM" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KADM" /> fields for each CSV column header</returns>
         protected override Action<KADM, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KADM, string>[Headers.Count];

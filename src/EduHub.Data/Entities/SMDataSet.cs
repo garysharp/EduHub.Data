@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">ROOM value used to find SM</param>
         /// <param name="Value">Related SM entity</param>
-        /// <returns>True if the SM Entity is found</returns>
+        /// <returns>True if the SM entity is found</returns>
         public bool TryFindByROOM(string Key, out SM Value)
         {
             return ROOMIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SM" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SM" /> fields for each CSV column header</returns>
         protected override Action<SM, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SM, string>[Headers.Count];

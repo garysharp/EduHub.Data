@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SDPKEY value used to find SDP</param>
         /// <param name="Value">Related SDP entity</param>
-        /// <returns>True if the SDP Entity is found</returns>
+        /// <returns>True if the SDP entity is found</returns>
         public bool TryFindBySDPKEY(int Key, out SDP Value)
         {
             return SDPKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SDP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SDP" /> fields for each CSV column header</returns>
         protected override Action<SDP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDP, string>[Headers.Count];

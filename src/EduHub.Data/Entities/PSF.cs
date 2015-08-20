@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public decimal? ANNUAL_RATE { get; internal set; }
         /// <summary>
-        /// Hourly Rate for Wkly & Fortnightly
+        /// Hourly Rate for Wkly &amp; Fortnightly
         /// </summary>
         public decimal? HOURLY_RATE { get; internal set; }
         /// <summary>

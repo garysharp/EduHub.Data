@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KERROR_ID value used to find KERROR</param>
         /// <param name="Value">Related KERROR entity</param>
-        /// <returns>True if the KERROR Entity is found</returns>
+        /// <returns>True if the KERROR entity is found</returns>
         public bool TryFindByKERROR_ID(int Key, out KERROR Value)
         {
             return KERROR_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KERROR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KERROR" /> fields for each CSV column header</returns>
         protected override Action<KERROR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KERROR, string>[Headers.Count];

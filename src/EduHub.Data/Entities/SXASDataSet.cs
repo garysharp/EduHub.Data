@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find SXAS</param>
         /// <param name="Value">Related SXAS entity</param>
-        /// <returns>True if the SXAS Entity is found</returns>
+        /// <returns>True if the SXAS entity is found</returns>
         public bool TryFindByTID(int Key, out SXAS Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SXAS" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SXAS" /> fields for each CSV column header</returns>
         protected override Action<SXAS, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXAS, string>[Headers.Count];

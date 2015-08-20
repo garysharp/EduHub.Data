@@ -6,9 +6,19 @@ using System.Text;
 
 namespace EduHub.Data.Entities
 {
+    /// <summary>
+    /// Base Data Set for eduHub Entities
+    /// </summary>
+    /// <typeparam name="T">An eduHub Entity derived from <see cref="EntityBase"/></typeparam>
     public abstract class SetBase<T> : IReadOnlyList<T> where T : EntityBase
     {
-        protected EduHubContext Context;
+        /// <summary>
+        /// EduHubContext this Data Set belongs to
+        /// </summary>
+        protected readonly EduHubContext Context;
+        /// <summary>
+        /// Helper method for Mapper Builders used to ignore fields (no operation)
+        /// </summary>
         protected static Action<T, string> MapperNoOp = (entity, field) => { };
         private Lazy<List<T>> Items;
 
@@ -22,6 +32,12 @@ namespace EduHub.Data.Entities
         /// Data Set Name
         /// </summary>
         public abstract string Name { get; }
+        
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize an entity
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize entity fields for each CSV column header</returns>
         protected abstract Action<T, string>[] BuildMapper(List<string> Headers);
 
         /// <summary>
@@ -206,6 +222,11 @@ namespace EduHub.Data.Entities
             return fields;
         }
 
+        /// <summary>
+        /// Gets the EduHub entity at the specified index in the data set.
+        /// </summary>
+        /// <param name="index">The zero-based index of the entity to get.</param>
+        /// <returns>The entity at the specified index in the data set.</returns>
         public T this[int index]
         {
             get
@@ -214,6 +235,10 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <summary>
+        /// Gets the number of entities in the data set.
+        /// </summary>
+        /// <returns>The number of entities in the data set.</returns>
         public int Count
         {
             get
@@ -222,11 +247,19 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the data set.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the data set.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return Items.Value.GetEnumerator();
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a data set.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerator"/> object that can be used to iterate through the data set.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Items.Value.GetEnumerator();

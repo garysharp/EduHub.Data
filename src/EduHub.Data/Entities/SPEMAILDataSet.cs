@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
         /// <param name="Value">Related SPEMAIL entity</param>
-        /// <returns>True if the SPEMAIL Entity is found</returns>
+        /// <returns>True if the SPEMAIL entity is found</returns>
         public bool TryFindBySPEMAILKEY(string Key, out SPEMAIL Value)
         {
             return SPEMAILKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SPEMAIL" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SPEMAIL" /> fields for each CSV column header</returns>
         protected override Action<SPEMAIL, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SPEMAIL, string>[Headers.Count];

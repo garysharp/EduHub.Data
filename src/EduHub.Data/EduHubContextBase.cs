@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace EduHub.Data
 {
+    /// <summary>
+    /// Base object for an EduHubContext
+    /// </summary>
     public abstract class EduHubContextBase
     {
         /// <summary>

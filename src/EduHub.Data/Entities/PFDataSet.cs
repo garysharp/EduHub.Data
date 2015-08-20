@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">PFKEY value used to find PF</param>
         /// <param name="Value">Related PF entity</param>
-        /// <returns>True if the PF Entity is found</returns>
+        /// <returns>True if the PF entity is found</returns>
         public bool TryFindByPFKEY(string Key, out PF Value)
         {
             return PFKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="PF" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="PF" /> fields for each CSV column header</returns>
         protected override Action<PF, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<PF, string>[Headers.Count];

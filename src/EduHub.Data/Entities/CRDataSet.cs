@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">CRKEY value used to find CR</param>
         /// <param name="Value">Related CR entity</param>
-        /// <returns>True if the CR Entity is found</returns>
+        /// <returns>True if the CR entity is found</returns>
         public bool TryFindByCRKEY(string Key, out CR Value)
         {
             return CRKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="CR" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="CR" /> fields for each CSV column header</returns>
         protected override Action<CR, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<CR, string>[Headers.Count];

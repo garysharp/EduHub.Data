@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// Subject Selections & Marks
+    /// Subject Selections &amp; Marks
     /// </summary>
     public class STMA : EntityBase
     {

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find TXAS</param>
         /// <param name="Value">Related TXAS entity</param>
-        /// <returns>True if the TXAS Entity is found</returns>
+        /// <returns>True if the TXAS entity is found</returns>
         public bool TryFindByTID(int Key, out TXAS Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TXAS" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TXAS" /> fields for each CSV column header</returns>
         protected override Action<TXAS, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TXAS, string>[Headers.Count];

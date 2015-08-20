@@ -274,7 +274,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ADULT_RESPONSIBLE { get; internal set; }
         /// <summary>
-        /// (If parent/guardian in charge) Identifies which of the two adults in the family is in charge: << should be renamed RESP_PARENT
+        /// (If parent/guardian in charge) Identifies which of the two adults in the family is in charge: &lt;&lt; should be renamed RESP_PARENT
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string RESP_PARENT_GENDER { get; internal set; }

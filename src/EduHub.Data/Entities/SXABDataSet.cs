@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SXAB_ID value used to find SXAB</param>
         /// <param name="Value">Related SXAB entity</param>
-        /// <returns>True if the SXAB Entity is found</returns>
+        /// <returns>True if the SXAB entity is found</returns>
         public bool TryFindBySXAB_ID(int Key, out SXAB Value)
         {
             return SXAB_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SXAB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SXAB" /> fields for each CSV column header</returns>
         protected override Action<SXAB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SXAB, string>[Headers.Count];

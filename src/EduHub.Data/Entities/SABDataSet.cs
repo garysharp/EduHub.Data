@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SABKEY value used to find SAB</param>
         /// <param name="Value">Related SAB entity</param>
-        /// <returns>True if the SAB Entity is found</returns>
+        /// <returns>True if the SAB entity is found</returns>
         public bool TryFindBySABKEY(string Key, out SAB Value)
         {
             return SABKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SAB" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SAB" /> fields for each CSV column header</returns>
         protected override Action<SAB, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SAB, string>[Headers.Count];

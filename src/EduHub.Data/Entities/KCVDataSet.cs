@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
         /// <param name="Value">Related KCV entity</param>
-        /// <returns>True if the KCV Entity is found</returns>
+        /// <returns>True if the KCV entity is found</returns>
         public bool TryFindByVISA_SUBCLASS(string Key, out KCV Value)
         {
             return VISA_SUBCLASSIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCV" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCV" /> fields for each CSV column header</returns>
         protected override Action<KCV, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCV, string>[Headers.Count];

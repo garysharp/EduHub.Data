@@ -120,7 +120,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string FAIR { get; internal set; }
         /// <summary>
-        /// Consultation & discussion
+        /// Consultation &amp; discussion
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string CONSULT { get; internal set; }

@@ -32,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ARKEY { get; internal set; }
         /// <summary>
-        /// Numeric SAMS number for DE&T export
+        /// Numeric SAMS number for DE&amp;T export
         /// </summary>
         public int? ARNUMBER { get; internal set; }
         /// <summary>

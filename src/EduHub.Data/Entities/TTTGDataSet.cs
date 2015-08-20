@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">IDENT value used to find TTTG</param>
         /// <param name="Value">Related TTTG entity</param>
-        /// <returns>True if the TTTG Entity is found</returns>
+        /// <returns>True if the TTTG entity is found</returns>
         public bool TryFindByIDENT(int Key, out TTTG Value)
         {
             return IDENTIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TTTG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TTTG" /> fields for each CSV column header</returns>
         protected override Action<TTTG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TTTG, string>[Headers.Count];

@@ -105,7 +105,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ST_ED_ALLOW { get; internal set; }
         /// <summary>
-        /// Youth allowance (<25)
+        /// Youth allowance (&lt;25)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ST_YOUTH_ALLOW { get; internal set; }

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KFTCKEY value used to find KFTC</param>
         /// <param name="Value">Related KFTC entity</param>
-        /// <returns>True if the KFTC Entity is found</returns>
+        /// <returns>True if the KFTC entity is found</returns>
         public bool TryFindByKFTCKEY(string Key, out KFTC Value)
         {
             return KFTCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KFTC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KFTC" /> fields for each CSV column header</returns>
         protected override Action<KFTC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KFTC, string>[Headers.Count];

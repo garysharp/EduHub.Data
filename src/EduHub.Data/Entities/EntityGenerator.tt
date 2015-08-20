@@ -87,7 +87,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
         /// <param name="Value">Related <#= entity.Name #> entity</param>
-        /// <returns>True if the <#= entity.Name #> Entity is found</returns>
+        /// <returns>True if the <#= entity.Name #> entity is found</returns>
         public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #> Value)
         {
             return <#= field.Name #>Index.Value.TryGetValue(Key, out Value);
@@ -114,6 +114,12 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="<#= entity.Name #>" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="<#= entity.Name #>" /> fields for each CSV column header</returns>
         protected override Action<<#= entity.Name #>, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<<#= entity.Name #>, string>[Headers.Count];
@@ -317,7 +323,7 @@ namespace EduHub.Data.Entities
             .Select(e => new C7Entity()
             {
                 Name = e.Attribute("Name").Value,
-                Description = e.Attribute("Description").Value,
+                Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
                 Fields = e.Elements("Field").Select(f => new C7Field()
                 {
                     Name = f.Attribute("Name").Value,
@@ -329,7 +335,7 @@ namespace EduHub.Data.Entities
                     IsKey = bool.Parse(f.Attribute("IsKey").Value),
                     RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
                     RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
-                    Description = f.Value
+                    Description = f.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
                 }).ToList()
             }).ToList();
     }

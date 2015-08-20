@@ -21,6 +21,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public override string Name { get { return "TETN"; } }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="TETN" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="TETN" /> fields for each CSV column header</returns>
         protected override Action<TETN, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<TETN, string>[Headers.Count];

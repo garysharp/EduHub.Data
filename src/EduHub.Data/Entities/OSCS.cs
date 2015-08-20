@@ -277,12 +277,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ZEROMTH_DEST { get; internal set; }
         /// <summary>
-        /// MIPS Category & Destination on exit
+        /// MIPS Category &amp; Destination on exit
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string ZEROMTH_CAT_DEST { get; internal set; }
         /// <summary>
-        /// Date MIPS Destination & Category Updated
+        /// Date MIPS Destination &amp; Category Updated
         /// </summary>
         public DateTime? ZEROMTH_DATE { get; internal set; }
         /// <summary>
@@ -404,7 +404,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ED_ALLOW { get; internal set; }
         /// <summary>
-        /// Youth allowance (<25)
+        /// Youth allowance (&lt;25)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string YOUTH_ALLOW { get; internal set; }
@@ -553,12 +553,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SIXMTH_DEST { get; internal set; }
         /// <summary>
-        /// MIPS Category & Destination after six month
+        /// MIPS Category &amp; Destination after six month
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string SIXMTH_CAT_DEST { get; internal set; }
         /// <summary>
-        /// Date 6 months MIPS Destination & Category Updated
+        /// Date 6 months MIPS Destination &amp; Category Updated
         /// </summary>
         public DateTime? SIXMTH_DATE { get; internal set; }
         /// <summary>
@@ -664,7 +664,7 @@ namespace EduHub.Data.Entities
         }
         /// <summary>
         /// Navigation property for [ZEROMTH_CAT_DEST] => [KGD].[KGDKEY]
-        /// MIPS Category & Destination on exit
+        /// MIPS Category &amp; Destination on exit
         /// </summary>
         public KGD ZEROMTH_CAT_DEST_KGD {
             get
@@ -748,7 +748,7 @@ namespace EduHub.Data.Entities
         }
         /// <summary>
         /// Navigation property for [SIXMTH_CAT_DEST] => [KGD].[KGDKEY]
-        /// MIPS Category & Destination after six month
+        /// MIPS Category &amp; Destination after six month
         /// </summary>
         public KGD SIXMTH_CAT_DEST_KGD {
             get

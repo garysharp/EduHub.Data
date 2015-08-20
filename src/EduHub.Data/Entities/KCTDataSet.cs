@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KCTKEY value used to find KCT</param>
         /// <param name="Value">Related KCT entity</param>
-        /// <returns>True if the KCT Entity is found</returns>
+        /// <returns>True if the KCT entity is found</returns>
         public bool TryFindByKCTKEY(short Key, out KCT Value)
         {
             return KCTKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCT" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCT" /> fields for each CSV column header</returns>
         protected override Action<KCT, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCT, string>[Headers.Count];

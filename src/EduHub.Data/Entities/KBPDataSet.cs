@@ -49,7 +49,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find KBP</param>
         /// <param name="Value">Related KBP entity</param>
-        /// <returns>True if the KBP Entity is found</returns>
+        /// <returns>True if the KBP entity is found</returns>
         public bool TryFindByTID(int Key, out KBP Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">REFERENCE_NO value used to find KBP</param>
         /// <param name="Value">Related KBP entity</param>
-        /// <returns>True if the KBP Entity is found</returns>
+        /// <returns>True if the KBP entity is found</returns>
         public bool TryFindByREFERENCE_NO(string Key, out KBP Value)
         {
             return REFERENCE_NOIndex.Value.TryGetValue(Key, out Value);
@@ -121,6 +121,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KBP" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KBP" /> fields for each CSV column header</returns>
         protected override Action<KBP, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KBP, string>[Headers.Count];

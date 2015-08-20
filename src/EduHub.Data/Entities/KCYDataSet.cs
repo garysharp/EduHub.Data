@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">KCYKEY value used to find KCY</param>
         /// <param name="Value">Related KCY entity</param>
-        /// <returns>True if the KCY Entity is found</returns>
+        /// <returns>True if the KCY entity is found</returns>
         public bool TryFindByKCYKEY(string Key, out KCY Value)
         {
             return KCYKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KCY" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KCY" /> fields for each CSV column header</returns>
         protected override Action<KCY, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KCY, string>[Headers.Count];

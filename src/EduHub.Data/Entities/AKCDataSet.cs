@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">CATEGORY value used to find AKC</param>
         /// <param name="Value">Related AKC entity</param>
-        /// <returns>True if the AKC Entity is found</returns>
+        /// <returns>True if the AKC entity is found</returns>
         public bool TryFindByCATEGORY(string Key, out AKC Value)
         {
             return CATEGORYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="AKC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="AKC" /> fields for each CSV column header</returns>
         protected override Action<AKC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<AKC, string>[Headers.Count];

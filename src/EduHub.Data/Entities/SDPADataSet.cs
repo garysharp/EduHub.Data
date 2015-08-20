@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">TID value used to find SDPA</param>
         /// <param name="Value">Related SDPA entity</param>
-        /// <returns>True if the SDPA Entity is found</returns>
+        /// <returns>True if the SDPA entity is found</returns>
         public bool TryFindByTID(int Key, out SDPA Value)
         {
             return TIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SDPA" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SDPA" /> fields for each CSV column header</returns>
         protected override Action<SDPA, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDPA, string>[Headers.Count];

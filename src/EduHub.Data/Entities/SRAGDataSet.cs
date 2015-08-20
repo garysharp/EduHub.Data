@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SRAG_ID value used to find SRAG</param>
         /// <param name="Value">Related SRAG entity</param>
-        /// <returns>True if the SRAG Entity is found</returns>
+        /// <returns>True if the SRAG entity is found</returns>
         public bool TryFindBySRAG_ID(int Key, out SRAG Value)
         {
             return SRAG_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SRAG" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SRAG" /> fields for each CSV column header</returns>
         protected override Action<SRAG, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SRAG, string>[Headers.Count];

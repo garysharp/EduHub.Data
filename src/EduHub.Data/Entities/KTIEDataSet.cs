@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">RECORD_ID value used to find KTIE</param>
         /// <param name="Value">Related KTIE entity</param>
-        /// <returns>True if the KTIE Entity is found</returns>
+        /// <returns>True if the KTIE entity is found</returns>
         public bool TryFindByRECORD_ID(int Key, out KTIE Value)
         {
             return RECORD_IDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KTIE" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="KTIE" /> fields for each CSV column header</returns>
         protected override Action<KTIE, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<KTIE, string>[Headers.Count];

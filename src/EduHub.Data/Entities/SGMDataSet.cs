@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">MEETING_DATE value used to find SGM</param>
         /// <param name="Value">Related SGM entity</param>
-        /// <returns>True if the SGM Entity is found</returns>
+        /// <returns>True if the SGM entity is found</returns>
         public bool TryFindByMEETING_DATE(DateTime Key, out SGM Value)
         {
             return MEETING_DATEIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SGM" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SGM" /> fields for each CSV column header</returns>
         protected override Action<SGM, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SGM, string>[Headers.Count];

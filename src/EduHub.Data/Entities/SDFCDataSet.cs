@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SDFCKEY value used to find SDFC</param>
         /// <param name="Value">Related SDFC entity</param>
-        /// <returns>True if the SDFC Entity is found</returns>
+        /// <returns>True if the SDFC entity is found</returns>
         public bool TryFindBySDFCKEY(string Key, out SDFC Value)
         {
             return SDFCKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SDFC" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SDFC" /> fields for each CSV column header</returns>
         protected override Action<SDFC, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SDFC, string>[Headers.Count];

@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">UMKEY value used to find UM</param>
         /// <param name="Value">Related UM entity</param>
-        /// <returns>True if the UM Entity is found</returns>
+        /// <returns>True if the UM entity is found</returns>
         public bool TryFindByUMKEY(int Key, out UM Value)
         {
             return UMKEYIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="UM" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="UM" /> fields for each CSV column header</returns>
         protected override Action<UM, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<UM, string>[Headers.Count];

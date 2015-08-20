@@ -47,7 +47,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Key">SCHOOLURLID value used to find SEC_URL</param>
         /// <param name="Value">Related SEC_URL entity</param>
-        /// <returns>True if the SEC_URL Entity is found</returns>
+        /// <returns>True if the SEC_URL entity is found</returns>
         public bool TryFindBySCHOOLURLID(int Key, out SEC_URL Value)
         {
             return SCHOOLURLIDIndex.Value.TryGetValue(Key, out Value);
@@ -71,6 +71,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+
+        /// <summary>
+        /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_URL" />
+        /// </summary>
+        /// <param name="Headers">The CSV column headers</param>
+        /// <returns>An array of actions which deserialize <see cref="SEC_URL" /> fields for each CSV column header</returns>
         protected override Action<SEC_URL, string>[] BuildMapper(List<string> Headers)
         {
             var mapper = new Action<SEC_URL, string>[Headers.Count];
