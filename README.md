@@ -64,6 +64,8 @@ var activeStudentTowns = (
 
 #### PowerShell Example
 
+[Download the latest release for PowerShell](https://github.com/garysharp/EduHub.Data/releases)
+
 ```PowerShell
 Add-Type -Path "EduHub.Data.dll";
 
