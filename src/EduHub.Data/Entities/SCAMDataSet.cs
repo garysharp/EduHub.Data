@@ -27,7 +27,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCAM" /> fields for each CSV column header</returns>
-        protected override Action<SCAM, string>[] BuildMapper(List<string> Headers)
+        protected override Action<SCAM, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCAM, string>[Headers.Count];
 

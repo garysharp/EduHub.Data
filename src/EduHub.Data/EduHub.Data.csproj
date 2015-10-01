@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvReader.cs" />
     <Compile Include="EduHubContext.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

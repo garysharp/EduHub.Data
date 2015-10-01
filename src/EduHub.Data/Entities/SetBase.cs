@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -25,20 +24,20 @@ namespace EduHub.Data.Entities
         internal SetBase(EduHubContext Context)
         {
             this.Context = Context;
-            this.Items = new Lazy<List<T>>(Parse);
+            this.Items = new Lazy<List<T>>(LoadCsv);
         }
 
         /// <summary>
         /// Data Set Name
         /// </summary>
         public abstract string Name { get; }
-        
+
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize an entity
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize entity fields for each CSV column header</returns>
-        protected abstract Action<T, string>[] BuildMapper(List<string> Headers);
+        protected abstract Action<T, string>[] BuildMapper(IReadOnlyList<string> Headers);
 
         /// <summary>
         /// Data Set Location
@@ -92,13 +91,12 @@ namespace EduHub.Data.Entities
             }
         }
 
-        private List<T> Parse()
+        private List<T> LoadCsv()
         {
             List<T> items = new List<T>();
-            string filename = Filename;
 
-            if (!File.Exists(filename))
-                throw new EduHubDataSetNotFoundException(Name, filename);
+            if (!File.Exists(Filename))
+                throw new EduHubDataSetNotFoundException(Name, Filename);
 
             // Create temporary file
             var fileTemp = Path.GetTempFileName();
@@ -106,29 +104,25 @@ namespace EduHub.Data.Entities
             // Copy to temporary file (don't directly process eduHub files)
             try
             {
-                File.Copy(filename, fileTemp, true);
+                File.Copy(Filename, fileTemp, true);
 
-                using (var recordIter = File.ReadLines(fileTemp).GetEnumerator())
+                using (FileStream stream = File.OpenRead(fileTemp))
                 {
-                    // Read Headers
-                    recordIter.MoveNext();
-                    var headerRecord = recordIter.Current;
-                    var headers = SplitCsvRecord(recordIter);
-
-                    // Request Mapper
-                    var mapper = BuildMapper(headers);
-
-                    // Read Records
-                    while (recordIter.MoveNext())
+                    using (CsvReader reader = new CsvReader(stream))
                     {
-                        var record = SplitCsvRecord(recordIter);
-                        var entity = Activator.CreateInstance<T>();
-                        entity.Context = Context;
-                        for (int i = 0; i < record.Count; i++)
+                        var mapper = BuildMapper(reader.Header);
+
+                        foreach (var record in reader.ReadRecords())
                         {
-                            mapper[i](entity, record[i]);
+                            var entity = Activator.CreateInstance<T>();
+                            entity.Context = Context;
+
+                            for (int i = 0; i < record.Count; i++)
+                            {
+                                mapper[i](entity, record[i]);
+                            }
+                            items.Add(entity);
                         }
-                        items.Add(entity);
                     }
                 }
             }
@@ -139,87 +133,6 @@ namespace EduHub.Data.Entities
             }
 
             return items;
-        }
-
-        private static List<string> SplitCsvRecord(IEnumerator<string> RecordIter)
-        {
-            List<string> fields = new List<string>();
-            StringBuilder fieldBuilder = new StringBuilder();
-            bool textQualifier = false;
-
-            while (true)
-            {
-                for (int i = 0; i < RecordIter.Current.Length; i++)
-                {
-                    var c = RecordIter.Current[i];
-                    switch (c)
-                    {
-                        case ',':
-                            if (textQualifier)
-                            {
-                                fieldBuilder.Append(c);
-                            }
-                            else
-                            {
-                                if (fieldBuilder.Length == 0)
-                                {
-                                    fields.Add(null);
-                                }
-                                else
-                                {
-                                    fields.Add(fieldBuilder.ToString());
-                                    fieldBuilder.Clear();
-                                }
-                            }
-                            break;
-                        case '"':
-                            if (!textQualifier && fieldBuilder.Length == 0)
-                            {
-                                // Beginning of record (Text Qualifier)
-                                textQualifier = true;
-                            }
-                            else if (i + 1 == RecordIter.Current.Length)
-                            {
-                                // End of record
-                                if (textQualifier)
-                                {
-                                    // End of field
-                                    textQualifier = false;
-                                }
-                            }
-                            else if (textQualifier && RecordIter.Current[i + 1] == '"')
-                            {
-                                // Escaped character
-                                fieldBuilder.Append(c);
-                                i++;
-                            }
-                            else if (textQualifier && RecordIter.Current[i + 1] == ',')
-                            {
-                                // End of field
-                                fields.Add(fieldBuilder.ToString());
-                                fieldBuilder.Clear();
-                                textQualifier = false;
-                                i++;
-                            }
-                            break;
-                        default:
-                            fieldBuilder.Append(c);
-                            break;
-                    }
-                }
-                if (textQualifier == false)
-                {
-                    if (fieldBuilder.Length > 0)
-                    {
-                        fields.Add(fieldBuilder.ToString());
-                    }
-                    break;
-                }
-                fieldBuilder.AppendLine();
-                RecordIter.MoveNext();
-            }
-
-            return fields;
         }
 
         /// <summary>

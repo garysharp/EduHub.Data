@@ -77,7 +77,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SXHI" /> fields for each CSV column header</returns>
-        protected override Action<SXHI, string>[] BuildMapper(List<string> Headers)
+        protected override Action<SXHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SXHI, string>[Headers.Count];
 

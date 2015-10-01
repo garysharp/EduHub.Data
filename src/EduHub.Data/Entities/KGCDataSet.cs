@@ -77,7 +77,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KGC" /> fields for each CSV column header</returns>
-        protected override Action<KGC, string>[] BuildMapper(List<string> Headers)
+        protected override Action<KGC, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KGC, string>[Headers.Count];
 

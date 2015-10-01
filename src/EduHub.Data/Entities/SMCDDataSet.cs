@@ -27,7 +27,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SMCD" /> fields for each CSV column header</returns>
-        protected override Action<SMCD, string>[] BuildMapper(List<string> Headers)
+        protected override Action<SMCD, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SMCD, string>[Headers.Count];
 

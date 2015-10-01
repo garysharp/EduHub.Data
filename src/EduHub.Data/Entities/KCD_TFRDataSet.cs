@@ -27,7 +27,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KCD_TFR" /> fields for each CSV column header</returns>
-        protected override Action<KCD_TFR, string>[] BuildMapper(List<string> Headers)
+        protected override Action<KCD_TFR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KCD_TFR, string>[Headers.Count];
 

@@ -77,7 +77,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TRSTACC" /> fields for each CSV column header</returns>
-        protected override Action<TRSTACC, string>[] BuildMapper(List<string> Headers)
+        protected override Action<TRSTACC, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TRSTACC, string>[Headers.Count];
 
