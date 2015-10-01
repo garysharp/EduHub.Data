@@ -121,7 +121,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? SAM_SCH_COUNCIL { get; internal set; }
         /// <summary>
-        /// DEECD platform identification.
+        /// Department platform identification.
         /// [Alphanumeric (5)]
         /// </summary>
         public string PLATFORM { get; internal set; }
@@ -131,12 +131,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CURRENT_RELEASE { get; internal set; }
         /// <summary>
-        /// DEECD release action. (Alpha 1, Beta or Final)
+        /// Department release action. (Alpha 1, Beta or Final)
         /// [Alphanumeric (7)]
         /// </summary>
         public string RELEASE_ACTION { get; internal set; }
         /// <summary>
-        /// DEECD date of last release
+        /// Department date of last release
         /// </summary>
         public DateTime? RELEASE_DATE { get; internal set; }
         /// <summary>

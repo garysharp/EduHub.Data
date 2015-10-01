@@ -38,7 +38,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ENABLED { get; internal set; }
         /// <summary>
-        /// Is assessment of this Strand compulsory for DEECD? (Y/N)
+        /// Is assessment of this Strand compulsory for Department? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DEET_REQUIRED { get; internal set; }

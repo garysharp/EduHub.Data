@@ -119,6 +119,12 @@ namespace EduHub.Data.Entities
                     case "ABSENCE_PERIOD":
                         mapper[i] = (e, v) => e.ABSENCE_PERIOD = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "SMS_KEY":
+                        mapper[i] = (e, v) => e.SMS_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "EMAIL_KEY":
+                        mapper[i] = (e, v) => e.EMAIL_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

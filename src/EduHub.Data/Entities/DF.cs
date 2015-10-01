@@ -111,7 +111,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string E_MAIL_A { get; internal set; }
         /// <summary>
-        /// (Was PREF_COM_A) Parent/guardian A preferred mail mechanism: M=Mail, E=E-mail, F=Fax
+        /// (Was PREF_COM_A) Parent/guardian A preferred mail mechanism: M=Mail, E=E-mail, F=Fax, P=Phone
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string PREF_MAIL_MECH_A { get; internal set; }
@@ -145,6 +145,21 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (7)]
         /// </summary>
         public string LOTE_HOME_CODE_A { get; internal set; }
+        /// <summary>
+        /// Parent/guardian A mobile number
+        /// [Uppercase Alphanumeric (20)]
+        /// </summary>
+        public string MOBILE_A { get; internal set; }
+        /// <summary>
+        /// SMS can be used to notify this parent
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SMS_NOTIFY_A { get; internal set; }
+        /// <summary>
+        /// Email can be used to notify this parent
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string E_MAIL_NOTIFY_A { get; internal set; }
         /// <summary>
         /// (Was FNAME) Parent/guardian B first given name
         /// [Alphanumeric (30)]
@@ -221,7 +236,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string E_MAIL_B { get; internal set; }
         /// <summary>
-        /// (Was PREF_COM_B) Parent/guardian B preferred mail mechanism: M=Mail, E=E-mail, F=Fax
+        /// (Was PREF_COM_B) Parent/guardian B preferred mail mechanism: M=Mail, E=E-mail, F=Fax, P=Phone
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string PREF_MAIL_MECH_B { get; internal set; }
@@ -255,6 +270,21 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (7)]
         /// </summary>
         public string LOTE_HOME_CODE_B { get; internal set; }
+        /// <summary>
+        /// Parent/guardian B mobile number
+        /// [Uppercase Alphanumeric (20)]
+        /// </summary>
+        public string MOBILE_B { get; internal set; }
+        /// <summary>
+        /// SMS can be used to notify this parent
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SMS_NOTIFY_B { get; internal set; }
+        /// <summary>
+        /// Email can be used to notify this parent
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string E_MAIL_NOTIFY_B { get; internal set; }
         /// <summary>
         /// Preferred language for notices
         /// [Uppercase Alphanumeric (7)]
@@ -511,6 +541,11 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string BILLING_EMAIL { get; internal set; }
         /// <summary>
+        /// Preferred Email: A=Adult A e-mail, B=Adult B e-mail, C=Billing e-mail
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string PREF_EMAIL { get; internal set; }
+        /// <summary>
         /// ID of the record of this family in the CASES system
         /// [Uppercase Alphanumeric (7)]
         /// </summary>
@@ -576,7 +611,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string EMA_CLAIM_PD { get; internal set; }
         /// <summary>
-        /// EMA identifier for existing families
+        /// CSEF identifier for existing families
         /// [Alphanumeric (10)]
         /// </summary>
         public string CASES_EMA_ID { get; internal set; }

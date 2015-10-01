@@ -293,20 +293,20 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string SGB_FUNDED { get; internal set; }
         /// <summary>
-        /// Is this student an applicant for, or in receipt of, EMA? (Y/N)
+        /// Is this student an applicant for, or in receipt of, CSEF? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ED_ALLOW { get; internal set; }
         /// <summary>
-        /// EMA amount paid in Semester 1
+        /// CSEF amount paid in Semester 1
         /// </summary>
         public decimal? EMA_AMT1P { get; internal set; }
         /// <summary>
-        /// EMA amount paid in Semester 2
+        /// CSEF amount paid in Semester 2
         /// </summary>
         public decimal? EMA_AMT2P { get; internal set; }
         /// <summary>
-        /// EMA identifier for existing students
+        /// CSEF identifier for existing students
         /// [Alphanumeric (10)]
         /// </summary>
         public string CASES_EMA_ID { get; internal set; }
@@ -579,6 +579,11 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string IMMUN_CERT_SIGHTED { get; internal set; }
         /// <summary>
+        /// Permission for immunisation program Y/N
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string IMMUNISE_PERMISSION { get; internal set; }
+        /// <summary>
         /// Overall Immunisation status
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
@@ -589,17 +594,17 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DISABILITY_ADJUSTMENT_ASSESSED { get; internal set; }
         /// <summary>
-        /// Is the student provided with adjustments to address a disability Y/N?
+        /// Is the student provided with adjustments to address a disability Y?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DISABILITY_ADJUSTMENT { get; internal set; }
         /// <summary>
-        /// P =Physical; C = Cognitive; S = Sensory; SE = Social/Emotional - Default value: blank
+        /// C = Cognitive; P = Physical; S = Sensory; SE = Social/Emotional - Default value: blank
         /// [Alphanumeric (2)]
         /// </summary>
         public string DISABILITY_TYPE { get; internal set; }
         /// <summary>
-        /// 0 = No adjustment; 1 = Supplementary; 2 = Substantial; 3 = Extensive - Default value: blank
+        /// 1 = Quality differentiated teaching practice; 2 = Supplementary; 3 = Substantial; 4 = Extensive - Default value: blank
         /// [Alphanumeric (2)]
         /// </summary>
         public string DISABILITY_ADJUSTMENT_LEVEL { get; internal set; }

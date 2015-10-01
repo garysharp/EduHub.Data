@@ -116,6 +116,9 @@ namespace EduHub.Data.Entities
                     case "RECORD_TYPE":
                         mapper[i] = (e, v) => e.RECORD_TYPE = v;
                         break;
+                    case "TRXLEDGER":
+                        mapper[i] = (e, v) => e.TRXLEDGER = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

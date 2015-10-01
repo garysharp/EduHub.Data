@@ -96,12 +96,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HELP_FULL_NAME { get; internal set; }
         /// <summary>
-        /// Incident Number used for reporting to DEECD
+        /// Incident Number used for reporting to Department
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string INCIDENT_NO { get; internal set; }
         /// <summary>
-        /// Has this information been transmitted to DEECD? (Y/N)
+        /// Has this information been transmitted to Department? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string SENT_TO_DEPT { get; internal set; }
@@ -175,6 +175,14 @@ namespace EduHub.Data.Entities
         /// [Memo]
         /// </summary>
         public string ACTION_OUTCOME { get; internal set; }
+        /// <summary>
+        /// Key of SMS recipient record sent relating this sickbay visit
+        /// </summary>
+        public int? SMS_KEY { get; internal set; }
+        /// <summary>
+        /// Key of Email recipient record sent relating this sickbay visit
+        /// </summary>
+        public int? EMAIL_KEY { get; internal set; }
         /// <summary>
         /// Last write date
         /// </summary>

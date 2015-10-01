@@ -338,6 +338,9 @@ namespace EduHub.Data.Entities
                     case "DEBTOR_ID":
                         mapper[i] = (e, v) => e.DEBTOR_ID = v;
                         break;
+                    case "NOTES":
+                        mapper[i] = (e, v) => e.NOTES = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

@@ -399,7 +399,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string HOME_LANG { get; internal set; }
         /// <summary>
-        /// Was this student an applicant for, or in receipt of, EMA? (Y/N)
+        /// Was this student an applicant for, or in receipt of, CSEF? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ED_ALLOW { get; internal set; }
@@ -583,6 +583,11 @@ namespace EduHub.Data.Entities
         /// Total YTD Approved absences for student
         /// </summary>
         public double? YTD_APPROVED { get; internal set; }
+        /// <summary>
+        /// Mobile number
+        /// [Uppercase Alphanumeric (15)]
+        /// </summary>
+        public string MOBILE { get; internal set; }
         /// <summary>
         /// Last write date
         /// </summary>

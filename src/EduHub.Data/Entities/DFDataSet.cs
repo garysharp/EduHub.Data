@@ -152,6 +152,15 @@ namespace EduHub.Data.Entities
                     case "LOTE_HOME_CODE_A":
                         mapper[i] = (e, v) => e.LOTE_HOME_CODE_A = v;
                         break;
+                    case "MOBILE_A":
+                        mapper[i] = (e, v) => e.MOBILE_A = v;
+                        break;
+                    case "SMS_NOTIFY_A":
+                        mapper[i] = (e, v) => e.SMS_NOTIFY_A = v;
+                        break;
+                    case "E_MAIL_NOTIFY_A":
+                        mapper[i] = (e, v) => e.E_MAIL_NOTIFY_A = v;
+                        break;
                     case "NAME_B":
                         mapper[i] = (e, v) => e.NAME_B = v;
                         break;
@@ -217,6 +226,15 @@ namespace EduHub.Data.Entities
                         break;
                     case "LOTE_HOME_CODE_B":
                         mapper[i] = (e, v) => e.LOTE_HOME_CODE_B = v;
+                        break;
+                    case "MOBILE_B":
+                        mapper[i] = (e, v) => e.MOBILE_B = v;
+                        break;
+                    case "SMS_NOTIFY_B":
+                        mapper[i] = (e, v) => e.SMS_NOTIFY_B = v;
+                        break;
+                    case "E_MAIL_NOTIFY_B":
+                        mapper[i] = (e, v) => e.E_MAIL_NOTIFY_B = v;
                         break;
                     case "PREF_NOTICE_LANG":
                         mapper[i] = (e, v) => e.PREF_NOTICE_LANG = v;
@@ -382,6 +400,9 @@ namespace EduHub.Data.Entities
                         break;
                     case "BILLING_EMAIL":
                         mapper[i] = (e, v) => e.BILLING_EMAIL = v;
+                        break;
+                    case "PREF_EMAIL":
+                        mapper[i] = (e, v) => e.PREF_EMAIL = v;
                         break;
                     case "CASES_KEY":
                         mapper[i] = (e, v) => e.CASES_KEY = v;

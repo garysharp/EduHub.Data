@@ -452,6 +452,11 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string DEBTOR_ID { get; internal set; }
         /// <summary>
+        /// Notes - any general purpose
+        /// [Memo]
+        /// </summary>
+        public string NOTES { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

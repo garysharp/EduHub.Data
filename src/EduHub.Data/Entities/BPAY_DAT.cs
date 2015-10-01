@@ -66,6 +66,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string RECORD_TYPE { get; internal set; }
         /// <summary>
+        /// Source Ledger type
+        /// eg. DF, DR
+        /// [Uppercase Alphanumeric (2)]
+        /// </summary>
+        public string TRXLEDGER { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

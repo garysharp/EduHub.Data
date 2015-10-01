@@ -72,6 +72,14 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? ABSENCE_PERIOD { get; internal set; }
         /// <summary>
+        /// Key of SMS recipient record
+        /// </summary>
+        public int? SMS_KEY { get; internal set; }
+        /// <summary>
+        /// Key of SMS recipient record
+        /// </summary>
+        public int? EMAIL_KEY { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

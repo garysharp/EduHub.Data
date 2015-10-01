@@ -4,18 +4,24 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// BPAY Temp Receipts Import
+    /// BPAY Receipts for Sundry Debtors
     /// </summary>
-    public class KBPT : EntityBase
+    public class DRB : EntityBase
     {
 #region Navigation Property Cache
+        private DR _DR_CODE_DR;
 #endregion
 
 #region Field Properties
         /// <summary>
-        /// 
+        /// Transaction ID (internal)
         /// </summary>
-        public int TID { get; internal set; }
+        public int? TID { get; internal set; }
+        /// <summary>
+        /// Sundry Debtor key
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string DR_CODE { get; internal set; }
         /// <summary>
         /// Unique payment reference number
         /// [Alphanumeric (21)]
@@ -27,17 +33,22 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string CUST_REFERENCE { get; internal set; }
         /// <summary>
-        /// BPAY Import record type required for import
+        /// BPAY Import record type required
+        /// for import
         /// [Alphanumeric (2)]
         /// </summary>
         public string RECORD_TYPE { get; internal set; }
         /// <summary>
-        /// School biller code required for import
+        /// School biller code required for
+        /// import
         /// [Alphanumeric (10)]
         /// </summary>
         public string BILLER_CODE { get; internal set; }
         /// <summary>
-        /// Type of payment 05 = Payment 15 = Error Correction 25 = Reversal
+        /// Type of payment
+        /// 05 = Payment
+        /// 15 = Error Correction
+        /// 25 = Reversal
         /// [Alphanumeric (2)]
         /// </summary>
         public string PAYMENT_TYPE { get; internal set; }
@@ -50,7 +61,8 @@ namespace EduHub.Data.Entities
         /// </summary>
         public DateTime? PAYMENT_DATE { get; internal set; }
         /// <summary>
-        /// Processed/flagged for deletion set to 'Y' else null
+        /// Processed/flagged for deletion set
+        /// to 'Y' else null
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DELETE_FLAG { get; internal set; }
@@ -58,12 +70,6 @@ namespace EduHub.Data.Entities
         /// TID of invoice being paid for imported invoice payments
         /// </summary>
         public int? INVOICE_TID { get; internal set; }
-        /// <summary>
-        /// Source Ledger type
-        /// eg. DF, DR
-        /// [Uppercase Alphanumeric (2)]
-        /// </summary>
-        public string TRXLEDGER { get; internal set; }
         /// <summary>
         /// Last write date
         /// </summary>
@@ -80,6 +86,27 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+        /// <summary>
+        /// Navigation property for [DR_CODE] => [DR].[DRKEY]
+        /// Sundry Debtor key
+        /// </summary>
+        public DR DR_CODE_DR {
+            get
+            {
+                if (DR_CODE != null)
+                {
+                    if (_DR_CODE_DR == null)
+                    {
+                        _DR_CODE_DR = Context.DR.FindByDRKEY(DR_CODE);
+                    }
+                    return _DR_CODE_DR;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 #endregion
     }
 }

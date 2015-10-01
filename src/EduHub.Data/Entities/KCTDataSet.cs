@@ -107,6 +107,15 @@ namespace EduHub.Data.Entities
                     case "ABS_RATE":
                         mapper[i] = (e, v) => e.ABS_RATE = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "SMS":
+                        mapper[i] = (e, v) => e.SMS = v;
+                        break;
+                    case "SMS_MESSAGE":
+                        mapper[i] = (e, v) => e.SMS_MESSAGE = v;
+                        break;
+                    case "EMAIL":
+                        mapper[i] = (e, v) => e.EMAIL = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

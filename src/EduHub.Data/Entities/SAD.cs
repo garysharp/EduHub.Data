@@ -91,7 +91,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public DateTime? CREATION_DATE { get; internal set; }
         /// <summary>
-        /// Has the report of this accident been mailed to DEECD? (Y/N)
+        /// Has the report of this accident been mailed to Department? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string MAILED { get; internal set; }

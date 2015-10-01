@@ -163,6 +163,9 @@ namespace EduHub.Data.Entities
                     case "INVOICE_TID":
                         mapper[i] = (e, v) => e.INVOICE_TID = v == null ? (int?)null : int.Parse(v);
                         break;
+                    case "TRXLEDGER":
+                        mapper[i] = (e, v) => e.TRXLEDGER = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

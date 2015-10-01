@@ -242,6 +242,18 @@ namespace EduHub.Data.Entities
                     case "RECEIPT_PRINTED":
                         mapper[i] = (e, v) => e.RECEIPT_PRINTED = v;
                         break;
+                    case "BPAY_SEQUENCE":
+                        mapper[i] = (e, v) => e.BPAY_SEQUENCE = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "BPAY_REFERENCE":
+                        mapper[i] = (e, v) => e.BPAY_REFERENCE = v;
+                        break;
+                    case "REFERENCE_NO":
+                        mapper[i] = (e, v) => e.REFERENCE_NO = v;
+                        break;
+                    case "TRMETHOD":
+                        mapper[i] = (e, v) => e.TRMETHOD = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

@@ -100,7 +100,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ST_HOME_LANG { get; internal set; }
         /// <summary>
-        /// Is this student an applicant for, or in receipt of, EMA? (Y/N)
+        /// Is this student an applicant for, or in receipt of, CSEF? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ST_ED_ALLOW { get; internal set; }

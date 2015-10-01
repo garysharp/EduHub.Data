@@ -4,44 +4,44 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// CSEF Receipt details
+    /// SMS messages
     /// </summary>
-    public class KEMA : EntityBase
+    public class SPSMS : EntityBase
     {
 #region Navigation Property Cache
 #endregion
 
 #region Field Properties
         /// <summary>
-        /// Unique id number
+        /// Key
         /// </summary>
-        public int TID { get; internal set; }
+        public int SPSMSKEY { get; internal set; }
         /// <summary>
-        /// Family ID
-        /// [Alphanumeric (10)]
-        /// </summary>
-        public string FAMILY_KEY { get; internal set; }
-        /// <summary>
+        /// Message to send
         /// 
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (160)]
         /// </summary>
-        public string STREGISTRATION { get; internal set; }
+        public string MESSAGE { get; internal set; }
         /// <summary>
-        /// To allow ST update
+        /// Created Date
+        /// </summary>
+        public DateTime? CREATED_DATE { get; internal set; }
+        /// <summary>
+        /// Who created the message.
+        /// [Uppercase Alphanumeric (128)]
+        /// </summary>
+        public string CREATED_BY { get; internal set; }
+        /// <summary>
+        /// Notify the originator of the SMS of any reply
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
-        public string EMA_PERIOD { get; internal set; }
+        public string NOTIFY_REPLIES { get; internal set; }
         /// <summary>
-        /// 
-        /// </summary>
-        public decimal? EMA_TRAMT { get; internal set; }
-        /// <summary>
-        /// Processed/flagged for deletion set
-        /// to 'Y' else null
+        /// Set to Y if SMS automatically generated.
         /// 
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
-        public string DELETE_FLAG { get; internal set; }
+        public string AUTO_MESSAGE { get; internal set; }
         /// <summary>
         /// Last write date
         /// </summary>

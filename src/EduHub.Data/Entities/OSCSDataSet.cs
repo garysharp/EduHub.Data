@@ -443,6 +443,9 @@ namespace EduHub.Data.Entities
                     case "YTD_APPROVED":
                         mapper[i] = (e, v) => e.YTD_APPROVED = v == null ? (double?)null : double.Parse(v);
                         break;
+                    case "MOBILE":
+                        mapper[i] = (e, v) => e.MOBILE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

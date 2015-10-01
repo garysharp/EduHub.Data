@@ -218,6 +218,12 @@ namespace EduHub.Data.Entities
                     case "TAX_INVOICE":
                         mapper[i] = (e, v) => e.TAX_INVOICE = v;
                         break;
+                    case "BPAY_SEQUENCE":
+                        mapper[i] = (e, v) => e.BPAY_SEQUENCE = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "BPAY_REFERENCE":
+                        mapper[i] = (e, v) => e.BPAY_REFERENCE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

@@ -109,6 +109,12 @@
 // EduHub.Data\src\EduHub.Data\Entities\SRAGDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPU.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPUDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPSMS.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPSMSDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPREPLY.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPREPLYDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPRECIP.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPRECIPDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPOUT.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPOUTDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPEPRINT.cs
@@ -335,6 +341,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\OSCSDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KTRCMP.cs
 // EduHub.Data\src\EduHub.Data\Entities\KTRCMPDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\KTM.cs
+// EduHub.Data\src\EduHub.Data\Entities\KTMDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KTIE.cs
 // EduHub.Data\src\EduHub.Data\Entities\KTIEDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSQ.cs
@@ -479,6 +487,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\FDT_EXPDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\DRF.cs
 // EduHub.Data\src\EduHub.Data\Entities\DRFDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\DRB.cs
+// EduHub.Data\src\EduHub.Data\Entities\DRBDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\DR.cs
 // EduHub.Data\src\EduHub.Data\Entities\DRDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\DFVT.cs

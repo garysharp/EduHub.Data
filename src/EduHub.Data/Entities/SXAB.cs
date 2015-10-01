@@ -119,6 +119,22 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string LAST_ACTION { get; internal set; }
         /// <summary>
+        /// Key of SMS recipient record sent relating to AM absence
+        /// </summary>
+        public int? SMS_AM_KEY { get; internal set; }
+        /// <summary>
+        /// Key of SMS recipient record sent relating to PM absence
+        /// </summary>
+        public int? SMS_PM_KEY { get; internal set; }
+        /// <summary>
+        /// Key of Email recipient record sent relating to AM absence
+        /// </summary>
+        public int? EMAIL_AM_KEY { get; internal set; }
+        /// <summary>
+        /// Key of Email recipient record sent relating to PM absence
+        /// </summary>
+        public int? EMAIL_PM_KEY { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

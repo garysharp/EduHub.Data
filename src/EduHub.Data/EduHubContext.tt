@@ -14,7 +14,7 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Xml.Linq" #>
 <#
-    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"CASES21v55 Schema.xml"));
+    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"CASES21v56 Schema.xml"));
 #>
 using System;
 using System.Collections.Generic;

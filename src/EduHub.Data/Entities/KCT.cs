@@ -51,6 +51,21 @@ namespace EduHub.Data.Entities
         /// </summary>
         public short? ABS_RATE { get; internal set; }
         /// <summary>
+        /// Allow SMS to be generated for this type
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SMS { get; internal set; }
+        /// <summary>
+        /// SMS message for this absence type
+        /// [Alphanumeric (160)]
+        /// </summary>
+        public string SMS_MESSAGE { get; internal set; }
+        /// <summary>
+        /// Allow emails to be generated for this type
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string EMAIL { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

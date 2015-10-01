@@ -149,6 +149,18 @@ namespace EduHub.Data.Entities
                     case "LAST_ACTION":
                         mapper[i] = (e, v) => e.LAST_ACTION = v;
                         break;
+                    case "SMS_AM_KEY":
+                        mapper[i] = (e, v) => e.SMS_AM_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "SMS_PM_KEY":
+                        mapper[i] = (e, v) => e.SMS_PM_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "EMAIL_AM_KEY":
+                        mapper[i] = (e, v) => e.EMAIL_AM_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "EMAIL_PM_KEY":
+                        mapper[i] = (e, v) => e.EMAIL_PM_KEY = v == null ? (int?)null : int.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;

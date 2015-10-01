@@ -6,7 +6,7 @@ using System.Linq;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// EMA Receipt details Data Set
+    /// CSEF Receipt details Data Set
     /// </summary>
     public sealed class KEMADataSet : SetBase<KEMA>
     {

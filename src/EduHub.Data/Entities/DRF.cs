@@ -272,6 +272,25 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string RECEIPT_PRINTED { get; internal set; }
         /// <summary>
+        /// Seed number for BPAY reference
+        /// </summary>
+        public int? BPAY_SEQUENCE { get; internal set; }
+        /// <summary>
+        /// BPAY Reference number with check digit
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string BPAY_REFERENCE { get; internal set; }
+        /// <summary>
+        /// Unique reference number for this Bpay transaction
+        /// [Alphanumeric (21)]
+        /// </summary>
+        public string REFERENCE_NO { get; internal set; }
+        /// <summary>
+        /// Transaction method
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string TRMETHOD { get; internal set; }
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

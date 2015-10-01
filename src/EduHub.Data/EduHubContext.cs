@@ -34,6 +34,7 @@ namespace EduHub.Data
         private DFHIDataSet _DFHI;
         private DFVTDataSet _DFVT;
         private DRDataSet _DR;
+        private DRBDataSet _DRB;
         private DRFDataSet _DRF;
         private FDT_EXPDataSet _FDT_EXP;
         private FDT_IMPDataSet _FDT_IMP;
@@ -106,6 +107,7 @@ namespace EduHub.Data
         private KSIDataSet _KSI;
         private KSQDataSet _KSQ;
         private KTIEDataSet _KTIE;
+        private KTMDataSet _KTM;
         private KTRCMPDataSet _KTRCMP;
         private OSCSDataSet _OSCS;
         private PCDataSet _PC;
@@ -219,6 +221,9 @@ namespace EduHub.Data
         private SPEMAILDataSet _SPEMAIL;
         private SPEPRINTDataSet _SPEPRINT;
         private SPOUTDataSet _SPOUT;
+        private SPRECIPDataSet _SPRECIP;
+        private SPREPLYDataSet _SPREPLY;
+        private SPSMSDataSet _SPSMS;
         private SPUDataSet _SPU;
         private SRAGDataSet _SRAG;
         private SSDataSet _SS;
@@ -308,6 +313,7 @@ namespace EduHub.Data
             _DFHI = new DFHIDataSet(this);
             _DFVT = new DFVTDataSet(this);
             _DR = new DRDataSet(this);
+            _DRB = new DRBDataSet(this);
             _DRF = new DRFDataSet(this);
             _FDT_EXP = new FDT_EXPDataSet(this);
             _FDT_IMP = new FDT_IMPDataSet(this);
@@ -380,6 +386,7 @@ namespace EduHub.Data
             _KSI = new KSIDataSet(this);
             _KSQ = new KSQDataSet(this);
             _KTIE = new KTIEDataSet(this);
+            _KTM = new KTMDataSet(this);
             _KTRCMP = new KTRCMPDataSet(this);
             _OSCS = new OSCSDataSet(this);
             _PC = new PCDataSet(this);
@@ -493,6 +500,9 @@ namespace EduHub.Data
             _SPEMAIL = new SPEMAILDataSet(this);
             _SPEPRINT = new SPEPRINTDataSet(this);
             _SPOUT = new SPOUTDataSet(this);
+            _SPRECIP = new SPRECIPDataSet(this);
+            _SPREPLY = new SPREPLYDataSet(this);
+            _SPSMS = new SPSMSDataSet(this);
             _SPU = new SPUDataSet(this);
             _SRAG = new SRAGDataSet(this);
             _SS = new SSDataSet(this);
@@ -597,6 +607,7 @@ namespace EduHub.Data
             yield return "DFHI";
             yield return "DFVT";
             yield return "DR";
+            yield return "DRB";
             yield return "DRF";
             yield return "FDT_EXP";
             yield return "FDT_IMP";
@@ -669,6 +680,7 @@ namespace EduHub.Data
             yield return "KSI";
             yield return "KSQ";
             yield return "KTIE";
+            yield return "KTM";
             yield return "KTRCMP";
             yield return "OSCS";
             yield return "PC";
@@ -782,6 +794,9 @@ namespace EduHub.Data
             yield return "SPEMAIL";
             yield return "SPEPRINT";
             yield return "SPOUT";
+            yield return "SPRECIP";
+            yield return "SPREPLY";
+            yield return "SPSMS";
             yield return "SPU";
             yield return "SRAG";
             yield return "SS";
@@ -957,6 +972,11 @@ namespace EduHub.Data
         /// Accounts Receivable
         /// </summary>
         public DRDataSet DR { get { return _DR; } }
+
+        /// <summary>
+        /// BPAY Receipts for Sundry Debtors
+        /// </summary>
+        public DRBDataSet DRB { get { return _DRB; } }
 
         /// <summary>
         /// DR Transactions
@@ -1149,7 +1169,7 @@ namespace EduHub.Data
         public KDODataSet KDO { get { return _KDO; } }
 
         /// <summary>
-        /// EMA Receipt details
+        /// CSEF Receipt details
         /// </summary>
         public KEMADataSet KEMA { get { return _KEMA; } }
 
@@ -1317,6 +1337,11 @@ namespace EduHub.Data
         /// Timetable Import Errors
         /// </summary>
         public KTIEDataSet KTIE { get { return _KTIE; } }
+
+        /// <summary>
+        /// Task Message
+        /// </summary>
+        public KTMDataSet KTM { get { return _KTM; } }
 
         /// <summary>
         /// Student Transport Company
@@ -1882,6 +1907,21 @@ namespace EduHub.Data
         /// Stored Procedure Return Values
         /// </summary>
         public SPOUTDataSet SPOUT { get { return _SPOUT; } }
+
+        /// <summary>
+        /// SMS Recipients
+        /// </summary>
+        public SPRECIPDataSet SPRECIP { get { return _SPRECIP; } }
+
+        /// <summary>
+        /// SMS Recipients
+        /// </summary>
+        public SPREPLYDataSet SPREPLY { get { return _SPREPLY; } }
+
+        /// <summary>
+        /// SMS messages
+        /// </summary>
+        public SPSMSDataSet SPSMS { get { return _SPSMS; } }
 
         /// <summary>
         /// Publications

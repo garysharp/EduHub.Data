@@ -6,33 +6,33 @@ using System.Linq;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// BPAY Temp Receipts Import Data Set
+    /// BPAY Receipts for Sundry Debtors Data Set
     /// </summary>
-    public sealed class KBPTDataSet : SetBase<KBPT>
+    public sealed class DRBDataSet : SetBase<DRB>
     {
-        private Lazy<Dictionary<int, KBPT>> TIDIndex;
+        private Lazy<Dictionary<string, DRB>> REFERENCE_NOIndex;
 
-        internal KBPTDataSet(EduHubContext Context)
+        internal DRBDataSet(EduHubContext Context)
             : base(Context)
         {
-            TIDIndex = new Lazy<Dictionary<int, KBPT>>(() => this.ToDictionary(e => e.TID));
+            REFERENCE_NOIndex = new Lazy<Dictionary<string, DRB>>(() => this.ToDictionary(e => e.REFERENCE_NO));
         }
 
         /// <summary>
         /// Data Set Name
         /// </summary>
-        public override string Name { get { return "KBPT"; } }
+        public override string Name { get { return "DRB"; } }
 
         /// <summary>
-        /// Find KBPT by TID key field
+        /// Find DRB by REFERENCE_NO key field
         /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <returns>Related KBPT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KBPT entities</exception>
-        public KBPT FindByTID(int Key)
+        /// <param name="Key">REFERENCE_NO value used to find DRB</param>
+        /// <returns>Related DRB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">REFERENCE_NO value didn't match any DRB entities</exception>
+        public DRB FindByREFERENCE_NO(string Key)
         {
-            KBPT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
+            DRB result;
+            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
             {
                 return result;
             }
@@ -43,25 +43,25 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Attempt to find KBPT by TID key field
+        /// Attempt to find DRB by REFERENCE_NO key field
         /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <param name="Value">Related KBPT entity</param>
-        /// <returns>True if the KBPT entity is found</returns>
-        public bool TryFindByTID(int Key, out KBPT Value)
+        /// <param name="Key">REFERENCE_NO value used to find DRB</param>
+        /// <param name="Value">Related DRB entity</param>
+        /// <returns>True if the DRB entity is found</returns>
+        public bool TryFindByREFERENCE_NO(string Key, out DRB Value)
         {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
+            return REFERENCE_NOIndex.Value.TryGetValue(Key, out Value);
         }
 
         /// <summary>
-        /// Attempt to find KBPT by TID key field
+        /// Attempt to find DRB by REFERENCE_NO key field
         /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <returns>Related KBPT entity, or null if not found</returns>
-        public KBPT TryFindByTID(int Key)
+        /// <param name="Key">REFERENCE_NO value used to find DRB</param>
+        /// <returns>Related DRB entity, or null if not found</returns>
+        public DRB TryFindByREFERENCE_NO(string Key)
         {
-            KBPT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
+            DRB result;
+            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
             {
                 return result;
             }
@@ -73,18 +73,21 @@ namespace EduHub.Data.Entities
 
 
         /// <summary>
-        /// Matches CSV file headers to actions, used to deserialize <see cref="KBPT" />
+        /// Matches CSV file headers to actions, used to deserialize <see cref="DRB" />
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
-        /// <returns>An array of actions which deserialize <see cref="KBPT" /> fields for each CSV column header</returns>
-        protected override Action<KBPT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        /// <returns>An array of actions which deserialize <see cref="DRB" /> fields for each CSV column header</returns>
+        protected override Action<DRB, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
-            var mapper = new Action<KBPT, string>[Headers.Count];
+            var mapper = new Action<DRB, string>[Headers.Count];
 
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        break;
+                    case "DR_CODE":
+                        mapper[i] = (e, v) => e.DR_CODE = v;
                         break;
                     case "REFERENCE_NO":
                         mapper[i] = (e, v) => e.REFERENCE_NO = v;
@@ -112,9 +115,6 @@ namespace EduHub.Data.Entities
                         break;
                     case "INVOICE_TID":
                         mapper[i] = (e, v) => e.INVOICE_TID = v == null ? (int?)null : int.Parse(v);
-                        break;
-                    case "TRXLEDGER":
-                        mapper[i] = (e, v) => e.TRXLEDGER = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);

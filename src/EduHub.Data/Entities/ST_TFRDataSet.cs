@@ -291,6 +291,9 @@ namespace EduHub.Data.Entities
                     case "IMMUN_CERT_SIGHTED":
                         mapper[i] = (e, v) => e.IMMUN_CERT_SIGHTED = v;
                         break;
+                    case "IMMUNISE_PERMISSION":
+                        mapper[i] = (e, v) => e.IMMUNISE_PERMISSION = v;
+                        break;
                     case "IMMUNIZE":
                         mapper[i] = (e, v) => e.IMMUNIZE = v;
                         break;

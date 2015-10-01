@@ -233,10 +233,19 @@ namespace EduHub.Data.Entities
         public double? DRFCOUNT { get; internal set; }
         /// <summary>
         /// Does debtor require tax invoices for GST
-        /// 
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string TAX_INVOICE { get; internal set; }
+        /// <summary>
+        /// Seed number for BPAY reference
+        /// </summary>
+        public int? BPAY_SEQUENCE { get; internal set; }
+        /// <summary>
+        /// BPAY Reference number with check digit
+        /// 
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string BPAY_REFERENCE { get; internal set; }
         /// <summary>
         /// Last write date
         /// </summary>

@@ -440,6 +440,11 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string IMMUN_CERT_SIGHTED { get; internal set; }
         /// <summary>
+        /// Permission for immunisation program Y/N
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string IMMUNISE_PERMISSION { get; internal set; }
+        /// <summary>
         /// Overall Immunisation status
         /// [Uppercase Alphanumeric (1)]
         /// </summary>

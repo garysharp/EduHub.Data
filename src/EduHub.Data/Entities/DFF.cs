@@ -255,12 +255,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string VOLUNTARY { get; internal set; }
         /// <summary>
-        /// Need to identify if this is EMA receipt
+        /// Need to identify if this is CSEF receipt
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string EMA_RECEIPT { get; internal set; }
         /// <summary>
-        /// Period the EMA receipts applies for
+        /// Period the CSEF receipts applies for
         /// </summary>
         public short? EMA_PERIOD { get; internal set; }
         /// <summary>
@@ -269,7 +269,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         public int? EMA_TID { get; internal set; }
         /// <summary>
-        /// Is set when journal for EMA receipts is done
+        /// Is set when journal for CSEF receipts is done
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string GL_PROCESSED { get; internal set; }

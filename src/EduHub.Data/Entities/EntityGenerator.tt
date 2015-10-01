@@ -15,7 +15,7 @@
 <#
     var manager = TemplateFileManager.Create(this);
     manager.IsAutoIndentEnabled = false;
-    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v55 Schema.xml"));
+    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v56 Schema.xml"));
     foreach (var entity in schema)
     {
         manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
