@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Grid Subjects Data Set
     /// </summary>
-    public sealed class TTTGDataSet : SetBase<TTTG>
+    public sealed partial class TTTGDataSet : SetBase<TTTG>
     {
         private Lazy<Dictionary<int, TTTG>> IDENTIndex;
+
 
         internal TTTGDataSet(EduHubContext Context)
             : base(Context)
         {
             IDENTIndex = new Lazy<Dictionary<int, TTTG>>(() => this.ToDictionary(e => e.IDENT));
+
         }
 
         /// <summary>

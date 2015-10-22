@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Staff
     /// </summary>
-    public class TTEF : EntityBase
+    public partial class TTEF : EntityBase
     {
 #region Navigation Property Cache
         private TT _GKEY_TT;
@@ -62,11 +62,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GKEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TTEF.GKEY]-&gt;[TT.TTKEY]
         /// Grid involved in exam
         /// </summary>
-        public TT GKEY_TT {
+        public TT GKEY_TT
+        {
             get
             {
                 if (GKEY != null)
@@ -83,11 +85,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STAFF] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TTEF.STAFF]-&gt;[SF.SFKEY]
         /// Staff member
         /// </summary>
-        public SF STAFF_SF {
+        public SF STAFF_SF
+        {
             get
             {
                 if (STAFF != null)
@@ -104,11 +108,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TTEF.ROOM]-&gt;[SM.ROOM]
         /// Room where Exam is to be held
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)

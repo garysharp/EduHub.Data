@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contacts
     /// </summary>
-    public class KPC : EntityBase
+    public partial class KPC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Contact code
@@ -99,6 +96,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// KPCL (Contact Links) related entities by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
+        /// </summary>
+        public IReadOnlyList<KPCL> KPCL_CONTACT
+        {
+            get
+            {
+                return Context.KPC.FindKPCLByCONTACT(KPCKEY);
+            }
+        }
 #endregion
     }
 }

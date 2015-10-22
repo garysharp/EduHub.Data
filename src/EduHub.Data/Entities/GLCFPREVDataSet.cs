@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Last Years GL Combined Financial Trans Data Set
     /// </summary>
-    public sealed class GLCFPREVDataSet : SetBase<GLCFPREV>
+    public sealed partial class GLCFPREVDataSet : SetBase<GLCFPREV>
     {
         private Lazy<Dictionary<string, GLCFPREV>> TRREFIndex;
+
 
         internal GLCFPREVDataSet(EduHubContext Context)
             : base(Context)
         {
             TRREFIndex = new Lazy<Dictionary<string, GLCFPREV>>(() => this.ToDictionary(e => e.TRREF));
+
         }
 
         /// <summary>

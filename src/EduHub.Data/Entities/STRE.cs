@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Re-Enrolment
     /// </summary>
-    public class STRE : EntityBase
+    public partial class STRE : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -240,11 +240,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STRE.SKEY]-&gt;[ST.STKEY]
         /// Student key
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)
@@ -261,11 +263,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_SCHOOL_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [STRE.ST_SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
         /// Year Level at time of leaving
         /// </summary>
-        public KCY ST_SCHOOL_YEAR_KCY {
+        public KCY ST_SCHOOL_YEAR_KCY
+        {
             get
             {
                 if (ST_SCHOOL_YEAR != null)
@@ -282,11 +286,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_HOME_GROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [STRE.ST_HOME_GROUP]-&gt;[KGC.KGCKEY]
         /// Home Group at time of leaving
         /// </summary>
-        public KGC ST_HOME_GROUP_KGC {
+        public KGC ST_HOME_GROUP_KGC
+        {
             get
             {
                 if (ST_HOME_GROUP != null)
@@ -303,11 +309,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_PREVIOUS_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.ST_PREVIOUS_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// Previous school attended
         /// </summary>
-        public SKGS ST_PREVIOUS_SCHOOL_SKGS {
+        public SKGS ST_PREVIOUS_SCHOOL_SKGS
+        {
             get
             {
                 if (ST_PREVIOUS_SCHOOL != null)
@@ -324,11 +332,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_VISA_SUBCLASS] => [KCV].[VISA_SUBCLASS]
+        /// KCV (Visa Subclasses) related entity by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
         /// Visa Sub-class
         /// </summary>
-        public KCV ST_VISA_SUBCLASS_KCV {
+        public KCV ST_VISA_SUBCLASS_KCV
+        {
             get
             {
                 if (ST_VISA_SUBCLASS != null)
@@ -345,11 +355,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_HOME_LANG] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [STRE.ST_HOME_LANG]-&gt;[KGL.KGLKEY]
         /// The language spoken at home: copied from DF record of family with whom student lives most
         /// </summary>
-        public KGL ST_HOME_LANG_KGL {
+        public KGL ST_HOME_LANG_KGL
+        {
             get
             {
                 if (ST_HOME_LANG != null)
@@ -366,11 +378,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STRE.ST_CAMPUS]-&gt;[SCI.SCIKEY]
         /// Student's home campus
         /// </summary>
-        public SCI ST_CAMPUS_SCI {
+        public SCI ST_CAMPUS_SCI
+        {
             get
             {
                 if (ST_CAMPUS.HasValue)
@@ -387,11 +401,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STPT_SCHL_NUM01] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.STPT_SCHL_NUM01]-&gt;[SKGS.SCHOOL]
         /// ID of school (could be home school)
         /// </summary>
-        public SKGS STPT_SCHL_NUM01_SKGS {
+        public SKGS STPT_SCHL_NUM01_SKGS
+        {
             get
             {
                 if (STPT_SCHL_NUM01 != null)
@@ -408,11 +424,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STPT_SCHL_NUM02] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.STPT_SCHL_NUM02]-&gt;[SKGS.SCHOOL]
         /// ID of school (could be home school)
         /// </summary>
-        public SKGS STPT_SCHL_NUM02_SKGS {
+        public SKGS STPT_SCHL_NUM02_SKGS
+        {
             get
             {
                 if (STPT_SCHL_NUM02 != null)
@@ -429,11 +447,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STPT_SCHL_NUM03] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.STPT_SCHL_NUM03]-&gt;[SKGS.SCHOOL]
         /// ID of school (could be home school)
         /// </summary>
-        public SKGS STPT_SCHL_NUM03_SKGS {
+        public SKGS STPT_SCHL_NUM03_SKGS
+        {
             get
             {
                 if (STPT_SCHL_NUM03 != null)
@@ -450,11 +470,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STPT_SCHL_NUM04] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.STPT_SCHL_NUM04]-&gt;[SKGS.SCHOOL]
         /// ID of school (could be home school)
         /// </summary>
-        public SKGS STPT_SCHL_NUM04_SKGS {
+        public SKGS STPT_SCHL_NUM04_SKGS
+        {
             get
             {
                 if (STPT_SCHL_NUM04 != null)
@@ -471,11 +493,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_NEXT_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STRE.ST_NEXT_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// School to which departed student has gone (if any)
         /// </summary>
-        public SKGS ST_NEXT_SCHOOL_SKGS {
+        public SKGS ST_NEXT_SCHOOL_SKGS
+        {
             get
             {
                 if (ST_NEXT_SCHOOL != null)
@@ -492,11 +516,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_LOTE_HOME_CODE] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [STRE.ST_LOTE_HOME_CODE]-&gt;[KGL.KGLKEY]
         /// The Language other than English spoken at home by student, copied from ST record
         /// </summary>
-        public KGL ST_LOTE_HOME_CODE_KGL {
+        public KGL ST_LOTE_HOME_CODE_KGL
+        {
             get
             {
                 if (ST_LOTE_HOME_CODE != null)
@@ -513,11 +539,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DF_LOTE_HOME_CODE_A] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [STRE.DF_LOTE_HOME_CODE_A]-&gt;[KGL.KGLKEY]
         /// The language other than English spoken at home by adult A, copied from DF
         /// </summary>
-        public KGL DF_LOTE_HOME_CODE_A_KGL {
+        public KGL DF_LOTE_HOME_CODE_A_KGL
+        {
             get
             {
                 if (DF_LOTE_HOME_CODE_A != null)
@@ -534,11 +562,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DF_LOTE_HOME_CODE_B] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [STRE.DF_LOTE_HOME_CODE_B]-&gt;[KGL.KGLKEY]
         /// The language other than English spoken at home by adult B, copied from DF
         /// </summary>
-        public KGL DF_LOTE_HOME_CODE_B_KGL {
+        public KGL DF_LOTE_HOME_CODE_B_KGL
+        {
             get
             {
                 if (DF_LOTE_HOME_CODE_B != null)

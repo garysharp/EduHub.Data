@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Grid Subjects
     /// </summary>
-    public class TTTG : EntityBase
+    public partial class TTTG : EntityBase
     {
 #region Navigation Property Cache
         private TT _GKEY_TT;
@@ -220,11 +220,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GKEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TTTG.GKEY]-&gt;[TT.TTKEY]
         /// Link to Timetable Grid Template
         /// </summary>
-        public TT GKEY_TT {
+        public TT GKEY_TT
+        {
             get
             {
                 if (GKEY != null)
@@ -241,11 +243,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [TTTG.SUBJ]-&gt;[SU.SUKEY]
         /// Link to Subject
         /// </summary>
-        public SU SUBJ_SU {
+        public SU SUBJ_SU
+        {
             get
             {
                 if (SUBJ != null)
@@ -262,11 +266,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [T1TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TTTG.T1TEACH]-&gt;[SF.SFKEY]
         /// Staff code of first or only teacher for this period
         /// </summary>
-        public SF T1TEACH_SF {
+        public SF T1TEACH_SF
+        {
             get
             {
                 if (T1TEACH != null)
@@ -283,11 +289,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [T2TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TTTG.T2TEACH]-&gt;[SF.SFKEY]
         /// Staff code of second teacher for this period (if any)
         /// </summary>
-        public SF T2TEACH_SF {
+        public SF T2TEACH_SF
+        {
             get
             {
                 if (T2TEACH != null)
@@ -304,11 +312,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [R1ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TTTG.R1ROOM]-&gt;[SM.ROOM]
         /// Room code of first or only room for this period
         /// </summary>
-        public SM R1ROOM_SM {
+        public SM R1ROOM_SM
+        {
             get
             {
                 if (R1ROOM != null)
@@ -325,11 +335,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [R2ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TTTG.R2ROOM]-&gt;[SM.ROOM]
         /// Room code of second room for this period (if any)
         /// </summary>
-        public SM R2ROOM_SM {
+        public SM R2ROOM_SM
+        {
             get
             {
                 if (R2ROOM != null)

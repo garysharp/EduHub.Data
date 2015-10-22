@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Part-Time Enrolments Data Set
     /// </summary>
-    public sealed class STPTDataSet : SetBase<STPT>
+    public sealed partial class STPTDataSet : SetBase<STPT>
     {
+
 
         internal STPTDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Tax Scales Data Set
     /// </summary>
-    public sealed class PXDataSet : SetBase<PX>
+    public sealed partial class PXDataSet : SetBase<PX>
     {
         private Lazy<Dictionary<short, PX>> PXKEYIndex;
+
+        private Lazy<Dictionary<short, IReadOnlyList<PE>>> PE_TAXCODEForeignIndex;
 
         internal PXDataSet(EduHubContext Context)
             : base(Context)
         {
             PXKEYIndex = new Lazy<Dictionary<short, PX>>(() => this.ToDictionary(e => e.PXKEY));
+
+            PE_TAXCODEForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PE>>>(() =>
+                    Context.PE
+                          .Where(e => e.TAXCODE != null)
+                          .GroupBy(e => e.TAXCODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PE (Employees) entities by [PE.TAXCODE]-&gt;[PX.PXKEY]
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PE entities</param>
+        /// <returns>A list of related PE entities</returns>
+        public IReadOnlyList<PE> FindPEByTAXCODE(short PXKEY)
+        {
+            IReadOnlyList<PE> result;
+            if (PE_TAXCODEForeignIndex.Value.TryGetValue(PXKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PE entities by [PE.TAXCODE]-&gt;[PX.PXKEY]
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PE entities</param>
+        /// <param name="Value">A list of related PE entities</param>
+        /// <returns>True if any PE entities are found</returns>
+        public bool TryFindPEByTAXCODE(short PXKEY, out IReadOnlyList<PE> Value)
+        {
+            return PE_TAXCODEForeignIndex.Value.TryGetValue(PXKEY, out Value);
         }
 
 

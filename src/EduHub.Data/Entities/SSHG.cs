@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects per Home Group
     /// </summary>
-    public class SSHG : EntityBase
+    public partial class SSHG : EntityBase
     {
 #region Navigation Property Cache
         private KGC _HOMEGROUP_KGC;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [HOMEGROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [SSHG.HOMEGROUP]-&gt;[KGC.KGCKEY]
         /// Home group ID
         /// </summary>
-        public KGC HOMEGROUP_KGC {
+        public KGC HOMEGROUP_KGC
+        {
             get
             {
                 if (HOMEGROUP != null)
@@ -88,11 +90,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT] => [SS].[SSKEY]
+        /// SS (Specialist Subjects) related entity by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
         /// Subject ID
         /// </summary>
-        public SS SUBJECT_SS {
+        public SS SUBJECT_SS
+        {
             get
             {
                 if (SUBJECT != null)
@@ -109,11 +113,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SSHG.TEACHER]-&gt;[SF.SFKEY]
         /// Teacher ID
         /// </summary>
-        public SF TEACHER_SF {
+        public SF TEACHER_SF
+        {
             get
             {
                 if (TEACHER != null)
@@ -130,11 +136,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STUDENT] => [ST].[STKEY]
+        /// ST (Students) related entity by [SSHG.STUDENT]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STUDENT_ST {
+        public ST STUDENT_ST
+        {
             get
             {
                 if (STUDENT != null)
@@ -151,11 +159,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHING_HG] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [SSHG.TEACHING_HG]-&gt;[KGC.KGCKEY]
         /// ID of home group with which an IN variation will be taken. ZZZ otherwise.
         /// </summary>
-        public KGC TEACHING_HG_KGC {
+        public KGC TEACHING_HG_KGC
+        {
             get
             {
                 if (TEACHING_HG != null)

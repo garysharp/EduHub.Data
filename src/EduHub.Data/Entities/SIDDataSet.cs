@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Disciplinary Incidents Data Set
     /// </summary>
-    public sealed class SIDDataSet : SetBase<SID>
+    public sealed partial class SIDDataSet : SetBase<SID>
     {
         private Lazy<Dictionary<int, SID>> SIDKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SDP>>> SDP_INCIDENT_KEYForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SIDV>>> SIDV_INCIDENT_KEYForeignIndex;
 
         internal SIDDataSet(EduHubContext Context)
             : base(Context)
         {
             SIDKEYIndex = new Lazy<Dictionary<int, SID>>(() => this.ToDictionary(e => e.SIDKEY));
+
+            SDP_INCIDENT_KEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SDP>>>(() =>
+                    Context.SDP
+                          .Where(e => e.INCIDENT_KEY != null)
+                          .GroupBy(e => e.INCIDENT_KEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDP>)g.ToList()
+                          .AsReadOnly()));
+
+            SIDV_INCIDENT_KEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SIDV>>>(() =>
+                    Context.SIDV
+                          .Where(e => e.INCIDENT_KEY != null)
+                          .GroupBy(e => e.INCIDENT_KEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SIDV>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SDP (Incident Instigators) entities by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SDP entities</param>
+        /// <returns>A list of related SDP entities</returns>
+        public IReadOnlyList<SDP> FindSDPByINCIDENT_KEY(int SIDKEY)
+        {
+            IReadOnlyList<SDP> result;
+            if (SDP_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SDP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SDP entities by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SDP entities</param>
+        /// <param name="Value">A list of related SDP entities</param>
+        /// <returns>True if any SDP entities are found</returns>
+        public bool TryFindSDPByINCIDENT_KEY(int SIDKEY, out IReadOnlyList<SDP> Value)
+        {
+            return SDP_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SIDV (Incident Victims/Recipients) entities by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SIDV entities</param>
+        /// <returns>A list of related SIDV entities</returns>
+        public IReadOnlyList<SIDV> FindSIDVByINCIDENT_KEY(int SIDKEY)
+        {
+            IReadOnlyList<SIDV> result;
+            if (SIDV_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SIDV>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SIDV entities by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SIDV entities</param>
+        /// <param name="Value">A list of related SIDV entities</param>
+        /// <returns>True if any SIDV entities are found</returns>
+        public bool TryFindSIDVByINCIDENT_KEY(int SIDKEY, out IReadOnlyList<SIDV> Value)
+        {
+            return SIDV_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out Value);
         }
 
 

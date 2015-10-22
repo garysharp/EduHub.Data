@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Categories Data Set
     /// </summary>
-    public sealed class KPECDataSet : SetBase<KPEC>
+    public sealed partial class KPECDataSet : SetBase<KPEC>
     {
         private Lazy<Dictionary<string, KPEC>> KPECKEYIndex;
+
 
         internal KPECDataSet(EduHubContext Context)
             : base(Context)
         {
             KPECKEYIndex = new Lazy<Dictionary<string, KPEC>>(() => this.ToDictionary(e => e.KPECKEY));
+
         }
 
         /// <summary>

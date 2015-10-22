@@ -8,11 +8,12 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Transactions Data Set
     /// </summary>
-    public sealed class GLFDataSet : SetBase<GLF>
+    public sealed partial class GLFDataSet : SetBase<GLF>
     {
         private Lazy<Dictionary<string, GLF>> TRREFIndex;
         private Lazy<Dictionary<string, GLF>> GST_BOXIndex;
         private Lazy<Dictionary<string, GLF>> GST_SALE_PURCHIndex;
+
 
         internal GLFDataSet(EduHubContext Context)
             : base(Context)
@@ -20,6 +21,7 @@ namespace EduHub.Data.Entities
             TRREFIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.TRREF));
             GST_BOXIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.GST_BOX));
             GST_SALE_PURCHIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.GST_SALE_PURCH));
+
         }
 
         /// <summary>

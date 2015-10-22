@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Login Log
     /// </summary>
-    public class SEC_LLOG : EntityBase
+    public partial class SEC_LLOG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -77,9 +74,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public short? LOGGEDPERIOD { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

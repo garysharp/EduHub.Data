@@ -6,10 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace EduHub.Data
 {
-    /// <summary>
-    /// Base object for an EduHubContext
-    /// </summary>
-    public abstract class EduHubContextBase
+    public partial class EduHubContext
     {
         /// <summary>
         /// Default directory used when creating a context if none is provided to the constructor
@@ -36,7 +33,7 @@ namespace EduHub.Data
         /// <param name="EduHubDirectory">Directory which contains the eduHub CSV Data Sets</param>
         /// <param name="EduHubSiteIdentifier">Data Set Suffix for each CSV file</param>
         /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
-        protected EduHubContextBase(string EduHubDirectory, string EduHubSiteIdentifier)
+        public EduHubContext(string EduHubDirectory, string EduHubSiteIdentifier)
         {
             // Use default directory if none provided
             if (string.IsNullOrWhiteSpace(EduHubDirectory))
@@ -60,6 +57,27 @@ namespace EduHub.Data
 
             this.EduHubDirectory = EduHubDirectory;
             this.EduHubSiteIdentifier = EduHubSiteIdentifier;
+
+            Initialize();
+        }
+
+        /// <summary>
+        /// Creates an EduHubContext with a dynamically determined site identifier
+        /// </summary>
+        /// <param name="EduHubDirectory">Directory which contains the eduHub .csv data sets.</param>
+        /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
+        public EduHubContext(string EduHubDirectory)
+            : this(EduHubDirectory, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates an EduHubContext with the default directory and dynamically determined site identifier
+        /// </summary>
+        /// <exception cref="ArgumentException">Default eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
+        public EduHubContext()
+            : this(null, null)
+        {
         }
 
         /// <summary>
@@ -104,11 +122,6 @@ namespace EduHub.Data
                 yield return filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
             }
         }
-
-        /// <summary>
-        /// Names of all Data Sets
-        /// </summary>
-        public abstract IEnumerable<string> GetNames();
 
         /// <summary>
         /// Determines site identifiers which are present in the eduHub directory
@@ -190,6 +203,15 @@ namespace EduHub.Data
                 throw new ArgumentNullException(nameof(DefaultEduHubDirectory));
 
             return GetSiteIdentifier(DefaultEduHubDirectory);
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return $"eduHub Context for '{EduHubDirectory}' [Site: {EduHubSiteIdentifier}]";
         }
     }
 }

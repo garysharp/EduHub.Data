@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Students
     /// </summary>
-    public class ST : EntityBase
+    public partial class ST : EntityBase
     {
 #region Navigation Property Cache
         private DF _FAMILY_DF;
@@ -856,11 +856,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FAMILY] => [DF].[DFKEY]
+        /// DF (Families) related entity by [ST.FAMILY]-&gt;[DF.DFKEY]
         /// Student's prime family
         /// </summary>
-        public DF FAMILY_DF {
+        public DF FAMILY_DF
+        {
             get
             {
                 if (FAMILY != null)
@@ -877,11 +879,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FAMB] => [DF].[DFKEY]
+        /// DF (Families) related entity by [ST.FAMB]-&gt;[DF.DFKEY]
         /// Student's alternative family
         /// </summary>
-        public DF FAMB_DF {
+        public DF FAMB_DF
+        {
             get
             {
                 if (FAMB != null)
@@ -898,11 +902,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FAMC] => [DF].[DFKEY]
+        /// DF (Families) related entity by [ST.FAMC]-&gt;[DF.DFKEY]
         /// Student's additional contact family
         /// </summary>
-        public DF FAMC_DF {
+        public DF FAMC_DF
+        {
             get
             {
                 if (FAMC != null)
@@ -919,11 +925,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PREVIOUS_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [ST.PREVIOUS_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// (Was PREVIOUS) Previous school attended
         /// </summary>
-        public SKGS PREVIOUS_SCHOOL_SKGS {
+        public SKGS PREVIOUS_SCHOOL_SKGS
+        {
             get
             {
                 if (PREVIOUS_SCHOOL != null)
@@ -940,11 +948,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_GROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [ST.HOME_GROUP]-&gt;[KGC.KGCKEY]
         /// (Was FORM) Student's home group
         /// </summary>
-        public KGC HOME_GROUP_KGC {
+        public KGC HOME_GROUP_KGC
+        {
             get
             {
                 if (HOME_GROUP != null)
@@ -961,11 +971,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [NEXT_HG] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [ST.NEXT_HG]-&gt;[KGC.KGCKEY]
         /// Anticipated next home group
         /// </summary>
-        public KGC NEXT_HG_KGC {
+        public KGC NEXT_HG_KGC
+        {
             get
             {
                 if (NEXT_HG != null)
@@ -982,11 +994,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [ST.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
         /// Year level
         /// </summary>
-        public KCY SCHOOL_YEAR_KCY {
+        public KCY SCHOOL_YEAR_KCY
+        {
             get
             {
                 if (SCHOOL_YEAR != null)
@@ -1003,11 +1017,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOUSE] => [KGH].[KGHKEY]
+        /// KGH (Houses) related entity by [ST.HOUSE]-&gt;[KGH.KGHKEY]
         /// Student's house group
         /// </summary>
-        public KGH HOUSE_KGH {
+        public KGH HOUSE_KGH
+        {
             get
             {
                 if (HOUSE != null)
@@ -1024,11 +1040,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [ST.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Student's home campus
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -1045,11 +1063,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [RELIGION] => [KGR].[RELIGION]
+        /// KGR (Religions) related entity by [ST.RELIGION]-&gt;[KGR.RELIGION]
         /// Religion
         /// </summary>
-        public KGR RELIGION_KGR {
+        public KGR RELIGION_KGR
+        {
             get
             {
                 if (RELIGION != null)
@@ -1066,11 +1086,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [REL_INSTR] => [KCI].[KCIKEY]
+        /// KCI (Religious Instruction Curricula) related entity by [ST.REL_INSTR]-&gt;[KCI.KCIKEY]
         /// Link to Religious Instruction Course
         /// </summary>
-        public KCI REL_INSTR_KCI {
+        public KCI REL_INSTR_KCI
+        {
             get
             {
                 if (REL_INSTR != null)
@@ -1087,11 +1109,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [VISA_SUBCLASS] => [KCV].[VISA_SUBCLASS]
+        /// KCV (Visa Subclasses) related entity by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
         /// Visa Sub-class
         /// </summary>
-        public KCV VISA_SUBCLASS_KCV {
+        public KCV VISA_SUBCLASS_KCV
+        {
             get
             {
                 if (VISA_SUBCLASS != null)
@@ -1108,11 +1132,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [ST.BIRTH_COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country of birth
         /// </summary>
-        public KGT BIRTH_COUNTRY_KGT {
+        public KGT BIRTH_COUNTRY_KGT
+        {
             get
             {
                 if (BIRTH_COUNTRY != null)
@@ -1129,11 +1155,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [ST.HOME_LANG]-&gt;[KGL.KGLKEY]
         /// The language spoken at home: copied from DF record of family with whom student lives most
         /// </summary>
-        public KGL HOME_LANG_KGL {
+        public KGL HOME_LANG_KGL
+        {
             get
             {
                 if (HOME_LANG != null)
@@ -1150,11 +1178,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DOCTOR] => [KCD].[KCDKEY]
+        /// KCD (Doctors) related entity by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
         /// Student's regular medical practitioner
         /// </summary>
-        public KCD DOCTOR_KCD {
+        public KCD DOCTOR_KCD
+        {
             get
             {
                 if (DOCTOR != null)
@@ -1171,11 +1201,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG01] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [ST.EMERG_LANG01]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG01_KGL {
+        public KGL EMERG_LANG01_KGL
+        {
             get
             {
                 if (EMERG_LANG01 != null)
@@ -1192,11 +1224,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG02] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [ST.EMERG_LANG02]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG02_KGL {
+        public KGL EMERG_LANG02_KGL
+        {
             get
             {
                 if (EMERG_LANG02 != null)
@@ -1213,11 +1247,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LANGUAGE_PREVIOUS_SCHOOLING] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [ST.LANGUAGE_PREVIOUS_SCHOOLING]-&gt;[KGL.KGLKEY]
         /// Language of previous schooling
         /// </summary>
-        public KGL LANGUAGE_PREVIOUS_SCHOOLING_KGL {
+        public KGL LANGUAGE_PREVIOUS_SCHOOLING_KGL
+        {
             get
             {
                 if (LANGUAGE_PREVIOUS_SCHOOLING != null)
@@ -1234,11 +1270,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [NEXT_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [ST.NEXT_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// School to which departed student has gone (if any)
         /// </summary>
-        public SKGS NEXT_SCHOOL_SKGS {
+        public SKGS NEXT_SCHOOL_SKGS
+        {
             get
             {
                 if (NEXT_SCHOOL != null)
@@ -1255,11 +1293,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXIT_CAT01] => [KGG].[KGGKEY]
+        /// KGG (Year 9-12 Exit Categories) related entity by [ST.EXIT_CAT01]-&gt;[KGG.KGGKEY]
         /// EXIT Category
         /// </summary>
-        public KGG EXIT_CAT01_KGG {
+        public KGG EXIT_CAT01_KGG
+        {
             get
             {
                 if (EXIT_CAT01 != null)
@@ -1276,11 +1316,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXIT_CAT02] => [KGG].[KGGKEY]
+        /// KGG (Year 9-12 Exit Categories) related entity by [ST.EXIT_CAT02]-&gt;[KGG.KGGKEY]
         /// EXIT Category
         /// </summary>
-        public KGG EXIT_CAT02_KGG {
+        public KGG EXIT_CAT02_KGG
+        {
             get
             {
                 if (EXIT_CAT02 != null)
@@ -1297,11 +1339,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXIT_DEST01] => [KGD].[KGDKEY]
+        /// KGD (Year 9-12 Exit Destinations) related entity by [ST.EXIT_DEST01]-&gt;[KGD.KGDKEY]
         /// EXIT Destination
         /// </summary>
-        public KGD EXIT_DEST01_KGD {
+        public KGD EXIT_DEST01_KGD
+        {
             get
             {
                 if (EXIT_DEST01 != null)
@@ -1318,11 +1362,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXIT_DEST02] => [KGD].[KGDKEY]
+        /// KGD (Year 9-12 Exit Destinations) related entity by [ST.EXIT_DEST02]-&gt;[KGD.KGDKEY]
         /// EXIT Destination
         /// </summary>
-        public KGD EXIT_DEST02_KGD {
+        public KGD EXIT_DEST02_KGD
+        {
             get
             {
                 if (EXIT_DEST02 != null)
@@ -1339,11 +1385,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INAC_ABS_CODE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [ST.INAC_ABS_CODE]-&gt;[KCT.KCTKEY]
         /// Code used to populate attendance records whilst status is INACtive.
         /// </summary>
-        public KCT INAC_ABS_CODE_KCT {
+        public KCT INAC_ABS_CODE_KCT
+        {
             get
             {
                 if (INAC_ABS_CODE.HasValue)
@@ -1360,11 +1408,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [ST.LOTE_HOME_CODE]-&gt;[KGL.KGLKEY]
         /// The Language other than English spoken at home by student
         /// </summary>
-        public KGL LOTE_HOME_CODE_KGL {
+        public KGL LOTE_HOME_CODE_KGL
+        {
             get
             {
                 if (LOTE_HOME_CODE != null)
@@ -1379,6 +1429,248 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// BKHR (Book Hire Records) related entities by [BKHR.STUDENT]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<BKHR> BKHR_STUDENT
+        {
+            get
+            {
+                return Context.ST.FindBKHRBySTUDENT(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// DFF (Family Financial Transactions) related entities by [DFF.TRSTUD]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<DFF> DFF_TRSTUD
+        {
+            get
+            {
+                return Context.ST.FindDFFByTRSTUD(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// DFF (Family Financial Transactions) related entities by [DFF.STUDENT]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<DFF> DFF_STUDENT
+        {
+            get
+            {
+                return Context.ST.FindDFFBySTUDENT(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SDP (Incident Instigators) related entities by [SDP.STUDENT_KEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SDP> SDP_STUDENT_KEY
+        {
+            get
+            {
+                return Context.ST.FindSDPBySTUDENT_KEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SMC (Student Medical Conditions) related entities by [SMC.STUDENT]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SMC> SMC_STUDENT
+        {
+            get
+            {
+                return Context.ST.FindSMCBySTUDENT(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SSHG (Specialist Subjects per Home Group) related entities by [SSHG.STUDENT]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SSHG> SSHG_STUDENT
+        {
+            get
+            {
+                return Context.ST.FindSSHGBySTUDENT(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.STBTKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_STBTKEY
+        {
+            get
+            {
+                return Context.ST.FindSTBTBySTBTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STMA (Subject Selections &amp; Marks) related entities by [STMA.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STMA> STMA_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTMABySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STMB (Student Merit Behaviour Details) related entities by [STMB.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STMB> STMB_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTMBBySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STPO (Position or Group Memberships) related entities by [STPO.STPOKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STPO> STPO_STPOKEY
+        {
+            get
+            {
+                return Context.ST.FindSTPOBySTPOKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STPT (Student Part-Time Enrolments) related entities by [STPT.STPTKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STPT> STPT_STPTKEY
+        {
+            get
+            {
+                return Context.ST.FindSTPTBySTPTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STRA (Multiple Day Absences) related entities by [STRA.STKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STRA> STRA_STKEY
+        {
+            get
+            {
+                return Context.ST.FindSTRABySTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTREBySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STSB (Family Invoice Allocations) related entities by [STSB.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STSB> STSB_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTSBBySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STSP (Suspension Details) related entities by [STSP.SPKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STSP> STSP_SPKEY
+        {
+            get
+            {
+                return Context.ST.FindSTSPBySPKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.STUDENT_ID]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_STUDENT_ID
+        {
+            get
+            {
+                return Context.ST.FindSTTRIPSBySTUDENT_ID(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDI (VELS Dimension Results) related entities by [STVDI.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STVDI> STVDI_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTVDIBySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDO (VELS Domain Results) related entities by [STVDO.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<STVDO> STVDO_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSTVDOBySKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.STKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_STKEY
+        {
+            get
+            {
+                return Context.ST.FindSXABBySTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXABCONV (Converted Student Half-Day Absences) related entities by [SXABCONV.STKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SXABCONV> SXABCONV_STKEY
+        {
+            get
+            {
+                return Context.ST.FindSXABCONVBySTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAS (Student Scheduled Sessions) related entities by [SXAS.STKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SXAS> SXAS_STKEY
+        {
+            get
+            {
+                return Context.ST.FindSXASBySTKEY(STKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXHI (Student History) related entities by [SXHI.SKEY]-&gt;[ST.STKEY]
+        /// </summary>
+        public IReadOnlyList<SXHI> SXHI_SKEY
+        {
+            get
+            {
+                return Context.ST.FindSXHIBySKEY(STKEY);
             }
         }
 #endregion

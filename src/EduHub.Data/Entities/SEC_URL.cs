@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 School Links URL
     /// </summary>
-    public class SEC_URL : EntityBase
+    public partial class SEC_URL : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -26,9 +23,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (200)]
         /// </summary>
         public string MAINURL { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

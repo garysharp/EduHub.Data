@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// HRMS Temp Import Table
     /// </summary>
-    public class SK_HRMST : EntityBase
+    public partial class SK_HRMST : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Seq
@@ -163,9 +160,6 @@ namespace EduHub.Data.Entities
         /// Finish Date
         /// </summary>
         public DateTime? FINISH_DATE { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

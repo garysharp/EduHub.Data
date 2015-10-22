@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Release Types
     /// </summary>
-    public class AKR : EntityBase
+    public partial class AKR : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Asset Release Type
@@ -38,6 +35,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_RELEASE_TYPE
+        {
+            get
+            {
+                return Context.AKR.FindARByRELEASE_TYPE(AKRKEY);
+            }
+        }
+
+        /// <summary>
+        /// ARF (Asset Financial Transactions) related entities by [ARF.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
+        /// </summary>
+        public IReadOnlyList<ARF> ARF_RELEASE_TYPE
+        {
+            get
+            {
+                return Context.AKR.FindARFByRELEASE_TYPE(AKRKEY);
+            }
+        }
 #endregion
     }
 }

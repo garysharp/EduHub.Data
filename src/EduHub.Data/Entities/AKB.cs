@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Sub-Category
     /// </summary>
-    public class AKB : EntityBase
+    public partial class AKB : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -39,6 +36,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.BRANCH]-&gt;[AKB.BRANCH]
+        /// </summary>
+        public IReadOnlyList<AR> AR_BRANCH
+        {
+            get
+            {
+                return Context.AKB.FindARByBRANCH(BRANCH);
+            }
+        }
 #endregion
     }
 }

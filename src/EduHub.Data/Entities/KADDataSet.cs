@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Delivery Addresses Data Set
     /// </summary>
-    public sealed class KADDataSet : SetBase<KAD>
+    public sealed partial class KADDataSet : SetBase<KAD>
     {
         private Lazy<Dictionary<string, KAD>> KADKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> CRF_DEL_CODEForeignIndex;
 
         internal KADDataSet(EduHubContext Context)
             : base(Context)
         {
             KADKEYIndex = new Lazy<Dictionary<string, KAD>>(() => this.ToDictionary(e => e.KADKEY));
+
+            CRF_DEL_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() =>
+                    Context.CRF
+                          .Where(e => e.DEL_CODE != null)
+                          .GroupBy(e => e.DEL_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all CRF (Creditor Financial Transaction) entities by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
+        /// </summary>
+        /// <param name="KADKEY">KADKEY value used to find CRF entities</param>
+        /// <returns>A list of related CRF entities</returns>
+        public IReadOnlyList<CRF> FindCRFByDEL_CODE(string KADKEY)
+        {
+            IReadOnlyList<CRF> result;
+            if (CRF_DEL_CODEForeignIndex.Value.TryGetValue(KADKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CRF entities by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
+        /// </summary>
+        /// <param name="KADKEY">KADKEY value used to find CRF entities</param>
+        /// <param name="Value">A list of related CRF entities</param>
+        /// <returns>True if any CRF entities are found</returns>
+        public bool TryFindCRFByDEL_CODE(string KADKEY, out IReadOnlyList<CRF> Value)
+        {
+            return CRF_DEL_CODEForeignIndex.Value.TryGetValue(KADKEY, out Value);
         }
 
 

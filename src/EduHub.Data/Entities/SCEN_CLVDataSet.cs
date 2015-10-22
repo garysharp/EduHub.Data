@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Class Sizes Validation Data Data Set
     /// </summary>
-    public sealed class SCEN_CLVDataSet : SetBase<SCEN_CLV>
+    public sealed partial class SCEN_CLVDataSet : SetBase<SCEN_CLV>
     {
         private Lazy<Dictionary<int, SCEN_CLV>> IDIndex;
+
 
         internal SCEN_CLVDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_CLV>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

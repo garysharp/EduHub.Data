@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial History Data Set
     /// </summary>
-    public sealed class FINHISTDataSet : SetBase<FINHIST>
+    public sealed partial class FINHISTDataSet : SetBase<FINHIST>
     {
         private Lazy<Dictionary<int, FINHIST>> IDIndex;
+
 
         internal FINHISTDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, FINHIST>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

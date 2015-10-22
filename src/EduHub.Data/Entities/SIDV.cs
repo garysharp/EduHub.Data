@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Incident Victims/Recipients
     /// </summary>
-    public class SIDV : EntityBase
+    public partial class SIDV : EntityBase
     {
 #region Navigation Property Cache
         private SID _INCIDENT_KEY_SID;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [INCIDENT_KEY] => [SID].[SIDKEY]
+        /// SID (Disciplinary Incidents) related entity by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
         /// Number of the incident that the victim/recipient was involved in
         /// </summary>
-        public SID INCIDENT_KEY_SID {
+        public SID INCIDENT_KEY_SID
+        {
             get
             {
                 if (INCIDENT_KEY.HasValue)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Import or Update Errors
     /// </summary>
-    public class KERROR : EntityBase
+    public partial class KERROR : EntityBase
     {
 #region Navigation Property Cache
         private SPOUT _SPOUTKEY_SPOUT;
@@ -93,11 +93,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SPOUTKEY] => [SPOUT].[SPOUTKEY]
+        /// SPOUT (Stored Procedure Return Values) related entity by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
         /// Unique user session ID
         /// </summary>
-        public SPOUT SPOUTKEY_SPOUT {
+        public SPOUT SPOUTKEY_SPOUT
+        {
             get
             {
                 if (SPOUTKEY != null)

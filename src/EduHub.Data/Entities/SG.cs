@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Groupings
     /// </summary>
-    public class SG : EntityBase
+    public partial class SG : EntityBase
     {
 #region Navigation Property Cache
         private SCI _FROM_CAMPUS_SCI;
@@ -294,11 +294,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FROM_CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SG.FROM_CAMPUS]-&gt;[SCI.SCIKEY]
         /// Minimum qualifying campus
         /// </summary>
-        public SCI FROM_CAMPUS_SCI {
+        public SCI FROM_CAMPUS_SCI
+        {
             get
             {
                 if (FROM_CAMPUS.HasValue)
@@ -315,11 +317,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TO_CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SG.TO_CAMPUS]-&gt;[SCI.SCIKEY]
         /// Maximum qualifying campus
         /// </summary>
-        public SCI TO_CAMPUS_SCI {
+        public SCI TO_CAMPUS_SCI
+        {
             get
             {
                 if (TO_CAMPUS.HasValue)
@@ -336,11 +340,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAND_FIRST_YR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SG.CAND_FIRST_YR]-&gt;[KCY.KCYKEY]
         /// Minimum qualifying year level
         /// </summary>
-        public KCY CAND_FIRST_YR_KCY {
+        public KCY CAND_FIRST_YR_KCY
+        {
             get
             {
                 if (CAND_FIRST_YR != null)
@@ -357,11 +363,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAND_LAST_YR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SG.CAND_LAST_YR]-&gt;[KCY.KCYKEY]
         /// Maximum qualifying year level
         /// </summary>
-        public KCY CAND_LAST_YR_KCY {
+        public KCY CAND_LAST_YR_KCY
+        {
             get
             {
                 if (CAND_LAST_YR != null)
@@ -378,11 +386,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FUT_FIRST_YR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SG.FUT_FIRST_YR]-&gt;[KCY.KCYKEY]
         /// Minimum qualifying year fo FUT students
         /// </summary>
-        public KCY FUT_FIRST_YR_KCY {
+        public KCY FUT_FIRST_YR_KCY
+        {
             get
             {
                 if (FUT_FIRST_YR != null)
@@ -399,11 +409,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FUT_LAST_YR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SG.FUT_LAST_YR]-&gt;[KCY.KCYKEY]
         /// Maximum qualifying year fo FUT students
         /// </summary>
-        public KCY FUT_LAST_YR_KCY {
+        public KCY FUT_LAST_YR_KCY
+        {
             get
             {
                 if (FUT_LAST_YR != null)
@@ -420,11 +432,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOUSE] => [KGH].[KGHKEY]
+        /// KGH (Houses) related entity by [SG.HOUSE]-&gt;[KGH.KGHKEY]
         /// Qualifying House (if any)
         /// </summary>
-        public KGH HOUSE_KGH {
+        public KGH HOUSE_KGH
+        {
             get
             {
                 if (HOUSE != null)
@@ -441,11 +455,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ABS_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SG.ABS_TYPE]-&gt;[KCT.KCTKEY]
         /// Attendance Type for Excursion
         /// </summary>
-        public KCT ABS_TYPE_KCT {
+        public KCT ABS_TYPE_KCT
+        {
             get
             {
                 if (ABS_TYPE.HasValue)
@@ -460,6 +476,116 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SGAM (Adult Group Members) related entities by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGAM> SGAM_SGAMKEY
+        {
+            get
+            {
+                return Context.SG.FindSGAMBySGAMKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGHG (Home Group Eligibility Criteria) related entities by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGHG> SGHG_SGHGKEY
+        {
+            get
+            {
+                return Context.SG.FindSGHGBySGHGKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGM (Special Group Meetings) related entities by [SGM.SGMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGM> SGM_SGMKEY
+        {
+            get
+            {
+                return Context.SG.FindSGMBySGMKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGMA (Group Meeting Attendance) related entities by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGMA> SGMA_SGMAKEY
+        {
+            get
+            {
+                return Context.SG.FindSGMABySGMAKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGSC (Subject/Class Eligibility Criteria) related entities by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGSC> SGSC_SGSCKEY
+        {
+            get
+            {
+                return Context.SG.FindSGSCBySGSCKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGSG (Group Membership Eligibility Criteria) related entities by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGSG> SGSG_SGSGKEY
+        {
+            get
+            {
+                return Context.SG.FindSGSGBySGSGKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGSG (Group Membership Eligibility Criteria) related entities by [SGSG.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGSG> SGSG_SGLINK
+        {
+            get
+            {
+                return Context.SG.FindSGSGBySGLINK(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SGTRX (Temporary Group Transactions) related entities by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SGTRX> SGTRX_SGTRXKEY
+        {
+            get
+            {
+                return Context.SG.FindSGTRXBySGTRXKEY(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// SPU (Publications) related entities by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<SPU> SPU_MAILING_LIST
+        {
+            get
+            {
+                return Context.SG.FindSPUByMAILING_LIST(SGKEY);
+            }
+        }
+
+        /// <summary>
+        /// STPO (Position or Group Memberships) related entities by [STPO.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        public IReadOnlyList<STPO> STPO_SGLINK
+        {
+            get
+            {
+                return Context.SG.FindSTPOBySGLINK(SGKEY);
             }
         }
 #endregion

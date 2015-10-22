@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Medication Doses
     /// </summary>
-    public class SMCD : EntityBase
+    public partial class SMCD : EntityBase
     {
 #region Navigation Property Cache
         private SMC _SMCDKEY_SMC;
@@ -66,11 +66,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SMCDKEY] => [SMC].[SMCKEY]
+        /// SMC (Student Medical Conditions) related entity by [SMCD.SMCDKEY]-&gt;[SMC.SMCKEY]
         /// Medical condition ID
         /// </summary>
-        public SMC SMCDKEY_SMC {
+        public SMC SMCDKEY_SMC
+        {
             get
             {
                 if (SMCDKEY.HasValue)
@@ -87,11 +89,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STAFF] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SMCD.STAFF]-&gt;[SF.SFKEY]
         /// Staff code of staff member who administered dosage (if any)
         /// </summary>
-        public SF STAFF_SF {
+        public SF STAFF_SF
+        {
             get
             {
                 if (STAFF != null)

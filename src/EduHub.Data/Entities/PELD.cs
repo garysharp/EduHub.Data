@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Details
     /// </summary>
-    public class PELD : EntityBase
+    public partial class PELD : EntityBase
     {
 #region Navigation Property Cache
         private PLT _PLTKEY_PLT;
@@ -88,11 +88,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PLTKEY] => [PLT].[PLTKEY]
+        /// PLT (Leave Group Types) related entity by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
         /// PLT KEY
         /// </summary>
-        public PLT PLTKEY_PLT {
+        public PLT PLTKEY_PLT
+        {
             get
             {
                 if (PLTKEY != null)
@@ -109,11 +111,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PEKEY] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PELD.PEKEY]-&gt;[PE.PEKEY]
         /// EMPLOYEE KEY
         /// </summary>
-        public PE PEKEY_PE {
+        public PE PEKEY_PE
+        {
             get
             {
                 if (PEKEY != null)
@@ -130,11 +134,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC].[PLCKEY]
+        /// PLC (Leave Code Description) related entity by [PELD.LEAVE_CODE]-&gt;[PLC.PLCKEY]
         /// Leave Type Code eg Sick,LSL,RDO
         /// </summary>
-        public PLC LEAVE_CODE_PLC {
+        public PLC LEAVE_CODE_PLC
+        {
             get
             {
                 if (LEAVE_CODE != null)

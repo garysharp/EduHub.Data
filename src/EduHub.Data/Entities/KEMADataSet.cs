@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSEF Receipt details Data Set
     /// </summary>
-    public sealed class KEMADataSet : SetBase<KEMA>
+    public sealed partial class KEMADataSet : SetBase<KEMA>
     {
         private Lazy<Dictionary<int, KEMA>> TIDIndex;
+
 
         internal KEMADataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, KEMA>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Decrypted data IMPORT
     /// </summary>
-    public class A_DECRYP : EntityBase
+    public partial class A_DECRYP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transaction ID
@@ -30,9 +27,6 @@ namespace EduHub.Data.Entities
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Behaviour Classifications
     /// </summary>
-    public class KCB : EntityBase
+    public partial class KCB : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Behaviour code
@@ -43,6 +40,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SID (Disciplinary Incidents) related entities by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        public IReadOnlyList<SID> SID_INCIDENT_TYPE
+        {
+            get
+            {
+                return Context.KCB.FindSIDByINCIDENT_TYPE(KCBKEY);
+            }
+        }
+
+        /// <summary>
+        /// STMB (Student Merit Behaviour Details) related entities by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        public IReadOnlyList<STMB> STMB_B_CODE
+        {
+            get
+            {
+                return Context.KCB.FindSTMBByB_CODE(KCBKEY);
+            }
+        }
 #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Group Types
     /// </summary>
-    public class PLT : EntityBase
+    public partial class PLT : EntityBase
     {
 #region Navigation Property Cache
         private PLG _LEAVE_GROUP_PLG;
@@ -193,11 +193,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [LEAVE_GROUP] => [PLG].[LEAVE_GROUP]
+        /// PLG (Leave Management Group) related entity by [PLT.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
         /// Leave Group Identifier
         /// </summary>
-        public PLG LEAVE_GROUP_PLG {
+        public PLG LEAVE_GROUP_PLG
+        {
             get
             {
                 if (LEAVE_GROUP != null)
@@ -214,11 +216,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC].[PLCKEY]
+        /// PLC (Leave Code Description) related entity by [PLT.LEAVE_CODE]-&gt;[PLC.PLCKEY]
         /// Leave Type Code
         /// </summary>
-        public PLC LEAVE_CODE_PLC {
+        public PLC LEAVE_CODE_PLC
+        {
             get
             {
                 if (LEAVE_CODE != null)
@@ -233,6 +237,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PELD (Employee Leave Details) related entities by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        public IReadOnlyList<PELD> PELD_PLTKEY
+        {
+            get
+            {
+                return Context.PLT.FindPELDByPLTKEY(PLTKEY);
+            }
+        }
+
+        /// <summary>
+        /// PILI (Pay Item Leave Items) related entities by [PILI.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        public IReadOnlyList<PILI> PILI_PLTKEY
+        {
+            get
+            {
+                return Context.PLT.FindPILIByPLTKEY(PLTKEY);
             }
         }
 #endregion

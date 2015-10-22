@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Courses Data Set
     /// </summary>
-    public sealed class SCDataSet : SetBase<SC>
+    public sealed partial class SCDataSet : SetBase<SC>
     {
         private Lazy<Dictionary<string, SC>> COURSEIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<STMA>>> STMA_CKEYForeignIndex;
 
         internal SCDataSet(EduHubContext Context)
             : base(Context)
         {
             COURSEIndex = new Lazy<Dictionary<string, SC>>(() => this.ToDictionary(e => e.COURSE));
+
+            STMA_CKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STMA>>>(() =>
+                    Context.STMA
+                          .Where(e => e.CKEY != null)
+                          .GroupBy(e => e.CKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMA>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STMA (Subject Selections &amp; Marks) entities by [STMA.CKEY]-&gt;[SC.COURSE]
+        /// </summary>
+        /// <param name="COURSE">COURSE value used to find STMA entities</param>
+        /// <returns>A list of related STMA entities</returns>
+        public IReadOnlyList<STMA> FindSTMAByCKEY(string COURSE)
+        {
+            IReadOnlyList<STMA> result;
+            if (STMA_CKEYForeignIndex.Value.TryGetValue(COURSE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STMA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STMA entities by [STMA.CKEY]-&gt;[SC.COURSE]
+        /// </summary>
+        /// <param name="COURSE">COURSE value used to find STMA entities</param>
+        /// <param name="Value">A list of related STMA entities</param>
+        /// <returns>True if any STMA entities are found</returns>
+        public bool TryFindSTMAByCKEY(string COURSE, out IReadOnlyList<STMA> Value)
+        {
+            return STMA_CKEYForeignIndex.Value.TryGetValue(COURSE, out Value);
         }
 
 

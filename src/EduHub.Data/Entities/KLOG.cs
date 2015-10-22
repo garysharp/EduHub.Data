@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Trace log for finance import and export
     /// </summary>
-    public class KLOG : EntityBase
+    public partial class KLOG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -38,9 +35,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Grid Templates
     /// </summary>
-    public class TT : EntityBase
+    public partial class TT : EntityBase
     {
 #region Navigation Property Cache
         private SCI _CAMPUS_SCI;
@@ -295,11 +295,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [TT.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -316,11 +318,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR01] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR01]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR01_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR01_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR01 != null)
@@ -337,11 +341,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR02] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR02]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR02_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR02_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR02 != null)
@@ -358,11 +364,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR03] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR03]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR03_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR03_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR03 != null)
@@ -379,11 +387,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR04] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR04]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR04_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR04_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR04 != null)
@@ -400,11 +410,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR05] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR05]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR05_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR05_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR05 != null)
@@ -421,11 +433,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR06] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR06]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR06_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR06_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR06 != null)
@@ -442,11 +456,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR07] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR07]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR07_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR07_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR07 != null)
@@ -463,11 +479,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR08] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR08]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR08_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR08_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR08 != null)
@@ -484,11 +502,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR09] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TT.SUBJECT_ACADEMIC_YEAR09]-&gt;[KCY.KCYKEY]
         /// If SUBJECT_ACADEMIC_YEAR in an SU record is blank or matches one of these values, the subject is eligible for this template
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR09_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR09_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR09 != null)
@@ -503,6 +523,237 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// TCTQ (Calendar Class Information) related entities by [TCTQ.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TCTQ> TCTQ_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTCTQByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT01KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT01KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT01KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT02KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT02KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT02KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT03KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT03KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT03KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT04KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT04KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT04KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT05KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT05KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT05KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT06KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT06KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT06KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT07KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT07KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT07KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT08KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT08KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT08KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT09KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT09KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT09KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT10KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT10KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT10KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT11KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT11KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT11KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT12KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT12KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT12KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TH (Timetable Quilt Headers) related entities by [TH.TT13KEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TH> TH_TT13KEY
+        {
+            get
+            {
+                return Context.TT.FindTHByTT13KEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// THTQ (Timetable Quilt Entries) related entities by [THTQ.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<THTQ> THTQ_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTHTQByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTEF (Exam Staff) related entities by [TTEF.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTEF> TTEF_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTEFByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTEI (Exam Details) related entities by [TTEI.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTEI> TTEI_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTEIByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTEP (Exam Periods) related entities by [TTEP.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTEP> TTEP_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTEPByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTES (Exam Subjects) related entities by [TTES.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTES> TTES_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTESByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTEX (Exam Grid) related entities by [TTEX.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTEX> TTEX_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTEXByGKEY(TTKEY);
+            }
+        }
+
+        /// <summary>
+        /// TTTG (Grid Subjects) related entities by [TTTG.GKEY]-&gt;[TT.TTKEY]
+        /// </summary>
+        public IReadOnlyList<TTTG> TTTG_GKEY
+        {
+            get
+            {
+                return Context.TT.FindTTTGByGKEY(TTKEY);
             }
         }
 #endregion

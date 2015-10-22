@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Item Leave Items
     /// </summary>
-    public class PILI : EntityBase
+    public partial class PILI : EntityBase
     {
 #region Navigation Property Cache
         private PI _PIKEY_PI;
@@ -55,11 +55,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PIKEY] => [PI].[PIKEY]
+        /// PI (Pay Items) related entity by [PILI.PIKEY]-&gt;[PI.PIKEY]
         /// PIKEY to PI table
         /// </summary>
-        public PI PIKEY_PI {
+        public PI PIKEY_PI
+        {
             get
             {
                 if (PIKEY.HasValue)
@@ -76,11 +78,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PLTKEY] => [PLT].[PLTKEY]
+        /// PLT (Leave Group Types) related entity by [PILI.PLTKEY]-&gt;[PLT.PLTKEY]
         /// PLT key
         /// </summary>
-        public PLT PLTKEY_PLT {
+        public PLT PLTKEY_PLT
+        {
             get
             {
                 if (PLTKEY != null)
@@ -97,11 +101,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_GROUP] => [PLG].[LEAVE_GROUP]
+        /// PLG (Leave Management Group) related entity by [PILI.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
         /// Group code
         /// </summary>
-        public PLG LEAVE_GROUP_PLG {
+        public PLG LEAVE_GROUP_PLG
+        {
             get
             {
                 if (LEAVE_GROUP != null)
@@ -118,11 +124,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC].[PLCKEY]
+        /// PLC (Leave Code Description) related entity by [PILI.LEAVE_CODE]-&gt;[PLC.PLCKEY]
         /// Leave code
         /// </summary>
-        public PLC LEAVE_CODE_PLC {
+        public PLC LEAVE_CODE_PLC
+        {
             get
             {
                 if (LEAVE_CODE != null)

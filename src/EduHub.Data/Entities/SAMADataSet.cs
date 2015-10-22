@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Association Member Attendances Data Set
     /// </summary>
-    public sealed class SAMADataSet : SetBase<SAMA>
+    public sealed partial class SAMADataSet : SetBase<SAMA>
     {
+
 
         internal SAMADataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Instances Data Set
     /// </summary>
-    public sealed class TETEDataSet : SetBase<TETE>
+    public sealed partial class TETEDataSet : SetBase<TETE>
     {
+
 
         internal TETEDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

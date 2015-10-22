@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Faculties
     /// </summary>
-    public class KSF : EntityBase
+    public partial class KSF : EntityBase
     {
 #region Navigation Property Cache
         private SF _COORDINATOR_SF;
@@ -44,11 +44,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COORDINATOR] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [KSF.COORDINATOR]-&gt;[SF.SFKEY]
         /// Staff code of KLA co-ordinator
         /// </summary>
-        public SF COORDINATOR_SF {
+        public SF COORDINATOR_SF
+        {
             get
             {
                 if (COORDINATOR != null)
@@ -63,6 +65,72 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.FACULTY01]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_FACULTY01
+        {
+            get
+            {
+                return Context.KSF.FindSFByFACULTY01(KSFKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.FACULTY02]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_FACULTY02
+        {
+            get
+            {
+                return Context.KSF.FindSFByFACULTY02(KSFKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.FACULTY03]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_FACULTY03
+        {
+            get
+            {
+                return Context.KSF.FindSFByFACULTY03(KSFKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.FACULTY04]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_FACULTY04
+        {
+            get
+            {
+                return Context.KSF.FindSFByFACULTY04(KSFKEY);
+            }
+        }
+
+        /// <summary>
+        /// SM (Rooms) related entities by [SM.FACULTY]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SM> SM_FACULTY
+        {
+            get
+            {
+                return Context.KSF.FindSMByFACULTY(KSFKEY);
+            }
+        }
+
+        /// <summary>
+        /// SU (Subjects) related entities by [SU.FACULTY]-&gt;[KSF.KSFKEY]
+        /// </summary>
+        public IReadOnlyList<SU> SU_FACULTY
+        {
+            get
+            {
+                return Context.KSF.FindSUByFACULTY(KSFKEY);
             }
         }
 #endregion

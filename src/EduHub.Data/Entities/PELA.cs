@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Audit
     /// </summary>
-    public class PELA : EntityBase
+    public partial class PELA : EntityBase
     {
 #region Navigation Property Cache
         private PE _PEKEY_PE;
@@ -98,11 +98,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PEKEY] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PELA.PEKEY]-&gt;[PE.PEKEY]
         /// Employee identification code
         /// </summary>
-        public PE PEKEY_PE {
+        public PE PEKEY_PE
+        {
             get
             {
                 if (PEKEY != null)
@@ -119,11 +121,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_CODE] => [PLC].[PLCKEY]
+        /// PLC (Leave Code Description) related entity by [PELA.LEAVE_CODE]-&gt;[PLC.PLCKEY]
         /// Leave type code
         /// </summary>
-        public PLC LEAVE_CODE_PLC {
+        public PLC LEAVE_CODE_PLC
+        {
             get
             {
                 if (LEAVE_CODE != null)

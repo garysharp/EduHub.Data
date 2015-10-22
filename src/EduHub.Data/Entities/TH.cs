@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Quilt Headers
     /// </summary>
-    public class TH : EntityBase
+    public partial class TH : EntityBase
     {
 #region Navigation Property Cache
         private TT _TT01KEY_TT;
@@ -592,11 +592,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TT01KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT01KEY]-&gt;[TT.TTKEY]
         /// Link to 1st template in timetable
         /// </summary>
-        public TT TT01KEY_TT {
+        public TT TT01KEY_TT
+        {
             get
             {
                 if (TT01KEY != null)
@@ -613,11 +615,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT02KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT02KEY]-&gt;[TT.TTKEY]
         /// Link to 2nd template in timetable
         /// </summary>
-        public TT TT02KEY_TT {
+        public TT TT02KEY_TT
+        {
             get
             {
                 if (TT02KEY != null)
@@ -634,11 +638,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT03KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT03KEY]-&gt;[TT.TTKEY]
         /// Link to 3rd template in timetable
         /// </summary>
-        public TT TT03KEY_TT {
+        public TT TT03KEY_TT
+        {
             get
             {
                 if (TT03KEY != null)
@@ -655,11 +661,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT04KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT04KEY]-&gt;[TT.TTKEY]
         /// Link to 4th template in timetable
         /// </summary>
-        public TT TT04KEY_TT {
+        public TT TT04KEY_TT
+        {
             get
             {
                 if (TT04KEY != null)
@@ -676,11 +684,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT05KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT05KEY]-&gt;[TT.TTKEY]
         /// Link to 5th template in timetable
         /// </summary>
-        public TT TT05KEY_TT {
+        public TT TT05KEY_TT
+        {
             get
             {
                 if (TT05KEY != null)
@@ -697,11 +707,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT06KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT06KEY]-&gt;[TT.TTKEY]
         /// Link to 6th template in timetable
         /// </summary>
-        public TT TT06KEY_TT {
+        public TT TT06KEY_TT
+        {
             get
             {
                 if (TT06KEY != null)
@@ -718,11 +730,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT07KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT07KEY]-&gt;[TT.TTKEY]
         /// Link to 7th template in timetable
         /// </summary>
-        public TT TT07KEY_TT {
+        public TT TT07KEY_TT
+        {
             get
             {
                 if (TT07KEY != null)
@@ -739,11 +753,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT08KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT08KEY]-&gt;[TT.TTKEY]
         /// Link to 8th template in timetable
         /// </summary>
-        public TT TT08KEY_TT {
+        public TT TT08KEY_TT
+        {
             get
             {
                 if (TT08KEY != null)
@@ -760,11 +776,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT09KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT09KEY]-&gt;[TT.TTKEY]
         /// Link to 9th template in timetable
         /// </summary>
-        public TT TT09KEY_TT {
+        public TT TT09KEY_TT
+        {
             get
             {
                 if (TT09KEY != null)
@@ -781,11 +799,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT10KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT10KEY]-&gt;[TT.TTKEY]
         /// Link to 10th template in timetable
         /// </summary>
-        public TT TT10KEY_TT {
+        public TT TT10KEY_TT
+        {
             get
             {
                 if (TT10KEY != null)
@@ -802,11 +822,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT11KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT11KEY]-&gt;[TT.TTKEY]
         /// Link to 11th template in timetable
         /// </summary>
-        public TT TT11KEY_TT {
+        public TT TT11KEY_TT
+        {
             get
             {
                 if (TT11KEY != null)
@@ -823,11 +845,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT12KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT12KEY]-&gt;[TT.TTKEY]
         /// Link to 12th template in timetable
         /// </summary>
-        public TT TT12KEY_TT {
+        public TT TT12KEY_TT
+        {
             get
             {
                 if (TT12KEY != null)
@@ -844,11 +868,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TT13KEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TH.TT13KEY]-&gt;[TT.TTKEY]
         /// Link to 13th template in timetable (maximum)
         /// </summary>
-        public TT TT13KEY_TT {
+        public TT TT13KEY_TT
+        {
             get
             {
                 if (TT13KEY != null)
@@ -863,6 +889,105 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// KCC (Calendar Dates for Absences) related entities by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<KCC> KCC_CURRENT_QUILT
+        {
+            get
+            {
+                return Context.TH.FindKCCByCURRENT_QUILT(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_CURRENT_QUILT
+        {
+            get
+            {
+                return Context.TH.FindSCIByCURRENT_QUILT(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCL (Subject Classes) related entities by [SCL.QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<SCL> SCL_QUILT
+        {
+            get
+            {
+                return Context.TH.FindSCLByQUILT(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// SFAQ (Staff Availability in Quilt) related entities by [SFAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<SFAQ> SFAQ_QKEY
+        {
+            get
+            {
+                return Context.TH.FindSFAQByQKEY(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// SMAQ (Room Availability in Quilt) related entities by [SMAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<SMAQ> SMAQ_QKEY
+        {
+            get
+            {
+                return Context.TH.FindSMAQByQKEY(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// TCTD (Calendar Period Information) related entities by [TCTD.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<TCTD> TCTD_QKEY
+        {
+            get
+            {
+                return Context.TH.FindTCTDByQKEY(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// TCTQ (Calendar Class Information) related entities by [TCTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<TCTQ> TCTQ_QKEY
+        {
+            get
+            {
+                return Context.TH.FindTCTQByQKEY(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// THTN (Timetable Labels) related entities by [THTN.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<THTN> THTN_QKEY
+        {
+            get
+            {
+                return Context.TH.FindTHTNByQKEY(THKEY);
+            }
+        }
+
+        /// <summary>
+        /// THTQ (Timetable Quilt Entries) related entities by [THTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        public IReadOnlyList<THTQ> THTQ_QKEY
+        {
+            get
+            {
+                return Context.TH.FindTHTQByQKEY(THKEY);
             }
         }
 #endregion

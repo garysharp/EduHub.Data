@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Note Categories
     /// </summary>
-    public class KPN : EntityBase
+    public partial class KPN : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key
@@ -39,6 +36,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PEPY (Employee History) related entities by [PEPY.PURPOSE]-&gt;[KPN.KPNKEY]
+        /// </summary>
+        public IReadOnlyList<PEPY> PEPY_PURPOSE
+        {
+            get
+            {
+                return Context.KPN.FindPEPYByPURPOSE(KPNKEY);
+            }
+        }
 #endregion
     }
 }

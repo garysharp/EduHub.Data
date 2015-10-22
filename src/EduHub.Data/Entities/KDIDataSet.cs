@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Dimensions Data Set
     /// </summary>
-    public sealed class KDIDataSet : SetBase<KDI>
+    public sealed partial class KDIDataSet : SetBase<KDI>
     {
         private Lazy<Dictionary<string, KDI>> KDIKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> STVDI_VDIMENSIONForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STVDO>>> STVDO_VDIMENSIONForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SVAG>>> SVAG_VDIMENSIONForeignIndex;
 
         internal KDIDataSet(EduHubContext Context)
             : base(Context)
         {
             KDIKEYIndex = new Lazy<Dictionary<string, KDI>>(() => this.ToDictionary(e => e.KDIKEY));
+
+            STVDI_VDIMENSIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() =>
+                    Context.STVDI
+                          .Where(e => e.VDIMENSION != null)
+                          .GroupBy(e => e.VDIMENSION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDI>)g.ToList()
+                          .AsReadOnly()));
+
+            STVDO_VDIMENSIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STVDO>>>(() =>
+                    Context.STVDO
+                          .Where(e => e.VDIMENSION != null)
+                          .GroupBy(e => e.VDIMENSION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDO>)g.ToList()
+                          .AsReadOnly()));
+
+            SVAG_VDIMENSIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SVAG>>>(() =>
+                    Context.SVAG
+                          .Where(e => e.VDIMENSION != null)
+                          .GroupBy(e => e.VDIMENSION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SVAG>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STVDI (VELS Dimension Results) entities by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find STVDI entities</param>
+        /// <returns>A list of related STVDI entities</returns>
+        public IReadOnlyList<STVDI> FindSTVDIByVDIMENSION(string KDIKEY)
+        {
+            IReadOnlyList<STVDI> result;
+            if (STVDI_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STVDI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STVDI entities by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find STVDI entities</param>
+        /// <param name="Value">A list of related STVDI entities</param>
+        /// <returns>True if any STVDI entities are found</returns>
+        public bool TryFindSTVDIByVDIMENSION(string KDIKEY, out IReadOnlyList<STVDI> Value)
+        {
+            return STVDI_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all STVDO (VELS Domain Results) entities by [STVDO.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find STVDO entities</param>
+        /// <returns>A list of related STVDO entities</returns>
+        public IReadOnlyList<STVDO> FindSTVDOByVDIMENSION(string KDIKEY)
+        {
+            IReadOnlyList<STVDO> result;
+            if (STVDO_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STVDO>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STVDO entities by [STVDO.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find STVDO entities</param>
+        /// <param name="Value">A list of related STVDO entities</param>
+        /// <returns>True if any STVDO entities are found</returns>
+        public bool TryFindSTVDOByVDIMENSION(string KDIKEY, out IReadOnlyList<STVDO> Value)
+        {
+            return STVDO_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SVAG (VELS Aggregated Dimensions) entities by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find SVAG entities</param>
+        /// <returns>A list of related SVAG entities</returns>
+        public IReadOnlyList<SVAG> FindSVAGByVDIMENSION(string KDIKEY)
+        {
+            IReadOnlyList<SVAG> result;
+            if (SVAG_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SVAG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SVAG entities by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        /// <param name="KDIKEY">KDIKEY value used to find SVAG entities</param>
+        /// <param name="Value">A list of related SVAG entities</param>
+        /// <returns>True if any SVAG entities are found</returns>
+        public bool TryFindSVAGByVDIMENSION(string KDIKEY, out IReadOnlyList<SVAG> Value)
+        {
+            return SVAG_VDIMENSIONForeignIndex.Value.TryGetValue(KDIKEY, out Value);
         }
 
 

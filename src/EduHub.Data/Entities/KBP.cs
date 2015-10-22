@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts Import
     /// </summary>
-    public class KBP : EntityBase
+    public partial class KBP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -77,9 +74,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

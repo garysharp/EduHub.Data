@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts for Sundry Debtors Data Set
     /// </summary>
-    public sealed class DRBDataSet : SetBase<DRB>
+    public sealed partial class DRBDataSet : SetBase<DRB>
     {
         private Lazy<Dictionary<string, DRB>> REFERENCE_NOIndex;
+
 
         internal DRBDataSet(EduHubContext Context)
             : base(Context)
         {
             REFERENCE_NOIndex = new Lazy<Dictionary<string, DRB>>(() => this.ToDictionary(e => e.REFERENCE_NO));
+
         }
 
         /// <summary>

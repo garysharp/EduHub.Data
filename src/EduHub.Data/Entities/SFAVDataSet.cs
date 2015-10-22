@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Availability for Calendar Extras Data Set
     /// </summary>
-    public sealed class SFAVDataSet : SetBase<SFAV>
+    public sealed partial class SFAVDataSet : SetBase<SFAV>
     {
+
 
         internal SFAVDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

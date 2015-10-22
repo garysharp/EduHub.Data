@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Absence Types
     /// </summary>
-    public class KCT : EntityBase
+    public partial class KCT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Absence type code
@@ -81,6 +78,127 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SG (Student Groupings) related entities by [SG.ABS_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SG> SG_ABS_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSGByABS_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.INAC_ABS_CODE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_INAC_ABS_CODE
+        {
+            get
+            {
+                return Context.KCT.FindSTByINAC_ABS_CODE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// STRA (Multiple Day Absences) related entities by [STRA.ABS_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<STRA> STRA_ABS_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSTRAByABS_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.AM_EXP_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_AM_EXP_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABByAM_EXP_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.AM_ACT_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_AM_ACT_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABByAM_ACT_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.PM_EXP_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_PM_EXP_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABByPM_EXP_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.PM_ACT_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_PM_ACT_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABByPM_ACT_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXABCONV (Converted Student Half-Day Absences) related entities by [SXABCONV.AM_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXABCONV> SXABCONV_AM_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABCONVByAM_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXABCONV (Converted Student Half-Day Absences) related entities by [SXABCONV.PM_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXABCONV> SXABCONV_PM_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXABCONVByPM_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAS (Student Scheduled Sessions) related entities by [SXAS.EXP_ABS_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAS> SXAS_EXP_ABS_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXASByEXP_ABS_TYPE(KCTKEY);
+            }
+        }
+
+        /// <summary>
+        /// SXAS (Student Scheduled Sessions) related entities by [SXAS.ACT_ABS_TYPE]-&gt;[KCT.KCTKEY]
+        /// </summary>
+        public IReadOnlyList<SXAS> SXAS_ACT_ABS_TYPE
+        {
+            get
+            {
+                return Context.KCT.FindSXASByACT_ABS_TYPE(KCTKEY);
+            }
+        }
 #endregion
     }
 }

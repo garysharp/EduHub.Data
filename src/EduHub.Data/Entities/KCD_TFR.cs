@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// KCD Transfer
     /// </summary>
-    public class KCD_TFR : EntityBase
+    public partial class KCD_TFR : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _ORIG_SCHOOL_SKGS;
@@ -117,11 +117,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ORIG_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [KCD_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// Orignating School
         /// </summary>
-        public SKGS ORIG_SCHOOL_SKGS {
+        public SKGS ORIG_SCHOOL_SKGS
+        {
             get
             {
                 if (ORIG_SCHOOL != null)

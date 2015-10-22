@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Addresses
     /// </summary>
-    public class UM : EntityBase
+    public partial class UM : EntityBase
     {
 #region Navigation Property Cache
         private KGT _COUNTRY_KGT;
@@ -97,11 +97,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [UM.COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country (default '1101' code for Australia)
         /// </summary>
-        public KGT COUNTRY_KGT {
+        public KGT COUNTRY_KGT
+        {
             get
             {
                 if (COUNTRY != null)
@@ -116,6 +118,138 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// DF (Families) related entities by [DF.HOMEKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<DF> DF_HOMEKEY
+        {
+            get
+            {
+                return Context.UM.FindDFByHOMEKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// DF (Families) related entities by [DF.MAILKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<DF> DF_MAILKEY
+        {
+            get
+            {
+                return Context.UM.FindDFByMAILKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// DF (Families) related entities by [DF.BILLINGKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<DF> DF_BILLINGKEY
+        {
+            get
+            {
+                return Context.UM.FindDFByBILLINGKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.HOMEKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_HOMEKEY
+        {
+            get
+            {
+                return Context.UM.FindPEByHOMEKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.MAILKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_MAILKEY
+        {
+            get
+            {
+                return Context.UM.FindPEByMAILKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.LEAVEKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_LEAVEKEY
+        {
+            get
+            {
+                return Context.UM.FindPEByLEAVEKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAM (School Association Members) related entities by [SAM.ADDRESSKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<SAM> SAM_ADDRESSKEY
+        {
+            get
+            {
+                return Context.UM.FindSAMByADDRESSKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAM (School Association Members) related entities by [SAM.MAILKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<SAM> SAM_MAILKEY
+        {
+            get
+            {
+                return Context.UM.FindSAMByMAILKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.HOMEKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_HOMEKEY
+        {
+            get
+            {
+                return Context.UM.FindSFByHOMEKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.MAILKEY]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_MAILKEY
+        {
+            get
+            {
+                return Context.UM.FindSFByMAILKEY(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.AM_PICKUP_ADDRESS_ID]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_AM_PICKUP_ADDRESS_ID
+        {
+            get
+            {
+                return Context.UM.FindSTTRIPSByAM_PICKUP_ADDRESS_ID(UMKEY);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.PM_SETDOWN_ADDRESS_ID]-&gt;[UM.UMKEY]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_PM_SETDOWN_ADDRESS_ID
+        {
+            get
+            {
+                return Context.UM.FindSTTRIPSByPM_SETDOWN_ADDRESS_ID(UMKEY);
             }
         }
 #endregion

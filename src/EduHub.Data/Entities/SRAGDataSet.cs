@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FTE Student Retentions Data Set
     /// </summary>
-    public sealed class SRAGDataSet : SetBase<SRAG>
+    public sealed partial class SRAGDataSet : SetBase<SRAG>
     {
         private Lazy<Dictionary<int, SRAG>> SRAG_IDIndex;
+
 
         internal SRAGDataSet(EduHubContext Context)
             : base(Context)
         {
             SRAG_IDIndex = new Lazy<Dictionary<int, SRAG>>(() => this.ToDictionary(e => e.SRAG_ID));
+
         }
 
         /// <summary>

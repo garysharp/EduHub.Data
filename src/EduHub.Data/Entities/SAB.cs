@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fees - Billing Templates
     /// </summary>
-    public class SAB : EntityBase
+    public partial class SAB : EntityBase
     {
 #region Navigation Property Cache
         private SA _FEE_CODE_1ST_SA;
@@ -98,11 +98,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FEE_CODE_1ST] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SAB.FEE_CODE_1ST]-&gt;[SA.SAKEY]
         /// Fee code for the 1st child
         /// </summary>
-        public SA FEE_CODE_1ST_SA {
+        public SA FEE_CODE_1ST_SA
+        {
             get
             {
                 if (FEE_CODE_1ST != null)
@@ -119,11 +121,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE_2ND] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SAB.FEE_CODE_2ND]-&gt;[SA.SAKEY]
         /// Fee code for the 2nd child
         /// </summary>
-        public SA FEE_CODE_2ND_SA {
+        public SA FEE_CODE_2ND_SA
+        {
             get
             {
                 if (FEE_CODE_2ND != null)
@@ -140,11 +144,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE_3RD] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SAB.FEE_CODE_3RD]-&gt;[SA.SAKEY]
         /// Fee code for the 3rd child
         /// </summary>
-        public SA FEE_CODE_3RD_SA {
+        public SA FEE_CODE_3RD_SA
+        {
             get
             {
                 if (FEE_CODE_3RD != null)
@@ -161,11 +167,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE_4TH] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SAB.FEE_CODE_4TH]-&gt;[SA.SAKEY]
         /// Fee code for the 4th child
         /// </summary>
-        public SA FEE_CODE_4TH_SA {
+        public SA FEE_CODE_4TH_SA
+        {
             get
             {
                 if (FEE_CODE_4TH != null)
@@ -182,11 +190,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE_KG] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SAB.FEE_CODE_KG]-&gt;[SA.SAKEY]
         /// Fee code for the Kindergarten child
         /// </summary>
-        public SA FEE_CODE_KG_SA {
+        public SA FEE_CODE_KG_SA
+        {
             get
             {
                 if (FEE_CODE_KG != null)
@@ -201,6 +211,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SABT (Billing Template Transactions) related entities by [SABT.SABTKEY]-&gt;[SAB.SABKEY]
+        /// </summary>
+        public IReadOnlyList<SABT> SABT_SABTKEY
+        {
+            get
+            {
+                return Context.SAB.FindSABTBySABTKEY(SABKEY);
             }
         }
 #endregion

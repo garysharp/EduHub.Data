@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Book Hire Records
     /// </summary>
-    public class BKHR : EntityBase
+    public partial class BKHR : EntityBase
     {
 #region Navigation Property Cache
         private BKH _BKHRKEY_BKH;
@@ -71,11 +71,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [BKHRKEY] => [BKH].[BKHKEY]
+        /// BKH (Books for Hire) related entity by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
         /// Book code of book
         /// </summary>
-        public BKH BKHRKEY_BKH {
+        public BKH BKHRKEY_BKH
+        {
             get
             {
                 if (BKHRKEY != null)
@@ -92,11 +94,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STUDENT] => [ST].[STKEY]
+        /// ST (Students) related entity by [BKHR.STUDENT]-&gt;[ST.STKEY]
         /// Student ID of student making loan
         /// </summary>
-        public ST STUDENT_ST {
+        public ST STUDENT_ST
+        {
             get
             {
                 if (STUDENT != null)
@@ -113,11 +117,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STAFF] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [BKHR.STAFF]-&gt;[SF.SFKEY]
         /// Staff code of staff member making loan
         /// </summary>
-        public SF STAFF_SF {
+        public SF STAFF_SF
+        {
             get
             {
                 if (STAFF != null)

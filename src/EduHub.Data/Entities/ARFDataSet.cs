@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Financial Transactions Data Set
     /// </summary>
-    public sealed class ARFDataSet : SetBase<ARF>
+    public sealed partial class ARFDataSet : SetBase<ARF>
     {
         private Lazy<Dictionary<string, ARF>> TRREFIndex;
+
 
         internal ARFDataSet(EduHubContext Context)
             : base(Context)
         {
             TRREFIndex = new Lazy<Dictionary<string, ARF>>(() => this.ToDictionary(e => e.TRREF));
+
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Advice Slip Message
     /// </summary>
-    public class PEM : EntityBase
+    public partial class PEM : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -53,11 +53,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PEM.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)

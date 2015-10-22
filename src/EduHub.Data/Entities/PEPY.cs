@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee History
     /// </summary>
-    public class PEPY : EntityBase
+    public partial class PEPY : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -59,11 +59,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PEPY.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)
@@ -80,11 +82,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PURPOSE] => [KPN].[KPNKEY]
+        /// KPN (Note Categories) related entity by [PEPY.PURPOSE]-&gt;[KPN.KPNKEY]
         /// Generic purpose for notes
         /// </summary>
-        public KPN PURPOSE_KPN {
+        public KPN PURPOSE_KPN
+        {
             get
             {
                 if (PURPOSE != null)

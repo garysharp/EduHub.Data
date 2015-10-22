@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SP2 dummy table
     /// </summary>
-    public class GLFBUDG : EntityBase
+    public partial class GLFBUDG : EntityBase
     {
 #region Navigation Property Cache
         private GLBUDG _BKEY_GLBUDG;
@@ -46,11 +46,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [BKEY] => [GLBUDG].[BUDGETKEY]
+        /// GLBUDG (General Ledger Budgets) related entity by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
         /// GLBUDG link
         /// </summary>
-        public GLBUDG BKEY_GLBUDG {
+        public GLBUDG BKEY_GLBUDG
+        {
             get
             {
                 if (BKEY != null)

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Meetings Data Set
     /// </summary>
-    public sealed class SCAMDataSet : SetBase<SCAM>
+    public sealed partial class SCAMDataSet : SetBase<SCAM>
     {
+
 
         internal SCAMDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

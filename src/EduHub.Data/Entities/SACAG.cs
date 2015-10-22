@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Absence by Cohort Aggregations
     /// </summary>
-    public class SACAG : EntityBase
+    public partial class SACAG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Unique ID for this record
@@ -59,9 +56,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

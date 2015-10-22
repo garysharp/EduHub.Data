@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Grid
     /// </summary>
-    public class TTEX : EntityBase
+    public partial class TTEX : EntityBase
     {
 #region Navigation Property Cache
         private TT _GKEY_TT;
@@ -69,11 +69,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GKEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TTEX.GKEY]-&gt;[TT.TTKEY]
         /// Grid involved in exam
         /// </summary>
-        public TT GKEY_TT {
+        public TT GKEY_TT
+        {
             get
             {
                 if (GKEY != null)
@@ -90,11 +92,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXAM_ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TTEX.EXAM_ROOM]-&gt;[SM.ROOM]
         /// Room for subject under TTES
         /// </summary>
-        public SM EXAM_ROOM_SM {
+        public SM EXAM_ROOM_SM
+        {
             get
             {
                 if (EXAM_ROOM != null)

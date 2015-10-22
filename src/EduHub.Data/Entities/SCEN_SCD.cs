@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Column-Display Metadata for displaying Student Data
     /// </summary>
-    public class SCEN_SCD : EntityBase
+    public partial class SCEN_SCD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -42,9 +39,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public short? PREFERREDCOLUMNDISPLAYORDER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

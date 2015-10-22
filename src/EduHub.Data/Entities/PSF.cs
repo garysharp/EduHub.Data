@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Pay Steps or Pay Class
     /// </summary>
-    public class PSF : EntityBase
+    public partial class PSF : EntityBase
     {
 #region Navigation Property Cache
         private PS _PSKEY_PS;
@@ -55,11 +55,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PSKEY] => [PS].[PSKEY]
+        /// PS (Pay Steps or Pay Class) related entity by [PSF.PSKEY]-&gt;[PS.PSKEY]
         /// Pay Step or Pay Class code
         /// </summary>
-        public PS PSKEY_PS {
+        public PS PSKEY_PS
+        {
             get
             {
                 if (PSKEY.HasValue)

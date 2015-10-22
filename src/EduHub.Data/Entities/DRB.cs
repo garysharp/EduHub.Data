@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts for Sundry Debtors
     /// </summary>
-    public class DRB : EntityBase
+    public partial class DRB : EntityBase
     {
 #region Navigation Property Cache
         private DR _DR_CODE_DR;
@@ -86,11 +86,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [DR_CODE] => [DR].[DRKEY]
+        /// DR (Accounts Receivable) related entity by [DRB.DR_CODE]-&gt;[DR.DRKEY]
         /// Sundry Debtor key
         /// </summary>
-        public DR DR_CODE_DR {
+        public DR DR_CODE_DR
+        {
             get
             {
                 if (DR_CODE != null)

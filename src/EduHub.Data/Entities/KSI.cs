@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Institutions
     /// </summary>
-    public class KSI : EntityBase
+    public partial class KSI : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Institution code
@@ -33,6 +30,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SFQA (Staff Qualifications) related entities by [SFQA.INSTITUTION]-&gt;[KSI.KSIKEY]
+        /// </summary>
+        public IReadOnlyList<SFQA> SFQA_INSTITUTION
+        {
+            get
+            {
+                return Context.KSI.FindSFQAByINSTITUTION(KSIKEY);
+            }
+        }
 #endregion
     }
 }

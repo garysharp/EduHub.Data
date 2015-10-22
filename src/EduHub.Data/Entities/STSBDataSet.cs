@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Invoice Allocations Data Set
     /// </summary>
-    public sealed class STSBDataSet : SetBase<STSB>
+    public sealed partial class STSBDataSet : SetBase<STSB>
     {
+
 
         internal STSBDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

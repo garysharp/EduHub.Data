@@ -8,14 +8,106 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Groupings Data Set
     /// </summary>
-    public sealed class SGDataSet : SetBase<SG>
+    public sealed partial class SGDataSet : SetBase<SG>
     {
         private Lazy<Dictionary<string, SG>> SGKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SGAM>>> SGAM_SGAMKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGHG>>> SGHG_SGHGKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGM>>> SGM_SGMKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGMA>>> SGMA_SGMAKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGSC>>> SGSC_SGSCKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGSG>>> SGSG_SGSGKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGSG>>> SGSG_SGLINKForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SGTRX>>> SGTRX_SGTRXKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SPU>>> SPU_MAILING_LISTForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STPO>>> STPO_SGLINKForeignIndex;
 
         internal SGDataSet(EduHubContext Context)
             : base(Context)
         {
             SGKEYIndex = new Lazy<Dictionary<string, SG>>(() => this.ToDictionary(e => e.SGKEY));
+
+            SGAM_SGAMKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGAM>>>(() =>
+                    Context.SGAM
+                          .Where(e => e.SGAMKEY != null)
+                          .GroupBy(e => e.SGAMKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGAM>)g.ToList()
+                          .AsReadOnly()));
+
+            SGHG_SGHGKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGHG>>>(() =>
+                    Context.SGHG
+                          .Where(e => e.SGHGKEY != null)
+                          .GroupBy(e => e.SGHGKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGHG>)g.ToList()
+                          .AsReadOnly()));
+
+            SGM_SGMKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGM>>>(() =>
+                    Context.SGM
+                          .Where(e => e.SGMKEY != null)
+                          .GroupBy(e => e.SGMKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGM>)g.ToList()
+                          .AsReadOnly()));
+
+            SGMA_SGMAKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGMA>>>(() =>
+                    Context.SGMA
+                          .Where(e => e.SGMAKEY != null)
+                          .GroupBy(e => e.SGMAKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGMA>)g.ToList()
+                          .AsReadOnly()));
+
+            SGSC_SGSCKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGSC>>>(() =>
+                    Context.SGSC
+                          .Where(e => e.SGSCKEY != null)
+                          .GroupBy(e => e.SGSCKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSC>)g.ToList()
+                          .AsReadOnly()));
+
+            SGSG_SGSGKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGSG>>>(() =>
+                    Context.SGSG
+                          .Where(e => e.SGSGKEY != null)
+                          .GroupBy(e => e.SGSGKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSG>)g.ToList()
+                          .AsReadOnly()));
+
+            SGSG_SGLINKForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGSG>>>(() =>
+                    Context.SGSG
+                          .Where(e => e.SGLINK != null)
+                          .GroupBy(e => e.SGLINK)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSG>)g.ToList()
+                          .AsReadOnly()));
+
+            SGTRX_SGTRXKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SGTRX>>>(() =>
+                    Context.SGTRX
+                          .Where(e => e.SGTRXKEY != null)
+                          .GroupBy(e => e.SGTRXKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGTRX>)g.ToList()
+                          .AsReadOnly()));
+
+            SPU_MAILING_LISTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SPU>>>(() =>
+                    Context.SPU
+                          .Where(e => e.MAILING_LIST != null)
+                          .GroupBy(e => e.MAILING_LIST)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPU>)g.ToList()
+                          .AsReadOnly()));
+
+            STPO_SGLINKForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STPO>>>(() =>
+                    Context.STPO
+                          .Where(e => e.SGLINK != null)
+                          .GroupBy(e => e.SGLINK)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STPO>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +161,296 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SGAM (Adult Group Members) entities by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGAM entities</param>
+        /// <returns>A list of related SGAM entities</returns>
+        public IReadOnlyList<SGAM> FindSGAMBySGAMKEY(string SGKEY)
+        {
+            IReadOnlyList<SGAM> result;
+            if (SGAM_SGAMKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGAM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGAM entities by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGAM entities</param>
+        /// <param name="Value">A list of related SGAM entities</param>
+        /// <returns>True if any SGAM entities are found</returns>
+        public bool TryFindSGAMBySGAMKEY(string SGKEY, out IReadOnlyList<SGAM> Value)
+        {
+            return SGAM_SGAMKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGHG (Home Group Eligibility Criteria) entities by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGHG entities</param>
+        /// <returns>A list of related SGHG entities</returns>
+        public IReadOnlyList<SGHG> FindSGHGBySGHGKEY(string SGKEY)
+        {
+            IReadOnlyList<SGHG> result;
+            if (SGHG_SGHGKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGHG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGHG entities by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGHG entities</param>
+        /// <param name="Value">A list of related SGHG entities</param>
+        /// <returns>True if any SGHG entities are found</returns>
+        public bool TryFindSGHGBySGHGKEY(string SGKEY, out IReadOnlyList<SGHG> Value)
+        {
+            return SGHG_SGHGKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGM (Special Group Meetings) entities by [SGM.SGMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGM entities</param>
+        /// <returns>A list of related SGM entities</returns>
+        public IReadOnlyList<SGM> FindSGMBySGMKEY(string SGKEY)
+        {
+            IReadOnlyList<SGM> result;
+            if (SGM_SGMKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGM entities by [SGM.SGMKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGM entities</param>
+        /// <param name="Value">A list of related SGM entities</param>
+        /// <returns>True if any SGM entities are found</returns>
+        public bool TryFindSGMBySGMKEY(string SGKEY, out IReadOnlyList<SGM> Value)
+        {
+            return SGM_SGMKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGMA (Group Meeting Attendance) entities by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGMA entities</param>
+        /// <returns>A list of related SGMA entities</returns>
+        public IReadOnlyList<SGMA> FindSGMABySGMAKEY(string SGKEY)
+        {
+            IReadOnlyList<SGMA> result;
+            if (SGMA_SGMAKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGMA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGMA entities by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGMA entities</param>
+        /// <param name="Value">A list of related SGMA entities</param>
+        /// <returns>True if any SGMA entities are found</returns>
+        public bool TryFindSGMABySGMAKEY(string SGKEY, out IReadOnlyList<SGMA> Value)
+        {
+            return SGMA_SGMAKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGSC (Subject/Class Eligibility Criteria) entities by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSC entities</param>
+        /// <returns>A list of related SGSC entities</returns>
+        public IReadOnlyList<SGSC> FindSGSCBySGSCKEY(string SGKEY)
+        {
+            IReadOnlyList<SGSC> result;
+            if (SGSC_SGSCKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGSC>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGSC entities by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSC entities</param>
+        /// <param name="Value">A list of related SGSC entities</param>
+        /// <returns>True if any SGSC entities are found</returns>
+        public bool TryFindSGSCBySGSCKEY(string SGKEY, out IReadOnlyList<SGSC> Value)
+        {
+            return SGSC_SGSCKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGSG (Group Membership Eligibility Criteria) entities by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
+        /// <returns>A list of related SGSG entities</returns>
+        public IReadOnlyList<SGSG> FindSGSGBySGSGKEY(string SGKEY)
+        {
+            IReadOnlyList<SGSG> result;
+            if (SGSG_SGSGKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGSG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGSG entities by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
+        /// <param name="Value">A list of related SGSG entities</param>
+        /// <returns>True if any SGSG entities are found</returns>
+        public bool TryFindSGSGBySGSGKEY(string SGKEY, out IReadOnlyList<SGSG> Value)
+        {
+            return SGSG_SGSGKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGSG (Group Membership Eligibility Criteria) entities by [SGSG.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
+        /// <returns>A list of related SGSG entities</returns>
+        public IReadOnlyList<SGSG> FindSGSGBySGLINK(string SGKEY)
+        {
+            IReadOnlyList<SGSG> result;
+            if (SGSG_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGSG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGSG entities by [SGSG.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
+        /// <param name="Value">A list of related SGSG entities</param>
+        /// <returns>True if any SGSG entities are found</returns>
+        public bool TryFindSGSGBySGLINK(string SGKEY, out IReadOnlyList<SGSG> Value)
+        {
+            return SGSG_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SGTRX (Temporary Group Transactions) entities by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGTRX entities</param>
+        /// <returns>A list of related SGTRX entities</returns>
+        public IReadOnlyList<SGTRX> FindSGTRXBySGTRXKEY(string SGKEY)
+        {
+            IReadOnlyList<SGTRX> result;
+            if (SGTRX_SGTRXKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SGTRX>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SGTRX entities by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SGTRX entities</param>
+        /// <param name="Value">A list of related SGTRX entities</param>
+        /// <returns>True if any SGTRX entities are found</returns>
+        public bool TryFindSGTRXBySGTRXKEY(string SGKEY, out IReadOnlyList<SGTRX> Value)
+        {
+            return SGTRX_SGTRXKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SPU (Publications) entities by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SPU entities</param>
+        /// <returns>A list of related SPU entities</returns>
+        public IReadOnlyList<SPU> FindSPUByMAILING_LIST(string SGKEY)
+        {
+            IReadOnlyList<SPU> result;
+            if (SPU_MAILING_LISTForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SPU>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SPU entities by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SPU entities</param>
+        /// <param name="Value">A list of related SPU entities</param>
+        /// <returns>True if any SPU entities are found</returns>
+        public bool TryFindSPUByMAILING_LIST(string SGKEY, out IReadOnlyList<SPU> Value)
+        {
+            return SPU_MAILING_LISTForeignIndex.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all STPO (Position or Group Memberships) entities by [STPO.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find STPO entities</param>
+        /// <returns>A list of related STPO entities</returns>
+        public IReadOnlyList<STPO> FindSTPOBySGLINK(string SGKEY)
+        {
+            IReadOnlyList<STPO> result;
+            if (STPO_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STPO>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STPO entities by [STPO.SGLINK]-&gt;[SG.SGKEY]
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find STPO entities</param>
+        /// <param name="Value">A list of related STPO entities</param>
+        /// <returns>True if any STPO entities are found</returns>
+        public bool TryFindSTPOBySGLINK(string SGKEY, out IReadOnlyList<STPO> Value)
+        {
+            return STPO_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out Value);
         }
 
 

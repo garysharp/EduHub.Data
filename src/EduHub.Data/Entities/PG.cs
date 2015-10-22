@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Payment Summary Box
     /// </summary>
-    public class PG : EntityBase
+    public partial class PG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// PAYG Payment summary Box
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PI (Pay Items) related entities by [PI.PAYG_BOX]-&gt;[PG.PAYG_BOX]
+        /// </summary>
+        public IReadOnlyList<PI> PI_PAYG_BOX
+        {
+            get
+            {
+                return Context.PG.FindPIByPAYG_BOX(PAYG_BOX);
+            }
+        }
 #endregion
     }
 }

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Available Qualifications
     /// </summary>
-    public class KSQ : EntityBase
+    public partial class KSQ : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Qualification code
@@ -33,6 +30,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SFQA (Staff Qualifications) related entities by [SFQA.QUALIFICATION]-&gt;[KSQ.KSQKEY]
+        /// </summary>
+        public IReadOnlyList<SFQA> SFQA_QUALIFICATION
+        {
+            get
+            {
+                return Context.KSQ.FindSFQAByQUALIFICATION(KSQKEY);
+            }
+        }
 #endregion
     }
 }

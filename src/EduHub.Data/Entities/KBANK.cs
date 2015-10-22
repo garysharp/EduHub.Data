@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account
     /// </summary>
-    public class KBANK : EntityBase
+    public partial class KBANK : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// General Ledger code (Prime Key)
@@ -109,6 +106,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PN (Payroll Groups) related entities by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
+        /// </summary>
+        public IReadOnlyList<PN> PN_DD_GLCODE
+        {
+            get
+            {
+                return Context.KBANK.FindPNByDD_GLCODE(GLCODE);
+            }
+        }
 #endregion
     }
 }

@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvements/Sickbay Visits Data Set
     /// </summary>
-    public sealed class SAIDataSet : SetBase<SAI>
+    public sealed partial class SAIDataSet : SetBase<SAI>
     {
         private Lazy<Dictionary<int, SAI>> SAIKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SAII>>> SAII_INVOLVEMENTIDForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SAIM>>> SAIM_INVOLVEMENTIDForeignIndex;
 
         internal SAIDataSet(EduHubContext Context)
             : base(Context)
         {
             SAIKEYIndex = new Lazy<Dictionary<int, SAI>>(() => this.ToDictionary(e => e.SAIKEY));
+
+            SAII_INVOLVEMENTIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SAII>>>(() =>
+                    Context.SAII
+                          .Where(e => e.INVOLVEMENTID != null)
+                          .GroupBy(e => e.INVOLVEMENTID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAII>)g.ToList()
+                          .AsReadOnly()));
+
+            SAIM_INVOLVEMENTIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SAIM>>>(() =>
+                    Context.SAIM
+                          .Where(e => e.INVOLVEMENTID != null)
+                          .GroupBy(e => e.INVOLVEMENTID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAIM>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SAII (Accident Involvement Injuries) entities by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAII entities</param>
+        /// <returns>A list of related SAII entities</returns>
+        public IReadOnlyList<SAII> FindSAIIByINVOLVEMENTID(int SAIKEY)
+        {
+            IReadOnlyList<SAII> result;
+            if (SAII_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAII>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAII entities by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAII entities</param>
+        /// <param name="Value">A list of related SAII entities</param>
+        /// <returns>True if any SAII entities are found</returns>
+        public bool TryFindSAIIByINVOLVEMENTID(int SAIKEY, out IReadOnlyList<SAII> Value)
+        {
+            return SAII_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SAIM (Sickbay Medication Administrations) entities by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAIM entities</param>
+        /// <returns>A list of related SAIM entities</returns>
+        public IReadOnlyList<SAIM> FindSAIMByINVOLVEMENTID(int SAIKEY)
+        {
+            IReadOnlyList<SAIM> result;
+            if (SAIM_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAIM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAIM entities by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAIM entities</param>
+        /// <param name="Value">A list of related SAIM entities</param>
+        /// <returns>True if any SAIM entities are found</returns>
+        public bool TryFindSAIMByINVOLVEMENTID(int SAIKEY, out IReadOnlyList<SAIM> Value)
+        {
+            return SAIM_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out Value);
         }
 
 

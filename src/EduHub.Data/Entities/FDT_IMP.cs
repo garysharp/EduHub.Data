@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FDT Financial Raw Import Table
     /// </summary>
-    public class FDT_IMP : EntityBase
+    public partial class FDT_IMP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Sequence no
@@ -343,9 +340,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

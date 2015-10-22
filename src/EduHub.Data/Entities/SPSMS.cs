@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS messages
     /// </summary>
-    public class SPSMS : EntityBase
+    public partial class SPSMS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key
@@ -58,6 +55,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SPRECIP (SMS Recipients) related entities by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        public IReadOnlyList<SPRECIP> SPRECIP_CODE
+        {
+            get
+            {
+                return Context.SPSMS.FindSPRECIPByCODE(SPSMSKEY);
+            }
+        }
+
+        /// <summary>
+        /// SPREPLY (SMS Recipients) related entities by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        public IReadOnlyList<SPREPLY> SPREPLY_CODE
+        {
+            get
+            {
+                return Context.SPSMS.FindSPREPLYByCODE(SPSMSKEY);
+            }
+        }
 #endregion
     }
 }

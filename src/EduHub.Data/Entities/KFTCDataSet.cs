@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fuel Tax Credit Rates Data Set
     /// </summary>
-    public sealed class KFTCDataSet : SetBase<KFTC>
+    public sealed partial class KFTCDataSet : SetBase<KFTC>
     {
         private Lazy<Dictionary<string, KFTC>> KFTCKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> CRFTC_FTC_CODEForeignIndex;
 
         internal KFTCDataSet(EduHubContext Context)
             : base(Context)
         {
             KFTCKEYIndex = new Lazy<Dictionary<string, KFTC>>(() => this.ToDictionary(e => e.KFTCKEY));
+
+            CRFTC_FTC_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() =>
+                    Context.CRFTC
+                          .Where(e => e.FTC_CODE != null)
+                          .GroupBy(e => e.FTC_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRFTC>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all CRFTC (Creditor Fuel Tax Credits) entities by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
+        /// </summary>
+        /// <param name="KFTCKEY">KFTCKEY value used to find CRFTC entities</param>
+        /// <returns>A list of related CRFTC entities</returns>
+        public IReadOnlyList<CRFTC> FindCRFTCByFTC_CODE(string KFTCKEY)
+        {
+            IReadOnlyList<CRFTC> result;
+            if (CRFTC_FTC_CODEForeignIndex.Value.TryGetValue(KFTCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CRFTC>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CRFTC entities by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
+        /// </summary>
+        /// <param name="KFTCKEY">KFTCKEY value used to find CRFTC entities</param>
+        /// <param name="Value">A list of related CRFTC entities</param>
+        /// <returns>True if any CRFTC entities are found</returns>
+        public bool TryFindCRFTCByFTC_CODE(string KFTCKEY, out IReadOnlyList<CRFTC> Value)
+        {
+            return CRFTC_FTC_CODEForeignIndex.Value.TryGetValue(KFTCKEY, out Value);
         }
 
 

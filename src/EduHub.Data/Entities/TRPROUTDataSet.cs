@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Routes Data Set
     /// </summary>
-    public sealed class TRPROUTDataSet : SetBase<TRPROUT>
+    public sealed partial class TRPROUTDataSet : SetBase<TRPROUT>
     {
         private Lazy<Dictionary<int, TRPROUT>> ROUTE_IDIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_AM_ROUTE_IDForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_PM_ROUTE_IDForeignIndex;
 
         internal TRPROUTDataSet(EduHubContext Context)
             : base(Context)
         {
             ROUTE_IDIndex = new Lazy<Dictionary<int, TRPROUT>>(() => this.ToDictionary(e => e.ROUTE_ID));
+
+            STTRIPS_AM_ROUTE_IDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
+                    Context.STTRIPS
+                          .Where(e => e.AM_ROUTE_ID != null)
+                          .GroupBy(e => e.AM_ROUTE_ID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
+                          .AsReadOnly()));
+
+            STTRIPS_PM_ROUTE_IDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
+                    Context.STTRIPS
+                          .Where(e => e.PM_ROUTE_ID != null)
+                          .GroupBy(e => e.PM_ROUTE_ID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.AM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        /// <param name="ROUTE_ID">ROUTE_ID value used to find STTRIPS entities</param>
+        /// <returns>A list of related STTRIPS entities</returns>
+        public IReadOnlyList<STTRIPS> FindSTTRIPSByAM_ROUTE_ID(int ROUTE_ID)
+        {
+            IReadOnlyList<STTRIPS> result;
+            if (STTRIPS_AM_ROUTE_IDForeignIndex.Value.TryGetValue(ROUTE_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STTRIPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STTRIPS entities by [STTRIPS.AM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        /// <param name="ROUTE_ID">ROUTE_ID value used to find STTRIPS entities</param>
+        /// <param name="Value">A list of related STTRIPS entities</param>
+        /// <returns>True if any STTRIPS entities are found</returns>
+        public bool TryFindSTTRIPSByAM_ROUTE_ID(int ROUTE_ID, out IReadOnlyList<STTRIPS> Value)
+        {
+            return STTRIPS_AM_ROUTE_IDForeignIndex.Value.TryGetValue(ROUTE_ID, out Value);
+        }
+
+        /// <summary>
+        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.PM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        /// <param name="ROUTE_ID">ROUTE_ID value used to find STTRIPS entities</param>
+        /// <returns>A list of related STTRIPS entities</returns>
+        public IReadOnlyList<STTRIPS> FindSTTRIPSByPM_ROUTE_ID(int ROUTE_ID)
+        {
+            IReadOnlyList<STTRIPS> result;
+            if (STTRIPS_PM_ROUTE_IDForeignIndex.Value.TryGetValue(ROUTE_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STTRIPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STTRIPS entities by [STTRIPS.PM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        /// <param name="ROUTE_ID">ROUTE_ID value used to find STTRIPS entities</param>
+        /// <param name="Value">A list of related STTRIPS entities</param>
+        /// <returns>True if any STTRIPS entities are found</returns>
+        public bool TryFindSTTRIPSByPM_ROUTE_ID(int ROUTE_ID, out IReadOnlyList<STTRIPS> Value)
+        {
+            return STTRIPS_PM_ROUTE_IDForeignIndex.Value.TryGetValue(ROUTE_ID, out Value);
         }
 
 

@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account Data Set
     /// </summary>
-    public sealed class KBANKDataSet : SetBase<KBANK>
+    public sealed partial class KBANKDataSet : SetBase<KBANK>
     {
         private Lazy<Dictionary<string, KBANK>> GLCODEIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PN>>> PN_DD_GLCODEForeignIndex;
 
         internal KBANKDataSet(EduHubContext Context)
             : base(Context)
         {
             GLCODEIndex = new Lazy<Dictionary<string, KBANK>>(() => this.ToDictionary(e => e.GLCODE));
+
+            PN_DD_GLCODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PN>>>(() =>
+                    Context.PN
+                          .Where(e => e.DD_GLCODE != null)
+                          .GroupBy(e => e.DD_GLCODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PN>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PN (Payroll Groups) entities by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PN entities</param>
+        /// <returns>A list of related PN entities</returns>
+        public IReadOnlyList<PN> FindPNByDD_GLCODE(string GLCODE)
+        {
+            IReadOnlyList<PN> result;
+            if (PN_DD_GLCODEForeignIndex.Value.TryGetValue(GLCODE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PN>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PN entities by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PN entities</param>
+        /// <param name="Value">A list of related PN entities</param>
+        /// <returns>True if any PN entities are found</returns>
+        public bool TryFindPNByDD_GLCODE(string GLCODE, out IReadOnlyList<PN> Value)
+        {
+            return PN_DD_GLCODEForeignIndex.Value.TryGetValue(GLCODE, out Value);
         }
 
 

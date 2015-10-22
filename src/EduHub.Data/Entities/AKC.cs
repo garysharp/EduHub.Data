@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Categories
     /// </summary>
-    public class AKC : EntityBase
+    public partial class AKC : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_ASS_GL;
@@ -143,11 +143,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE_ASS] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GLCODE_ASS]-&gt;[GL.CODE]
         /// GL Asset Code  (Capital)
         /// </summary>
-        public GL GLCODE_ASS_GL {
+        public GL GLCODE_ASS_GL
+        {
             get
             {
                 if (GLCODE_ASS != null)
@@ -164,11 +166,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLCODE_PRV] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GLCODE_PRV]-&gt;[GL.CODE]
         /// GL Asset Provision for Depn
         /// </summary>
-        public GL GLCODE_PRV_GL {
+        public GL GLCODE_PRV_GL
+        {
             get
             {
                 if (GLCODE_PRV != null)
@@ -185,11 +189,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLCODE_EXP] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GLCODE_EXP]-&gt;[GL.CODE]
         /// GL Asset Depreciation Code
         /// </summary>
-        public GL GLCODE_EXP_GL {
+        public GL GLCODE_EXP_GL
+        {
             get
             {
                 if (GLCODE_EXP != null)
@@ -206,11 +212,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GL_REVALS_BS] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GL_REVALS_BS]-&gt;[GL.CODE]
         /// GL Asset Revaluations put to
         /// </summary>
-        public GL GL_REVALS_BS_GL {
+        public GL GL_REVALS_BS_GL
+        {
             get
             {
                 if (GL_REVALS_BS != null)
@@ -227,11 +235,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GL_REVALS_PL] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GL_REVALS_PL]-&gt;[GL.CODE]
         /// GL Asset Revaluations put to P &amp; L
         /// </summary>
-        public GL GL_REVALS_PL_GL {
+        public GL GL_REVALS_PL_GL
+        {
             get
             {
                 if (GL_REVALS_PL != null)
@@ -248,11 +258,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GL_REVALS_ASS] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GL_REVALS_ASS]-&gt;[GL.CODE]
         /// GL Code for asset cost of Reval's
         /// </summary>
-        public GL GL_REVALS_ASS_GL {
+        public GL GL_REVALS_ASS_GL
+        {
             get
             {
                 if (GL_REVALS_ASS != null)
@@ -269,11 +281,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GL_DISP_PROF] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GL_DISP_PROF]-&gt;[GL.CODE]
         /// GL Asset Profit/Loss on Sale
         /// </summary>
-        public GL GL_DISP_PROF_GL {
+        public GL GL_DISP_PROF_GL
+        {
             get
             {
                 if (GL_DISP_PROF != null)
@@ -290,11 +304,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GL_DISP_PROC] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.GL_DISP_PROC]-&gt;[GL.CODE]
         /// GL Postings Proceeds from Disposals (PL)
         /// </summary>
-        public GL GL_DISP_PROC_GL {
+        public GL GL_DISP_PROC_GL
+        {
             get
             {
                 if (GL_DISP_PROC != null)
@@ -311,11 +327,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [APTE_GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AKC.APTE_GLCODE]-&gt;[GL.CODE]
         /// GL acct where pte use % of depn will be posted
         /// </summary>
-        public GL APTE_GLCODE_GL {
+        public GL APTE_GLCODE_GL
+        {
             get
             {
                 if (APTE_GLCODE != null)
@@ -332,11 +350,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEPN_AMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [AKC.DEPN_AMETHOD]-&gt;[KADM.KADMKEY]
         /// Default deprn method for accounts
         /// </summary>
-        public KADM DEPN_AMETHOD_KADM {
+        public KADM DEPN_AMETHOD_KADM
+        {
             get
             {
                 if (DEPN_AMETHOD != null)
@@ -353,11 +373,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEPN_TMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [AKC.DEPN_TMETHOD]-&gt;[KADM.KADMKEY]
         /// Default deprn method for taxation
         /// </summary>
-        public KADM DEPN_TMETHOD_KADM {
+        public KADM DEPN_TMETHOD_KADM
+        {
             get
             {
                 if (DEPN_TMETHOD != null)
@@ -372,6 +394,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.CATEGORY]-&gt;[AKC.CATEGORY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_CATEGORY
+        {
+            get
+            {
+                return Context.AKC.FindARByCATEGORY(CATEGORY);
             }
         }
 #endregion

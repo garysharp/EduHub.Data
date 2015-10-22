@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Prevention Measures Data Set
     /// </summary>
-    public sealed class SADPDataSet : SetBase<SADP>
+    public sealed partial class SADPDataSet : SetBase<SADP>
     {
+
 
         internal SADPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

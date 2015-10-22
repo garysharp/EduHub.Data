@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Half-Day Absences Data Set
     /// </summary>
-    public sealed class SXABDataSet : SetBase<SXAB>
+    public sealed partial class SXABDataSet : SetBase<SXAB>
     {
         private Lazy<Dictionary<int, SXAB>> SXAB_IDIndex;
+
 
         internal SXABDataSet(EduHubContext Context)
             : base(Context)
         {
             SXAB_IDIndex = new Lazy<Dictionary<int, SXAB>>(() => this.ToDictionary(e => e.SXAB_ID));
+
         }
 
         /// <summary>

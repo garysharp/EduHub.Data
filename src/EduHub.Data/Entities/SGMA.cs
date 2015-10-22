@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Group Meeting Attendance
     /// </summary>
-    public class SGMA : EntityBase
+    public partial class SGMA : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGMAKEY_SG;
@@ -62,11 +62,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGMAKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
         /// Code of group holding this meeting
         /// </summary>
-        public SG SGMAKEY_SG {
+        public SG SGMAKEY_SG
+        {
             get
             {
                 if (SGMAKEY != null)

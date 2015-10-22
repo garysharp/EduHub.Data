@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Trips
     /// </summary>
-    public class STTRIPS : EntityBase
+    public partial class STTRIPS : EntityBase
     {
 #region Navigation Property Cache
         private ST _STUDENT_ID_ST;
@@ -187,11 +187,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STUDENT_ID] => [ST].[STKEY]
+        /// ST (Students) related entity by [STTRIPS.STUDENT_ID]-&gt;[ST.STKEY]
         /// Student key
         /// </summary>
-        public ST STUDENT_ID_ST {
+        public ST STUDENT_ID_ST
+        {
             get
             {
                 if (STUDENT_ID != null)
@@ -208,11 +210,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_ROUTE_ID] => [TRPROUT].[ROUTE_ID]
+        /// TRPROUT (Student Transport Routes) related entity by [STTRIPS.AM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
         /// AM Route ID
         /// </summary>
-        public TRPROUT AM_ROUTE_ID_TRPROUT {
+        public TRPROUT AM_ROUTE_ID_TRPROUT
+        {
             get
             {
                 if (AM_ROUTE_ID.HasValue)
@@ -229,11 +233,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_TRANSPORT_MODE] => [TRPMODE].[TRANSPORT_MODE_ID]
+        /// TRPMODE (Transport Modes) related entity by [STTRIPS.AM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
         /// AM mode of transport
         /// </summary>
-        public TRPMODE AM_TRANSPORT_MODE_TRPMODE {
+        public TRPMODE AM_TRANSPORT_MODE_TRPMODE
+        {
             get
             {
                 if (AM_TRANSPORT_MODE.HasValue)
@@ -250,11 +256,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_PICKUP_ADDRESS_ID] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [STTRIPS.AM_PICKUP_ADDRESS_ID]-&gt;[UM.UMKEY]
         /// AM pickup address
         /// </summary>
-        public UM AM_PICKUP_ADDRESS_ID_UM {
+        public UM AM_PICKUP_ADDRESS_ID_UM
+        {
             get
             {
                 if (AM_PICKUP_ADDRESS_ID.HasValue)
@@ -271,11 +279,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_SETDOWN_CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STTRIPS.AM_SETDOWN_CAMPUS]-&gt;[SCI.SCIKEY]
         /// 
         /// </summary>
-        public SCI AM_SETDOWN_CAMPUS_SCI {
+        public SCI AM_SETDOWN_CAMPUS_SCI
+        {
             get
             {
                 if (AM_SETDOWN_CAMPUS.HasValue)
@@ -292,11 +302,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_ROUTE_ID] => [TRPROUT].[ROUTE_ID]
+        /// TRPROUT (Student Transport Routes) related entity by [STTRIPS.PM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
         /// 
         /// </summary>
-        public TRPROUT PM_ROUTE_ID_TRPROUT {
+        public TRPROUT PM_ROUTE_ID_TRPROUT
+        {
             get
             {
                 if (PM_ROUTE_ID.HasValue)
@@ -313,11 +325,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_TRANSPORT_MODE] => [TRPMODE].[TRANSPORT_MODE_ID]
+        /// TRPMODE (Transport Modes) related entity by [STTRIPS.PM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
         /// 
         /// </summary>
-        public TRPMODE PM_TRANSPORT_MODE_TRPMODE {
+        public TRPMODE PM_TRANSPORT_MODE_TRPMODE
+        {
             get
             {
                 if (PM_TRANSPORT_MODE.HasValue)
@@ -334,11 +348,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_PICKUP_CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STTRIPS.PM_PICKUP_CAMPUS]-&gt;[SCI.SCIKEY]
         /// 
         /// </summary>
-        public SCI PM_PICKUP_CAMPUS_SCI {
+        public SCI PM_PICKUP_CAMPUS_SCI
+        {
             get
             {
                 if (PM_PICKUP_CAMPUS.HasValue)
@@ -355,11 +371,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_SETDOWN_ADDRESS_ID] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [STTRIPS.PM_SETDOWN_ADDRESS_ID]-&gt;[UM.UMKEY]
         /// 
         /// </summary>
-        public UM PM_SETDOWN_ADDRESS_ID_UM {
+        public UM PM_SETDOWN_ADDRESS_ID_UM
+        {
             get
             {
                 if (PM_SETDOWN_ADDRESS_ID.HasValue)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Last Years General Ledger
     /// </summary>
-    public class GLPREV : EntityBase
+    public partial class GLPREV : EntityBase
     {
 #region Navigation Property Cache
         private KGLT _GL_TYPE_KGLT;
@@ -423,11 +423,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GL_TYPE] => [KGLT].[GL_TYPE]
+        /// KGLT (General Ledger Account Types) related entity by [GLPREV.GL_TYPE]-&gt;[KGLT.GL_TYPE]
         /// Income/expense/Liabitiy etc
         /// </summary>
-        public KGLT GL_TYPE_KGLT {
+        public KGLT GL_TYPE_KGLT
+        {
             get
             {
                 if (GL_TYPE != null)
@@ -442,6 +444,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// GLCFPREV (Last Years GL Combined Financial Trans) related entities by [GLCFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        public IReadOnlyList<GLCFPREV> GLCFPREV_CODE
+        {
+            get
+            {
+                return Context.GLPREV.FindGLCFPREVByCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// GLFPREV (Last Years GL Financial Trans) related entities by [GLFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        public IReadOnlyList<GLFPREV> GLFPREV_CODE
+        {
+            get
+            {
+                return Context.GLPREV.FindGLFPREVByCODE(CODE);
             }
         }
 #endregion

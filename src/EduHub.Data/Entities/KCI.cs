@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Religious Instruction Curricula
     /// </summary>
-    public class KCI : EntityBase
+    public partial class KCI : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Religious Instruction Curriculum code
@@ -38,6 +35,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.REL_INSTR]-&gt;[KCI.KCIKEY]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_REL_INSTR
+        {
+            get
+            {
+                return Context.KCI.FindSCIByREL_INSTR(KCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.REL_INSTR]-&gt;[KCI.KCIKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_REL_INSTR
+        {
+            get
+            {
+                return Context.KCI.FindSTByREL_INSTR(KCIKEY);
+            }
+        }
 #endregion
     }
 }

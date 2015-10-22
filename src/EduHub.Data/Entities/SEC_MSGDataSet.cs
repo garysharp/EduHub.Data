@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 School Message Data Set
     /// </summary>
-    public sealed class SEC_MSGDataSet : SetBase<SEC_MSG>
+    public sealed partial class SEC_MSGDataSet : SetBase<SEC_MSG>
     {
         private Lazy<Dictionary<int, SEC_MSG>> SCHOOLMSGIDIndex;
+
 
         internal SEC_MSGDataSet(EduHubContext Context)
             : base(Context)
         {
             SCHOOLMSGIDIndex = new Lazy<Dictionary<int, SEC_MSG>>(() => this.ToDictionary(e => e.SCHOOLMSGID));
+
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Financial Transactions
     /// </summary>
-    public class DFF : EntityBase
+    public partial class DFF : EntityBase
     {
 #region Navigation Property Cache
         private DF _CODE_DF;
@@ -332,11 +332,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [DF].[DFKEY]
+        /// DF (Families) related entity by [DFF.CODE]-&gt;[DF.DFKEY]
         /// Family key
         /// </summary>
-        public DF CODE_DF {
+        public DF CODE_DF
+        {
             get
             {
                 if (CODE != null)
@@ -353,11 +355,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TRSTUD] => [ST].[STKEY]
+        /// ST (Students) related entity by [DFF.TRSTUD]-&gt;[ST.STKEY]
         /// Student key - only used for split billing
         /// </summary>
-        public ST TRSTUD_ST {
+        public ST TRSTUD_ST
+        {
             get
             {
                 if (TRSTUD != null)
@@ -374,11 +378,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STUDENT] => [ST].[STKEY]
+        /// ST (Students) related entity by [DFF.STUDENT]-&gt;[ST.STKEY]
         /// Student key
         /// </summary>
-        public ST STUDENT_ST {
+        public ST STUDENT_ST
+        {
             get
             {
                 if (STUDENT != null)
@@ -395,11 +401,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [DFF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// Relate to KGST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -416,11 +424,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [DFF.BSB]-&gt;[KAB.BSB]
         /// Cheque BSB number
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -437,11 +447,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [DFF.FEE_CODE]-&gt;[SA.SAKEY]
         /// Fee code
         /// </summary>
-        public SA FEE_CODE_SA {
+        public SA FEE_CODE_SA
+        {
             get
             {
                 if (FEE_CODE != null)
@@ -458,12 +470,14 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [DFF.SUBJECT]-&gt;[SU.SUKEY]
         /// Subject with fee (levy)
         /// 
         /// </summary>
-        public SU SUBJECT_SU {
+        public SU SUBJECT_SU
+        {
             get
             {
                 if (SUBJECT != null)
@@ -480,11 +494,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [DFF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -501,11 +517,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [DFF.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

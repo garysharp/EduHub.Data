@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report file audit
     /// </summary>
-    public class SPEPRINT : EntityBase
+    public partial class SPEPRINT : EntityBase
     {
 #region Navigation Property Cache
         private SPEMAIL _CODE_SPEMAIL;
@@ -107,11 +107,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [SPEMAIL].[SPEMAILKEY]
+        /// SPEMAIL (Report email templates) related entity by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
         /// Email Key
         /// </summary>
-        public SPEMAIL CODE_SPEMAIL {
+        public SPEMAIL CODE_SPEMAIL
+        {
             get
             {
                 if (CODE != null)

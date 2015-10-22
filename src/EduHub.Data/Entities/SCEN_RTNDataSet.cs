@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Return Summary Data Data Set
     /// </summary>
-    public sealed class SCEN_RTNDataSet : SetBase<SCEN_RTN>
+    public sealed partial class SCEN_RTNDataSet : SetBase<SCEN_RTN>
     {
         private Lazy<Dictionary<int, SCEN_RTN>> IDIndex;
+
 
         internal SCEN_RTNDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_RTN>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

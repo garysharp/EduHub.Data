@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Budgets Data Set
     /// </summary>
-    public sealed class GLBUDGDataSet : SetBase<GLBUDG>
+    public sealed partial class GLBUDGDataSet : SetBase<GLBUDG>
     {
         private Lazy<Dictionary<string, GLBUDG>> BUDGETKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLFBUDG>>> GLFBUDG_BKEYForeignIndex;
 
         internal GLBUDGDataSet(EduHubContext Context)
             : base(Context)
         {
             BUDGETKEYIndex = new Lazy<Dictionary<string, GLBUDG>>(() => this.ToDictionary(e => e.BUDGETKEY));
+
+            GLFBUDG_BKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLFBUDG>>>(() =>
+                    Context.GLFBUDG
+                          .Where(e => e.BKEY != null)
+                          .GroupBy(e => e.BKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFBUDG>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all GLFBUDG (SP2 dummy table) entities by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
+        /// </summary>
+        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLFBUDG entities</param>
+        /// <returns>A list of related GLFBUDG entities</returns>
+        public IReadOnlyList<GLFBUDG> FindGLFBUDGByBKEY(string BUDGETKEY)
+        {
+            IReadOnlyList<GLFBUDG> result;
+            if (GLFBUDG_BKEYForeignIndex.Value.TryGetValue(BUDGETKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLFBUDG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLFBUDG entities by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
+        /// </summary>
+        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLFBUDG entities</param>
+        /// <param name="Value">A list of related GLFBUDG entities</param>
+        /// <returns>True if any GLFBUDG entities are found</returns>
+        public bool TryFindGLFBUDGByBKEY(string BUDGETKEY, out IReadOnlyList<GLFBUDG> Value)
+        {
+            return GLFBUDG_BKEYForeignIndex.Value.TryGetValue(BUDGETKEY, out Value);
         }
 
 

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Multiple Day Absences Data Set
     /// </summary>
-    public sealed class STRADataSet : SetBase<STRA>
+    public sealed partial class STRADataSet : SetBase<STRA>
     {
+
 
         internal STRADataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

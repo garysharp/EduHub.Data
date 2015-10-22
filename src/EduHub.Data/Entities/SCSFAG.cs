@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Data Aggregates
     /// </summary>
-    public class SCSFAG : EntityBase
+    public partial class SCSFAG : EntityBase
     {
 #region Navigation Property Cache
         private SCSF _SCSFKEY_SCSF;
@@ -198,11 +198,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SCSFKEY] => [SCSF].[SCSFKEY]
+        /// SCSF (CSF Strands) related entity by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
         /// CSF Outcome Code (identifies KLA and Strand)
         /// </summary>
-        public SCSF SCSFKEY_SCSF {
+        public SCSF SCSFKEY_SCSF
+        {
             get
             {
                 if (SCSFKEY != null)
@@ -219,11 +221,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_YEAR_LEVEL] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SCSFAG.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
         /// Year level of assessed students
         /// </summary>
-        public KCY ST_YEAR_LEVEL_KCY {
+        public KCY ST_YEAR_LEVEL_KCY
+        {
             get
             {
                 if (ST_YEAR_LEVEL != null)

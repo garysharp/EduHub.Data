@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Payer Details
     /// </summary>
-    public class PPD : EntityBase
+    public partial class PPD : EntityBase
     {
 #region Navigation Property Cache
         private KGT _COUNTRY_KGT;
@@ -123,11 +123,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [PPD.COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country
         /// </summary>
-        public KGT COUNTRY_KGT {
+        public KGT COUNTRY_KGT
+        {
             get
             {
                 if (COUNTRY != null)
@@ -142,6 +144,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// CR (Accounts Payable) related entities by [CR.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        public IReadOnlyList<CR> CR_PPDKEY
+        {
+            get
+            {
+                return Context.PPD.FindCRByPPDKEY(PPDKEY);
+            }
+        }
+
+        /// <summary>
+        /// PN (Payroll Groups) related entities by [PN.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        public IReadOnlyList<PN> PN_PPDKEY
+        {
+            get
+            {
+                return Context.PPD.FindPNByPPDKEY(PPDKEY);
             }
         }
 #endregion

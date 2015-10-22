@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Task Message Data Set
     /// </summary>
-    public sealed class KTMDataSet : SetBase<KTM>
+    public sealed partial class KTMDataSet : SetBase<KTM>
     {
         private Lazy<Dictionary<int, KTM>> TIDIndex;
+
 
         internal KTMDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, KTM>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family/Student ID Sequence Numbers
     /// </summary>
-    public class KNFS : EntityBase
+    public partial class KNFS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// First 3 characters of Family/Student Name
@@ -35,9 +32,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Aggregated Dimensions
     /// </summary>
-    public class SVAG : EntityBase
+    public partial class SVAG : EntityBase
     {
 #region Navigation Property Cache
         private KCOHORT _COHORT_KCOHORT;
@@ -191,11 +191,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COHORT] => [KCOHORT].[COHORT]
+        /// KCOHORT (Cohorts for data aggregation) related entity by [SVAG.COHORT]-&gt;[KCOHORT.COHORT]
         /// Link to cohort
         /// </summary>
-        public KCOHORT COHORT_KCOHORT {
+        public KCOHORT COHORT_KCOHORT
+        {
             get
             {
                 if (COHORT != null)
@@ -212,11 +214,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SVAG.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
         /// Year level of cohort
         /// </summary>
-        public KCY SCHOOL_YEAR_KCY {
+        public KCY SCHOOL_YEAR_KCY
+        {
             get
             {
                 if (SCHOOL_YEAR != null)
@@ -233,11 +237,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [VDIMENSION] => [KDI].[KDIKEY]
+        /// KDI (VELS Dimensions) related entity by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
         /// Link to dimension
         /// </summary>
-        public KDI VDIMENSION_KDI {
+        public KDI VDIMENSION_KDI
+        {
             get
             {
                 if (VDIMENSION != null)

@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Positions Data Set
     /// </summary>
-    public sealed class SAPDataSet : SetBase<SAP>
+    public sealed partial class SAPDataSet : SetBase<SAP>
     {
         private Lazy<Dictionary<string, SAP>> SAPKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SAM>>> SAM_ASSOC_POSNForeignIndex;
 
         internal SAPDataSet(EduHubContext Context)
             : base(Context)
         {
             SAPKEYIndex = new Lazy<Dictionary<string, SAP>>(() => this.ToDictionary(e => e.SAPKEY));
+
+            SAM_ASSOC_POSNForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SAM>>>(() =>
+                    Context.SAM
+                          .Where(e => e.ASSOC_POSN != null)
+                          .GroupBy(e => e.ASSOC_POSN)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAM>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SAM (School Association Members) entities by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
+        /// </summary>
+        /// <param name="SAPKEY">SAPKEY value used to find SAM entities</param>
+        /// <returns>A list of related SAM entities</returns>
+        public IReadOnlyList<SAM> FindSAMByASSOC_POSN(string SAPKEY)
+        {
+            IReadOnlyList<SAM> result;
+            if (SAM_ASSOC_POSNForeignIndex.Value.TryGetValue(SAPKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAM entities by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
+        /// </summary>
+        /// <param name="SAPKEY">SAPKEY value used to find SAM entities</param>
+        /// <param name="Value">A list of related SAM entities</param>
+        /// <returns>True if any SAM entities are found</returns>
+        public bool TryFindSAMByASSOC_POSN(string SAPKEY, out IReadOnlyList<SAM> Value)
+        {
+            return SAM_ASSOC_POSNForeignIndex.Value.TryGetValue(SAPKEY, out Value);
         }
 
 

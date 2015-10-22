@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Class Sizes Validation Data
     /// </summary>
-    public class SCEN_ACV : EntityBase
+    public partial class SCEN_ACV : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -52,9 +49,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? LUPDATED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

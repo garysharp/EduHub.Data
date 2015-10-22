@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Behaviour Classifications Data Set
     /// </summary>
-    public sealed class KCBDataSet : SetBase<KCB>
+    public sealed partial class KCBDataSet : SetBase<KCB>
     {
         private Lazy<Dictionary<string, KCB>> KCBKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SID>>> SID_INCIDENT_TYPEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STMB>>> STMB_B_CODEForeignIndex;
 
         internal KCBDataSet(EduHubContext Context)
             : base(Context)
         {
             KCBKEYIndex = new Lazy<Dictionary<string, KCB>>(() => this.ToDictionary(e => e.KCBKEY));
+
+            SID_INCIDENT_TYPEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SID>>>(() =>
+                    Context.SID
+                          .Where(e => e.INCIDENT_TYPE != null)
+                          .GroupBy(e => e.INCIDENT_TYPE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SID>)g.ToList()
+                          .AsReadOnly()));
+
+            STMB_B_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STMB>>>(() =>
+                    Context.STMB
+                          .Where(e => e.B_CODE != null)
+                          .GroupBy(e => e.B_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SID (Disciplinary Incidents) entities by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find SID entities</param>
+        /// <returns>A list of related SID entities</returns>
+        public IReadOnlyList<SID> FindSIDByINCIDENT_TYPE(string KCBKEY)
+        {
+            IReadOnlyList<SID> result;
+            if (SID_INCIDENT_TYPEForeignIndex.Value.TryGetValue(KCBKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SID>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SID entities by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find SID entities</param>
+        /// <param name="Value">A list of related SID entities</param>
+        /// <returns>True if any SID entities are found</returns>
+        public bool TryFindSIDByINCIDENT_TYPE(string KCBKEY, out IReadOnlyList<SID> Value)
+        {
+            return SID_INCIDENT_TYPEForeignIndex.Value.TryGetValue(KCBKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all STMB (Student Merit Behaviour Details) entities by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find STMB entities</param>
+        /// <returns>A list of related STMB entities</returns>
+        public IReadOnlyList<STMB> FindSTMBByB_CODE(string KCBKEY)
+        {
+            IReadOnlyList<STMB> result;
+            if (STMB_B_CODEForeignIndex.Value.TryGetValue(KCBKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STMB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STMB entities by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find STMB entities</param>
+        /// <param name="Value">A list of related STMB entities</param>
+        /// <returns>True if any STMB entities are found</returns>
+        public bool TryFindSTMBByB_CODE(string KCBKEY, out IReadOnlyList<STMB> Value)
+        {
+            return STMB_B_CODEForeignIndex.Value.TryGetValue(KCBKEY, out Value);
         }
 
 

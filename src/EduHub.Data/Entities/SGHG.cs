@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group Eligibility Criteria
     /// </summary>
-    public class SGHG : EntityBase
+    public partial class SGHG : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGHGKEY_SG;
@@ -44,11 +44,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGHGKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
         /// Code of group for which this is a criterion
         /// </summary>
-        public SG SGHGKEY_SG {
+        public SG SGHGKEY_SG
+        {
             get
             {
                 if (SGHGKEY != null)
@@ -65,11 +67,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [KGCLINK] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [SGHG.KGCLINK]-&gt;[KGC.KGCKEY]
         /// Code of home group which is a criterion for membership in group SGSGKEY
         /// </summary>
-        public KGC KGCLINK_KGC {
+        public KGC KGCLINK_KGC
+        {
             get
             {
                 if (KGCLINK != null)

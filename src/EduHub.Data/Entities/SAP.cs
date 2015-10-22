@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Positions
     /// </summary>
-    public class SAP : EntityBase
+    public partial class SAP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Association position code
@@ -42,6 +39,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SAM (School Association Members) related entities by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
+        /// </summary>
+        public IReadOnlyList<SAM> SAM_ASSOC_POSN
+        {
+            get
+            {
+                return Context.SAP.FindSAMByASSOC_POSN(SAPKEY);
+            }
+        }
 #endregion
     }
 }

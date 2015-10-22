@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Financial Transactions Data Set
     /// </summary>
-    public sealed class DFFDataSet : SetBase<DFF>
+    public sealed partial class DFFDataSet : SetBase<DFF>
     {
+
 
         internal DFFDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members Data Set
     /// </summary>
-    public sealed class SDGMDataSet : SetBase<SDGM>
+    public sealed partial class SDGMDataSet : SetBase<SDGM>
     {
+
 
         internal SDGMDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

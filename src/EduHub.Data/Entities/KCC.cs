@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Dates for Absences
     /// </summary>
-    public class KCC : EntityBase
+    public partial class KCC : EntityBase
     {
 #region Navigation Property Cache
         private TH _CURRENT_QUILT_TH;
@@ -91,11 +91,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CURRENT_QUILT] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
         /// (Was QUILT) Code identifying current timetabling quilt
         /// </summary>
-        public TH CURRENT_QUILT_TH {
+        public TH CURRENT_QUILT_TH
+        {
             get
             {
                 if (CURRENT_QUILT != null)

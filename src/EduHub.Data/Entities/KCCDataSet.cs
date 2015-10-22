@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Dates for Absences Data Set
     /// </summary>
-    public sealed class KCCDataSet : SetBase<KCC>
+    public sealed partial class KCCDataSet : SetBase<KCC>
     {
         private Lazy<Dictionary<DateTime, KCC>> KCCKEYIndex;
+
 
         internal KCCDataSet(EduHubContext Context)
             : base(Context)
         {
             KCCKEYIndex = new Lazy<Dictionary<DateTime, KCC>>(() => this.ToDictionary(e => e.KCCKEY));
+
         }
 
         /// <summary>

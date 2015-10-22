@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Standard and Last Pays
     /// </summary>
-    public class PEPS : EntityBase
+    public partial class PEPS : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -133,11 +133,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PEPS.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)
@@ -154,11 +156,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PAYITEM] => [PI].[PIKEY]
+        /// PI (Pay Items) related entity by [PEPS.PAYITEM]-&gt;[PI.PIKEY]
         /// Pay item code
         /// </summary>
-        public PI PAYITEM_PI {
+        public PI PAYITEM_PI
+        {
             get
             {
                 if (PAYITEM.HasValue)
@@ -175,11 +179,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PAY_STEP] => [PS].[PSKEY]
+        /// PS (Pay Steps or Pay Class) related entity by [PEPS.PAY_STEP]-&gt;[PS.PSKEY]
         /// Pay Rate Step
         /// </summary>
-        public PS PAY_STEP_PS {
+        public PS PAY_STEP_PS
+        {
             get
             {
                 if (PAY_STEP.HasValue)
@@ -196,11 +202,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUPER_FUND] => [PF].[PFKEY]
+        /// PF (Superannuation Funds) related entity by [PEPS.SUPER_FUND]-&gt;[PF.PFKEY]
         /// Super fund key
         /// </summary>
-        public PF SUPER_FUND_PF {
+        public PF SUPER_FUND_PF
+        {
             get
             {
                 if (SUPER_FUND != null)
@@ -217,11 +225,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TRCENTRE] => [PC].[PCKEY]
+        /// PC (Cost Centres) related entity by [PEPS.TRCENTRE]-&gt;[PC.PCKEY]
         /// Cost Centre
         /// </summary>
-        public PC TRCENTRE_PC {
+        public PC TRCENTRE_PC
+        {
             get
             {
                 if (TRCENTRE != null)
@@ -238,11 +248,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [PEPS.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -259,11 +271,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [PEPS.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

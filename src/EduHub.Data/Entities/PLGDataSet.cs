@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Management Group Data Set
     /// </summary>
-    public sealed class PLGDataSet : SetBase<PLG>
+    public sealed partial class PLGDataSet : SetBase<PLG>
     {
         private Lazy<Dictionary<string, PLG>> LEAVE_GROUPIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PE>>> PE_LEAVE_GROUPForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PILI>>> PILI_LEAVE_GROUPForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PLT>>> PLT_LEAVE_GROUPForeignIndex;
 
         internal PLGDataSet(EduHubContext Context)
             : base(Context)
         {
             LEAVE_GROUPIndex = new Lazy<Dictionary<string, PLG>>(() => this.ToDictionary(e => e.LEAVE_GROUP));
+
+            PE_LEAVE_GROUPForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PE>>>(() =>
+                    Context.PE
+                          .Where(e => e.LEAVE_GROUP != null)
+                          .GroupBy(e => e.LEAVE_GROUP)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
+                          .AsReadOnly()));
+
+            PILI_LEAVE_GROUPForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PILI>>>(() =>
+                    Context.PILI
+                          .Where(e => e.LEAVE_GROUP != null)
+                          .GroupBy(e => e.LEAVE_GROUP)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PILI>)g.ToList()
+                          .AsReadOnly()));
+
+            PLT_LEAVE_GROUPForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PLT>>>(() =>
+                    Context.PLT
+                          .Where(e => e.LEAVE_GROUP != null)
+                          .GroupBy(e => e.LEAVE_GROUP)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PLT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PE (Employees) entities by [PE.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PE entities</param>
+        /// <returns>A list of related PE entities</returns>
+        public IReadOnlyList<PE> FindPEByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            IReadOnlyList<PE> result;
+            if (PE_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PE entities by [PE.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PE entities</param>
+        /// <param name="Value">A list of related PE entities</param>
+        /// <returns>True if any PE entities are found</returns>
+        public bool TryFindPEByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PE> Value)
+        {
+            return PE_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Find all PILI (Pay Item Leave Items) entities by [PILI.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PILI entities</param>
+        /// <returns>A list of related PILI entities</returns>
+        public IReadOnlyList<PILI> FindPILIByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            IReadOnlyList<PILI> result;
+            if (PILI_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PILI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PILI entities by [PILI.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PILI entities</param>
+        /// <param name="Value">A list of related PILI entities</param>
+        /// <returns>True if any PILI entities are found</returns>
+        public bool TryFindPILIByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PILI> Value)
+        {
+            return PILI_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Find all PLT (Leave Group Types) entities by [PLT.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT entities</param>
+        /// <returns>A list of related PLT entities</returns>
+        public IReadOnlyList<PLT> FindPLTByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            IReadOnlyList<PLT> result;
+            if (PLT_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PLT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PLT entities by [PLT.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT entities</param>
+        /// <param name="Value">A list of related PLT entities</param>
+        /// <returns>True if any PLT entities are found</returns>
+        public bool TryFindPLTByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PLT> Value)
+        {
+            return PLT_LEAVE_GROUPForeignIndex.Value.TryGetValue(LEAVE_GROUP, out Value);
         }
 
 

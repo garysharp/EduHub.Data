@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Billing Template Transactions
     /// </summary>
-    public class SABT : EntityBase
+    public partial class SABT : EntityBase
     {
 #region Navigation Property Cache
         private SAB _SABTKEY_SAB;
@@ -54,11 +54,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SABTKEY] => [SAB].[SABKEY]
+        /// SAB (Fees - Billing Templates) related entity by [SABT.SABTKEY]-&gt;[SAB.SABKEY]
         /// Key
         /// </summary>
-        public SAB SABTKEY_SAB {
+        public SAB SABTKEY_SAB
+        {
             get
             {
                 if (SABTKEY != null)
@@ -75,11 +77,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [SABT.FEE_CODE]-&gt;[SA.SAKEY]
         /// Fee code for the student
         /// </summary>
-        public SA FEE_CODE_SA {
+        public SA FEE_CODE_SA
+        {
             get
             {
                 if (FEE_CODE != null)

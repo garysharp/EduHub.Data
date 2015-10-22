@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Transport Modes
     /// </summary>
-    public class TRPMODE : EntityBase
+    public partial class TRPMODE : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transport Modes
@@ -37,6 +34,39 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.AM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_AM_TRANSPORT_MODE
+        {
+            get
+            {
+                return Context.TRPMODE.FindSTTRIPSByAM_TRANSPORT_MODE(TRANSPORT_MODE_ID);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.PM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_PM_TRANSPORT_MODE
+        {
+            get
+            {
+                return Context.TRPMODE.FindSTTRIPSByPM_TRANSPORT_MODE(TRANSPORT_MODE_ID);
+            }
+        }
+
+        /// <summary>
+        /// TRPROUT (Student Transport Routes) related entities by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        public IReadOnlyList<TRPROUT> TRPROUT_TRANSPORT_MODE_ID
+        {
+            get
+            {
+                return Context.TRPMODE.FindTRPROUTByTRANSPORT_MODE_ID(TRANSPORT_MODE_ID);
+            }
+        }
 #endregion
     }
 }

@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accidents Data Set
     /// </summary>
-    public sealed class SADDataSet : SetBase<SAD>
+    public sealed partial class SADDataSet : SetBase<SAD>
     {
         private Lazy<Dictionary<int, SAD>> SADKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SADP>>> SADP_ACCIDENTIDForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SADW>>> SADW_ACCIDENTIDForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SAI>>> SAI_ACCIDENTIDForeignIndex;
 
         internal SADDataSet(EduHubContext Context)
             : base(Context)
         {
             SADKEYIndex = new Lazy<Dictionary<int, SAD>>(() => this.ToDictionary(e => e.SADKEY));
+
+            SADP_ACCIDENTIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SADP>>>(() =>
+                    Context.SADP
+                          .Where(e => e.ACCIDENTID != null)
+                          .GroupBy(e => e.ACCIDENTID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SADP>)g.ToList()
+                          .AsReadOnly()));
+
+            SADW_ACCIDENTIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SADW>>>(() =>
+                    Context.SADW
+                          .Where(e => e.ACCIDENTID != null)
+                          .GroupBy(e => e.ACCIDENTID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SADW>)g.ToList()
+                          .AsReadOnly()));
+
+            SAI_ACCIDENTIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SAI>>>(() =>
+                    Context.SAI
+                          .Where(e => e.ACCIDENTID != null)
+                          .GroupBy(e => e.ACCIDENTID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAI>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SADP (Accident Prevention Measures) entities by [SADP.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SADP entities</param>
+        /// <returns>A list of related SADP entities</returns>
+        public IReadOnlyList<SADP> FindSADPByACCIDENTID(int SADKEY)
+        {
+            IReadOnlyList<SADP> result;
+            if (SADP_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SADP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SADP entities by [SADP.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SADP entities</param>
+        /// <param name="Value">A list of related SADP entities</param>
+        /// <returns>True if any SADP entities are found</returns>
+        public bool TryFindSADPByACCIDENTID(int SADKEY, out IReadOnlyList<SADP> Value)
+        {
+            return SADP_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SADW (Accident Witnesses) entities by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SADW entities</param>
+        /// <returns>A list of related SADW entities</returns>
+        public IReadOnlyList<SADW> FindSADWByACCIDENTID(int SADKEY)
+        {
+            IReadOnlyList<SADW> result;
+            if (SADW_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SADW>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SADW entities by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SADW entities</param>
+        /// <param name="Value">A list of related SADW entities</param>
+        /// <returns>True if any SADW entities are found</returns>
+        public bool TryFindSADWByACCIDENTID(int SADKEY, out IReadOnlyList<SADW> Value)
+        {
+            return SADW_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SAI (Accident Involvements/Sickbay Visits) entities by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SAI entities</param>
+        /// <returns>A list of related SAI entities</returns>
+        public IReadOnlyList<SAI> FindSAIByACCIDENTID(int SADKEY)
+        {
+            IReadOnlyList<SAI> result;
+            if (SAI_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAI entities by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SAI entities</param>
+        /// <param name="Value">A list of related SAI entities</param>
+        /// <returns>True if any SAI entities are found</returns>
+        public bool TryFindSAIByACCIDENTID(int SADKEY, out IReadOnlyList<SAI> Value)
+        {
+            return SAI_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
         }
 
 

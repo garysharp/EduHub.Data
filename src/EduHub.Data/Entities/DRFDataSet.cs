@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// DR Transactions Data Set
     /// </summary>
-    public sealed class DRFDataSet : SetBase<DRF>
+    public sealed partial class DRFDataSet : SetBase<DRF>
     {
         private Lazy<Dictionary<string, DRF>> TRREFIndex;
+
 
         internal DRFDataSet(EduHubContext Context)
             : base(Context)
         {
             TRREFIndex = new Lazy<Dictionary<string, DRF>>(() => this.ToDictionary(e => e.TRREF));
+
         }
 
         /// <summary>

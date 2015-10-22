@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Creditor Financial Transaction
     /// </summary>
-    public class CRF : EntityBase
+    public partial class CRF : EntityBase
     {
 #region Navigation Property Cache
         private CR _CODE_CR;
@@ -414,11 +414,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [CR].[CRKEY]
+        /// CR (Accounts Payable) related entity by [CRF.CODE]-&gt;[CR.CRKEY]
         /// Creditor key
         /// </summary>
-        public CR CODE_CR {
+        public CR CODE_CR
+        {
             get
             {
                 if (CODE != null)
@@ -435,11 +437,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [CRF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// Relate to KGST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -456,11 +460,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [CRF.BSB]-&gt;[KAB.BSB]
         /// BSB number of cheque
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -477,11 +483,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEL_CODE] => [KAD].[KADKEY]
+        /// KAD (Delivery Addresses) related entity by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
         /// Delivery address code
         /// </summary>
-        public KAD DEL_CODE_KAD {
+        public KAD DEL_CODE_KAD
+        {
             get
             {
                 if (DEL_CODE != null)
@@ -498,11 +506,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ATKEY] => [AR].[ARKEY]
+        /// AR (Assets) related entity by [CRF.ATKEY]-&gt;[AR.ARKEY]
         /// 
         /// </summary>
-        public AR ATKEY_AR {
+        public AR ATKEY_AR
+        {
             get
             {
                 if (ATKEY != null)
@@ -519,11 +529,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INVOICEGST] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [CRF.INVOICEGST]-&gt;[KGST.KGSTKEY]
         /// Used in Reverse Payments to obtain the invoice GST type.
         /// </summary>
-        public KGST INVOICEGST_KGST {
+        public KGST INVOICEGST_KGST
+        {
             get
             {
                 if (INVOICEGST != null)
@@ -540,11 +552,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [CRF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -561,11 +575,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [CRF.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

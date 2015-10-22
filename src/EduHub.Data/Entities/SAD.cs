@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accidents
     /// </summary>
-    public class SAD : EntityBase
+    public partial class SAD : EntityBase
     {
 #region Navigation Property Cache
         private SCI _CAMPUS_SCI;
@@ -116,11 +116,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SAD.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus on which accident occured
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -137,11 +139,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SAD.ROOM]-&gt;[SM.ROOM]
         /// Room where accident occurred (if any)
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)
@@ -158,11 +162,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AREA_DUTY_TEACHER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SAD.AREA_DUTY_TEACHER]-&gt;[SF.SFKEY]
         /// Staff code of senior duty teacher in area of accident at the time
         /// </summary>
-        public SF AREA_DUTY_TEACHER_SF {
+        public SF AREA_DUTY_TEACHER_SF
+        {
             get
             {
                 if (AREA_DUTY_TEACHER != null)
@@ -177,6 +183,39 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SADP (Accident Prevention Measures) related entities by [SADP.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        public IReadOnlyList<SADP> SADP_ACCIDENTID
+        {
+            get
+            {
+                return Context.SAD.FindSADPByACCIDENTID(SADKEY);
+            }
+        }
+
+        /// <summary>
+        /// SADW (Accident Witnesses) related entities by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        public IReadOnlyList<SADW> SADW_ACCIDENTID
+        {
+            get
+            {
+                return Context.SAD.FindSADWByACCIDENTID(SADKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAI (Accident Involvements/Sickbay Visits) related entities by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
+        /// </summary>
+        public IReadOnlyList<SAI> SAI_ACCIDENTID
+        {
+            get
+            {
+                return Context.SAD.FindSAIByACCIDENTID(SADKEY);
             }
         }
 #endregion

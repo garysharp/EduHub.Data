@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Australian Postcodes
     /// </summary>
-    public class KAP : EntityBase
+    public partial class KAP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Unique ID: NOTE there are two rows for each postcode/locality combination: in one, KAPKEY=POSTCODE|PLACE_NAME; in the other, KAPKEY=PLACE_NAME|POSTCODE
@@ -55,9 +52,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

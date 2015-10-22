@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored Procedure Return Values Data Set
     /// </summary>
-    public sealed class SPOUTDataSet : SetBase<SPOUT>
+    public sealed partial class SPOUTDataSet : SetBase<SPOUT>
     {
         private Lazy<Dictionary<string, SPOUT>> SPOUTKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<KERROR>>> KERROR_SPOUTKEYForeignIndex;
 
         internal SPOUTDataSet(EduHubContext Context)
             : base(Context)
         {
             SPOUTKEYIndex = new Lazy<Dictionary<string, SPOUT>>(() => this.ToDictionary(e => e.SPOUTKEY));
+
+            KERROR_SPOUTKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<KERROR>>>(() =>
+                    Context.KERROR
+                          .Where(e => e.SPOUTKEY != null)
+                          .GroupBy(e => e.SPOUTKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KERROR>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all KERROR (Import or Update Errors) entities by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR entities</param>
+        /// <returns>A list of related KERROR entities</returns>
+        public IReadOnlyList<KERROR> FindKERRORBySPOUTKEY(string SPOUTKEY)
+        {
+            IReadOnlyList<KERROR> result;
+            if (KERROR_SPOUTKEYForeignIndex.Value.TryGetValue(SPOUTKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<KERROR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all KERROR entities by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR entities</param>
+        /// <param name="Value">A list of related KERROR entities</param>
+        /// <returns>True if any KERROR entities are found</returns>
+        public bool TryFindKERRORBySPOUTKEY(string SPOUTKEY, out IReadOnlyList<KERROR> Value)
+        {
+            return KERROR_SPOUTKEYForeignIndex.Value.TryGetValue(SPOUTKEY, out Value);
         }
 
 

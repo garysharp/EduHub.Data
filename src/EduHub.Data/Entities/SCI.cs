@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Information
     /// </summary>
-    public class SCI : EntityBase
+    public partial class SCI : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _SCHOOL_LINK_SKGS;
@@ -405,11 +405,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SCHOOL_LINK] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [SCI.SCHOOL_LINK]-&gt;[SKGS.SCHOOL]
         /// School ID
         /// </summary>
-        public SKGS SCHOOL_LINK_SKGS {
+        public SKGS SCHOOL_LINK_SKGS
+        {
             get
             {
                 if (SCHOOL_LINK != null)
@@ -426,11 +428,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_PRINCIPAL] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_PRINCIPAL]-&gt;[SF.SFKEY]
         /// Staff code for Principal of School
         /// </summary>
-        public SF SCH_PRINCIPAL_SF {
+        public SF SCH_PRINCIPAL_SF
+        {
             get
             {
                 if (SCH_PRINCIPAL != null)
@@ -447,11 +451,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_OIC] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_OIC]-&gt;[SF.SFKEY]
         /// Staff code for Principal of Campus
         /// </summary>
-        public SF SF_OIC_SF {
+        public SF SF_OIC_SF
+        {
             get
             {
                 if (SF_OIC != null)
@@ -468,11 +474,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_VPRIN] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_VPRIN]-&gt;[SF.SFKEY]
         /// Staff code for Vice-Principal of School
         /// </summary>
-        public SF SF_VPRIN_SF {
+        public SF SF_VPRIN_SF
+        {
             get
             {
                 if (SF_VPRIN != null)
@@ -489,11 +497,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_2VPRIN] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_2VPRIN]-&gt;[SF.SFKEY]
         /// Staff code for 2nd Vice-Principal of School
         /// </summary>
-        public SF SF_2VPRIN_SF {
+        public SF SF_2VPRIN_SF
+        {
             get
             {
                 if (SF_2VPRIN != null)
@@ -510,11 +520,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_3VPRIN] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_3VPRIN]-&gt;[SF.SFKEY]
         /// Staff code for 3rd Vice-Principal of School
         /// </summary>
-        public SF SF_3VPRIN_SF {
+        public SF SF_3VPRIN_SF
+        {
             get
             {
                 if (SF_3VPRIN != null)
@@ -531,11 +543,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_APRIN] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_APRIN]-&gt;[SF.SFKEY]
         /// Staff code for Acting Principal of School
         /// </summary>
-        public SF SF_APRIN_SF {
+        public SF SF_APRIN_SF
+        {
             get
             {
                 if (SF_APRIN != null)
@@ -552,11 +566,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_BMANAGER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_BMANAGER]-&gt;[SF.SFKEY]
         /// Staff code for Business Manager of School
         /// </summary>
-        public SF SF_BMANAGER_SF {
+        public SF SF_BMANAGER_SF
+        {
             get
             {
                 if (SF_BMANAGER != null)
@@ -573,11 +589,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_VAC_CONTACT] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_VAC_CONTACT]-&gt;[SF.SFKEY]
         /// Staff code for Vacation contact person for School
         /// </summary>
-        public SF SF_VAC_CONTACT_SF {
+        public SF SF_VAC_CONTACT_SF
+        {
             get
             {
                 if (SF_VAC_CONTACT != null)
@@ -594,11 +612,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SF_EMERG_CONTACT] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SF_EMERG_CONTACT]-&gt;[SF.SFKEY]
         /// Staff code for Emergency contact person for School
         /// </summary>
-        public SF SF_EMERG_CONTACT_SF {
+        public SF SF_EMERG_CONTACT_SF
+        {
             get
             {
                 if (SF_EMERG_CONTACT != null)
@@ -615,11 +635,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SAM_SCH_COUNCIL] => [SAM].[SAMKEY]
+        /// SAM (School Association Members) related entity by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
         /// ID of School Council representative for School
         /// </summary>
-        public SAM SAM_SCH_COUNCIL_SAM {
+        public SAM SAM_SCH_COUNCIL_SAM
+        {
             get
             {
                 if (SAM_SCH_COUNCIL.HasValue)
@@ -636,11 +658,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CURRENT_QUILT] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
         /// Code of current quilt
         /// </summary>
-        public TH CURRENT_QUILT_TH {
+        public TH CURRENT_QUILT_TH
+        {
             get
             {
                 if (CURRENT_QUILT != null)
@@ -657,11 +681,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [REL_INSTR] => [KCI].[KCIKEY]
+        /// KCI (Religious Instruction Curricula) related entity by [SCI.REL_INSTR]-&gt;[KCI.KCIKEY]
         /// Default religious instruction course
         /// </summary>
-        public KCI REL_INSTR_KCI {
+        public KCI REL_INSTR_KCI
+        {
             get
             {
                 if (REL_INSTR != null)
@@ -678,11 +704,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DESTINATION_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [SCI.DESTINATION_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// Default destination for graduating students
         /// </summary>
-        public SKGS DESTINATION_SCHOOL_SKGS {
+        public SKGS DESTINATION_SCHOOL_SKGS
+        {
             get
             {
                 if (DESTINATION_SCHOOL != null)
@@ -699,11 +727,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_AOIC] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_AOIC]-&gt;[SF.SFKEY]
         /// SFKEY of the staff member that is the Acting School Principal / OIC
         /// </summary>
-        public SF SCH_AOIC_SF {
+        public SF SCH_AOIC_SF
+        {
             get
             {
                 if (SCH_AOIC != null)
@@ -720,11 +750,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_VPRIN] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_VPRIN]-&gt;[SF.SFKEY]
         /// SFKEY of the staff member that is the Assistant School Principal i.e. Vice Principal
         /// </summary>
-        public SF SCH_VPRIN_SF {
+        public SF SCH_VPRIN_SF
+        {
             get
             {
                 if (SCH_VPRIN != null)
@@ -741,11 +773,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_BMANAGER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_BMANAGER]-&gt;[SF.SFKEY]
         /// SFKEY of the staff member that is the School Business Manager
         /// </summary>
-        public SF SCH_BMANAGER_SF {
+        public SF SCH_BMANAGER_SF
+        {
             get
             {
                 if (SCH_BMANAGER != null)
@@ -762,11 +796,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_VAC_CONTACT] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_VAC_CONTACT]-&gt;[SF.SFKEY]
         /// SFKEY of the staff member that is the School Vacation contact
         /// </summary>
-        public SF SCH_VAC_CONTACT_SF {
+        public SF SCH_VAC_CONTACT_SF
+        {
             get
             {
                 if (SCH_VAC_CONTACT != null)
@@ -783,11 +819,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_EMERG_CONTACT] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCI.SCH_EMERG_CONTACT]-&gt;[SF.SFKEY]
         /// SFKEY of the staff member that is the School Emergency contact
         /// </summary>
-        public SF SCH_EMERG_CONTACT_SF {
+        public SF SCH_EMERG_CONTACT_SF
+        {
             get
             {
                 if (SCH_EMERG_CONTACT != null)
@@ -804,11 +842,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCH_COUNCIL_PRES] => [SAM].[SAMKEY]
+        /// SAM (School Association Members) related entity by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
         /// Link to the school council representative for the school
         /// </summary>
-        public SAM SCH_COUNCIL_PRES_SAM {
+        public SAM SCH_COUNCIL_PRES_SAM
+        {
             get
             {
                 if (SCH_COUNCIL_PRES.HasValue)
@@ -823,6 +863,336 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindARByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// KGC (Home Groups) related entities by [KGC.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<KGC> KGC_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindKGCByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// KGH (Houses) related entities by [KGH.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<KGH> KGH_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindKGHByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAD (Accidents) related entities by [SAD.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SAD> SAD_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSADByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCAM (School Association Meetings) related entities by [SCAM.MEETING_LOCATION]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SCAM> SCAM_MEETING_LOCATION
+        {
+            get
+            {
+                return Context.SCI.FindSCAMByMEETING_LOCATION(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCL (Subject Classes) related entities by [SCL.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SCL> SCL_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSCLByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSFByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SG (Student Groupings) related entities by [SG.FROM_CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SG> SG_FROM_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSGByFROM_CAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SG (Student Groupings) related entities by [SG.TO_CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SG> SG_TO_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSGByTO_CAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SID (Disciplinary Incidents) related entities by [SID.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SID> SID_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSIDByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SM (Rooms) related entities by [SM.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SM> SM_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSMByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SMC (Student Medical Conditions) related entities by [SMC.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<SMC> SMC_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSMCByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM1_SD_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM1_SD_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByAM1_SD_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM1_PU_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM1_PU_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByPM1_PU_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM2_SD_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM2_SD_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByAM2_SD_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM2_PU_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM2_PU_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByPM2_PU_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM3_SD_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM3_SD_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByAM3_SD_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM3_PU_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM3_PU_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByPM3_PU_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM4_SD_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM4_SD_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByAM4_SD_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM4_PU_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM4_PU_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByPM4_PU_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM5_SD_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM5_SD_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByAM5_SD_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM5_PU_SITE]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM5_PU_SITE
+        {
+            get
+            {
+                return Context.SCI.FindSTBTByPM5_PU_SITE(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_ST_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTREByST_CAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.AM_SETDOWN_CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_AM_SETDOWN_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTTRIPSByAM_SETDOWN_CAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.PM_PICKUP_CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_PM_PICKUP_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTTRIPSByPM_PICKUP_CAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDI (VELS Dimension Results) related entities by [STVDI.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STVDI> STVDI_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTVDIByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDO (VELS Domain Results) related entities by [STVDO.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<STVDO> STVDO_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindSTVDOByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// TE (Calendar Events) related entities by [TE.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<TE> TE_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindTEByCAMPUS(SCIKEY);
+            }
+        }
+
+        /// <summary>
+        /// TT (Timetable Grid Templates) related entities by [TT.CAMPUS]-&gt;[SCI.SCIKEY]
+        /// </summary>
+        public IReadOnlyList<TT> TT_CAMPUS
+        {
+            get
+            {
+                return Context.SCI.FindTTByCAMPUS(SCIKEY);
             }
         }
 #endregion

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// DR Transactions
     /// </summary>
-    public class DRF : EntityBase
+    public partial class DRF : EntityBase
     {
 #region Navigation Property Cache
         private DR _CODE_DR;
@@ -306,11 +306,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [DR].[DRKEY]
+        /// DR (Accounts Receivable) related entity by [DRF.CODE]-&gt;[DR.DRKEY]
         /// DR KEY
         /// </summary>
-        public DR CODE_DR {
+        public DR CODE_DR
+        {
             get
             {
                 if (CODE != null)
@@ -327,11 +329,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TRBATCH] => [QB].[QBKEY]
+        /// QB (Batch Headers) related entity by [DRF.TRBATCH]-&gt;[QB.QBKEY]
         /// BATCH NUMBER
         /// </summary>
-        public QB TRBATCH_QB {
+        public QB TRBATCH_QB
+        {
             get
             {
                 if (TRBATCH.HasValue)
@@ -348,11 +352,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [DRF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// WHAT TYPE OF GST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -369,11 +375,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [DRF.BSB]-&gt;[KAB.BSB]
         /// Cheque BSB number
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -390,11 +398,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FEE_CODE] => [SDFC].[SDFCKEY]
+        /// SDFC (Sundry Debtor Fees) related entity by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
         /// Fee code
         /// </summary>
-        public SDFC FEE_CODE_SDFC {
+        public SDFC FEE_CODE_SDFC
+        {
             get
             {
                 if (FEE_CODE != null)
@@ -411,11 +421,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [DRF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -432,11 +444,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [DRF.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

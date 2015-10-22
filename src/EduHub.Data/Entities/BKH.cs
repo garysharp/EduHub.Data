@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Books for Hire
     /// </summary>
-    public class BKH : EntityBase
+    public partial class BKH : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Book code
@@ -109,6 +106,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// BKHR (Book Hire Records) related entities by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
+        /// </summary>
+        public IReadOnlyList<BKHR> BKHR_BKHRKEY
+        {
+            get
+            {
+                return Context.BKH.FindBKHRByBKHRKEY(BKHKEY);
+            }
+        }
+
+        /// <summary>
+        /// SUBL (Subject Book List) related entities by [SUBL.BOOK]-&gt;[BKH.BKHKEY]
+        /// </summary>
+        public IReadOnlyList<SUBL> SUBL_BOOK
+        {
+            get
+            {
+                return Context.BKH.FindSUBLByBOOK(BKHKEY);
+            }
+        }
 #endregion
     }
 }

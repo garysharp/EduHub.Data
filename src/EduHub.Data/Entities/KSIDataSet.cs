@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Institutions Data Set
     /// </summary>
-    public sealed class KSIDataSet : SetBase<KSI>
+    public sealed partial class KSIDataSet : SetBase<KSI>
     {
         private Lazy<Dictionary<string, KSI>> KSIKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SFQA>>> SFQA_INSTITUTIONForeignIndex;
 
         internal KSIDataSet(EduHubContext Context)
             : base(Context)
         {
             KSIKEYIndex = new Lazy<Dictionary<string, KSI>>(() => this.ToDictionary(e => e.KSIKEY));
+
+            SFQA_INSTITUTIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SFQA>>>(() =>
+                    Context.SFQA
+                          .Where(e => e.INSTITUTION != null)
+                          .GroupBy(e => e.INSTITUTION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SFQA>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SFQA (Staff Qualifications) entities by [SFQA.INSTITUTION]-&gt;[KSI.KSIKEY]
+        /// </summary>
+        /// <param name="KSIKEY">KSIKEY value used to find SFQA entities</param>
+        /// <returns>A list of related SFQA entities</returns>
+        public IReadOnlyList<SFQA> FindSFQAByINSTITUTION(string KSIKEY)
+        {
+            IReadOnlyList<SFQA> result;
+            if (SFQA_INSTITUTIONForeignIndex.Value.TryGetValue(KSIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SFQA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SFQA entities by [SFQA.INSTITUTION]-&gt;[KSI.KSIKEY]
+        /// </summary>
+        /// <param name="KSIKEY">KSIKEY value used to find SFQA entities</param>
+        /// <param name="Value">A list of related SFQA entities</param>
+        /// <returns>True if any SFQA entities are found</returns>
+        public bool TryFindSFQAByINSTITUTION(string KSIKEY, out IReadOnlyList<SFQA> Value)
+        {
+            return SFQA_INSTITUTIONForeignIndex.Value.TryGetValue(KSIKEY, out Value);
         }
 
 

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Position or Group Memberships
     /// </summary>
-    public class STPO : EntityBase
+    public partial class STPO : EntityBase
     {
 #region Navigation Property Cache
         private ST _STPOKEY_ST;
@@ -92,11 +92,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STPOKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STPO.STPOKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STPOKEY_ST {
+        public ST STPOKEY_ST
+        {
             get
             {
                 if (STPOKEY != null)
@@ -113,11 +115,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SGLINK] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [STPO.SGLINK]-&gt;[SG.SGKEY]
         /// Position or Group code
         /// </summary>
-        public SG SGLINK_SG {
+        public SG SGLINK_SG
+        {
             get
             {
                 if (SGLINK != null)

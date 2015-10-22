@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Details Data Set
     /// </summary>
-    public sealed class PELDDataSet : SetBase<PELD>
+    public sealed partial class PELDDataSet : SetBase<PELD>
     {
+
 
         internal PELDDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

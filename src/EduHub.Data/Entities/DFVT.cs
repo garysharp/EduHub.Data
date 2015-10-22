@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Voluntary Transactions
     /// </summary>
-    public class DFVT : EntityBase
+    public partial class DFVT : EntityBase
     {
 #region Navigation Property Cache
         private DF _FAMILY_DF;
@@ -109,11 +109,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FAMILY] => [DF].[DFKEY]
+        /// DF (Families) related entity by [DFVT.FAMILY]-&gt;[DF.DFKEY]
         /// Family key
         /// </summary>
-        public DF FAMILY_DF {
+        public DF FAMILY_DF
+        {
             get
             {
                 if (FAMILY != null)
@@ -130,11 +132,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [DFVT.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// Relate to KGST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)

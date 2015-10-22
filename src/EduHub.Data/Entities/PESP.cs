@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Super Payment Transactions
     /// </summary>
-    public class PESP : EntityBase
+    public partial class PESP : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -77,11 +77,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PESP.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)

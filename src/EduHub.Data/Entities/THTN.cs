@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Labels
     /// </summary>
-    public class THTN : EntityBase
+    public partial class THTN : EntityBase
     {
 #region Navigation Property Cache
         private TH _QKEY_TH;
@@ -56,11 +56,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [QKEY] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [THTN.QKEY]-&gt;[TH.THKEY]
         /// Link to Timetable Quilt Header
         /// </summary>
-        public TH QKEY_TH {
+        public TH QKEY_TH
+        {
             get
             {
                 if (QKEY != null)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Events
     /// </summary>
-    public class TE : EntityBase
+    public partial class TE : EntityBase
     {
 #region Navigation Property Cache
         private SCI _CAMPUS_SCI;
@@ -146,11 +146,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [TE.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -167,11 +169,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOCATION] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TE.LOCATION]-&gt;[SM.ROOM]
         /// Location of the event
         /// </summary>
-        public SM LOCATION_SM {
+        public SM LOCATION_SM
+        {
             get
             {
                 if (LOCATION != null)
@@ -188,11 +192,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CATEGORY] => [TEC].[CATEGORY]
+        /// TEC (Event Categories) related entity by [TE.CATEGORY]-&gt;[TEC.CATEGORY]
         /// Category of event
         /// </summary>
-        public TEC CATEGORY_TEC {
+        public TEC CATEGORY_TEC
+        {
             get
             {
                 if (CATEGORY != null)
@@ -209,11 +215,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [START_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TE.START_YEAR]-&gt;[KCY.KCYKEY]
         /// First Year for event
         /// </summary>
-        public KCY START_YEAR_KCY {
+        public KCY START_YEAR_KCY
+        {
             get
             {
                 if (START_YEAR != null)
@@ -230,11 +238,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [END_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [TE.END_YEAR]-&gt;[KCY.KCYKEY]
         /// Last Year for event
         /// </summary>
-        public KCY END_YEAR_KCY {
+        public KCY END_YEAR_KCY
+        {
             get
             {
                 if (END_YEAR != null)
@@ -251,11 +261,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [START_FORM] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [TE.START_FORM]-&gt;[KGC.KGCKEY]
         /// First Form for event
         /// </summary>
-        public KGC START_FORM_KGC {
+        public KGC START_FORM_KGC
+        {
             get
             {
                 if (START_FORM != null)
@@ -272,11 +284,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [END_FORM] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [TE.END_FORM]-&gt;[KGC.KGCKEY]
         /// Last Form for event
         /// </summary>
-        public KGC END_FORM_KGC {
+        public KGC END_FORM_KGC
+        {
             get
             {
                 if (END_FORM != null)
@@ -293,11 +307,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [TE.SUBJ]-&gt;[SU.SUKEY]
         /// Subject involved in an event
         /// </summary>
-        public SU SUBJ_SU {
+        public SU SUBJ_SU
+        {
             get
             {
                 if (SUBJ != null)
@@ -312,6 +328,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// TETE (Event Instances) related entities by [TETE.TETEKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        public IReadOnlyList<TETE> TETE_TETEKEY
+        {
+            get
+            {
+                return Context.TE.FindTETEByTETEKEY(TEKEY);
+            }
+        }
+
+        /// <summary>
+        /// TETN (Event Attendees) related entities by [TETN.TETNKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        public IReadOnlyList<TETN> TETN_TETNKEY
+        {
+            get
+            {
+                return Context.TE.FindTETNByTETNKEY(TEKEY);
             }
         }
 #endregion

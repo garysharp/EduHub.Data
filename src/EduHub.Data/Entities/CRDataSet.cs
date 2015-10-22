@@ -8,14 +8,52 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Payable Data Set
     /// </summary>
-    public sealed class CRDataSet : SetBase<CR>
+    public sealed partial class CRDataSet : SetBase<CR>
     {
         private Lazy<Dictionary<string, CR>> CRKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_ORIG_SUPPLIERForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_CURR_SUPPLIERForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> CRF_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> CRFTC_CODEForeignIndex;
 
         internal CRDataSet(EduHubContext Context)
             : base(Context)
         {
             CRKEYIndex = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(e => e.CRKEY));
+
+            AR_ORIG_SUPPLIERForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.ORIG_SUPPLIER != null)
+                          .GroupBy(e => e.ORIG_SUPPLIER)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
+            AR_CURR_SUPPLIERForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.CURR_SUPPLIER != null)
+                          .GroupBy(e => e.CURR_SUPPLIER)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
+            CRF_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() =>
+                    Context.CRF
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRF>)g.ToList()
+                          .AsReadOnly()));
+
+            CRFTC_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() =>
+                    Context.CRFTC
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRFTC>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +107,122 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByORIG_SUPPLIER(string CRKEY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_ORIG_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByORIG_SUPPLIER(string CRKEY, out IReadOnlyList<AR> Value)
+        {
+            return AR_ORIG_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByCURR_SUPPLIER(string CRKEY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_CURR_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByCURR_SUPPLIER(string CRKEY, out IReadOnlyList<AR> Value)
+        {
+            return AR_CURR_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all CRF (Creditor Financial Transaction) entities by [CRF.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CRF entities</param>
+        /// <returns>A list of related CRF entities</returns>
+        public IReadOnlyList<CRF> FindCRFByCODE(string CRKEY)
+        {
+            IReadOnlyList<CRF> result;
+            if (CRF_CODEForeignIndex.Value.TryGetValue(CRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CRF entities by [CRF.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CRF entities</param>
+        /// <param name="Value">A list of related CRF entities</param>
+        /// <returns>True if any CRF entities are found</returns>
+        public bool TryFindCRFByCODE(string CRKEY, out IReadOnlyList<CRF> Value)
+        {
+            return CRF_CODEForeignIndex.Value.TryGetValue(CRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all CRFTC (Creditor Fuel Tax Credits) entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CRFTC entities</param>
+        /// <returns>A list of related CRFTC entities</returns>
+        public IReadOnlyList<CRFTC> FindCRFTCByCODE(string CRKEY)
+        {
+            IReadOnlyList<CRFTC> result;
+            if (CRFTC_CODEForeignIndex.Value.TryGetValue(CRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CRFTC>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CRFTC entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CRFTC entities</param>
+        /// <param name="Value">A list of related CRFTC entities</param>
+        /// <returns>True if any CRFTC entities are found</returns>
+        public bool TryFindCRFTCByCODE(string CRKEY, out IReadOnlyList<CRFTC> Value)
+        {
+            return CRFTC_CODEForeignIndex.Value.TryGetValue(CRKEY, out Value);
         }
 
 

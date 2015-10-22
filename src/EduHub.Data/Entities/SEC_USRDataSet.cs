@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 User Sessions Data Set
     /// </summary>
-    public sealed class SEC_USRDataSet : SetBase<SEC_USR>
+    public sealed partial class SEC_USRDataSet : SetBase<SEC_USR>
     {
         private Lazy<Dictionary<int, SEC_USR>> ROWIDIndex;
+
 
         internal SEC_USRDataSet(EduHubContext Context)
             : base(Context)
         {
             ROWIDIndex = new Lazy<Dictionary<int, SEC_USR>>(() => this.ToDictionary(e => e.ROWID));
+
         }
 
         /// <summary>

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Pay Steps or Pay Class Data Set
     /// </summary>
-    public sealed class PSFDataSet : SetBase<PSF>
+    public sealed partial class PSFDataSet : SetBase<PSF>
     {
+
 
         internal PSFDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

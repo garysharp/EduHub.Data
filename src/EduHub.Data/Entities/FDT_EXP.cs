@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial Data Export
     /// </summary>
-    public class FDT_EXP : EntityBase
+    public partial class FDT_EXP : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _DEST_SKGS;
@@ -66,11 +66,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [DEST] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [FDT_EXP.DEST]-&gt;[SKGS.SCHOOL]
         /// 
         /// </summary>
-        public SKGS DEST_SKGS {
+        public SKGS DEST_SKGS
+        {
             get
             {
                 if (DEST != null)

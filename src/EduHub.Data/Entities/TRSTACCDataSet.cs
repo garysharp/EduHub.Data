@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// STACC Holding Table Data Set
     /// </summary>
-    public sealed class TRSTACCDataSet : SetBase<TRSTACC>
+    public sealed partial class TRSTACCDataSet : SetBase<TRSTACC>
     {
         private Lazy<Dictionary<int, TRSTACC>> STACCKEYIndex;
+
 
         internal TRSTACCDataSet(EduHubContext Context)
             : base(Context)
         {
             STACCKEYIndex = new Lazy<Dictionary<int, TRSTACC>>(() => this.ToDictionary(e => e.STACCKEY));
+
         }
 
         /// <summary>

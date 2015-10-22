@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Details Data Set
     /// </summary>
-    public sealed class TTEIDataSet : SetBase<TTEI>
+    public sealed partial class TTEIDataSet : SetBase<TTEI>
     {
         private Lazy<Dictionary<int, TTEI>> TIDIndex;
+
 
         internal TTEIDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, TTEI>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

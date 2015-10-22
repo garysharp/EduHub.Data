@@ -8,14 +8,52 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Steps or Pay Class Data Set
     /// </summary>
-    public sealed class PSDataSet : SetBase<PS>
+    public sealed partial class PSDataSet : SetBase<PS>
     {
         private Lazy<Dictionary<short, PS>> PSKEYIndex;
+
+        private Lazy<Dictionary<short, IReadOnlyList<PEF>>> PEF_PAY_STEPForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEFH>>> PEFH_PAY_STEPForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEPS>>> PEPS_PAY_STEPForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PSF>>> PSF_PSKEYForeignIndex;
 
         internal PSDataSet(EduHubContext Context)
             : base(Context)
         {
             PSKEYIndex = new Lazy<Dictionary<short, PS>>(() => this.ToDictionary(e => e.PSKEY));
+
+            PEF_PAY_STEPForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEF>>>(() =>
+                    Context.PEF
+                          .Where(e => e.PAY_STEP != null)
+                          .GroupBy(e => e.PAY_STEP.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEF>)g.ToList()
+                          .AsReadOnly()));
+
+            PEFH_PAY_STEPForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEFH>>>(() =>
+                    Context.PEFH
+                          .Where(e => e.PAY_STEP != null)
+                          .GroupBy(e => e.PAY_STEP.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEFH>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPS_PAY_STEPForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEPS>>>(() =>
+                    Context.PEPS
+                          .Where(e => e.PAY_STEP != null)
+                          .GroupBy(e => e.PAY_STEP.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPS>)g.ToList()
+                          .AsReadOnly()));
+
+            PSF_PSKEYForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PSF>>>(() =>
+                    Context.PSF
+                          .Where(e => e.PSKEY != null)
+                          .GroupBy(e => e.PSKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PSF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +107,122 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PEF (Payroll Transactions) entities by [PEF.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEF entities</param>
+        /// <returns>A list of related PEF entities</returns>
+        public IReadOnlyList<PEF> FindPEFByPAY_STEP(short PSKEY)
+        {
+            IReadOnlyList<PEF> result;
+            if (PEF_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEF entities by [PEF.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEF entities</param>
+        /// <param name="Value">A list of related PEF entities</param>
+        /// <returns>True if any PEF entities are found</returns>
+        public bool TryFindPEFByPAY_STEP(short PSKEY, out IReadOnlyList<PEF> Value)
+        {
+            return PEF_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEFH (Payroll Transaction History) entities by [PEFH.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEFH entities</param>
+        /// <returns>A list of related PEFH entities</returns>
+        public IReadOnlyList<PEFH> FindPEFHByPAY_STEP(short PSKEY)
+        {
+            IReadOnlyList<PEFH> result;
+            if (PEFH_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEFH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEFH entities by [PEFH.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEFH entities</param>
+        /// <param name="Value">A list of related PEFH entities</param>
+        /// <returns>True if any PEFH entities are found</returns>
+        public bool TryFindPEFHByPAY_STEP(short PSKEY, out IReadOnlyList<PEFH> Value)
+        {
+            return PEFH_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPS (Standard and Last Pays) entities by [PEPS.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEPS entities</param>
+        /// <returns>A list of related PEPS entities</returns>
+        public IReadOnlyList<PEPS> FindPEPSByPAY_STEP(short PSKEY)
+        {
+            IReadOnlyList<PEPS> result;
+            if (PEPS_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPS entities by [PEPS.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PEPS entities</param>
+        /// <param name="Value">A list of related PEPS entities</param>
+        /// <returns>True if any PEPS entities are found</returns>
+        public bool TryFindPEPSByPAY_STEP(short PSKEY, out IReadOnlyList<PEPS> Value)
+        {
+            return PEPS_PAY_STEPForeignIndex.Value.TryGetValue(PSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PSF (Future Pay Steps or Pay Class) entities by [PSF.PSKEY]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PSF entities</param>
+        /// <returns>A list of related PSF entities</returns>
+        public IReadOnlyList<PSF> FindPSFByPSKEY(short PSKEY)
+        {
+            IReadOnlyList<PSF> result;
+            if (PSF_PSKEYForeignIndex.Value.TryGetValue(PSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PSF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PSF entities by [PSF.PSKEY]-&gt;[PS.PSKEY]
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PSF entities</param>
+        /// <param name="Value">A list of related PSF entities</param>
+        /// <returns>True if any PSF entities are found</returns>
+        public bool TryFindPSFByPSKEY(short PSKEY, out IReadOnlyList<PSF> Value)
+        {
+            return PSF_PSKEYForeignIndex.Value.TryGetValue(PSKEY, out Value);
         }
 
 

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Book List
     /// </summary>
-    public class SUBL : EntityBase
+    public partial class SUBL : EntityBase
     {
 #region Navigation Property Cache
         private SU _BLKEY_SU;
@@ -62,11 +62,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [BLKEY] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SUBL.BLKEY]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU BLKEY_SU {
+        public SU BLKEY_SU
+        {
             get
             {
                 if (BLKEY != null)
@@ -83,11 +85,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BOOK] => [BKH].[BKHKEY]
+        /// BKH (Books for Hire) related entity by [SUBL.BOOK]-&gt;[BKH.BKHKEY]
         /// Book ISBN identifier
         /// </summary>
-        public BKH BOOK_BKH {
+        public BKH BOOK_BKH
+        {
             get
             {
                 if (BOOK != null)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Key Holders
     /// </summary>
-    public class AKK : EntityBase
+    public partial class AKK : EntityBase
     {
 #region Navigation Property Cache
         private AR _CODE_AR;
@@ -44,11 +44,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [AR].[ARKEY]
+        /// AR (Assets) related entity by [AKK.CODE]-&gt;[AR.ARKEY]
         /// Asset code
         /// </summary>
-        public AR CODE_AR {
+        public AR CODE_AR
+        {
             get
             {
                 if (CODE != null)
@@ -65,11 +67,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STAFF] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [AKK.STAFF]-&gt;[SF.SFKEY]
         /// Staff
         /// </summary>
-        public SF STAFF_SF {
+        public SF STAFF_SF
+        {
             get
             {
                 if (STAFF != null)

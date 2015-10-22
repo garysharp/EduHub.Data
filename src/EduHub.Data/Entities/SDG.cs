@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fee Groups
     /// </summary>
-    public class SDG : EntityBase
+    public partial class SDG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Short name of Fee Group
@@ -48,6 +45,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SDGM (Adult Group Members) related entities by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
+        /// </summary>
+        public IReadOnlyList<SDGM> SDGM_SDGMKEY
+        {
+            get
+            {
+                return Context.SDG.FindSDGMBySDGMKEY(SDGKEY);
+            }
+        }
 #endregion
     }
 }

@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Incident Victims/Recipients Data Set
     /// </summary>
-    public sealed class SIDVDataSet : SetBase<SIDV>
+    public sealed partial class SIDVDataSet : SetBase<SIDV>
     {
         private Lazy<Dictionary<int, SIDV>> TIDIndex;
+
 
         internal SIDVDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SIDV>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

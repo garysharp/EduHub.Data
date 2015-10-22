@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Column-Display Metadata for displaying Student Data Data Set
     /// </summary>
-    public sealed class SCEN_SCDDataSet : SetBase<SCEN_SCD>
+    public sealed partial class SCEN_SCDDataSet : SetBase<SCEN_SCD>
     {
         private Lazy<Dictionary<int, SCEN_SCD>> IDIndex;
+
 
         internal SCEN_SCDDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_SCD>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Termination Payment
     /// </summary>
-    public class PETP : EntityBase
+    public partial class PETP : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -83,11 +83,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PETP.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)
@@ -104,11 +106,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PAYITEM] => [PI].[PIKEY]
+        /// PI (Pay Items) related entity by [PETP.PAYITEM]-&gt;[PI.PIKEY]
         /// Pay item code
         /// </summary>
-        public PI PAYITEM_PI {
+        public PI PAYITEM_PI
+        {
             get
             {
                 if (PAYITEM.HasValue)

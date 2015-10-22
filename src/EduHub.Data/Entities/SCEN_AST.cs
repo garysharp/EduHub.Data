@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Student Data
     /// </summary>
-    public class SCEN_AST : EntityBase
+    public partial class SCEN_AST : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -652,9 +649,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (30)]
         /// </summary>
         public string ADDRESS_C { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

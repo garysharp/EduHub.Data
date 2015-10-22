@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Account Types Data Set
     /// </summary>
-    public sealed class KGLTDataSet : SetBase<KGLT>
+    public sealed partial class KGLTDataSet : SetBase<KGLT>
     {
         private Lazy<Dictionary<string, KGLT>> GL_TYPEIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<GL>>> GL_GL_TYPEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<GLPREV>>> GLPREV_GL_TYPEForeignIndex;
 
         internal KGLTDataSet(EduHubContext Context)
             : base(Context)
         {
             GL_TYPEIndex = new Lazy<Dictionary<string, KGLT>>(() => this.ToDictionary(e => e.GL_TYPE));
+
+            GL_GL_TYPEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GL>>>(() =>
+                    Context.GL
+                          .Where(e => e.GL_TYPE != null)
+                          .GroupBy(e => e.GL_TYPE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GL>)g.ToList()
+                          .AsReadOnly()));
+
+            GLPREV_GL_TYPEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLPREV>>>(() =>
+                    Context.GLPREV
+                          .Where(e => e.GL_TYPE != null)
+                          .GroupBy(e => e.GL_TYPE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLPREV>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all GL (General Ledger) entities by [GL.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// </summary>
+        /// <param name="GL_TYPE">GL_TYPE value used to find GL entities</param>
+        /// <returns>A list of related GL entities</returns>
+        public IReadOnlyList<GL> FindGLByGL_TYPE(string GL_TYPE)
+        {
+            IReadOnlyList<GL> result;
+            if (GL_GL_TYPEForeignIndex.Value.TryGetValue(GL_TYPE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GL>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GL entities by [GL.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// </summary>
+        /// <param name="GL_TYPE">GL_TYPE value used to find GL entities</param>
+        /// <param name="Value">A list of related GL entities</param>
+        /// <returns>True if any GL entities are found</returns>
+        public bool TryFindGLByGL_TYPE(string GL_TYPE, out IReadOnlyList<GL> Value)
+        {
+            return GL_GL_TYPEForeignIndex.Value.TryGetValue(GL_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Find all GLPREV (Last Years General Ledger) entities by [GLPREV.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// </summary>
+        /// <param name="GL_TYPE">GL_TYPE value used to find GLPREV entities</param>
+        /// <returns>A list of related GLPREV entities</returns>
+        public IReadOnlyList<GLPREV> FindGLPREVByGL_TYPE(string GL_TYPE)
+        {
+            IReadOnlyList<GLPREV> result;
+            if (GLPREV_GL_TYPEForeignIndex.Value.TryGetValue(GL_TYPE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLPREV>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLPREV entities by [GLPREV.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// </summary>
+        /// <param name="GL_TYPE">GL_TYPE value used to find GLPREV entities</param>
+        /// <param name="Value">A list of related GLPREV entities</param>
+        /// <returns>True if any GLPREV entities are found</returns>
+        public bool TryFindGLPREVByGL_TYPE(string GL_TYPE, out IReadOnlyList<GLPREV> Value)
+        {
+            return GLPREV_GL_TYPEForeignIndex.Value.TryGetValue(GL_TYPE, out Value);
         }
 
 

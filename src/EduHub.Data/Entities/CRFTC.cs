@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Creditor Fuel Tax Credits
     /// </summary>
-    public class CRFTC : EntityBase
+    public partial class CRFTC : EntityBase
     {
 #region Navigation Property Cache
         private CR _CODE_CR;
@@ -87,11 +87,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [CR].[CRKEY]
+        /// CR (Accounts Payable) related entity by [CRFTC.CODE]-&gt;[CR.CRKEY]
         /// Creditor key
         /// </summary>
-        public CR CODE_CR {
+        public CR CODE_CR
+        {
             get
             {
                 if (CODE != null)
@@ -108,11 +110,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FTC_CODE] => [KFTC].[KFTCKEY]
+        /// KFTC (Fuel Tax Credit Rates) related entity by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
         /// Fuel Tax Credit code
         /// </summary>
-        public KFTC FTC_CODE_KFTC {
+        public KFTC FTC_CODE_KFTC
+        {
             get
             {
                 if (FTC_CODE != null)

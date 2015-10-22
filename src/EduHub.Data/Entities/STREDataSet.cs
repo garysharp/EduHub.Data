@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Re-Enrolment Data Set
     /// </summary>
-    public sealed class STREDataSet : SetBase<STRE>
+    public sealed partial class STREDataSet : SetBase<STRE>
     {
+
 
         internal STREDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

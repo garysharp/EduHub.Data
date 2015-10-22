@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Associations Data Set
     /// </summary>
-    public sealed class SCADataSet : SetBase<SCA>
+    public sealed partial class SCADataSet : SetBase<SCA>
     {
         private Lazy<Dictionary<string, SCA>> SCAKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SAM>>> SAM_ASSOC_NAMEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SCAM>>> SCAM_SCAMKEYForeignIndex;
 
         internal SCADataSet(EduHubContext Context)
             : base(Context)
         {
             SCAKEYIndex = new Lazy<Dictionary<string, SCA>>(() => this.ToDictionary(e => e.SCAKEY));
+
+            SAM_ASSOC_NAMEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SAM>>>(() =>
+                    Context.SAM
+                          .Where(e => e.ASSOC_NAME != null)
+                          .GroupBy(e => e.ASSOC_NAME)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAM>)g.ToList()
+                          .AsReadOnly()));
+
+            SCAM_SCAMKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SCAM>>>(() =>
+                    Context.SCAM
+                          .Where(e => e.SCAMKEY != null)
+                          .GroupBy(e => e.SCAMKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCAM>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SAM (School Association Members) entities by [SAM.ASSOC_NAME]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        /// <param name="SCAKEY">SCAKEY value used to find SAM entities</param>
+        /// <returns>A list of related SAM entities</returns>
+        public IReadOnlyList<SAM> FindSAMByASSOC_NAME(string SCAKEY)
+        {
+            IReadOnlyList<SAM> result;
+            if (SAM_ASSOC_NAMEForeignIndex.Value.TryGetValue(SCAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAM entities by [SAM.ASSOC_NAME]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        /// <param name="SCAKEY">SCAKEY value used to find SAM entities</param>
+        /// <param name="Value">A list of related SAM entities</param>
+        /// <returns>True if any SAM entities are found</returns>
+        public bool TryFindSAMByASSOC_NAME(string SCAKEY, out IReadOnlyList<SAM> Value)
+        {
+            return SAM_ASSOC_NAMEForeignIndex.Value.TryGetValue(SCAKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SCAM (School Association Meetings) entities by [SCAM.SCAMKEY]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        /// <param name="SCAKEY">SCAKEY value used to find SCAM entities</param>
+        /// <returns>A list of related SCAM entities</returns>
+        public IReadOnlyList<SCAM> FindSCAMBySCAMKEY(string SCAKEY)
+        {
+            IReadOnlyList<SCAM> result;
+            if (SCAM_SCAMKEYForeignIndex.Value.TryGetValue(SCAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCAM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCAM entities by [SCAM.SCAMKEY]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        /// <param name="SCAKEY">SCAKEY value used to find SCAM entities</param>
+        /// <param name="Value">A list of related SCAM entities</param>
+        /// <returns>True if any SCAM entities are found</returns>
+        public bool TryFindSCAMBySCAMKEY(string SCAKEY, out IReadOnlyList<SCAM> Value)
+        {
+            return SCAM_SCAMKEYForeignIndex.Value.TryGetValue(SCAKEY, out Value);
         }
 
 

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FTE Student Retentions
     /// </summary>
-    public class SRAG : EntityBase
+    public partial class SRAG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Unique ID for this record
@@ -42,9 +39,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

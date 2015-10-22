@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members
     /// </summary>
-    public class SDGM : EntityBase
+    public partial class SDGM : EntityBase
     {
 #region Navigation Property Cache
         private SDG _SDGMKEY_SDG;
@@ -57,11 +57,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SDGMKEY] => [SDG].[SDGKEY]
+        /// SDG (Sundry Debtor Fee Groups) related entity by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
         /// Group Code
         /// </summary>
-        public SDG SDGMKEY_SDG {
+        public SDG SDGMKEY_SDG
+        {
             get
             {
                 if (SDGMKEY != null)
@@ -78,11 +80,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PERSON_LINK] => [DR].[DRKEY]
+        /// DR (Accounts Receivable) related entity by [SDGM.PERSON_LINK]-&gt;[DR.DRKEY]
         /// Code of this person in table SF or DF
         /// </summary>
-        public DR PERSON_LINK_DR {
+        public DR PERSON_LINK_DR
+        {
             get
             {
                 if (PERSON_LINK != null)

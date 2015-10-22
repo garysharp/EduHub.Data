@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Categories Data Set
     /// </summary>
-    public sealed class TECDataSet : SetBase<TEC>
+    public sealed partial class TECDataSet : SetBase<TEC>
     {
         private Lazy<Dictionary<string, TEC>> CATEGORYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<TE>>> TE_CATEGORYForeignIndex;
 
         internal TECDataSet(EduHubContext Context)
             : base(Context)
         {
             CATEGORYIndex = new Lazy<Dictionary<string, TEC>>(() => this.ToDictionary(e => e.CATEGORY));
+
+            TE_CATEGORYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<TE>>>(() =>
+                    Context.TE
+                          .Where(e => e.CATEGORY != null)
+                          .GroupBy(e => e.CATEGORY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TE>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all TE (Calendar Events) entities by [TE.CATEGORY]-&gt;[TEC.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find TE entities</param>
+        /// <returns>A list of related TE entities</returns>
+        public IReadOnlyList<TE> FindTEByCATEGORY(string CATEGORY)
+        {
+            IReadOnlyList<TE> result;
+            if (TE_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TE entities by [TE.CATEGORY]-&gt;[TEC.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find TE entities</param>
+        /// <param name="Value">A list of related TE entities</param>
+        /// <returns>True if any TE entities are found</returns>
+        public bool TryFindTEByCATEGORY(string CATEGORY, out IReadOnlyList<TE> Value)
+        {
+            return TE_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out Value);
         }
 
 

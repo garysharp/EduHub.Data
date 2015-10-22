@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Group Meeting Attendance Data Set
     /// </summary>
-    public sealed class SGMADataSet : SetBase<SGMA>
+    public sealed partial class SGMADataSet : SetBase<SGMA>
     {
+
 
         internal SGMADataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

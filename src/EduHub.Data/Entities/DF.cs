@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Families
     /// </summary>
-    public class DF : EntityBase
+    public partial class DF : EntityBase
     {
 #region Navigation Property Cache
         private KGL _NATIVE_LANG_A_KGL;
@@ -631,11 +631,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [NATIVE_LANG_A] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.NATIVE_LANG_A]-&gt;[KGL.KGLKEY]
         /// (Was MNATIVE_LANG) Parent/guardian A native language
         /// </summary>
-        public KGL NATIVE_LANG_A_KGL {
+        public KGL NATIVE_LANG_A_KGL
+        {
             get
             {
                 if (NATIVE_LANG_A != null)
@@ -652,11 +654,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [OTHER_LANG_A] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.OTHER_LANG_A]-&gt;[KGL.KGLKEY]
         /// (Was M_OTHER_LANG) Parent/guardian A other language
         /// </summary>
-        public KGL OTHER_LANG_A_KGL {
+        public KGL OTHER_LANG_A_KGL
+        {
             get
             {
                 if (OTHER_LANG_A != null)
@@ -673,11 +677,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY_A] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [DF.BIRTH_COUNTRY_A]-&gt;[KGT.COUNTRY]
         /// (Was MBIRTH_COUNTRY) Parent/guardian A country of birth
         /// </summary>
-        public KGT BIRTH_COUNTRY_A_KGT {
+        public KGT BIRTH_COUNTRY_A_KGT
+        {
             get
             {
                 if (BIRTH_COUNTRY_A != null)
@@ -694,11 +700,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE_A] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.LOTE_HOME_CODE_A]-&gt;[KGL.KGLKEY]
         /// The Language other than English spoken at home by parent/guardian A
         /// </summary>
-        public KGL LOTE_HOME_CODE_A_KGL {
+        public KGL LOTE_HOME_CODE_A_KGL
+        {
             get
             {
                 if (LOTE_HOME_CODE_A != null)
@@ -715,11 +723,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [NATIVE_LANG_B] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.NATIVE_LANG_B]-&gt;[KGL.KGLKEY]
         /// (Was FNATIVE_LANG) Parent/guardian B native language
         /// </summary>
-        public KGL NATIVE_LANG_B_KGL {
+        public KGL NATIVE_LANG_B_KGL
+        {
             get
             {
                 if (NATIVE_LANG_B != null)
@@ -736,11 +746,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [OTHER_LANG_B] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.OTHER_LANG_B]-&gt;[KGL.KGLKEY]
         /// (Was F_OTHER_LANG) Parent/guardian B other language
         /// </summary>
-        public KGL OTHER_LANG_B_KGL {
+        public KGL OTHER_LANG_B_KGL
+        {
             get
             {
                 if (OTHER_LANG_B != null)
@@ -757,11 +769,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY_B] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [DF.BIRTH_COUNTRY_B]-&gt;[KGT.COUNTRY]
         /// (Was FBIRTH_COUNTRY) Parent/guardian B country of birth
         /// </summary>
-        public KGT BIRTH_COUNTRY_B_KGT {
+        public KGT BIRTH_COUNTRY_B_KGT
+        {
             get
             {
                 if (BIRTH_COUNTRY_B != null)
@@ -778,11 +792,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOTE_HOME_CODE_B] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.LOTE_HOME_CODE_B]-&gt;[KGL.KGLKEY]
         /// The Language other than English spoken at home by parent/guardian B
         /// </summary>
-        public KGL LOTE_HOME_CODE_B_KGL {
+        public KGL LOTE_HOME_CODE_B_KGL
+        {
             get
             {
                 if (LOTE_HOME_CODE_B != null)
@@ -799,11 +815,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PREF_NOTICE_LANG] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.PREF_NOTICE_LANG]-&gt;[KGL.KGLKEY]
         /// Preferred language for notices
         /// </summary>
-        public KGL PREF_NOTICE_LANG_KGL {
+        public KGL PREF_NOTICE_LANG_KGL
+        {
             get
             {
                 if (PREF_NOTICE_LANG != null)
@@ -820,11 +838,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOMEKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [DF.HOMEKEY]-&gt;[UM.UMKEY]
         /// Home address ID
         /// </summary>
-        public UM HOMEKEY_UM {
+        public UM HOMEKEY_UM
+        {
             get
             {
                 if (HOMEKEY.HasValue)
@@ -841,11 +861,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MAILKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [DF.MAILKEY]-&gt;[UM.UMKEY]
         /// Mail address ID
         /// </summary>
-        public UM MAILKEY_UM {
+        public UM MAILKEY_UM
+        {
             get
             {
                 if (MAILKEY.HasValue)
@@ -862,11 +884,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BILLINGKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [DF.BILLINGKEY]-&gt;[UM.UMKEY]
         /// Billing address ID
         /// </summary>
-        public UM BILLINGKEY_UM {
+        public UM BILLINGKEY_UM
+        {
             get
             {
                 if (BILLINGKEY.HasValue)
@@ -883,11 +907,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DOCTOR] => [KCD].[KCDKEY]
+        /// KCD (Doctors) related entity by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
         /// Reference to local doctor (default for each student)
         /// </summary>
-        public KCD DOCTOR_KCD {
+        public KCD DOCTOR_KCD
+        {
             get
             {
                 if (DOCTOR != null)
@@ -904,11 +930,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG01] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.EMERG_LANG01]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG01_KGL {
+        public KGL EMERG_LANG01_KGL
+        {
             get
             {
                 if (EMERG_LANG01 != null)
@@ -925,11 +953,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG02] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.EMERG_LANG02]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG02_KGL {
+        public KGL EMERG_LANG02_KGL
+        {
             get
             {
                 if (EMERG_LANG02 != null)
@@ -946,11 +976,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG03] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.EMERG_LANG03]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG03_KGL {
+        public KGL EMERG_LANG03_KGL
+        {
             get
             {
                 if (EMERG_LANG03 != null)
@@ -967,11 +999,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EMERG_LANG04] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.EMERG_LANG04]-&gt;[KGL.KGLKEY]
         /// Language spoken by person(s) to contact in an emergency
         /// </summary>
-        public KGL EMERG_LANG04_KGL {
+        public KGL EMERG_LANG04_KGL
+        {
             get
             {
                 if (EMERG_LANG04 != null)
@@ -988,11 +1022,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [DF.HOME_LANG]-&gt;[KGL.KGLKEY]
         /// The language spoken at home
         /// </summary>
-        public KGL HOME_LANG_KGL {
+        public KGL HOME_LANG_KGL
+        {
             get
             {
                 if (HOME_LANG != null)
@@ -1007,6 +1043,94 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// DFB (BPAY Receipts) related entities by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<DFB> DFB_FAM_CODE
+        {
+            get
+            {
+                return Context.DF.FindDFBByFAM_CODE(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// DFF (Family Financial Transactions) related entities by [DFF.CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<DFF> DFF_CODE
+        {
+            get
+            {
+                return Context.DF.FindDFFByCODE(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// DFHI (Family History) related entities by [DFHI.FKEY]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<DFHI> DFHI_FKEY
+        {
+            get
+            {
+                return Context.DF.FindDFHIByFKEY(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// DFVT (Family Voluntary Transactions) related entities by [DFVT.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<DFVT> DFVT_FAMILY
+        {
+            get
+            {
+                return Context.DF.FindDFVTByFAMILY(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_FAMILY
+        {
+            get
+            {
+                return Context.DF.FindSTByFAMILY(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.FAMB]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_FAMB
+        {
+            get
+            {
+                return Context.DF.FindSTByFAMB(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.FAMC]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_FAMC
+        {
+            get
+            {
+                return Context.DF.FindSTByFAMC(DFKEY);
+            }
+        }
+
+        /// <summary>
+        /// STSB (Family Invoice Allocations) related entities by [STSB.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        public IReadOnlyList<STSB> STSB_FAMILY
+        {
+            get
+            {
+                return Context.DF.FindSTSBByFAMILY(DFKEY);
             }
         }
 #endregion

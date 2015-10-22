@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group Daily Attendance Records Data Set
     /// </summary>
-    public sealed class TXHGDataSet : SetBase<TXHG>
+    public sealed partial class TXHGDataSet : SetBase<TXHG>
     {
         private Lazy<Dictionary<int, TXHG>> TXHG_IDIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SXAB>>> SXAB_TXHG_TIDForeignIndex;
 
         internal TXHGDataSet(EduHubContext Context)
             : base(Context)
         {
             TXHG_IDIndex = new Lazy<Dictionary<int, TXHG>>(() => this.ToDictionary(e => e.TXHG_ID));
+
+            SXAB_TXHG_TIDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SXAB>>>(() =>
+                    Context.SXAB
+                          .Where(e => e.TXHG_TID != null)
+                          .GroupBy(e => e.TXHG_TID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SXAB (Student Half-Day Absences) entities by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
+        /// </summary>
+        /// <param name="TXHG_ID">TXHG_ID value used to find SXAB entities</param>
+        /// <returns>A list of related SXAB entities</returns>
+        public IReadOnlyList<SXAB> FindSXABByTXHG_TID(int TXHG_ID)
+        {
+            IReadOnlyList<SXAB> result;
+            if (SXAB_TXHG_TIDForeignIndex.Value.TryGetValue(TXHG_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SXAB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SXAB entities by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
+        /// </summary>
+        /// <param name="TXHG_ID">TXHG_ID value used to find SXAB entities</param>
+        /// <param name="Value">A list of related SXAB entities</param>
+        /// <returns>True if any SXAB entities are found</returns>
+        public bool TryFindSXABByTXHG_TID(int TXHG_ID, out IReadOnlyList<SXAB> Value)
+        {
+            return SXAB_TXHG_TIDForeignIndex.Value.TryGetValue(TXHG_ID, out Value);
         }
 
 

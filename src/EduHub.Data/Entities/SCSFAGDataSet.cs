@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Data Aggregates Data Set
     /// </summary>
-    public sealed class SCSFAGDataSet : SetBase<SCSFAG>
+    public sealed partial class SCSFAGDataSet : SetBase<SCSFAG>
     {
+
 
         internal SCSFAGDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

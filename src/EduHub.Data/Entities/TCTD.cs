@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Period Information
     /// </summary>
-    public class TCTD : EntityBase
+    public partial class TCTD : EntityBase
     {
 #region Navigation Property Cache
         private TC _TCTDKEY_TC;
@@ -64,11 +64,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TCTDKEY] => [TC].[TCKEY]
+        /// TC (Calendar) related entity by [TCTD.TCTDKEY]-&gt;[TC.TCKEY]
         /// Owner relation
         /// </summary>
-        public TC TCTDKEY_TC {
+        public TC TCTDKEY_TC
+        {
             get
             {
                 if (TCTDKEY.HasValue)
@@ -85,11 +87,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [QKEY] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [TCTD.QKEY]-&gt;[TH.THKEY]
         /// Associated Quilt
         /// </summary>
-        public TH QKEY_TH {
+        public TH QKEY_TH
+        {
             get
             {
                 if (QKEY != null)

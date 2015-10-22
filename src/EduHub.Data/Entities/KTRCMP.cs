@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Company
     /// </summary>
-    public class KTRCMP : EntityBase
+    public partial class KTRCMP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Company ID
@@ -92,6 +89,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// TRPROUT (Student Transport Routes) related entities by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
+        /// </summary>
+        public IReadOnlyList<TRPROUT> TRPROUT_TRANSPORT_COMPANY_ID
+        {
+            get
+            {
+                return Context.KTRCMP.FindTRPROUTByTRANSPORT_COMPANY_ID(COMPANY_ID);
+            }
+        }
 #endregion
     }
 }

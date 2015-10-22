@@ -8,16 +8,18 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Australian Postcodes Data Set
     /// </summary>
-    public sealed class KAPDataSet : SetBase<KAP>
+    public sealed partial class KAPDataSet : SetBase<KAP>
     {
         private Lazy<Dictionary<string, KAP>> KAPKEYIndex;
         private Lazy<Dictionary<string, KAP>> PLACE_NAMEIndex;
+
 
         internal KAPDataSet(EduHubContext Context)
             : base(Context)
         {
             KAPKEYIndex = new Lazy<Dictionary<string, KAP>>(() => this.ToDictionary(e => e.KAPKEY));
             PLACE_NAMEIndex = new Lazy<Dictionary<string, KAP>>(() => this.ToDictionary(e => e.PLACE_NAME));
+
         }
 
         /// <summary>

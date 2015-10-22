@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Room Availablity Extras
     /// </summary>
-    public class SMAV : EntityBase
+    public partial class SMAV : EntityBase
     {
 #region Navigation Property Cache
         private SM _ROOM_SM;
@@ -54,11 +54,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SMAV.ROOM]-&gt;[SM.ROOM]
         /// Room key
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)

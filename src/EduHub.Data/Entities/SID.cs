@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Disciplinary Incidents
     /// </summary>
-    public class SID : EntityBase
+    public partial class SID : EntityBase
     {
 #region Navigation Property Cache
         private KCB _INCIDENT_TYPE_KCB;
@@ -81,11 +81,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [INCIDENT_TYPE] => [KCB].[KCBKEY]
+        /// KCB (Behaviour Classifications) related entity by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
         /// Type of incident
         /// </summary>
-        public KCB INCIDENT_TYPE_KCB {
+        public KCB INCIDENT_TYPE_KCB
+        {
             get
             {
                 if (INCIDENT_TYPE != null)
@@ -102,11 +104,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SID.CAMPUS]-&gt;[SCI.SCIKEY]
         /// School campus at which incident took place
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -121,6 +125,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SDP (Incident Instigators) related entities by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        public IReadOnlyList<SDP> SDP_INCIDENT_KEY
+        {
+            get
+            {
+                return Context.SID.FindSDPByINCIDENT_KEY(SIDKEY);
+            }
+        }
+
+        /// <summary>
+        /// SIDV (Incident Victims/Recipients) related entities by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
+        /// </summary>
+        public IReadOnlyList<SIDV> SIDV_INCIDENT_KEY
+        {
+            get
+            {
+                return Context.SID.FindSIDVByINCIDENT_KEY(SIDKEY);
             }
         }
 #endregion

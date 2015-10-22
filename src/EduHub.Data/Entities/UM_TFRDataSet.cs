@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// UM Transfer Data Set
     /// </summary>
-    public sealed class UM_TFRDataSet : SetBase<UM_TFR>
+    public sealed partial class UM_TFRDataSet : SetBase<UM_TFR>
     {
+
 
         internal UM_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Departments
     /// </summary>
-    public class AKD : EntityBase
+    public partial class AKD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.DEPARTMENT]-&gt;[AKD.DEPARTMENT]
+        /// </summary>
+        public IReadOnlyList<AR> AR_DEPARTMENT
+        {
+            get
+            {
+                return Context.AKD.FindARByDEPARTMENT(DEPARTMENT);
+            }
+        }
 #endregion
     }
 }

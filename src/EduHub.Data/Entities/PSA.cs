@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Award Details
     /// </summary>
-    public class PSA : EntityBase
+    public partial class PSA : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// oldname=PSKEY; * Award Code
@@ -44,6 +41,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PI (Pay Items) related entities by [PI.AWARD]-&gt;[PSA.PSAKEY]
+        /// </summary>
+        public IReadOnlyList<PI> PI_AWARD
+        {
+            get
+            {
+                return Context.PSA.FindPIByAWARD(PSAKEY);
+            }
+        }
 #endregion
     }
 }

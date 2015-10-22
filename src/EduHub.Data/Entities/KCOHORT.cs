@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Cohorts for data aggregation
     /// </summary>
-    public class KCOHORT : EntityBase
+    public partial class KCOHORT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Unique ID for this record
@@ -48,6 +45,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SVAG (VELS Aggregated Dimensions) related entities by [SVAG.COHORT]-&gt;[KCOHORT.COHORT]
+        /// </summary>
+        public IReadOnlyList<SVAG> SVAG_COHORT
+        {
+            get
+            {
+                return Context.KCOHORT.FindSVAGByCOHORT(COHORT);
+            }
+        }
 #endregion
     }
 }

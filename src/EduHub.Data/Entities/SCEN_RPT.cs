@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Report Usage Metadata
     /// </summary>
-    public class SCEN_RPT : EntityBase
+    public partial class SCEN_RPT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -61,9 +58,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ISSPECIAL { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

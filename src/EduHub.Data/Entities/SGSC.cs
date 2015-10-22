@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject/Class Eligibility Criteria
     /// </summary>
-    public class SGSC : EntityBase
+    public partial class SGSC : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGSCKEY_SG;
@@ -53,11 +53,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGSCKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
         /// Code of group for which this is a criterion
         /// </summary>
-        public SG SGSCKEY_SG {
+        public SG SGSCKEY_SG
+        {
             get
             {
                 if (SGSCKEY != null)
@@ -74,11 +76,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SULINK] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SGSC.SULINK]-&gt;[SU.SUKEY]
         /// Code of subject which is a criterion for membership in group SGSGKEY
         /// </summary>
-        public SU SULINK_SU {
+        public SU SULINK_SU
+        {
             get
             {
                 if (SULINK != null)

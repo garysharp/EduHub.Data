@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Publications Data Set
     /// </summary>
-    public sealed class SPUDataSet : SetBase<SPU>
+    public sealed partial class SPUDataSet : SetBase<SPU>
     {
         private Lazy<Dictionary<string, SPU>> SPUKEYIndex;
+
 
         internal SPUDataSet(EduHubContext Context)
             : base(Context)
         {
             SPUKEYIndex = new Lazy<Dictionary<string, SPU>>(() => this.ToDictionary(e => e.SPUKEY));
+
         }
 
         /// <summary>

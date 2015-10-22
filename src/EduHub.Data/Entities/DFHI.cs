@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family History
     /// </summary>
-    public class DFHI : EntityBase
+    public partial class DFHI : EntityBase
     {
 #region Navigation Property Cache
         private DF _FKEY_DF;
@@ -135,11 +135,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FKEY] => [DF].[DFKEY]
+        /// DF (Families) related entity by [DFHI.FKEY]-&gt;[DF.DFKEY]
         /// Family ID (dynamic link that gets updated whenever DF.DFKEY is also updated)
         /// </summary>
-        public DF FKEY_DF {
+        public DF FKEY_DF
+        {
             get
             {
                 if (FKEY != null)

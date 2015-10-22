@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Types Data Set
     /// </summary>
-    public sealed class AKTDataSet : SetBase<AKT>
+    public sealed partial class AKTDataSet : SetBase<AKT>
     {
         private Lazy<Dictionary<string, AKT>> AKTKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_ASSET_TYPEForeignIndex;
 
         internal AKTDataSet(EduHubContext Context)
             : base(Context)
         {
             AKTKEYIndex = new Lazy<Dictionary<string, AKT>>(() => this.ToDictionary(e => e.AKTKEY));
+
+            AR_ASSET_TYPEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.ASSET_TYPE != null)
+                          .GroupBy(e => e.ASSET_TYPE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.ASSET_TYPE]-&gt;[AKT.AKTKEY]
+        /// </summary>
+        /// <param name="AKTKEY">AKTKEY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByASSET_TYPE(string AKTKEY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_ASSET_TYPEForeignIndex.Value.TryGetValue(AKTKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.ASSET_TYPE]-&gt;[AKT.AKTKEY]
+        /// </summary>
+        /// <param name="AKTKEY">AKTKEY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByASSET_TYPE(string AKTKEY, out IReadOnlyList<AR> Value)
+        {
+            return AR_ASSET_TYPEForeignIndex.Value.TryGetValue(AKTKEY, out Value);
         }
 
 

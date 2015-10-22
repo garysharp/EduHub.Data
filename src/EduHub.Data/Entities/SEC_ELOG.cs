@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Error Log
     /// </summary>
-    public class SEC_ELOG : EntityBase
+    public partial class SEC_ELOG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -30,9 +27,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? ERRORTIME { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Student Validation Type Data
     /// </summary>
-    public class SCEN_SVT : EntityBase
+    public partial class SCEN_SVT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -56,9 +53,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ISENABLED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

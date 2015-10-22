@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// DF Transfer Data Set
     /// </summary>
-    public sealed class DF_TFRDataSet : SetBase<DF_TFR>
+    public sealed partial class DF_TFRDataSet : SetBase<DF_TFR>
     {
+
 
         internal DF_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -8,14 +8,52 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets Data Set
     /// </summary>
-    public sealed class ARDataSet : SetBase<AR>
+    public sealed partial class ARDataSet : SetBase<AR>
     {
         private Lazy<Dictionary<string, AR>> ARKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AKK>>> AKK_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_COMPONENT_OFForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> ARF_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> CRF_ATKEYForeignIndex;
 
         internal ARDataSet(EduHubContext Context)
             : base(Context)
         {
             ARKEYIndex = new Lazy<Dictionary<string, AR>>(() => this.ToDictionary(e => e.ARKEY));
+
+            AKK_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AKK>>>(() =>
+                    Context.AKK
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AKK>)g.ToList()
+                          .AsReadOnly()));
+
+            AR_COMPONENT_OFForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.COMPONENT_OF != null)
+                          .GroupBy(e => e.COMPONENT_OF)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
+            ARF_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() =>
+                    Context.ARF
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ARF>)g.ToList()
+                          .AsReadOnly()));
+
+            CRF_ATKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() =>
+                    Context.CRF
+                          .Where(e => e.ATKEY != null)
+                          .GroupBy(e => e.ATKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +107,122 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AKK (Asset Key Holders) entities by [AKK.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find AKK entities</param>
+        /// <returns>A list of related AKK entities</returns>
+        public IReadOnlyList<AKK> FindAKKByCODE(string ARKEY)
+        {
+            IReadOnlyList<AKK> result;
+            if (AKK_CODEForeignIndex.Value.TryGetValue(ARKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AKK>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AKK entities by [AKK.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find AKK entities</param>
+        /// <param name="Value">A list of related AKK entities</param>
+        /// <returns>True if any AKK entities are found</returns>
+        public bool TryFindAKKByCODE(string ARKEY, out IReadOnlyList<AKK> Value)
+        {
+            return AKK_CODEForeignIndex.Value.TryGetValue(ARKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.COMPONENT_OF]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByCOMPONENT_OF(string ARKEY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_COMPONENT_OFForeignIndex.Value.TryGetValue(ARKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.COMPONENT_OF]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByCOMPONENT_OF(string ARKEY, out IReadOnlyList<AR> Value)
+        {
+            return AR_COMPONENT_OFForeignIndex.Value.TryGetValue(ARKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ARF (Asset Financial Transactions) entities by [ARF.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find ARF entities</param>
+        /// <returns>A list of related ARF entities</returns>
+        public IReadOnlyList<ARF> FindARFByCODE(string ARKEY)
+        {
+            IReadOnlyList<ARF> result;
+            if (ARF_CODEForeignIndex.Value.TryGetValue(ARKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ARF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ARF entities by [ARF.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find ARF entities</param>
+        /// <param name="Value">A list of related ARF entities</param>
+        /// <returns>True if any ARF entities are found</returns>
+        public bool TryFindARFByCODE(string ARKEY, out IReadOnlyList<ARF> Value)
+        {
+            return ARF_CODEForeignIndex.Value.TryGetValue(ARKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all CRF (Creditor Financial Transaction) entities by [CRF.ATKEY]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find CRF entities</param>
+        /// <returns>A list of related CRF entities</returns>
+        public IReadOnlyList<CRF> FindCRFByATKEY(string ARKEY)
+        {
+            IReadOnlyList<CRF> result;
+            if (CRF_ATKEYForeignIndex.Value.TryGetValue(ARKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CRF entities by [CRF.ATKEY]-&gt;[AR.ARKEY]
+        /// </summary>
+        /// <param name="ARKEY">ARKEY value used to find CRF entities</param>
+        /// <param name="Value">A list of related CRF entities</param>
+        /// <returns>True if any CRF entities are found</returns>
+        public bool TryFindCRFByATKEY(string ARKEY, out IReadOnlyList<CRF> Value)
+        {
+            return CRF_ATKEYForeignIndex.Value.TryGetValue(ARKEY, out Value);
         }
 
 

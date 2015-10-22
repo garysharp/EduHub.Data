@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Part-Time Enrolments
     /// </summary>
-    public class STPT : EntityBase
+    public partial class STPT : EntityBase
     {
 #region Navigation Property Cache
         private ST _STPTKEY_ST;
@@ -57,11 +57,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STPTKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STPT.STPTKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STPTKEY_ST {
+        public ST STPTKEY_ST
+        {
             get
             {
                 if (STPTKEY != null)
@@ -78,11 +80,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHL_NUM] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [STPT.SCHL_NUM]-&gt;[SKGS.SCHOOL]
         /// ID of school (could be home school)
         /// </summary>
-        public SKGS SCHL_NUM_SKGS {
+        public SKGS SCHL_NUM_SKGS
+        {
             get
             {
                 if (SCHL_NUM != null)

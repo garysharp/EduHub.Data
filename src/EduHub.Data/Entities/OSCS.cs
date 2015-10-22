@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CASES Past Students
     /// </summary>
-    public class OSCS : EntityBase
+    public partial class OSCS : EntityBase
     {
 #region Navigation Property Cache
         private KGT _ADULT_A_COUNTRY_KGT;
@@ -604,11 +604,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ADULT_A_COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [OSCS.ADULT_A_COUNTRY]-&gt;[KGT.COUNTRY]
         /// (Was M_COUNTRY) Country of birth of first parent/guardian of this student
         /// </summary>
-        public KGT ADULT_A_COUNTRY_KGT {
+        public KGT ADULT_A_COUNTRY_KGT
+        {
             get
             {
                 if (ADULT_A_COUNTRY != null)
@@ -625,11 +627,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ADULT_B_COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [OSCS.ADULT_B_COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country of birth of second parent/guardian of this student
         /// </summary>
-        public KGT ADULT_B_COUNTRY_KGT {
+        public KGT ADULT_B_COUNTRY_KGT
+        {
             get
             {
                 if (ADULT_B_COUNTRY != null)
@@ -646,11 +650,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ZEROMTH_CAT] => [KGG].[KGGKEY]
+        /// KGG (Year 9-12 Exit Categories) related entity by [OSCS.ZEROMTH_CAT]-&gt;[KGG.KGGKEY]
         /// MIPS Destination Category on exit
         /// </summary>
-        public KGG ZEROMTH_CAT_KGG {
+        public KGG ZEROMTH_CAT_KGG
+        {
             get
             {
                 if (ZEROMTH_CAT != null)
@@ -667,11 +673,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ZEROMTH_CAT_DEST] => [KGD].[KGDKEY]
+        /// KGD (Year 9-12 Exit Destinations) related entity by [OSCS.ZEROMTH_CAT_DEST]-&gt;[KGD.KGDKEY]
         /// MIPS Category &amp; Destination on exit
         /// </summary>
-        public KGD ZEROMTH_CAT_DEST_KGD {
+        public KGD ZEROMTH_CAT_DEST_KGD
+        {
             get
             {
                 if (ZEROMTH_CAT_DEST != null)
@@ -688,11 +696,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BIRTH_COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [OSCS.BIRTH_COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country of birth
         /// </summary>
-        public KGT BIRTH_COUNTRY_KGT {
+        public KGT BIRTH_COUNTRY_KGT
+        {
             get
             {
                 if (BIRTH_COUNTRY != null)
@@ -709,11 +719,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_LANG] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [OSCS.HOME_LANG]-&gt;[KGL.KGLKEY]
         /// The language spoken at home
         /// </summary>
-        public KGL HOME_LANG_KGL {
+        public KGL HOME_LANG_KGL
+        {
             get
             {
                 if (HOME_LANG != null)
@@ -730,11 +742,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SIXMTH_CAT] => [KGG].[KGGKEY]
+        /// KGG (Year 9-12 Exit Categories) related entity by [OSCS.SIXMTH_CAT]-&gt;[KGG.KGGKEY]
         /// MIPS Destination Category after 6 months
         /// </summary>
-        public KGG SIXMTH_CAT_KGG {
+        public KGG SIXMTH_CAT_KGG
+        {
             get
             {
                 if (SIXMTH_CAT != null)
@@ -751,11 +765,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SIXMTH_CAT_DEST] => [KGD].[KGDKEY]
+        /// KGD (Year 9-12 Exit Destinations) related entity by [OSCS.SIXMTH_CAT_DEST]-&gt;[KGD.KGDKEY]
         /// MIPS Category &amp; Destination after six month
         /// </summary>
-        public KGD SIXMTH_CAT_DEST_KGD {
+        public KGD SIXMTH_CAT_DEST_KGD
+        {
             get
             {
                 if (SIXMTH_CAT_DEST != null)

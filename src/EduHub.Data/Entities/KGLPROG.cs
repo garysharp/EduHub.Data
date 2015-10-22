@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Programs
     /// </summary>
-    public class KGLPROG : EntityBase
+    public partial class KGLPROG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Type key, eg I
@@ -43,6 +40,39 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// GLF (General Ledger Transactions) related entities by [GLF.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        public IReadOnlyList<GLF> GLF_GLPROGRAM
+        {
+            get
+            {
+                return Context.KGLPROG.FindGLFByGLPROGRAM(GLPROGRAM);
+            }
+        }
+
+        /// <summary>
+        /// GLFPREV (Last Years GL Financial Trans) related entities by [GLFPREV.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        public IReadOnlyList<GLFPREV> GLFPREV_GLPROGRAM
+        {
+            get
+            {
+                return Context.KGLPROG.FindGLFPREVByGLPROGRAM(GLPROGRAM);
+            }
+        }
+
+        /// <summary>
+        /// KGLSUB (General Ledger Sub Programs) related entities by [KGLSUB.GL_PROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        public IReadOnlyList<KGLSUB> KGLSUB_GL_PROGRAM
+        {
+            get
+            {
+                return Context.KGLPROG.FindKGLSUBByGL_PROGRAM(GLPROGRAM);
+            }
+        }
 #endregion
     }
 }

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Temporary Group Transactions Data Set
     /// </summary>
-    public sealed class SGTRXDataSet : SetBase<SGTRX>
+    public sealed partial class SGTRXDataSet : SetBase<SGTRX>
     {
+
 
         internal SGTRXDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

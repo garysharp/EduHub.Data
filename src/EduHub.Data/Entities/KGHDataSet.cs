@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Houses Data Set
     /// </summary>
-    public sealed class KGHDataSet : SetBase<KGH>
+    public sealed partial class KGHDataSet : SetBase<KGH>
     {
         private Lazy<Dictionary<string, KGH>> KGHKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_HOUSEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SG>>> SG_HOUSEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_HOUSEForeignIndex;
 
         internal KGHDataSet(EduHubContext Context)
             : base(Context)
         {
             KGHKEYIndex = new Lazy<Dictionary<string, KGH>>(() => this.ToDictionary(e => e.KGHKEY));
+
+            SF_HOUSEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.HOUSE != null)
+                          .GroupBy(e => e.HOUSE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
+            SG_HOUSEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SG>>>(() =>
+                    Context.SG
+                          .Where(e => e.HOUSE != null)
+                          .GroupBy(e => e.HOUSE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SG>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_HOUSEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.HOUSE != null)
+                          .GroupBy(e => e.HOUSE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByHOUSE(string KGHKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByHOUSE(string KGHKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SG (Student Groupings) entities by [SG.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find SG entities</param>
+        /// <returns>A list of related SG entities</returns>
+        public IReadOnlyList<SG> FindSGByHOUSE(string KGHKEY)
+        {
+            IReadOnlyList<SG> result;
+            if (SG_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SG entities by [SG.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find SG entities</param>
+        /// <param name="Value">A list of related SG entities</param>
+        /// <returns>True if any SG entities are found</returns>
+        public bool TryFindSGByHOUSE(string KGHKEY, out IReadOnlyList<SG> Value)
+        {
+            return SG_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByHOUSE(string KGHKEY)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByHOUSE(string KGHKEY, out IReadOnlyList<ST> Value)
+        {
+            return ST_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
         }
 
 

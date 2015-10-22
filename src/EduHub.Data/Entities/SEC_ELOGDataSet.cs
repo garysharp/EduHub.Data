@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Error Log Data Set
     /// </summary>
-    public sealed class SEC_ELOGDataSet : SetBase<SEC_ELOG>
+    public sealed partial class SEC_ELOGDataSet : SetBase<SEC_ELOG>
     {
         private Lazy<Dictionary<int, SEC_ELOG>> ERRORCOUNTIndex;
+
 
         internal SEC_ELOGDataSet(EduHubContext Context)
             : base(Context)
         {
             ERRORCOUNTIndex = new Lazy<Dictionary<int, SEC_ELOG>>(() => this.ToDictionary(e => e.ERRORCOUNT));
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Categories
     /// </summary>
-    public class TEC : EntityBase
+    public partial class TEC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// TE (Calendar Events) related entities by [TE.CATEGORY]-&gt;[TEC.CATEGORY]
+        /// </summary>
+        public IReadOnlyList<TE> TE_CATEGORY
+        {
+            get
+            {
+                return Context.TEC.FindTEByCATEGORY(CATEGORY);
+            }
+        }
 #endregion
     }
 }

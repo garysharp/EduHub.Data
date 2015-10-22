@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Temp Receipts Import Data Set
     /// </summary>
-    public sealed class KBPTDataSet : SetBase<KBPT>
+    public sealed partial class KBPTDataSet : SetBase<KBPT>
     {
         private Lazy<Dictionary<int, KBPT>> TIDIndex;
+
 
         internal KBPTDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, KBPT>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

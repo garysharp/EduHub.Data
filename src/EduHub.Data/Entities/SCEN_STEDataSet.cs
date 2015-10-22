@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Student Excluded Data Data Set
     /// </summary>
-    public sealed class SCEN_STEDataSet : SetBase<SCEN_STE>
+    public sealed partial class SCEN_STEDataSet : SetBase<SCEN_STE>
     {
         private Lazy<Dictionary<int, SCEN_STE>> IDIndex;
+
 
         internal SCEN_STEDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_STE>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

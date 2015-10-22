@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Last Years General Ledger Data Set
     /// </summary>
-    public sealed class GLPREVDataSet : SetBase<GLPREV>
+    public sealed partial class GLPREVDataSet : SetBase<GLPREV>
     {
         private Lazy<Dictionary<string, GLPREV>> CODEIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLCFPREV>>> GLCFPREV_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<GLFPREV>>> GLFPREV_CODEForeignIndex;
 
         internal GLPREVDataSet(EduHubContext Context)
             : base(Context)
         {
             CODEIndex = new Lazy<Dictionary<string, GLPREV>>(() => this.ToDictionary(e => e.CODE));
+
+            GLCFPREV_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLCFPREV>>>(() =>
+                    Context.GLCFPREV
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLCFPREV>)g.ToList()
+                          .AsReadOnly()));
+
+            GLFPREV_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLFPREV>>>(() =>
+                    Context.GLFPREV
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFPREV>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all GLCFPREV (Last Years GL Combined Financial Trans) entities by [GLCFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLCFPREV entities</param>
+        /// <returns>A list of related GLCFPREV entities</returns>
+        public IReadOnlyList<GLCFPREV> FindGLCFPREVByCODE(string CODE)
+        {
+            IReadOnlyList<GLCFPREV> result;
+            if (GLCFPREV_CODEForeignIndex.Value.TryGetValue(CODE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLCFPREV>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLCFPREV entities by [GLCFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLCFPREV entities</param>
+        /// <param name="Value">A list of related GLCFPREV entities</param>
+        /// <returns>True if any GLCFPREV entities are found</returns>
+        public bool TryFindGLCFPREVByCODE(string CODE, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return GLCFPREV_CODEForeignIndex.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Find all GLFPREV (Last Years GL Financial Trans) entities by [GLFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLFPREV entities</param>
+        /// <returns>A list of related GLFPREV entities</returns>
+        public IReadOnlyList<GLFPREV> FindGLFPREVByCODE(string CODE)
+        {
+            IReadOnlyList<GLFPREV> result;
+            if (GLFPREV_CODEForeignIndex.Value.TryGetValue(CODE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLFPREV>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLFPREV entities by [GLFPREV.CODE]-&gt;[GLPREV.CODE]
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLFPREV entities</param>
+        /// <param name="Value">A list of related GLFPREV entities</param>
+        /// <returns>True if any GLFPREV entities are found</returns>
+        public bool TryFindGLFPREVByCODE(string CODE, out IReadOnlyList<GLFPREV> Value)
+        {
+            return GLFPREV_CODEForeignIndex.Value.TryGetValue(CODE, out Value);
         }
 
 

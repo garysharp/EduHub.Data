@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Awards and Prizes Data Set
     /// </summary>
-    public sealed class KGWDataSet : SetBase<KGW>
+    public sealed partial class KGWDataSet : SetBase<KGW>
     {
         private Lazy<Dictionary<string, KGW>> AWARDIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<STMB>>> STMB_AWARDForeignIndex;
 
         internal KGWDataSet(EduHubContext Context)
             : base(Context)
         {
             AWARDIndex = new Lazy<Dictionary<string, KGW>>(() => this.ToDictionary(e => e.AWARD));
+
+            STMB_AWARDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STMB>>>(() =>
+                    Context.STMB
+                          .Where(e => e.AWARD != null)
+                          .GroupBy(e => e.AWARD)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STMB (Student Merit Behaviour Details) entities by [STMB.AWARD]-&gt;[KGW.AWARD]
+        /// </summary>
+        /// <param name="AWARD">AWARD value used to find STMB entities</param>
+        /// <returns>A list of related STMB entities</returns>
+        public IReadOnlyList<STMB> FindSTMBByAWARD(string AWARD)
+        {
+            IReadOnlyList<STMB> result;
+            if (STMB_AWARDForeignIndex.Value.TryGetValue(AWARD, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STMB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STMB entities by [STMB.AWARD]-&gt;[KGW.AWARD]
+        /// </summary>
+        /// <param name="AWARD">AWARD value used to find STMB entities</param>
+        /// <param name="Value">A list of related STMB entities</param>
+        /// <returns>True if any STMB entities are found</returns>
+        public bool TryFindSTMBByAWARD(string AWARD, out IReadOnlyList<STMB> Value)
+        {
+            return STMB_AWARDForeignIndex.Value.TryGetValue(AWARD, out Value);
         }
 
 

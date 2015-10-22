@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Class Information
     /// </summary>
-    public class TCTQ : EntityBase
+    public partial class TCTQ : EntityBase
     {
 #region Navigation Property Cache
         private TC _TCTQKEY_TC;
@@ -176,11 +176,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TCTQKEY] => [TC].[TCKEY]
+        /// TC (Calendar) related entity by [TCTQ.TCTQKEY]-&gt;[TC.TCKEY]
         /// (was TQTCKEY) Owner relation
         /// </summary>
-        public TC TCTQKEY_TC {
+        public TC TCTQKEY_TC
+        {
             get
             {
                 if (TCTQKEY.HasValue)
@@ -197,11 +199,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [QKEY] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [TCTQ.QKEY]-&gt;[TH.THKEY]
         /// Associated Quilt
         /// </summary>
-        public TH QKEY_TH {
+        public TH QKEY_TH
+        {
             get
             {
                 if (QKEY != null)
@@ -218,11 +222,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [TCTQ.SUBJ]-&gt;[SU.SUKEY]
         /// Subject
         /// </summary>
-        public SU SUBJ_SU {
+        public SU SUBJ_SU
+        {
             get
             {
                 if (SUBJ != null)
@@ -239,11 +245,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [T1TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TCTQ.T1TEACH]-&gt;[SF.SFKEY]
         /// 1st teacher for this period
         /// </summary>
-        public SF T1TEACH_SF {
+        public SF T1TEACH_SF
+        {
             get
             {
                 if (T1TEACH != null)
@@ -260,11 +268,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [T2TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TCTQ.T2TEACH]-&gt;[SF.SFKEY]
         /// 2nd teacher for this period
         /// </summary>
-        public SF T2TEACH_SF {
+        public SF T2TEACH_SF
+        {
             get
             {
                 if (T2TEACH != null)
@@ -281,11 +291,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [R1ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TCTQ.R1ROOM]-&gt;[SM.ROOM]
         /// 1st room for this period
         /// </summary>
-        public SM R1ROOM_SM {
+        public SM R1ROOM_SM
+        {
             get
             {
                 if (R1ROOM != null)
@@ -302,11 +314,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [R2ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TCTQ.R2ROOM]-&gt;[SM.ROOM]
         /// 2nd room for this period
         /// </summary>
-        public SM R2ROOM_SM {
+        public SM R2ROOM_SM
+        {
             get
             {
                 if (R2ROOM != null)
@@ -323,11 +337,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXTRA_TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TCTQ.EXTRA_TEACH]-&gt;[SF.SFKEY]
         /// Teacher replacement
         /// </summary>
-        public SF EXTRA_TEACH_SF {
+        public SF EXTRA_TEACH_SF
+        {
             get
             {
                 if (EXTRA_TEACH != null)
@@ -344,11 +360,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXTRA_ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TCTQ.EXTRA_ROOM]-&gt;[SM.ROOM]
         /// Room for replacement
         /// </summary>
-        public SM EXTRA_ROOM_SM {
+        public SM EXTRA_ROOM_SM
+        {
             get
             {
                 if (EXTRA_ROOM != null)
@@ -365,11 +383,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GKEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TCTQ.GKEY]-&gt;[TT.TTKEY]
         /// Inserted by Schema Verify for 8.15.1
         /// </summary>
-        public TT GKEY_TT {
+        public TT GKEY_TT
+        {
             get
             {
                 if (GKEY != null)

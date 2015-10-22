@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Subjects Data Set
     /// </summary>
-    public sealed class TTESDataSet : SetBase<TTES>
+    public sealed partial class TTESDataSet : SetBase<TTES>
     {
+
 
         internal TTESDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

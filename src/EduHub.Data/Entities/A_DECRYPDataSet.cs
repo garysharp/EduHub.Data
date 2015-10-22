@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Decrypted data IMPORT Data Set
     /// </summary>
-    public sealed class A_DECRYPDataSet : SetBase<A_DECRYP>
+    public sealed partial class A_DECRYPDataSet : SetBase<A_DECRYP>
     {
         private Lazy<Dictionary<int, A_DECRYP>> TIDIndex;
+
 
         internal A_DECRYPDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, A_DECRYP>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

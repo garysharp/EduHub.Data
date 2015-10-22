@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Company Data Set
     /// </summary>
-    public sealed class KTRCMPDataSet : SetBase<KTRCMP>
+    public sealed partial class KTRCMPDataSet : SetBase<KTRCMP>
     {
         private Lazy<Dictionary<int, KTRCMP>> COMPANY_IDIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>> TRPROUT_TRANSPORT_COMPANY_IDForeignIndex;
 
         internal KTRCMPDataSet(EduHubContext Context)
             : base(Context)
         {
             COMPANY_IDIndex = new Lazy<Dictionary<int, KTRCMP>>(() => this.ToDictionary(e => e.COMPANY_ID));
+
+            TRPROUT_TRANSPORT_COMPANY_IDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>>(() =>
+                    Context.TRPROUT
+                          .Where(e => e.TRANSPORT_COMPANY_ID != null)
+                          .GroupBy(e => e.TRANSPORT_COMPANY_ID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TRPROUT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all TRPROUT (Student Transport Routes) entities by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find TRPROUT entities</param>
+        /// <returns>A list of related TRPROUT entities</returns>
+        public IReadOnlyList<TRPROUT> FindTRPROUTByTRANSPORT_COMPANY_ID(int COMPANY_ID)
+        {
+            IReadOnlyList<TRPROUT> result;
+            if (TRPROUT_TRANSPORT_COMPANY_IDForeignIndex.Value.TryGetValue(COMPANY_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TRPROUT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TRPROUT entities by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find TRPROUT entities</param>
+        /// <param name="Value">A list of related TRPROUT entities</param>
+        /// <returns>True if any TRPROUT entities are found</returns>
+        public bool TryFindTRPROUTByTRANSPORT_COMPANY_ID(int COMPANY_ID, out IReadOnlyList<TRPROUT> Value)
+        {
+            return TRPROUT_TRANSPORT_COMPANY_IDForeignIndex.Value.TryGetValue(COMPANY_ID, out Value);
         }
 
 

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Attendees Data Set
     /// </summary>
-    public sealed class TETNDataSet : SetBase<TETN>
+    public sealed partial class TETNDataSet : SetBase<TETN>
     {
+
 
         internal TETNDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

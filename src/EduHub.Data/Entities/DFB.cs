@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts
     /// </summary>
-    public class DFB : EntityBase
+    public partial class DFB : EntityBase
     {
 #region Navigation Property Cache
         private DF _FAM_CODE_DF;
@@ -86,11 +86,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FAM_CODE] => [DF].[DFKEY]
+        /// DF (Families) related entity by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
         /// Family key
         /// </summary>
-        public DF FAM_CODE_DF {
+        public DF FAM_CODE_DF
+        {
             get
             {
                 if (FAM_CODE != null)

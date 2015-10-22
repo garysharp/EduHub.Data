@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial Commitments
     /// </summary>
-    public class GLFBANK : EntityBase
+    public partial class GLFBANK : EntityBase
     {
 #region Navigation Property Cache
         private GLBANK _CODE_GLBANK;
@@ -73,11 +73,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [GLBANK].[GLCODE]
+        /// GLBANK (Bank Account Details) related entity by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
         /// Owner account
         /// </summary>
-        public GLBANK CODE_GLBANK {
+        public GLBANK CODE_GLBANK
+        {
             get
             {
                 if (CODE != null)

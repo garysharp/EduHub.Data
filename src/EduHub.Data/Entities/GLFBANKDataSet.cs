@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial Commitments Data Set
     /// </summary>
-    public sealed class GLFBANKDataSet : SetBase<GLFBANK>
+    public sealed partial class GLFBANKDataSet : SetBase<GLFBANK>
     {
+
 
         internal GLFBANKDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

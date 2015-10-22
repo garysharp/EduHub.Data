@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Areas of Teaching Data Set
     /// </summary>
-    public sealed class KSADataSet : SetBase<KSA>
+    public sealed partial class KSADataSet : SetBase<KSA>
     {
         private Lazy<Dictionary<string, KSA>> KSAKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_MAJORAForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_MAJORBForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_MAJORCForeignIndex;
 
         internal KSADataSet(EduHubContext Context)
             : base(Context)
         {
             KSAKEYIndex = new Lazy<Dictionary<string, KSA>>(() => this.ToDictionary(e => e.KSAKEY));
+
+            SF_MAJORAForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.MAJORA != null)
+                          .GroupBy(e => e.MAJORA)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
+            SF_MAJORBForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.MAJORB != null)
+                          .GroupBy(e => e.MAJORB)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
+            SF_MAJORCForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.MAJORC != null)
+                          .GroupBy(e => e.MAJORC)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.MAJORA]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByMAJORA(string KSAKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_MAJORAForeignIndex.Value.TryGetValue(KSAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.MAJORA]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByMAJORA(string KSAKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_MAJORAForeignIndex.Value.TryGetValue(KSAKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.MAJORB]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByMAJORB(string KSAKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_MAJORBForeignIndex.Value.TryGetValue(KSAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.MAJORB]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByMAJORB(string KSAKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_MAJORBForeignIndex.Value.TryGetValue(KSAKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.MAJORC]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByMAJORC(string KSAKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_MAJORCForeignIndex.Value.TryGetValue(KSAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.MAJORC]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        /// <param name="KSAKEY">KSAKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByMAJORC(string KSAKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_MAJORCForeignIndex.Value.TryGetValue(KSAKEY, out Value);
         }
 
 

@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Domains Data Set
     /// </summary>
-    public sealed class KDODataSet : SetBase<KDO>
+    public sealed partial class KDODataSet : SetBase<KDO>
     {
         private Lazy<Dictionary<string, KDO>> KDOKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> STVDI_VDOMAINForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STVDO>>> STVDO_VDOMAINForeignIndex;
 
         internal KDODataSet(EduHubContext Context)
             : base(Context)
         {
             KDOKEYIndex = new Lazy<Dictionary<string, KDO>>(() => this.ToDictionary(e => e.KDOKEY));
+
+            STVDI_VDOMAINForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() =>
+                    Context.STVDI
+                          .Where(e => e.VDOMAIN != null)
+                          .GroupBy(e => e.VDOMAIN)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDI>)g.ToList()
+                          .AsReadOnly()));
+
+            STVDO_VDOMAINForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STVDO>>>(() =>
+                    Context.STVDO
+                          .Where(e => e.VDOMAIN != null)
+                          .GroupBy(e => e.VDOMAIN)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDO>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STVDI (VELS Dimension Results) entities by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find STVDI entities</param>
+        /// <returns>A list of related STVDI entities</returns>
+        public IReadOnlyList<STVDI> FindSTVDIByVDOMAIN(string KDOKEY)
+        {
+            IReadOnlyList<STVDI> result;
+            if (STVDI_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STVDI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STVDI entities by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find STVDI entities</param>
+        /// <param name="Value">A list of related STVDI entities</param>
+        /// <returns>True if any STVDI entities are found</returns>
+        public bool TryFindSTVDIByVDOMAIN(string KDOKEY, out IReadOnlyList<STVDI> Value)
+        {
+            return STVDI_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all STVDO (VELS Domain Results) entities by [STVDO.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find STVDO entities</param>
+        /// <returns>A list of related STVDO entities</returns>
+        public IReadOnlyList<STVDO> FindSTVDOByVDOMAIN(string KDOKEY)
+        {
+            IReadOnlyList<STVDO> result;
+            if (STVDO_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STVDO>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STVDO entities by [STVDO.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find STVDO entities</param>
+        /// <param name="Value">A list of related STVDO entities</param>
+        /// <returns>True if any STVDO entities are found</returns>
+        public bool TryFindSTVDOByVDOMAIN(string KDOKEY, out IReadOnlyList<STVDO> Value)
+        {
+            return STVDO_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out Value);
         }
 
 

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Usage
     /// </summary>
-    public class STBT : EntityBase
+    public partial class STBT : EntityBase
     {
 #region Navigation Property Cache
         private ST _STBTKEY_ST;
@@ -322,11 +322,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STBTKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STBT.STBTKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STBTKEY_ST {
+        public ST STBTKEY_ST
+        {
             get
             {
                 if (STBTKEY != null)
@@ -343,11 +345,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route or stop used
         /// </summary>
-        public KCR ROUTE_KCR {
+        public KCR ROUTE_KCR
+        {
             get
             {
                 if (ROUTE != null)
@@ -364,11 +368,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM1_SD_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.AM1_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 1
         /// </summary>
-        public SCI AM1_SD_SITE_SCI {
+        public SCI AM1_SD_SITE_SCI
+        {
             get
             {
                 if (AM1_SD_SITE.HasValue)
@@ -385,11 +391,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM1_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.AM1_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 1
         /// </summary>
-        public KCR AM1_ROUTE_KCR {
+        public KCR AM1_ROUTE_KCR
+        {
             get
             {
                 if (AM1_ROUTE != null)
@@ -406,11 +414,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM1_PU_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.PM1_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 1
         /// </summary>
-        public SCI PM1_PU_SITE_SCI {
+        public SCI PM1_PU_SITE_SCI
+        {
             get
             {
                 if (PM1_PU_SITE.HasValue)
@@ -427,11 +437,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM1_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.PM1_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 1
         /// </summary>
-        public KCR PM1_ROUTE_KCR {
+        public KCR PM1_ROUTE_KCR
+        {
             get
             {
                 if (PM1_ROUTE != null)
@@ -448,11 +460,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM2_SD_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.AM2_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 2
         /// </summary>
-        public SCI AM2_SD_SITE_SCI {
+        public SCI AM2_SD_SITE_SCI
+        {
             get
             {
                 if (AM2_SD_SITE.HasValue)
@@ -469,11 +483,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM2_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.AM2_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 2
         /// </summary>
-        public KCR AM2_ROUTE_KCR {
+        public KCR AM2_ROUTE_KCR
+        {
             get
             {
                 if (AM2_ROUTE != null)
@@ -490,11 +506,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM2_PU_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.PM2_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 2
         /// </summary>
-        public SCI PM2_PU_SITE_SCI {
+        public SCI PM2_PU_SITE_SCI
+        {
             get
             {
                 if (PM2_PU_SITE.HasValue)
@@ -511,11 +529,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM2_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.PM2_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 2
         /// </summary>
-        public KCR PM2_ROUTE_KCR {
+        public KCR PM2_ROUTE_KCR
+        {
             get
             {
                 if (PM2_ROUTE != null)
@@ -532,11 +552,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM3_SD_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.AM3_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 3
         /// </summary>
-        public SCI AM3_SD_SITE_SCI {
+        public SCI AM3_SD_SITE_SCI
+        {
             get
             {
                 if (AM3_SD_SITE.HasValue)
@@ -553,11 +575,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM3_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.AM3_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 3
         /// </summary>
-        public KCR AM3_ROUTE_KCR {
+        public KCR AM3_ROUTE_KCR
+        {
             get
             {
                 if (AM3_ROUTE != null)
@@ -574,11 +598,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM3_PU_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.PM3_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 3
         /// </summary>
-        public SCI PM3_PU_SITE_SCI {
+        public SCI PM3_PU_SITE_SCI
+        {
             get
             {
                 if (PM3_PU_SITE.HasValue)
@@ -595,11 +621,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM3_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.PM3_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 3
         /// </summary>
-        public KCR PM3_ROUTE_KCR {
+        public KCR PM3_ROUTE_KCR
+        {
             get
             {
                 if (PM3_ROUTE != null)
@@ -616,11 +644,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM4_SD_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.AM4_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 4
         /// </summary>
-        public SCI AM4_SD_SITE_SCI {
+        public SCI AM4_SD_SITE_SCI
+        {
             get
             {
                 if (AM4_SD_SITE.HasValue)
@@ -637,11 +667,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM4_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.AM4_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 4
         /// </summary>
-        public KCR AM4_ROUTE_KCR {
+        public KCR AM4_ROUTE_KCR
+        {
             get
             {
                 if (AM4_ROUTE != null)
@@ -658,11 +690,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM4_PU_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.PM4_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 4
         /// </summary>
-        public SCI PM4_PU_SITE_SCI {
+        public SCI PM4_PU_SITE_SCI
+        {
             get
             {
                 if (PM4_PU_SITE.HasValue)
@@ -679,11 +713,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM4_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.PM4_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 4
         /// </summary>
-        public KCR PM4_ROUTE_KCR {
+        public KCR PM4_ROUTE_KCR
+        {
             get
             {
                 if (PM4_ROUTE != null)
@@ -700,11 +736,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM5_SD_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.AM5_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 5
         /// </summary>
-        public SCI AM5_SD_SITE_SCI {
+        public SCI AM5_SD_SITE_SCI
+        {
             get
             {
                 if (AM5_SD_SITE.HasValue)
@@ -721,11 +759,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM5_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.AM5_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 5
         /// </summary>
-        public KCR AM5_ROUTE_KCR {
+        public KCR AM5_ROUTE_KCR
+        {
             get
             {
                 if (AM5_ROUTE != null)
@@ -742,11 +782,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM5_PU_SITE] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STBT.PM5_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 5
         /// </summary>
-        public SCI PM5_PU_SITE_SCI {
+        public SCI PM5_PU_SITE_SCI
+        {
             get
             {
                 if (PM5_PU_SITE.HasValue)
@@ -763,11 +805,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM5_ROUTE] => [KCR].[KCRKEY]
+        /// KCR (Transport Routes/Stops) related entity by [STBT.PM5_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 5
         /// </summary>
-        public KCR PM5_ROUTE_KCR {
+        public KCR PM5_ROUTE_KCR
+        {
             get
             {
                 if (PM5_ROUTE != null)

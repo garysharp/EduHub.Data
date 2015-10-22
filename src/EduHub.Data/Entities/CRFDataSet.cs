@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Creditor Financial Transaction Data Set
     /// </summary>
-    public sealed class CRFDataSet : SetBase<CRF>
+    public sealed partial class CRFDataSet : SetBase<CRF>
     {
         private Lazy<Dictionary<string, CRF>> TRREFIndex;
+
 
         internal CRFDataSet(EduHubContext Context)
             : base(Context)
         {
             TRREFIndex = new Lazy<Dictionary<string, CRF>>(() => this.ToDictionary(e => e.TRREF));
+
         }
 
         /// <summary>

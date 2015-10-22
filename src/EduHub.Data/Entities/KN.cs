@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Notes
     /// </summary>
-    public class KN : EntityBase
+    public partial class KN : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// ID
@@ -45,9 +42,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

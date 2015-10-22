@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Super (SGL and Employee) History YTD Transactions Data Set
     /// </summary>
-    public sealed class PEPUHDataSet : SetBase<PEPUH>
+    public sealed partial class PEPUHDataSet : SetBase<PEPUH>
     {
+
 
         internal PEPUHDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

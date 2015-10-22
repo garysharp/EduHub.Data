@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Standard Disciplinary Actions Data Set
     /// </summary>
-    public sealed class KAMDataSet : SetBase<KAM>
+    public sealed partial class KAMDataSet : SetBase<KAM>
     {
         private Lazy<Dictionary<string, KAM>> KAMKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SDPA>>> SDPA_ACTION_TAKENForeignIndex;
 
         internal KAMDataSet(EduHubContext Context)
             : base(Context)
         {
             KAMKEYIndex = new Lazy<Dictionary<string, KAM>>(() => this.ToDictionary(e => e.KAMKEY));
+
+            SDPA_ACTION_TAKENForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SDPA>>>(() =>
+                    Context.SDPA
+                          .Where(e => e.ACTION_TAKEN != null)
+                          .GroupBy(e => e.ACTION_TAKEN)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDPA>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SDPA (Disciplinary Actions) entities by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
+        /// </summary>
+        /// <param name="KAMKEY">KAMKEY value used to find SDPA entities</param>
+        /// <returns>A list of related SDPA entities</returns>
+        public IReadOnlyList<SDPA> FindSDPAByACTION_TAKEN(string KAMKEY)
+        {
+            IReadOnlyList<SDPA> result;
+            if (SDPA_ACTION_TAKENForeignIndex.Value.TryGetValue(KAMKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SDPA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SDPA entities by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
+        /// </summary>
+        /// <param name="KAMKEY">KAMKEY value used to find SDPA entities</param>
+        /// <param name="Value">A list of related SDPA entities</param>
+        /// <returns>True if any SDPA entities are found</returns>
+        public bool TryFindSDPAByACTION_TAKEN(string KAMKEY, out IReadOnlyList<SDPA> Value)
+        {
+            return SDPA_ACTION_TAKENForeignIndex.Value.TryGetValue(KAMKEY, out Value);
         }
 
 

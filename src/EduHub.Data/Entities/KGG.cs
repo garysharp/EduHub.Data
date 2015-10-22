@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Year 9-12 Exit Categories
     /// </summary>
-    public class KGG : EntityBase
+    public partial class KGG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Category Code
@@ -35,6 +32,50 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// OSCS (CASES Past Students) related entities by [OSCS.ZEROMTH_CAT]-&gt;[KGG.KGGKEY]
+        /// </summary>
+        public IReadOnlyList<OSCS> OSCS_ZEROMTH_CAT
+        {
+            get
+            {
+                return Context.KGG.FindOSCSByZEROMTH_CAT(KGGKEY);
+            }
+        }
+
+        /// <summary>
+        /// OSCS (CASES Past Students) related entities by [OSCS.SIXMTH_CAT]-&gt;[KGG.KGGKEY]
+        /// </summary>
+        public IReadOnlyList<OSCS> OSCS_SIXMTH_CAT
+        {
+            get
+            {
+                return Context.KGG.FindOSCSBySIXMTH_CAT(KGGKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.EXIT_CAT01]-&gt;[KGG.KGGKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_EXIT_CAT01
+        {
+            get
+            {
+                return Context.KGG.FindSTByEXIT_CAT01(KGGKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.EXIT_CAT02]-&gt;[KGG.KGGKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_EXIT_CAT02
+        {
+            get
+            {
+                return Context.KGG.FindSTByEXIT_CAT02(KGGKEY);
+            }
+        }
 #endregion
     }
 }

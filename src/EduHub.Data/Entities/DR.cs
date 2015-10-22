@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Receivable
     /// </summary>
-    public class DR : EntityBase
+    public partial class DR : EntityBase
     {
 #region Navigation Property Cache
         private SA _DRTABLEA_SA;
@@ -262,11 +262,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [DRTABLEA] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [DR.DRTABLEA]-&gt;[SA.SAKEY]
         /// Table
         /// </summary>
-        public SA DRTABLEA_SA {
+        public SA DRTABLEA_SA
+        {
             get
             {
                 if (DRTABLEA != null)
@@ -281,6 +283,50 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// DRB (BPAY Receipts for Sundry Debtors) related entities by [DRB.DR_CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        public IReadOnlyList<DRB> DRB_DR_CODE
+        {
+            get
+            {
+                return Context.DR.FindDRBByDR_CODE(DRKEY);
+            }
+        }
+
+        /// <summary>
+        /// DRF (DR Transactions) related entities by [DRF.CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        public IReadOnlyList<DRF> DRF_CODE
+        {
+            get
+            {
+                return Context.DR.FindDRFByCODE(DRKEY);
+            }
+        }
+
+        /// <summary>
+        /// SDGM (Adult Group Members) related entities by [SDGM.PERSON_LINK]-&gt;[DR.DRKEY]
+        /// </summary>
+        public IReadOnlyList<SDGM> SDGM_PERSON_LINK
+        {
+            get
+            {
+                return Context.DR.FindSDGMByPERSON_LINK(DRKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.DEBTOR_ID]-&gt;[DR.DRKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_DEBTOR_ID
+        {
+            get
+            {
+                return Context.DR.FindSFByDEBTOR_ID(DRKEY);
             }
         }
 #endregion

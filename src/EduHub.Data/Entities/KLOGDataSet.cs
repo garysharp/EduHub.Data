@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Trace log for finance import and export Data Set
     /// </summary>
-    public sealed class KLOGDataSet : SetBase<KLOG>
+    public sealed partial class KLOGDataSet : SetBase<KLOG>
     {
         private Lazy<Dictionary<int, KLOG>> TIDIndex;
+
 
         internal KLOGDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, KLOG>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

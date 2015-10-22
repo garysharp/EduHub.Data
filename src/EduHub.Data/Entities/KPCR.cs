@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contact Relationship
     /// </summary>
-    public class KPCR : EntityBase
+    public partial class KPCR : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Contact relationship Key
@@ -39,6 +36,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// KPCL (Contact Links) related entities by [KPCL.CONTACT_TYPE]-&gt;[KPCR.KPCRKEY]
+        /// </summary>
+        public IReadOnlyList<KPCL> KPCL_CONTACT_TYPE
+        {
+            get
+            {
+                return Context.KPCR.FindKPCLByCONTACT_TYPE(KPCRKEY);
+            }
+        }
 #endregion
     }
 }

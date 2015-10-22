@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Positions Data Set
     /// </summary>
-    public sealed class KSCDataSet : SetBase<KSC>
+    public sealed partial class KSCDataSet : SetBase<KSC>
     {
         private Lazy<Dictionary<string, KSC>> KSCKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_POS_CODE_AForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_POS_CODE_BForeignIndex;
 
         internal KSCDataSet(EduHubContext Context)
             : base(Context)
         {
             KSCKEYIndex = new Lazy<Dictionary<string, KSC>>(() => this.ToDictionary(e => e.KSCKEY));
+
+            SF_POS_CODE_AForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.POS_CODE_A != null)
+                          .GroupBy(e => e.POS_CODE_A)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
+            SF_POS_CODE_BForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.POS_CODE_B != null)
+                          .GroupBy(e => e.POS_CODE_B)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.POS_CODE_A]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        /// <param name="KSCKEY">KSCKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByPOS_CODE_A(string KSCKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_POS_CODE_AForeignIndex.Value.TryGetValue(KSCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.POS_CODE_A]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        /// <param name="KSCKEY">KSCKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByPOS_CODE_A(string KSCKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_POS_CODE_AForeignIndex.Value.TryGetValue(KSCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.POS_CODE_B]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        /// <param name="KSCKEY">KSCKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByPOS_CODE_B(string KSCKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_POS_CODE_BForeignIndex.Value.TryGetValue(KSCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.POS_CODE_B]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        /// <param name="KSCKEY">KSCKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByPOS_CODE_B(string KSCKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_POS_CODE_BForeignIndex.Value.TryGetValue(KSCKEY, out Value);
         }
 
 

@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Award Details Data Set
     /// </summary>
-    public sealed class PSADataSet : SetBase<PSA>
+    public sealed partial class PSADataSet : SetBase<PSA>
     {
         private Lazy<Dictionary<string, PSA>> PSAKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PI>>> PI_AWARDForeignIndex;
 
         internal PSADataSet(EduHubContext Context)
             : base(Context)
         {
             PSAKEYIndex = new Lazy<Dictionary<string, PSA>>(() => this.ToDictionary(e => e.PSAKEY));
+
+            PI_AWARDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PI>>>(() =>
+                    Context.PI
+                          .Where(e => e.AWARD != null)
+                          .GroupBy(e => e.AWARD)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PI>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PI (Pay Items) entities by [PI.AWARD]-&gt;[PSA.PSAKEY]
+        /// </summary>
+        /// <param name="PSAKEY">PSAKEY value used to find PI entities</param>
+        /// <returns>A list of related PI entities</returns>
+        public IReadOnlyList<PI> FindPIByAWARD(string PSAKEY)
+        {
+            IReadOnlyList<PI> result;
+            if (PI_AWARDForeignIndex.Value.TryGetValue(PSAKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PI entities by [PI.AWARD]-&gt;[PSA.PSAKEY]
+        /// </summary>
+        /// <param name="PSAKEY">PSAKEY value used to find PI entities</param>
+        /// <param name="Value">A list of related PI entities</param>
+        /// <returns>True if any PI entities are found</returns>
+        public bool TryFindPIByAWARD(string PSAKEY, out IReadOnlyList<PI> Value)
+        {
+            return PI_AWARDForeignIndex.Value.TryGetValue(PSAKEY, out Value);
         }
 
 

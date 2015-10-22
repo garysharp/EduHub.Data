@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fees
     /// </summary>
-    public class SDFC : EntityBase
+    public partial class SDFC : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_GL;
@@ -90,11 +90,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [SDFC.GLCODE]-&gt;[GL.CODE]
         /// One GL key for each category
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -111,11 +113,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [SDFC.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What GST applies to this fee
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -132,11 +136,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [SDFC.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every fee there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -153,11 +159,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [SDFC.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Fee might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -172,6 +180,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// DRF (DR Transactions) related entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
+        /// </summary>
+        public IReadOnlyList<DRF> DRF_FEE_CODE
+        {
+            get
+            {
+                return Context.SDFC.FindDRFByFEE_CODE(SDFCKEY);
             }
         }
 #endregion

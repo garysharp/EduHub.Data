@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Houses
     /// </summary>
-    public class KGH : EntityBase
+    public partial class KGH : EntityBase
     {
 #region Navigation Property Cache
         private SCI _CAMPUS_SCI;
@@ -220,11 +220,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [KGH.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -239,6 +241,39 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_HOUSE
+        {
+            get
+            {
+                return Context.KGH.FindSFByHOUSE(KGHKEY);
+            }
+        }
+
+        /// <summary>
+        /// SG (Student Groupings) related entities by [SG.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        public IReadOnlyList<SG> SG_HOUSE
+        {
+            get
+            {
+                return Context.KGH.FindSGByHOUSE(KGHKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.HOUSE]-&gt;[KGH.KGHKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_HOUSE
+        {
+            get
+            {
+                return Context.KGH.FindSTByHOUSE(KGHKEY);
             }
         }
 #endregion

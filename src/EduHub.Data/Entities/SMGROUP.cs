@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Rooms group
     /// </summary>
-    public class SMGROUP : EntityBase
+    public partial class SMGROUP : EntityBase
     {
 #region Navigation Property Cache
         private SM _GROUPKEY_SM;
@@ -44,11 +44,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GROUPKEY] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SMGROUP.GROUPKEY]-&gt;[SM.ROOM]
         /// Group key in SM
         /// </summary>
-        public SM GROUPKEY_SM {
+        public SM GROUPKEY_SM
+        {
             get
             {
                 if (GROUPKEY != null)
@@ -65,11 +67,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SMGROUP.ROOM]-&gt;[SM.ROOM]
         /// Room in the group
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)

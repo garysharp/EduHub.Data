@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Trips Data Set
     /// </summary>
-    public sealed class STTRIPSDataSet : SetBase<STTRIPS>
+    public sealed partial class STTRIPSDataSet : SetBase<STTRIPS>
     {
+
 
         internal STTRIPSDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

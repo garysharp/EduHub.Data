@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report email templates Data Set
     /// </summary>
-    public sealed class SPEMAILDataSet : SetBase<SPEMAIL>
+    public sealed partial class SPEMAILDataSet : SetBase<SPEMAIL>
     {
         private Lazy<Dictionary<string, SPEMAIL>> SPEMAILKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>> SPEPRINT_CODEForeignIndex;
 
         internal SPEMAILDataSet(EduHubContext Context)
             : base(Context)
         {
             SPEMAILKEYIndex = new Lazy<Dictionary<string, SPEMAIL>>(() => this.ToDictionary(e => e.SPEMAILKEY));
+
+            SPEPRINT_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>>(() =>
+                    Context.SPEPRINT
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPEPRINT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SPEPRINT (Report file audit) entities by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEPRINT entities</param>
+        /// <returns>A list of related SPEPRINT entities</returns>
+        public IReadOnlyList<SPEPRINT> FindSPEPRINTByCODE(string SPEMAILKEY)
+        {
+            IReadOnlyList<SPEPRINT> result;
+            if (SPEPRINT_CODEForeignIndex.Value.TryGetValue(SPEMAILKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SPEPRINT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SPEPRINT entities by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEPRINT entities</param>
+        /// <param name="Value">A list of related SPEPRINT entities</param>
+        /// <returns>True if any SPEPRINT entities are found</returns>
+        public bool TryFindSPEPRINTByCODE(string SPEMAILKEY, out IReadOnlyList<SPEPRINT> Value)
+        {
+            return SPEPRINT_CODEForeignIndex.Value.TryGetValue(SPEMAILKEY, out Value);
         }
 
 

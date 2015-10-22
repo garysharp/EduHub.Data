@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Association Member Attendances
     /// </summary>
-    public class SAMA : EntityBase
+    public partial class SAMA : EntityBase
     {
 #region Navigation Property Cache
         private SAM _SAMAKEY_SAM;
@@ -46,11 +46,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SAMAKEY] => [SAM].[SAMKEY]
+        /// SAM (School Association Members) related entity by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
         /// ID of school association member
         /// </summary>
-        public SAM SAMAKEY_SAM {
+        public SAM SAMAKEY_SAM
+        {
             get
             {
                 if (SAMAKEY.HasValue)

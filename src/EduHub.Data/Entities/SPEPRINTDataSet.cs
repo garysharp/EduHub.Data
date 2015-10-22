@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report file audit Data Set
     /// </summary>
-    public sealed class SPEPRINTDataSet : SetBase<SPEPRINT>
+    public sealed partial class SPEPRINTDataSet : SetBase<SPEPRINT>
     {
         private Lazy<Dictionary<int, SPEPRINT>> TIDIndex;
+
 
         internal SPEPRINTDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SPEPRINT>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

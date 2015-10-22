@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Special Group Meetings Data Set
     /// </summary>
-    public sealed class SGMDataSet : SetBase<SGM>
+    public sealed partial class SGMDataSet : SetBase<SGM>
     {
         private Lazy<Dictionary<DateTime, SGM>> MEETING_DATEIndex;
+
 
         internal SGMDataSet(EduHubContext Context)
             : base(Context)
         {
             MEETING_DATEIndex = new Lazy<Dictionary<DateTime, SGM>>(() => this.ToDictionary(e => e.MEETING_DATE));
+
         }
 
         /// <summary>

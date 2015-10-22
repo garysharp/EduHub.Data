@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Members
     /// </summary>
-    public class SAM : EntityBase
+    public partial class SAM : EntityBase
     {
 #region Navigation Property Cache
         private SCA _ASSOC_NAME_SCA;
@@ -161,11 +161,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ASSOC_NAME] => [SCA].[SCAKEY]
+        /// SCA (School Associations) related entity by [SAM.ASSOC_NAME]-&gt;[SCA.SCAKEY]
         /// Association name
         /// </summary>
-        public SCA ASSOC_NAME_SCA {
+        public SCA ASSOC_NAME_SCA
+        {
             get
             {
                 if (ASSOC_NAME != null)
@@ -182,11 +184,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ASSOC_POSN] => [SAP].[SAPKEY]
+        /// SAP (School Association Positions) related entity by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
         /// Position within association
         /// </summary>
-        public SAP ASSOC_POSN_SAP {
+        public SAP ASSOC_POSN_SAP
+        {
             get
             {
                 if (ASSOC_POSN != null)
@@ -203,11 +207,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ADDRESSKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [SAM.ADDRESSKEY]-&gt;[UM.UMKEY]
         /// Actual address
         /// </summary>
-        public UM ADDRESSKEY_UM {
+        public UM ADDRESSKEY_UM
+        {
             get
             {
                 if (ADDRESSKEY.HasValue)
@@ -224,11 +230,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MAILKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [SAM.MAILKEY]-&gt;[UM.UMKEY]
         /// Postal address
         /// </summary>
-        public UM MAILKEY_UM {
+        public UM MAILKEY_UM
+        {
             get
             {
                 if (MAILKEY.HasValue)
@@ -243,6 +251,39 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SAMA (Association Member Attendances) related entities by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        public IReadOnlyList<SAMA> SAMA_SAMAKEY
+        {
+            get
+            {
+                return Context.SAM.FindSAMABySAMAKEY(SAMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_SAM_SCH_COUNCIL
+        {
+            get
+            {
+                return Context.SAM.FindSCIBySAM_SCH_COUNCIL(SAMKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_SCH_COUNCIL_PRES
+        {
+            get
+            {
+                return Context.SAM.FindSCIBySCH_COUNCIL_PRES(SAMKEY);
             }
         }
 #endregion

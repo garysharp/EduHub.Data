@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// HRMS Import Table
     /// </summary>
-    public class SK_HRMS : EntityBase
+    public partial class SK_HRMS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Seq
@@ -177,9 +174,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string REC_PROCESS_FLAG { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

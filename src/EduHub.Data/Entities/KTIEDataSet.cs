@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Import Errors Data Set
     /// </summary>
-    public sealed class KTIEDataSet : SetBase<KTIE>
+    public sealed partial class KTIEDataSet : SetBase<KTIE>
     {
         private Lazy<Dictionary<int, KTIE>> RECORD_IDIndex;
+
 
         internal KTIEDataSet(EduHubContext Context)
             : base(Context)
         {
             RECORD_IDIndex = new Lazy<Dictionary<int, KTIE>>(() => this.ToDictionary(e => e.RECORD_ID));
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Dimensions
     /// </summary>
-    public class KDI : EntityBase
+    public partial class KDI : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key of the dimension
@@ -51,6 +48,39 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// STVDI (VELS Dimension Results) related entities by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        public IReadOnlyList<STVDI> STVDI_VDIMENSION
+        {
+            get
+            {
+                return Context.KDI.FindSTVDIByVDIMENSION(KDIKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDO (VELS Domain Results) related entities by [STVDO.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        public IReadOnlyList<STVDO> STVDO_VDIMENSION
+        {
+            get
+            {
+                return Context.KDI.FindSTVDOByVDIMENSION(KDIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SVAG (VELS Aggregated Dimensions) related entities by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// </summary>
+        public IReadOnlyList<SVAG> SVAG_VDIMENSION
+        {
+            get
+            {
+                return Context.KDI.FindSVAGByVDIMENSION(KDIKEY);
+            }
+        }
 #endregion
     }
 }

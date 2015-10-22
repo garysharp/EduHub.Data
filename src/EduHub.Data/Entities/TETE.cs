@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Instances
     /// </summary>
-    public class TETE : EntityBase
+    public partial class TETE : EntityBase
     {
 #region Navigation Property Cache
         private TE _TETEKEY_TE;
@@ -70,11 +70,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TETEKEY] => [TE].[TEKEY]
+        /// TE (Calendar Events) related entity by [TETE.TETEKEY]-&gt;[TE.TEKEY]
         /// Owner relation
         /// </summary>
-        public TE TETEKEY_TE {
+        public TE TETEKEY_TE
+        {
             get
             {
                 if (TETEKEY.HasValue)
@@ -91,11 +93,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOCATION] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TETE.LOCATION]-&gt;[SM.ROOM]
         /// Location of the event
         /// </summary>
-        public SM LOCATION_SM {
+        public SM LOCATION_SM
+        {
             get
             {
                 if (LOCATION != null)

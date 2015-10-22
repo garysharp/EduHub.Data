@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Routes
     /// </summary>
-    public class TRPROUT : EntityBase
+    public partial class TRPROUT : EntityBase
     {
 #region Navigation Property Cache
         private TRPMODE _TRANSPORT_MODE_ID_TRPMODE;
@@ -90,11 +90,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TRANSPORT_MODE_ID] => [TRPMODE].[TRANSPORT_MODE_ID]
+        /// TRPMODE (Transport Modes) related entity by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
         /// Transport Modes
         /// </summary>
-        public TRPMODE TRANSPORT_MODE_ID_TRPMODE {
+        public TRPMODE TRANSPORT_MODE_ID_TRPMODE
+        {
             get
             {
                 if (TRANSPORT_MODE_ID.HasValue)
@@ -111,11 +113,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TRANSPORT_COMPANY_ID] => [KTRCMP].[COMPANY_ID]
+        /// KTRCMP (Student Transport Company) related entity by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
         /// Company ID
         /// </summary>
-        public KTRCMP TRANSPORT_COMPANY_ID_KTRCMP {
+        public KTRCMP TRANSPORT_COMPANY_ID_KTRCMP
+        {
             get
             {
                 if (TRANSPORT_COMPANY_ID.HasValue)
@@ -130,6 +134,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.AM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_AM_ROUTE_ID
+        {
+            get
+            {
+                return Context.TRPROUT.FindSTTRIPSByAM_ROUTE_ID(ROUTE_ID);
+            }
+        }
+
+        /// <summary>
+        /// STTRIPS (Student Trips) related entities by [STTRIPS.PM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
+        /// </summary>
+        public IReadOnlyList<STTRIPS> STTRIPS_PM_ROUTE_ID
+        {
+            get
+            {
+                return Context.TRPROUT.FindSTTRIPSByPM_ROUTE_ID(ROUTE_ID);
             }
         }
 #endregion

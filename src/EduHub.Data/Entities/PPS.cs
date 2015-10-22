@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Supplier Details
     /// </summary>
-    public class PPS : EntityBase
+    public partial class PPS : EntityBase
     {
 #region Navigation Property Cache
         private KGT _COUNTRY_KGT;
@@ -130,11 +130,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [PPS.COUNTRY]-&gt;[KGT.COUNTRY]
         /// Country
         /// </summary>
-        public KGT COUNTRY_KGT {
+        public KGT COUNTRY_KGT
+        {
             get
             {
                 if (COUNTRY != null)
@@ -151,11 +153,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [POSTAL_COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [PPS.POSTAL_COUNTRY]-&gt;[KGT.COUNTRY]
         /// Supplier postal Country
         /// </summary>
-        public KGT POSTAL_COUNTRY_KGT {
+        public KGT POSTAL_COUNTRY_KGT
+        {
             get
             {
                 if (POSTAL_COUNTRY != null)

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Areas of Teaching
     /// </summary>
-    public class KSA : EntityBase
+    public partial class KSA : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Code to identify Area of Teaching
@@ -38,6 +35,39 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.MAJORA]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_MAJORA
+        {
+            get
+            {
+                return Context.KSA.FindSFByMAJORA(KSAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.MAJORB]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_MAJORB
+        {
+            get
+            {
+                return Context.KSA.FindSFByMAJORB(KSAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.MAJORC]-&gt;[KSA.KSAKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_MAJORC
+        {
+            get
+            {
+                return Context.KSA.FindSFByMAJORC(KSAKEY);
+            }
+        }
 #endregion
     }
 }

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Visa Subclasses
     /// </summary>
-    public class KCV : EntityBase
+    public partial class KCV : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Visa Subclass code
@@ -68,6 +65,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        public IReadOnlyList<ST> ST_VISA_SUBCLASS
+        {
+            get
+            {
+                return Context.KCV.FindSTByVISA_SUBCLASS(VISA_SUBCLASS);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_ST_VISA_SUBCLASS
+        {
+            get
+            {
+                return Context.KCV.FindSTREByST_VISA_SUBCLASS(VISA_SUBCLASS);
+            }
+        }
 #endregion
     }
 }

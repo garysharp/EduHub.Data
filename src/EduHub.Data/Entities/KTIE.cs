@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Import Errors
     /// </summary>
-    public class KTIE : EntityBase
+    public partial class KTIE : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// prime key
@@ -31,9 +28,6 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (60)]
         /// </summary>
         public string ERROR_TEXT { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

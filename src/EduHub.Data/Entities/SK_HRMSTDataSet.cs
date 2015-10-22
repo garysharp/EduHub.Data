@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// HRMS Temp Import Table Data Set
     /// </summary>
-    public sealed class SK_HRMSTDataSet : SetBase<SK_HRMST>
+    public sealed partial class SK_HRMSTDataSet : SetBase<SK_HRMST>
     {
         private Lazy<Dictionary<int, SK_HRMST>> SEQIndex;
+
 
         internal SK_HRMSTDataSet(EduHubContext Context)
             : base(Context)
         {
             SEQIndex = new Lazy<Dictionary<int, SK_HRMST>>(() => this.ToDictionary(e => e.SEQ));
+
         }
 
         /// <summary>

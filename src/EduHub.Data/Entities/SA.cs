@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fees
     /// </summary>
-    public class SA : EntityBase
+    public partial class SA : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_GL;
@@ -104,11 +104,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [SA.GLCODE]-&gt;[GL.CODE]
         /// One GL key for each category
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -125,11 +127,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [SA.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What GST applies to this fee
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -146,11 +150,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [SA.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every fee there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -167,11 +173,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [SA.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Fee might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -186,6 +194,116 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// DFF (Family Financial Transactions) related entities by [DFF.FEE_CODE]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<DFF> DFF_FEE_CODE
+        {
+            get
+            {
+                return Context.SA.FindDFFByFEE_CODE(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// DR (Accounts Receivable) related entities by [DR.DRTABLEA]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<DR> DR_DRTABLEA
+        {
+            get
+            {
+                return Context.SA.FindDRByDRTABLEA(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAB (Fees - Billing Templates) related entities by [SAB.FEE_CODE_1ST]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SAB> SAB_FEE_CODE_1ST
+        {
+            get
+            {
+                return Context.SA.FindSABByFEE_CODE_1ST(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAB (Fees - Billing Templates) related entities by [SAB.FEE_CODE_2ND]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SAB> SAB_FEE_CODE_2ND
+        {
+            get
+            {
+                return Context.SA.FindSABByFEE_CODE_2ND(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAB (Fees - Billing Templates) related entities by [SAB.FEE_CODE_3RD]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SAB> SAB_FEE_CODE_3RD
+        {
+            get
+            {
+                return Context.SA.FindSABByFEE_CODE_3RD(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAB (Fees - Billing Templates) related entities by [SAB.FEE_CODE_4TH]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SAB> SAB_FEE_CODE_4TH
+        {
+            get
+            {
+                return Context.SA.FindSABByFEE_CODE_4TH(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAB (Fees - Billing Templates) related entities by [SAB.FEE_CODE_KG]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SAB> SAB_FEE_CODE_KG
+        {
+            get
+            {
+                return Context.SA.FindSABByFEE_CODE_KG(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SABT (Billing Template Transactions) related entities by [SABT.FEE_CODE]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SABT> SABT_FEE_CODE
+        {
+            get
+            {
+                return Context.SA.FindSABTByFEE_CODE(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// STSB (Family Invoice Allocations) related entities by [STSB.SPLIT_ITEM]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<STSB> STSB_SPLIT_ITEM
+        {
+            get
+            {
+                return Context.SA.FindSTSBBySPLIT_ITEM(SAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SU (Subjects) related entities by [SU.FEE_CODE]-&gt;[SA.SAKEY]
+        /// </summary>
+        public IReadOnlyList<SU> SU_FEE_CODE
+        {
+            get
+            {
+                return Context.SA.FindSUByFEE_CODE(SAKEY);
             }
         }
 #endregion

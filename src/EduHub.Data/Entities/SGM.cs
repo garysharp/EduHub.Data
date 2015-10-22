@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Special Group Meetings
     /// </summary>
-    public class SGM : EntityBase
+    public partial class SGM : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGMKEY_SG;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGMKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGM.SGMKEY]-&gt;[SG.SGKEY]
         /// Code of group holding this meeting
         /// </summary>
-        public SG SGMKEY_SG {
+        public SG SGMKEY_SG
+        {
             get
             {
                 if (SGMKEY != null)
@@ -88,11 +90,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MEETING_ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SGM.MEETING_ROOM]-&gt;[SM.ROOM]
         /// Room in which the meeting is held
         /// </summary>
-        public SM MEETING_ROOM_SM {
+        public SM MEETING_ROOM_SM
+        {
             get
             {
                 if (MEETING_ROOM != null)

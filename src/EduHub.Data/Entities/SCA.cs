@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Associations
     /// </summary>
-    public class SCA : EntityBase
+    public partial class SCA : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Short name of association
@@ -51,6 +48,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SAM (School Association Members) related entities by [SAM.ASSOC_NAME]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        public IReadOnlyList<SAM> SAM_ASSOC_NAME
+        {
+            get
+            {
+                return Context.SCA.FindSAMByASSOC_NAME(SCAKEY);
+            }
+        }
+
+        /// <summary>
+        /// SCAM (School Association Meetings) related entities by [SCAM.SCAMKEY]-&gt;[SCA.SCAKEY]
+        /// </summary>
+        public IReadOnlyList<SCAM> SCAM_SCAMKEY
+        {
+            get
+            {
+                return Context.SCA.FindSCAMBySCAMKEY(SCAKEY);
+            }
+        }
 #endregion
     }
 }

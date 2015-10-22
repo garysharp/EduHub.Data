@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fuel Tax Credit Rates
     /// </summary>
-    public class KFTC : EntityBase
+    public partial class KFTC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -68,6 +65,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// CRFTC (Creditor Fuel Tax Credits) related entities by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
+        /// </summary>
+        public IReadOnlyList<CRFTC> CRFTC_FTC_CODE
+        {
+            get
+            {
+                return Context.KFTC.FindCRFTCByFTC_CODE(KFTCKEY);
+            }
+        }
 #endregion
     }
 }

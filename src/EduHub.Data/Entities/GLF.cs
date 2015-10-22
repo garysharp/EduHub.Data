@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Transactions
     /// </summary>
-    public class GLF : EntityBase
+    public partial class GLF : EntityBase
     {
 #region Navigation Property Cache
         private GL _CODE_GL;
@@ -308,11 +308,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [GLF.CODE]-&gt;[GL.CODE]
         /// General Ledger Code
         /// </summary>
-        public GL CODE_GL {
+        public GL CODE_GL
+        {
             get
             {
                 if (CODE != null)
@@ -329,11 +331,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [GLF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What type of GST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -350,11 +354,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [GLF.BSB]-&gt;[KAB.BSB]
         /// Cheque BSB number
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -371,11 +377,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [GLF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -392,11 +400,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLPROGRAM] => [KGLPROG].[GLPROGRAM]
+        /// KGLPROG (General Ledger Programs) related entity by [GLF.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
         /// A subprogram always belongs to a program
         /// </summary>
-        public KGLPROG GLPROGRAM_KGLPROG {
+        public KGLPROG GLPROGRAM_KGLPROG
+        {
             get
             {
                 if (GLPROGRAM != null)
@@ -413,11 +423,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [GLF.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

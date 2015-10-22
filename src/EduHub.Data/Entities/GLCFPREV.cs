@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Last Years GL Combined Financial Trans
     /// </summary>
-    public class GLCFPREV : EntityBase
+    public partial class GLCFPREV : EntityBase
     {
 #region Navigation Property Cache
         private GLPREV _CODE_GLPREV;
@@ -345,11 +345,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [GLPREV].[CODE]
+        /// GLPREV (Last Years General Ledger) related entity by [GLCFPREV.CODE]-&gt;[GLPREV.CODE]
         /// General Ledger Code
         /// </summary>
-        public GLPREV CODE_GLPREV {
+        public GLPREV CODE_GLPREV
+        {
             get
             {
                 if (CODE != null)
@@ -366,11 +368,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [GLCFPREV.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What type of GST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -387,11 +391,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [GLCFPREV.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -408,11 +414,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [GLCFPREV.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)

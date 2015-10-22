@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group Daily Attendance Records
     /// </summary>
-    public class TXHG : EntityBase
+    public partial class TXHG : EntityBase
     {
 #region Navigation Property Cache
         private KGC _HOME_GROUP_KGC;
@@ -52,11 +52,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [HOME_GROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [TXHG.HOME_GROUP]-&gt;[KGC.KGCKEY]
         /// The home group to which this record applies
         /// </summary>
-        public KGC HOME_GROUP_KGC {
+        public KGC HOME_GROUP_KGC
+        {
             get
             {
                 if (HOME_GROUP != null)
@@ -71,6 +73,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SXAB (Student Half-Day Absences) related entities by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
+        /// </summary>
+        public IReadOnlyList<SXAB> SXAB_TXHG_TID
+        {
+            get
+            {
+                return Context.TXHG.FindSXABByTXHG_TID(TXHG_ID);
             }
         }
 #endregion

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Tax Scales
     /// </summary>
-    public class PX : EntityBase
+    public partial class PX : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Tax scale number
@@ -291,6 +288,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.TAXCODE]-&gt;[PX.PXKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_TAXCODE
+        {
+            get
+            {
+                return Context.PX.FindPEByTAXCODE(PXKEY);
+            }
+        }
 #endregion
     }
 }

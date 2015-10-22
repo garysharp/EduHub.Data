@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Medicare Levy Parameters Data Set
     /// </summary>
-    public sealed class PMLDataSet : SetBase<PML>
+    public sealed partial class PMLDataSet : SetBase<PML>
     {
         private Lazy<Dictionary<short, PML>> SCALEIndex;
+
 
         internal PMLDataSet(EduHubContext Context)
             : base(Context)
         {
             SCALEIndex = new Lazy<Dictionary<short, PML>>(() => this.ToDictionary(e => e.SCALE));
+
         }
 
         /// <summary>

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Return Summary Data
     /// </summary>
-    public class SCEN_RTN : EntityBase
+    public partial class SCEN_RTN : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transaction ID (internal)
@@ -210,9 +207,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? LD_LUPDATED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

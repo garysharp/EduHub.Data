@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Departments Data Set
     /// </summary>
-    public sealed class AKDDataSet : SetBase<AKD>
+    public sealed partial class AKDDataSet : SetBase<AKD>
     {
         private Lazy<Dictionary<string, AKD>> DEPARTMENTIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_DEPARTMENTForeignIndex;
 
         internal AKDDataSet(EduHubContext Context)
             : base(Context)
         {
             DEPARTMENTIndex = new Lazy<Dictionary<string, AKD>>(() => this.ToDictionary(e => e.DEPARTMENT));
+
+            AR_DEPARTMENTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.DEPARTMENT != null)
+                          .GroupBy(e => e.DEPARTMENT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.DEPARTMENT]-&gt;[AKD.DEPARTMENT]
+        /// </summary>
+        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByDEPARTMENT(string DEPARTMENT)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_DEPARTMENTForeignIndex.Value.TryGetValue(DEPARTMENT, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.DEPARTMENT]-&gt;[AKD.DEPARTMENT]
+        /// </summary>
+        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByDEPARTMENT(string DEPARTMENT, out IReadOnlyList<AR> Value)
+        {
+            return AR_DEPARTMENTForeignIndex.Value.TryGetValue(DEPARTMENT, out Value);
         }
 
 

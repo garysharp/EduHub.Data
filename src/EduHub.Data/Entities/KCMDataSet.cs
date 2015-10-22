@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Medical Conditions Data Set
     /// </summary>
-    public sealed class KCMDataSet : SetBase<KCM>
+    public sealed partial class KCMDataSet : SetBase<KCM>
     {
         private Lazy<Dictionary<string, KCM>> KCMKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SMC>>> SMC_MED_CONDITIONForeignIndex;
 
         internal KCMDataSet(EduHubContext Context)
             : base(Context)
         {
             KCMKEYIndex = new Lazy<Dictionary<string, KCM>>(() => this.ToDictionary(e => e.KCMKEY));
+
+            SMC_MED_CONDITIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SMC>>>(() =>
+                    Context.SMC
+                          .Where(e => e.MED_CONDITION != null)
+                          .GroupBy(e => e.MED_CONDITION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMC>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SMC (Student Medical Conditions) entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
+        /// </summary>
+        /// <param name="KCMKEY">KCMKEY value used to find SMC entities</param>
+        /// <returns>A list of related SMC entities</returns>
+        public IReadOnlyList<SMC> FindSMCByMED_CONDITION(string KCMKEY)
+        {
+            IReadOnlyList<SMC> result;
+            if (SMC_MED_CONDITIONForeignIndex.Value.TryGetValue(KCMKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SMC>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SMC entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
+        /// </summary>
+        /// <param name="KCMKEY">KCMKEY value used to find SMC entities</param>
+        /// <param name="Value">A list of related SMC entities</param>
+        /// <returns>True if any SMC entities are found</returns>
+        public bool TryFindSMCByMED_CONDITION(string KCMKEY, out IReadOnlyList<SMC> Value)
+        {
+            return SMC_MED_CONDITIONForeignIndex.Value.TryGetValue(KCMKEY, out Value);
         }
 
 

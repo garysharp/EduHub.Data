@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial History
     /// </summary>
-    public class FINHIST : EntityBase
+    public partial class FINHIST : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// SQL identity
@@ -72,9 +69,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

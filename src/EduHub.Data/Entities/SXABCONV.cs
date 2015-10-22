@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Converted Student Half-Day Absences
     /// </summary>
-    public class SXABCONV : EntityBase
+    public partial class SXABCONV : EntityBase
     {
 #region Navigation Property Cache
         private ST _STKEY_ST;
@@ -78,11 +78,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [SXABCONV.STKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STKEY_ST {
+        public ST STKEY_ST
+        {
             get
             {
                 if (STKEY != null)
@@ -99,11 +101,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_YEAR_LEVEL] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SXABCONV.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
         /// Year level at time of absence
         /// </summary>
-        public KCY ST_YEAR_LEVEL_KCY {
+        public KCY ST_YEAR_LEVEL_KCY
+        {
             get
             {
                 if (ST_YEAR_LEVEL != null)
@@ -120,11 +124,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXABCONV.AM_TYPE]-&gt;[KCT.KCTKEY]
         /// Expected attendance type in the morning
         /// </summary>
-        public KCT AM_TYPE_KCT {
+        public KCT AM_TYPE_KCT
+        {
             get
             {
                 if (AM_TYPE.HasValue)
@@ -141,11 +147,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXABCONV.PM_TYPE]-&gt;[KCT.KCTKEY]
         /// Expected attendance type in the afternoon
         /// </summary>
-        public KCT PM_TYPE_KCT {
+        public KCT PM_TYPE_KCT
+        {
             get
             {
                 if (PM_TYPE.HasValue)

@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Class Information Data Set
     /// </summary>
-    public sealed class TCTQDataSet : SetBase<TCTQ>
+    public sealed partial class TCTQDataSet : SetBase<TCTQ>
     {
         private Lazy<Dictionary<short, TCTQ>> COMPOSITEIndex;
+
 
         internal TCTQDataSet(EduHubContext Context)
             : base(Context)
         {
             COMPOSITEIndex = new Lazy<Dictionary<short, TCTQ>>(() => this.ToDictionary(e => e.COMPOSITE));
+
         }
 
         /// <summary>

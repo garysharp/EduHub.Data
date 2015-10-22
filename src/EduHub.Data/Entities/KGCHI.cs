@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group History
     /// </summary>
-    public class KGCHI : EntityBase
+    public partial class KGCHI : EntityBase
     {
 #region Navigation Property Cache
         private KGC _KGCKEY_KGC;
@@ -76,11 +76,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [KGCKEY] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [KGCHI.KGCKEY]-&gt;[KGC.KGCKEY]
         /// Home group code (dynamic link that gets updated whenever KGC.KGCKEY is also updated)
         /// </summary>
-        public KGC KGCKEY_KGC {
+        public KGC KGCKEY_KGC
+        {
             get
             {
                 if (KGCKEY != null)

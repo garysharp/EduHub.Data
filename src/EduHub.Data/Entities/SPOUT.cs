@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored Procedure Return Values
     /// </summary>
-    public class SPOUT : EntityBase
+    public partial class SPOUT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Unique identifier consisting of school number,user name and timestamp
@@ -104,6 +101,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// KERROR (Import or Update Errors) related entities by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
+        /// </summary>
+        public IReadOnlyList<KERROR> KERROR_SPOUTKEY
+        {
+            get
+            {
+                return Context.SPOUT.FindKERRORBySPOUTKEY(SPOUTKEY);
+            }
+        }
 #endregion
     }
 }

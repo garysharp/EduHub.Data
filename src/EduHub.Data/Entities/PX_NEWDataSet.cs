@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Tax Scales Data Set
     /// </summary>
-    public sealed class PX_NEWDataSet : SetBase<PX_NEW>
+    public sealed partial class PX_NEWDataSet : SetBase<PX_NEW>
     {
         private Lazy<Dictionary<short, PX_NEW>> PXKEYIndex;
+
 
         internal PX_NEWDataSet(EduHubContext Context)
             : base(Context)
         {
             PXKEYIndex = new Lazy<Dictionary<short, PX_NEW>>(() => this.ToDictionary(e => e.PXKEY));
+
         }
 
         /// <summary>

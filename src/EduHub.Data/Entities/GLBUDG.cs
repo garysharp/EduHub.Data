@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Budgets
     /// </summary>
-    public class GLBUDG : EntityBase
+    public partial class GLBUDG : EntityBase
     {
 #region Navigation Property Cache
         private GL _CODE_GL;
@@ -321,11 +321,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [GLBUDG.CODE]-&gt;[GL.CODE]
         /// GL Account
         /// </summary>
-        public GL CODE_GL {
+        public GL CODE_GL
+        {
             get
             {
                 if (CODE != null)
@@ -342,11 +344,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [GLBUDG.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Not mandatory
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -361,6 +365,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// GLFBUDG (SP2 dummy table) related entities by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
+        /// </summary>
+        public IReadOnlyList<GLFBUDG> GLFBUDG_BKEY
+        {
+            get
+            {
+                return Context.GLBUDG.FindGLFBUDGByBKEY(BUDGETKEY);
             }
         }
 #endregion

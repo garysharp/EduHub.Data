@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Replacements
     /// </summary>
-    public class TCTR : EntityBase
+    public partial class TCTR : EntityBase
     {
 #region Navigation Property Cache
         private TC _TCTRKEY_TC;
@@ -81,11 +81,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TCTRKEY] => [TC].[TCKEY]
+        /// TC (Calendar) related entity by [TCTR.TCTRKEY]-&gt;[TC.TCKEY]
         /// Replacement date
         /// </summary>
-        public TC TCTRKEY_TC {
+        public TC TCTRKEY_TC
+        {
             get
             {
                 if (TCTRKEY.HasValue)
@@ -102,11 +104,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TCTR.TEACH]-&gt;[SF.SFKEY]
         /// Replacement teacher
         /// </summary>
-        public SF TEACH_SF {
+        public SF TEACH_SF
+        {
             get
             {
                 if (TEACH != null)
@@ -123,11 +127,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TCTR.ROOM]-&gt;[SM.ROOM]
         /// Replacement room
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)

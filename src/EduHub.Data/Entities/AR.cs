@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets
     /// </summary>
-    public class AR : EntityBase
+    public partial class AR : EntityBase
     {
 #region Navigation Property Cache
         private AKC _CATEGORY_AKC;
@@ -505,11 +505,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CATEGORY] => [AKC].[CATEGORY]
+        /// AKC (Assets - Categories) related entity by [AR.CATEGORY]-&gt;[AKC.CATEGORY]
         /// Asset category
         /// </summary>
-        public AKC CATEGORY_AKC {
+        public AKC CATEGORY_AKC
+        {
             get
             {
                 if (CATEGORY != null)
@@ -526,11 +528,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ASSET_TYPE] => [AKT].[AKTKEY]
+        /// AKT (Asset Types) related entity by [AR.ASSET_TYPE]-&gt;[AKT.AKTKEY]
         /// Asset type
         /// </summary>
-        public AKT ASSET_TYPE_AKT {
+        public AKT ASSET_TYPE_AKT
+        {
             get
             {
                 if (ASSET_TYPE != null)
@@ -547,11 +551,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [RELEASE_TYPE] => [AKR].[AKRKEY]
+        /// AKR (Asset Release Types) related entity by [AR.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
         /// Asset Release Type
         /// </summary>
-        public AKR RELEASE_TYPE_AKR {
+        public AKR RELEASE_TYPE_AKR
+        {
             get
             {
                 if (RELEASE_TYPE != null)
@@ -568,11 +574,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TAX_CATEGORY] => [AKCT].[CATEGORY]
+        /// AKCT (Assets - Categories Tax) related entity by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
         /// Asset tax category
         /// </summary>
-        public AKCT TAX_CATEGORY_AKCT {
+        public AKCT TAX_CATEGORY_AKCT
+        {
             get
             {
                 if (TAX_CATEGORY != null)
@@ -589,11 +597,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOCATION] => [AKL].[LOCATION]
+        /// AKL (Assets - Locations) related entity by [AR.LOCATION]-&gt;[AKL.LOCATION]
         /// Asset locations
         /// </summary>
-        public AKL LOCATION_AKL {
+        public AKL LOCATION_AKL
+        {
             get
             {
                 if (LOCATION != null)
@@ -610,11 +620,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEPARTMENT] => [AKD].[DEPARTMENT]
+        /// AKD (Assets - Departments) related entity by [AR.DEPARTMENT]-&gt;[AKD.DEPARTMENT]
         /// Departments
         /// </summary>
-        public AKD DEPARTMENT_AKD {
+        public AKD DEPARTMENT_AKD
+        {
             get
             {
                 if (DEPARTMENT != null)
@@ -631,11 +643,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BRANCH] => [AKB].[BRANCH]
+        /// AKB (Assets - Sub-Category) related entity by [AR.BRANCH]-&gt;[AKB.BRANCH]
         /// Sub Category
         /// </summary>
-        public AKB BRANCH_AKB {
+        public AKB BRANCH_AKB
+        {
             get
             {
                 if (BRANCH != null)
@@ -652,11 +666,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ORIG_SUPPLIER] => [CR].[CRKEY]
+        /// CR (Accounts Payable) related entity by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
         /// Supplier
         /// </summary>
-        public CR ORIG_SUPPLIER_CR {
+        public CR ORIG_SUPPLIER_CR
+        {
             get
             {
                 if (ORIG_SUPPLIER != null)
@@ -673,11 +689,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CURR_SUPPLIER] => [CR].[CRKEY]
+        /// CR (Accounts Payable) related entity by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
         /// Default repairer
         /// </summary>
-        public CR CURR_SUPPLIER_CR {
+        public CR CURR_SUPPLIER_CR
+        {
             get
             {
                 if (CURR_SUPPLIER != null)
@@ -694,11 +712,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PTE_GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [AR.PTE_GLCODE]-&gt;[GL.CODE]
         /// GL acct where pte use % of depn will be posted
         /// </summary>
-        public GL PTE_GLCODE_GL {
+        public GL PTE_GLCODE_GL
+        {
             get
             {
                 if (PTE_GLCODE != null)
@@ -715,11 +735,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [AR.AMETHOD]-&gt;[KADM.KADMKEY]
         /// method
         /// </summary>
-        public KADM AMETHOD_KADM {
+        public KADM AMETHOD_KADM
+        {
             get
             {
                 if (AMETHOD != null)
@@ -736,11 +758,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [AR.TMETHOD]-&gt;[KADM.KADMKEY]
         /// Depreciation method
         /// </summary>
-        public KADM TMETHOD_KADM {
+        public KADM TMETHOD_KADM
+        {
             get
             {
                 if (TMETHOD != null)
@@ -757,11 +781,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [COMPONENT_OF] => [AR].[ARKEY]
+        /// AR (Assets) related entity by [AR.COMPONENT_OF]-&gt;[AR.ARKEY]
         /// Asset that this is a component of, or related to
         /// </summary>
-        public AR COMPONENT_OF_AR {
+        public AR COMPONENT_OF_AR
+        {
             get
             {
                 if (COMPONENT_OF != null)
@@ -778,11 +804,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [AR.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus number
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -797,6 +825,50 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AKK (Asset Key Holders) related entities by [AKK.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        public IReadOnlyList<AKK> AKK_CODE
+        {
+            get
+            {
+                return Context.AR.FindAKKByCODE(ARKEY);
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.COMPONENT_OF]-&gt;[AR.ARKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_COMPONENT_OF
+        {
+            get
+            {
+                return Context.AR.FindARByCOMPONENT_OF(ARKEY);
+            }
+        }
+
+        /// <summary>
+        /// ARF (Asset Financial Transactions) related entities by [ARF.CODE]-&gt;[AR.ARKEY]
+        /// </summary>
+        public IReadOnlyList<ARF> ARF_CODE
+        {
+            get
+            {
+                return Context.AR.FindARFByCODE(ARKEY);
+            }
+        }
+
+        /// <summary>
+        /// CRF (Creditor Financial Transaction) related entities by [CRF.ATKEY]-&gt;[AR.ARKEY]
+        /// </summary>
+        public IReadOnlyList<CRF> CRF_ATKEY
+        {
+            get
+            {
+                return Context.AR.FindCRFByATKEY(ARKEY);
             }
         }
 #endregion

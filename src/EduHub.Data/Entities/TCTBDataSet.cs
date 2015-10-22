@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Absences Data Set
     /// </summary>
-    public sealed class TCTBDataSet : SetBase<TCTB>
+    public sealed partial class TCTBDataSet : SetBase<TCTB>
     {
+
 
         internal TCTBDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

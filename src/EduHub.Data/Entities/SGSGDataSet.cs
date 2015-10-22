@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Group Membership Eligibility Criteria Data Set
     /// </summary>
-    public sealed class SGSGDataSet : SetBase<SGSG>
+    public sealed partial class SGSGDataSet : SetBase<SGSG>
     {
+
 
         internal SGSGDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

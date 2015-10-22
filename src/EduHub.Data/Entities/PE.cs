@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employees
     /// </summary>
-    public class PE : EntityBase
+    public partial class PE : EntityBase
     {
 #region Navigation Property Cache
         private KGT _COUNTRY_KGT;
@@ -622,11 +622,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [COUNTRY] => [KGT].[COUNTRY]
+        /// KGT (Countries) related entity by [PE.COUNTRY]-&gt;[KGT.COUNTRY]
         /// Overseas Country
         /// </summary>
-        public KGT COUNTRY_KGT {
+        public KGT COUNTRY_KGT
+        {
             get
             {
                 if (COUNTRY != null)
@@ -643,11 +645,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOMEKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [PE.HOMEKEY]-&gt;[UM.UMKEY]
         /// Home    address
         /// </summary>
-        public UM HOMEKEY_UM {
+        public UM HOMEKEY_UM
+        {
             get
             {
                 if (HOMEKEY.HasValue)
@@ -664,11 +668,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MAILKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [PE.MAILKEY]-&gt;[UM.UMKEY]
         /// Mailing address
         /// </summary>
-        public UM MAILKEY_UM {
+        public UM MAILKEY_UM
+        {
             get
             {
                 if (MAILKEY.HasValue)
@@ -685,11 +691,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVEKEY] => [UM].[UMKEY]
+        /// UM (Addresses) related entity by [PE.LEAVEKEY]-&gt;[UM.UMKEY]
         /// Holiday address
         /// </summary>
-        public UM LEAVEKEY_UM {
+        public UM LEAVEKEY_UM
+        {
             get
             {
                 if (LEAVEKEY.HasValue)
@@ -706,11 +714,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PAYCODE] => [PN].[PNKEY]
+        /// PN (Payroll Groups) related entity by [PE.PAYCODE]-&gt;[PN.PNKEY]
         /// Payroll group
         /// </summary>
-        public PN PAYCODE_PN {
+        public PN PAYCODE_PN
+        {
             get
             {
                 if (PAYCODE.HasValue)
@@ -727,11 +737,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TAXCODE] => [PX].[PXKEY]
+        /// PX (Tax Scales) related entity by [PE.TAXCODE]-&gt;[PX.PXKEY]
         /// Tax code
         /// </summary>
-        public PX TAXCODE_PX {
+        public PX TAXCODE_PX
+        {
             get
             {
                 if (TAXCODE.HasValue)
@@ -748,11 +760,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEPARTMENT] => [PD].[PDKEY]
+        /// PD (Departments) related entity by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
         /// Department
         /// </summary>
-        public PD DEPARTMENT_PD {
+        public PD DEPARTMENT_PD
+        {
             get
             {
                 if (DEPARTMENT != null)
@@ -769,11 +783,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LEAVE_GROUP] => [PLG].[LEAVE_GROUP]
+        /// PLG (Leave Management Group) related entity by [PE.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
         /// Leave Management Group
         /// </summary>
-        public PLG LEAVE_GROUP_PLG {
+        public PLG LEAVE_GROUP_PLG
+        {
             get
             {
                 if (LEAVE_GROUP != null)
@@ -788,6 +804,149 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PEF (Payroll Transactions) related entities by [PEF.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEF> PEF_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEFByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEFH (Payroll Transaction History) related entities by [PEFH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEFH> PEFH_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEFHByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PELA (Employee Leave Audit) related entities by [PELA.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PELA> PELA_PEKEY
+        {
+            get
+            {
+                return Context.PE.FindPELAByPEKEY(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PELD (Employee Leave Details) related entities by [PELD.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PELD> PELD_PEKEY
+        {
+            get
+            {
+                return Context.PE.FindPELDByPEKEY(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEM (Pay Advice Slip Message) related entities by [PEM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEM> PEM_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEMByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPM (Pay Methods) related entities by [PEPM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEPM> PEPM_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEPMByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPS (Standard and Last Pays) related entities by [PEPS.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEPS> PEPS_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEPSByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPU (Super (SGL and Employee) YTD Transactions) related entities by [PEPU.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEPU> PEPU_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEPUByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPUH (Super (SGL and Employee) History YTD Transactions) related entities by [PEPUH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEPUH> PEPUH_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEPUHByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPY (Employee History) related entities by [PEPY.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PEPY> PEPY_CODE
+        {
+            get
+            {
+                return Context.PE.FindPEPYByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PESH (Employee Super LTD History) related entities by [PESH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PESH> PESH_CODE
+        {
+            get
+            {
+                return Context.PE.FindPESHByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PESP (Employee Super Payment Transactions) related entities by [PESP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PESP> PESP_CODE
+        {
+            get
+            {
+                return Context.PE.FindPESPByCODE(PEKEY);
+            }
+        }
+
+        /// <summary>
+        /// PETP (Termination Payment) related entities by [PETP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        public IReadOnlyList<PETP> PETP_CODE
+        {
+            get
+            {
+                return Context.PE.FindPETPByCODE(PEKEY);
             }
         }
 #endregion

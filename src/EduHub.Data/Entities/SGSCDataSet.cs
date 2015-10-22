@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject/Class Eligibility Criteria Data Set
     /// </summary>
-    public sealed class SGSCDataSet : SetBase<SGSC>
+    public sealed partial class SGSCDataSet : SetBase<SGSC>
     {
+
 
         internal SGSCDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

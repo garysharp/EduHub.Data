@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects Data Set
     /// </summary>
-    public sealed class SSDataSet : SetBase<SS>
+    public sealed partial class SSDataSet : SetBase<SS>
     {
         private Lazy<Dictionary<string, SS>> SSKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SSHG>>> SSHG_SUBJECTForeignIndex;
 
         internal SSDataSet(EduHubContext Context)
             : base(Context)
         {
             SSKEYIndex = new Lazy<Dictionary<string, SS>>(() => this.ToDictionary(e => e.SSKEY));
+
+            SSHG_SUBJECTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SSHG>>>(() =>
+                    Context.SSHG
+                          .Where(e => e.SUBJECT != null)
+                          .GroupBy(e => e.SUBJECT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SSHG>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SSHG (Specialist Subjects per Home Group) entities by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
+        /// </summary>
+        /// <param name="SSKEY">SSKEY value used to find SSHG entities</param>
+        /// <returns>A list of related SSHG entities</returns>
+        public IReadOnlyList<SSHG> FindSSHGBySUBJECT(string SSKEY)
+        {
+            IReadOnlyList<SSHG> result;
+            if (SSHG_SUBJECTForeignIndex.Value.TryGetValue(SSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SSHG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SSHG entities by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
+        /// </summary>
+        /// <param name="SSKEY">SSKEY value used to find SSHG entities</param>
+        /// <param name="Value">A list of related SSHG entities</param>
+        /// <returns>True if any SSHG entities are found</returns>
+        public bool TryFindSSHGBySUBJECT(string SSKEY, out IReadOnlyList<SSHG> Value)
+        {
+            return SSHG_SUBJECTForeignIndex.Value.TryGetValue(SSKEY, out Value);
         }
 
 

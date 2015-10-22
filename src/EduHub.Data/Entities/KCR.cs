@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Transport Routes/Stops
     /// </summary>
-    public class KCR : EntityBase
+    public partial class KCR : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Route/Stop code
@@ -126,6 +123,127 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM1_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM1_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByAM1_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM1_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM1_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByPM1_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM2_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM2_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByAM2_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM2_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM2_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByPM2_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM3_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM3_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByAM3_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM3_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM3_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByPM3_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM4_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM4_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByAM4_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM4_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM4_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByPM4_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.AM5_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_AM5_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByAM5_ROUTE(KCRKEY);
+            }
+        }
+
+        /// <summary>
+        /// STBT (Student Transport Usage) related entities by [STBT.PM5_ROUTE]-&gt;[KCR.KCRKEY]
+        /// </summary>
+        public IReadOnlyList<STBT> STBT_PM5_ROUTE
+        {
+            get
+            {
+                return Context.KCR.FindSTBTByPM5_ROUTE(KCRKEY);
+            }
+        }
 #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Disciplinary Actions
     /// </summary>
-    public class SDPA : EntityBase
+    public partial class SDPA : EntityBase
     {
 #region Navigation Property Cache
         private SDP _SDP_STUDENT_SDP;
@@ -64,11 +64,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SDP_STUDENT] => [SDP].[SDPKEY]
+        /// SDP (Incident Instigators) related entity by [SDPA.SDP_STUDENT]-&gt;[SDP.SDPKEY]
         /// Number of the relevant Incident Instigator record
         /// </summary>
-        public SDP SDP_STUDENT_SDP {
+        public SDP SDP_STUDENT_SDP
+        {
             get
             {
                 if (SDP_STUDENT.HasValue)
@@ -85,11 +87,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TAKEN_BY] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SDPA.TAKEN_BY]-&gt;[SF.SFKEY]
         /// Staff code of staff member responsible for this disciplinary action
         /// </summary>
-        public SF TAKEN_BY_SF {
+        public SF TAKEN_BY_SF
+        {
             get
             {
                 if (TAKEN_BY != null)
@@ -106,11 +110,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ACTION_TAKEN] => [KAM].[KAMKEY]
+        /// KAM (Standard Disciplinary Actions) related entity by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
         /// Code identifying type of disciplinary action
         /// </summary>
-        public KAM ACTION_TAKEN_KAM {
+        public KAM ACTION_TAKEN_KAM
+        {
             get
             {
                 if (ACTION_TAKEN != null)

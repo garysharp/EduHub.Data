@@ -8,14 +8,88 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Items Data Set
     /// </summary>
-    public sealed class PIDataSet : SetBase<PI>
+    public sealed partial class PIDataSet : SetBase<PI>
     {
         private Lazy<Dictionary<short, PI>> PIKEYIndex;
+
+        private Lazy<Dictionary<short, IReadOnlyList<PEF>>> PEF_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEFH>>> PEFH_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEPS>>> PEPS_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEPU>>> PEPU_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PEPUH>>> PEPUH_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PETP>>> PETP_PAYITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PI>>> PI_BASEITEMForeignIndex;
+        private Lazy<Dictionary<short, IReadOnlyList<PILI>>> PILI_PIKEYForeignIndex;
 
         internal PIDataSet(EduHubContext Context)
             : base(Context)
         {
             PIKEYIndex = new Lazy<Dictionary<short, PI>>(() => this.ToDictionary(e => e.PIKEY));
+
+            PEF_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEF>>>(() =>
+                    Context.PEF
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEF>)g.ToList()
+                          .AsReadOnly()));
+
+            PEFH_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEFH>>>(() =>
+                    Context.PEFH
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEFH>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPS_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEPS>>>(() =>
+                    Context.PEPS
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPS>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPU_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEPU>>>(() =>
+                    Context.PEPU
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPU>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPUH_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PEPUH>>>(() =>
+                    Context.PEPUH
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPUH>)g.ToList()
+                          .AsReadOnly()));
+
+            PETP_PAYITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PETP>>>(() =>
+                    Context.PETP
+                          .Where(e => e.PAYITEM != null)
+                          .GroupBy(e => e.PAYITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PETP>)g.ToList()
+                          .AsReadOnly()));
+
+            PI_BASEITEMForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PI>>>(() =>
+                    Context.PI
+                          .Where(e => e.BASEITEM != null)
+                          .GroupBy(e => e.BASEITEM.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PI>)g.ToList()
+                          .AsReadOnly()));
+
+            PILI_PIKEYForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PILI>>>(() =>
+                    Context.PILI
+                          .Where(e => e.PIKEY != null)
+                          .GroupBy(e => e.PIKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PILI>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +143,238 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PEF (Payroll Transactions) entities by [PEF.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEF entities</param>
+        /// <returns>A list of related PEF entities</returns>
+        public IReadOnlyList<PEF> FindPEFByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PEF> result;
+            if (PEF_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEF entities by [PEF.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEF entities</param>
+        /// <param name="Value">A list of related PEF entities</param>
+        /// <returns>True if any PEF entities are found</returns>
+        public bool TryFindPEFByPAYITEM(short PIKEY, out IReadOnlyList<PEF> Value)
+        {
+            return PEF_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEFH (Payroll Transaction History) entities by [PEFH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEFH entities</param>
+        /// <returns>A list of related PEFH entities</returns>
+        public IReadOnlyList<PEFH> FindPEFHByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PEFH> result;
+            if (PEFH_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEFH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEFH entities by [PEFH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEFH entities</param>
+        /// <param name="Value">A list of related PEFH entities</param>
+        /// <returns>True if any PEFH entities are found</returns>
+        public bool TryFindPEFHByPAYITEM(short PIKEY, out IReadOnlyList<PEFH> Value)
+        {
+            return PEFH_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPS (Standard and Last Pays) entities by [PEPS.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPS entities</param>
+        /// <returns>A list of related PEPS entities</returns>
+        public IReadOnlyList<PEPS> FindPEPSByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PEPS> result;
+            if (PEPS_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPS entities by [PEPS.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPS entities</param>
+        /// <param name="Value">A list of related PEPS entities</param>
+        /// <returns>True if any PEPS entities are found</returns>
+        public bool TryFindPEPSByPAYITEM(short PIKEY, out IReadOnlyList<PEPS> Value)
+        {
+            return PEPS_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPU (Super (SGL and Employee) YTD Transactions) entities by [PEPU.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPU entities</param>
+        /// <returns>A list of related PEPU entities</returns>
+        public IReadOnlyList<PEPU> FindPEPUByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PEPU> result;
+            if (PEPU_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPU>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPU entities by [PEPU.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPU entities</param>
+        /// <param name="Value">A list of related PEPU entities</param>
+        /// <returns>True if any PEPU entities are found</returns>
+        public bool TryFindPEPUByPAYITEM(short PIKEY, out IReadOnlyList<PEPU> Value)
+        {
+            return PEPU_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPUH (Super (SGL and Employee) History YTD Transactions) entities by [PEPUH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPUH entities</param>
+        /// <returns>A list of related PEPUH entities</returns>
+        public IReadOnlyList<PEPUH> FindPEPUHByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PEPUH> result;
+            if (PEPUH_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPUH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPUH entities by [PEPUH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PEPUH entities</param>
+        /// <param name="Value">A list of related PEPUH entities</param>
+        /// <returns>True if any PEPUH entities are found</returns>
+        public bool TryFindPEPUHByPAYITEM(short PIKEY, out IReadOnlyList<PEPUH> Value)
+        {
+            return PEPUH_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PETP (Termination Payment) entities by [PETP.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PETP entities</param>
+        /// <returns>A list of related PETP entities</returns>
+        public IReadOnlyList<PETP> FindPETPByPAYITEM(short PIKEY)
+        {
+            IReadOnlyList<PETP> result;
+            if (PETP_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PETP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PETP entities by [PETP.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PETP entities</param>
+        /// <param name="Value">A list of related PETP entities</param>
+        /// <returns>True if any PETP entities are found</returns>
+        public bool TryFindPETPByPAYITEM(short PIKEY, out IReadOnlyList<PETP> Value)
+        {
+            return PETP_PAYITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PI (Pay Items) entities by [PI.BASEITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PI entities</param>
+        /// <returns>A list of related PI entities</returns>
+        public IReadOnlyList<PI> FindPIByBASEITEM(short PIKEY)
+        {
+            IReadOnlyList<PI> result;
+            if (PI_BASEITEMForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PI entities by [PI.BASEITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PI entities</param>
+        /// <param name="Value">A list of related PI entities</param>
+        /// <returns>True if any PI entities are found</returns>
+        public bool TryFindPIByBASEITEM(short PIKEY, out IReadOnlyList<PI> Value)
+        {
+            return PI_BASEITEMForeignIndex.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PILI (Pay Item Leave Items) entities by [PILI.PIKEY]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PILI entities</param>
+        /// <returns>A list of related PILI entities</returns>
+        public IReadOnlyList<PILI> FindPILIByPIKEY(short PIKEY)
+        {
+            IReadOnlyList<PILI> result;
+            if (PILI_PIKEYForeignIndex.Value.TryGetValue(PIKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PILI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PILI entities by [PILI.PIKEY]-&gt;[PI.PIKEY]
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PILI entities</param>
+        /// <param name="Value">A list of related PILI entities</param>
+        /// <returns>True if any PILI entities are found</returns>
+        public bool TryFindPILIByPIKEY(short PIKEY, out IReadOnlyList<PILI> Value)
+        {
+            return PILI_PIKEYForeignIndex.Value.TryGetValue(PIKEY, out Value);
         }
 
 

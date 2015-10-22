@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Merit Behaviour Details Data Set
     /// </summary>
-    public sealed class STMBDataSet : SetBase<STMB>
+    public sealed partial class STMBDataSet : SetBase<STMB>
     {
+
 
         internal STMBDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

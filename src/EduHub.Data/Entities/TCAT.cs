@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Absence Types
     /// </summary>
-    public class TCAT : EntityBase
+    public partial class TCAT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Staff Absence Type Key
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// TCTB (Teacher Absences) related entities by [TCTB.ABSENCE_TYPE]-&gt;[TCAT.TCATKEY]
+        /// </summary>
+        public IReadOnlyList<TCTB> TCTB_ABSENCE_TYPE
+        {
+            get
+            {
+                return Context.TCAT.FindTCTBByABSENCE_TYPE(TCATKEY);
+            }
+        }
 #endregion
     }
 }

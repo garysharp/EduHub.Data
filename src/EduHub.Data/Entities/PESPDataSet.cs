@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Super Payment Transactions Data Set
     /// </summary>
-    public sealed class PESPDataSet : SetBase<PESP>
+    public sealed partial class PESPDataSet : SetBase<PESP>
     {
+
 
         internal PESPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

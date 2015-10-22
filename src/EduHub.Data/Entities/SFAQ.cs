@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Availability in Quilt
     /// </summary>
-    public class SFAQ : EntityBase
+    public partial class SFAQ : EntityBase
     {
 #region Navigation Property Cache
         private SF _SFAQKEY_SF;
@@ -56,11 +56,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SFAQKEY] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SFAQ.SFAQKEY]-&gt;[SF.SFKEY]
         /// Staff key
         /// </summary>
-        public SF SFAQKEY_SF {
+        public SF SFAQKEY_SF
+        {
             get
             {
                 if (SFAQKEY != null)
@@ -77,11 +79,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [QKEY] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [SFAQ.QKEY]-&gt;[TH.THKEY]
         /// Quilt
         /// </summary>
-        public TH QKEY_TH {
+        public TH QKEY_TH
+        {
             get
             {
                 if (QKEY != null)

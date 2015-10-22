@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FDT Financal Holding Table Data Set
     /// </summary>
-    public sealed class FER_FDTDataSet : SetBase<FER_FDT>
+    public sealed partial class FER_FDTDataSet : SetBase<FER_FDT>
     {
         private Lazy<Dictionary<int, FER_FDT>> TIDIndex;
+
 
         internal FER_FDTDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, FER_FDT>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

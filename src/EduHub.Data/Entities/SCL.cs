@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Classes
     /// </summary>
-    public class SCL : EntityBase
+    public partial class SCL : EntityBase
     {
 #region Navigation Property Cache
         private TH _QUILT_TH;
@@ -107,11 +107,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [QUILT] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [SCL.QUILT]-&gt;[TH.THKEY]
         /// Applicable quilt
         /// </summary>
-        public TH QUILT_TH {
+        public TH QUILT_TH
+        {
             get
             {
                 if (QUILT != null)
@@ -128,11 +130,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SCL.SUBJECT]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJECT_SU {
+        public SU SUBJECT_SU
+        {
             get
             {
                 if (SUBJECT != null)
@@ -149,11 +153,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHER01] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCL.TEACHER01]-&gt;[SF.SFKEY]
         /// Teachers
         /// </summary>
-        public SF TEACHER01_SF {
+        public SF TEACHER01_SF
+        {
             get
             {
                 if (TEACHER01 != null)
@@ -170,11 +176,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHER02] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SCL.TEACHER02]-&gt;[SF.SFKEY]
         /// Teachers
         /// </summary>
-        public SF TEACHER02_SF {
+        public SF TEACHER02_SF
+        {
             get
             {
                 if (TEACHER02 != null)
@@ -191,11 +199,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM01] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SCL.ROOM01]-&gt;[SM.ROOM]
         /// Rooms
         /// </summary>
-        public SM ROOM01_SM {
+        public SM ROOM01_SM
+        {
             get
             {
                 if (ROOM01 != null)
@@ -212,11 +222,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM02] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SCL.ROOM02]-&gt;[SM.ROOM]
         /// Rooms
         /// </summary>
-        public SM ROOM02_SM {
+        public SM ROOM02_SM
+        {
             get
             {
                 if (ROOM02 != null)
@@ -233,11 +245,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SCL.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus where the class is held
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -252,6 +266,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// TXAS (Actual Sessions) related entities by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
+        /// </summary>
+        public IReadOnlyList<TXAS> TXAS_SCL_LINK
+        {
+            get
+            {
+                return Context.SCL.FindTXASBySCL_LINK(SCLKEY);
             }
         }
 #endregion

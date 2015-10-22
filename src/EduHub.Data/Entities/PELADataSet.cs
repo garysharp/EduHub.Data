@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Audit Data Set
     /// </summary>
-    public sealed class PELADataSet : SetBase<PELA>
+    public sealed partial class PELADataSet : SetBase<PELA>
     {
+
 
         internal PELADataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

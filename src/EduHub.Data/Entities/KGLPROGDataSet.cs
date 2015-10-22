@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Programs Data Set
     /// </summary>
-    public sealed class KGLPROGDataSet : SetBase<KGLPROG>
+    public sealed partial class KGLPROGDataSet : SetBase<KGLPROG>
     {
         private Lazy<Dictionary<string, KGLPROG>> GLPROGRAMIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLF>>> GLF_GLPROGRAMForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<GLFPREV>>> GLFPREV_GLPROGRAMForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<KGLSUB>>> KGLSUB_GL_PROGRAMForeignIndex;
 
         internal KGLPROGDataSet(EduHubContext Context)
             : base(Context)
         {
             GLPROGRAMIndex = new Lazy<Dictionary<string, KGLPROG>>(() => this.ToDictionary(e => e.GLPROGRAM));
+
+            GLF_GLPROGRAMForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLF>>>(() =>
+                    Context.GLF
+                          .Where(e => e.GLPROGRAM != null)
+                          .GroupBy(e => e.GLPROGRAM)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLF>)g.ToList()
+                          .AsReadOnly()));
+
+            GLFPREV_GLPROGRAMForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLFPREV>>>(() =>
+                    Context.GLFPREV
+                          .Where(e => e.GLPROGRAM != null)
+                          .GroupBy(e => e.GLPROGRAM)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFPREV>)g.ToList()
+                          .AsReadOnly()));
+
+            KGLSUB_GL_PROGRAMForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<KGLSUB>>>(() =>
+                    Context.KGLSUB
+                          .Where(e => e.GL_PROGRAM != null)
+                          .GroupBy(e => e.GL_PROGRAM)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KGLSUB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all GLF (General Ledger Transactions) entities by [GLF.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLF entities</param>
+        /// <returns>A list of related GLF entities</returns>
+        public IReadOnlyList<GLF> FindGLFByGLPROGRAM(string GLPROGRAM)
+        {
+            IReadOnlyList<GLF> result;
+            if (GLF_GLPROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLF entities by [GLF.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLF entities</param>
+        /// <param name="Value">A list of related GLF entities</param>
+        /// <returns>True if any GLF entities are found</returns>
+        public bool TryFindGLFByGLPROGRAM(string GLPROGRAM, out IReadOnlyList<GLF> Value)
+        {
+            return GLF_GLPROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Find all GLFPREV (Last Years GL Financial Trans) entities by [GLFPREV.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLFPREV entities</param>
+        /// <returns>A list of related GLFPREV entities</returns>
+        public IReadOnlyList<GLFPREV> FindGLFPREVByGLPROGRAM(string GLPROGRAM)
+        {
+            IReadOnlyList<GLFPREV> result;
+            if (GLFPREV_GLPROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLFPREV>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLFPREV entities by [GLFPREV.GLPROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLFPREV entities</param>
+        /// <param name="Value">A list of related GLFPREV entities</param>
+        /// <returns>True if any GLFPREV entities are found</returns>
+        public bool TryFindGLFPREVByGLPROGRAM(string GLPROGRAM, out IReadOnlyList<GLFPREV> Value)
+        {
+            return GLFPREV_GLPROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Find all KGLSUB (General Ledger Sub Programs) entities by [KGLSUB.GL_PROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find KGLSUB entities</param>
+        /// <returns>A list of related KGLSUB entities</returns>
+        public IReadOnlyList<KGLSUB> FindKGLSUBByGL_PROGRAM(string GLPROGRAM)
+        {
+            IReadOnlyList<KGLSUB> result;
+            if (KGLSUB_GL_PROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<KGLSUB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all KGLSUB entities by [KGLSUB.GL_PROGRAM]-&gt;[KGLPROG.GLPROGRAM]
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find KGLSUB entities</param>
+        /// <param name="Value">A list of related KGLSUB entities</param>
+        /// <returns>True if any KGLSUB entities are found</returns>
+        public bool TryFindKGLSUBByGL_PROGRAM(string GLPROGRAM, out IReadOnlyList<KGLSUB> Value)
+        {
+            return KGLSUB_GL_PROGRAMForeignIndex.Value.TryGetValue(GLPROGRAM, out Value);
         }
 
 

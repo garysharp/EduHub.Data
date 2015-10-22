@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Role Codes
     /// </summary>
-    public class KROLE : EntityBase
+    public partial class KROLE : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Code
@@ -44,6 +41,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// KREPORT (Reports for emailing) related entities by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
+        /// </summary>
+        public IReadOnlyList<KREPORT> KREPORT_ROLE_CODE
+        {
+            get
+            {
+                return Context.KROLE.FindKREPORTByROLE_CODE(KROLEKEY);
+            }
+        }
 #endregion
     }
 }

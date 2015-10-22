@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contacts Data Set
     /// </summary>
-    public sealed class KPCDataSet : SetBase<KPC>
+    public sealed partial class KPCDataSet : SetBase<KPC>
     {
         private Lazy<Dictionary<string, KPC>> KPCKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<KPCL>>> KPCL_CONTACTForeignIndex;
 
         internal KPCDataSet(EduHubContext Context)
             : base(Context)
         {
             KPCKEYIndex = new Lazy<Dictionary<string, KPC>>(() => this.ToDictionary(e => e.KPCKEY));
+
+            KPCL_CONTACTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<KPCL>>>(() =>
+                    Context.KPCL
+                          .Where(e => e.CONTACT != null)
+                          .GroupBy(e => e.CONTACT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KPCL>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all KPCL (Contact Links) entities by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
+        /// </summary>
+        /// <param name="KPCKEY">KPCKEY value used to find KPCL entities</param>
+        /// <returns>A list of related KPCL entities</returns>
+        public IReadOnlyList<KPCL> FindKPCLByCONTACT(string KPCKEY)
+        {
+            IReadOnlyList<KPCL> result;
+            if (KPCL_CONTACTForeignIndex.Value.TryGetValue(KPCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<KPCL>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all KPCL entities by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
+        /// </summary>
+        /// <param name="KPCKEY">KPCKEY value used to find KPCL entities</param>
+        /// <param name="Value">A list of related KPCL entities</param>
+        /// <returns>True if any KPCL entities are found</returns>
+        public bool TryFindKPCLByCONTACT(string KPCKEY, out IReadOnlyList<KPCL> Value)
+        {
+            return KPCL_CONTACTForeignIndex.Value.TryGetValue(KPCKEY, out Value);
         }
 
 

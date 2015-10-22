@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects
     /// </summary>
-    public class SS : EntityBase
+    public partial class SS : EntityBase
     {
 #region Navigation Property Cache
         private KGC _FROM_HOMEGROUP_KGC;
@@ -61,11 +61,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [FROM_HOMEGROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [SS.FROM_HOMEGROUP]-&gt;[KGC.KGCKEY]
         /// Minimum home group taking the subject
         /// </summary>
-        public KGC FROM_HOMEGROUP_KGC {
+        public KGC FROM_HOMEGROUP_KGC
+        {
             get
             {
                 if (FROM_HOMEGROUP != null)
@@ -82,11 +84,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TO_HOMEGROUP] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [SS.TO_HOMEGROUP]-&gt;[KGC.KGCKEY]
         /// Maximum home group taking the subject
         /// </summary>
-        public KGC TO_HOMEGROUP_KGC {
+        public KGC TO_HOMEGROUP_KGC
+        {
             get
             {
                 if (TO_HOMEGROUP != null)
@@ -103,11 +107,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DEFAULT_TEACHER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SS.DEFAULT_TEACHER]-&gt;[SF.SFKEY]
         /// Optional default teacher
         /// </summary>
-        public SF DEFAULT_TEACHER_SF {
+        public SF DEFAULT_TEACHER_SF
+        {
             get
             {
                 if (DEFAULT_TEACHER != null)
@@ -122,6 +128,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SSHG (Specialist Subjects per Home Group) related entities by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
+        /// </summary>
+        public IReadOnlyList<SSHG> SSHG_SUBJECT
+        {
+            get
+            {
+                return Context.SS.FindSSHGBySUBJECT(SSKEY);
             }
         }
 #endregion

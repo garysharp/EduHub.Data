@@ -217,6 +217,8 @@ namespace EduHub.Data
                                         break;
                                     case '"':
                                         // Escaped " - include
+                                        stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
+                                        fieldPosition = charPosition + 1;
                                         break;
                                     default:
                                         throw new InvalidDataException("A CSV field is incorrectly escaped");

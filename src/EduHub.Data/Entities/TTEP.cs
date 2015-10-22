@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Periods
     /// </summary>
-    public class TTEP : EntityBase
+    public partial class TTEP : EntityBase
     {
 #region Navigation Property Cache
         private TT _GKEY_TT;
@@ -58,11 +58,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GKEY] => [TT].[TTKEY]
+        /// TT (Timetable Grid Templates) related entity by [TTEP.GKEY]-&gt;[TT.TTKEY]
         /// Grid involved in exam
         /// </summary>
-        public TT GKEY_TT {
+        public TT GKEY_TT
+        {
             get
             {
                 if (GKEY != null)

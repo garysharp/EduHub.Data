@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Courses
     /// </summary>
-    public class SC : EntityBase
+    public partial class SC : EntityBase
     {
 #region Navigation Property Cache
         private SU _SUBJ01_SU;
@@ -348,11 +348,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SUBJ01] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ01]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ01_SU {
+        public SU SUBJ01_SU
+        {
             get
             {
                 if (SUBJ01 != null)
@@ -369,11 +371,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ02] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ02]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ02_SU {
+        public SU SUBJ02_SU
+        {
             get
             {
                 if (SUBJ02 != null)
@@ -390,11 +394,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ03] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ03]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ03_SU {
+        public SU SUBJ03_SU
+        {
             get
             {
                 if (SUBJ03 != null)
@@ -411,11 +417,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ04] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ04]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ04_SU {
+        public SU SUBJ04_SU
+        {
             get
             {
                 if (SUBJ04 != null)
@@ -432,11 +440,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ05] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ05]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ05_SU {
+        public SU SUBJ05_SU
+        {
             get
             {
                 if (SUBJ05 != null)
@@ -453,11 +463,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ06] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ06]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ06_SU {
+        public SU SUBJ06_SU
+        {
             get
             {
                 if (SUBJ06 != null)
@@ -474,11 +486,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ07] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ07]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ07_SU {
+        public SU SUBJ07_SU
+        {
             get
             {
                 if (SUBJ07 != null)
@@ -495,11 +509,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ08] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ08]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ08_SU {
+        public SU SUBJ08_SU
+        {
             get
             {
                 if (SUBJ08 != null)
@@ -516,11 +532,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ09] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ09]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ09_SU {
+        public SU SUBJ09_SU
+        {
             get
             {
                 if (SUBJ09 != null)
@@ -537,11 +555,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ10] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ10]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ10_SU {
+        public SU SUBJ10_SU
+        {
             get
             {
                 if (SUBJ10 != null)
@@ -558,11 +578,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ11] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ11]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ11_SU {
+        public SU SUBJ11_SU
+        {
             get
             {
                 if (SUBJ11 != null)
@@ -579,11 +601,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ12] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ12]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ12_SU {
+        public SU SUBJ12_SU
+        {
             get
             {
                 if (SUBJ12 != null)
@@ -600,11 +624,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ13] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ13]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ13_SU {
+        public SU SUBJ13_SU
+        {
             get
             {
                 if (SUBJ13 != null)
@@ -621,11 +647,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ14] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ14]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ14_SU {
+        public SU SUBJ14_SU
+        {
             get
             {
                 if (SUBJ14 != null)
@@ -642,11 +670,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ15] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ15]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ15_SU {
+        public SU SUBJ15_SU
+        {
             get
             {
                 if (SUBJ15 != null)
@@ -663,11 +693,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ16] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ16]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ16_SU {
+        public SU SUBJ16_SU
+        {
             get
             {
                 if (SUBJ16 != null)
@@ -684,11 +716,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ17] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ17]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ17_SU {
+        public SU SUBJ17_SU
+        {
             get
             {
                 if (SUBJ17 != null)
@@ -705,11 +739,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ18] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ18]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ18_SU {
+        public SU SUBJ18_SU
+        {
             get
             {
                 if (SUBJ18 != null)
@@ -726,11 +762,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ19] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ19]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ19_SU {
+        public SU SUBJ19_SU
+        {
             get
             {
                 if (SUBJ19 != null)
@@ -747,11 +785,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ20] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SC.SUBJ20]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU SUBJ20_SU {
+        public SU SUBJ20_SU
+        {
             get
             {
                 if (SUBJ20 != null)
@@ -768,11 +808,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJECT_ACADEMIC_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SC.SUBJECT_ACADEMIC_YEAR]-&gt;[KCY.KCYKEY]
         /// Default academic year of subjects
         /// </summary>
-        public KCY SUBJECT_ACADEMIC_YEAR_KCY {
+        public KCY SUBJECT_ACADEMIC_YEAR_KCY
+        {
             get
             {
                 if (SUBJECT_ACADEMIC_YEAR != null)
@@ -787,6 +829,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// STMA (Subject Selections &amp; Marks) related entities by [STMA.CKEY]-&gt;[SC.COURSE]
+        /// </summary>
+        public IReadOnlyList<STMA> STMA_CKEY
+        {
+            get
+            {
+                return Context.SC.FindSTMAByCKEY(COURSE);
             }
         }
 #endregion

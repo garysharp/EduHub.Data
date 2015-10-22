@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored SQL Data Set
     /// </summary>
-    public sealed class QSDataSet : SetBase<QS>
+    public sealed partial class QSDataSet : SetBase<QS>
     {
         private Lazy<Dictionary<string, QS>> QSKEYIndex;
+
 
         internal QSDataSet(EduHubContext Context)
             : base(Context)
         {
             QSKEYIndex = new Lazy<Dictionary<string, QS>>(() => this.ToDictionary(e => e.QSKEY));
+
         }
 
         /// <summary>

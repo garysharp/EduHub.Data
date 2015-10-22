@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Notes Data Set
     /// </summary>
-    public sealed class KNDataSet : SetBase<KN>
+    public sealed partial class KNDataSet : SetBase<KN>
     {
         private Lazy<Dictionary<string, KN>> NOTE_IDIndex;
+
 
         internal KNDataSet(EduHubContext Context)
             : base(Context)
         {
             NOTE_IDIndex = new Lazy<Dictionary<string, KN>>(() => this.ToDictionary(e => e.NOTE_ID));
+
         }
 
         /// <summary>

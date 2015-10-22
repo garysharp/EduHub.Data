@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Data deleted from DataMirror monitored tables Data Set
     /// </summary>
-    public sealed class KDELETEDataSet : SetBase<KDELETE>
+    public sealed partial class KDELETEDataSet : SetBase<KDELETE>
     {
         private Lazy<Dictionary<int, KDELETE>> IDIndex;
+
 
         internal KDELETEDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, KDELETE>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

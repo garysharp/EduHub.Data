@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Year 9-12 Exit Destinations
     /// </summary>
-    public class KGD : EntityBase
+    public partial class KGD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Combination of KGG.KGGKEY and Destination
@@ -35,6 +32,50 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// OSCS (CASES Past Students) related entities by [OSCS.ZEROMTH_CAT_DEST]-&gt;[KGD.KGDKEY]
+        /// </summary>
+        public IReadOnlyList<OSCS> OSCS_ZEROMTH_CAT_DEST
+        {
+            get
+            {
+                return Context.KGD.FindOSCSByZEROMTH_CAT_DEST(KGDKEY);
+            }
+        }
+
+        /// <summary>
+        /// OSCS (CASES Past Students) related entities by [OSCS.SIXMTH_CAT_DEST]-&gt;[KGD.KGDKEY]
+        /// </summary>
+        public IReadOnlyList<OSCS> OSCS_SIXMTH_CAT_DEST
+        {
+            get
+            {
+                return Context.KGD.FindOSCSBySIXMTH_CAT_DEST(KGDKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.EXIT_DEST01]-&gt;[KGD.KGDKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_EXIT_DEST01
+        {
+            get
+            {
+                return Context.KGD.FindSTByEXIT_DEST01(KGDKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.EXIT_DEST02]-&gt;[KGD.KGDKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_EXIT_DEST02
+        {
+            get
+            {
+                return Context.KGD.FindSTByEXIT_DEST02(KGDKEY);
+            }
+        }
 #endregion
     }
 }

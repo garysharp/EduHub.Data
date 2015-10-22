@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Standard and Last Pays Data Set
     /// </summary>
-    public sealed class PEPSDataSet : SetBase<PEPS>
+    public sealed partial class PEPSDataSet : SetBase<PEPS>
     {
+
 
         internal PEPSDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

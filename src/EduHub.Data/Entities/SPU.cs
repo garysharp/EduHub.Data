@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Publications
     /// </summary>
-    public class SPU : EntityBase
+    public partial class SPU : EntityBase
     {
 #region Navigation Property Cache
         private SG _MAILING_LIST_SG;
@@ -95,11 +95,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [MAILING_LIST] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
         /// Code of group of students to which this publication is to go
         /// </summary>
-        public SG MAILING_LIST_SG {
+        public SG MAILING_LIST_SG
+        {
             get
             {
                 if (MAILING_LIST != null)
@@ -116,11 +118,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_LANGUAGE] => [KGL].[KGLKEY]
+        /// KGL (Languages) related entity by [SPU.HOME_LANGUAGE]-&gt;[KGL.KGLKEY]
         /// If filled publication only goes to students with matching ST.HOME_LANG
         /// </summary>
-        public KGL HOME_LANGUAGE_KGL {
+        public KGL HOME_LANGUAGE_KGL
+        {
             get
             {
                 if (HOME_LANGUAGE != null)

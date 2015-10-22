@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Labels Data Set
     /// </summary>
-    public sealed class THTNDataSet : SetBase<THTN>
+    public sealed partial class THTNDataSet : SetBase<THTN>
     {
+
 
         internal THTNDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

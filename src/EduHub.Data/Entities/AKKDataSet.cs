@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Key Holders Data Set
     /// </summary>
-    public sealed class AKKDataSet : SetBase<AKK>
+    public sealed partial class AKKDataSet : SetBase<AKK>
     {
+
 
         internal AKKDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

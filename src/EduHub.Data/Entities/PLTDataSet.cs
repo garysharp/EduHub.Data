@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Group Types Data Set
     /// </summary>
-    public sealed class PLTDataSet : SetBase<PLT>
+    public sealed partial class PLTDataSet : SetBase<PLT>
     {
         private Lazy<Dictionary<string, PLT>> PLTKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PELD>>> PELD_PLTKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PILI>>> PILI_PLTKEYForeignIndex;
 
         internal PLTDataSet(EduHubContext Context)
             : base(Context)
         {
             PLTKEYIndex = new Lazy<Dictionary<string, PLT>>(() => this.ToDictionary(e => e.PLTKEY));
+
+            PELD_PLTKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PELD>>>(() =>
+                    Context.PELD
+                          .Where(e => e.PLTKEY != null)
+                          .GroupBy(e => e.PLTKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PELD>)g.ToList()
+                          .AsReadOnly()));
+
+            PILI_PLTKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PILI>>>(() =>
+                    Context.PILI
+                          .Where(e => e.PLTKEY != null)
+                          .GroupBy(e => e.PLTKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PILI>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PELD (Employee Leave Details) entities by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PELD entities</param>
+        /// <returns>A list of related PELD entities</returns>
+        public IReadOnlyList<PELD> FindPELDByPLTKEY(string PLTKEY)
+        {
+            IReadOnlyList<PELD> result;
+            if (PELD_PLTKEYForeignIndex.Value.TryGetValue(PLTKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PELD>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PELD entities by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PELD entities</param>
+        /// <param name="Value">A list of related PELD entities</param>
+        /// <returns>True if any PELD entities are found</returns>
+        public bool TryFindPELDByPLTKEY(string PLTKEY, out IReadOnlyList<PELD> Value)
+        {
+            return PELD_PLTKEYForeignIndex.Value.TryGetValue(PLTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PILI (Pay Item Leave Items) entities by [PILI.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PILI entities</param>
+        /// <returns>A list of related PILI entities</returns>
+        public IReadOnlyList<PILI> FindPILIByPLTKEY(string PLTKEY)
+        {
+            IReadOnlyList<PILI> result;
+            if (PILI_PLTKEYForeignIndex.Value.TryGetValue(PLTKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PILI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PILI entities by [PILI.PLTKEY]-&gt;[PLT.PLTKEY]
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PILI entities</param>
+        /// <param name="Value">A list of related PILI entities</param>
+        /// <returns>True if any PILI entities are found</returns>
+        public bool TryFindPILIByPLTKEY(string PLTKEY, out IReadOnlyList<PILI> Value)
+        {
+            return PILI_PLTKEYForeignIndex.Value.TryGetValue(PLTKEY, out Value);
         }
 
 

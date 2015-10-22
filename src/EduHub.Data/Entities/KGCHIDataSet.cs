@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group History Data Set
     /// </summary>
-    public sealed class KGCHIDataSet : SetBase<KGCHI>
+    public sealed partial class KGCHIDataSet : SetBase<KGCHI>
     {
         private Lazy<Dictionary<int, KGCHI>> KGCHIKEYIndex;
+
 
         internal KGCHIDataSet(EduHubContext Context)
             : base(Context)
         {
             KGCHIKEYIndex = new Lazy<Dictionary<int, KGCHI>>(() => this.ToDictionary(e => e.KGCHIKEY));
+
         }
 
         /// <summary>

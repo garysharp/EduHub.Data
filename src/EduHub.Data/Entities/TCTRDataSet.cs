@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Replacements Data Set
     /// </summary>
-    public sealed class TCTRDataSet : SetBase<TCTR>
+    public sealed partial class TCTRDataSet : SetBase<TCTR>
     {
+
 
         internal TCTRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

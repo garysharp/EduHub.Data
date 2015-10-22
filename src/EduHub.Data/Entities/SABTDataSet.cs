@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Billing Template Transactions Data Set
     /// </summary>
-    public sealed class SABTDataSet : SetBase<SABT>
+    public sealed partial class SABTDataSet : SetBase<SABT>
     {
+
 
         internal SABTDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

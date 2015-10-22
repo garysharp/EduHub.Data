@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Batch Headers
     /// </summary>
-    public class QB : EntityBase
+    public partial class QB : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Batch number (Prime Key)
@@ -83,6 +80,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// DRF (DR Transactions) related entities by [DRF.TRBATCH]-&gt;[QB.QBKEY]
+        /// </summary>
+        public IReadOnlyList<DRF> DRF_TRBATCH
+        {
+            get
+            {
+                return Context.QB.FindDRFByTRBATCH(QBKEY);
+            }
+        }
 #endregion
     }
 }

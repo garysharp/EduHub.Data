@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PRMS Order Details
     /// </summary>
-    public class KPRMS : EntityBase
+    public partial class KPRMS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -107,9 +104,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

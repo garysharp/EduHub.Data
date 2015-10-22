@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Transport Modes Data Set
     /// </summary>
-    public sealed class TRPMODEDataSet : SetBase<TRPMODE>
+    public sealed partial class TRPMODEDataSet : SetBase<TRPMODE>
     {
         private Lazy<Dictionary<int, TRPMODE>> TRANSPORT_MODE_IDIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_AM_TRANSPORT_MODEForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_PM_TRANSPORT_MODEForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>> TRPROUT_TRANSPORT_MODE_IDForeignIndex;
 
         internal TRPMODEDataSet(EduHubContext Context)
             : base(Context)
         {
             TRANSPORT_MODE_IDIndex = new Lazy<Dictionary<int, TRPMODE>>(() => this.ToDictionary(e => e.TRANSPORT_MODE_ID));
+
+            STTRIPS_AM_TRANSPORT_MODEForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
+                    Context.STTRIPS
+                          .Where(e => e.AM_TRANSPORT_MODE != null)
+                          .GroupBy(e => e.AM_TRANSPORT_MODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
+                          .AsReadOnly()));
+
+            STTRIPS_PM_TRANSPORT_MODEForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
+                    Context.STTRIPS
+                          .Where(e => e.PM_TRANSPORT_MODE != null)
+                          .GroupBy(e => e.PM_TRANSPORT_MODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
+                          .AsReadOnly()));
+
+            TRPROUT_TRANSPORT_MODE_IDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>>(() =>
+                    Context.TRPROUT
+                          .Where(e => e.TRANSPORT_MODE_ID != null)
+                          .GroupBy(e => e.TRANSPORT_MODE_ID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TRPROUT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.AM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find STTRIPS entities</param>
+        /// <returns>A list of related STTRIPS entities</returns>
+        public IReadOnlyList<STTRIPS> FindSTTRIPSByAM_TRANSPORT_MODE(int TRANSPORT_MODE_ID)
+        {
+            IReadOnlyList<STTRIPS> result;
+            if (STTRIPS_AM_TRANSPORT_MODEForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STTRIPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STTRIPS entities by [STTRIPS.AM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find STTRIPS entities</param>
+        /// <param name="Value">A list of related STTRIPS entities</param>
+        /// <returns>True if any STTRIPS entities are found</returns>
+        public bool TryFindSTTRIPSByAM_TRANSPORT_MODE(int TRANSPORT_MODE_ID, out IReadOnlyList<STTRIPS> Value)
+        {
+            return STTRIPS_AM_TRANSPORT_MODEForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out Value);
+        }
+
+        /// <summary>
+        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.PM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find STTRIPS entities</param>
+        /// <returns>A list of related STTRIPS entities</returns>
+        public IReadOnlyList<STTRIPS> FindSTTRIPSByPM_TRANSPORT_MODE(int TRANSPORT_MODE_ID)
+        {
+            IReadOnlyList<STTRIPS> result;
+            if (STTRIPS_PM_TRANSPORT_MODEForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STTRIPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STTRIPS entities by [STTRIPS.PM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find STTRIPS entities</param>
+        /// <param name="Value">A list of related STTRIPS entities</param>
+        /// <returns>True if any STTRIPS entities are found</returns>
+        public bool TryFindSTTRIPSByPM_TRANSPORT_MODE(int TRANSPORT_MODE_ID, out IReadOnlyList<STTRIPS> Value)
+        {
+            return STTRIPS_PM_TRANSPORT_MODEForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out Value);
+        }
+
+        /// <summary>
+        /// Find all TRPROUT (Student Transport Routes) entities by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT entities</param>
+        /// <returns>A list of related TRPROUT entities</returns>
+        public IReadOnlyList<TRPROUT> FindTRPROUTByTRANSPORT_MODE_ID(int TRANSPORT_MODE_ID)
+        {
+            IReadOnlyList<TRPROUT> result;
+            if (TRPROUT_TRANSPORT_MODE_IDForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TRPROUT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TRPROUT entities by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT entities</param>
+        /// <param name="Value">A list of related TRPROUT entities</param>
+        /// <returns>True if any TRPROUT entities are found</returns>
+        public bool TryFindTRPROUTByTRANSPORT_MODE_ID(int TRANSPORT_MODE_ID, out IReadOnlyList<TRPROUT> Value)
+        {
+            return TRPROUT_TRANSPORT_MODE_IDForeignIndex.Value.TryGetValue(TRANSPORT_MODE_ID, out Value);
         }
 
 

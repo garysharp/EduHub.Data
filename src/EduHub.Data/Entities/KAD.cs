@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Delivery Addresses
     /// </summary>
-    public class KAD : EntityBase
+    public partial class KAD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -48,6 +45,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// CRF (Creditor Financial Transaction) related entities by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
+        /// </summary>
+        public IReadOnlyList<CRF> CRF_DEL_CODE
+        {
+            get
+            {
+                return Context.KAD.FindCRFByDEL_CODE(KADKEY);
+            }
+        }
 #endregion
     }
 }

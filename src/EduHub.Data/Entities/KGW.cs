@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Awards and Prizes
     /// </summary>
-    public class KGW : EntityBase
+    public partial class KGW : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Award code
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// STMB (Student Merit Behaviour Details) related entities by [STMB.AWARD]-&gt;[KGW.AWARD]
+        /// </summary>
+        public IReadOnlyList<STMB> STMB_AWARD
+        {
+            get
+            {
+                return Context.KGW.FindSTMBByAWARD(AWARD);
+            }
+        }
 #endregion
     }
 }

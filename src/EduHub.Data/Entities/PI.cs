@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Items
     /// </summary>
-    public class PI : EntityBase
+    public partial class PI : EntityBase
     {
 #region Navigation Property Cache
         private PG _PAYG_BOX_PG;
@@ -280,11 +280,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PAYG_BOX] => [PG].[PAYG_BOX]
+        /// PG (PAYG Payment Summary Box) related entity by [PI.PAYG_BOX]-&gt;[PG.PAYG_BOX]
         /// PAYG Payment summary box no.
         /// </summary>
-        public PG PAYG_BOX_PG {
+        public PG PAYG_BOX_PG
+        {
             get
             {
                 if (PAYG_BOX.HasValue)
@@ -301,11 +303,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BASEITEM] => [PI].[PIKEY]
+        /// PI (Pay Items) related entity by [PI.BASEITEM]-&gt;[PI.PIKEY]
         /// Base item to get rate from
         /// </summary>
-        public PI BASEITEM_PI {
+        public PI BASEITEM_PI
+        {
             get
             {
                 if (BASEITEM.HasValue)
@@ -322,12 +326,14 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AWARD] => [PSA].[PSAKEY]
+        /// PSA (Award Details) related entity by [PI.AWARD]-&gt;[PSA.PSAKEY]
         /// Award this item belongs to
         /// 
         /// </summary>
-        public PSA AWARD_PSA {
+        public PSA AWARD_PSA
+        {
             get
             {
                 if (AWARD != null)
@@ -344,11 +350,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CLR_GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PI.CLR_GLCODE]-&gt;[GL.CODE]
         /// Clearing GL code (not used)
         /// </summary>
-        public GL CLR_GLCODE_GL {
+        public GL CLR_GLCODE_GL
+        {
             get
             {
                 if (CLR_GLCODE != null)
@@ -365,11 +373,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [PI.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -386,11 +396,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [PI.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -405,6 +417,94 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PEF (Payroll Transactions) related entities by [PEF.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PEF> PEF_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPEFByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEFH (Payroll Transaction History) related entities by [PEFH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PEFH> PEFH_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPEFHByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPS (Standard and Last Pays) related entities by [PEPS.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PEPS> PEPS_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPEPSByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPU (Super (SGL and Employee) YTD Transactions) related entities by [PEPU.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PEPU> PEPU_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPEPUByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPUH (Super (SGL and Employee) History YTD Transactions) related entities by [PEPUH.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PEPUH> PEPUH_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPEPUHByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PETP (Termination Payment) related entities by [PETP.PAYITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PETP> PETP_PAYITEM
+        {
+            get
+            {
+                return Context.PI.FindPETPByPAYITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PI (Pay Items) related entities by [PI.BASEITEM]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PI> PI_BASEITEM
+        {
+            get
+            {
+                return Context.PI.FindPIByBASEITEM(PIKEY);
+            }
+        }
+
+        /// <summary>
+        /// PILI (Pay Item Leave Items) related entities by [PILI.PIKEY]-&gt;[PI.PIKEY]
+        /// </summary>
+        public IReadOnlyList<PILI> PILI_PIKEY
+        {
+            get
+            {
+                return Context.PI.FindPILIByPIKEY(PIKEY);
             }
         }
 #endregion

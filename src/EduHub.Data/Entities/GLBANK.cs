@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account Details
     /// </summary>
-    public class GLBANK : EntityBase
+    public partial class GLBANK : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -186,6 +183,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// GLFBANK (Financial Commitments) related entities by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
+        /// </summary>
+        public IReadOnlyList<GLFBANK> GLFBANK_CODE
+        {
+            get
+            {
+                return Context.GLBANK.FindGLFBANKByCODE(GLCODE);
+            }
+        }
 #endregion
     }
 }

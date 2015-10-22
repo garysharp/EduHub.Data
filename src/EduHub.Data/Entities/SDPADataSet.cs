@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Disciplinary Actions Data Set
     /// </summary>
-    public sealed class SDPADataSet : SetBase<SDPA>
+    public sealed partial class SDPADataSet : SetBase<SDPA>
     {
         private Lazy<Dictionary<int, SDPA>> TIDIndex;
+
 
         internal SDPADataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SDPA>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

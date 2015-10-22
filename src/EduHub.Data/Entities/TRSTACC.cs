@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// STACC Holding Table
     /// </summary>
-    public class TRSTACC : EntityBase
+    public partial class TRSTACC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Sequence no
@@ -206,9 +203,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

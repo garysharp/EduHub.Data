@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Departments Data Set
     /// </summary>
-    public sealed class PDDataSet : SetBase<PD>
+    public sealed partial class PDDataSet : SetBase<PD>
     {
         private Lazy<Dictionary<string, PD>> PDKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PE>>> PE_DEPARTMENTForeignIndex;
 
         internal PDDataSet(EduHubContext Context)
             : base(Context)
         {
             PDKEYIndex = new Lazy<Dictionary<string, PD>>(() => this.ToDictionary(e => e.PDKEY));
+
+            PE_DEPARTMENTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PE>>>(() =>
+                    Context.PE
+                          .Where(e => e.DEPARTMENT != null)
+                          .GroupBy(e => e.DEPARTMENT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PE (Employees) entities by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
+        /// </summary>
+        /// <param name="PDKEY">PDKEY value used to find PE entities</param>
+        /// <returns>A list of related PE entities</returns>
+        public IReadOnlyList<PE> FindPEByDEPARTMENT(string PDKEY)
+        {
+            IReadOnlyList<PE> result;
+            if (PE_DEPARTMENTForeignIndex.Value.TryGetValue(PDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PE entities by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
+        /// </summary>
+        /// <param name="PDKEY">PDKEY value used to find PE entities</param>
+        /// <param name="Value">A list of related PE entities</param>
+        /// <returns>True if any PE entities are found</returns>
+        public bool TryFindPEByDEPARTMENT(string PDKEY, out IReadOnlyList<PE> Value)
+        {
+            return PE_DEPARTMENTForeignIndex.Value.TryGetValue(PDKEY, out Value);
         }
 
 

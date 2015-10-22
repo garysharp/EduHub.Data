@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Temporary Group Transactions
     /// </summary>
-    public class SGTRX : EntityBase
+    public partial class SGTRX : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGTRXKEY_SG;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGTRXKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
         /// Code of new group
         /// </summary>
-        public SG SGTRXKEY_SG {
+        public SG SGTRXKEY_SG
+        {
             get
             {
                 if (SGTRXKEY != null)

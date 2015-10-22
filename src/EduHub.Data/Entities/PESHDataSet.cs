@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Super LTD History Data Set
     /// </summary>
-    public sealed class PESHDataSet : SetBase<PESH>
+    public sealed partial class PESHDataSet : SetBase<PESH>
     {
+
 
         internal PESHDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

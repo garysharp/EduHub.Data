@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Superannuation Funds Data Set
     /// </summary>
-    public sealed class PFDataSet : SetBase<PF>
+    public sealed partial class PFDataSet : SetBase<PF>
     {
         private Lazy<Dictionary<string, PF>> PFKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PEPS>>> PEPS_SUPER_FUNDForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPU>>> PEPU_SUPER_FUNDForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPUH>>> PEPUH_SUPER_FUNDForeignIndex;
 
         internal PFDataSet(EduHubContext Context)
             : base(Context)
         {
             PFKEYIndex = new Lazy<Dictionary<string, PF>>(() => this.ToDictionary(e => e.PFKEY));
+
+            PEPS_SUPER_FUNDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPS>>>(() =>
+                    Context.PEPS
+                          .Where(e => e.SUPER_FUND != null)
+                          .GroupBy(e => e.SUPER_FUND)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPS>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPU_SUPER_FUNDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPU>>>(() =>
+                    Context.PEPU
+                          .Where(e => e.SUPER_FUND != null)
+                          .GroupBy(e => e.SUPER_FUND)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPU>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPUH_SUPER_FUNDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPUH>>>(() =>
+                    Context.PEPUH
+                          .Where(e => e.SUPER_FUND != null)
+                          .GroupBy(e => e.SUPER_FUND)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPUH>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PEPS (Standard and Last Pays) entities by [PEPS.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPS entities</param>
+        /// <returns>A list of related PEPS entities</returns>
+        public IReadOnlyList<PEPS> FindPEPSBySUPER_FUND(string PFKEY)
+        {
+            IReadOnlyList<PEPS> result;
+            if (PEPS_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPS entities by [PEPS.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPS entities</param>
+        /// <param name="Value">A list of related PEPS entities</param>
+        /// <returns>True if any PEPS entities are found</returns>
+        public bool TryFindPEPSBySUPER_FUND(string PFKEY, out IReadOnlyList<PEPS> Value)
+        {
+            return PEPS_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPU (Super (SGL and Employee) YTD Transactions) entities by [PEPU.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPU entities</param>
+        /// <returns>A list of related PEPU entities</returns>
+        public IReadOnlyList<PEPU> FindPEPUBySUPER_FUND(string PFKEY)
+        {
+            IReadOnlyList<PEPU> result;
+            if (PEPU_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPU>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPU entities by [PEPU.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPU entities</param>
+        /// <param name="Value">A list of related PEPU entities</param>
+        /// <returns>True if any PEPU entities are found</returns>
+        public bool TryFindPEPUBySUPER_FUND(string PFKEY, out IReadOnlyList<PEPU> Value)
+        {
+            return PEPU_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPUH (Super (SGL and Employee) History YTD Transactions) entities by [PEPUH.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPUH entities</param>
+        /// <returns>A list of related PEPUH entities</returns>
+        public IReadOnlyList<PEPUH> FindPEPUHBySUPER_FUND(string PFKEY)
+        {
+            IReadOnlyList<PEPUH> result;
+            if (PEPUH_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPUH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPUH entities by [PEPUH.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PEPUH entities</param>
+        /// <param name="Value">A list of related PEPUH entities</param>
+        /// <returns>True if any PEPUH entities are found</returns>
+        public bool TryFindPEPUHBySUPER_FUND(string PFKEY, out IReadOnlyList<PEPUH> Value)
+        {
+            return PEPUH_SUPER_FUNDForeignIndex.Value.TryGetValue(PFKEY, out Value);
         }
 
 

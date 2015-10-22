@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Medical Conditions
     /// </summary>
-    public class KCM : EntityBase
+    public partial class KCM : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Medical Condition code
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SMC (Student Medical Conditions) related entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
+        /// </summary>
+        public IReadOnlyList<SMC> SMC_MED_CONDITION
+        {
+            get
+            {
+                return Context.KCM.FindSMCByMED_CONDITION(KCMKEY);
+            }
+        }
 #endregion
     }
 }

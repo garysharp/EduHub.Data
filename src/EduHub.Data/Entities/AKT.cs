@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Types
     /// </summary>
-    public class AKT : EntityBase
+    public partial class AKT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Asset Type
@@ -38,6 +35,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.ASSET_TYPE]-&gt;[AKT.AKTKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_ASSET_TYPE
+        {
+            get
+            {
+                return Context.AKT.FindARByASSET_TYPE(AKTKEY);
+            }
+        }
 #endregion
     }
 }

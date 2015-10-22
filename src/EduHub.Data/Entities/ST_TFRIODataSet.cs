@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Data Transfer Table Data Set
     /// </summary>
-    public sealed class ST_TFRIODataSet : SetBase<ST_TFRIO>
+    public sealed partial class ST_TFRIODataSet : SetBase<ST_TFRIO>
     {
+
 
         internal ST_TFRIODataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

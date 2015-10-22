@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Strands
     /// </summary>
-    public class SCSF : EntityBase
+    public partial class SCSF : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// CSF Outcome Code
@@ -66,6 +63,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SCSFAG (CSF Data Aggregates) related entities by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
+        /// </summary>
+        public IReadOnlyList<SCSFAG> SCSFAG_SCSFKEY
+        {
+            get
+            {
+                return Context.SCSF.FindSCSFAGBySCSFKEY(SCSFKEY);
+            }
+        }
 #endregion
     }
 }

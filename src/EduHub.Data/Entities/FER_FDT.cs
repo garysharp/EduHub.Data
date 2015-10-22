@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FDT Financal Holding Table
     /// </summary>
-    public class FER_FDT : EntityBase
+    public partial class FER_FDT : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _SOURCE_SKGS;
@@ -1147,11 +1147,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SOURCE] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [FER_FDT.SOURCE]-&gt;[SKGS.SCHOOL]
         /// 
         /// </summary>
-        public SKGS SOURCE_SKGS {
+        public SKGS SOURCE_SKGS
+        {
             get
             {
                 if (SOURCE != null)

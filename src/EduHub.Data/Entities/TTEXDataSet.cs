@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Grid Data Set
     /// </summary>
-    public sealed class TTEXDataSet : SetBase<TTEX>
+    public sealed partial class TTEXDataSet : SetBase<TTEX>
     {
+
 
         internal TTEXDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

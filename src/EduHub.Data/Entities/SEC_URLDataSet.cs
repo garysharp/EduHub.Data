@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 School Links URL Data Set
     /// </summary>
-    public sealed class SEC_URLDataSet : SetBase<SEC_URL>
+    public sealed partial class SEC_URLDataSet : SetBase<SEC_URL>
     {
         private Lazy<Dictionary<int, SEC_URL>> SCHOOLURLIDIndex;
+
 
         internal SEC_URLDataSet(EduHubContext Context)
             : base(Context)
         {
             SCHOOLURLIDIndex = new Lazy<Dictionary<int, SEC_URL>>(() => this.ToDictionary(e => e.SCHOOLURLID));
+
         }
 
         /// <summary>

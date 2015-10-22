@@ -8,14 +8,133 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employees Data Set
     /// </summary>
-    public sealed class PEDataSet : SetBase<PE>
+    public sealed partial class PEDataSet : SetBase<PE>
     {
         private Lazy<Dictionary<string, PE>> PEKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PEF>>> PEF_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEFH>>> PEFH_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PELA>>> PELA_PEKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PELD>>> PELD_PEKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEM>>> PEM_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPM>>> PEPM_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPS>>> PEPS_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPU>>> PEPU_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPUH>>> PEPUH_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PEPY>>> PEPY_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PESH>>> PESH_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PESP>>> PESP_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PETP>>> PETP_CODEForeignIndex;
 
         internal PEDataSet(EduHubContext Context)
             : base(Context)
         {
             PEKEYIndex = new Lazy<Dictionary<string, PE>>(() => this.ToDictionary(e => e.PEKEY));
+
+            PEF_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEF>>>(() =>
+                    Context.PEF
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEF>)g.ToList()
+                          .AsReadOnly()));
+
+            PEFH_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEFH>>>(() =>
+                    Context.PEFH
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEFH>)g.ToList()
+                          .AsReadOnly()));
+
+            PELA_PEKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PELA>>>(() =>
+                    Context.PELA
+                          .Where(e => e.PEKEY != null)
+                          .GroupBy(e => e.PEKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PELA>)g.ToList()
+                          .AsReadOnly()));
+
+            PELD_PEKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PELD>>>(() =>
+                    Context.PELD
+                          .Where(e => e.PEKEY != null)
+                          .GroupBy(e => e.PEKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PELD>)g.ToList()
+                          .AsReadOnly()));
+
+            PEM_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEM>>>(() =>
+                    Context.PEM
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEM>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPM_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPM>>>(() =>
+                    Context.PEPM
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPM>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPS_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPS>>>(() =>
+                    Context.PEPS
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPS>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPU_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPU>>>(() =>
+                    Context.PEPU
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPU>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPUH_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPUH>>>(() =>
+                    Context.PEPUH
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPUH>)g.ToList()
+                          .AsReadOnly()));
+
+            PEPY_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPY>>>(() =>
+                    Context.PEPY
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPY>)g.ToList()
+                          .AsReadOnly()));
+
+            PESH_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PESH>>>(() =>
+                    Context.PESH
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PESH>)g.ToList()
+                          .AsReadOnly()));
+
+            PESP_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PESP>>>(() =>
+                    Context.PESP
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PESP>)g.ToList()
+                          .AsReadOnly()));
+
+            PETP_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PETP>>>(() =>
+                    Context.PETP
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PETP>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +188,383 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PEF (Payroll Transactions) entities by [PEF.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEF entities</param>
+        /// <returns>A list of related PEF entities</returns>
+        public IReadOnlyList<PEF> FindPEFByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEF> result;
+            if (PEF_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEF entities by [PEF.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEF entities</param>
+        /// <param name="Value">A list of related PEF entities</param>
+        /// <returns>True if any PEF entities are found</returns>
+        public bool TryFindPEFByCODE(string PEKEY, out IReadOnlyList<PEF> Value)
+        {
+            return PEF_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEFH (Payroll Transaction History) entities by [PEFH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEFH entities</param>
+        /// <returns>A list of related PEFH entities</returns>
+        public IReadOnlyList<PEFH> FindPEFHByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEFH> result;
+            if (PEFH_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEFH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEFH entities by [PEFH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEFH entities</param>
+        /// <param name="Value">A list of related PEFH entities</param>
+        /// <returns>True if any PEFH entities are found</returns>
+        public bool TryFindPEFHByCODE(string PEKEY, out IReadOnlyList<PEFH> Value)
+        {
+            return PEFH_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PELA (Employee Leave Audit) entities by [PELA.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELA entities</param>
+        /// <returns>A list of related PELA entities</returns>
+        public IReadOnlyList<PELA> FindPELAByPEKEY(string PEKEY)
+        {
+            IReadOnlyList<PELA> result;
+            if (PELA_PEKEYForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PELA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PELA entities by [PELA.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELA entities</param>
+        /// <param name="Value">A list of related PELA entities</param>
+        /// <returns>True if any PELA entities are found</returns>
+        public bool TryFindPELAByPEKEY(string PEKEY, out IReadOnlyList<PELA> Value)
+        {
+            return PELA_PEKEYForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PELD (Employee Leave Details) entities by [PELD.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELD entities</param>
+        /// <returns>A list of related PELD entities</returns>
+        public IReadOnlyList<PELD> FindPELDByPEKEY(string PEKEY)
+        {
+            IReadOnlyList<PELD> result;
+            if (PELD_PEKEYForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PELD>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PELD entities by [PELD.PEKEY]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELD entities</param>
+        /// <param name="Value">A list of related PELD entities</param>
+        /// <returns>True if any PELD entities are found</returns>
+        public bool TryFindPELDByPEKEY(string PEKEY, out IReadOnlyList<PELD> Value)
+        {
+            return PELD_PEKEYForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEM (Pay Advice Slip Message) entities by [PEM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEM entities</param>
+        /// <returns>A list of related PEM entities</returns>
+        public IReadOnlyList<PEM> FindPEMByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEM> result;
+            if (PEM_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEM entities by [PEM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEM entities</param>
+        /// <param name="Value">A list of related PEM entities</param>
+        /// <returns>True if any PEM entities are found</returns>
+        public bool TryFindPEMByCODE(string PEKEY, out IReadOnlyList<PEM> Value)
+        {
+            return PEM_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPM (Pay Methods) entities by [PEPM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPM entities</param>
+        /// <returns>A list of related PEPM entities</returns>
+        public IReadOnlyList<PEPM> FindPEPMByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEPM> result;
+            if (PEPM_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPM entities by [PEPM.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPM entities</param>
+        /// <param name="Value">A list of related PEPM entities</param>
+        /// <returns>True if any PEPM entities are found</returns>
+        public bool TryFindPEPMByCODE(string PEKEY, out IReadOnlyList<PEPM> Value)
+        {
+            return PEPM_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPS (Standard and Last Pays) entities by [PEPS.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPS entities</param>
+        /// <returns>A list of related PEPS entities</returns>
+        public IReadOnlyList<PEPS> FindPEPSByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEPS> result;
+            if (PEPS_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPS entities by [PEPS.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPS entities</param>
+        /// <param name="Value">A list of related PEPS entities</param>
+        /// <returns>True if any PEPS entities are found</returns>
+        public bool TryFindPEPSByCODE(string PEKEY, out IReadOnlyList<PEPS> Value)
+        {
+            return PEPS_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPU (Super (SGL and Employee) YTD Transactions) entities by [PEPU.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPU entities</param>
+        /// <returns>A list of related PEPU entities</returns>
+        public IReadOnlyList<PEPU> FindPEPUByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEPU> result;
+            if (PEPU_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPU>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPU entities by [PEPU.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPU entities</param>
+        /// <param name="Value">A list of related PEPU entities</param>
+        /// <returns>True if any PEPU entities are found</returns>
+        public bool TryFindPEPUByCODE(string PEKEY, out IReadOnlyList<PEPU> Value)
+        {
+            return PEPU_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPUH (Super (SGL and Employee) History YTD Transactions) entities by [PEPUH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPUH entities</param>
+        /// <returns>A list of related PEPUH entities</returns>
+        public IReadOnlyList<PEPUH> FindPEPUHByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEPUH> result;
+            if (PEPUH_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPUH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPUH entities by [PEPUH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPUH entities</param>
+        /// <param name="Value">A list of related PEPUH entities</param>
+        /// <returns>True if any PEPUH entities are found</returns>
+        public bool TryFindPEPUHByCODE(string PEKEY, out IReadOnlyList<PEPUH> Value)
+        {
+            return PEPUH_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PEPY (Employee History) entities by [PEPY.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPY entities</param>
+        /// <returns>A list of related PEPY entities</returns>
+        public IReadOnlyList<PEPY> FindPEPYByCODE(string PEKEY)
+        {
+            IReadOnlyList<PEPY> result;
+            if (PEPY_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPY>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPY entities by [PEPY.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PEPY entities</param>
+        /// <param name="Value">A list of related PEPY entities</param>
+        /// <returns>True if any PEPY entities are found</returns>
+        public bool TryFindPEPYByCODE(string PEKEY, out IReadOnlyList<PEPY> Value)
+        {
+            return PEPY_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PESH (Employee Super LTD History) entities by [PESH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PESH entities</param>
+        /// <returns>A list of related PESH entities</returns>
+        public IReadOnlyList<PESH> FindPESHByCODE(string PEKEY)
+        {
+            IReadOnlyList<PESH> result;
+            if (PESH_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PESH>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PESH entities by [PESH.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PESH entities</param>
+        /// <param name="Value">A list of related PESH entities</param>
+        /// <returns>True if any PESH entities are found</returns>
+        public bool TryFindPESHByCODE(string PEKEY, out IReadOnlyList<PESH> Value)
+        {
+            return PESH_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PESP (Employee Super Payment Transactions) entities by [PESP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PESP entities</param>
+        /// <returns>A list of related PESP entities</returns>
+        public IReadOnlyList<PESP> FindPESPByCODE(string PEKEY)
+        {
+            IReadOnlyList<PESP> result;
+            if (PESP_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PESP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PESP entities by [PESP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PESP entities</param>
+        /// <param name="Value">A list of related PESP entities</param>
+        /// <returns>True if any PESP entities are found</returns>
+        public bool TryFindPESPByCODE(string PEKEY, out IReadOnlyList<PESP> Value)
+        {
+            return PESP_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PETP (Termination Payment) entities by [PETP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PETP entities</param>
+        /// <returns>A list of related PETP entities</returns>
+        public IReadOnlyList<PETP> FindPETPByCODE(string PEKEY)
+        {
+            IReadOnlyList<PETP> result;
+            if (PETP_CODEForeignIndex.Value.TryGetValue(PEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PETP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PETP entities by [PETP.CODE]-&gt;[PE.PEKEY]
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PETP entities</param>
+        /// <param name="Value">A list of related PETP entities</param>
+        /// <returns>True if any PETP entities are found</returns>
+        public bool TryFindPETPByCODE(string PEKEY, out IReadOnlyList<PETP> Value)
+        {
+            return PETP_CODEForeignIndex.Value.TryGetValue(PEKEY, out Value);
         }
 
 

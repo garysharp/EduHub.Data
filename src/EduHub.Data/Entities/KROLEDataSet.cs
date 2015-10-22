@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Role Codes Data Set
     /// </summary>
-    public sealed class KROLEDataSet : SetBase<KROLE>
+    public sealed partial class KROLEDataSet : SetBase<KROLE>
     {
         private Lazy<Dictionary<string, KROLE>> KROLEKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<KREPORT>>> KREPORT_ROLE_CODEForeignIndex;
 
         internal KROLEDataSet(EduHubContext Context)
             : base(Context)
         {
             KROLEKEYIndex = new Lazy<Dictionary<string, KROLE>>(() => this.ToDictionary(e => e.KROLEKEY));
+
+            KREPORT_ROLE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<KREPORT>>>(() =>
+                    Context.KREPORT
+                          .Where(e => e.ROLE_CODE != null)
+                          .GroupBy(e => e.ROLE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KREPORT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all KREPORT (Reports for emailing) entities by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
+        /// </summary>
+        /// <param name="KROLEKEY">KROLEKEY value used to find KREPORT entities</param>
+        /// <returns>A list of related KREPORT entities</returns>
+        public IReadOnlyList<KREPORT> FindKREPORTByROLE_CODE(string KROLEKEY)
+        {
+            IReadOnlyList<KREPORT> result;
+            if (KREPORT_ROLE_CODEForeignIndex.Value.TryGetValue(KROLEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<KREPORT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all KREPORT entities by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
+        /// </summary>
+        /// <param name="KROLEKEY">KROLEKEY value used to find KREPORT entities</param>
+        /// <param name="Value">A list of related KREPORT entities</param>
+        /// <returns>True if any KREPORT entities are found</returns>
+        public bool TryFindKREPORTByROLE_CODE(string KROLEKEY, out IReadOnlyList<KREPORT> Value)
+        {
+            return KREPORT_ROLE_CODEForeignIndex.Value.TryGetValue(KROLEKEY, out Value);
         }
 
 

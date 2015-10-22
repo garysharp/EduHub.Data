@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Superannuation Funds
     /// </summary>
-    public class PF : EntityBase
+    public partial class PF : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_GL;
@@ -59,11 +59,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PF.GLCODE]-&gt;[GL.CODE]
         /// Super GL clearing account
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -78,6 +80,39 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PEPS (Standard and Last Pays) related entities by [PEPS.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        public IReadOnlyList<PEPS> PEPS_SUPER_FUND
+        {
+            get
+            {
+                return Context.PF.FindPEPSBySUPER_FUND(PFKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPU (Super (SGL and Employee) YTD Transactions) related entities by [PEPU.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        public IReadOnlyList<PEPU> PEPU_SUPER_FUND
+        {
+            get
+            {
+                return Context.PF.FindPEPUBySUPER_FUND(PFKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPUH (Super (SGL and Employee) History YTD Transactions) related entities by [PEPUH.SUPER_FUND]-&gt;[PF.PFKEY]
+        /// </summary>
+        public IReadOnlyList<PEPUH> PEPUH_SUPER_FUND
+        {
+            get
+            {
+                return Context.PF.FindPEPUHBySUPER_FUND(PFKEY);
             }
         }
 #endregion

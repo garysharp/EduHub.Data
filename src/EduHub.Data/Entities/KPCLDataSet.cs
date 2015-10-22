@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contact Links Data Set
     /// </summary>
-    public sealed class KPCLDataSet : SetBase<KPCL>
+    public sealed partial class KPCLDataSet : SetBase<KPCL>
     {
         private Lazy<Dictionary<int, KPCL>> KPCLKEYIndex;
+
 
         internal KPCLDataSet(EduHubContext Context)
             : base(Context)
         {
             KPCLKEYIndex = new Lazy<Dictionary<int, KPCL>>(() => this.ToDictionary(e => e.KPCLKEY));
+
         }
 
         /// <summary>

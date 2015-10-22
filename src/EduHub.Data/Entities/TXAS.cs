@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Actual Sessions
     /// </summary>
-    public class TXAS : EntityBase
+    public partial class TXAS : EntityBase
     {
 #region Navigation Property Cache
         private SU _SUBJECT_SU;
@@ -99,11 +99,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SUBJECT] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [TXAS.SUBJECT]-&gt;[SU.SUKEY]
         /// Subject for this session
         /// </summary>
-        public SU SUBJECT_SU {
+        public SU SUBJECT_SU
+        {
             get
             {
                 if (SUBJECT != null)
@@ -120,11 +122,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TXAS.TEACHER]-&gt;[SF.SFKEY]
         /// Staff code of teacher for this session
         /// </summary>
-        public SF TEACHER_SF {
+        public SF TEACHER_SF
+        {
             get
             {
                 if (TEACHER != null)
@@ -141,11 +145,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOCATION] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TXAS.LOCATION]-&gt;[SM.ROOM]
         /// Room code of room for this session
         /// </summary>
-        public SM LOCATION_SM {
+        public SM LOCATION_SM
+        {
             get
             {
                 if (LOCATION != null)
@@ -162,11 +168,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCL_LINK] => [SCL].[SCLKEY]
+        /// SCL (Subject Classes) related entity by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
         /// Class code in SCL
         /// </summary>
-        public SCL SCL_LINK_SCL {
+        public SCL SCL_LINK_SCL
+        {
             get
             {
                 if (SCL_LINK != null)
@@ -181,6 +189,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SXAS (Student Scheduled Sessions) related entities by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
+        /// </summary>
+        public IReadOnlyList<SXAS> SXAS_TXAS_ID
+        {
+            get
+            {
+                return Context.TXAS.FindSXASByTXAS_ID(TID);
             }
         }
 #endregion

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects per Home Group Data Set
     /// </summary>
-    public sealed class SSHGDataSet : SetBase<SSHG>
+    public sealed partial class SSHGDataSet : SetBase<SSHG>
     {
+
 
         internal SSHGDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

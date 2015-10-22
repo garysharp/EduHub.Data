@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS messages Data Set
     /// </summary>
-    public sealed class SPSMSDataSet : SetBase<SPSMS>
+    public sealed partial class SPSMSDataSet : SetBase<SPSMS>
     {
         private Lazy<Dictionary<int, SPSMS>> SPSMSKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>> SPRECIP_CODEForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>> SPREPLY_CODEForeignIndex;
 
         internal SPSMSDataSet(EduHubContext Context)
             : base(Context)
         {
             SPSMSKEYIndex = new Lazy<Dictionary<int, SPSMS>>(() => this.ToDictionary(e => e.SPSMSKEY));
+
+            SPRECIP_CODEForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>>(() =>
+                    Context.SPRECIP
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPRECIP>)g.ToList()
+                          .AsReadOnly()));
+
+            SPREPLY_CODEForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>>(() =>
+                    Context.SPREPLY
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPREPLY>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SPRECIP (SMS Recipients) entities by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPRECIP entities</param>
+        /// <returns>A list of related SPRECIP entities</returns>
+        public IReadOnlyList<SPRECIP> FindSPRECIPByCODE(int SPSMSKEY)
+        {
+            IReadOnlyList<SPRECIP> result;
+            if (SPRECIP_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SPRECIP>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SPRECIP entities by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPRECIP entities</param>
+        /// <param name="Value">A list of related SPRECIP entities</param>
+        /// <returns>True if any SPRECIP entities are found</returns>
+        public bool TryFindSPRECIPByCODE(int SPSMSKEY, out IReadOnlyList<SPRECIP> Value)
+        {
+            return SPRECIP_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SPREPLY (SMS Recipients) entities by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPREPLY entities</param>
+        /// <returns>A list of related SPREPLY entities</returns>
+        public IReadOnlyList<SPREPLY> FindSPREPLYByCODE(int SPSMSKEY)
+        {
+            IReadOnlyList<SPREPLY> result;
+            if (SPREPLY_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SPREPLY>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SPREPLY entities by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPREPLY entities</param>
+        /// <param name="Value">A list of related SPREPLY entities</param>
+        /// <returns>True if any SPREPLY entities are found</returns>
+        public bool TryFindSPREPLYByCODE(int SPSMSKEY, out IReadOnlyList<SPREPLY> Value)
+        {
+            return SPREPLY_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out Value);
         }
 
 

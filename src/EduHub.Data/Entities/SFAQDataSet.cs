@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Availability in Quilt Data Set
     /// </summary>
-    public sealed class SFAQDataSet : SetBase<SFAQ>
+    public sealed partial class SFAQDataSet : SetBase<SFAQ>
     {
+
 
         internal SFAQDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

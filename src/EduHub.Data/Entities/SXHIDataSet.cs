@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student History Data Set
     /// </summary>
-    public sealed class SXHIDataSet : SetBase<SXHI>
+    public sealed partial class SXHIDataSet : SetBase<SXHI>
     {
         private Lazy<Dictionary<int, SXHI>> TIDIndex;
+
 
         internal SXHIDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SXHI>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

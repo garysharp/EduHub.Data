@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Aggregated Dimensions Data Set
     /// </summary>
-    public sealed class SVAGDataSet : SetBase<SVAG>
+    public sealed partial class SVAGDataSet : SetBase<SVAG>
     {
         private Lazy<Dictionary<int, SVAG>> SVAGKEYIndex;
+
 
         internal SVAGDataSet(EduHubContext Context)
             : base(Context)
         {
             SVAGKEYIndex = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(e => e.SVAGKEY));
+
         }
 
         /// <summary>

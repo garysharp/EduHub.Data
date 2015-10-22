@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Room Availability in Quilt
     /// </summary>
-    public class SMAQ : EntityBase
+    public partial class SMAQ : EntityBase
     {
 #region Navigation Property Cache
         private SM _SMAQKEY_SM;
@@ -56,11 +56,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SMAQKEY] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SMAQ.SMAQKEY]-&gt;[SM.ROOM]
         /// Room key
         /// </summary>
-        public SM SMAQKEY_SM {
+        public SM SMAQKEY_SM
+        {
             get
             {
                 if (SMAQKEY != null)
@@ -77,11 +79,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [QKEY] => [TH].[THKEY]
+        /// TH (Timetable Quilt Headers) related entity by [SMAQ.QKEY]-&gt;[TH.THKEY]
         /// Quilt
         /// </summary>
-        public TH QKEY_TH {
+        public TH QKEY_TH
+        {
             get
             {
                 if (QKEY != null)

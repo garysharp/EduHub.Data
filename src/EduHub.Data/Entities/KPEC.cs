@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Categories
     /// </summary>
-    public class KPEC : EntityBase
+    public partial class KPEC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key
@@ -36,9 +33,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Visa Subclasses Data Set
     /// </summary>
-    public sealed class KCVDataSet : SetBase<KCV>
+    public sealed partial class KCVDataSet : SetBase<KCV>
     {
         private Lazy<Dictionary<string, KCV>> VISA_SUBCLASSIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_VISA_SUBCLASSForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STRE>>> STRE_ST_VISA_SUBCLASSForeignIndex;
 
         internal KCVDataSet(EduHubContext Context)
             : base(Context)
         {
             VISA_SUBCLASSIndex = new Lazy<Dictionary<string, KCV>>(() => this.ToDictionary(e => e.VISA_SUBCLASS));
+
+            ST_VISA_SUBCLASSForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.VISA_SUBCLASS != null)
+                          .GroupBy(e => e.VISA_SUBCLASS)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
+            STRE_ST_VISA_SUBCLASSForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STRE>>>(() =>
+                    Context.STRE
+                          .Where(e => e.ST_VISA_SUBCLASS != null)
+                          .GroupBy(e => e.ST_VISA_SUBCLASS)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STRE>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByVISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<ST> Value)
+        {
+            return ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out Value);
+        }
+
+        /// <summary>
+        /// Find all STRE (Student Re-Enrolment) entities by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find STRE entities</param>
+        /// <returns>A list of related STRE entities</returns>
+        public IReadOnlyList<STRE> FindSTREByST_VISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            IReadOnlyList<STRE> result;
+            if (STRE_ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STRE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STRE entities by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find STRE entities</param>
+        /// <param name="Value">A list of related STRE entities</param>
+        /// <returns>True if any STRE entities are found</returns>
+        public bool TryFindSTREByST_VISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<STRE> Value)
+        {
+            return STRE_ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out Value);
         }
 
 

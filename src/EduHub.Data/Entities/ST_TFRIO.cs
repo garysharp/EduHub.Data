@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Data Transfer Table
     /// </summary>
-    public class ST_TFRIO : EntityBase
+    public partial class ST_TFRIO : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _DEST_SCHOOL_SKGS;
@@ -86,11 +86,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [DEST_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [ST_TFRIO.DEST_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// Destination school ID
         /// </summary>
-        public SKGS DEST_SCHOOL_SKGS {
+        public SKGS DEST_SCHOOL_SKGS
+        {
             get
             {
                 if (DEST_SCHOOL != null)

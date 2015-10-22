@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contact Links
     /// </summary>
-    public class KPCL : EntityBase
+    public partial class KPCL : EntityBase
     {
 #region Navigation Property Cache
         private KPC _CONTACT_KPC;
@@ -59,11 +59,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CONTACT] => [KPC].[KPCKEY]
+        /// KPC (Contacts) related entity by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
         /// Link code
         /// </summary>
-        public KPC CONTACT_KPC {
+        public KPC CONTACT_KPC
+        {
             get
             {
                 if (CONTACT != null)
@@ -80,11 +82,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CONTACT_TYPE] => [KPCR].[KPCRKEY]
+        /// KPCR (Contact Relationship) related entity by [KPCL.CONTACT_TYPE]-&gt;[KPCR.KPCRKEY]
         /// Contact description eg:Parents, Manager
         /// </summary>
-        public KPCR CONTACT_TYPE_KPCR {
+        public KPCR CONTACT_TYPE_KPCR
+        {
             get
             {
                 if (CONTACT_TYPE != null)

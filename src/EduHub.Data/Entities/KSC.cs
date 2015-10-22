@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Positions
     /// </summary>
-    public class KSC : EntityBase
+    public partial class KSC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Position code
@@ -42,6 +39,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.POS_CODE_A]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_POS_CODE_A
+        {
+            get
+            {
+                return Context.KSC.FindSFByPOS_CODE_A(KSCKEY);
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.POS_CODE_B]-&gt;[KSC.KSCKEY]
+        /// </summary>
+        public IReadOnlyList<SF> SF_POS_CODE_B
+        {
+            get
+            {
+                return Context.KSC.FindSFByPOS_CODE_B(KSCKEY);
+            }
+        }
 #endregion
     }
 }

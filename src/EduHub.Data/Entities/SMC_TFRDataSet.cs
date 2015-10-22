@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMC Transfer Data Set
     /// </summary>
-    public sealed class SMC_TFRDataSet : SetBase<SMC_TFR>
+    public sealed partial class SMC_TFRDataSet : SetBase<SMC_TFR>
     {
+
 
         internal SMC_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

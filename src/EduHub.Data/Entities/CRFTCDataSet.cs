@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Creditor Fuel Tax Credits Data Set
     /// </summary>
-    public sealed class CRFTCDataSet : SetBase<CRFTC>
+    public sealed partial class CRFTCDataSet : SetBase<CRFTC>
     {
         private Lazy<Dictionary<string, CRFTC>> TRREFIndex;
+
 
         internal CRFTCDataSet(EduHubContext Context)
             : base(Context)
         {
             TRREFIndex = new Lazy<Dictionary<string, CRFTC>>(() => this.ToDictionary(e => e.TRREF));
+
         }
 
         /// <summary>

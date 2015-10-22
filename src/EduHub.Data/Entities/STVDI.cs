@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Dimension Results
     /// </summary>
-    public class STVDI : EntityBase
+    public partial class STVDI : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -71,11 +71,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STVDI.SKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)
@@ -92,11 +94,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [STVDI.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
         /// Year level at the time of result
         /// </summary>
-        public KCY SCHOOL_YEAR_KCY {
+        public KCY SCHOOL_YEAR_KCY
+        {
             get
             {
                 if (SCHOOL_YEAR != null)
@@ -113,11 +117,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [STVDI.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus at the time of the result
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -134,11 +140,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [VDOMAIN] => [KDO].[KDOKEY]
+        /// KDO (VELS Domains) related entity by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
         /// Link to domain
         /// </summary>
-        public KDO VDOMAIN_KDO {
+        public KDO VDOMAIN_KDO
+        {
             get
             {
                 if (VDOMAIN != null)
@@ -155,11 +163,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [VDIMENSION] => [KDI].[KDIKEY]
+        /// KDI (VELS Dimensions) related entity by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
         /// Link to dimension
         /// </summary>
-        public KDI VDIMENSION_KDI {
+        public KDI VDIMENSION_KDI
+        {
             get
             {
                 if (VDIMENSION != null)

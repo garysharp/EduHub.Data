@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Invoice Allocations
     /// </summary>
-    public class STSB : EntityBase
+    public partial class STSB : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -65,11 +65,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STSB.SKEY]-&gt;[ST.STKEY]
         /// Student key
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)
@@ -86,11 +88,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [FAMILY] => [DF].[DFKEY]
+        /// DF (Families) related entity by [STSB.FAMILY]-&gt;[DF.DFKEY]
         /// Family key
         /// </summary>
-        public DF FAMILY_DF {
+        public DF FAMILY_DF
+        {
             get
             {
                 if (FAMILY != null)
@@ -107,11 +111,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SPLIT_ITEM] => [SA].[SAKEY]
+        /// SA (Fees) related entity by [STSB.SPLIT_ITEM]-&gt;[SA.SAKEY]
         /// Item that the family pays
         /// </summary>
-        public SA SPLIT_ITEM_SA {
+        public SA SPLIT_ITEM_SA
+        {
             get
             {
                 if (SPLIT_ITEM != null)

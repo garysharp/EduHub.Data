@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Qualifications Data Set
     /// </summary>
-    public sealed class SFQADataSet : SetBase<SFQA>
+    public sealed partial class SFQADataSet : SetBase<SFQA>
     {
+
 
         internal SFQADataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

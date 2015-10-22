@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Login Log Data Set
     /// </summary>
-    public sealed class SEC_LLOGDataSet : SetBase<SEC_LLOG>
+    public sealed partial class SEC_LLOGDataSet : SetBase<SEC_LLOG>
     {
         private Lazy<Dictionary<int, SEC_LLOG>> LOGINLOGIDIndex;
+
 
         internal SEC_LLOGDataSet(EduHubContext Context)
             : base(Context)
         {
             LOGINLOGIDIndex = new Lazy<Dictionary<int, SEC_LLOG>>(() => this.ToDictionary(e => e.LOGINLOGID));
+
         }
 
         /// <summary>

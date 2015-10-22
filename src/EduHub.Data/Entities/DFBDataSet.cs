@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts Data Set
     /// </summary>
-    public sealed class DFBDataSet : SetBase<DFB>
+    public sealed partial class DFBDataSet : SetBase<DFB>
     {
         private Lazy<Dictionary<string, DFB>> REFERENCE_NOIndex;
+
 
         internal DFBDataSet(EduHubContext Context)
             : base(Context)
         {
             REFERENCE_NOIndex = new Lazy<Dictionary<string, DFB>>(() => this.ToDictionary(e => e.REFERENCE_NO));
+
         }
 
         /// <summary>

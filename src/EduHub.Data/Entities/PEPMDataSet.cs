@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Methods Data Set
     /// </summary>
-    public sealed class PEPMDataSet : SetBase<PEPM>
+    public sealed partial class PEPMDataSet : SetBase<PEPM>
     {
+
 
         internal PEPMDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

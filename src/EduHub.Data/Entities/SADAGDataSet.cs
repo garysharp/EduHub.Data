@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Absence by Cohort Aggregations Data Set
     /// </summary>
-    public sealed class SADAGDataSet : SetBase<SADAG>
+    public sealed partial class SADAGDataSet : SetBase<SADAG>
     {
         private Lazy<Dictionary<int, SADAG>> SADAG_IDIndex;
+
 
         internal SADAGDataSet(EduHubContext Context)
             : base(Context)
         {
             SADAG_IDIndex = new Lazy<Dictionary<int, SADAG>>(() => this.ToDictionary(e => e.SADAG_ID));
+
         }
 
         /// <summary>

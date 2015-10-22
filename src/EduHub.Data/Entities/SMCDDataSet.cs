@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Medication Doses Data Set
     /// </summary>
-    public sealed class SMCDDataSet : SetBase<SMCD>
+    public sealed partial class SMCDDataSet : SetBase<SMCD>
     {
+
 
         internal SMCDDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

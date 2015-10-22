@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Student Validation Data
     /// </summary>
-    public class SCEN_ASV : EntityBase
+    public partial class SCEN_ASV : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -61,9 +58,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? LUPDATED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

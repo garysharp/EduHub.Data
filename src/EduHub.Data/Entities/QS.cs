@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored SQL
     /// </summary>
-    public class QS : EntityBase
+    public partial class QS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// SQL statement ID
@@ -40,9 +37,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

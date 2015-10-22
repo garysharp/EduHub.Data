@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Task Message
     /// </summary>
-    public class KTM : EntityBase
+    public partial class KTM : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transaction ID
@@ -26,9 +23,6 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (200)]
         /// </summary>
         public string MESSAGE { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

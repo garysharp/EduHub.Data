@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Categories Tax
     /// </summary>
-    public class AKCT : EntityBase
+    public partial class AKCT : EntityBase
     {
 #region Navigation Property Cache
         private KADM _DEPN_TMETHOD_KADM;
@@ -48,11 +48,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [DEPN_TMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [AKCT.DEPN_TMETHOD]-&gt;[KADM.KADMKEY]
         /// Default deprn method for taxation
         /// </summary>
-        public KADM DEPN_TMETHOD_KADM {
+        public KADM DEPN_TMETHOD_KADM
+        {
             get
             {
                 if (DEPN_TMETHOD != null)
@@ -67,6 +69,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_TAX_CATEGORY
+        {
+            get
+            {
+                return Context.AKCT.FindARByTAX_CATEGORY(CATEGORY);
             }
         }
 #endregion

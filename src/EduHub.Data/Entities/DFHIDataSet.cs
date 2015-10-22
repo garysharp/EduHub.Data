@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family History Data Set
     /// </summary>
-    public sealed class DFHIDataSet : SetBase<DFHI>
+    public sealed partial class DFHIDataSet : SetBase<DFHI>
     {
+
 
         internal DFHIDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

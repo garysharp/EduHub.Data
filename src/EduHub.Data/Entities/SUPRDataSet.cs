@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Prerequisites Data Set
     /// </summary>
-    public sealed class SUPRDataSet : SetBase<SUPR>
+    public sealed partial class SUPRDataSet : SetBase<SUPR>
     {
+
 
         internal SUPRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

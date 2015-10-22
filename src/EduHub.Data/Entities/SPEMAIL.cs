@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report email templates
     /// </summary>
-    public class SPEMAIL : EntityBase
+    public partial class SPEMAIL : EntityBase
     {
 #region Navigation Property Cache
         private KREPORT _REPORT_KREPORT;
@@ -86,12 +86,14 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [REPORT] => [KREPORT].[KREPORTKEY]
+        /// KREPORT (Reports for emailing) related entity by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
         /// Report file name (without  extension)
         /// 
         /// </summary>
-        public KREPORT REPORT_KREPORT {
+        public KREPORT REPORT_KREPORT
+        {
             get
             {
                 if (REPORT != null)
@@ -106,6 +108,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SPEPRINT (Report file audit) related entities by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
+        /// </summary>
+        public IReadOnlyList<SPEPRINT> SPEPRINT_CODE
+        {
+            get
+            {
+                return Context.SPEMAIL.FindSPEPRINTByCODE(SPEMAILKEY);
             }
         }
 #endregion

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Room Availablity Extras Data Set
     /// </summary>
-    public sealed class SMAVDataSet : SetBase<SMAV>
+    public sealed partial class SMAVDataSet : SetBase<SMAV>
     {
+
 
         internal SMAVDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

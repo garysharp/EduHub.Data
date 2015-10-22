@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family/Student ID Sequence Numbers Data Set
     /// </summary>
-    public sealed class KNFSDataSet : SetBase<KNFS>
+    public sealed partial class KNFSDataSet : SetBase<KNFS>
     {
         private Lazy<Dictionary<string, KNFS>> KNFSKEYIndex;
+
 
         internal KNFSDataSet(EduHubContext Context)
             : base(Context)
         {
             KNFSKEYIndex = new Lazy<Dictionary<string, KNFS>>(() => this.ToDictionary(e => e.KNFSKEY));
+
         }
 
         /// <summary>

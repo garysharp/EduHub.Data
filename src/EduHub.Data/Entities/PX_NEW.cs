@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Tax Scales
     /// </summary>
-    public class PX_NEW : EntityBase
+    public partial class PX_NEW : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Tax scale number
@@ -288,9 +285,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

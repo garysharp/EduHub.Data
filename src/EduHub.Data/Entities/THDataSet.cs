@@ -8,14 +8,97 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Quilt Headers Data Set
     /// </summary>
-    public sealed class THDataSet : SetBase<TH>
+    public sealed partial class THDataSet : SetBase<TH>
     {
         private Lazy<Dictionary<string, TH>> THKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<KCC>>> KCC_CURRENT_QUILTForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SCI>>> SCI_CURRENT_QUILTForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SCL>>> SCL_QUILTForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SFAQ>>> SFAQ_QKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SMAQ>>> SMAQ_QKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<TCTD>>> TCTD_QKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<TCTQ>>> TCTQ_QKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<THTN>>> THTN_QKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<THTQ>>> THTQ_QKEYForeignIndex;
 
         internal THDataSet(EduHubContext Context)
             : base(Context)
         {
             THKEYIndex = new Lazy<Dictionary<string, TH>>(() => this.ToDictionary(e => e.THKEY));
+
+            KCC_CURRENT_QUILTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<KCC>>>(() =>
+                    Context.KCC
+                          .Where(e => e.CURRENT_QUILT != null)
+                          .GroupBy(e => e.CURRENT_QUILT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KCC>)g.ToList()
+                          .AsReadOnly()));
+
+            SCI_CURRENT_QUILTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SCI>>>(() =>
+                    Context.SCI
+                          .Where(e => e.CURRENT_QUILT != null)
+                          .GroupBy(e => e.CURRENT_QUILT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
+                          .AsReadOnly()));
+
+            SCL_QUILTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SCL>>>(() =>
+                    Context.SCL
+                          .Where(e => e.QUILT != null)
+                          .GroupBy(e => e.QUILT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCL>)g.ToList()
+                          .AsReadOnly()));
+
+            SFAQ_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SFAQ>>>(() =>
+                    Context.SFAQ
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SFAQ>)g.ToList()
+                          .AsReadOnly()));
+
+            SMAQ_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SMAQ>>>(() =>
+                    Context.SMAQ
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMAQ>)g.ToList()
+                          .AsReadOnly()));
+
+            TCTD_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<TCTD>>>(() =>
+                    Context.TCTD
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TCTD>)g.ToList()
+                          .AsReadOnly()));
+
+            TCTQ_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<TCTQ>>>(() =>
+                    Context.TCTQ
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TCTQ>)g.ToList()
+                          .AsReadOnly()));
+
+            THTN_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<THTN>>>(() =>
+                    Context.THTN
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<THTN>)g.ToList()
+                          .AsReadOnly()));
+
+            THTQ_QKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<THTQ>>>(() =>
+                    Context.THTQ
+                          .Where(e => e.QKEY != null)
+                          .GroupBy(e => e.QKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<THTQ>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +152,267 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all KCC (Calendar Dates for Absences) entities by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find KCC entities</param>
+        /// <returns>A list of related KCC entities</returns>
+        public IReadOnlyList<KCC> FindKCCByCURRENT_QUILT(string THKEY)
+        {
+            IReadOnlyList<KCC> result;
+            if (KCC_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<KCC>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all KCC entities by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find KCC entities</param>
+        /// <param name="Value">A list of related KCC entities</param>
+        /// <returns>True if any KCC entities are found</returns>
+        public bool TryFindKCCByCURRENT_QUILT(string THKEY, out IReadOnlyList<KCC> Value)
+        {
+            return KCC_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SCI (School Information) entities by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SCI entities</param>
+        /// <returns>A list of related SCI entities</returns>
+        public IReadOnlyList<SCI> FindSCIByCURRENT_QUILT(string THKEY)
+        {
+            IReadOnlyList<SCI> result;
+            if (SCI_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCI entities by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SCI entities</param>
+        /// <param name="Value">A list of related SCI entities</param>
+        /// <returns>True if any SCI entities are found</returns>
+        public bool TryFindSCIByCURRENT_QUILT(string THKEY, out IReadOnlyList<SCI> Value)
+        {
+            return SCI_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SCL (Subject Classes) entities by [SCL.QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SCL entities</param>
+        /// <returns>A list of related SCL entities</returns>
+        public IReadOnlyList<SCL> FindSCLByQUILT(string THKEY)
+        {
+            IReadOnlyList<SCL> result;
+            if (SCL_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCL>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCL entities by [SCL.QUILT]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SCL entities</param>
+        /// <param name="Value">A list of related SCL entities</param>
+        /// <returns>True if any SCL entities are found</returns>
+        public bool TryFindSCLByQUILT(string THKEY, out IReadOnlyList<SCL> Value)
+        {
+            return SCL_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SFAQ (Staff Availability in Quilt) entities by [SFAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SFAQ entities</param>
+        /// <returns>A list of related SFAQ entities</returns>
+        public IReadOnlyList<SFAQ> FindSFAQByQKEY(string THKEY)
+        {
+            IReadOnlyList<SFAQ> result;
+            if (SFAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SFAQ>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SFAQ entities by [SFAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SFAQ entities</param>
+        /// <param name="Value">A list of related SFAQ entities</param>
+        /// <returns>True if any SFAQ entities are found</returns>
+        public bool TryFindSFAQByQKEY(string THKEY, out IReadOnlyList<SFAQ> Value)
+        {
+            return SFAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SMAQ (Room Availability in Quilt) entities by [SMAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SMAQ entities</param>
+        /// <returns>A list of related SMAQ entities</returns>
+        public IReadOnlyList<SMAQ> FindSMAQByQKEY(string THKEY)
+        {
+            IReadOnlyList<SMAQ> result;
+            if (SMAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SMAQ>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SMAQ entities by [SMAQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find SMAQ entities</param>
+        /// <param name="Value">A list of related SMAQ entities</param>
+        /// <returns>True if any SMAQ entities are found</returns>
+        public bool TryFindSMAQByQKEY(string THKEY, out IReadOnlyList<SMAQ> Value)
+        {
+            return SMAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all TCTD (Calendar Period Information) entities by [TCTD.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TCTD entities</param>
+        /// <returns>A list of related TCTD entities</returns>
+        public IReadOnlyList<TCTD> FindTCTDByQKEY(string THKEY)
+        {
+            IReadOnlyList<TCTD> result;
+            if (TCTD_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TCTD>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TCTD entities by [TCTD.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TCTD entities</param>
+        /// <param name="Value">A list of related TCTD entities</param>
+        /// <returns>True if any TCTD entities are found</returns>
+        public bool TryFindTCTDByQKEY(string THKEY, out IReadOnlyList<TCTD> Value)
+        {
+            return TCTD_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all TCTQ (Calendar Class Information) entities by [TCTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TCTQ entities</param>
+        /// <returns>A list of related TCTQ entities</returns>
+        public IReadOnlyList<TCTQ> FindTCTQByQKEY(string THKEY)
+        {
+            IReadOnlyList<TCTQ> result;
+            if (TCTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TCTQ>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TCTQ entities by [TCTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TCTQ entities</param>
+        /// <param name="Value">A list of related TCTQ entities</param>
+        /// <returns>True if any TCTQ entities are found</returns>
+        public bool TryFindTCTQByQKEY(string THKEY, out IReadOnlyList<TCTQ> Value)
+        {
+            return TCTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all THTN (Timetable Labels) entities by [THTN.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find THTN entities</param>
+        /// <returns>A list of related THTN entities</returns>
+        public IReadOnlyList<THTN> FindTHTNByQKEY(string THKEY)
+        {
+            IReadOnlyList<THTN> result;
+            if (THTN_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<THTN>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all THTN entities by [THTN.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find THTN entities</param>
+        /// <param name="Value">A list of related THTN entities</param>
+        /// <returns>True if any THTN entities are found</returns>
+        public bool TryFindTHTNByQKEY(string THKEY, out IReadOnlyList<THTN> Value)
+        {
+            return THTN_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all THTQ (Timetable Quilt Entries) entities by [THTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find THTQ entities</param>
+        /// <returns>A list of related THTQ entities</returns>
+        public IReadOnlyList<THTQ> FindTHTQByQKEY(string THKEY)
+        {
+            IReadOnlyList<THTQ> result;
+            if (THTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<THTQ>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all THTQ entities by [THTQ.QKEY]-&gt;[TH.THKEY]
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find THTQ entities</param>
+        /// <param name="Value">A list of related THTQ entities</param>
+        /// <returns>True if any THTQ entities are found</returns>
+        public bool TryFindTHTQByQKEY(string THKEY, out IReadOnlyList<THTQ> Value)
+        {
+            return THTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
         }
 
 

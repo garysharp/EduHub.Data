@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Doctors Data Set
     /// </summary>
-    public sealed class KCDDataSet : SetBase<KCD>
+    public sealed partial class KCDDataSet : SetBase<KCD>
     {
         private Lazy<Dictionary<string, KCD>> KCDKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<DF>>> DF_DOCTORForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_DOCTORForeignIndex;
 
         internal KCDDataSet(EduHubContext Context)
             : base(Context)
         {
             KCDKEYIndex = new Lazy<Dictionary<string, KCD>>(() => this.ToDictionary(e => e.KCDKEY));
+
+            DF_DOCTORForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DF>>>(() =>
+                    Context.DF
+                          .Where(e => e.DOCTOR != null)
+                          .GroupBy(e => e.DOCTOR)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DF>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_DOCTORForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.DOCTOR != null)
+                          .GroupBy(e => e.DOCTOR)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all DF (Families) entities by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find DF entities</param>
+        /// <returns>A list of related DF entities</returns>
+        public IReadOnlyList<DF> FindDFByDOCTOR(string KCDKEY)
+        {
+            IReadOnlyList<DF> result;
+            if (DF_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DF entities by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find DF entities</param>
+        /// <param name="Value">A list of related DF entities</param>
+        /// <returns>True if any DF entities are found</returns>
+        public bool TryFindDFByDOCTOR(string KCDKEY, out IReadOnlyList<DF> Value)
+        {
+            return DF_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByDOCTOR(string KCDKEY)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByDOCTOR(string KCDKEY, out IReadOnlyList<ST> Value)
+        {
+            return ST_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out Value);
         }
 
 

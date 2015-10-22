@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SP2 dummy table Data Set
     /// </summary>
-    public sealed class GLFBUDGDataSet : SetBase<GLFBUDG>
+    public sealed partial class GLFBUDGDataSet : SetBase<GLFBUDG>
     {
+
 
         internal GLFBUDGDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

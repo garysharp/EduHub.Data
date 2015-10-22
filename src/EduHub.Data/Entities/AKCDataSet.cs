@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Categories Data Set
     /// </summary>
-    public sealed class AKCDataSet : SetBase<AKC>
+    public sealed partial class AKCDataSet : SetBase<AKC>
     {
         private Lazy<Dictionary<string, AKC>> CATEGORYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_CATEGORYForeignIndex;
 
         internal AKCDataSet(EduHubContext Context)
             : base(Context)
         {
             CATEGORYIndex = new Lazy<Dictionary<string, AKC>>(() => this.ToDictionary(e => e.CATEGORY));
+
+            AR_CATEGORYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.CATEGORY != null)
+                          .GroupBy(e => e.CATEGORY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.CATEGORY]-&gt;[AKC.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByCATEGORY(string CATEGORY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.CATEGORY]-&gt;[AKC.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByCATEGORY(string CATEGORY, out IReadOnlyList<AR> Value)
+        {
+            return AR_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out Value);
         }
 
 

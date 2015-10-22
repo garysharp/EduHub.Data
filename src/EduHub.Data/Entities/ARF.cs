@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Financial Transactions
     /// </summary>
-    public class ARF : EntityBase
+    public partial class ARF : EntityBase
     {
 #region Navigation Property Cache
         private AR _CODE_AR;
@@ -386,11 +386,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [AR].[ARKEY]
+        /// AR (Assets) related entity by [ARF.CODE]-&gt;[AR.ARKEY]
         /// Asset code
         /// </summary>
-        public AR CODE_AR {
+        public AR CODE_AR
+        {
             get
             {
                 if (CODE != null)
@@ -407,11 +409,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [ARF.BSB]-&gt;[KAB.BSB]
         /// Cheque BSB number
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -428,11 +432,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GST_TYPE] => [KGST].[KGSTKEY]
+        /// KGST (GST Percentages) related entity by [ARF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// Relate to KGST
         /// </summary>
-        public KGST GST_TYPE_KGST {
+        public KGST GST_TYPE_KGST
+        {
             get
             {
                 if (GST_TYPE != null)
@@ -449,11 +455,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [ARF.AMETHOD]-&gt;[KADM.KADMKEY]
         /// Method of depreciation
         /// </summary>
-        public KADM AMETHOD_KADM {
+        public KADM AMETHOD_KADM
+        {
             get
             {
                 if (AMETHOD != null)
@@ -470,11 +478,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TMETHOD] => [KADM].[KADMKEY]
+        /// KADM (Asset Depreciation Methods) related entity by [ARF.TMETHOD]-&gt;[KADM.KADMKEY]
         /// Method of depreciation
         /// </summary>
-        public KADM TMETHOD_KADM {
+        public KADM TMETHOD_KADM
+        {
             get
             {
                 if (TMETHOD != null)
@@ -491,11 +501,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [ARF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -512,11 +524,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [ARF.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -533,11 +547,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [RELEASE_TYPE] => [AKR].[AKRKEY]
+        /// AKR (Asset Release Types) related entity by [ARF.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
         /// Asset Release Type
         /// </summary>
-        public AKR RELEASE_TYPE_AKR {
+        public AKR RELEASE_TYPE_AKR
+        {
             get
             {
                 if (RELEASE_TYPE != null)
@@ -554,11 +570,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [LOCATION] => [AKL].[LOCATION]
+        /// AKL (Assets - Locations) related entity by [ARF.LOCATION]-&gt;[AKL.LOCATION]
         /// Asset location
         /// </summary>
-        public AKL LOCATION_AKL {
+        public AKL LOCATION_AKL
+        {
             get
             {
                 if (LOCATION != null)

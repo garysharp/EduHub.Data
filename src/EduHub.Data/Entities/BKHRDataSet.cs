@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Book Hire Records Data Set
     /// </summary>
-    public sealed class BKHRDataSet : SetBase<BKHR>
+    public sealed partial class BKHRDataSet : SetBase<BKHR>
     {
+
 
         internal BKHRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

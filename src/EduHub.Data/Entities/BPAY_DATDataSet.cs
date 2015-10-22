@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPay Data Data Set
     /// </summary>
-    public sealed class BPAY_DATDataSet : SetBase<BPAY_DAT>
+    public sealed partial class BPAY_DATDataSet : SetBase<BPAY_DAT>
     {
         private Lazy<Dictionary<int, BPAY_DAT>> TIDIndex;
+
 
         internal BPAY_DATDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, BPAY_DAT>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

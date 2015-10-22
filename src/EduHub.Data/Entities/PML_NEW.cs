@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Medicare Levy Parameters
     /// </summary>
-    public class PML_NEW : EntityBase
+    public partial class PML_NEW : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Tax scale
@@ -65,9 +62,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

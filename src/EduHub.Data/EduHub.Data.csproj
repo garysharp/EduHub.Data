@@ -141,12 +141,14 @@
     <Compile Include="Entities\CRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CRHelpers.cs" />
     <Compile Include="Entities\CRF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\CRFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CRFHelpers.cs" />
     <Compile Include="Entities\CRFTC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -165,6 +167,7 @@
     <Compile Include="Entities\DFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\DFHelpers.cs" />
     <Compile Include="Entities\DFF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -252,6 +255,7 @@
     <Compile Include="Entities\GLBUDGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\GLBUDGHelpers.cs" />
     <Compile Include="Entities\GLCF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -267,6 +271,8 @@
     <Compile Include="Entities\GLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\GLFHelpers.cs" />
+    <Compile Include="Entities\GLHelpers.cs" />
     <Compile Include="Entities\GLF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -417,6 +423,7 @@
     <Compile Include="Entities\KCYDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KCYHelpers.cs" />
     <Compile Include="Entities\KDELETE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -459,6 +466,7 @@
     <Compile Include="Entities\KGCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGCHelpers.cs" />
     <Compile Include="Entities\KGCHI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -483,12 +491,14 @@
     <Compile Include="Entities\KGHDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGHHelpers.cs" />
     <Compile Include="Entities\KGL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KGLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGLHelpers.cs" />
     <Compile Include="Entities\KGLINIT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -501,24 +511,28 @@
     <Compile Include="Entities\KGLPROGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGLPROGHelpers.cs" />
     <Compile Include="Entities\KGLSUB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KGLSUBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGLSUBHelpers.cs" />
     <Compile Include="Entities\KGLT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KGLTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGLTHelpers.cs" />
     <Compile Include="Entities\KGR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KGRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGRHelpers.cs" />
     <Compile Include="Entities\KGST.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -531,6 +545,7 @@
     <Compile Include="Entities\KGTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGTHelpers.cs" />
     <Compile Include="Entities\KGW.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1077,6 +1092,7 @@
     <Compile Include="Entities\SCIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SCIHelpers.cs" />
     <Compile Include="Entities\SCL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1174,6 +1190,7 @@
     <Compile Include="Entities\SFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SFHelpers.cs" />
     <Compile Include="Entities\SFQA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1252,6 +1269,7 @@
     <Compile Include="Entities\SKGSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SKGSHelpers.cs" />
     <Compile Include="Entities\SK_HRMS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1378,6 +1396,7 @@
     <Compile Include="Entities\STDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\STHelpers.cs" />
     <Compile Include="Entities\STMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1660,6 +1679,7 @@
     <Compile Include="Entities\UMDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\UMHelpers.cs" />
     <Compile Include="Entities\UM_TFR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>

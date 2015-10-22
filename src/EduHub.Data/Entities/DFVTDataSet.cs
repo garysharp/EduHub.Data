@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Voluntary Transactions Data Set
     /// </summary>
-    public sealed class DFVTDataSet : SetBase<DFVT>
+    public sealed partial class DFVTDataSet : SetBase<DFVT>
     {
+
 
         internal DFVTDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

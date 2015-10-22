@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee History Data Set
     /// </summary>
-    public sealed class PEPYDataSet : SetBase<PEPY>
+    public sealed partial class PEPYDataSet : SetBase<PEPY>
     {
+
 
         internal PEPYDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Multiple Day Absences
     /// </summary>
-    public class STRA : EntityBase
+    public partial class STRA : EntityBase
     {
 #region Navigation Property Cache
         private ST _STKEY_ST;
@@ -79,11 +79,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STRA.STKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STKEY_ST {
+        public ST STKEY_ST
+        {
             get
             {
                 if (STKEY != null)
@@ -100,11 +102,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ABS_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [STRA.ABS_TYPE]-&gt;[KCT.KCTKEY]
         /// Type of absence if known
         /// </summary>
-        public KCT ABS_TYPE_KCT {
+        public KCT ABS_TYPE_KCT
+        {
             get
             {
                 if (ABS_TYPE.HasValue)

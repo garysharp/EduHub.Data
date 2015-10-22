@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Payroll Transactions Data Set
     /// </summary>
-    public sealed class PEFDataSet : SetBase<PEF>
+    public sealed partial class PEFDataSet : SetBase<PEF>
     {
+
 
         internal PEFDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

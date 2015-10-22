@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Categories Tax Data Set
     /// </summary>
-    public sealed class AKCTDataSet : SetBase<AKCT>
+    public sealed partial class AKCTDataSet : SetBase<AKCT>
     {
         private Lazy<Dictionary<string, AKCT>> CATEGORYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_TAX_CATEGORYForeignIndex;
 
         internal AKCTDataSet(EduHubContext Context)
             : base(Context)
         {
             CATEGORYIndex = new Lazy<Dictionary<string, AKCT>>(() => this.ToDictionary(e => e.CATEGORY));
+
+            AR_TAX_CATEGORYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.TAX_CATEGORY != null)
+                          .GroupBy(e => e.TAX_CATEGORY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByTAX_CATEGORY(string CATEGORY)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_TAX_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByTAX_CATEGORY(string CATEGORY, out IReadOnlyList<AR> Value)
+        {
+            return AR_TAX_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out Value);
         }
 
 

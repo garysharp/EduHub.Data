@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Payroll Groups Data Set
     /// </summary>
-    public sealed class PNDataSet : SetBase<PN>
+    public sealed partial class PNDataSet : SetBase<PN>
     {
         private Lazy<Dictionary<short, PN>> PNKEYIndex;
+
+        private Lazy<Dictionary<short, IReadOnlyList<PE>>> PE_PAYCODEForeignIndex;
 
         internal PNDataSet(EduHubContext Context)
             : base(Context)
         {
             PNKEYIndex = new Lazy<Dictionary<short, PN>>(() => this.ToDictionary(e => e.PNKEY));
+
+            PE_PAYCODEForeignIndex =
+                new Lazy<Dictionary<short, IReadOnlyList<PE>>>(() =>
+                    Context.PE
+                          .Where(e => e.PAYCODE != null)
+                          .GroupBy(e => e.PAYCODE.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PE (Employees) entities by [PE.PAYCODE]-&gt;[PN.PNKEY]
+        /// </summary>
+        /// <param name="PNKEY">PNKEY value used to find PE entities</param>
+        /// <returns>A list of related PE entities</returns>
+        public IReadOnlyList<PE> FindPEByPAYCODE(short PNKEY)
+        {
+            IReadOnlyList<PE> result;
+            if (PE_PAYCODEForeignIndex.Value.TryGetValue(PNKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PE entities by [PE.PAYCODE]-&gt;[PN.PNKEY]
+        /// </summary>
+        /// <param name="PNKEY">PNKEY value used to find PE entities</param>
+        /// <param name="Value">A list of related PE entities</param>
+        /// <returns>True if any PE entities are found</returns>
+        public bool TryFindPEByPAYCODE(short PNKEY, out IReadOnlyList<PE> Value)
+        {
+            return PE_PAYCODEForeignIndex.Value.TryGetValue(PNKEY, out Value);
         }
 
 

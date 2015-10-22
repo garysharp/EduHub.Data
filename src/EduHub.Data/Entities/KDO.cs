@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Domains
     /// </summary>
-    public class KDO : EntityBase
+    public partial class KDO : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Key of the domain
@@ -43,6 +40,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// STVDI (VELS Dimension Results) related entities by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        public IReadOnlyList<STVDI> STVDI_VDOMAIN
+        {
+            get
+            {
+                return Context.KDO.FindSTVDIByVDOMAIN(KDOKEY);
+            }
+        }
+
+        /// <summary>
+        /// STVDO (VELS Domain Results) related entities by [STVDO.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// </summary>
+        public IReadOnlyList<STVDO> STVDO_VDOMAIN
+        {
+            get
+            {
+                return Context.KDO.FindSTVDOByVDOMAIN(KDOKEY);
+            }
+        }
 #endregion
     }
 }

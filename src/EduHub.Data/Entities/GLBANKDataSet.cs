@@ -8,16 +8,27 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account Details Data Set
     /// </summary>
-    public sealed class GLBANKDataSet : SetBase<GLBANK>
+    public sealed partial class GLBANKDataSet : SetBase<GLBANK>
     {
         private Lazy<Dictionary<string, GLBANK>> GLCODEIndex;
         private Lazy<Dictionary<int, GLBANK>> GLBANKKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>> GLFBANK_CODEForeignIndex;
 
         internal GLBANKDataSet(EduHubContext Context)
             : base(Context)
         {
             GLCODEIndex = new Lazy<Dictionary<string, GLBANK>>(() => this.ToDictionary(e => e.GLCODE));
             GLBANKKEYIndex = new Lazy<Dictionary<int, GLBANK>>(() => this.ToDictionary(e => e.GLBANKKEY));
+
+            GLFBANK_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>>(() =>
+                    Context.GLFBANK
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFBANK>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -119,6 +130,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all GLFBANK (Financial Commitments) entities by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find GLFBANK entities</param>
+        /// <returns>A list of related GLFBANK entities</returns>
+        public IReadOnlyList<GLFBANK> FindGLFBANKByCODE(string GLCODE)
+        {
+            IReadOnlyList<GLFBANK> result;
+            if (GLFBANK_CODEForeignIndex.Value.TryGetValue(GLCODE, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<GLFBANK>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all GLFBANK entities by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find GLFBANK entities</param>
+        /// <param name="Value">A list of related GLFBANK entities</param>
+        /// <returns>True if any GLFBANK entities are found</returns>
+        public bool TryFindGLFBANKByCODE(string GLCODE, out IReadOnlyList<GLFBANK> Value)
+        {
+            return GLFBANK_CODEForeignIndex.Value.TryGetValue(GLCODE, out Value);
         }
 
 

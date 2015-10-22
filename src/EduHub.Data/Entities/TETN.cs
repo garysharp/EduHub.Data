@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Event Attendees
     /// </summary>
-    public class TETN : EntityBase
+    public partial class TETN : EntityBase
     {
 #region Navigation Property Cache
         private TE _TETNKEY_TE;
@@ -56,11 +56,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TETNKEY] => [TE].[TEKEY]
+        /// TE (Calendar Events) related entity by [TETN.TETNKEY]-&gt;[TE.TEKEY]
         /// Event number
         /// </summary>
-        public TE TETNKEY_TE {
+        public TE TETNKEY_TE
+        {
             get
             {
                 if (TETNKEY.HasValue)

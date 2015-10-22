@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Management Group
     /// </summary>
-    public class PLG : EntityBase
+    public partial class PLG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Leave Group Identifier
@@ -51,6 +48,39 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        public IReadOnlyList<PE> PE_LEAVE_GROUP
+        {
+            get
+            {
+                return Context.PLG.FindPEByLEAVE_GROUP(LEAVE_GROUP);
+            }
+        }
+
+        /// <summary>
+        /// PILI (Pay Item Leave Items) related entities by [PILI.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        public IReadOnlyList<PILI> PILI_LEAVE_GROUP
+        {
+            get
+            {
+                return Context.PLG.FindPILIByLEAVE_GROUP(LEAVE_GROUP);
+            }
+        }
+
+        /// <summary>
+        /// PLT (Leave Group Types) related entities by [PLT.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
+        /// </summary>
+        public IReadOnlyList<PLT> PLT_LEAVE_GROUP
+        {
+            get
+            {
+                return Context.PLG.FindPLTByLEAVE_GROUP(LEAVE_GROUP);
+            }
+        }
 #endregion
     }
 }

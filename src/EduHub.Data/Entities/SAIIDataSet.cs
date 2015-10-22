@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvement Injuries Data Set
     /// </summary>
-    public sealed class SAIIDataSet : SetBase<SAII>
+    public sealed partial class SAIIDataSet : SetBase<SAII>
     {
+
 
         internal SAIIDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

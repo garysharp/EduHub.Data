@@ -8,14 +8,88 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Families Data Set
     /// </summary>
-    public sealed class DFDataSet : SetBase<DF>
+    public sealed partial class DFDataSet : SetBase<DF>
     {
         private Lazy<Dictionary<string, DF>> DFKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<DFB>>> DFB_FAM_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> DFF_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<DFHI>>> DFHI_FKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<DFVT>>> DFVT_FAMILYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMILYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMBForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMCForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<STSB>>> STSB_FAMILYForeignIndex;
 
         internal DFDataSet(EduHubContext Context)
             : base(Context)
         {
             DFKEYIndex = new Lazy<Dictionary<string, DF>>(() => this.ToDictionary(e => e.DFKEY));
+
+            DFB_FAM_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DFB>>>(() =>
+                    Context.DFB
+                          .Where(e => e.FAM_CODE != null)
+                          .GroupBy(e => e.FAM_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFB>)g.ToList()
+                          .AsReadOnly()));
+
+            DFF_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() =>
+                    Context.DFF
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFF>)g.ToList()
+                          .AsReadOnly()));
+
+            DFHI_FKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DFHI>>>(() =>
+                    Context.DFHI
+                          .Where(e => e.FKEY != null)
+                          .GroupBy(e => e.FKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFHI>)g.ToList()
+                          .AsReadOnly()));
+
+            DFVT_FAMILYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DFVT>>>(() =>
+                    Context.DFVT
+                          .Where(e => e.FAMILY != null)
+                          .GroupBy(e => e.FAMILY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFVT>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_FAMILYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.FAMILY != null)
+                          .GroupBy(e => e.FAMILY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_FAMBForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.FAMB != null)
+                          .GroupBy(e => e.FAMB)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_FAMCForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.FAMC != null)
+                          .GroupBy(e => e.FAMC)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
+            STSB_FAMILYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<STSB>>>(() =>
+                    Context.STSB
+                          .Where(e => e.FAMILY != null)
+                          .GroupBy(e => e.FAMILY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STSB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +143,238 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all DFB (BPAY Receipts) entities by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFB entities</param>
+        /// <returns>A list of related DFB entities</returns>
+        public IReadOnlyList<DFB> FindDFBByFAM_CODE(string DFKEY)
+        {
+            IReadOnlyList<DFB> result;
+            if (DFB_FAM_CODEForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DFB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DFB entities by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFB entities</param>
+        /// <param name="Value">A list of related DFB entities</param>
+        /// <returns>True if any DFB entities are found</returns>
+        public bool TryFindDFBByFAM_CODE(string DFKEY, out IReadOnlyList<DFB> Value)
+        {
+            return DFB_FAM_CODEForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all DFF (Family Financial Transactions) entities by [DFF.CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFF entities</param>
+        /// <returns>A list of related DFF entities</returns>
+        public IReadOnlyList<DFF> FindDFFByCODE(string DFKEY)
+        {
+            IReadOnlyList<DFF> result;
+            if (DFF_CODEForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DFF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DFF entities by [DFF.CODE]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFF entities</param>
+        /// <param name="Value">A list of related DFF entities</param>
+        /// <returns>True if any DFF entities are found</returns>
+        public bool TryFindDFFByCODE(string DFKEY, out IReadOnlyList<DFF> Value)
+        {
+            return DFF_CODEForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all DFHI (Family History) entities by [DFHI.FKEY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFHI entities</param>
+        /// <returns>A list of related DFHI entities</returns>
+        public IReadOnlyList<DFHI> FindDFHIByFKEY(string DFKEY)
+        {
+            IReadOnlyList<DFHI> result;
+            if (DFHI_FKEYForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DFHI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DFHI entities by [DFHI.FKEY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFHI entities</param>
+        /// <param name="Value">A list of related DFHI entities</param>
+        /// <returns>True if any DFHI entities are found</returns>
+        public bool TryFindDFHIByFKEY(string DFKEY, out IReadOnlyList<DFHI> Value)
+        {
+            return DFHI_FKEYForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all DFVT (Family Voluntary Transactions) entities by [DFVT.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFVT entities</param>
+        /// <returns>A list of related DFVT entities</returns>
+        public IReadOnlyList<DFVT> FindDFVTByFAMILY(string DFKEY)
+        {
+            IReadOnlyList<DFVT> result;
+            if (DFVT_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DFVT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DFVT entities by [DFVT.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DFVT entities</param>
+        /// <param name="Value">A list of related DFVT entities</param>
+        /// <returns>True if any DFVT entities are found</returns>
+        public bool TryFindDFVTByFAMILY(string DFKEY, out IReadOnlyList<DFVT> Value)
+        {
+            return DFVT_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByFAMILY(string DFKEY)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByFAMILY(string DFKEY, out IReadOnlyList<ST> Value)
+        {
+            return ST_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.FAMB]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByFAMB(string DFKEY)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_FAMBForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.FAMB]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByFAMB(string DFKEY, out IReadOnlyList<ST> Value)
+        {
+            return ST_FAMBForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.FAMC]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByFAMC(string DFKEY)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_FAMCForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.FAMC]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByFAMC(string DFKEY, out IReadOnlyList<ST> Value)
+        {
+            return ST_FAMCForeignIndex.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all STSB (Family Invoice Allocations) entities by [STSB.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find STSB entities</param>
+        /// <returns>A list of related STSB entities</returns>
+        public IReadOnlyList<STSB> FindSTSBByFAMILY(string DFKEY)
+        {
+            IReadOnlyList<STSB> result;
+            if (STSB_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<STSB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all STSB entities by [STSB.FAMILY]-&gt;[DF.DFKEY]
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find STSB entities</param>
+        /// <param name="Value">A list of related STSB entities</param>
+        /// <returns>True if any STSB entities are found</returns>
+        public bool TryFindSTSBByFAMILY(string DFKEY, out IReadOnlyList<STSB> Value)
+        {
+            return STSB_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
         }
 
 

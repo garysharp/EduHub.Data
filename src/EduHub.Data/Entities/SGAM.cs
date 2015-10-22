@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members
     /// </summary>
-    public class SGAM : EntityBase
+    public partial class SGAM : EntityBase
     {
 #region Navigation Property Cache
         private SG _SGAMKEY_SG;
@@ -86,11 +86,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SGAMKEY] => [SG].[SGKEY]
+        /// SG (Student Groupings) related entity by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
         /// Code of Group/Excursion/Position to which this person belongs
         /// </summary>
-        public SG SGAMKEY_SG {
+        public SG SGAMKEY_SG
+        {
             get
             {
                 if (SGAMKEY != null)

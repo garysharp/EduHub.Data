@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Steps or Pay Class
     /// </summary>
-    public class PS : EntityBase
+    public partial class PS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Pay Step or Pay Class code
@@ -79,6 +76,50 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PEF (Payroll Transactions) related entities by [PEF.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        public IReadOnlyList<PEF> PEF_PAY_STEP
+        {
+            get
+            {
+                return Context.PS.FindPEFByPAY_STEP(PSKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEFH (Payroll Transaction History) related entities by [PEFH.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        public IReadOnlyList<PEFH> PEFH_PAY_STEP
+        {
+            get
+            {
+                return Context.PS.FindPEFHByPAY_STEP(PSKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPS (Standard and Last Pays) related entities by [PEPS.PAY_STEP]-&gt;[PS.PSKEY]
+        /// </summary>
+        public IReadOnlyList<PEPS> PEPS_PAY_STEP
+        {
+            get
+            {
+                return Context.PS.FindPEPSByPAY_STEP(PSKEY);
+            }
+        }
+
+        /// <summary>
+        /// PSF (Future Pay Steps or Pay Class) related entities by [PSF.PSKEY]-&gt;[PS.PSKEY]
+        /// </summary>
+        public IReadOnlyList<PSF> PSF_PSKEY
+        {
+            get
+            {
+                return Context.PS.FindPSFByPSKEY(PSKEY);
+            }
+        }
 #endregion
     }
 }

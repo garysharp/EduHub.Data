@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Prerequisites
     /// </summary>
-    public class SUPR : EntityBase
+    public partial class SUPR : EntityBase
     {
 #region Navigation Property Cache
         private SU _SUPRKEY_SU;
@@ -49,11 +49,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SUPRKEY] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SUPR.SUPRKEY]-&gt;[SU.SUKEY]
         /// Subject code of this subject
         /// </summary>
-        public SU SUPRKEY_SU {
+        public SU SUPRKEY_SU
+        {
             get
             {
                 if (SUPRKEY != null)
@@ -70,11 +72,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PREREQUISITE] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [SUPR.PREREQUISITE]-&gt;[SU.SUKEY]
         /// Subject code of this subject's prerequisite
         /// </summary>
-        public SU PREREQUISITE_SU {
+        public SU PREREQUISITE_SU
+        {
             get
             {
                 if (PREREQUISITE != null)

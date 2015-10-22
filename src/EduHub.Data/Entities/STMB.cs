@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Merit Behaviour Details
     /// </summary>
-    public class STMB : EntityBase
+    public partial class STMB : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -88,11 +88,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STMB.SKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)
@@ -109,11 +111,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [B_CODE] => [KCB].[KCBKEY]
+        /// KCB (Behaviour Classifications) related entity by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
         /// Behaviour code
         /// </summary>
-        public KCB B_CODE_KCB {
+        public KCB B_CODE_KCB
+        {
             get
             {
                 if (B_CODE != null)
@@ -130,11 +134,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AWARD] => [KGW].[AWARD]
+        /// KGW (Awards and Prizes) related entity by [STMB.AWARD]-&gt;[KGW.AWARD]
         /// Award code
         /// </summary>
-        public KGW AWARD_KGW {
+        public KGW AWARD_KGW
+        {
             get
             {
                 if (AWARD != null)

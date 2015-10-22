@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Meetings
     /// </summary>
-    public class SCAM : EntityBase
+    public partial class SCAM : EntityBase
     {
 #region Navigation Property Cache
         private SCA _SCAMKEY_SCA;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SCAMKEY] => [SCA].[SCAKEY]
+        /// SCA (School Associations) related entity by [SCAM.SCAMKEY]-&gt;[SCA.SCAKEY]
         /// Short name of association
         /// </summary>
-        public SCA SCAMKEY_SCA {
+        public SCA SCAMKEY_SCA
+        {
             get
             {
                 if (SCAMKEY != null)
@@ -88,11 +90,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MEETING_LOCATION] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SCAM.MEETING_LOCATION]-&gt;[SCI.SCIKEY]
         /// (Was MEET_LOCATION) Campus where meeting is held
         /// </summary>
-        public SCI MEETING_LOCATION_SCI {
+        public SCI MEETING_LOCATION_SCI
+        {
             get
             {
                 if (MEETING_LOCATION.HasValue)
@@ -109,11 +113,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MEETING_ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [SCAM.MEETING_ROOM]-&gt;[SM.ROOM]
         /// (Was MEET_ROOM) Room where meeting is held
         /// </summary>
-        public SM MEETING_ROOM_SM {
+        public SM MEETING_ROOM_SM
+        {
             get
             {
                 if (MEETING_ROOM != null)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvement Injuries
     /// </summary>
-    public class SAII : EntityBase
+    public partial class SAII : EntityBase
     {
 #region Navigation Property Cache
         private SAI _INVOLVEMENTID_SAI;
@@ -58,11 +58,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [INVOLVEMENTID] => [SAI].[SAIKEY]
+        /// SAI (Accident Involvements/Sickbay Visits) related entity by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
         /// Sequence no of accident involvement
         /// </summary>
-        public SAI INVOLVEMENTID_SAI {
+        public SAI INVOLVEMENTID_SAI
+        {
             get
             {
                 if (INVOLVEMENTID.HasValue)

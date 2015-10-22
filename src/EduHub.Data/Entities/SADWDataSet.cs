@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Witnesses Data Set
     /// </summary>
-    public sealed class SADWDataSet : SetBase<SADW>
+    public sealed partial class SADWDataSet : SetBase<SADW>
     {
+
 
         internal SADWDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

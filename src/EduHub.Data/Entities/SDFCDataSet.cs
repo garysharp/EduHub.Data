@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fees Data Set
     /// </summary>
-    public sealed class SDFCDataSet : SetBase<SDFC>
+    public sealed partial class SDFCDataSet : SetBase<SDFC>
     {
         private Lazy<Dictionary<string, SDFC>> SDFCKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<DRF>>> DRF_FEE_CODEForeignIndex;
 
         internal SDFCDataSet(EduHubContext Context)
             : base(Context)
         {
             SDFCKEYIndex = new Lazy<Dictionary<string, SDFC>>(() => this.ToDictionary(e => e.SDFCKEY));
+
+            DRF_FEE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DRF>>>(() =>
+                    Context.DRF
+                          .Where(e => e.FEE_CODE != null)
+                          .GroupBy(e => e.FEE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all DRF (DR Transactions) entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find DRF entities</param>
+        /// <returns>A list of related DRF entities</returns>
+        public IReadOnlyList<DRF> FindDRFByFEE_CODE(string SDFCKEY)
+        {
+            IReadOnlyList<DRF> result;
+            if (DRF_FEE_CODEForeignIndex.Value.TryGetValue(SDFCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DRF entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find DRF entities</param>
+        /// <param name="Value">A list of related DRF entities</param>
+        /// <returns>True if any DRF entities are found</returns>
+        public bool TryFindDRFByFEE_CODE(string SDFCKEY, out IReadOnlyList<DRF> Value)
+        {
+            return DRF_FEE_CODEForeignIndex.Value.TryGetValue(SDFCKEY, out Value);
         }
 
 

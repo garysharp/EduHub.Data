@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Incident Instigators Data Set
     /// </summary>
-    public sealed class SDPDataSet : SetBase<SDP>
+    public sealed partial class SDPDataSet : SetBase<SDP>
     {
         private Lazy<Dictionary<int, SDP>> SDPKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SDPA>>> SDPA_SDP_STUDENTForeignIndex;
 
         internal SDPDataSet(EduHubContext Context)
             : base(Context)
         {
             SDPKEYIndex = new Lazy<Dictionary<int, SDP>>(() => this.ToDictionary(e => e.SDPKEY));
+
+            SDPA_SDP_STUDENTForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SDPA>>>(() =>
+                    Context.SDPA
+                          .Where(e => e.SDP_STUDENT != null)
+                          .GroupBy(e => e.SDP_STUDENT.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDPA>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SDPA (Disciplinary Actions) entities by [SDPA.SDP_STUDENT]-&gt;[SDP.SDPKEY]
+        /// </summary>
+        /// <param name="SDPKEY">SDPKEY value used to find SDPA entities</param>
+        /// <returns>A list of related SDPA entities</returns>
+        public IReadOnlyList<SDPA> FindSDPABySDP_STUDENT(int SDPKEY)
+        {
+            IReadOnlyList<SDPA> result;
+            if (SDPA_SDP_STUDENTForeignIndex.Value.TryGetValue(SDPKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SDPA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SDPA entities by [SDPA.SDP_STUDENT]-&gt;[SDP.SDPKEY]
+        /// </summary>
+        /// <param name="SDPKEY">SDPKEY value used to find SDPA entities</param>
+        /// <param name="Value">A list of related SDPA entities</param>
+        /// <returns>True if any SDPA entities are found</returns>
+        public bool TryFindSDPABySDP_STUDENT(int SDPKEY, out IReadOnlyList<SDPA> Value)
+        {
+            return SDPA_SDP_STUDENTForeignIndex.Value.TryGetValue(SDPKEY, out Value);
         }
 
 

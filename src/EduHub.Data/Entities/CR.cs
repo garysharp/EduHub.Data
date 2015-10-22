@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Payable
     /// </summary>
-    public class CR : EntityBase
+    public partial class CR : EntityBase
     {
 #region Navigation Property Cache
         private KAB _BSB_KAB;
@@ -276,11 +276,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [CR.BSB]-&gt;[KAB.BSB]
         /// Bank/State/Branch number
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)
@@ -297,11 +299,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PPDKEY] => [PPD].[PPDKEY]
+        /// PPD (PAYG Payer Details) related entity by [CR.PPDKEY]-&gt;[PPD.PPDKEY]
         /// Payer code in PPD
         /// </summary>
-        public PPD PPDKEY_PPD {
+        public PPD PPDKEY_PPD
+        {
             get
             {
                 if (PPDKEY != null)
@@ -316,6 +320,50 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_ORIG_SUPPLIER
+        {
+            get
+            {
+                return Context.CR.FindARByORIG_SUPPLIER(CRKEY);
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
+        /// </summary>
+        public IReadOnlyList<AR> AR_CURR_SUPPLIER
+        {
+            get
+            {
+                return Context.CR.FindARByCURR_SUPPLIER(CRKEY);
+            }
+        }
+
+        /// <summary>
+        /// CRF (Creditor Financial Transaction) related entities by [CRF.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        public IReadOnlyList<CRF> CRF_CODE
+        {
+            get
+            {
+                return Context.CR.FindCRFByCODE(CRKEY);
+            }
+        }
+
+        /// <summary>
+        /// CRFTC (Creditor Fuel Tax Credits) related entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
+        /// </summary>
+        public IReadOnlyList<CRFTC> CRFTC_CODE
+        {
+            get
+            {
+                return Context.CR.FindCRFTCByCODE(CRKEY);
             }
         }
 #endregion

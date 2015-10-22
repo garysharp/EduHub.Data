@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Item Leave Items Data Set
     /// </summary>
-    public sealed class PILIDataSet : SetBase<PILI>
+    public sealed partial class PILIDataSet : SetBase<PILI>
     {
+
 
         internal PILIDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

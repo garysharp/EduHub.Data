@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Qualifications
     /// </summary>
-    public class SFQA : EntityBase
+    public partial class SFQA : EntityBase
     {
 #region Navigation Property Cache
         private SF _TEACH_SF;
@@ -55,11 +55,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SFQA.TEACH]-&gt;[SF.SFKEY]
         /// Staff code of teacher
         /// </summary>
-        public SF TEACH_SF {
+        public SF TEACH_SF
+        {
             get
             {
                 if (TEACH != null)
@@ -76,11 +78,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [QUALIFICATION] => [KSQ].[KSQKEY]
+        /// KSQ (Available Qualifications) related entity by [SFQA.QUALIFICATION]-&gt;[KSQ.KSQKEY]
         /// Name of qualification
         /// </summary>
-        public KSQ QUALIFICATION_KSQ {
+        public KSQ QUALIFICATION_KSQ
+        {
             get
             {
                 if (QUALIFICATION != null)
@@ -97,11 +101,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INSTITUTION] => [KSI].[KSIKEY]
+        /// KSI (Institutions) related entity by [SFQA.INSTITUTION]-&gt;[KSI.KSIKEY]
         /// Where studied
         /// </summary>
-        public KSI INSTITUTION_KSI {
+        public KSI INSTITUTION_KSI
+        {
             get
             {
                 if (INSTITUTION != null)

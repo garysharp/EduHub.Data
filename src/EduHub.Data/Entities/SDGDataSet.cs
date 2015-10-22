@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fee Groups Data Set
     /// </summary>
-    public sealed class SDGDataSet : SetBase<SDG>
+    public sealed partial class SDGDataSet : SetBase<SDG>
     {
         private Lazy<Dictionary<string, SDG>> SDGKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SDGM>>> SDGM_SDGMKEYForeignIndex;
 
         internal SDGDataSet(EduHubContext Context)
             : base(Context)
         {
             SDGKEYIndex = new Lazy<Dictionary<string, SDG>>(() => this.ToDictionary(e => e.SDGKEY));
+
+            SDGM_SDGMKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SDGM>>>(() =>
+                    Context.SDGM
+                          .Where(e => e.SDGMKEY != null)
+                          .GroupBy(e => e.SDGMKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDGM>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SDGM (Adult Group Members) entities by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
+        /// </summary>
+        /// <param name="SDGKEY">SDGKEY value used to find SDGM entities</param>
+        /// <returns>A list of related SDGM entities</returns>
+        public IReadOnlyList<SDGM> FindSDGMBySDGMKEY(string SDGKEY)
+        {
+            IReadOnlyList<SDGM> result;
+            if (SDGM_SDGMKEYForeignIndex.Value.TryGetValue(SDGKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SDGM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SDGM entities by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
+        /// </summary>
+        /// <param name="SDGKEY">SDGKEY value used to find SDGM entities</param>
+        /// <param name="Value">A list of related SDGM entities</param>
+        /// <returns>True if any SDGM entities are found</returns>
+        public bool TryFindSDGMBySDGMKEY(string SDGKEY, out IReadOnlyList<SDGM> Value)
+        {
+            return SDGM_SDGMKEYForeignIndex.Value.TryGetValue(SDGKEY, out Value);
         }
 
 

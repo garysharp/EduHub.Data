@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FDT Financial Raw Import Table Data Set
     /// </summary>
-    public sealed class FDT_IMPDataSet : SetBase<FDT_IMP>
+    public sealed partial class FDT_IMPDataSet : SetBase<FDT_IMP>
     {
         private Lazy<Dictionary<int, FDT_IMP>> FDTKEYIndex;
+
 
         internal FDT_IMPDataSet(EduHubContext Context)
             : base(Context)
         {
             FDTKEYIndex = new Lazy<Dictionary<int, FDT_IMP>>(() => this.ToDictionary(e => e.FDTKEY));
+
         }
 
         /// <summary>

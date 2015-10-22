@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CASES Past Students Data Set
     /// </summary>
-    public sealed class OSCSDataSet : SetBase<OSCS>
+    public sealed partial class OSCSDataSet : SetBase<OSCS>
     {
         private Lazy<Dictionary<int, OSCS>> OSCSKEYIndex;
+
 
         internal OSCSDataSet(EduHubContext Context)
             : base(Context)
         {
             OSCSKEYIndex = new Lazy<Dictionary<int, OSCS>>(() => this.ToDictionary(e => e.OSCSKEY));
+
         }
 
         /// <summary>

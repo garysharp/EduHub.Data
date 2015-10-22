@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 School Message
     /// </summary>
-    public class SEC_MSG : EntityBase
+    public partial class SEC_MSG : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -30,9 +27,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? EDITDATE { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

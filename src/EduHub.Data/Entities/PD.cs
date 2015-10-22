@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Departments
     /// </summary>
-    public class PD : EntityBase
+    public partial class PD : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_GL;
@@ -74,11 +74,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PD.GLCODE]-&gt;[GL.CODE]
         /// Salary expense code
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -95,11 +97,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLBANK] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PD.GLBANK]-&gt;[GL.CODE]
         /// Bank account
         /// </summary>
-        public GL GLBANK_GL {
+        public GL GLBANK_GL
+        {
             get
             {
                 if (GLBANK != null)
@@ -116,12 +120,14 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLTAX] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PD.GLTAX]-&gt;[GL.CODE]
         /// Group tax clearing
         /// 
         /// </summary>
-        public GL GLTAX_GL {
+        public GL GLTAX_GL
+        {
             get
             {
                 if (GLTAX != null)
@@ -138,11 +144,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [PD.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -159,11 +167,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [PD.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -178,6 +188,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_DEPARTMENT
+        {
+            get
+            {
+                return Context.PD.FindPEByDEPARTMENT(PDKEY);
             }
         }
 #endregion

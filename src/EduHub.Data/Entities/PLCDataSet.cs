@@ -8,14 +8,52 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Code Description Data Set
     /// </summary>
-    public sealed class PLCDataSet : SetBase<PLC>
+    public sealed partial class PLCDataSet : SetBase<PLC>
     {
         private Lazy<Dictionary<string, PLC>> PLCKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PELA>>> PELA_LEAVE_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PELD>>> PELD_LEAVE_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PILI>>> PILI_LEAVE_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PLT>>> PLT_LEAVE_CODEForeignIndex;
 
         internal PLCDataSet(EduHubContext Context)
             : base(Context)
         {
             PLCKEYIndex = new Lazy<Dictionary<string, PLC>>(() => this.ToDictionary(e => e.PLCKEY));
+
+            PELA_LEAVE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PELA>>>(() =>
+                    Context.PELA
+                          .Where(e => e.LEAVE_CODE != null)
+                          .GroupBy(e => e.LEAVE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PELA>)g.ToList()
+                          .AsReadOnly()));
+
+            PELD_LEAVE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PELD>>>(() =>
+                    Context.PELD
+                          .Where(e => e.LEAVE_CODE != null)
+                          .GroupBy(e => e.LEAVE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PELD>)g.ToList()
+                          .AsReadOnly()));
+
+            PILI_LEAVE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PILI>>>(() =>
+                    Context.PILI
+                          .Where(e => e.LEAVE_CODE != null)
+                          .GroupBy(e => e.LEAVE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PILI>)g.ToList()
+                          .AsReadOnly()));
+
+            PLT_LEAVE_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PLT>>>(() =>
+                    Context.PLT
+                          .Where(e => e.LEAVE_CODE != null)
+                          .GroupBy(e => e.LEAVE_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PLT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +107,122 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PELA (Employee Leave Audit) entities by [PELA.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PELA entities</param>
+        /// <returns>A list of related PELA entities</returns>
+        public IReadOnlyList<PELA> FindPELAByLEAVE_CODE(string PLCKEY)
+        {
+            IReadOnlyList<PELA> result;
+            if (PELA_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PELA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PELA entities by [PELA.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PELA entities</param>
+        /// <param name="Value">A list of related PELA entities</param>
+        /// <returns>True if any PELA entities are found</returns>
+        public bool TryFindPELAByLEAVE_CODE(string PLCKEY, out IReadOnlyList<PELA> Value)
+        {
+            return PELA_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PELD (Employee Leave Details) entities by [PELD.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PELD entities</param>
+        /// <returns>A list of related PELD entities</returns>
+        public IReadOnlyList<PELD> FindPELDByLEAVE_CODE(string PLCKEY)
+        {
+            IReadOnlyList<PELD> result;
+            if (PELD_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PELD>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PELD entities by [PELD.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PELD entities</param>
+        /// <param name="Value">A list of related PELD entities</param>
+        /// <returns>True if any PELD entities are found</returns>
+        public bool TryFindPELDByLEAVE_CODE(string PLCKEY, out IReadOnlyList<PELD> Value)
+        {
+            return PELD_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PILI (Pay Item Leave Items) entities by [PILI.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PILI entities</param>
+        /// <returns>A list of related PILI entities</returns>
+        public IReadOnlyList<PILI> FindPILIByLEAVE_CODE(string PLCKEY)
+        {
+            IReadOnlyList<PILI> result;
+            if (PILI_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PILI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PILI entities by [PILI.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PILI entities</param>
+        /// <param name="Value">A list of related PILI entities</param>
+        /// <returns>True if any PILI entities are found</returns>
+        public bool TryFindPILIByLEAVE_CODE(string PLCKEY, out IReadOnlyList<PILI> Value)
+        {
+            return PILI_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PLT (Leave Group Types) entities by [PLT.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PLT entities</param>
+        /// <returns>A list of related PLT entities</returns>
+        public IReadOnlyList<PLT> FindPLTByLEAVE_CODE(string PLCKEY)
+        {
+            IReadOnlyList<PLT> result;
+            if (PLT_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PLT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PLT entities by [PLT.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        /// <param name="PLCKEY">PLCKEY value used to find PLT entities</param>
+        /// <param name="Value">A list of related PLT entities</param>
+        /// <returns>True if any PLT entities are found</returns>
+        public bool TryFindPLTByLEAVE_CODE(string PLCKEY, out IReadOnlyList<PLT> Value)
+        {
+            return PLT_LEAVE_CODEForeignIndex.Value.TryGetValue(PLCKEY, out Value);
         }
 
 

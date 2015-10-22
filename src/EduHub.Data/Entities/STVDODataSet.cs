@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Domain Results Data Set
     /// </summary>
-    public sealed class STVDODataSet : SetBase<STVDO>
+    public sealed partial class STVDODataSet : SetBase<STVDO>
     {
+
 
         internal STVDODataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

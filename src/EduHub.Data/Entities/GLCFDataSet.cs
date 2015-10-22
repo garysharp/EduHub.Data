@@ -8,11 +8,12 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// GL Combined Financial Trans Data Set
     /// </summary>
-    public sealed class GLCFDataSet : SetBase<GLCF>
+    public sealed partial class GLCFDataSet : SetBase<GLCF>
     {
         private Lazy<Dictionary<string, GLCF>> TRREFIndex;
         private Lazy<Dictionary<string, GLCF>> GST_BOXIndex;
         private Lazy<Dictionary<string, GLCF>> GST_SALE_PURCHIndex;
+
 
         internal GLCFDataSet(EduHubContext Context)
             : base(Context)
@@ -20,6 +21,7 @@ namespace EduHub.Data.Entities
             TRREFIndex = new Lazy<Dictionary<string, GLCF>>(() => this.ToDictionary(e => e.TRREF));
             GST_BOXIndex = new Lazy<Dictionary<string, GLCF>>(() => this.ToDictionary(e => e.GST_BOX));
             GST_SALE_PURCHIndex = new Lazy<Dictionary<string, GLCF>>(() => this.ToDictionary(e => e.GST_SALE_PURCH));
+
         }
 
         /// <summary>

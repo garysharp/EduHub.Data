@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Leave Code Description
     /// </summary>
-    public class PLC : EntityBase
+    public partial class PLC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Leave Group Identifier
@@ -48,6 +45,50 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// PELA (Employee Leave Audit) related entities by [PELA.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        public IReadOnlyList<PELA> PELA_LEAVE_CODE
+        {
+            get
+            {
+                return Context.PLC.FindPELAByLEAVE_CODE(PLCKEY);
+            }
+        }
+
+        /// <summary>
+        /// PELD (Employee Leave Details) related entities by [PELD.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        public IReadOnlyList<PELD> PELD_LEAVE_CODE
+        {
+            get
+            {
+                return Context.PLC.FindPELDByLEAVE_CODE(PLCKEY);
+            }
+        }
+
+        /// <summary>
+        /// PILI (Pay Item Leave Items) related entities by [PILI.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        public IReadOnlyList<PILI> PILI_LEAVE_CODE
+        {
+            get
+            {
+                return Context.PLC.FindPILIByLEAVE_CODE(PLCKEY);
+            }
+        }
+
+        /// <summary>
+        /// PLT (Leave Group Types) related entities by [PLT.LEAVE_CODE]-&gt;[PLC.PLCKEY]
+        /// </summary>
+        public IReadOnlyList<PLT> PLT_LEAVE_CODE
+        {
+            get
+            {
+                return Context.PLC.FindPLTByLEAVE_CODE(PLCKEY);
+            }
+        }
 #endregion
     }
 }

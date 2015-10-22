@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPay Data
     /// </summary>
-    public class BPAY_DAT : EntityBase
+    public partial class BPAY_DAT : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transaction ID
@@ -84,9 +81,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

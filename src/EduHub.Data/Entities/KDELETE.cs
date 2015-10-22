@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Data deleted from DataMirror monitored tables
     /// </summary>
-    public class KDELETE : EntityBase
+    public partial class KDELETE : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// SQL identity
@@ -39,9 +36,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

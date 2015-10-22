@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Witnesses
     /// </summary>
-    public class SADW : EntityBase
+    public partial class SADW : EntityBase
     {
 #region Navigation Property Cache
         private SAD _ACCIDENTID_SAD;
@@ -72,11 +72,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ACCIDENTID] => [SAD].[SADKEY]
+        /// SAD (Accidents) related entity by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
         /// Sequence no of accident
         /// </summary>
-        public SAD ACCIDENTID_SAD {
+        public SAD ACCIDENTID_SAD
+        {
             get
             {
                 if (ACCIDENTID.HasValue)

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Payroll Groups
     /// </summary>
-    public class PN : EntityBase
+    public partial class PN : EntityBase
     {
 #region Navigation Property Cache
         private PPD _PPDKEY_PPD;
@@ -127,11 +127,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [PPDKEY] => [PPD].[PPDKEY]
+        /// PPD (PAYG Payer Details) related entity by [PN.PPDKEY]-&gt;[PPD.PPDKEY]
         /// PAYG Payer details
         /// </summary>
-        public PPD PPDKEY_PPD {
+        public PPD PPDKEY_PPD
+        {
             get
             {
                 if (PPDKEY != null)
@@ -148,12 +150,14 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [DD_GLCODE] => [KBANK].[GLCODE]
+        /// KBANK (Bank Account) related entity by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
         /// Direct Deposit GL Bank Account
         /// 
         /// </summary>
-        public KBANK DD_GLCODE_KBANK {
+        public KBANK DD_GLCODE_KBANK
+        {
             get
             {
                 if (DD_GLCODE != null)
@@ -170,11 +174,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PN.GLCODE]-&gt;[GL.CODE]
         /// Salary    expense code
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -191,11 +197,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLBANK] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PN.GLBANK]-&gt;[GL.CODE]
         /// Wages     clearing account
         /// </summary>
-        public GL GLBANK_GL {
+        public GL GLBANK_GL
+        {
             get
             {
                 if (GLBANK != null)
@@ -212,12 +220,14 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [GLTAX] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PN.GLTAX]-&gt;[GL.CODE]
         /// Group Tax clearing account
         /// 
         /// </summary>
-        public GL GLTAX_GL {
+        public GL GLTAX_GL
+        {
             get
             {
                 if (GLTAX != null)
@@ -234,11 +244,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [PN.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -255,11 +267,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [PN.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -274,6 +288,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PE (Employees) related entities by [PE.PAYCODE]-&gt;[PN.PNKEY]
+        /// </summary>
+        public IReadOnlyList<PE> PE_PAYCODE
+        {
+            get
+            {
+                return Context.PN.FindPEByPAYCODE(PNKEY);
             }
         }
 #endregion

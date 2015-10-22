@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Note Categories Data Set
     /// </summary>
-    public sealed class KPNDataSet : SetBase<KPN>
+    public sealed partial class KPNDataSet : SetBase<KPN>
     {
         private Lazy<Dictionary<string, KPN>> KPNKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<PEPY>>> PEPY_PURPOSEForeignIndex;
 
         internal KPNDataSet(EduHubContext Context)
             : base(Context)
         {
             KPNKEYIndex = new Lazy<Dictionary<string, KPN>>(() => this.ToDictionary(e => e.KPNKEY));
+
+            PEPY_PURPOSEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PEPY>>>(() =>
+                    Context.PEPY
+                          .Where(e => e.PURPOSE != null)
+                          .GroupBy(e => e.PURPOSE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPY>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all PEPY (Employee History) entities by [PEPY.PURPOSE]-&gt;[KPN.KPNKEY]
+        /// </summary>
+        /// <param name="KPNKEY">KPNKEY value used to find PEPY entities</param>
+        /// <returns>A list of related PEPY entities</returns>
+        public IReadOnlyList<PEPY> FindPEPYByPURPOSE(string KPNKEY)
+        {
+            IReadOnlyList<PEPY> result;
+            if (PEPY_PURPOSEForeignIndex.Value.TryGetValue(KPNKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PEPY>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PEPY entities by [PEPY.PURPOSE]-&gt;[KPN.KPNKEY]
+        /// </summary>
+        /// <param name="KPNKEY">KPNKEY value used to find PEPY entities</param>
+        /// <param name="Value">A list of related PEPY entities</param>
+        /// <returns>True if any PEPY entities are found</returns>
+        public bool TryFindPEPYByPURPOSE(string KPNKEY, out IReadOnlyList<PEPY> Value)
+        {
+            return PEPY_PURPOSEForeignIndex.Value.TryGetValue(KPNKEY, out Value);
         }
 
 

@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial Data Export Data Set
     /// </summary>
-    public sealed class FDT_EXPDataSet : SetBase<FDT_EXP>
+    public sealed partial class FDT_EXPDataSet : SetBase<FDT_EXP>
     {
         private Lazy<Dictionary<int, FDT_EXP>> TIDIndex;
+
 
         internal FDT_EXPDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, FDT_EXP>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

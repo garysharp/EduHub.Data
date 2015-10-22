@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Advice Slip Message Data Set
     /// </summary>
-    public sealed class PEMDataSet : SetBase<PEM>
+    public sealed partial class PEMDataSet : SetBase<PEM>
     {
+
 
         internal PEMDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

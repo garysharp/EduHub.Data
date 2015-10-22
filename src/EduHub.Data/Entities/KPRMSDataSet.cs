@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PRMS Order Details Data Set
     /// </summary>
-    public sealed class KPRMSDataSet : SetBase<KPRMS>
+    public sealed partial class KPRMSDataSet : SetBase<KPRMS>
     {
         private Lazy<Dictionary<int, KPRMS>> TIDIndex;
+
 
         internal KPRMSDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, KPRMS>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

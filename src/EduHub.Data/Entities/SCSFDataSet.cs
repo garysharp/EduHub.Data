@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Strands Data Set
     /// </summary>
-    public sealed class SCSFDataSet : SetBase<SCSF>
+    public sealed partial class SCSFDataSet : SetBase<SCSF>
     {
         private Lazy<Dictionary<string, SCSF>> SCSFKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>> SCSFAG_SCSFKEYForeignIndex;
 
         internal SCSFDataSet(EduHubContext Context)
             : base(Context)
         {
             SCSFKEYIndex = new Lazy<Dictionary<string, SCSF>>(() => this.ToDictionary(e => e.SCSFKEY));
+
+            SCSFAG_SCSFKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>>(() =>
+                    Context.SCSFAG
+                          .Where(e => e.SCSFKEY != null)
+                          .GroupBy(e => e.SCSFKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCSFAG>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SCSFAG (CSF Data Aggregates) entities by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG entities</param>
+        /// <returns>A list of related SCSFAG entities</returns>
+        public IReadOnlyList<SCSFAG> FindSCSFAGBySCSFKEY(string SCSFKEY)
+        {
+            IReadOnlyList<SCSFAG> result;
+            if (SCSFAG_SCSFKEYForeignIndex.Value.TryGetValue(SCSFKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCSFAG>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCSFAG entities by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG entities</param>
+        /// <param name="Value">A list of related SCSFAG entities</param>
+        /// <returns>True if any SCSFAG entities are found</returns>
+        public bool TryFindSCSFAGBySCSFKEY(string SCSFKEY, out IReadOnlyList<SCSFAG> Value)
+        {
+            return SCSFAG_SCSFKEYForeignIndex.Value.TryGetValue(SCSFKEY, out Value);
         }
 
 

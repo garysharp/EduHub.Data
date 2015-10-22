@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Actual Sessions Data Set
     /// </summary>
-    public sealed class TXASDataSet : SetBase<TXAS>
+    public sealed partial class TXASDataSet : SetBase<TXAS>
     {
         private Lazy<Dictionary<int, TXAS>> TIDIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SXAS>>> SXAS_TXAS_IDForeignIndex;
 
         internal TXASDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, TXAS>>(() => this.ToDictionary(e => e.TID));
+
+            SXAS_TXAS_IDForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SXAS>>>(() =>
+                    Context.SXAS
+                          .Where(e => e.TXAS_ID != null)
+                          .GroupBy(e => e.TXAS_ID.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAS>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SXAS (Student Scheduled Sessions) entities by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
+        /// </summary>
+        /// <param name="TID">TID value used to find SXAS entities</param>
+        /// <returns>A list of related SXAS entities</returns>
+        public IReadOnlyList<SXAS> FindSXASByTXAS_ID(int TID)
+        {
+            IReadOnlyList<SXAS> result;
+            if (SXAS_TXAS_IDForeignIndex.Value.TryGetValue(TID, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SXAS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SXAS entities by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
+        /// </summary>
+        /// <param name="TID">TID value used to find SXAS entities</param>
+        /// <param name="Value">A list of related SXAS entities</param>
+        /// <returns>True if any SXAS entities are found</returns>
+        public bool TryFindSXASByTXAS_ID(int TID, out IReadOnlyList<SXAS> Value)
+        {
+            return SXAS_TXAS_IDForeignIndex.Value.TryGetValue(TID, out Value);
         }
 
 

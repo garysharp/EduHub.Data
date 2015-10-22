@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Half-Day Absences
     /// </summary>
-    public class SXAB : EntityBase
+    public partial class SXAB : EntityBase
     {
 #region Navigation Property Cache
         private TXHG _TXHG_TID_TXHG;
@@ -150,11 +150,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TXHG_TID] => [TXHG].[TXHG_ID]
+        /// TXHG (Home Group Daily Attendance Records) related entity by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
         /// TID of corresponding Home Group Daily Attendance record &lt;&lt; may require referential integrity controls
         /// </summary>
-        public TXHG TXHG_TID_TXHG {
+        public TXHG TXHG_TID_TXHG
+        {
             get
             {
                 if (TXHG_TID.HasValue)
@@ -171,11 +173,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [SXAB.STKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STKEY_ST {
+        public ST STKEY_ST
+        {
             get
             {
                 if (STKEY != null)
@@ -192,11 +196,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_YEAR_LEVEL] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SXAB.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
         /// Year level at time of absence
         /// </summary>
-        public KCY ST_YEAR_LEVEL_KCY {
+        public KCY ST_YEAR_LEVEL_KCY
+        {
             get
             {
                 if (ST_YEAR_LEVEL != null)
@@ -213,11 +219,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_EXP_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAB.AM_EXP_TYPE]-&gt;[KCT.KCTKEY]
         /// Expected attendance type in the morning
         /// </summary>
-        public KCT AM_EXP_TYPE_KCT {
+        public KCT AM_EXP_TYPE_KCT
+        {
             get
             {
                 if (AM_EXP_TYPE.HasValue)
@@ -234,11 +242,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [AM_ACT_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAB.AM_ACT_TYPE]-&gt;[KCT.KCTKEY]
         /// Actual attendance type in the morning
         /// </summary>
-        public KCT AM_ACT_TYPE_KCT {
+        public KCT AM_ACT_TYPE_KCT
+        {
             get
             {
                 if (AM_ACT_TYPE.HasValue)
@@ -255,11 +265,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_EXP_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAB.PM_EXP_TYPE]-&gt;[KCT.KCTKEY]
         /// Expected attendance type in the afternoon
         /// </summary>
-        public KCT PM_EXP_TYPE_KCT {
+        public KCT PM_EXP_TYPE_KCT
+        {
             get
             {
                 if (PM_EXP_TYPE.HasValue)
@@ -276,11 +288,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [PM_ACT_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAB.PM_ACT_TYPE]-&gt;[KCT.KCTKEY]
         /// Actual attendance type in the afternoon
         /// </summary>
-        public KCT PM_ACT_TYPE_KCT {
+        public KCT PM_ACT_TYPE_KCT
+        {
             get
             {
                 if (PM_ACT_TYPE.HasValue)

@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar
     /// </summary>
-    public class TC : EntityBase
+    public partial class TC : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Calendar entry code
@@ -42,6 +39,50 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// TCTB (Teacher Absences) related entities by [TCTB.TCTBKEY]-&gt;[TC.TCKEY]
+        /// </summary>
+        public IReadOnlyList<TCTB> TCTB_TCTBKEY
+        {
+            get
+            {
+                return Context.TC.FindTCTBByTCTBKEY(TCKEY);
+            }
+        }
+
+        /// <summary>
+        /// TCTD (Calendar Period Information) related entities by [TCTD.TCTDKEY]-&gt;[TC.TCKEY]
+        /// </summary>
+        public IReadOnlyList<TCTD> TCTD_TCTDKEY
+        {
+            get
+            {
+                return Context.TC.FindTCTDByTCTDKEY(TCKEY);
+            }
+        }
+
+        /// <summary>
+        /// TCTQ (Calendar Class Information) related entities by [TCTQ.TCTQKEY]-&gt;[TC.TCKEY]
+        /// </summary>
+        public IReadOnlyList<TCTQ> TCTQ_TCTQKEY
+        {
+            get
+            {
+                return Context.TC.FindTCTQByTCTQKEY(TCKEY);
+            }
+        }
+
+        /// <summary>
+        /// TCTR (Teacher Replacements) related entities by [TCTR.TCTRKEY]-&gt;[TC.TCKEY]
+        /// </summary>
+        public IReadOnlyList<TCTR> TCTR_TCTRKEY
+        {
+            get
+            {
+                return Context.TC.FindTCTRByTCTRKEY(TCKEY);
+            }
+        }
 #endregion
     }
 }

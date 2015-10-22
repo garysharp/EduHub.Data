@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Position or Group Memberships Data Set
     /// </summary>
-    public sealed class STPODataSet : SetBase<STPO>
+    public sealed partial class STPODataSet : SetBase<STPO>
     {
+
 
         internal STPODataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

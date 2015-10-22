@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Rooms group Data Set
     /// </summary>
-    public sealed class SMGROUPDataSet : SetBase<SMGROUP>
+    public sealed partial class SMGROUPDataSet : SetBase<SMGROUP>
     {
+
 
         internal SMGROUPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sickbay Medication Administrations Data Set
     /// </summary>
-    public sealed class SAIMDataSet : SetBase<SAIM>
+    public sealed partial class SAIMDataSet : SetBase<SAIM>
     {
+
 
         internal SAIMDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

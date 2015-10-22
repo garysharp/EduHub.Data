@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// On line receipt history Data Set
     /// </summary>
-    public sealed class SIRHDataSet : SetBase<SIRH>
+    public sealed partial class SIRHDataSet : SetBase<SIRH>
     {
         private Lazy<Dictionary<string, SIRH>> SIRHKEYIndex;
+
 
         internal SIRHDataSet(EduHubContext Context)
             : base(Context)
         {
             SIRHKEYIndex = new Lazy<Dictionary<string, SIRH>>(() => this.ToDictionary(e => e.SIRHKEY));
+
         }
 
         /// <summary>

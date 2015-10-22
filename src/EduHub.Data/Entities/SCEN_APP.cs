@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Application Message Data
     /// </summary>
-    public class SCEN_APP : EntityBase
+    public partial class SCEN_APP : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -41,9 +38,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (255)]
         /// </summary>
         public string ITEMCOMMENTS { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

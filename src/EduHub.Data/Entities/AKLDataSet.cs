@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Locations Data Set
     /// </summary>
-    public sealed class AKLDataSet : SetBase<AKL>
+    public sealed partial class AKLDataSet : SetBase<AKL>
     {
         private Lazy<Dictionary<string, AKL>> LOCATIONIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_LOCATIONForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> ARF_LOCATIONForeignIndex;
 
         internal AKLDataSet(EduHubContext Context)
             : base(Context)
         {
             LOCATIONIndex = new Lazy<Dictionary<string, AKL>>(() => this.ToDictionary(e => e.LOCATION));
+
+            AR_LOCATIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
+                    Context.AR
+                          .Where(e => e.LOCATION != null)
+                          .GroupBy(e => e.LOCATION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
+                          .AsReadOnly()));
+
+            ARF_LOCATIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() =>
+                    Context.ARF
+                          .Where(e => e.LOCATION != null)
+                          .GroupBy(e => e.LOCATION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ARF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all AR (Assets) entities by [AR.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AR entities</param>
+        /// <returns>A list of related AR entities</returns>
+        public IReadOnlyList<AR> FindARByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<AR> result;
+            if (AR_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<AR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all AR entities by [AR.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AR entities</param>
+        /// <param name="Value">A list of related AR entities</param>
+        /// <returns>True if any AR entities are found</returns>
+        public bool TryFindARByLOCATION(string LOCATION, out IReadOnlyList<AR> Value)
+        {
+            return AR_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Find all ARF (Asset Financial Transactions) entities by [ARF.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find ARF entities</param>
+        /// <returns>A list of related ARF entities</returns>
+        public IReadOnlyList<ARF> FindARFByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<ARF> result;
+            if (ARF_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ARF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ARF entities by [ARF.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find ARF entities</param>
+        /// <param name="Value">A list of related ARF entities</param>
+        /// <returns>True if any ARF entities are found</returns>
+        public bool TryFindARFByLOCATION(string LOCATION, out IReadOnlyList<ARF> Value)
+        {
+            return ARF_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out Value);
         }
 
 

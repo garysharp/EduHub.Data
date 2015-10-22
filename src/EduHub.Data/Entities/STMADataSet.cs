@@ -8,16 +8,18 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Selections &amp; Marks Data Set
     /// </summary>
-    public sealed class STMADataSet : SetBase<STMA>
+    public sealed partial class STMADataSet : SetBase<STMA>
     {
         private Lazy<Dictionary<int, STMA>> IDENTIndex;
         private Lazy<Dictionary<string, STMA>> TTPERIODIndex;
+
 
         internal STMADataSet(EduHubContext Context)
             : base(Context)
         {
             IDENTIndex = new Lazy<Dictionary<int, STMA>>(() => this.ToDictionary(e => e.IDENT));
             TTPERIODIndex = new Lazy<Dictionary<string, STMA>>(() => this.ToDictionary(e => e.TTPERIOD));
+
         }
 
         /// <summary>

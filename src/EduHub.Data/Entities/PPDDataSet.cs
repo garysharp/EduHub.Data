@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Payer Details Data Set
     /// </summary>
-    public sealed class PPDDataSet : SetBase<PPD>
+    public sealed partial class PPDDataSet : SetBase<PPD>
     {
         private Lazy<Dictionary<string, PPD>> PPDKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<CR>>> CR_PPDKEYForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<PN>>> PN_PPDKEYForeignIndex;
 
         internal PPDDataSet(EduHubContext Context)
             : base(Context)
         {
             PPDKEYIndex = new Lazy<Dictionary<string, PPD>>(() => this.ToDictionary(e => e.PPDKEY));
+
+            CR_PPDKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<CR>>>(() =>
+                    Context.CR
+                          .Where(e => e.PPDKEY != null)
+                          .GroupBy(e => e.PPDKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CR>)g.ToList()
+                          .AsReadOnly()));
+
+            PN_PPDKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<PN>>>(() =>
+                    Context.PN
+                          .Where(e => e.PPDKEY != null)
+                          .GroupBy(e => e.PPDKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PN>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all CR (Accounts Payable) entities by [CR.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find CR entities</param>
+        /// <returns>A list of related CR entities</returns>
+        public IReadOnlyList<CR> FindCRByPPDKEY(string PPDKEY)
+        {
+            IReadOnlyList<CR> result;
+            if (CR_PPDKEYForeignIndex.Value.TryGetValue(PPDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<CR>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all CR entities by [CR.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find CR entities</param>
+        /// <param name="Value">A list of related CR entities</param>
+        /// <returns>True if any CR entities are found</returns>
+        public bool TryFindCRByPPDKEY(string PPDKEY, out IReadOnlyList<CR> Value)
+        {
+            return CR_PPDKEYForeignIndex.Value.TryGetValue(PPDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all PN (Payroll Groups) entities by [PN.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find PN entities</param>
+        /// <returns>A list of related PN entities</returns>
+        public IReadOnlyList<PN> FindPNByPPDKEY(string PPDKEY)
+        {
+            IReadOnlyList<PN> result;
+            if (PN_PPDKEYForeignIndex.Value.TryGetValue(PPDKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<PN>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all PN entities by [PN.PPDKEY]-&gt;[PPD.PPDKEY]
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find PN entities</param>
+        /// <param name="Value">A list of related PN entities</param>
+        /// <returns>True if any PN entities are found</returns>
+        public bool TryFindPNByPPDKEY(string PPDKEY, out IReadOnlyList<PN> Value)
+        {
+            return PN_PPDKEYForeignIndex.Value.TryGetValue(PPDKEY, out Value);
         }
 
 

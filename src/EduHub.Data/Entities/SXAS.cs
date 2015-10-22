@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Scheduled Sessions
     /// </summary>
-    public class SXAS : EntityBase
+    public partial class SXAS : EntityBase
     {
 #region Navigation Property Cache
         private TXAS _TXAS_ID_TXAS;
@@ -95,11 +95,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TXAS_ID] => [TXAS].[TID]
+        /// TXAS (Actual Sessions) related entity by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
         /// ID of actual session
         /// </summary>
-        public TXAS TXAS_ID_TXAS {
+        public TXAS TXAS_ID_TXAS
+        {
             get
             {
                 if (TXAS_ID.HasValue)
@@ -116,11 +118,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [SXAS.STKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STKEY_ST {
+        public ST STKEY_ST
+        {
             get
             {
                 if (STKEY != null)
@@ -137,11 +141,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ST_YEAR_LEVEL] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [SXAS.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
         /// Student's year level at time of absence
         /// </summary>
-        public KCY ST_YEAR_LEVEL_KCY {
+        public KCY ST_YEAR_LEVEL_KCY
+        {
             get
             {
                 if (ST_YEAR_LEVEL != null)
@@ -158,11 +164,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [EXP_ABS_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAS.EXP_ABS_TYPE]-&gt;[KCT.KCTKEY]
         /// Expected attendance type
         /// </summary>
-        public KCT EXP_ABS_TYPE_KCT {
+        public KCT EXP_ABS_TYPE_KCT
+        {
             get
             {
                 if (EXP_ABS_TYPE.HasValue)
@@ -179,11 +187,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ACT_ABS_TYPE] => [KCT].[KCTKEY]
+        /// KCT (Absence Types) related entity by [SXAS.ACT_ABS_TYPE]-&gt;[KCT.KCTKEY]
         /// Actual absence type
         /// </summary>
-        public KCT ACT_ABS_TYPE_KCT {
+        public KCT ACT_ABS_TYPE_KCT
+        {
             get
             {
                 if (ACT_ABS_TYPE.HasValue)

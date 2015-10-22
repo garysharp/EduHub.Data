@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Classes Data Set
     /// </summary>
-    public sealed class SCLDataSet : SetBase<SCL>
+    public sealed partial class SCLDataSet : SetBase<SCL>
     {
         private Lazy<Dictionary<string, SCL>> SCLKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<TXAS>>> TXAS_SCL_LINKForeignIndex;
 
         internal SCLDataSet(EduHubContext Context)
             : base(Context)
         {
             SCLKEYIndex = new Lazy<Dictionary<string, SCL>>(() => this.ToDictionary(e => e.SCLKEY));
+
+            TXAS_SCL_LINKForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<TXAS>>>(() =>
+                    Context.TXAS
+                          .Where(e => e.SCL_LINK != null)
+                          .GroupBy(e => e.SCL_LINK)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TXAS>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all TXAS (Actual Sessions) entities by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
+        /// </summary>
+        /// <param name="SCLKEY">SCLKEY value used to find TXAS entities</param>
+        /// <returns>A list of related TXAS entities</returns>
+        public IReadOnlyList<TXAS> FindTXASBySCL_LINK(string SCLKEY)
+        {
+            IReadOnlyList<TXAS> result;
+            if (TXAS_SCL_LINKForeignIndex.Value.TryGetValue(SCLKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TXAS>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TXAS entities by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
+        /// </summary>
+        /// <param name="SCLKEY">SCLKEY value used to find TXAS entities</param>
+        /// <param name="Value">A list of related TXAS entities</param>
+        /// <returns>True if any TXAS entities are found</returns>
+        public bool TryFindTXASBySCL_LINK(string SCLKEY, out IReadOnlyList<TXAS> Value)
+        {
+            return TXAS_SCL_LINKForeignIndex.Value.TryGetValue(SCLKEY, out Value);
         }
 
 

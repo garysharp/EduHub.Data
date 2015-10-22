@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Absences
     /// </summary>
-    public class TCTB : EntityBase
+    public partial class TCTB : EntityBase
     {
 #region Navigation Property Cache
         private TC _TCTBKEY_TC;
@@ -88,11 +88,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TCTBKEY] => [TC].[TCKEY]
+        /// TC (Calendar) related entity by [TCTB.TCTBKEY]-&gt;[TC.TCKEY]
         /// Absent date
         /// </summary>
-        public TC TCTBKEY_TC {
+        public TC TCTBKEY_TC
+        {
             get
             {
                 if (TCTBKEY.HasValue)
@@ -109,11 +111,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBJ] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [TCTB.SUBJ]-&gt;[SU.SUKEY]
         /// Subject key
         /// </summary>
-        public SU SUBJ_SU {
+        public SU SUBJ_SU
+        {
             get
             {
                 if (SUBJ != null)
@@ -130,11 +134,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [TEACHER] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [TCTB.TEACHER]-&gt;[SF.SFKEY]
         /// Teacher that is absent
         /// </summary>
-        public SF TEACHER_SF {
+        public SF TEACHER_SF
+        {
             get
             {
                 if (TEACHER != null)
@@ -151,11 +157,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ROOM] => [SM].[ROOM]
+        /// SM (Rooms) related entity by [TCTB.ROOM]-&gt;[SM.ROOM]
         /// Room that is not available
         /// </summary>
-        public SM ROOM_SM {
+        public SM ROOM_SM
+        {
             get
             {
                 if (ROOM != null)
@@ -172,11 +180,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [ABSENCE_TYPE] => [TCAT].[TCATKEY]
+        /// TCAT (Staff Absence Types) related entity by [TCTB.ABSENCE_TYPE]-&gt;[TCAT.TCATKEY]
         /// Absence type code. Defaults to "CURRICULUM" if absence created by an Event
         /// </summary>
-        public TCAT ABSENCE_TYPE_TCAT {
+        public TCAT ABSENCE_TYPE_TCAT
+        {
             get
             {
                 if (ABSENCE_TYPE != null)

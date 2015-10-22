@@ -7,7 +7,7 @@ namespace EduHub.Data
     /// <summary>
     /// eduHub Data Context
     /// </summary>
-    public class EduHubContext : EduHubContextBase
+    public partial class EduHubContext
     {
 #region Set Fields
         private A_DECRYPDataSet _A_DECRYP;
@@ -280,14 +280,7 @@ namespace EduHub.Data
         private UM_TFRDataSet _UM_TFR;
 #endregion
 
-        /// <summary>
-        /// Creates an EduHubContext
-        /// </summary>
-        /// <param name="EduHubDirectory">Directory which contains the eduHub .csv data sets.</param>
-        /// <param name="EduHubSiteIdentifier">Data set suffix for each .csv file</param>
-        /// <exception cref="ArgumentException">eduHub Directory does not exist or has no valid data sets</exception>
-        public EduHubContext(string EduHubDirectory, string EduHubSiteIdentifier)
-            : base (EduHubDirectory, EduHubSiteIdentifier)
+        private void Initialize()
         {
             _A_DECRYP = new A_DECRYPDataSet(this);
             _AKB = new AKBDataSet(this);
@@ -560,28 +553,9 @@ namespace EduHub.Data
         }
 
         /// <summary>
-        /// Creates an EduHubContext with a dynamically determined site identifier
-        /// </summary>
-        /// <param name="EduHubDirectory">Directory which contains the eduHub .csv data sets.</param>
-        /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
-        public EduHubContext(string EduHubDirectory)
-            : this(EduHubDirectory, null)
-        {
-        }
-
-        /// <summary>
-        /// Creates an EduHubContext with the default directory and dynamically determined site identifier
-        /// </summary>
-        /// <exception cref="ArgumentException">Default eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
-        public EduHubContext()
-            : this(null, null)
-        {
-        }
-
-        /// <summary>
         /// Names of all Data Sets
         /// </summary>
-        public override IEnumerable<string> GetNames()
+        public IEnumerable<string> GetNames()
         {
             yield return "A_DECRYP";
             yield return "AKB";

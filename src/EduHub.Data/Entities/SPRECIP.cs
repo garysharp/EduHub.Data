@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS Recipients
     /// </summary>
-    public class SPRECIP : EntityBase
+    public partial class SPRECIP : EntityBase
     {
 #region Navigation Property Cache
         private SPSMS _CODE_SPSMS;
@@ -95,12 +95,14 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [SPSMS].[SPSMSKEY]
+        /// SPSMS (SMS messages) related entity by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
         /// SMS Key
         /// 
         /// </summary>
-        public SPSMS CODE_SPSMS {
+        public SPSMS CODE_SPSMS
+        {
             get
             {
                 if (CODE.HasValue)

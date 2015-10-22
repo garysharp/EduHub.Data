@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Locations
     /// </summary>
-    public class AKL : EntityBase
+    public partial class AKL : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Prime Key
@@ -72,6 +69,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        public IReadOnlyList<AR> AR_LOCATION
+        {
+            get
+            {
+                return Context.AKL.FindARByLOCATION(LOCATION);
+            }
+        }
+
+        /// <summary>
+        /// ARF (Asset Financial Transactions) related entities by [ARF.LOCATION]-&gt;[AKL.LOCATION]
+        /// </summary>
+        public IReadOnlyList<ARF> ARF_LOCATION
+        {
+            get
+            {
+                return Context.AKL.FindARFByLOCATION(LOCATION);
+            }
+        }
 #endregion
     }
 }

@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS Recipients Data Set
     /// </summary>
-    public sealed class SPREPLYDataSet : SetBase<SPREPLY>
+    public sealed partial class SPREPLYDataSet : SetBase<SPREPLY>
     {
         private Lazy<Dictionary<int, SPREPLY>> TIDIndex;
+
 
         internal SPREPLYDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SPREPLY>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

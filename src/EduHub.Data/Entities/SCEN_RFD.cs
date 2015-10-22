@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Field-Display Metadata for Census Return Data
     /// </summary>
-    public class SCEN_RFD : EntityBase
+    public partial class SCEN_RFD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -39,9 +36,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public short? DEFAULTCOLUMNDISPLAYORDER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

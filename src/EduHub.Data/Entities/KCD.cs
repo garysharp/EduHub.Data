@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Doctors
     /// </summary>
-    public class KCD : EntityBase
+    public partial class KCD : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Doctor code
@@ -83,6 +80,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// DF (Families) related entities by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        public IReadOnlyList<DF> DF_DOCTOR
+        {
+            get
+            {
+                return Context.KCD.FindDFByDOCTOR(KCDKEY);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
+        /// </summary>
+        public IReadOnlyList<ST> ST_DOCTOR
+        {
+            get
+            {
+                return Context.KCD.FindSTByDOCTOR(KCDKEY);
+            }
+        }
 #endregion
     }
 }

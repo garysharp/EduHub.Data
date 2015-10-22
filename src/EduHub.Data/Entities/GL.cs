@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger
     /// </summary>
-    public class GL : EntityBase
+    public partial class GL : EntityBase
     {
 #region Navigation Property Cache
         private KGLT _GL_TYPE_KGLT;
@@ -423,11 +423,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GL_TYPE] => [KGLT].[GL_TYPE]
+        /// KGLT (General Ledger Account Types) related entity by [GL.GL_TYPE]-&gt;[KGLT.GL_TYPE]
         /// Income/expense/Liabitiy etc
         /// </summary>
-        public KGLT GL_TYPE_KGLT {
+        public KGLT GL_TYPE_KGLT
+        {
             get
             {
                 if (GL_TYPE != null)
@@ -442,6 +444,281 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GLCODE_ASS]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GLCODE_ASS
+        {
+            get
+            {
+                return Context.GL.FindAKCByGLCODE_ASS(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GLCODE_PRV]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GLCODE_PRV
+        {
+            get
+            {
+                return Context.GL.FindAKCByGLCODE_PRV(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GLCODE_EXP]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GLCODE_EXP
+        {
+            get
+            {
+                return Context.GL.FindAKCByGLCODE_EXP(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GL_REVALS_BS]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GL_REVALS_BS
+        {
+            get
+            {
+                return Context.GL.FindAKCByGL_REVALS_BS(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GL_REVALS_PL]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GL_REVALS_PL
+        {
+            get
+            {
+                return Context.GL.FindAKCByGL_REVALS_PL(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GL_REVALS_ASS]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GL_REVALS_ASS
+        {
+            get
+            {
+                return Context.GL.FindAKCByGL_REVALS_ASS(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GL_DISP_PROF]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GL_DISP_PROF
+        {
+            get
+            {
+                return Context.GL.FindAKCByGL_DISP_PROF(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.GL_DISP_PROC]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_GL_DISP_PROC
+        {
+            get
+            {
+                return Context.GL.FindAKCByGL_DISP_PROC(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AKC (Assets - Categories) related entities by [AKC.APTE_GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AKC> AKC_APTE_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindAKCByAPTE_GLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// AR (Assets) related entities by [AR.PTE_GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<AR> AR_PTE_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindARByPTE_GLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// GLBUDG (General Ledger Budgets) related entities by [GLBUDG.CODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<GLBUDG> GLBUDG_CODE
+        {
+            get
+            {
+                return Context.GL.FindGLBUDGByCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// GLCF (GL Combined Financial Trans) related entities by [GLCF.CODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<GLCF> GLCF_CODE
+        {
+            get
+            {
+                return Context.GL.FindGLCFByCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// GLF (General Ledger Transactions) related entities by [GLF.CODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<GLF> GLF_CODE
+        {
+            get
+            {
+                return Context.GL.FindGLFByCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// KGST (GST Percentages) related entities by [KGST.GLGST_CODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<KGST> KGST_GLGST_CODE
+        {
+            get
+            {
+                return Context.GL.FindKGSTByGLGST_CODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PC (Cost Centres) related entities by [PC.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PC> PC_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindPCByGLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PD (Departments) related entities by [PD.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PD> PD_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindPDByGLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PD (Departments) related entities by [PD.GLBANK]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PD> PD_GLBANK
+        {
+            get
+            {
+                return Context.GL.FindPDByGLBANK(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PD (Departments) related entities by [PD.GLTAX]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PD> PD_GLTAX
+        {
+            get
+            {
+                return Context.GL.FindPDByGLTAX(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PF (Superannuation Funds) related entities by [PF.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PF> PF_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindPFByGLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PI (Pay Items) related entities by [PI.CLR_GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PI> PI_CLR_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindPIByCLR_GLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PN (Payroll Groups) related entities by [PN.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PN> PN_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindPNByGLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PN (Payroll Groups) related entities by [PN.GLBANK]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PN> PN_GLBANK
+        {
+            get
+            {
+                return Context.GL.FindPNByGLBANK(CODE);
+            }
+        }
+
+        /// <summary>
+        /// PN (Payroll Groups) related entities by [PN.GLTAX]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<PN> PN_GLTAX
+        {
+            get
+            {
+                return Context.GL.FindPNByGLTAX(CODE);
+            }
+        }
+
+        /// <summary>
+        /// SA (Fees) related entities by [SA.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<SA> SA_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindSAByGLCODE(CODE);
+            }
+        }
+
+        /// <summary>
+        /// SDFC (Sundry Debtor Fees) related entities by [SDFC.GLCODE]-&gt;[GL.CODE]
+        /// </summary>
+        public IReadOnlyList<SDFC> SDFC_GLCODE
+        {
+            get
+            {
+                return Context.GL.FindSDFCByGLCODE(CODE);
             }
         }
 #endregion

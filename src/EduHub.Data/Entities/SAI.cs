@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvements/Sickbay Visits
     /// </summary>
-    public class SAI : EntityBase
+    public partial class SAI : EntityBase
     {
 #region Navigation Property Cache
         private SAD _ACCIDENTID_SAD;
@@ -199,11 +199,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ACCIDENTID] => [SAD].[SADKEY]
+        /// SAD (Accidents) related entity by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
         /// Sequence no of accident
         /// </summary>
-        public SAD ACCIDENTID_SAD {
+        public SAD ACCIDENTID_SAD
+        {
             get
             {
                 if (ACCIDENTID.HasValue)
@@ -218,6 +220,28 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SAII (Accident Involvement Injuries) related entities by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        public IReadOnlyList<SAII> SAII_INVOLVEMENTID
+        {
+            get
+            {
+                return Context.SAI.FindSAIIByINVOLVEMENTID(SAIKEY);
+            }
+        }
+
+        /// <summary>
+        /// SAIM (Sickbay Medication Administrations) related entities by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
+        /// </summary>
+        public IReadOnlyList<SAIM> SAIM_INVOLVEMENTID
+        {
+            get
+            {
+                return Context.SAI.FindSAIMByINVOLVEMENTID(SAIKEY);
             }
         }
 #endregion

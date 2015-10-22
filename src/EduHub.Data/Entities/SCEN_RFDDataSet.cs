@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Field-Display Metadata for Census Return Data Data Set
     /// </summary>
-    public sealed class SCEN_RFDDataSet : SetBase<SCEN_RFD>
+    public sealed partial class SCEN_RFDDataSet : SetBase<SCEN_RFD>
     {
         private Lazy<Dictionary<int, SCEN_RFD>> IDIndex;
+
 
         internal SCEN_RFDDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_RFD>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

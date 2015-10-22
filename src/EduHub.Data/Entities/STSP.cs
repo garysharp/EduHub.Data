@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Suspension Details
     /// </summary>
-    public class STSP : EntityBase
+    public partial class STSP : EntityBase
     {
 #region Navigation Property Cache
         private ST _SPKEY_ST;
@@ -215,11 +215,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SPKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STSP.SPKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST SPKEY_ST {
+        public ST SPKEY_ST
+        {
             get
             {
                 if (SPKEY != null)
@@ -236,11 +238,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [REF_TEACHERA] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [STSP.REF_TEACHERA]-&gt;[SF.SFKEY]
         /// Staff code of first or only teacher involved
         /// </summary>
-        public SF REF_TEACHERA_SF {
+        public SF REF_TEACHERA_SF
+        {
             get
             {
                 if (REF_TEACHERA != null)
@@ -257,11 +261,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [REF_TEACHERB] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [STSP.REF_TEACHERB]-&gt;[SF.SFKEY]
         /// Staff code of second teacher involved (if any)
         /// </summary>
-        public SF REF_TEACHERB_SF {
+        public SF REF_TEACHERB_SF
+        {
             get
             {
                 if (REF_TEACHERB != null)

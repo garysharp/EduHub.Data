@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Absence Types Data Set
     /// </summary>
-    public sealed class TCATDataSet : SetBase<TCAT>
+    public sealed partial class TCATDataSet : SetBase<TCAT>
     {
         private Lazy<Dictionary<string, TCAT>> TCATKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<TCTB>>> TCTB_ABSENCE_TYPEForeignIndex;
 
         internal TCATDataSet(EduHubContext Context)
             : base(Context)
         {
             TCATKEYIndex = new Lazy<Dictionary<string, TCAT>>(() => this.ToDictionary(e => e.TCATKEY));
+
+            TCTB_ABSENCE_TYPEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<TCTB>>>(() =>
+                    Context.TCTB
+                          .Where(e => e.ABSENCE_TYPE != null)
+                          .GroupBy(e => e.ABSENCE_TYPE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TCTB>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all TCTB (Teacher Absences) entities by [TCTB.ABSENCE_TYPE]-&gt;[TCAT.TCATKEY]
+        /// </summary>
+        /// <param name="TCATKEY">TCATKEY value used to find TCTB entities</param>
+        /// <returns>A list of related TCTB entities</returns>
+        public IReadOnlyList<TCTB> FindTCTBByABSENCE_TYPE(string TCATKEY)
+        {
+            IReadOnlyList<TCTB> result;
+            if (TCTB_ABSENCE_TYPEForeignIndex.Value.TryGetValue(TCATKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TCTB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TCTB entities by [TCTB.ABSENCE_TYPE]-&gt;[TCAT.TCATKEY]
+        /// </summary>
+        /// <param name="TCATKEY">TCATKEY value used to find TCTB entities</param>
+        /// <param name="Value">A list of related TCTB entities</param>
+        /// <returns>True if any TCTB entities are found</returns>
+        public bool TryFindTCTBByABSENCE_TYPE(string TCATKEY, out IReadOnlyList<TCTB> Value)
+        {
+            return TCTB_ABSENCE_TYPEForeignIndex.Value.TryGetValue(TCATKEY, out Value);
         }
 
 

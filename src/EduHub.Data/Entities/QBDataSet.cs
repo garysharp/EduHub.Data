@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Batch Headers Data Set
     /// </summary>
-    public sealed class QBDataSet : SetBase<QB>
+    public sealed partial class QBDataSet : SetBase<QB>
     {
         private Lazy<Dictionary<int, QB>> QBKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<DRF>>> DRF_TRBATCHForeignIndex;
 
         internal QBDataSet(EduHubContext Context)
             : base(Context)
         {
             QBKEYIndex = new Lazy<Dictionary<int, QB>>(() => this.ToDictionary(e => e.QBKEY));
+
+            DRF_TRBATCHForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<DRF>>>(() =>
+                    Context.DRF
+                          .Where(e => e.TRBATCH != null)
+                          .GroupBy(e => e.TRBATCH.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all DRF (DR Transactions) entities by [DRF.TRBATCH]-&gt;[QB.QBKEY]
+        /// </summary>
+        /// <param name="QBKEY">QBKEY value used to find DRF entities</param>
+        /// <returns>A list of related DRF entities</returns>
+        public IReadOnlyList<DRF> FindDRFByTRBATCH(int QBKEY)
+        {
+            IReadOnlyList<DRF> result;
+            if (DRF_TRBATCHForeignIndex.Value.TryGetValue(QBKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DRF entities by [DRF.TRBATCH]-&gt;[QB.QBKEY]
+        /// </summary>
+        /// <param name="QBKEY">QBKEY value used to find DRF entities</param>
+        /// <param name="Value">A list of related DRF entities</param>
+        /// <returns>True if any DRF entities are found</returns>
+        public bool TryFindDRFByTRBATCH(int QBKEY, out IReadOnlyList<DRF> Value)
+        {
+            return DRF_TRBATCHForeignIndex.Value.TryGetValue(QBKEY, out Value);
         }
 
 

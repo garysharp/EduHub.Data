@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Standard Disciplinary Actions
     /// </summary>
-    public class KAM : EntityBase
+    public partial class KAM : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Code to identify standard disciplinary action
@@ -43,6 +40,17 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SDPA (Disciplinary Actions) related entities by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
+        /// </summary>
+        public IReadOnlyList<SDPA> SDPA_ACTION_TAKEN
+        {
+            get
+            {
+                return Context.KAM.FindSDPAByACTION_TAKEN(KAMKEY);
+            }
+        }
 #endregion
     }
 }

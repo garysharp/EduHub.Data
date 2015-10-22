@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Quilt Entries Data Set
     /// </summary>
-    public sealed class THTQDataSet : SetBase<THTQ>
+    public sealed partial class THTQDataSet : SetBase<THTQ>
     {
         private Lazy<Dictionary<int, THTQ>> IDENTIndex;
+
 
         internal THTQDataSet(EduHubContext Context)
             : base(Context)
         {
             IDENTIndex = new Lazy<Dictionary<int, THTQ>>(() => this.ToDictionary(e => e.IDENT));
+
         }
 
         /// <summary>

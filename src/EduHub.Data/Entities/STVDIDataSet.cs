@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Dimension Results Data Set
     /// </summary>
-    public sealed class STVDIDataSet : SetBase<STVDI>
+    public sealed partial class STVDIDataSet : SetBase<STVDI>
     {
+
 
         internal STVDIDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

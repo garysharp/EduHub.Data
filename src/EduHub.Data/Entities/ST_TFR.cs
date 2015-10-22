@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// ST Transfer
     /// </summary>
-    public class ST_TFR : EntityBase
+    public partial class ST_TFR : EntityBase
     {
 #region Navigation Property Cache
         private SKGS _ORIG_SCHOOL_SKGS;
@@ -536,11 +536,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ORIG_SCHOOL] => [SKGS].[SCHOOL]
+        /// SKGS (Schools) related entity by [ST_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
         /// Orignating School
         /// </summary>
-        public SKGS ORIG_SCHOOL_SKGS {
+        public SKGS ORIG_SCHOOL_SKGS
+        {
             get
             {
                 if (ORIG_SCHOOL != null)
@@ -557,11 +559,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR_NEW] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [ST_TFR.SCHOOL_YEAR_NEW]-&gt;[KCY.KCYKEY]
         /// New Year level
         /// </summary>
-        public KCY SCHOOL_YEAR_NEW_KCY {
+        public KCY SCHOOL_YEAR_NEW_KCY
+        {
             get
             {
                 if (SCHOOL_YEAR_NEW != null)
@@ -578,11 +582,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [HOME_GROUP_NEW] => [KGC].[KGCKEY]
+        /// KGC (Home Groups) related entity by [ST_TFR.HOME_GROUP_NEW]-&gt;[KGC.KGCKEY]
         /// New Home Group
         /// </summary>
-        public KGC HOME_GROUP_NEW_KGC {
+        public KGC HOME_GROUP_NEW_KGC
+        {
             get
             {
                 if (HOME_GROUP_NEW != null)

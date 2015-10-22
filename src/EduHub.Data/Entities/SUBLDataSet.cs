@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Book List Data Set
     /// </summary>
-    public sealed class SUBLDataSet : SetBase<SUBL>
+    public sealed partial class SUBLDataSet : SetBase<SUBL>
     {
+
 
         internal SUBLDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

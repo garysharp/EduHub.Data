@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// On line receipt history
     /// </summary>
-    public class SIRH : EntityBase
+    public partial class SIRH : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Transaction ID
@@ -109,9 +106,6 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

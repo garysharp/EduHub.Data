@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Incident Instigators
     /// </summary>
-    public class SDP : EntityBase
+    public partial class SDP : EntityBase
     {
 #region Navigation Property Cache
         private SID _INCIDENT_KEY_SID;
@@ -71,11 +71,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [INCIDENT_KEY] => [SID].[SIDKEY]
+        /// SID (Disciplinary Incidents) related entity by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
         /// Number of the incident
         /// </summary>
-        public SID INCIDENT_KEY_SID {
+        public SID INCIDENT_KEY_SID
+        {
             get
             {
                 if (INCIDENT_KEY.HasValue)
@@ -92,11 +94,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STUDENT_KEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [SDP.STUDENT_KEY]-&gt;[ST.STKEY]
         /// Code of student who instigated the incident
         /// </summary>
-        public ST STUDENT_KEY_ST {
+        public ST STUDENT_KEY_ST
+        {
             get
             {
                 if (STUDENT_KEY != null)
@@ -111,6 +115,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SDPA (Disciplinary Actions) related entities by [SDPA.SDP_STUDENT]-&gt;[SDP.SDPKEY]
+        /// </summary>
+        public IReadOnlyList<SDPA> SDPA_SDP_STUDENT
+        {
+            get
+            {
+                return Context.SDP.FindSDPABySDP_STUDENT(SDPKEY);
             }
         }
 #endregion

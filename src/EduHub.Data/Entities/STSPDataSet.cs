@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Suspension Details Data Set
     /// </summary>
-    public sealed class STSPDataSet : SetBase<STSP>
+    public sealed partial class STSPDataSet : SetBase<STSP>
     {
+
 
         internal STSPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

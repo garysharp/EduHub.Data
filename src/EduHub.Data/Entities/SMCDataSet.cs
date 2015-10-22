@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Medical Conditions Data Set
     /// </summary>
-    public sealed class SMCDataSet : SetBase<SMC>
+    public sealed partial class SMCDataSet : SetBase<SMC>
     {
         private Lazy<Dictionary<int, SMC>> SMCKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SMCD>>> SMCD_SMCDKEYForeignIndex;
 
         internal SMCDataSet(EduHubContext Context)
             : base(Context)
         {
             SMCKEYIndex = new Lazy<Dictionary<int, SMC>>(() => this.ToDictionary(e => e.SMCKEY));
+
+            SMCD_SMCDKEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SMCD>>>(() =>
+                    Context.SMCD
+                          .Where(e => e.SMCDKEY != null)
+                          .GroupBy(e => e.SMCDKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMCD>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SMCD (Student Medication Doses) entities by [SMCD.SMCDKEY]-&gt;[SMC.SMCKEY]
+        /// </summary>
+        /// <param name="SMCKEY">SMCKEY value used to find SMCD entities</param>
+        /// <returns>A list of related SMCD entities</returns>
+        public IReadOnlyList<SMCD> FindSMCDBySMCDKEY(int SMCKEY)
+        {
+            IReadOnlyList<SMCD> result;
+            if (SMCD_SMCDKEYForeignIndex.Value.TryGetValue(SMCKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SMCD>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SMCD entities by [SMCD.SMCDKEY]-&gt;[SMC.SMCKEY]
+        /// </summary>
+        /// <param name="SMCKEY">SMCKEY value used to find SMCD entities</param>
+        /// <param name="Value">A list of related SMCD entities</param>
+        /// <returns>True if any SMCD entities are found</returns>
+        public bool TryFindSMCDBySMCDKEY(int SMCKEY, out IReadOnlyList<SMCD> Value)
+        {
+            return SMCD_SMCDKEYForeignIndex.Value.TryGetValue(SMCKEY, out Value);
         }
 
 

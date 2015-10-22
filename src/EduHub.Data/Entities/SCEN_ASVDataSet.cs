@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Student Validation Data Data Set
     /// </summary>
-    public sealed class SCEN_ASVDataSet : SetBase<SCEN_ASV>
+    public sealed partial class SCEN_ASVDataSet : SetBase<SCEN_ASV>
     {
         private Lazy<Dictionary<int, SCEN_ASV>> IDIndex;
+
 
         internal SCEN_ASVDataSet(EduHubContext Context)
             : base(Context)
         {
             IDIndex = new Lazy<Dictionary<int, SCEN_ASV>>(() => this.ToDictionary(e => e.ID));
+
         }
 
         /// <summary>

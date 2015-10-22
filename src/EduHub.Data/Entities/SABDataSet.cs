@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fees - Billing Templates Data Set
     /// </summary>
-    public sealed class SABDataSet : SetBase<SAB>
+    public sealed partial class SABDataSet : SetBase<SAB>
     {
         private Lazy<Dictionary<string, SAB>> SABKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SABT>>> SABT_SABTKEYForeignIndex;
 
         internal SABDataSet(EduHubContext Context)
             : base(Context)
         {
             SABKEYIndex = new Lazy<Dictionary<string, SAB>>(() => this.ToDictionary(e => e.SABKEY));
+
+            SABT_SABTKEYForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SABT>>>(() =>
+                    Context.SABT
+                          .Where(e => e.SABTKEY != null)
+                          .GroupBy(e => e.SABTKEY)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SABT>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SABT (Billing Template Transactions) entities by [SABT.SABTKEY]-&gt;[SAB.SABKEY]
+        /// </summary>
+        /// <param name="SABKEY">SABKEY value used to find SABT entities</param>
+        /// <returns>A list of related SABT entities</returns>
+        public IReadOnlyList<SABT> FindSABTBySABTKEY(string SABKEY)
+        {
+            IReadOnlyList<SABT> result;
+            if (SABT_SABTKEYForeignIndex.Value.TryGetValue(SABKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SABT>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SABT entities by [SABT.SABTKEY]-&gt;[SAB.SABKEY]
+        /// </summary>
+        /// <param name="SABKEY">SABKEY value used to find SABT entities</param>
+        /// <param name="Value">A list of related SABT entities</param>
+        /// <returns>True if any SABT entities are found</returns>
+        public bool TryFindSABTBySABTKEY(string SABKEY, out IReadOnlyList<SABT> Value)
+        {
+            return SABT_SABTKEYForeignIndex.Value.TryGetValue(SABKEY, out Value);
         }
 
 

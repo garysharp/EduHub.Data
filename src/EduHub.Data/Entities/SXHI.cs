@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student History
     /// </summary>
-    public class SXHI : EntityBase
+    public partial class SXHI : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -203,11 +203,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [SXHI.SKEY]-&gt;[ST.STKEY]
         /// Student ID (dynamic link that gets updated whenever ST.STKEY is also updated)
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)

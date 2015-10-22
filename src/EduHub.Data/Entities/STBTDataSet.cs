@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Usage Data Set
     /// </summary>
-    public sealed class STBTDataSet : SetBase<STBT>
+    public sealed partial class STBTDataSet : SetBase<STBT>
     {
+
 
         internal STBTDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

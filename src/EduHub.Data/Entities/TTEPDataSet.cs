@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Periods Data Set
     /// </summary>
-    public sealed class TTEPDataSet : SetBase<TTEP>
+    public sealed partial class TTEPDataSet : SetBase<TTEP>
     {
+
 
         internal TTEPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

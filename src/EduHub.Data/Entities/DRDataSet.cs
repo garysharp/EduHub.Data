@@ -8,14 +8,52 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Receivable Data Set
     /// </summary>
-    public sealed class DRDataSet : SetBase<DR>
+    public sealed partial class DRDataSet : SetBase<DR>
     {
         private Lazy<Dictionary<string, DR>> DRKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<DRB>>> DRB_DR_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<DRF>>> DRF_CODEForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SDGM>>> SDGM_PERSON_LINKForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_DEBTOR_IDForeignIndex;
 
         internal DRDataSet(EduHubContext Context)
             : base(Context)
         {
             DRKEYIndex = new Lazy<Dictionary<string, DR>>(() => this.ToDictionary(e => e.DRKEY));
+
+            DRB_DR_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DRB>>>(() =>
+                    Context.DRB
+                          .Where(e => e.DR_CODE != null)
+                          .GroupBy(e => e.DR_CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRB>)g.ToList()
+                          .AsReadOnly()));
+
+            DRF_CODEForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<DRF>>>(() =>
+                    Context.DRF
+                          .Where(e => e.CODE != null)
+                          .GroupBy(e => e.CODE)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRF>)g.ToList()
+                          .AsReadOnly()));
+
+            SDGM_PERSON_LINKForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SDGM>>>(() =>
+                    Context.SDGM
+                          .Where(e => e.PERSON_LINK != null)
+                          .GroupBy(e => e.PERSON_LINK)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDGM>)g.ToList()
+                          .AsReadOnly()));
+
+            SF_DEBTOR_IDForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.DEBTOR_ID != null)
+                          .GroupBy(e => e.DEBTOR_ID)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +107,122 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all DRB (BPAY Receipts for Sundry Debtors) entities by [DRB.DR_CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find DRB entities</param>
+        /// <returns>A list of related DRB entities</returns>
+        public IReadOnlyList<DRB> FindDRBByDR_CODE(string DRKEY)
+        {
+            IReadOnlyList<DRB> result;
+            if (DRB_DR_CODEForeignIndex.Value.TryGetValue(DRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DRB>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DRB entities by [DRB.DR_CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find DRB entities</param>
+        /// <param name="Value">A list of related DRB entities</param>
+        /// <returns>True if any DRB entities are found</returns>
+        public bool TryFindDRBByDR_CODE(string DRKEY, out IReadOnlyList<DRB> Value)
+        {
+            return DRB_DR_CODEForeignIndex.Value.TryGetValue(DRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all DRF (DR Transactions) entities by [DRF.CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find DRF entities</param>
+        /// <returns>A list of related DRF entities</returns>
+        public IReadOnlyList<DRF> FindDRFByCODE(string DRKEY)
+        {
+            IReadOnlyList<DRF> result;
+            if (DRF_CODEForeignIndex.Value.TryGetValue(DRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<DRF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all DRF entities by [DRF.CODE]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find DRF entities</param>
+        /// <param name="Value">A list of related DRF entities</param>
+        /// <returns>True if any DRF entities are found</returns>
+        public bool TryFindDRFByCODE(string DRKEY, out IReadOnlyList<DRF> Value)
+        {
+            return DRF_CODEForeignIndex.Value.TryGetValue(DRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SDGM (Adult Group Members) entities by [SDGM.PERSON_LINK]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find SDGM entities</param>
+        /// <returns>A list of related SDGM entities</returns>
+        public IReadOnlyList<SDGM> FindSDGMByPERSON_LINK(string DRKEY)
+        {
+            IReadOnlyList<SDGM> result;
+            if (SDGM_PERSON_LINKForeignIndex.Value.TryGetValue(DRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SDGM>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SDGM entities by [SDGM.PERSON_LINK]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find SDGM entities</param>
+        /// <param name="Value">A list of related SDGM entities</param>
+        /// <returns>True if any SDGM entities are found</returns>
+        public bool TryFindSDGMByPERSON_LINK(string DRKEY, out IReadOnlyList<SDGM> Value)
+        {
+            return SDGM_PERSON_LINKForeignIndex.Value.TryGetValue(DRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.DEBTOR_ID]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByDEBTOR_ID(string DRKEY)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_DEBTOR_IDForeignIndex.Value.TryGetValue(DRKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.DEBTOR_ID]-&gt;[DR.DRKEY]
+        /// </summary>
+        /// <param name="DRKEY">DRKEY value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByDEBTOR_ID(string DRKEY, out IReadOnlyList<SF> Value)
+        {
+            return SF_DEBTOR_IDForeignIndex.Value.TryGetValue(DRKEY, out Value);
         }
 
 

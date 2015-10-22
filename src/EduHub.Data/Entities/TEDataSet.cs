@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Events Data Set
     /// </summary>
-    public sealed class TEDataSet : SetBase<TE>
+    public sealed partial class TEDataSet : SetBase<TE>
     {
         private Lazy<Dictionary<int, TE>> TEKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<TETE>>> TETE_TETEKEYForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<TETN>>> TETN_TETNKEYForeignIndex;
 
         internal TEDataSet(EduHubContext Context)
             : base(Context)
         {
             TEKEYIndex = new Lazy<Dictionary<int, TE>>(() => this.ToDictionary(e => e.TEKEY));
+
+            TETE_TETEKEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<TETE>>>(() =>
+                    Context.TETE
+                          .Where(e => e.TETEKEY != null)
+                          .GroupBy(e => e.TETEKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TETE>)g.ToList()
+                          .AsReadOnly()));
+
+            TETN_TETNKEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<TETN>>>(() =>
+                    Context.TETN
+                          .Where(e => e.TETNKEY != null)
+                          .GroupBy(e => e.TETNKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TETN>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all TETE (Event Instances) entities by [TETE.TETEKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        /// <param name="TEKEY">TEKEY value used to find TETE entities</param>
+        /// <returns>A list of related TETE entities</returns>
+        public IReadOnlyList<TETE> FindTETEByTETEKEY(int TEKEY)
+        {
+            IReadOnlyList<TETE> result;
+            if (TETE_TETEKEYForeignIndex.Value.TryGetValue(TEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TETE>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TETE entities by [TETE.TETEKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        /// <param name="TEKEY">TEKEY value used to find TETE entities</param>
+        /// <param name="Value">A list of related TETE entities</param>
+        /// <returns>True if any TETE entities are found</returns>
+        public bool TryFindTETEByTETEKEY(int TEKEY, out IReadOnlyList<TETE> Value)
+        {
+            return TETE_TETEKEYForeignIndex.Value.TryGetValue(TEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all TETN (Event Attendees) entities by [TETN.TETNKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        /// <param name="TEKEY">TEKEY value used to find TETN entities</param>
+        /// <returns>A list of related TETN entities</returns>
+        public IReadOnlyList<TETN> FindTETNByTETNKEY(int TEKEY)
+        {
+            IReadOnlyList<TETN> result;
+            if (TETN_TETNKEYForeignIndex.Value.TryGetValue(TEKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TETN>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all TETN entities by [TETN.TETNKEY]-&gt;[TE.TEKEY]
+        /// </summary>
+        /// <param name="TEKEY">TEKEY value used to find TETN entities</param>
+        /// <param name="Value">A list of related TETN entities</param>
+        /// <returns>True if any TETN entities are found</returns>
+        public bool TryFindTETNByTETNKEY(int TEKEY, out IReadOnlyList<TETN> Value)
+        {
+            return TETN_TETNKEYForeignIndex.Value.TryGetValue(TEKEY, out Value);
         }
 
 

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Selections &amp; Marks
     /// </summary>
-    public class STMA : EntityBase
+    public partial class STMA : EntityBase
     {
 #region Navigation Property Cache
         private ST _SKEY_ST;
@@ -155,11 +155,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [SKEY] => [ST].[STKEY]
+        /// ST (Students) related entity by [STMA.SKEY]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST SKEY_ST {
+        public ST SKEY_ST
+        {
             get
             {
                 if (SKEY != null)
@@ -176,11 +178,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MKEY] => [SU].[SUKEY]
+        /// SU (Subjects) related entity by [STMA.MKEY]-&gt;[SU.SUKEY]
         /// Subject code
         /// </summary>
-        public SU MKEY_SU {
+        public SU MKEY_SU
+        {
             get
             {
                 if (MKEY != null)
@@ -197,11 +201,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CKEY] => [SC].[COURSE]
+        /// SC (Courses) related entity by [STMA.CKEY]-&gt;[SC.COURSE]
         /// Course code
         /// </summary>
-        public SC CKEY_SC {
+        public SC CKEY_SC
+        {
             get
             {
                 if (CKEY != null)
@@ -218,11 +224,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SCHOOL_YEAR] => [KCY].[KCYKEY]
+        /// KCY (Year Levels) related entity by [STMA.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
         /// Specific year level: (V) (NRM)
         /// </summary>
-        public KCY SCHOOL_YEAR_KCY {
+        public KCY SCHOOL_YEAR_KCY
+        {
             get
             {
                 if (SCHOOL_YEAR != null)

@@ -8,14 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Reports for emailing Data Set
     /// </summary>
-    public sealed class KREPORTDataSet : SetBase<KREPORT>
+    public sealed partial class KREPORTDataSet : SetBase<KREPORT>
     {
         private Lazy<Dictionary<string, KREPORT>> KREPORTKEYIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SPEMAIL>>> SPEMAIL_REPORTForeignIndex;
 
         internal KREPORTDataSet(EduHubContext Context)
             : base(Context)
         {
             KREPORTKEYIndex = new Lazy<Dictionary<string, KREPORT>>(() => this.ToDictionary(e => e.KREPORTKEY));
+
+            SPEMAIL_REPORTForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SPEMAIL>>>(() =>
+                    Context.SPEMAIL
+                          .Where(e => e.REPORT != null)
+                          .GroupBy(e => e.REPORT)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPEMAIL>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +80,35 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SPEMAIL (Report email templates) entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
+        /// </summary>
+        /// <param name="KREPORTKEY">KREPORTKEY value used to find SPEMAIL entities</param>
+        /// <returns>A list of related SPEMAIL entities</returns>
+        public IReadOnlyList<SPEMAIL> FindSPEMAILByREPORT(string KREPORTKEY)
+        {
+            IReadOnlyList<SPEMAIL> result;
+            if (SPEMAIL_REPORTForeignIndex.Value.TryGetValue(KREPORTKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SPEMAIL>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SPEMAIL entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
+        /// </summary>
+        /// <param name="KREPORTKEY">KREPORTKEY value used to find SPEMAIL entities</param>
+        /// <param name="Value">A list of related SPEMAIL entities</param>
+        /// <returns>True if any SPEMAIL entities are found</returns>
+        public bool TryFindSPEMAILByREPORT(string KREPORTKEY, out IReadOnlyList<SPEMAIL> Value)
+        {
+            return SPEMAIL_REPORTForeignIndex.Value.TryGetValue(KREPORTKEY, out Value);
         }
 
 

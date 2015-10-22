@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Methods
     /// </summary>
-    public class PEPM : EntityBase
+    public partial class PEPM : EntityBase
     {
 #region Navigation Property Cache
         private PE _CODE_PE;
@@ -101,11 +101,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [CODE] => [PE].[PEKEY]
+        /// PE (Employees) related entity by [PEPM.CODE]-&gt;[PE.PEKEY]
         /// Employee code
         /// </summary>
-        public PE CODE_PE {
+        public PE CODE_PE
+        {
             get
             {
                 if (CODE != null)
@@ -122,11 +124,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [BSB] => [KAB].[BSB]
+        /// KAB (BSB Numbers) related entity by [PEPM.BSB]-&gt;[KAB.BSB]
         /// Bank-state-branch as BBBBBB
         /// </summary>
-        public KAB BSB_KAB {
+        public KAB BSB_KAB
+        {
             get
             {
                 if (BSB != null)

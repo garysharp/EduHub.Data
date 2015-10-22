@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Termination Payment Data Set
     /// </summary>
-    public sealed class PETPDataSet : SetBase<PETP>
+    public sealed partial class PETPDataSet : SetBase<PETP>
     {
+
 
         internal PETPDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

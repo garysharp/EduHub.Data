@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 User Sessions
     /// </summary>
-    public class SEC_USR : EntityBase
+    public partial class SEC_USR : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -30,9 +27,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? DATECREATED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

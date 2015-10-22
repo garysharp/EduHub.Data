@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Student Excluded Data
     /// </summary>
-    public class SCEN_ASE : EntityBase
+    public partial class SCEN_ASE : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// 
@@ -47,9 +44,6 @@ namespace EduHub.Data.Entities
         /// 
         /// </summary>
         public DateTime? LUPDATED { get; internal set; }
-#endregion
-
-#region Navigation Properties
 #endregion
     }
 }

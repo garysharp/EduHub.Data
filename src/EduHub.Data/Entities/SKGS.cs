@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Schools
     /// </summary>
-    public class SKGS : EntityBase
+    public partial class SKGS : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// School ID
@@ -247,6 +244,226 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// DF_TFR (DF Transfer) related entities by [DF_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<DF_TFR> DF_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindDF_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// FDT_EXP (Financial Data Export) related entities by [FDT_EXP.DEST]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<FDT_EXP> FDT_EXP_DEST
+        {
+            get
+            {
+                return Context.SKGS.FindFDT_EXPByDEST(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// FER_FDT (FDT Financal Holding Table) related entities by [FER_FDT.SOURCE]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<FER_FDT> FER_FDT_SOURCE
+        {
+            get
+            {
+                return Context.SKGS.FindFER_FDTBySOURCE(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// KCD_TFR (KCD Transfer) related entities by [KCD_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<KCD_TFR> KCD_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindKCD_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// KCM_TFR (KCM Transfer) related entities by [KCM_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<KCM_TFR> KCM_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindKCM_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.SCHOOL_LINK]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_SCHOOL_LINK
+        {
+            get
+            {
+                return Context.SKGS.FindSCIBySCHOOL_LINK(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SCI.DESTINATION_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<SCI> SCI_DESTINATION_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSCIByDESTINATION_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// SMC_TFR (SMC Transfer) related entities by [SMC_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<SMC_TFR> SMC_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSMC_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.PREVIOUS_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<ST> ST_PREVIOUS_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSTByPREVIOUS_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.NEXT_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<ST> ST_NEXT_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSTByNEXT_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// ST_TFR (ST Transfer) related entities by [ST_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<ST_TFR> ST_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindST_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// ST_TFRIO (Student Data Transfer Table) related entities by [ST_TFRIO.DEST_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<ST_TFRIO> ST_TFRIO_DEST_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindST_TFRIOByDEST_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STPT (Student Part-Time Enrolments) related entities by [STPT.SCHL_NUM]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STPT> STPT_SCHL_NUM
+        {
+            get
+            {
+                return Context.SKGS.FindSTPTBySCHL_NUM(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_PREVIOUS_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_ST_PREVIOUS_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSTREByST_PREVIOUS_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.STPT_SCHL_NUM01]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_STPT_SCHL_NUM01
+        {
+            get
+            {
+                return Context.SKGS.FindSTREBySTPT_SCHL_NUM01(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.STPT_SCHL_NUM02]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_STPT_SCHL_NUM02
+        {
+            get
+            {
+                return Context.SKGS.FindSTREBySTPT_SCHL_NUM02(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.STPT_SCHL_NUM03]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_STPT_SCHL_NUM03
+        {
+            get
+            {
+                return Context.SKGS.FindSTREBySTPT_SCHL_NUM03(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.STPT_SCHL_NUM04]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_STPT_SCHL_NUM04
+        {
+            get
+            {
+                return Context.SKGS.FindSTREBySTPT_SCHL_NUM04(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_NEXT_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<STRE> STRE_ST_NEXT_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindSTREByST_NEXT_SCHOOL(SCHOOL);
+            }
+        }
+
+        /// <summary>
+        /// UM_TFR (UM Transfer) related entities by [UM_TFR.ORIG_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// </summary>
+        public IReadOnlyList<UM_TFR> UM_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                return Context.SKGS.FindUM_TFRByORIG_SCHOOL(SCHOOL);
+            }
+        }
 #endregion
     }
 }

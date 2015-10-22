@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sickbay Medication Administrations
     /// </summary>
-    public class SAIM : EntityBase
+    public partial class SAIM : EntityBase
     {
 #region Navigation Property Cache
         private SAI _INVOLVEMENTID_SAI;
@@ -67,11 +67,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [INVOLVEMENTID] => [SAI].[SAIKEY]
+        /// SAI (Accident Involvements/Sickbay Visits) related entity by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
         /// Sequence no of accident involvement
         /// </summary>
-        public SAI INVOLVEMENTID_SAI {
+        public SAI INVOLVEMENTID_SAI
+        {
             get
             {
                 if (INVOLVEMENTID.HasValue)
@@ -88,11 +90,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [STAFF] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SAIM.STAFF]-&gt;[SF.SFKEY]
         /// Staff code of staff member administering medication (if any)
         /// </summary>
-        public SF STAFF_SF {
+        public SF STAFF_SF
+        {
             get
             {
                 if (STAFF != null)

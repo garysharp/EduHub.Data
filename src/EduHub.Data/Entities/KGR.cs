@@ -6,11 +6,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Religions
     /// </summary>
-    public class KGR : EntityBase
+    public partial class KGR : EntityBase
     {
-#region Navigation Property Cache
-#endregion
-
 #region Field Properties
         /// <summary>
         /// Religion code
@@ -38,6 +35,28 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
+        /// <summary>
+        /// SF (Staff) related entities by [SF.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        public IReadOnlyList<SF> SF_RELIGION
+        {
+            get
+            {
+                return Context.KGR.FindSFByRELIGION(RELIGION);
+            }
+        }
+
+        /// <summary>
+        /// ST (Students) related entities by [ST.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        public IReadOnlyList<ST> ST_RELIGION
+        {
+            get
+            {
+                return Context.KGR.FindSTByRELIGION(RELIGION);
+            }
+        }
 #endregion
     }
 }

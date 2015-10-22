@@ -8,14 +8,43 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Members Data Set
     /// </summary>
-    public sealed class SAMDataSet : SetBase<SAM>
+    public sealed partial class SAMDataSet : SetBase<SAM>
     {
         private Lazy<Dictionary<int, SAM>> SAMKEYIndex;
+
+        private Lazy<Dictionary<int, IReadOnlyList<SAMA>>> SAMA_SAMAKEYForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SCI>>> SCI_SAM_SCH_COUNCILForeignIndex;
+        private Lazy<Dictionary<int, IReadOnlyList<SCI>>> SCI_SCH_COUNCIL_PRESForeignIndex;
 
         internal SAMDataSet(EduHubContext Context)
             : base(Context)
         {
             SAMKEYIndex = new Lazy<Dictionary<int, SAM>>(() => this.ToDictionary(e => e.SAMKEY));
+
+            SAMA_SAMAKEYForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SAMA>>>(() =>
+                    Context.SAMA
+                          .Where(e => e.SAMAKEY != null)
+                          .GroupBy(e => e.SAMAKEY.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAMA>)g.ToList()
+                          .AsReadOnly()));
+
+            SCI_SAM_SCH_COUNCILForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SCI>>>(() =>
+                    Context.SCI
+                          .Where(e => e.SAM_SCH_COUNCIL != null)
+                          .GroupBy(e => e.SAM_SCH_COUNCIL.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
+                          .AsReadOnly()));
+
+            SCI_SCH_COUNCIL_PRESForeignIndex =
+                new Lazy<Dictionary<int, IReadOnlyList<SCI>>>(() =>
+                    Context.SCI
+                          .Where(e => e.SCH_COUNCIL_PRES != null)
+                          .GroupBy(e => e.SCH_COUNCIL_PRES.Value)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +98,93 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SAMA (Association Member Attendances) entities by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAMA entities</param>
+        /// <returns>A list of related SAMA entities</returns>
+        public IReadOnlyList<SAMA> FindSAMABySAMAKEY(int SAMKEY)
+        {
+            IReadOnlyList<SAMA> result;
+            if (SAMA_SAMAKEYForeignIndex.Value.TryGetValue(SAMKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SAMA>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SAMA entities by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAMA entities</param>
+        /// <param name="Value">A list of related SAMA entities</param>
+        /// <returns>True if any SAMA entities are found</returns>
+        public bool TryFindSAMABySAMAKEY(int SAMKEY, out IReadOnlyList<SAMA> Value)
+        {
+            return SAMA_SAMAKEYForeignIndex.Value.TryGetValue(SAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SCI (School Information) entities by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
+        /// <returns>A list of related SCI entities</returns>
+        public IReadOnlyList<SCI> FindSCIBySAM_SCH_COUNCIL(int SAMKEY)
+        {
+            IReadOnlyList<SCI> result;
+            if (SCI_SAM_SCH_COUNCILForeignIndex.Value.TryGetValue(SAMKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCI entities by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
+        /// <param name="Value">A list of related SCI entities</param>
+        /// <returns>True if any SCI entities are found</returns>
+        public bool TryFindSCIBySAM_SCH_COUNCIL(int SAMKEY, out IReadOnlyList<SCI> Value)
+        {
+            return SCI_SAM_SCH_COUNCILForeignIndex.Value.TryGetValue(SAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Find all SCI (School Information) entities by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
+        /// <returns>A list of related SCI entities</returns>
+        public IReadOnlyList<SCI> FindSCIBySCH_COUNCIL_PRES(int SAMKEY)
+        {
+            IReadOnlyList<SCI> result;
+            if (SCI_SCH_COUNCIL_PRESForeignIndex.Value.TryGetValue(SAMKEY, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SCI>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SCI entities by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
+        /// <param name="Value">A list of related SCI entities</param>
+        /// <returns>True if any SCI entities are found</returns>
+        public bool TryFindSCIBySCH_COUNCIL_PRES(int SAMKEY, out IReadOnlyList<SCI> Value)
+        {
+            return SCI_SCH_COUNCIL_PRESForeignIndex.Value.TryGetValue(SAMKEY, out Value);
         }
 
 

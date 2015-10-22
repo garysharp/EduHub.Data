@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Import or Update Errors Data Set
     /// </summary>
-    public sealed class KERRORDataSet : SetBase<KERROR>
+    public sealed partial class KERRORDataSet : SetBase<KERROR>
     {
         private Lazy<Dictionary<int, KERROR>> KERROR_IDIndex;
+
 
         internal KERRORDataSet(EduHubContext Context)
             : base(Context)
         {
             KERROR_IDIndex = new Lazy<Dictionary<int, KERROR>>(() => this.ToDictionary(e => e.KERROR_ID));
+
         }
 
         /// <summary>

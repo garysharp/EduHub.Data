@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Supplier Details Data Set
     /// </summary>
-    public sealed class PPSDataSet : SetBase<PPS>
+    public sealed partial class PPSDataSet : SetBase<PPS>
     {
         private Lazy<Dictionary<string, PPS>> PPSKEYIndex;
+
 
         internal PPSDataSet(EduHubContext Context)
             : base(Context)
         {
             PPSKEYIndex = new Lazy<Dictionary<string, PPS>>(() => this.ToDictionary(e => e.PPSKEY));
+
         }
 
         /// <summary>

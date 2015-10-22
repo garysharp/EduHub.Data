@@ -8,12 +8,14 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// KCD Transfer Data Set
     /// </summary>
-    public sealed class KCD_TFRDataSet : SetBase<KCD_TFR>
+    public sealed partial class KCD_TFRDataSet : SetBase<KCD_TFR>
     {
+
 
         internal KCD_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+
         }
 
         /// <summary>

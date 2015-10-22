@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Reports for emailing
     /// </summary>
-    public class KREPORT : EntityBase
+    public partial class KREPORT : EntityBase
     {
 #region Navigation Property Cache
         private KROLE _ROLE_CODE_KROLE;
@@ -49,11 +49,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [ROLE_CODE] => [KROLE].[KROLEKEY]
+        /// KROLE (Role Codes) related entity by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
         /// Role for the code
         /// </summary>
-        public KROLE ROLE_CODE_KROLE {
+        public KROLE ROLE_CODE_KROLE
+        {
             get
             {
                 if (ROLE_CODE != null)
@@ -68,6 +70,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SPEMAIL (Report email templates) related entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
+        /// </summary>
+        public IReadOnlyList<SPEMAIL> SPEMAIL_REPORT
+        {
+            get
+            {
+                return Context.KREPORT.FindSPEMAILByREPORT(KREPORTKEY);
             }
         }
 #endregion

@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Medical Conditions
     /// </summary>
-    public class SMC : EntityBase
+    public partial class SMC : EntityBase
     {
 #region Navigation Property Cache
         private ST _STUDENT_ST;
@@ -208,11 +208,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [STUDENT] => [ST].[STKEY]
+        /// ST (Students) related entity by [SMC.STUDENT]-&gt;[ST.STKEY]
         /// Student ID
         /// </summary>
-        public ST STUDENT_ST {
+        public ST STUDENT_ST
+        {
             get
             {
                 if (STUDENT != null)
@@ -229,11 +231,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [MED_CONDITION] => [KCM].[KCMKEY]
+        /// KCM (Medical Conditions) related entity by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
         /// Medical condition
         /// </summary>
-        public KCM MED_CONDITION_KCM {
+        public KCM MED_CONDITION_KCM
+        {
             get
             {
                 if (MED_CONDITION != null)
@@ -250,11 +254,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [CAMPUS] => [SCI].[SCIKEY]
+        /// SCI (School Information) related entity by [SMC.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Dummy field necessary because table is an ACCOUNT table with a short name starting with SM
         /// </summary>
-        public SCI CAMPUS_SCI {
+        public SCI CAMPUS_SCI
+        {
             get
             {
                 if (CAMPUS.HasValue)
@@ -269,6 +275,17 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// SMCD (Student Medication Doses) related entities by [SMCD.SMCDKEY]-&gt;[SMC.SMCKEY]
+        /// </summary>
+        public IReadOnlyList<SMCD> SMCD_SMCDKEY
+        {
+            get
+            {
+                return Context.SMC.FindSMCDBySMCDKEY(SMCKEY);
             }
         }
 #endregion

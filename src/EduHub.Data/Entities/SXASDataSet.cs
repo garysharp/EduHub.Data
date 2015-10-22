@@ -8,14 +8,16 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Scheduled Sessions Data Set
     /// </summary>
-    public sealed class SXASDataSet : SetBase<SXAS>
+    public sealed partial class SXASDataSet : SetBase<SXAS>
     {
         private Lazy<Dictionary<int, SXAS>> TIDIndex;
+
 
         internal SXASDataSet(EduHubContext Context)
             : base(Context)
         {
             TIDIndex = new Lazy<Dictionary<int, SXAS>>(() => this.ToDictionary(e => e.TID));
+
         }
 
         /// <summary>

@@ -8,14 +8,34 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Religions Data Set
     /// </summary>
-    public sealed class KGRDataSet : SetBase<KGR>
+    public sealed partial class KGRDataSet : SetBase<KGR>
     {
         private Lazy<Dictionary<string, KGR>> RELIGIONIndex;
+
+        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_RELIGIONForeignIndex;
+        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_RELIGIONForeignIndex;
 
         internal KGRDataSet(EduHubContext Context)
             : base(Context)
         {
             RELIGIONIndex = new Lazy<Dictionary<string, KGR>>(() => this.ToDictionary(e => e.RELIGION));
+
+            SF_RELIGIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
+                    Context.SF
+                          .Where(e => e.RELIGION != null)
+                          .GroupBy(e => e.RELIGION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
+                          .AsReadOnly()));
+
+            ST_RELIGIONForeignIndex =
+                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
+                    Context.ST
+                          .Where(e => e.RELIGION != null)
+                          .GroupBy(e => e.RELIGION)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
+                          .AsReadOnly()));
+
         }
 
         /// <summary>
@@ -69,6 +89,64 @@ namespace EduHub.Data.Entities
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Find all SF (Staff) entities by [SF.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find SF entities</param>
+        /// <returns>A list of related SF entities</returns>
+        public IReadOnlyList<SF> FindSFByRELIGION(string RELIGION)
+        {
+            IReadOnlyList<SF> result;
+            if (SF_RELIGIONForeignIndex.Value.TryGetValue(RELIGION, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<SF>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all SF entities by [SF.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find SF entities</param>
+        /// <param name="Value">A list of related SF entities</param>
+        /// <returns>True if any SF entities are found</returns>
+        public bool TryFindSFByRELIGION(string RELIGION, out IReadOnlyList<SF> Value)
+        {
+            return SF_RELIGIONForeignIndex.Value.TryGetValue(RELIGION, out Value);
+        }
+
+        /// <summary>
+        /// Find all ST (Students) entities by [ST.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST entities</param>
+        /// <returns>A list of related ST entities</returns>
+        public IReadOnlyList<ST> FindSTByRELIGION(string RELIGION)
+        {
+            IReadOnlyList<ST> result;
+            if (ST_RELIGIONForeignIndex.Value.TryGetValue(RELIGION, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ST>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all ST entities by [ST.RELIGION]-&gt;[KGR.RELIGION]
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST entities</param>
+        /// <param name="Value">A list of related ST entities</param>
+        /// <returns>True if any ST entities are found</returns>
+        public bool TryFindSTByRELIGION(string RELIGION, out IReadOnlyList<ST> Value)
+        {
+            return ST_RELIGIONForeignIndex.Value.TryGetValue(RELIGION, out Value);
         }
 
 

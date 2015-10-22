@@ -18,6 +18,16 @@
     var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v56 Schema.xml"));
     foreach (var entity in schema)
     {
+        var foreignDependanciesFields = schema
+            .SelectMany(e => e.Fields, (e,f) => Tuple.Create(e, f))
+            .Where(r => r.Item2.RelationshipEntity == entity.Name)
+            .Select(r => Tuple.Create(r.Item1, r.Item2, entity.Fields.First(f => f.Name == r.Item2.RelationshipField)))
+            .ToList();
+
+        var keyFields = entity.Fields.Where(f => f.IsKey).ToList();
+
+        var foreignFields = entity.Fields.Where(f => f.RelationshipEntity != null).ToList();
+
         manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
         #>
 using System;
@@ -30,13 +40,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #> Data Set
     /// </summary>
-    public sealed class <#= entity.Name #>DataSet : SetBase<<#= entity.Name #>>
+    public sealed partial class <#= entity.Name #>DataSet : SetBase<<#= entity.Name #>>
     {
 <#
-        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        foreach (var field in keyFields)
         {
 #>
         private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>> <#= field.Name #>Index;
+<#
+        }
+#>
+
+<#
+        foreach (var dependantField in foreignDependanciesFields)
+        {
+#>
+        private Lazy<Dictionary<<#= dependantField.Item3.TypeName #>, IReadOnlyList<<#= dependantField.Item1.Name #>>>> <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex;
 <#
         }
 #>
@@ -45,10 +64,26 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
 <#
-        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        foreach (var field in keyFields)
         {
 #>
             <#= field.Name #>Index = new Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>>(() => this.ToDictionary(e => e.<#= field.Name #>));
+<#
+        }
+#>
+
+<#
+        foreach (var dependantField in foreignDependanciesFields)
+        {
+#>
+            <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex =
+                new Lazy<Dictionary<<#= dependantField.Item3.TypeName #>, IReadOnlyList<<#= dependantField.Item1.Name #>>>>(() =>
+                    Context.<#= dependantField.Item1.Name #>
+                          .Where(e => e.<#= dependantField.Item2.Name #> != null)
+                          .GroupBy(e => e.<#= dependantField.Item2.Name #><#= dependantField.Item2.TypeName.EndsWith("?") ? ".Value" : "" #>)
+                          .ToDictionary(g => g.Key, g => (IReadOnlyList<<#= dependantField.Item1.Name #>>)g.ToList()
+                          .AsReadOnly()));
+
 <#
         }
 #>
@@ -60,7 +95,7 @@ namespace EduHub.Data.Entities
         public override string Name { get { return "<#= entity.Name #>"; } }
 
 <#
-        foreach (var field in entity.Fields.Where(f => f.IsKey))
+        foreach (var field in keyFields)
         {
 #>
         /// <summary>
@@ -114,6 +149,42 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
+<#
+        foreach (var dependantField in foreignDependanciesFields)
+        {
+#>
+        /// <summary>
+        /// Find all <#= dependantField.Item1.Name #> (<#= dependantField.Item1.Description #>) entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#= entity.Name #>.<#= dependantField.Item3.Name #>]
+        /// </summary>
+        /// <param name="<#= dependantField.Item3.Name #>"><#= dependantField.Item3.Name #> value used to find <#= dependantField.Item1.Name #> entities</param>
+        /// <returns>A list of related <#= dependantField.Item1.Name #> entities</returns>
+        public IReadOnlyList<<#= dependantField.Item1.Name #>> Find<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.TypeName #> <#= dependantField.Item3.Name #>)
+        {
+            IReadOnlyList<<#= dependantField.Item1.Name #>> result;
+            if (<#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex.Value.TryGetValue(<#= dependantField.Item3.Name #>, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return new List<<#= dependantField.Item1.Name #>>().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Attempt to find all <#= dependantField.Item1.Name #> entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#= entity.Name #>.<#= dependantField.Item3.Name #>]
+        /// </summary>
+        /// <param name="<#= dependantField.Item3.Name #>"><#= dependantField.Item3.Name #> value used to find <#= dependantField.Item1.Name #> entities</param>
+        /// <param name="Value">A list of related <#= dependantField.Item1.Name #> entities</param>
+        /// <returns>True if any <#= dependantField.Item1.Name #> entities are found</returns>
+        public bool TryFind<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.TypeName #> <#= dependantField.Item3.Name #>, out IReadOnlyList<<#= dependantField.Item1.Name #>> Value)
+        {
+            return <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex.Value.TryGetValue(<#= dependantField.Item3.Name #>, out Value);
+        }
+
+<#
+        }
+#>
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="<#= entity.Name #>" />
@@ -158,11 +229,15 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #>
     /// </summary>
-    public class <#= entity.Name #> : EntityBase
+    public partial class <#= entity.Name #> : EntityBase
     {
+<#
+        if (foreignFields.Count > 0)
+        {
+#>
 #region Navigation Property Cache
 <#
-        foreach (var field in entity.Fields.Where(f => f.RelationshipEntity != null))
+        foreach (var field in foreignFields)
         {
 #>
         private <#=field.RelationshipEntity#> _<#=field.Name#>_<#=field.RelationshipEntity#>;
@@ -171,6 +246,9 @@ namespace EduHub.Data.Entities
 #>
 #endregion
 
+<#
+        }
+#>
 #region Field Properties
 <#
         foreach (var field in entity.Fields)
@@ -186,17 +264,23 @@ namespace EduHub.Data.Entities
         }
 #>
 #endregion
+<#
+        if (foreignFields.Count > 0 || foreignDependanciesFields.Count > 0)
+        {
+#>
 
 #region Navigation Properties
 <#
-        foreach (var field in entity.Fields.Where(f => f.RelationshipEntity != null))
+        foreach (var field in foreignFields)
         {
 #>
+
         /// <summary>
-        /// Navigation property for [<#=field.Name#>] => [<#=field.RelationshipEntity#>].[<#=field.RelationshipField#>]
+        /// <#=field.RelationshipEntity#> (<#=schema.First(e => e.Name == field.RelationshipEntity).Description#>) related entity by [<#=entity.Name#>.<#=field.Name#>]-&gt;[<#=field.RelationshipEntity#>.<#=field.RelationshipField#>]
 <#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#>
         /// </summary>
-        public <#=field.RelationshipEntity#> <#=field.Name#>_<#=field.RelationshipEntity#> {
+        public <#=field.RelationshipEntity#> <#=field.Name#>_<#=field.RelationshipEntity#>
+        {
             get
             {
 <#=DetermineNavigationPropertyContent(field)#>
@@ -205,7 +289,28 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
+<#
+        foreach (var dependantField in foreignDependanciesFields)
+        {
+#>
+
+        /// <summary>
+        /// <#= dependantField.Item1.Name #> (<#= dependantField.Item1.Description #>) related entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#=entity.Name#>.<#= dependantField.Item3.Name #>]
+        /// </summary>
+        public IReadOnlyList<<#= dependantField.Item1.Name #>> <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>
+        {
+            get
+            {
+                return Context.<#= entity.Name #>.Find<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.Name #>);
+            }
+        }
+<#
+        }
+#>
 #endregion
+<#
+        }
+#>
     }
 }
 <#

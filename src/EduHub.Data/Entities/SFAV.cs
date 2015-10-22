@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Availability for Calendar Extras
     /// </summary>
-    public class SFAV : EntityBase
+    public partial class SFAV : EntityBase
     {
 #region Navigation Property Cache
         private SF _TEACH_SF;
@@ -54,11 +54,13 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [TEACH] => [SF].[SFKEY]
+        /// SF (Staff) related entity by [SFAV.TEACH]-&gt;[SF.SFKEY]
         /// Staff key
         /// </summary>
-        public SF TEACH_SF {
+        public SF TEACH_SF
+        {
             get
             {
                 if (TEACH != null)

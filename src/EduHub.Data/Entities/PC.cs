@@ -6,7 +6,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Cost Centres
     /// </summary>
-    public class PC : EntityBase
+    public partial class PC : EntityBase
     {
 #region Navigation Property Cache
         private GL _GLCODE_GL;
@@ -62,12 +62,14 @@ namespace EduHub.Data.Entities
 #endregion
 
 #region Navigation Properties
+
         /// <summary>
-        /// Navigation property for [GLCODE] => [GL].[CODE]
+        /// GL (General Ledger) related entity by [PC.GLCODE]-&gt;[GL.CODE]
         /// GL Salary expense code
         /// 
         /// </summary>
-        public GL GLCODE_GL {
+        public GL GLCODE_GL
+        {
             get
             {
                 if (GLCODE != null)
@@ -84,11 +86,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [SUBPROGRAM] => [KGLSUB].[SUBPROGRAM]
+        /// KGLSUB (General Ledger Sub Programs) related entity by [PC.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
         /// </summary>
-        public KGLSUB SUBPROGRAM_KGLSUB {
+        public KGLSUB SUBPROGRAM_KGLSUB
+        {
             get
             {
                 if (SUBPROGRAM != null)
@@ -105,11 +109,13 @@ namespace EduHub.Data.Entities
                 }
             }
         }
+
         /// <summary>
-        /// Navigation property for [INITIATIVE] => [KGLINIT].[INITIATIVE]
+        /// KGLINIT (General Ledger Initiatives) related entity by [PC.INITIATIVE]-&gt;[KGLINIT.INITIATIVE]
         /// Transaction might belong to an Initiative
         /// </summary>
-        public KGLINIT INITIATIVE_KGLINIT {
+        public KGLINIT INITIATIVE_KGLINIT
+        {
             get
             {
                 if (INITIATIVE != null)
@@ -124,6 +130,39 @@ namespace EduHub.Data.Entities
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// PEF (Payroll Transactions) related entities by [PEF.TRCENTRE]-&gt;[PC.PCKEY]
+        /// </summary>
+        public IReadOnlyList<PEF> PEF_TRCENTRE
+        {
+            get
+            {
+                return Context.PC.FindPEFByTRCENTRE(PCKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEFH (Payroll Transaction History) related entities by [PEFH.TRCENTRE]-&gt;[PC.PCKEY]
+        /// </summary>
+        public IReadOnlyList<PEFH> PEFH_TRCENTRE
+        {
+            get
+            {
+                return Context.PC.FindPEFHByTRCENTRE(PCKEY);
+            }
+        }
+
+        /// <summary>
+        /// PEPS (Standard and Last Pays) related entities by [PEPS.TRCENTRE]-&gt;[PC.PCKEY]
+        /// </summary>
+        public IReadOnlyList<PEPS> PEPS_TRCENTRE
+        {
+            get
+            {
+                return Context.PC.FindPEPSByTRCENTRE(PCKEY);
             }
         }
 #endregion
