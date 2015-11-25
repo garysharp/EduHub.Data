@@ -137,16 +137,19 @@ namespace EduHub.Data
             if (!Directory.Exists(EduHubDirectory))
                 throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] does not exist");
 
-            var testSiteIdentifier = new Regex(@".*_(.+).csv$", RegexOptions.IgnoreCase);
+            var testSiteIdentifier = new Regex(@".*_(.+)(?<!_D).csv$", RegexOptions.IgnoreCase);
             var siteIdentifiers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(EduHubDirectory, "*.csv"))
             {
                 var match = testSiteIdentifier.Match(file);
-                var siteIdentifier = match.Groups[1].Value;
-                if (match.Success && siteIdentifiers.Add(siteIdentifier))
+                if (match.Success)
                 {
-                    yield return siteIdentifier;
+                    var siteIdentifier = match.Groups[1].Value;
+                    if (siteIdentifiers.Add(siteIdentifier))
+                    {
+                        yield return siteIdentifier;
+                    }
                 }
             }
         }
