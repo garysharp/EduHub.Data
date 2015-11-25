@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KTRCMPDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_COMPANY_ID = new Lazy<Dictionary<int, KTRCMP>>(() => this.ToDictionary(i => i.COMPANY_ID));
             Index_COMPANY_CODE = new Lazy<NullDictionary<string, KTRCMP>>(() => this.ToNullDictionary(i => i.COMPANY_CODE));
+            Index_COMPANY_ID = new Lazy<Dictionary<int, KTRCMP>>(() => this.ToDictionary(i => i.COMPANY_ID));
             Index_COMPANY_NAME = new Lazy<NullDictionary<string, KTRCMP>>(() => this.ToNullDictionary(i => i.COMPANY_NAME));
         }
 
@@ -92,57 +92,53 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KTRCMP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KTRCMP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KTRCMP" /> items to added or update the base <see cref="KTRCMP" /> items</param>
+        /// <returns>A merged list of <see cref="KTRCMP" /> items</returns>
+        protected override List<KTRCMP> ApplyDeltaItems(List<KTRCMP> Items, List<KTRCMP> DeltaItems)
+        {
+            NullDictionary<string, int> Index_COMPANY_CODE = Items.ToIndexNullDictionary(i => i.COMPANY_CODE);
+            Dictionary<int, int> Index_COMPANY_ID = Items.ToIndexDictionary(i => i.COMPANY_ID);
+            NullDictionary<string, int> Index_COMPANY_NAME = Items.ToIndexNullDictionary(i => i.COMPANY_NAME);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KTRCMP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_COMPANY_CODE.TryGetValue(deltaItem.COMPANY_CODE, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_COMPANY_ID.TryGetValue(deltaItem.COMPANY_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_COMPANY_NAME.TryGetValue(deltaItem.COMPANY_NAME, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.COMPANY_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, KTRCMP>> Index_COMPANY_ID;
         private Lazy<NullDictionary<string, KTRCMP>> Index_COMPANY_CODE;
+        private Lazy<Dictionary<int, KTRCMP>> Index_COMPANY_ID;
         private Lazy<NullDictionary<string, KTRCMP>> Index_COMPANY_NAME;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KTRCMP by COMPANY_ID field
-        /// </summary>
-        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
-        /// <returns>Related KTRCMP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KTRCMP FindByCOMPANY_ID(int COMPANY_ID)
-        {
-            return Index_COMPANY_ID.Value[COMPANY_ID];
-        }
-
-        /// <summary>
-        /// Attempt to find KTRCMP by COMPANY_ID field
-        /// </summary>
-        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
-        /// <param name="Value">Related KTRCMP entity</param>
-        /// <returns>True if the related KTRCMP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCOMPANY_ID(int COMPANY_ID, out KTRCMP Value)
-        {
-            return Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KTRCMP by COMPANY_ID field
-        /// </summary>
-        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
-        /// <returns>Related KTRCMP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KTRCMP TryFindByCOMPANY_ID(int COMPANY_ID)
-        {
-            KTRCMP value;
-            if (Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KTRCMP by COMPANY_CODE field
@@ -177,6 +173,48 @@ namespace EduHub.Data.Entities
         {
             KTRCMP value;
             if (Index_COMPANY_CODE.Value.TryGetValue(COMPANY_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP FindByCOMPANY_ID(int COMPANY_ID)
+        {
+            return Index_COMPANY_ID.Value[COMPANY_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <param name="Value">Related KTRCMP entity</param>
+        /// <returns>True if the related KTRCMP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOMPANY_ID(int COMPANY_ID, out KTRCMP Value)
+        {
+            return Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP TryFindByCOMPANY_ID(int COMPANY_ID)
+        {
+            KTRCMP value;
+            if (Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out value))
             {
                 return value;
             }

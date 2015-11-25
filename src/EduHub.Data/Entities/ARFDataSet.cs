@@ -19,17 +19,17 @@ namespace EduHub.Data.Entities
         internal ARFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, ARF>>(() => this.ToDictionary(i => i.TID));
-            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
-            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
-            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
             Index_AMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.AMETHOD));
-            Index_TMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.TMETHOD));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
-            Index_RELEASE_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.RELEASE_TYPE));
             Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
+            Index_RELEASE_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.RELEASE_TYPE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_TID = new Lazy<Dictionary<int, ARF>>(() => this.ToDictionary(i => i.TID));
+            Index_TMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.TMETHOD));
+            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<ARF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
         }
 
         /// <summary>
@@ -283,141 +283,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="ARF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="ARF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="ARF" /> items to added or update the base <see cref="ARF" /> items</param>
+        /// <returns>A merged list of <see cref="ARF" /> items</returns>
+        protected override List<ARF> ApplyDeltaItems(List<ARF> Items, List<ARF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (ARF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> Index_CODE;
-        private Lazy<Dictionary<int, ARF>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_TRREF;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_BSB;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_GST_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_AMETHOD;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_TMETHOD;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_BSB;
+        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_GST_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_INITIATIVE;
-        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_RELEASE_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_LOCATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_RELEASE_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_SUBPROGRAM;
+        private Lazy<Dictionary<int, ARF>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_TMETHOD;
+        private Lazy<NullDictionary<string, IReadOnlyList<ARF>>> Index_TRREF;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find ARF by CODE field
+        /// Find ARF by AMETHOD field
         /// </summary>
-        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
         /// <returns>List of related ARF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindByCODE(string CODE)
+        public IReadOnlyList<ARF> FindByAMETHOD(string AMETHOD)
         {
-            return Index_CODE.Value[CODE];
+            return Index_AMETHOD.Value[AMETHOD];
         }
 
         /// <summary>
-        /// Attempt to find ARF by CODE field
+        /// Attempt to find ARF by AMETHOD field
         /// </summary>
-        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
         /// <param name="Value">List of related ARF entities</param>
         /// <returns>True if the list of related ARF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCODE(string CODE, out IReadOnlyList<ARF> Value)
+        public bool TryFindByAMETHOD(string AMETHOD, out IReadOnlyList<ARF> Value)
         {
-            return Index_CODE.Value.TryGetValue(CODE, out Value);
+            return Index_AMETHOD.Value.TryGetValue(AMETHOD, out Value);
         }
 
         /// <summary>
-        /// Attempt to find ARF by CODE field
+        /// Attempt to find ARF by AMETHOD field
         /// </summary>
-        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
         /// <returns>List of related ARF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindByCODE(string CODE)
+        public IReadOnlyList<ARF> TryFindByAMETHOD(string AMETHOD)
         {
             IReadOnlyList<ARF> value;
-            if (Index_CODE.Value.TryGetValue(CODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ARF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ARF</param>
-        /// <returns>Related ARF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ARF FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ARF</param>
-        /// <param name="Value">Related ARF entity</param>
-        /// <returns>True if the related ARF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out ARF Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ARF</param>
-        /// <returns>Related ARF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ARF TryFindByTID(int TID)
-        {
-            ARF value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ARF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find ARF</param>
-        /// <returns>List of related ARF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindByTRREF(string TRREF)
-        {
-            return Index_TRREF.Value[TRREF];
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find ARF</param>
-        /// <param name="Value">List of related ARF entities</param>
-        /// <returns>True if the list of related ARF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<ARF> Value)
-        {
-            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find ARF</param>
-        /// <returns>List of related ARF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindByTRREF(string TRREF)
-        {
-            IReadOnlyList<ARF> value;
-            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
+            if (Index_AMETHOD.Value.TryGetValue(AMETHOD, out value))
             {
                 return value;
             }
@@ -470,6 +414,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find ARF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <returns>List of related ARF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <param name="Value">List of related ARF entities</param>
+        /// <returns>True if the list of related ARF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<ARF> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find ARF</param>
+        /// <returns>List of related ARF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<ARF> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find ARF by GST_TYPE field
         /// </summary>
         /// <param name="GST_TYPE">GST_TYPE value used to find ARF</param>
@@ -502,132 +488,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<ARF> value;
             if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ARF by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
-        /// <returns>List of related ARF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindByAMETHOD(string AMETHOD)
-        {
-            return Index_AMETHOD.Value[AMETHOD];
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
-        /// <param name="Value">List of related ARF entities</param>
-        /// <returns>True if the list of related ARF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByAMETHOD(string AMETHOD, out IReadOnlyList<ARF> Value)
-        {
-            return Index_AMETHOD.Value.TryGetValue(AMETHOD, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find ARF</param>
-        /// <returns>List of related ARF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindByAMETHOD(string AMETHOD)
-        {
-            IReadOnlyList<ARF> value;
-            if (Index_AMETHOD.Value.TryGetValue(AMETHOD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ARF by TMETHOD field
-        /// </summary>
-        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
-        /// <returns>List of related ARF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindByTMETHOD(string TMETHOD)
-        {
-            return Index_TMETHOD.Value[TMETHOD];
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TMETHOD field
-        /// </summary>
-        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
-        /// <param name="Value">List of related ARF entities</param>
-        /// <returns>True if the list of related ARF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTMETHOD(string TMETHOD, out IReadOnlyList<ARF> Value)
-        {
-            return Index_TMETHOD.Value.TryGetValue(TMETHOD, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by TMETHOD field
-        /// </summary>
-        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
-        /// <returns>List of related ARF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindByTMETHOD(string TMETHOD)
-        {
-            IReadOnlyList<ARF> value;
-            if (Index_TMETHOD.Value.TryGetValue(TMETHOD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ARF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
-        /// <returns>List of related ARF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
-        /// <param name="Value">List of related ARF entities</param>
-        /// <returns>True if the list of related ARF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<ARF> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ARF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
-        /// <returns>List of related ARF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<ARF> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }
@@ -680,6 +540,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find ARF by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <returns>List of related ARF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> FindByLOCATION(string LOCATION)
+        {
+            return Index_LOCATION.Value[LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <param name="Value">List of related ARF entities</param>
+        /// <returns>True if the list of related ARF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<ARF> Value)
+        {
+            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <returns>List of related ARF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> TryFindByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<ARF> value;
+            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find ARF by RELEASE_TYPE field
         /// </summary>
         /// <param name="RELEASE_TYPE">RELEASE_TYPE value used to find ARF</param>
@@ -722,38 +624,164 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find ARF by LOCATION field
+        /// Find ARF by SUBPROGRAM field
         /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
         /// <returns>List of related ARF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> FindByLOCATION(string LOCATION)
+        public IReadOnlyList<ARF> FindBySUBPROGRAM(string SUBPROGRAM)
         {
-            return Index_LOCATION.Value[LOCATION];
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
         }
 
         /// <summary>
-        /// Attempt to find ARF by LOCATION field
+        /// Attempt to find ARF by SUBPROGRAM field
         /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
         /// <param name="Value">List of related ARF entities</param>
         /// <returns>True if the list of related ARF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<ARF> Value)
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<ARF> Value)
         {
-            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find ARF by LOCATION field
+        /// Attempt to find ARF by SUBPROGRAM field
         /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find ARF</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find ARF</param>
         /// <returns>List of related ARF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ARF> TryFindByLOCATION(string LOCATION)
+        public IReadOnlyList<ARF> TryFindBySUBPROGRAM(string SUBPROGRAM)
         {
             IReadOnlyList<ARF> value;
-            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ARF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ARF</param>
+        /// <returns>Related ARF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ARF FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ARF</param>
+        /// <param name="Value">Related ARF entity</param>
+        /// <returns>True if the related ARF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out ARF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ARF</param>
+        /// <returns>Related ARF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ARF TryFindByTID(int TID)
+        {
+            ARF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ARF by TMETHOD field
+        /// </summary>
+        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
+        /// <returns>List of related ARF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> FindByTMETHOD(string TMETHOD)
+        {
+            return Index_TMETHOD.Value[TMETHOD];
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TMETHOD field
+        /// </summary>
+        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
+        /// <param name="Value">List of related ARF entities</param>
+        /// <returns>True if the list of related ARF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTMETHOD(string TMETHOD, out IReadOnlyList<ARF> Value)
+        {
+            return Index_TMETHOD.Value.TryGetValue(TMETHOD, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TMETHOD field
+        /// </summary>
+        /// <param name="TMETHOD">TMETHOD value used to find ARF</param>
+        /// <returns>List of related ARF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> TryFindByTMETHOD(string TMETHOD)
+        {
+            IReadOnlyList<ARF> value;
+            if (Index_TMETHOD.Value.TryGetValue(TMETHOD, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ARF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find ARF</param>
+        /// <returns>List of related ARF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> FindByTRREF(string TRREF)
+        {
+            return Index_TRREF.Value[TRREF];
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find ARF</param>
+        /// <param name="Value">List of related ARF entities</param>
+        /// <returns>True if the list of related ARF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<ARF> Value)
+        {
+            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ARF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find ARF</param>
+        /// <returns>List of related ARF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ARF> TryFindByTRREF(string TRREF)
+        {
+            IReadOnlyList<ARF> value;
+            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
             {
                 return value;
             }

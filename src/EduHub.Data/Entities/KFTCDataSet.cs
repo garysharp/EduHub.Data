@@ -75,6 +75,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KFTC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KFTC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KFTC" /> items to added or update the base <see cref="KFTC" /> items</param>
+        /// <returns>A merged list of <see cref="KFTC" /> items</returns>
+        protected override List<KFTC> ApplyDeltaItems(List<KFTC> Items, List<KFTC> DeltaItems)
+        {
+            Dictionary<string, int> Index_KFTCKEY = Items.ToIndexDictionary(i => i.KFTCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KFTC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KFTCKEY.TryGetValue(deltaItem.KFTCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KFTCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KFTC>> Index_KFTCKEY;

@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal STSPDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SPKEY = new Lazy<Dictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedDictionary(i => i.SPKEY));
-            Index_TID = new Lazy<Dictionary<int, STSP>>(() => this.ToDictionary(i => i.TID));
             Index_REF_TEACHERA = new Lazy<NullDictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedNullDictionary(i => i.REF_TEACHERA));
             Index_REF_TEACHERB = new Lazy<NullDictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedNullDictionary(i => i.REF_TEACHERB));
+            Index_SPKEY = new Lazy<Dictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedDictionary(i => i.SPKEY));
+            Index_TID = new Lazy<Dictionary<int, STSP>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -168,100 +168,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STSP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STSP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STSP" /> items to added or update the base <see cref="STSP" /> items</param>
+        /// <returns>A merged list of <see cref="STSP" /> items</returns>
+        protected override List<STSP> ApplyDeltaItems(List<STSP> Items, List<STSP> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STSP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SPKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<STSP>>> Index_SPKEY;
-        private Lazy<Dictionary<int, STSP>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<STSP>>> Index_REF_TEACHERA;
         private Lazy<NullDictionary<string, IReadOnlyList<STSP>>> Index_REF_TEACHERB;
+        private Lazy<Dictionary<string, IReadOnlyList<STSP>>> Index_SPKEY;
+        private Lazy<Dictionary<int, STSP>> Index_TID;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find STSP by SPKEY field
-        /// </summary>
-        /// <param name="SPKEY">SPKEY value used to find STSP</param>
-        /// <returns>List of related STSP entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STSP> FindBySPKEY(string SPKEY)
-        {
-            return Index_SPKEY.Value[SPKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find STSP by SPKEY field
-        /// </summary>
-        /// <param name="SPKEY">SPKEY value used to find STSP</param>
-        /// <param name="Value">List of related STSP entities</param>
-        /// <returns>True if the list of related STSP entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySPKEY(string SPKEY, out IReadOnlyList<STSP> Value)
-        {
-            return Index_SPKEY.Value.TryGetValue(SPKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STSP by SPKEY field
-        /// </summary>
-        /// <param name="SPKEY">SPKEY value used to find STSP</param>
-        /// <returns>List of related STSP entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STSP> TryFindBySPKEY(string SPKEY)
-        {
-            IReadOnlyList<STSP> value;
-            if (Index_SPKEY.Value.TryGetValue(SPKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STSP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSP</param>
-        /// <returns>Related STSP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STSP FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find STSP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSP</param>
-        /// <param name="Value">Related STSP entity</param>
-        /// <returns>True if the related STSP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out STSP Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STSP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSP</param>
-        /// <returns>Related STSP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STSP TryFindByTID(int TID)
-        {
-            STSP value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find STSP by REF_TEACHERA field
@@ -338,6 +282,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STSP> value;
             if (Index_REF_TEACHERB.Value.TryGetValue(REF_TEACHERB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <returns>List of related STSP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> FindBySPKEY(string SPKEY)
+        {
+            return Index_SPKEY.Value[SPKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <param name="Value">List of related STSP entities</param>
+        /// <returns>True if the list of related STSP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPKEY(string SPKEY, out IReadOnlyList<STSP> Value)
+        {
+            return Index_SPKEY.Value.TryGetValue(SPKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <returns>List of related STSP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> TryFindBySPKEY(string SPKEY)
+        {
+            IReadOnlyList<STSP> value;
+            if (Index_SPKEY.Value.TryGetValue(SPKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <returns>Related STSP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <param name="Value">Related STSP entity</param>
+        /// <returns>True if the related STSP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out STSP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <returns>Related STSP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSP TryFindByTID(int TID)
+        {
+            STSP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

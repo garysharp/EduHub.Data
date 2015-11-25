@@ -20,13 +20,13 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_GKEY = new Lazy<Dictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedDictionary(i => i.GKEY));
-            Index_TID = new Lazy<Dictionary<int, TTTG>>(() => this.ToDictionary(i => i.TID));
-            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
             Index_IDENT = new Lazy<NullDictionary<int?, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.IDENT));
-            Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
-            Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
             Index_R1ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.R1ROOM));
             Index_R2ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.R2ROOM));
+            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
+            Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
+            Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TTTG>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
+            Index_TID = new Lazy<Dictionary<int, TTTG>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -184,16 +184,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TTTG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TTTG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TTTG" /> items to added or update the base <see cref="TTTG" /> items</param>
+        /// <returns>A merged list of <see cref="TTTG" /> items</returns>
+        protected override List<TTTG> ApplyDeltaItems(List<TTTG> Items, List<TTTG> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TTTG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<TTTG>>> Index_GKEY;
-        private Lazy<Dictionary<int, TTTG>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_SUBJ;
         private Lazy<NullDictionary<int?, IReadOnlyList<TTTG>>> Index_IDENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_T1TEACH;
-        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_T2TEACH;
         private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_R1ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_R2ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_SUBJ;
+        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_T1TEACH;
+        private Lazy<NullDictionary<string, IReadOnlyList<TTTG>>> Index_T2TEACH;
+        private Lazy<Dictionary<int, TTTG>> Index_TID;
 
         #endregion
 
@@ -242,38 +270,122 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TTTG by TID field
+        /// Find TTTG by IDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find TTTG</param>
-        /// <returns>Related TTTG entity</returns>
+        /// <param name="IDENT">IDENT value used to find TTTG</param>
+        /// <returns>List of related TTTG entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTTG FindByTID(int TID)
+        public IReadOnlyList<TTTG> FindByIDENT(int? IDENT)
         {
-            return Index_TID.Value[TID];
+            return Index_IDENT.Value[IDENT];
         }
 
         /// <summary>
-        /// Attempt to find TTTG by TID field
+        /// Attempt to find TTTG by IDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find TTTG</param>
-        /// <param name="Value">Related TTTG entity</param>
-        /// <returns>True if the related TTTG entity is found</returns>
+        /// <param name="IDENT">IDENT value used to find TTTG</param>
+        /// <param name="Value">List of related TTTG entities</param>
+        /// <returns>True if the list of related TTTG entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TTTG Value)
+        public bool TryFindByIDENT(int? IDENT, out IReadOnlyList<TTTG> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_IDENT.Value.TryGetValue(IDENT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TTTG by TID field
+        /// Attempt to find TTTG by IDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find TTTG</param>
-        /// <returns>Related TTTG entity, or null if not found</returns>
+        /// <param name="IDENT">IDENT value used to find TTTG</param>
+        /// <returns>List of related TTTG entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTTG TryFindByTID(int TID)
+        public IReadOnlyList<TTTG> TryFindByIDENT(int? IDENT)
         {
-            TTTG value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<TTTG> value;
+            if (Index_IDENT.Value.TryGetValue(IDENT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TTTG by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
+        /// <returns>List of related TTTG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTTG> FindByR1ROOM(string R1ROOM)
+        {
+            return Index_R1ROOM.Value[R1ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TTTG by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
+        /// <param name="Value">List of related TTTG entities</param>
+        /// <returns>True if the list of related TTTG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByR1ROOM(string R1ROOM, out IReadOnlyList<TTTG> Value)
+        {
+            return Index_R1ROOM.Value.TryGetValue(R1ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTTG by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
+        /// <returns>List of related TTTG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTTG> TryFindByR1ROOM(string R1ROOM)
+        {
+            IReadOnlyList<TTTG> value;
+            if (Index_R1ROOM.Value.TryGetValue(R1ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TTTG by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
+        /// <returns>List of related TTTG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTTG> FindByR2ROOM(string R2ROOM)
+        {
+            return Index_R2ROOM.Value[R2ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TTTG by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
+        /// <param name="Value">List of related TTTG entities</param>
+        /// <returns>True if the list of related TTTG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByR2ROOM(string R2ROOM, out IReadOnlyList<TTTG> Value)
+        {
+            return Index_R2ROOM.Value.TryGetValue(R2ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTTG by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
+        /// <returns>List of related TTTG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTTG> TryFindByR2ROOM(string R2ROOM)
+        {
+            IReadOnlyList<TTTG> value;
+            if (Index_R2ROOM.Value.TryGetValue(R2ROOM, out value))
             {
                 return value;
             }
@@ -316,48 +428,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TTTG> value;
             if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TTTG by IDENT field
-        /// </summary>
-        /// <param name="IDENT">IDENT value used to find TTTG</param>
-        /// <returns>List of related TTTG entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> FindByIDENT(int? IDENT)
-        {
-            return Index_IDENT.Value[IDENT];
-        }
-
-        /// <summary>
-        /// Attempt to find TTTG by IDENT field
-        /// </summary>
-        /// <param name="IDENT">IDENT value used to find TTTG</param>
-        /// <param name="Value">List of related TTTG entities</param>
-        /// <returns>True if the list of related TTTG entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByIDENT(int? IDENT, out IReadOnlyList<TTTG> Value)
-        {
-            return Index_IDENT.Value.TryGetValue(IDENT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TTTG by IDENT field
-        /// </summary>
-        /// <param name="IDENT">IDENT value used to find TTTG</param>
-        /// <returns>List of related TTTG entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> TryFindByIDENT(int? IDENT)
-        {
-            IReadOnlyList<TTTG> value;
-            if (Index_IDENT.Value.TryGetValue(IDENT, out value))
             {
                 return value;
             }
@@ -452,80 +522,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TTTG by R1ROOM field
+        /// Find TTTG by TID field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
-        /// <returns>List of related TTTG entities</returns>
+        /// <param name="TID">TID value used to find TTTG</param>
+        /// <returns>Related TTTG entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> FindByR1ROOM(string R1ROOM)
+        public TTTG FindByTID(int TID)
         {
-            return Index_R1ROOM.Value[R1ROOM];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find TTTG by R1ROOM field
+        /// Attempt to find TTTG by TID field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
-        /// <param name="Value">List of related TTTG entities</param>
-        /// <returns>True if the list of related TTTG entities is found</returns>
+        /// <param name="TID">TID value used to find TTTG</param>
+        /// <param name="Value">Related TTTG entity</param>
+        /// <returns>True if the related TTTG entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByR1ROOM(string R1ROOM, out IReadOnlyList<TTTG> Value)
+        public bool TryFindByTID(int TID, out TTTG Value)
         {
-            return Index_R1ROOM.Value.TryGetValue(R1ROOM, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TTTG by R1ROOM field
+        /// Attempt to find TTTG by TID field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TTTG</param>
-        /// <returns>List of related TTTG entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find TTTG</param>
+        /// <returns>Related TTTG entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> TryFindByR1ROOM(string R1ROOM)
+        public TTTG TryFindByTID(int TID)
         {
-            IReadOnlyList<TTTG> value;
-            if (Index_R1ROOM.Value.TryGetValue(R1ROOM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TTTG by R2ROOM field
-        /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
-        /// <returns>List of related TTTG entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> FindByR2ROOM(string R2ROOM)
-        {
-            return Index_R2ROOM.Value[R2ROOM];
-        }
-
-        /// <summary>
-        /// Attempt to find TTTG by R2ROOM field
-        /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
-        /// <param name="Value">List of related TTTG entities</param>
-        /// <returns>True if the list of related TTTG entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByR2ROOM(string R2ROOM, out IReadOnlyList<TTTG> Value)
-        {
-            return Index_R2ROOM.Value.TryGetValue(R2ROOM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TTTG by R2ROOM field
-        /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TTTG</param>
-        /// <returns>List of related TTTG entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTTG> TryFindByR2ROOM(string R2ROOM)
-        {
-            IReadOnlyList<TTTG> value;
-            if (Index_R2ROOM.Value.TryGetValue(R2ROOM, out value))
+            TTTG value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

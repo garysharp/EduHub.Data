@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KBPDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TID = new Lazy<Dictionary<int, KBP>>(() => this.ToDictionary(i => i.TID));
             Index_REFERENCE_NO = new Lazy<NullDictionary<string, IReadOnlyList<KBP>>>(() => this.ToGroupedNullDictionary(i => i.REFERENCE_NO));
+            Index_TID = new Lazy<Dictionary<int, KBP>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -85,56 +85,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KBP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KBP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KBP" /> items to added or update the base <see cref="KBP" /> items</param>
+        /// <returns>A merged list of <see cref="KBP" /> items</returns>
+        protected override List<KBP> ApplyDeltaItems(List<KBP> Items, List<KBP> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KBP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TID)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, KBP>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<KBP>>> Index_REFERENCE_NO;
+        private Lazy<Dictionary<int, KBP>> Index_TID;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KBP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find KBP</param>
-        /// <returns>Related KBP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KBP FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find KBP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find KBP</param>
-        /// <param name="Value">Related KBP entity</param>
-        /// <returns>True if the related KBP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out KBP Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KBP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find KBP</param>
-        /// <returns>Related KBP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KBP TryFindByTID(int TID)
-        {
-            KBP value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KBP by REFERENCE_NO field
@@ -169,6 +155,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KBP> value;
             if (Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <returns>Related KBP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <param name="Value">Related KBP entity</param>
+        /// <returns>True if the related KBP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KBP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <returns>Related KBP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBP TryFindByTID(int TID)
+        {
+            KBP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

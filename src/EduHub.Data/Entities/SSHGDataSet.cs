@@ -19,13 +19,13 @@ namespace EduHub.Data.Entities
         internal SSHGDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SUBJECT = new Lazy<Dictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedDictionary(i => i.SUBJECT));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_TID = new Lazy<Dictionary<int, SSHG>>(() => this.ToDictionary(i => i.TID));
             Index_HOMEGROUP = new Lazy<NullDictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.HOMEGROUP));
-            Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
+            Index_SUBJECT = new Lazy<Dictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedDictionary(i => i.SUBJECT));
+            Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
             Index_TEACHING_HG = new Lazy<NullDictionary<string, IReadOnlyList<SSHG>>>(() => this.ToGroupedNullDictionary(i => i.TEACHING_HG));
+            Index_TID = new Lazy<Dictionary<int, SSHG>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -78,53 +78,81 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SSHG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SSHG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SSHG" /> items to added or update the base <see cref="SSHG" /> items</param>
+        /// <returns>A merged list of <see cref="SSHG" /> items</returns>
+        protected override List<SSHG> ApplyDeltaItems(List<SSHG> Items, List<SSHG> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SSHG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SUBJECT)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<SSHG>>> Index_SUBJECT;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SSHG>>> Index_LW_DATE;
-        private Lazy<Dictionary<int, SSHG>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<SSHG>>> Index_HOMEGROUP;
-        private Lazy<NullDictionary<string, IReadOnlyList<SSHG>>> Index_TEACHER;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SSHG>>> Index_LW_DATE;
         private Lazy<NullDictionary<string, IReadOnlyList<SSHG>>> Index_STUDENT;
+        private Lazy<Dictionary<string, IReadOnlyList<SSHG>>> Index_SUBJECT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SSHG>>> Index_TEACHER;
         private Lazy<NullDictionary<string, IReadOnlyList<SSHG>>> Index_TEACHING_HG;
+        private Lazy<Dictionary<int, SSHG>> Index_TID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SSHG by SUBJECT field
+        /// Find SSHG by HOMEGROUP field
         /// </summary>
-        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
+        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
         /// <returns>List of related SSHG entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> FindBySUBJECT(string SUBJECT)
+        public IReadOnlyList<SSHG> FindByHOMEGROUP(string HOMEGROUP)
         {
-            return Index_SUBJECT.Value[SUBJECT];
+            return Index_HOMEGROUP.Value[HOMEGROUP];
         }
 
         /// <summary>
-        /// Attempt to find SSHG by SUBJECT field
+        /// Attempt to find SSHG by HOMEGROUP field
         /// </summary>
-        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
+        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
         /// <param name="Value">List of related SSHG entities</param>
         /// <returns>True if the list of related SSHG entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBJECT(string SUBJECT, out IReadOnlyList<SSHG> Value)
+        public bool TryFindByHOMEGROUP(string HOMEGROUP, out IReadOnlyList<SSHG> Value)
         {
-            return Index_SUBJECT.Value.TryGetValue(SUBJECT, out Value);
+            return Index_HOMEGROUP.Value.TryGetValue(HOMEGROUP, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SSHG by SUBJECT field
+        /// Attempt to find SSHG by HOMEGROUP field
         /// </summary>
-        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
+        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
         /// <returns>List of related SSHG entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> TryFindBySUBJECT(string SUBJECT)
+        public IReadOnlyList<SSHG> TryFindByHOMEGROUP(string HOMEGROUP)
         {
             IReadOnlyList<SSHG> value;
-            if (Index_SUBJECT.Value.TryGetValue(SUBJECT, out value))
+            if (Index_HOMEGROUP.Value.TryGetValue(HOMEGROUP, out value))
             {
                 return value;
             }
@@ -177,38 +205,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SSHG by TID field
+        /// Find SSHG by STUDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find SSHG</param>
-        /// <returns>Related SSHG entity</returns>
+        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
+        /// <returns>List of related SSHG entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SSHG FindByTID(int TID)
+        public IReadOnlyList<SSHG> FindBySTUDENT(string STUDENT)
         {
-            return Index_TID.Value[TID];
+            return Index_STUDENT.Value[STUDENT];
         }
 
         /// <summary>
-        /// Attempt to find SSHG by TID field
+        /// Attempt to find SSHG by STUDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find SSHG</param>
-        /// <param name="Value">Related SSHG entity</param>
-        /// <returns>True if the related SSHG entity is found</returns>
+        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
+        /// <param name="Value">List of related SSHG entities</param>
+        /// <returns>True if the list of related SSHG entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SSHG Value)
+        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<SSHG> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SSHG by TID field
+        /// Attempt to find SSHG by STUDENT field
         /// </summary>
-        /// <param name="TID">TID value used to find SSHG</param>
-        /// <returns>Related SSHG entity, or null if not found</returns>
+        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
+        /// <returns>List of related SSHG entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SSHG TryFindByTID(int TID)
+        public IReadOnlyList<SSHG> TryFindBySTUDENT(string STUDENT)
         {
-            SSHG value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<SSHG> value;
+            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
             {
                 return value;
             }
@@ -219,38 +247,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SSHG by HOMEGROUP field
+        /// Find SSHG by SUBJECT field
         /// </summary>
-        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
         /// <returns>List of related SSHG entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> FindByHOMEGROUP(string HOMEGROUP)
+        public IReadOnlyList<SSHG> FindBySUBJECT(string SUBJECT)
         {
-            return Index_HOMEGROUP.Value[HOMEGROUP];
+            return Index_SUBJECT.Value[SUBJECT];
         }
 
         /// <summary>
-        /// Attempt to find SSHG by HOMEGROUP field
+        /// Attempt to find SSHG by SUBJECT field
         /// </summary>
-        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
         /// <param name="Value">List of related SSHG entities</param>
         /// <returns>True if the list of related SSHG entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOMEGROUP(string HOMEGROUP, out IReadOnlyList<SSHG> Value)
+        public bool TryFindBySUBJECT(string SUBJECT, out IReadOnlyList<SSHG> Value)
         {
-            return Index_HOMEGROUP.Value.TryGetValue(HOMEGROUP, out Value);
+            return Index_SUBJECT.Value.TryGetValue(SUBJECT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SSHG by HOMEGROUP field
+        /// Attempt to find SSHG by SUBJECT field
         /// </summary>
-        /// <param name="HOMEGROUP">HOMEGROUP value used to find SSHG</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SSHG</param>
         /// <returns>List of related SSHG entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> TryFindByHOMEGROUP(string HOMEGROUP)
+        public IReadOnlyList<SSHG> TryFindBySUBJECT(string SUBJECT)
         {
             IReadOnlyList<SSHG> value;
-            if (Index_HOMEGROUP.Value.TryGetValue(HOMEGROUP, out value))
+            if (Index_SUBJECT.Value.TryGetValue(SUBJECT, out value))
             {
                 return value;
             }
@@ -303,48 +331,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SSHG by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
-        /// <returns>List of related SSHG entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> FindBySTUDENT(string STUDENT)
-        {
-            return Index_STUDENT.Value[STUDENT];
-        }
-
-        /// <summary>
-        /// Attempt to find SSHG by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
-        /// <param name="Value">List of related SSHG entities</param>
-        /// <returns>True if the list of related SSHG entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<SSHG> Value)
-        {
-            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SSHG by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SSHG</param>
-        /// <returns>List of related SSHG entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SSHG> TryFindBySTUDENT(string STUDENT)
-        {
-            IReadOnlyList<SSHG> value;
-            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SSHG by TEACHING_HG field
         /// </summary>
         /// <param name="TEACHING_HG">TEACHING_HG value used to find SSHG</param>
@@ -377,6 +363,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SSHG> value;
             if (Index_TEACHING_HG.Value.TryGetValue(TEACHING_HG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SSHG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SSHG</param>
+        /// <returns>Related SSHG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SSHG FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SSHG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SSHG</param>
+        /// <param name="Value">Related SSHG entity</param>
+        /// <returns>True if the related SSHG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SSHG Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SSHG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SSHG</param>
+        /// <returns>Related SSHG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SSHG TryFindByTID(int TID)
+        {
+            SSHG value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

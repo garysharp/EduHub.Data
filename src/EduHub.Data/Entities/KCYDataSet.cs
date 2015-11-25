@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_KCYKEY = new Lazy<Dictionary<string, KCY>>(() => this.ToDictionary(i => i.KCYKEY));
+            Index_NEXT_YR = new Lazy<NullDictionary<string, IReadOnlyList<KCY>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_YR));
             Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<KCY>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
             Index_TEACHER_B = new Lazy<NullDictionary<string, IReadOnlyList<KCY>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER_B));
-            Index_NEXT_YR = new Lazy<NullDictionary<string, IReadOnlyList<KCY>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_YR));
         }
 
         /// <summary>
@@ -87,12 +87,40 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KCY" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KCY" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KCY" /> items to added or update the base <see cref="KCY" /> items</param>
+        /// <returns>A merged list of <see cref="KCY" /> items</returns>
+        protected override List<KCY> ApplyDeltaItems(List<KCY> Items, List<KCY> DeltaItems)
+        {
+            Dictionary<string, int> Index_KCYKEY = Items.ToIndexDictionary(i => i.KCYKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KCY deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KCYKEY.TryGetValue(deltaItem.KCYKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KCYKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KCY>> Index_KCYKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KCY>>> Index_NEXT_YR;
         private Lazy<NullDictionary<string, IReadOnlyList<KCY>>> Index_TEACHER;
         private Lazy<NullDictionary<string, IReadOnlyList<KCY>>> Index_TEACHER_B;
-        private Lazy<NullDictionary<string, IReadOnlyList<KCY>>> Index_NEXT_YR;
 
         #endregion
 
@@ -131,6 +159,48 @@ namespace EduHub.Data.Entities
         {
             KCY value;
             if (Index_KCYKEY.Value.TryGetValue(KCYKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCY by NEXT_YR field
+        /// </summary>
+        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
+        /// <returns>List of related KCY entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCY> FindByNEXT_YR(string NEXT_YR)
+        {
+            return Index_NEXT_YR.Value[NEXT_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find KCY by NEXT_YR field
+        /// </summary>
+        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
+        /// <param name="Value">List of related KCY entities</param>
+        /// <returns>True if the list of related KCY entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_YR(string NEXT_YR, out IReadOnlyList<KCY> Value)
+        {
+            return Index_NEXT_YR.Value.TryGetValue(NEXT_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCY by NEXT_YR field
+        /// </summary>
+        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
+        /// <returns>List of related KCY entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCY> TryFindByNEXT_YR(string NEXT_YR)
+        {
+            IReadOnlyList<KCY> value;
+            if (Index_NEXT_YR.Value.TryGetValue(NEXT_YR, out value))
             {
                 return value;
             }
@@ -215,48 +285,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KCY> value;
             if (Index_TEACHER_B.Value.TryGetValue(TEACHER_B, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KCY by NEXT_YR field
-        /// </summary>
-        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
-        /// <returns>List of related KCY entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KCY> FindByNEXT_YR(string NEXT_YR)
-        {
-            return Index_NEXT_YR.Value[NEXT_YR];
-        }
-
-        /// <summary>
-        /// Attempt to find KCY by NEXT_YR field
-        /// </summary>
-        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
-        /// <param name="Value">List of related KCY entities</param>
-        /// <returns>True if the list of related KCY entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByNEXT_YR(string NEXT_YR, out IReadOnlyList<KCY> Value)
-        {
-            return Index_NEXT_YR.Value.TryGetValue(NEXT_YR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCY by NEXT_YR field
-        /// </summary>
-        /// <param name="NEXT_YR">NEXT_YR value used to find KCY</param>
-        /// <returns>List of related KCY entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KCY> TryFindByNEXT_YR(string NEXT_YR)
-        {
-            IReadOnlyList<KCY> value;
-            if (Index_NEXT_YR.Value.TryGetValue(NEXT_YR, out value))
             {
                 return value;
             }

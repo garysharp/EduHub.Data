@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_ACCIDENTID = new Lazy<Dictionary<int, IReadOnlyList<SADP>>>(() => this.ToGroupedDictionary(i => i.ACCIDENTID));
-            Index_TID = new Lazy<Dictionary<int, SADP>>(() => this.ToDictionary(i => i.TID));
             Index_ACCIDENTID_PREVENTION = new Lazy<Dictionary<Tuple<int, short?>, SADP>>(() => this.ToDictionary(i => Tuple.Create(i.ACCIDENTID, i.PREVENTION)));
+            Index_TID = new Lazy<Dictionary<int, SADP>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -65,11 +65,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SADP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SADP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SADP" /> items to added or update the base <see cref="SADP" /> items</param>
+        /// <returns>A merged list of <see cref="SADP" /> items</returns>
+        protected override List<SADP> ApplyDeltaItems(List<SADP> Items, List<SADP> DeltaItems)
+        {
+            Dictionary<Tuple<int, short?>, int> Index_ACCIDENTID_PREVENTION = Items.ToIndexDictionary(i => Tuple.Create(i.ACCIDENTID, i.PREVENTION));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SADP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ACCIDENTID_PREVENTION.TryGetValue(Tuple.Create(deltaItem.ACCIDENTID, deltaItem.PREVENTION), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ACCIDENTID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, IReadOnlyList<SADP>>> Index_ACCIDENTID;
-        private Lazy<Dictionary<int, SADP>> Index_TID;
         private Lazy<Dictionary<Tuple<int, short?>, SADP>> Index_ACCIDENTID_PREVENTION;
+        private Lazy<Dictionary<int, SADP>> Index_TID;
 
         #endregion
 
@@ -118,48 +151,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SADP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SADP</param>
-        /// <returns>Related SADP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SADP FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SADP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SADP</param>
-        /// <param name="Value">Related SADP entity</param>
-        /// <returns>True if the related SADP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SADP Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SADP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SADP</param>
-        /// <returns>Related SADP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SADP TryFindByTID(int TID)
-        {
-            SADP value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SADP by ACCIDENTID and PREVENTION fields
         /// </summary>
         /// <param name="ACCIDENTID">ACCIDENTID value used to find SADP</param>
@@ -195,6 +186,48 @@ namespace EduHub.Data.Entities
         {
             SADP value;
             if (Index_ACCIDENTID_PREVENTION.Value.TryGetValue(Tuple.Create(ACCIDENTID, PREVENTION), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SADP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADP</param>
+        /// <returns>Related SADP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SADP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADP</param>
+        /// <param name="Value">Related SADP entity</param>
+        /// <returns>True if the related SADP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SADP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SADP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADP</param>
+        /// <returns>Related SADP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADP TryFindByTID(int TID)
+        {
+            SADP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

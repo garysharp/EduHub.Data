@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KSFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_KSFKEY = new Lazy<Dictionary<string, KSF>>(() => this.ToDictionary(i => i.KSFKEY));
             Index_COORDINATOR = new Lazy<NullDictionary<string, IReadOnlyList<KSF>>>(() => this.ToGroupedNullDictionary(i => i.COORDINATOR));
+            Index_KSFKEY = new Lazy<Dictionary<string, KSF>>(() => this.ToDictionary(i => i.KSFKEY));
         }
 
         /// <summary>
@@ -61,56 +61,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KSF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KSF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KSF" /> items to added or update the base <see cref="KSF" /> items</param>
+        /// <returns>A merged list of <see cref="KSF" /> items</returns>
+        protected override List<KSF> ApplyDeltaItems(List<KSF> Items, List<KSF> DeltaItems)
+        {
+            Dictionary<string, int> Index_KSFKEY = Items.ToIndexDictionary(i => i.KSFKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KSF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KSFKEY.TryGetValue(deltaItem.KSFKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KSFKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, KSF>> Index_KSFKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<KSF>>> Index_COORDINATOR;
+        private Lazy<Dictionary<string, KSF>> Index_KSFKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KSF by KSFKEY field
-        /// </summary>
-        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
-        /// <returns>Related KSF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KSF FindByKSFKEY(string KSFKEY)
-        {
-            return Index_KSFKEY.Value[KSFKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find KSF by KSFKEY field
-        /// </summary>
-        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
-        /// <param name="Value">Related KSF entity</param>
-        /// <returns>True if the related KSF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByKSFKEY(string KSFKEY, out KSF Value)
-        {
-            return Index_KSFKEY.Value.TryGetValue(KSFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KSF by KSFKEY field
-        /// </summary>
-        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
-        /// <returns>Related KSF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KSF TryFindByKSFKEY(string KSFKEY)
-        {
-            KSF value;
-            if (Index_KSFKEY.Value.TryGetValue(KSFKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KSF by COORDINATOR field
@@ -145,6 +131,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KSF> value;
             if (Index_COORDINATOR.Value.TryGetValue(COORDINATOR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KSF by KSFKEY field
+        /// </summary>
+        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
+        /// <returns>Related KSF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KSF FindByKSFKEY(string KSFKEY)
+        {
+            return Index_KSFKEY.Value[KSFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KSF by KSFKEY field
+        /// </summary>
+        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
+        /// <param name="Value">Related KSF entity</param>
+        /// <returns>True if the related KSF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKSFKEY(string KSFKEY, out KSF Value)
+        {
+            return Index_KSFKEY.Value.TryGetValue(KSFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KSF by KSFKEY field
+        /// </summary>
+        /// <param name="KSFKEY">KSFKEY value used to find KSF</param>
+        /// <returns>Related KSF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KSF TryFindByKSFKEY(string KSFKEY)
+        {
+            KSF value;
+            if (Index_KSFKEY.Value.TryGetValue(KSFKEY, out value))
             {
                 return value;
             }

@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal SAMDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SAMKEY = new Lazy<Dictionary<int, SAM>>(() => this.ToDictionary(i => i.SAMKEY));
+            Index_ADDRESSKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ADDRESSKEY));
             Index_ASSOC_NAME = new Lazy<NullDictionary<string, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ASSOC_NAME));
             Index_ASSOC_POSN = new Lazy<NullDictionary<string, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ASSOC_POSN));
-            Index_ADDRESSKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ADDRESSKEY));
             Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
+            Index_SAMKEY = new Lazy<Dictionary<int, SAM>>(() => this.ToDictionary(i => i.SAMKEY));
         }
 
         /// <summary>
@@ -136,51 +136,79 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAM" /> items to added or update the base <see cref="SAM" /> items</param>
+        /// <returns>A merged list of <see cref="SAM" /> items</returns>
+        protected override List<SAM> ApplyDeltaItems(List<SAM> Items, List<SAM> DeltaItems)
+        {
+            Dictionary<int, int> Index_SAMKEY = Items.ToIndexDictionary(i => i.SAMKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SAMKEY.TryGetValue(deltaItem.SAMKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SAMKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SAM>> Index_SAMKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SAM>>> Index_ADDRESSKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SAM>>> Index_ASSOC_NAME;
         private Lazy<NullDictionary<string, IReadOnlyList<SAM>>> Index_ASSOC_POSN;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SAM>>> Index_ADDRESSKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<SAM>>> Index_MAILKEY;
+        private Lazy<Dictionary<int, SAM>> Index_SAMKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SAM by SAMKEY field
+        /// Find SAM by ADDRESSKEY field
         /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
-        /// <returns>Related SAM entity</returns>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAM FindBySAMKEY(int SAMKEY)
+        public IReadOnlyList<SAM> FindByADDRESSKEY(int? ADDRESSKEY)
         {
-            return Index_SAMKEY.Value[SAMKEY];
+            return Index_ADDRESSKEY.Value[ADDRESSKEY];
         }
 
         /// <summary>
-        /// Attempt to find SAM by SAMKEY field
+        /// Attempt to find SAM by ADDRESSKEY field
         /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
-        /// <param name="Value">Related SAM entity</param>
-        /// <returns>True if the related SAM entity is found</returns>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <param name="Value">List of related SAM entities</param>
+        /// <returns>True if the list of related SAM entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySAMKEY(int SAMKEY, out SAM Value)
+        public bool TryFindByADDRESSKEY(int? ADDRESSKEY, out IReadOnlyList<SAM> Value)
         {
-            return Index_SAMKEY.Value.TryGetValue(SAMKEY, out Value);
+            return Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SAM by SAMKEY field
+        /// Attempt to find SAM by ADDRESSKEY field
         /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
-        /// <returns>Related SAM entity, or null if not found</returns>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAM TryFindBySAMKEY(int SAMKEY)
+        public IReadOnlyList<SAM> TryFindByADDRESSKEY(int? ADDRESSKEY)
         {
-            SAM value;
-            if (Index_SAMKEY.Value.TryGetValue(SAMKEY, out value))
+            IReadOnlyList<SAM> value;
+            if (Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out value))
             {
                 return value;
             }
@@ -275,48 +303,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SAM by ADDRESSKEY field
-        /// </summary>
-        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
-        /// <returns>List of related SAM entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SAM> FindByADDRESSKEY(int? ADDRESSKEY)
-        {
-            return Index_ADDRESSKEY.Value[ADDRESSKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SAM by ADDRESSKEY field
-        /// </summary>
-        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
-        /// <param name="Value">List of related SAM entities</param>
-        /// <returns>True if the list of related SAM entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByADDRESSKEY(int? ADDRESSKEY, out IReadOnlyList<SAM> Value)
-        {
-            return Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAM by ADDRESSKEY field
-        /// </summary>
-        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
-        /// <returns>List of related SAM entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SAM> TryFindByADDRESSKEY(int? ADDRESSKEY)
-        {
-            IReadOnlyList<SAM> value;
-            if (Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SAM by MAILKEY field
         /// </summary>
         /// <param name="MAILKEY">MAILKEY value used to find SAM</param>
@@ -349,6 +335,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SAM> value;
             if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAM FindBySAMKEY(int SAMKEY)
+        {
+            return Index_SAMKEY.Value[SAMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <param name="Value">Related SAM entity</param>
+        /// <returns>True if the related SAM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAMKEY(int SAMKEY, out SAM Value)
+        {
+            return Index_SAMKEY.Value.TryGetValue(SAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAM TryFindBySAMKEY(int SAMKEY)
+        {
+            SAM value;
+            if (Index_SAMKEY.Value.TryGetValue(SAMKEY, out value))
             {
                 return value;
             }

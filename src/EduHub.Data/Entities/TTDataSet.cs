@@ -19,7 +19,6 @@ namespace EduHub.Data.Entities
         internal TTDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TTKEY = new Lazy<Dictionary<string, TT>>(() => this.ToDictionary(i => i.TTKEY));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
             Index_SUBJECT_ACADEMIC_YEAR01 = new Lazy<NullDictionary<string, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT_ACADEMIC_YEAR01));
             Index_SUBJECT_ACADEMIC_YEAR02 = new Lazy<NullDictionary<string, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT_ACADEMIC_YEAR02));
@@ -30,6 +29,7 @@ namespace EduHub.Data.Entities
             Index_SUBJECT_ACADEMIC_YEAR07 = new Lazy<NullDictionary<string, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT_ACADEMIC_YEAR07));
             Index_SUBJECT_ACADEMIC_YEAR08 = new Lazy<NullDictionary<string, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT_ACADEMIC_YEAR08));
             Index_SUBJECT_ACADEMIC_YEAR09 = new Lazy<NullDictionary<string, IReadOnlyList<TT>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT_ACADEMIC_YEAR09));
+            Index_TTKEY = new Lazy<Dictionary<string, TT>>(() => this.ToDictionary(i => i.TTKEY));
         }
 
         /// <summary>
@@ -226,9 +226,36 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TT" /> items to added or update the base <see cref="TT" /> items</param>
+        /// <returns>A merged list of <see cref="TT" /> items</returns>
+        protected override List<TT> ApplyDeltaItems(List<TT> Items, List<TT> DeltaItems)
+        {
+            Dictionary<string, int> Index_TTKEY = Items.ToIndexDictionary(i => i.TTKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TTKEY.TryGetValue(deltaItem.TTKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, TT>> Index_TTKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<TT>>> Index_CAMPUS;
         private Lazy<NullDictionary<string, IReadOnlyList<TT>>> Index_SUBJECT_ACADEMIC_YEAR01;
         private Lazy<NullDictionary<string, IReadOnlyList<TT>>> Index_SUBJECT_ACADEMIC_YEAR02;
@@ -239,52 +266,11 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<TT>>> Index_SUBJECT_ACADEMIC_YEAR07;
         private Lazy<NullDictionary<string, IReadOnlyList<TT>>> Index_SUBJECT_ACADEMIC_YEAR08;
         private Lazy<NullDictionary<string, IReadOnlyList<TT>>> Index_SUBJECT_ACADEMIC_YEAR09;
+        private Lazy<Dictionary<string, TT>> Index_TTKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find TT by TTKEY field
-        /// </summary>
-        /// <param name="TTKEY">TTKEY value used to find TT</param>
-        /// <returns>Related TT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TT FindByTTKEY(string TTKEY)
-        {
-            return Index_TTKEY.Value[TTKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find TT by TTKEY field
-        /// </summary>
-        /// <param name="TTKEY">TTKEY value used to find TT</param>
-        /// <param name="Value">Related TT entity</param>
-        /// <returns>True if the related TT entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTTKEY(string TTKEY, out TT Value)
-        {
-            return Index_TTKEY.Value.TryGetValue(TTKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TT by TTKEY field
-        /// </summary>
-        /// <param name="TTKEY">TTKEY value used to find TT</param>
-        /// <returns>Related TT entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TT TryFindByTTKEY(string TTKEY)
-        {
-            TT value;
-            if (Index_TTKEY.Value.TryGetValue(TTKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find TT by CAMPUS field
@@ -697,6 +683,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TT> value;
             if (Index_SUBJECT_ACADEMIC_YEAR09.Value.TryGetValue(SUBJECT_ACADEMIC_YEAR09, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TT by TTKEY field
+        /// </summary>
+        /// <param name="TTKEY">TTKEY value used to find TT</param>
+        /// <returns>Related TT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TT FindByTTKEY(string TTKEY)
+        {
+            return Index_TTKEY.Value[TTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TT by TTKEY field
+        /// </summary>
+        /// <param name="TTKEY">TTKEY value used to find TT</param>
+        /// <param name="Value">Related TT entity</param>
+        /// <returns>True if the related TT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTTKEY(string TTKEY, out TT Value)
+        {
+            return Index_TTKEY.Value.TryGetValue(TTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TT by TTKEY field
+        /// </summary>
+        /// <param name="TTKEY">TTKEY value used to find TT</param>
+        /// <returns>Related TT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TT TryFindByTTKEY(string TTKEY)
+        {
+            TT value;
+            if (Index_TTKEY.Value.TryGetValue(TTKEY, out value))
             {
                 return value;
             }

@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, GLFBANK>>(() => this.ToDictionary(i => i.TID));
             Index_FUND_ID = new Lazy<NullDictionary<short?, GLFBANK>>(() => this.ToNullDictionary(i => i.FUND_ID));
+            Index_TID = new Lazy<Dictionary<int, GLFBANK>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -83,11 +83,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="GLFBANK" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="GLFBANK" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="GLFBANK" /> items to added or update the base <see cref="GLFBANK" /> items</param>
+        /// <returns>A merged list of <see cref="GLFBANK" /> items</returns>
+        protected override List<GLFBANK> ApplyDeltaItems(List<GLFBANK> Items, List<GLFBANK> DeltaItems)
+        {
+            NullDictionary<short?, int> Index_FUND_ID = Items.ToIndexNullDictionary(i => i.FUND_ID);
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (GLFBANK deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_FUND_ID.TryGetValue(deltaItem.FUND_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>> Index_CODE;
-        private Lazy<Dictionary<int, GLFBANK>> Index_TID;
         private Lazy<NullDictionary<short?, GLFBANK>> Index_FUND_ID;
+        private Lazy<Dictionary<int, GLFBANK>> Index_TID;
 
         #endregion
 
@@ -136,48 +169,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find GLFBANK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find GLFBANK</param>
-        /// <returns>Related GLFBANK entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public GLFBANK FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find GLFBANK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find GLFBANK</param>
-        /// <param name="Value">Related GLFBANK entity</param>
-        /// <returns>True if the related GLFBANK entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out GLFBANK Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLFBANK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find GLFBANK</param>
-        /// <returns>Related GLFBANK entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public GLFBANK TryFindByTID(int TID)
-        {
-            GLFBANK value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find GLFBANK by FUND_ID field
         /// </summary>
         /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
@@ -210,6 +201,48 @@ namespace EduHub.Data.Entities
         {
             GLFBANK value;
             if (Index_FUND_ID.Value.TryGetValue(FUND_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLFBANK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLFBANK</param>
+        /// <returns>Related GLFBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLFBANK FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLFBANK</param>
+        /// <param name="Value">Related GLFBANK entity</param>
+        /// <returns>True if the related GLFBANK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out GLFBANK Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLFBANK</param>
+        /// <returns>Related GLFBANK entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLFBANK TryFindByTID(int TID)
+        {
+            GLFBANK value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal STPODataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_SGLINK = new Lazy<NullDictionary<string, IReadOnlyList<STPO>>>(() => this.ToGroupedNullDictionary(i => i.SGLINK));
             Index_STPOKEY = new Lazy<Dictionary<string, IReadOnlyList<STPO>>>(() => this.ToGroupedDictionary(i => i.STPOKEY));
             Index_TID = new Lazy<Dictionary<int, STPO>>(() => this.ToDictionary(i => i.TID));
-            Index_SGLINK = new Lazy<NullDictionary<string, IReadOnlyList<STPO>>>(() => this.ToGroupedNullDictionary(i => i.SGLINK));
         }
 
         /// <summary>
@@ -92,15 +92,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STPO" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STPO" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STPO" /> items to added or update the base <see cref="STPO" /> items</param>
+        /// <returns>A merged list of <see cref="STPO" /> items</returns>
+        protected override List<STPO> ApplyDeltaItems(List<STPO> Items, List<STPO> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STPO deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.STPOKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<STPO>>> Index_SGLINK;
         private Lazy<Dictionary<string, IReadOnlyList<STPO>>> Index_STPOKEY;
         private Lazy<Dictionary<int, STPO>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<STPO>>> Index_SGLINK;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find STPO by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find STPO</param>
+        /// <returns>List of related STPO entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STPO> FindBySGLINK(string SGLINK)
+        {
+            return Index_SGLINK.Value[SGLINK];
+        }
+
+        /// <summary>
+        /// Attempt to find STPO by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find STPO</param>
+        /// <param name="Value">List of related STPO entities</param>
+        /// <returns>True if the list of related STPO entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGLINK(string SGLINK, out IReadOnlyList<STPO> Value)
+        {
+            return Index_SGLINK.Value.TryGetValue(SGLINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STPO by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find STPO</param>
+        /// <returns>List of related STPO entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STPO> TryFindBySGLINK(string SGLINK)
+        {
+            IReadOnlyList<STPO> value;
+            if (Index_SGLINK.Value.TryGetValue(SGLINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find STPO by STPOKEY field
@@ -177,48 +247,6 @@ namespace EduHub.Data.Entities
         {
             STPO value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STPO by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find STPO</param>
-        /// <returns>List of related STPO entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STPO> FindBySGLINK(string SGLINK)
-        {
-            return Index_SGLINK.Value[SGLINK];
-        }
-
-        /// <summary>
-        /// Attempt to find STPO by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find STPO</param>
-        /// <param name="Value">List of related STPO entities</param>
-        /// <returns>True if the list of related STPO entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySGLINK(string SGLINK, out IReadOnlyList<STPO> Value)
-        {
-            return Index_SGLINK.Value.TryGetValue(SGLINK, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STPO by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find STPO</param>
-        /// <returns>List of related STPO entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STPO> TryFindBySGLINK(string SGLINK)
-        {
-            IReadOnlyList<STPO> value;
-            if (Index_SGLINK.Value.TryGetValue(SGLINK, out value))
             {
                 return value;
             }

@@ -70,6 +70,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SMAV" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SMAV" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SMAV" /> items to added or update the base <see cref="SMAV" /> items</param>
+        /// <returns>A merged list of <see cref="SMAV" /> items</returns>
+        protected override List<SMAV> ApplyDeltaItems(List<SMAV> Items, List<SMAV> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SMAV deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ROOM)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SMAV>>> Index_ROOM;

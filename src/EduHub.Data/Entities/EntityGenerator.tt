@@ -94,6 +94,74 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        /// <summary>
+        /// Merges <see cref="<#= entity.Name #>" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="<#= entity.Name #>" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="<#= entity.Name #>" /> items to added or update the base <see cref="<#= entity.Name #>" /> items</param>
+        /// <returns>A merged list of <see cref="<#= entity.Name #>" /> items</returns>
+        protected override List<<#= entity.Name #>> ApplyDeltaItems(List<<#= entity.Name #>> Items, List<<#= entity.Name #>> DeltaItems)
+        {
+<#
+        if (entity.DeltaIndexes.Count > 0)
+        {
+            foreach (EduHubIndex index in entity.DeltaIndexes)
+            {
+#>
+            <#=index.FrameworkTypeIndex #> <#=index.Name #> = Items.<#=index.IndexIndexBuilder #>;
+<#
+            }
+#>
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (<#= entity.Name #> deltaItem in DeltaItems)
+            {
+                int index;
+
+<#
+            foreach (EduHubIndex index in entity.DeltaIndexes)
+            {
+#>
+                if (<#=index.Name #>.TryGetValue(<#=index.FrameworkValueVariableBuilder("deltaItem") #>, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+<#
+            }
+#>
+            }
+<#
+        }
+#>
+
+            return Items
+<#
+        if (entity.DeltaIndexes.Count > 0)
+        {
+#>
+                .Remove(removeIndexes)
+<#
+        }
+#>
+                .Concat(DeltaItems)
+<#
+        EduHubIndex clusteredIndex = entity.ClusteredIndex;
+        if (clusteredIndex != null)
+        {
+#>
+                .OrderBy(i => i.<#=clusteredIndex.Fields[0].Name #>)
+<#
+            foreach (EduHubField field in clusteredIndex.Fields.Skip(1))
+            {
+#>
+                .ThenBy(i => i.<#=field.Name #>)
+<#
+            }
+        }
+#>
+                .ToList();
+        }
 <#
         if (entity.Indexes.Count > 0)
         {
@@ -437,6 +505,26 @@ namespace EduHub.Data.Entities
                     .ToList();
             }
         }
+
+        public List<EduHubIndex> DeltaIndexes
+        {
+            get
+            {
+                return Indexes
+                    .Where(i => i.IsUnique)
+                    .ToList();
+            }
+        }
+
+        public EduHubIndex ClusteredIndex
+        {
+            get
+            {
+                return Indexes
+                    .Where(i => i.IsClustered)
+                    .FirstOrDefault();
+            }
+        }
     }
 
     public class EduHubField
@@ -452,6 +540,7 @@ namespace EduHub.Data.Entities
 
         public bool IsKey;
         public bool IsNullable;
+        public bool IsIdentity;
 
         public string ForeignParentKey;
 
@@ -631,6 +720,8 @@ namespace EduHub.Data.Entities
 
         public bool IsUnique;
 
+        public bool IsClustered;
+
         public string Key
         {
             get
@@ -685,6 +776,18 @@ namespace EduHub.Data.Entities
             }
         }
 
+        public string FrameworkValueVariableBuilder(string VariableName)
+        {
+            if (Fields.Count == 1)
+            {
+                return string.Format("{0}.{1}", VariableName, Fields[0].Name);
+            }
+            else
+            {
+                return string.Format("Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("{0}.{1}", VariableName, f.Name))));
+            }
+        }
+
         public string FrameworkType
         {
             get
@@ -693,6 +796,26 @@ namespace EduHub.Data.Entities
                     FrameworkKeyNullable ? "NullDictionary" : "Dictionary",
                     FrameworkKeyType,
                     FrameworkValueType);
+            }
+        }
+
+        public string FrameworkTypeIndex
+        {
+            get
+            {
+                return string.Format("{0}<{1}, int>",
+                    FrameworkKeyNullable ? "NullDictionary" : "Dictionary",
+                    FrameworkKeyType);
+            }
+        }
+
+        public string IndexIndexBuilder
+        {
+            get
+            {
+                return string.Format("ToIndex{0}Dictionary({1})",
+                    FrameworkKeyNullable ? "Null" : null,
+                    FrameworkValueBuilder);
             }
         }
 
@@ -821,6 +944,7 @@ namespace EduHub.Data.Entities
                     TypeMaxLength = f.Attribute("TypeMaxLength") == null ? 0 : int.Parse(f.Attribute("TypeMaxLength").Value),
                     IsKey = bool.Parse(f.Attribute("IsKey").Value),
                     IsNullable = bool.Parse(f.Attribute("IsNullable").Value),
+                    IsIdentity = bool.Parse(f.Attribute("IsIdentity").Value),
                     ForeignParentKey = f.Attribute("ForeignParent") == null ? null : f.Attribute("ForeignParent").Value
                 }).ToList();
                 // Load Indexes
@@ -828,6 +952,7 @@ namespace EduHub.Data.Entities
                     Entity = entity,
                     Name = i.Attribute("Name").Value,
                     IsUnique = bool.Parse(i.Attribute("IsUnique").Value),
+                    IsClustered = bool.Parse(i.Attribute("IsClustered").Value),
                     Fields = i.Elements("Field").Select(fn => entity.Fields.First(f => f.Name == fn.Value)).ToList()
                 }).ToList();
                 return entity;

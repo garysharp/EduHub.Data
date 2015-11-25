@@ -19,12 +19,12 @@ namespace EduHub.Data.Entities
         internal TCTBDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TCTBKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTB>>>(() => this.ToGroupedDictionary(i => i.TCTBKEY));
-            Index_TID = new Lazy<Dictionary<int, TCTB>>(() => this.ToDictionary(i => i.TID));
-            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
-            Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
-            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
             Index_ABSENCE_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.ABSENCE_TYPE));
+            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
+            Index_TCTBKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTB>>>(() => this.ToGroupedDictionary(i => i.TCTBKEY));
+            Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<TCTB>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
+            Index_TID = new Lazy<Dictionary<int, TCTB>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -92,178 +92,80 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TCTB" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TCTB" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TCTB" /> items to added or update the base <see cref="TCTB" /> items</param>
+        /// <returns>A merged list of <see cref="TCTB" /> items</returns>
+        protected override List<TCTB> ApplyDeltaItems(List<TCTB> Items, List<TCTB> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TCTB deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TCTBKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTB>>> Index_TCTBKEY;
-        private Lazy<Dictionary<int, TCTB>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_SUBJ;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_TEACHER;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_ABSENCE_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_SUBJ;
+        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTB>>> Index_TCTBKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTB>>> Index_TEACHER;
+        private Lazy<Dictionary<int, TCTB>> Index_TID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find TCTB by TCTBKEY field
+        /// Find TCTB by ABSENCE_TYPE field
         /// </summary>
-        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
         /// <returns>List of related TCTB entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> FindByTCTBKEY(DateTime TCTBKEY)
+        public IReadOnlyList<TCTB> FindByABSENCE_TYPE(string ABSENCE_TYPE)
         {
-            return Index_TCTBKEY.Value[TCTBKEY];
+            return Index_ABSENCE_TYPE.Value[ABSENCE_TYPE];
         }
 
         /// <summary>
-        /// Attempt to find TCTB by TCTBKEY field
+        /// Attempt to find TCTB by ABSENCE_TYPE field
         /// </summary>
-        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
         /// <param name="Value">List of related TCTB entities</param>
         /// <returns>True if the list of related TCTB entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTCTBKEY(DateTime TCTBKEY, out IReadOnlyList<TCTB> Value)
+        public bool TryFindByABSENCE_TYPE(string ABSENCE_TYPE, out IReadOnlyList<TCTB> Value)
         {
-            return Index_TCTBKEY.Value.TryGetValue(TCTBKEY, out Value);
+            return Index_ABSENCE_TYPE.Value.TryGetValue(ABSENCE_TYPE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTB by TCTBKEY field
+        /// Attempt to find TCTB by ABSENCE_TYPE field
         /// </summary>
-        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
         /// <returns>List of related TCTB entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> TryFindByTCTBKEY(DateTime TCTBKEY)
+        public IReadOnlyList<TCTB> TryFindByABSENCE_TYPE(string ABSENCE_TYPE)
         {
             IReadOnlyList<TCTB> value;
-            if (Index_TCTBKEY.Value.TryGetValue(TCTBKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTB</param>
-        /// <returns>Related TCTB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTB FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTB</param>
-        /// <param name="Value">Related TCTB entity</param>
-        /// <returns>True if the related TCTB entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TCTB Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTB</param>
-        /// <returns>Related TCTB entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTB TryFindByTID(int TID)
-        {
-            TCTB value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTB by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
-        /// <returns>List of related TCTB entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> FindBySUBJ(string SUBJ)
-        {
-            return Index_SUBJ.Value[SUBJ];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
-        /// <param name="Value">List of related TCTB entities</param>
-        /// <returns>True if the list of related TCTB entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBJ(string SUBJ, out IReadOnlyList<TCTB> Value)
-        {
-            return Index_SUBJ.Value.TryGetValue(SUBJ, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
-        /// <returns>List of related TCTB entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> TryFindBySUBJ(string SUBJ)
-        {
-            IReadOnlyList<TCTB> value;
-            if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTB by TEACHER field
-        /// </summary>
-        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
-        /// <returns>List of related TCTB entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> FindByTEACHER(string TEACHER)
-        {
-            return Index_TEACHER.Value[TEACHER];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by TEACHER field
-        /// </summary>
-        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
-        /// <param name="Value">List of related TCTB entities</param>
-        /// <returns>True if the list of related TCTB entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTEACHER(string TEACHER, out IReadOnlyList<TCTB> Value)
-        {
-            return Index_TEACHER.Value.TryGetValue(TEACHER, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTB by TEACHER field
-        /// </summary>
-        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
-        /// <returns>List of related TCTB entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> TryFindByTEACHER(string TEACHER)
-        {
-            IReadOnlyList<TCTB> value;
-            if (Index_TEACHER.Value.TryGetValue(TEACHER, out value))
+            if (Index_ABSENCE_TYPE.Value.TryGetValue(ABSENCE_TYPE, out value))
             {
                 return value;
             }
@@ -316,38 +218,164 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TCTB by ABSENCE_TYPE field
+        /// Find TCTB by SUBJ field
         /// </summary>
-        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
+        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
         /// <returns>List of related TCTB entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> FindByABSENCE_TYPE(string ABSENCE_TYPE)
+        public IReadOnlyList<TCTB> FindBySUBJ(string SUBJ)
         {
-            return Index_ABSENCE_TYPE.Value[ABSENCE_TYPE];
+            return Index_SUBJ.Value[SUBJ];
         }
 
         /// <summary>
-        /// Attempt to find TCTB by ABSENCE_TYPE field
+        /// Attempt to find TCTB by SUBJ field
         /// </summary>
-        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
+        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
         /// <param name="Value">List of related TCTB entities</param>
         /// <returns>True if the list of related TCTB entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByABSENCE_TYPE(string ABSENCE_TYPE, out IReadOnlyList<TCTB> Value)
+        public bool TryFindBySUBJ(string SUBJ, out IReadOnlyList<TCTB> Value)
         {
-            return Index_ABSENCE_TYPE.Value.TryGetValue(ABSENCE_TYPE, out Value);
+            return Index_SUBJ.Value.TryGetValue(SUBJ, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTB by ABSENCE_TYPE field
+        /// Attempt to find TCTB by SUBJ field
         /// </summary>
-        /// <param name="ABSENCE_TYPE">ABSENCE_TYPE value used to find TCTB</param>
+        /// <param name="SUBJ">SUBJ value used to find TCTB</param>
         /// <returns>List of related TCTB entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTB> TryFindByABSENCE_TYPE(string ABSENCE_TYPE)
+        public IReadOnlyList<TCTB> TryFindBySUBJ(string SUBJ)
         {
             IReadOnlyList<TCTB> value;
-            if (Index_ABSENCE_TYPE.Value.TryGetValue(ABSENCE_TYPE, out value))
+            if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTB by TCTBKEY field
+        /// </summary>
+        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <returns>List of related TCTB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTB> FindByTCTBKEY(DateTime TCTBKEY)
+        {
+            return Index_TCTBKEY.Value[TCTBKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TCTBKEY field
+        /// </summary>
+        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <param name="Value">List of related TCTB entities</param>
+        /// <returns>True if the list of related TCTB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTCTBKEY(DateTime TCTBKEY, out IReadOnlyList<TCTB> Value)
+        {
+            return Index_TCTBKEY.Value.TryGetValue(TCTBKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TCTBKEY field
+        /// </summary>
+        /// <param name="TCTBKEY">TCTBKEY value used to find TCTB</param>
+        /// <returns>List of related TCTB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTB> TryFindByTCTBKEY(DateTime TCTBKEY)
+        {
+            IReadOnlyList<TCTB> value;
+            if (Index_TCTBKEY.Value.TryGetValue(TCTBKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTB by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
+        /// <returns>List of related TCTB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTB> FindByTEACHER(string TEACHER)
+        {
+            return Index_TEACHER.Value[TEACHER];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
+        /// <param name="Value">List of related TCTB entities</param>
+        /// <returns>True if the list of related TCTB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTEACHER(string TEACHER, out IReadOnlyList<TCTB> Value)
+        {
+            return Index_TEACHER.Value.TryGetValue(TEACHER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TCTB</param>
+        /// <returns>List of related TCTB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTB> TryFindByTEACHER(string TEACHER)
+        {
+            IReadOnlyList<TCTB> value;
+            if (Index_TEACHER.Value.TryGetValue(TEACHER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTB</param>
+        /// <returns>Related TCTB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TCTB FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTB</param>
+        /// <param name="Value">Related TCTB entity</param>
+        /// <returns>True if the related TCTB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out TCTB Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTB</param>
+        /// <returns>Related TCTB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TCTB TryFindByTID(int TID)
+        {
+            TCTB value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

@@ -57,6 +57,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="AKT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="AKT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="AKT" /> items to added or update the base <see cref="AKT" /> items</param>
+        /// <returns>A merged list of <see cref="AKT" /> items</returns>
+        protected override List<AKT> ApplyDeltaItems(List<AKT> Items, List<AKT> DeltaItems)
+        {
+            Dictionary<string, int> Index_AKTKEY = Items.ToIndexDictionary(i => i.AKTKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (AKT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_AKTKEY.TryGetValue(deltaItem.AKTKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.AKTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, AKT>> Index_AKTKEY;

@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal STSBDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STSB>>>(() => this.ToGroupedDictionary(i => i.SKEY));
-            Index_TID = new Lazy<Dictionary<int, STSB>>(() => this.ToDictionary(i => i.TID));
             Index_FAMILY = new Lazy<NullDictionary<string, IReadOnlyList<STSB>>>(() => this.ToGroupedNullDictionary(i => i.FAMILY));
+            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STSB>>>(() => this.ToGroupedDictionary(i => i.SKEY));
             Index_SPLIT_ITEM = new Lazy<NullDictionary<string, IReadOnlyList<STSB>>>(() => this.ToGroupedNullDictionary(i => i.SPLIT_ITEM));
+            Index_TID = new Lazy<Dictionary<int, STSB>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -75,100 +75,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STSB" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STSB" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STSB" /> items to added or update the base <see cref="STSB" /> items</param>
+        /// <returns>A merged list of <see cref="STSB" /> items</returns>
+        protected override List<STSB> ApplyDeltaItems(List<STSB> Items, List<STSB> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STSB deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<STSB>>> Index_SKEY;
-        private Lazy<Dictionary<int, STSB>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<STSB>>> Index_FAMILY;
+        private Lazy<Dictionary<string, IReadOnlyList<STSB>>> Index_SKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<STSB>>> Index_SPLIT_ITEM;
+        private Lazy<Dictionary<int, STSB>> Index_TID;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find STSB by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STSB</param>
-        /// <returns>List of related STSB entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STSB> FindBySKEY(string SKEY)
-        {
-            return Index_SKEY.Value[SKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find STSB by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STSB</param>
-        /// <param name="Value">List of related STSB entities</param>
-        /// <returns>True if the list of related STSB entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STSB> Value)
-        {
-            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STSB by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STSB</param>
-        /// <returns>List of related STSB entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STSB> TryFindBySKEY(string SKEY)
-        {
-            IReadOnlyList<STSB> value;
-            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STSB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSB</param>
-        /// <returns>Related STSB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STSB FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find STSB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSB</param>
-        /// <param name="Value">Related STSB entity</param>
-        /// <returns>True if the related STSB entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out STSB Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STSB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STSB</param>
-        /// <returns>Related STSB entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STSB TryFindByTID(int TID)
-        {
-            STSB value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find STSB by FAMILY field
@@ -213,6 +157,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find STSB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STSB</param>
+        /// <returns>List of related STSB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSB> FindBySKEY(string SKEY)
+        {
+            return Index_SKEY.Value[SKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STSB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STSB</param>
+        /// <param name="Value">List of related STSB entities</param>
+        /// <returns>True if the list of related STSB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STSB> Value)
+        {
+            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STSB</param>
+        /// <returns>List of related STSB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSB> TryFindBySKEY(string SKEY)
+        {
+            IReadOnlyList<STSB> value;
+            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find STSB by SPLIT_ITEM field
         /// </summary>
         /// <param name="SPLIT_ITEM">SPLIT_ITEM value used to find STSB</param>
@@ -245,6 +231,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STSB> value;
             if (Index_SPLIT_ITEM.Value.TryGetValue(SPLIT_ITEM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSB</param>
+        /// <returns>Related STSB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSB FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find STSB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSB</param>
+        /// <param name="Value">Related STSB entity</param>
+        /// <returns>True if the related STSB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out STSB Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSB</param>
+        /// <returns>Related STSB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSB TryFindByTID(int TID)
+        {
+            STSB value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

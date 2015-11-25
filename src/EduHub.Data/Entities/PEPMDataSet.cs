@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal PEPMDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<PEPM>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PEPM>>>(() => this.ToGroupedDictionary(i => i.CODE));
             Index_TID = new Lazy<Dictionary<int, PEPM>>(() => this.ToDictionary(i => i.TID));
-            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<PEPM>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
         }
 
         /// <summary>
@@ -95,15 +95,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PEPM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PEPM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PEPM" /> items to added or update the base <see cref="PEPM" /> items</param>
+        /// <returns>A merged list of <see cref="PEPM" /> items</returns>
+        protected override List<PEPM> ApplyDeltaItems(List<PEPM> Items, List<PEPM> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PEPM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPM>>> Index_BSB;
         private Lazy<Dictionary<string, IReadOnlyList<PEPM>>> Index_CODE;
         private Lazy<Dictionary<int, PEPM>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPM>>> Index_BSB;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find PEPM by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find PEPM</param>
+        /// <returns>List of related PEPM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEPM> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find PEPM by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find PEPM</param>
+        /// <param name="Value">List of related PEPM entities</param>
+        /// <returns>True if the list of related PEPM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<PEPM> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEPM by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find PEPM</param>
+        /// <returns>List of related PEPM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEPM> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<PEPM> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find PEPM by CODE field
@@ -180,48 +250,6 @@ namespace EduHub.Data.Entities
         {
             PEPM value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PEPM by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find PEPM</param>
-        /// <returns>List of related PEPM entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPM> FindByBSB(string BSB)
-        {
-            return Index_BSB.Value[BSB];
-        }
-
-        /// <summary>
-        /// Attempt to find PEPM by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find PEPM</param>
-        /// <param name="Value">List of related PEPM entities</param>
-        /// <returns>True if the list of related PEPM entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBSB(string BSB, out IReadOnlyList<PEPM> Value)
-        {
-            return Index_BSB.Value.TryGetValue(BSB, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEPM by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find PEPM</param>
-        /// <returns>List of related PEPM entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPM> TryFindByBSB(string BSB)
-        {
-            IReadOnlyList<PEPM> value;
-            if (Index_BSB.Value.TryGetValue(BSB, out value))
             {
                 return value;
             }

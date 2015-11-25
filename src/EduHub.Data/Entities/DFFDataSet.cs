@@ -19,16 +19,16 @@ namespace EduHub.Data.Entities
         internal DFFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, DFF>>(() => this.ToDictionary(i => i.TID));
-            Index_TRSTUD = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.TRSTUD));
-            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
-            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
             Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedDictionary(i => i.CODE));
             Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
             Index_SUBJECT = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT));
             Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
-            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_TID = new Lazy<Dictionary<int, DFF>>(() => this.ToDictionary(i => i.TID));
+            Index_TRSTUD = new Lazy<NullDictionary<string, IReadOnlyList<DFF>>>(() => this.ToGroupedNullDictionary(i => i.TRSTUD));
         }
 
         /// <summary>
@@ -243,22 +243,92 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="DFF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="DFF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="DFF" /> items to added or update the base <see cref="DFF" /> items</param>
+        /// <returns>A merged list of <see cref="DFF" /> items</returns>
+        protected override List<DFF> ApplyDeltaItems(List<DFF> Items, List<DFF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (DFF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> Index_CODE;
-        private Lazy<Dictionary<int, DFF>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_TRSTUD;
-        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_STUDENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_GST_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_BSB;
+        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> Index_CODE;
         private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_FEE_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_STUDENT;
         private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_SUBJECT;
         private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_SUBPROGRAM;
-        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_INITIATIVE;
+        private Lazy<Dictionary<int, DFF>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFF>>> Index_TRSTUD;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find DFF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <returns>List of related DFF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFF> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find DFF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <param name="Value">List of related DFF entities</param>
+        /// <returns>True if the list of related DFF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<DFF> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <returns>List of related DFF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFF> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<DFF> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find DFF by CODE field
@@ -303,122 +373,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFF by TID field
+        /// Find DFF by FEE_CODE field
         /// </summary>
-        /// <param name="TID">TID value used to find DFF</param>
-        /// <returns>Related DFF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFF FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find DFF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFF</param>
-        /// <param name="Value">Related DFF entity</param>
-        /// <returns>True if the related DFF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out DFF Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DFF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFF</param>
-        /// <returns>Related DFF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFF TryFindByTID(int TID)
-        {
-            DFF value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DFF by TRSTUD field
-        /// </summary>
-        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
         /// <returns>List of related DFF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> FindByTRSTUD(string TRSTUD)
+        public IReadOnlyList<DFF> FindByFEE_CODE(string FEE_CODE)
         {
-            return Index_TRSTUD.Value[TRSTUD];
+            return Index_FEE_CODE.Value[FEE_CODE];
         }
 
         /// <summary>
-        /// Attempt to find DFF by TRSTUD field
+        /// Attempt to find DFF by FEE_CODE field
         /// </summary>
-        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
         /// <param name="Value">List of related DFF entities</param>
         /// <returns>True if the list of related DFF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRSTUD(string TRSTUD, out IReadOnlyList<DFF> Value)
+        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<DFF> Value)
         {
-            return Index_TRSTUD.Value.TryGetValue(TRSTUD, out Value);
+            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find DFF by TRSTUD field
+        /// Attempt to find DFF by FEE_CODE field
         /// </summary>
-        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
         /// <returns>List of related DFF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> TryFindByTRSTUD(string TRSTUD)
+        public IReadOnlyList<DFF> TryFindByFEE_CODE(string FEE_CODE)
         {
             IReadOnlyList<DFF> value;
-            if (Index_TRSTUD.Value.TryGetValue(TRSTUD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DFF by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find DFF</param>
-        /// <returns>List of related DFF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> FindBySTUDENT(string STUDENT)
-        {
-            return Index_STUDENT.Value[STUDENT];
-        }
-
-        /// <summary>
-        /// Attempt to find DFF by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find DFF</param>
-        /// <param name="Value">List of related DFF entities</param>
-        /// <returns>True if the list of related DFF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<DFF> Value)
-        {
-            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DFF by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find DFF</param>
-        /// <returns>List of related DFF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> TryFindBySTUDENT(string STUDENT)
-        {
-            IReadOnlyList<DFF> value;
-            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
+            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
             {
                 return value;
             }
@@ -471,38 +457,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFF by BSB field
+        /// Find DFF by INITIATIVE field
         /// </summary>
-        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
         /// <returns>List of related DFF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> FindByBSB(string BSB)
+        public IReadOnlyList<DFF> FindByINITIATIVE(string INITIATIVE)
         {
-            return Index_BSB.Value[BSB];
+            return Index_INITIATIVE.Value[INITIATIVE];
         }
 
         /// <summary>
-        /// Attempt to find DFF by BSB field
+        /// Attempt to find DFF by INITIATIVE field
         /// </summary>
-        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
         /// <param name="Value">List of related DFF entities</param>
         /// <returns>True if the list of related DFF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBSB(string BSB, out IReadOnlyList<DFF> Value)
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<DFF> Value)
         {
-            return Index_BSB.Value.TryGetValue(BSB, out Value);
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find DFF by BSB field
+        /// Attempt to find DFF by INITIATIVE field
         /// </summary>
-        /// <param name="BSB">BSB value used to find DFF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
         /// <returns>List of related DFF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> TryFindByBSB(string BSB)
+        public IReadOnlyList<DFF> TryFindByINITIATIVE(string INITIATIVE)
         {
             IReadOnlyList<DFF> value;
-            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }
@@ -513,38 +499,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFF by FEE_CODE field
+        /// Find DFF by STUDENT field
         /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
+        /// <param name="STUDENT">STUDENT value used to find DFF</param>
         /// <returns>List of related DFF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> FindByFEE_CODE(string FEE_CODE)
+        public IReadOnlyList<DFF> FindBySTUDENT(string STUDENT)
         {
-            return Index_FEE_CODE.Value[FEE_CODE];
+            return Index_STUDENT.Value[STUDENT];
         }
 
         /// <summary>
-        /// Attempt to find DFF by FEE_CODE field
+        /// Attempt to find DFF by STUDENT field
         /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
+        /// <param name="STUDENT">STUDENT value used to find DFF</param>
         /// <param name="Value">List of related DFF entities</param>
         /// <returns>True if the list of related DFF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<DFF> Value)
+        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<DFF> Value)
         {
-            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
+            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find DFF by FEE_CODE field
+        /// Attempt to find DFF by STUDENT field
         /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DFF</param>
+        /// <param name="STUDENT">STUDENT value used to find DFF</param>
         /// <returns>List of related DFF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> TryFindByFEE_CODE(string FEE_CODE)
+        public IReadOnlyList<DFF> TryFindBySTUDENT(string STUDENT)
         {
             IReadOnlyList<DFF> value;
-            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
+            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
             {
                 return value;
             }
@@ -639,38 +625,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFF by INITIATIVE field
+        /// Find DFF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
-        /// <returns>List of related DFF entities</returns>
+        /// <param name="TID">TID value used to find DFF</param>
+        /// <returns>Related DFF entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> FindByINITIATIVE(string INITIATIVE)
+        public DFF FindByTID(int TID)
         {
-            return Index_INITIATIVE.Value[INITIATIVE];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find DFF by INITIATIVE field
+        /// Attempt to find DFF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
+        /// <param name="TID">TID value used to find DFF</param>
+        /// <param name="Value">Related DFF entity</param>
+        /// <returns>True if the related DFF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFF</param>
+        /// <returns>Related DFF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFF TryFindByTID(int TID)
+        {
+            DFF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFF by TRSTUD field
+        /// </summary>
+        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
+        /// <returns>List of related DFF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFF> FindByTRSTUD(string TRSTUD)
+        {
+            return Index_TRSTUD.Value[TRSTUD];
+        }
+
+        /// <summary>
+        /// Attempt to find DFF by TRSTUD field
+        /// </summary>
+        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
         /// <param name="Value">List of related DFF entities</param>
         /// <returns>True if the list of related DFF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<DFF> Value)
+        public bool TryFindByTRSTUD(string TRSTUD, out IReadOnlyList<DFF> Value)
         {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+            return Index_TRSTUD.Value.TryGetValue(TRSTUD, out Value);
         }
 
         /// <summary>
-        /// Attempt to find DFF by INITIATIVE field
+        /// Attempt to find DFF by TRSTUD field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DFF</param>
+        /// <param name="TRSTUD">TRSTUD value used to find DFF</param>
         /// <returns>List of related DFF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DFF> TryFindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<DFF> TryFindByTRSTUD(string TRSTUD)
         {
             IReadOnlyList<DFF> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            if (Index_TRSTUD.Value.TryGetValue(TRSTUD, out value))
             {
                 return value;
             }

@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KGLSUBDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SUBPROGRAM = new Lazy<Dictionary<string, KGLSUB>>(() => this.ToDictionary(i => i.SUBPROGRAM));
             Index_GL_PROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<KGLSUB>>>(() => this.ToGroupedNullDictionary(i => i.GL_PROGRAM));
+            Index_SUBPROGRAM = new Lazy<Dictionary<string, KGLSUB>>(() => this.ToDictionary(i => i.SUBPROGRAM));
         }
 
         /// <summary>
@@ -70,56 +70,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KGLSUB" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KGLSUB" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KGLSUB" /> items to added or update the base <see cref="KGLSUB" /> items</param>
+        /// <returns>A merged list of <see cref="KGLSUB" /> items</returns>
+        protected override List<KGLSUB> ApplyDeltaItems(List<KGLSUB> Items, List<KGLSUB> DeltaItems)
+        {
+            Dictionary<string, int> Index_SUBPROGRAM = Items.ToIndexDictionary(i => i.SUBPROGRAM);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KGLSUB deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SUBPROGRAM.TryGetValue(deltaItem.SUBPROGRAM, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SUBPROGRAM)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, KGLSUB>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<KGLSUB>>> Index_GL_PROGRAM;
+        private Lazy<Dictionary<string, KGLSUB>> Index_SUBPROGRAM;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KGLSUB by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
-        /// <returns>Related KGLSUB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGLSUB FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find KGLSUB by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
-        /// <param name="Value">Related KGLSUB entity</param>
-        /// <returns>True if the related KGLSUB entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out KGLSUB Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGLSUB by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
-        /// <returns>Related KGLSUB entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGLSUB TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            KGLSUB value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KGLSUB by GL_PROGRAM field
@@ -154,6 +140,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KGLSUB> value;
             if (Index_GL_PROGRAM.Value.TryGetValue(GL_PROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGLSUB by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
+        /// <returns>Related KGLSUB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGLSUB FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find KGLSUB by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
+        /// <param name="Value">Related KGLSUB entity</param>
+        /// <returns>True if the related KGLSUB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out KGLSUB Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGLSUB by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find KGLSUB</param>
+        /// <returns>Related KGLSUB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGLSUB TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            KGLSUB value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }

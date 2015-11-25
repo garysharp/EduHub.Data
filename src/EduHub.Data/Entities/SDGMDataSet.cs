@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SDGMDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_PERSON_LINK = new Lazy<NullDictionary<string, IReadOnlyList<SDGM>>>(() => this.ToGroupedNullDictionary(i => i.PERSON_LINK));
             Index_SDGMKEY = new Lazy<Dictionary<string, IReadOnlyList<SDGM>>>(() => this.ToGroupedDictionary(i => i.SDGMKEY));
             Index_TID = new Lazy<Dictionary<int, SDGM>>(() => this.ToDictionary(i => i.TID));
-            Index_PERSON_LINK = new Lazy<NullDictionary<string, IReadOnlyList<SDGM>>>(() => this.ToGroupedNullDictionary(i => i.PERSON_LINK));
         }
 
         /// <summary>
@@ -71,15 +71,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SDGM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SDGM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SDGM" /> items to added or update the base <see cref="SDGM" /> items</param>
+        /// <returns>A merged list of <see cref="SDGM" /> items</returns>
+        protected override List<SDGM> ApplyDeltaItems(List<SDGM> Items, List<SDGM> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SDGM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SDGMKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SDGM>>> Index_PERSON_LINK;
         private Lazy<Dictionary<string, IReadOnlyList<SDGM>>> Index_SDGMKEY;
         private Lazy<Dictionary<int, SDGM>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SDGM>>> Index_PERSON_LINK;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <returns>List of related SDGM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> FindByPERSON_LINK(string PERSON_LINK)
+        {
+            return Index_PERSON_LINK.Value[PERSON_LINK];
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <param name="Value">List of related SDGM entities</param>
+        /// <returns>True if the list of related SDGM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPERSON_LINK(string PERSON_LINK, out IReadOnlyList<SDGM> Value)
+        {
+            return Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <returns>List of related SDGM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> TryFindByPERSON_LINK(string PERSON_LINK)
+        {
+            IReadOnlyList<SDGM> value;
+            if (Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SDGM by SDGMKEY field
@@ -156,48 +226,6 @@ namespace EduHub.Data.Entities
         {
             SDGM value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SDGM by PERSON_LINK field
-        /// </summary>
-        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
-        /// <returns>List of related SDGM entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDGM> FindByPERSON_LINK(string PERSON_LINK)
-        {
-            return Index_PERSON_LINK.Value[PERSON_LINK];
-        }
-
-        /// <summary>
-        /// Attempt to find SDGM by PERSON_LINK field
-        /// </summary>
-        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
-        /// <param name="Value">List of related SDGM entities</param>
-        /// <returns>True if the list of related SDGM entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPERSON_LINK(string PERSON_LINK, out IReadOnlyList<SDGM> Value)
-        {
-            return Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDGM by PERSON_LINK field
-        /// </summary>
-        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
-        /// <returns>List of related SDGM entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDGM> TryFindByPERSON_LINK(string PERSON_LINK)
-        {
-            IReadOnlyList<SDGM> value;
-            if (Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out value))
             {
                 return value;
             }

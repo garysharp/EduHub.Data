@@ -19,22 +19,22 @@ namespace EduHub.Data.Entities
         internal STREDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_DF_LOTE_HOME_CODE_A = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.DF_LOTE_HOME_CODE_A));
+            Index_DF_LOTE_HOME_CODE_B = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.DF_LOTE_HOME_CODE_B));
             Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedDictionary(i => i.SKEY));
-            Index_TID = new Lazy<Dictionary<int, STRE>>(() => this.ToDictionary(i => i.TID));
-            Index_ST_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_SCHOOL_YEAR));
-            Index_ST_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_HOME_GROUP));
-            Index_ST_PREVIOUS_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_PREVIOUS_SCHOOL));
-            Index_ST_VISA_SUBCLASS = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_VISA_SUBCLASS));
-            Index_ST_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_HOME_LANG));
             Index_ST_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_CAMPUS));
+            Index_ST_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_HOME_GROUP));
+            Index_ST_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_HOME_LANG));
+            Index_ST_LOTE_HOME_CODE = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_LOTE_HOME_CODE));
+            Index_ST_NEXT_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_NEXT_SCHOOL));
+            Index_ST_PREVIOUS_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_PREVIOUS_SCHOOL));
+            Index_ST_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_SCHOOL_YEAR));
+            Index_ST_VISA_SUBCLASS = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_VISA_SUBCLASS));
             Index_STPT_SCHL_NUM01 = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.STPT_SCHL_NUM01));
             Index_STPT_SCHL_NUM02 = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.STPT_SCHL_NUM02));
             Index_STPT_SCHL_NUM03 = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.STPT_SCHL_NUM03));
             Index_STPT_SCHL_NUM04 = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.STPT_SCHL_NUM04));
-            Index_ST_NEXT_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_NEXT_SCHOOL));
-            Index_ST_LOTE_HOME_CODE = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.ST_LOTE_HOME_CODE));
-            Index_DF_LOTE_HOME_CODE_A = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.DF_LOTE_HOME_CODE_A));
-            Index_DF_LOTE_HOME_CODE_B = new Lazy<NullDictionary<string, IReadOnlyList<STRE>>>(() => this.ToGroupedNullDictionary(i => i.DF_LOTE_HOME_CODE_B));
+            Index_TID = new Lazy<Dictionary<int, STRE>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -192,28 +192,140 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STRE" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STRE" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STRE" /> items to added or update the base <see cref="STRE" /> items</param>
+        /// <returns>A merged list of <see cref="STRE" /> items</returns>
+        protected override List<STRE> ApplyDeltaItems(List<STRE> Items, List<STRE> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STRE deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_DF_LOTE_HOME_CODE_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_DF_LOTE_HOME_CODE_B;
         private Lazy<Dictionary<string, IReadOnlyList<STRE>>> Index_SKEY;
-        private Lazy<Dictionary<int, STRE>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_SCHOOL_YEAR;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_HOME_GROUP;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_PREVIOUS_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_VISA_SUBCLASS;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_HOME_LANG;
         private Lazy<NullDictionary<int?, IReadOnlyList<STRE>>> Index_ST_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_HOME_GROUP;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_HOME_LANG;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_LOTE_HOME_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_NEXT_SCHOOL;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_PREVIOUS_SCHOOL;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_SCHOOL_YEAR;
+        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_VISA_SUBCLASS;
         private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_STPT_SCHL_NUM01;
         private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_STPT_SCHL_NUM02;
         private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_STPT_SCHL_NUM03;
         private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_STPT_SCHL_NUM04;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_NEXT_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_ST_LOTE_HOME_CODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_DF_LOTE_HOME_CODE_A;
-        private Lazy<NullDictionary<string, IReadOnlyList<STRE>>> Index_DF_LOTE_HOME_CODE_B;
+        private Lazy<Dictionary<int, STRE>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find STRE by DF_LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A)
+        {
+            return Index_DF_LOTE_HOME_CODE_A.Value[DF_LOTE_HOME_CODE_A];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by DF_LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A, out IReadOnlyList<STRE> Value)
+        {
+            return Index_DF_LOTE_HOME_CODE_A.Value.TryGetValue(DF_LOTE_HOME_CODE_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by DF_LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_DF_LOTE_HOME_CODE_A.Value.TryGetValue(DF_LOTE_HOME_CODE_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STRE by DF_LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B)
+        {
+            return Index_DF_LOTE_HOME_CODE_B.Value[DF_LOTE_HOME_CODE_B];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by DF_LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B, out IReadOnlyList<STRE> Value)
+        {
+            return Index_DF_LOTE_HOME_CODE_B.Value.TryGetValue(DF_LOTE_HOME_CODE_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by DF_LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_DF_LOTE_HOME_CODE_B.Value.TryGetValue(DF_LOTE_HOME_CODE_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find STRE by SKEY field
@@ -258,80 +370,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STRE by TID field
+        /// Find STRE by ST_CAMPUS field
         /// </summary>
-        /// <param name="TID">TID value used to find STRE</param>
-        /// <returns>Related STRE entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STRE FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STRE</param>
-        /// <param name="Value">Related STRE entity</param>
-        /// <returns>True if the related STRE entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out STRE Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STRE</param>
-        /// <returns>Related STRE entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STRE TryFindByTID(int TID)
-        {
-            STRE value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRE by ST_SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
         /// <returns>List of related STRE entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR)
+        public IReadOnlyList<STRE> FindByST_CAMPUS(int? ST_CAMPUS)
         {
-            return Index_ST_SCHOOL_YEAR.Value[ST_SCHOOL_YEAR];
+            return Index_ST_CAMPUS.Value[ST_CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_SCHOOL_YEAR field
+        /// Attempt to find STRE by ST_CAMPUS field
         /// </summary>
-        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
         /// <param name="Value">List of related STRE entities</param>
         /// <returns>True if the list of related STRE entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR, out IReadOnlyList<STRE> Value)
+        public bool TryFindByST_CAMPUS(int? ST_CAMPUS, out IReadOnlyList<STRE> Value)
         {
-            return Index_ST_SCHOOL_YEAR.Value.TryGetValue(ST_SCHOOL_YEAR, out Value);
+            return Index_ST_CAMPUS.Value.TryGetValue(ST_CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_SCHOOL_YEAR field
+        /// Attempt to find STRE by ST_CAMPUS field
         /// </summary>
-        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
         /// <returns>List of related STRE entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR)
+        public IReadOnlyList<STRE> TryFindByST_CAMPUS(int? ST_CAMPUS)
         {
             IReadOnlyList<STRE> value;
-            if (Index_ST_SCHOOL_YEAR.Value.TryGetValue(ST_SCHOOL_YEAR, out value))
+            if (Index_ST_CAMPUS.Value.TryGetValue(ST_CAMPUS, out value))
             {
                 return value;
             }
@@ -384,90 +454,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STRE by ST_PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL)
-        {
-            return Index_ST_PREVIOUS_SCHOOL.Value[ST_PREVIOUS_SCHOOL];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL, out IReadOnlyList<STRE> Value)
-        {
-            return Index_ST_PREVIOUS_SCHOOL.Value.TryGetValue(ST_PREVIOUS_SCHOOL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL)
-        {
-            IReadOnlyList<STRE> value;
-            if (Index_ST_PREVIOUS_SCHOOL.Value.TryGetValue(ST_PREVIOUS_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRE by ST_VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS)
-        {
-            return Index_ST_VISA_SUBCLASS.Value[ST_VISA_SUBCLASS];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS, out IReadOnlyList<STRE> Value)
-        {
-            return Index_ST_VISA_SUBCLASS.Value.TryGetValue(ST_VISA_SUBCLASS, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS)
-        {
-            IReadOnlyList<STRE> value;
-            if (Index_ST_VISA_SUBCLASS.Value.TryGetValue(ST_VISA_SUBCLASS, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find STRE by ST_HOME_LANG field
         /// </summary>
         /// <param name="ST_HOME_LANG">ST_HOME_LANG value used to find STRE</param>
@@ -510,38 +496,206 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STRE by ST_CAMPUS field
+        /// Find STRE by ST_LOTE_HOME_CODE field
         /// </summary>
-        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
+        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
         /// <returns>List of related STRE entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_CAMPUS(int? ST_CAMPUS)
+        public IReadOnlyList<STRE> FindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE)
         {
-            return Index_ST_CAMPUS.Value[ST_CAMPUS];
+            return Index_ST_LOTE_HOME_CODE.Value[ST_LOTE_HOME_CODE];
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_CAMPUS field
+        /// Attempt to find STRE by ST_LOTE_HOME_CODE field
         /// </summary>
-        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
+        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
         /// <param name="Value">List of related STRE entities</param>
         /// <returns>True if the list of related STRE entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_CAMPUS(int? ST_CAMPUS, out IReadOnlyList<STRE> Value)
+        public bool TryFindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE, out IReadOnlyList<STRE> Value)
         {
-            return Index_ST_CAMPUS.Value.TryGetValue(ST_CAMPUS, out Value);
+            return Index_ST_LOTE_HOME_CODE.Value.TryGetValue(ST_LOTE_HOME_CODE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_CAMPUS field
+        /// Attempt to find STRE by ST_LOTE_HOME_CODE field
         /// </summary>
-        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find STRE</param>
+        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
         /// <returns>List of related STRE entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_CAMPUS(int? ST_CAMPUS)
+        public IReadOnlyList<STRE> TryFindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE)
         {
             IReadOnlyList<STRE> value;
-            if (Index_ST_CAMPUS.Value.TryGetValue(ST_CAMPUS, out value))
+            if (Index_ST_LOTE_HOME_CODE.Value.TryGetValue(ST_LOTE_HOME_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STRE by ST_NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL)
+        {
+            return Index_ST_NEXT_SCHOOL.Value[ST_NEXT_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL, out IReadOnlyList<STRE> Value)
+        {
+            return Index_ST_NEXT_SCHOOL.Value.TryGetValue(ST_NEXT_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_ST_NEXT_SCHOOL.Value.TryGetValue(ST_NEXT_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STRE by ST_PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL)
+        {
+            return Index_ST_PREVIOUS_SCHOOL.Value[ST_PREVIOUS_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL, out IReadOnlyList<STRE> Value)
+        {
+            return Index_ST_PREVIOUS_SCHOOL.Value.TryGetValue(ST_PREVIOUS_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="ST_PREVIOUS_SCHOOL">ST_PREVIOUS_SCHOOL value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByST_PREVIOUS_SCHOOL(string ST_PREVIOUS_SCHOOL)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_ST_PREVIOUS_SCHOOL.Value.TryGetValue(ST_PREVIOUS_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STRE by ST_SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR)
+        {
+            return Index_ST_SCHOOL_YEAR.Value[ST_SCHOOL_YEAR];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR, out IReadOnlyList<STRE> Value)
+        {
+            return Index_ST_SCHOOL_YEAR.Value.TryGetValue(ST_SCHOOL_YEAR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="ST_SCHOOL_YEAR">ST_SCHOOL_YEAR value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByST_SCHOOL_YEAR(string ST_SCHOOL_YEAR)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_ST_SCHOOL_YEAR.Value.TryGetValue(ST_SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STRE by ST_VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
+        /// <returns>List of related STRE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> FindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS)
+        {
+            return Index_ST_VISA_SUBCLASS.Value[ST_VISA_SUBCLASS];
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
+        /// <param name="Value">List of related STRE entities</param>
+        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS, out IReadOnlyList<STRE> Value)
+        {
+            return Index_ST_VISA_SUBCLASS.Value.TryGetValue(ST_VISA_SUBCLASS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRE by ST_VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="ST_VISA_SUBCLASS">ST_VISA_SUBCLASS value used to find STRE</param>
+        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRE> TryFindByST_VISA_SUBCLASS(string ST_VISA_SUBCLASS)
+        {
+            IReadOnlyList<STRE> value;
+            if (Index_ST_VISA_SUBCLASS.Value.TryGetValue(ST_VISA_SUBCLASS, out value))
             {
                 return value;
             }
@@ -720,164 +874,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STRE by ST_NEXT_SCHOOL field
+        /// Find STRE by TID field
         /// </summary>
-        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
+        /// <param name="TID">TID value used to find STRE</param>
+        /// <returns>Related STRE entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL)
+        public STRE FindByTID(int TID)
         {
-            return Index_ST_NEXT_SCHOOL.Value[ST_NEXT_SCHOOL];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_NEXT_SCHOOL field
+        /// Attempt to find STRE by TID field
         /// </summary>
-        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
+        /// <param name="TID">TID value used to find STRE</param>
+        /// <param name="Value">Related STRE entity</param>
+        /// <returns>True if the related STRE entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL, out IReadOnlyList<STRE> Value)
+        public bool TryFindByTID(int TID, out STRE Value)
         {
-            return Index_ST_NEXT_SCHOOL.Value.TryGetValue(ST_NEXT_SCHOOL, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STRE by ST_NEXT_SCHOOL field
+        /// Attempt to find STRE by TID field
         /// </summary>
-        /// <param name="ST_NEXT_SCHOOL">ST_NEXT_SCHOOL value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find STRE</param>
+        /// <returns>Related STRE entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_NEXT_SCHOOL(string ST_NEXT_SCHOOL)
+        public STRE TryFindByTID(int TID)
         {
-            IReadOnlyList<STRE> value;
-            if (Index_ST_NEXT_SCHOOL.Value.TryGetValue(ST_NEXT_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRE by ST_LOTE_HOME_CODE field
-        /// </summary>
-        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE)
-        {
-            return Index_ST_LOTE_HOME_CODE.Value[ST_LOTE_HOME_CODE];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_LOTE_HOME_CODE field
-        /// </summary>
-        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE, out IReadOnlyList<STRE> Value)
-        {
-            return Index_ST_LOTE_HOME_CODE.Value.TryGetValue(ST_LOTE_HOME_CODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by ST_LOTE_HOME_CODE field
-        /// </summary>
-        /// <param name="ST_LOTE_HOME_CODE">ST_LOTE_HOME_CODE value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByST_LOTE_HOME_CODE(string ST_LOTE_HOME_CODE)
-        {
-            IReadOnlyList<STRE> value;
-            if (Index_ST_LOTE_HOME_CODE.Value.TryGetValue(ST_LOTE_HOME_CODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRE by DF_LOTE_HOME_CODE_A field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A)
-        {
-            return Index_DF_LOTE_HOME_CODE_A.Value[DF_LOTE_HOME_CODE_A];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by DF_LOTE_HOME_CODE_A field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A, out IReadOnlyList<STRE> Value)
-        {
-            return Index_DF_LOTE_HOME_CODE_A.Value.TryGetValue(DF_LOTE_HOME_CODE_A, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by DF_LOTE_HOME_CODE_A field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_A">DF_LOTE_HOME_CODE_A value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByDF_LOTE_HOME_CODE_A(string DF_LOTE_HOME_CODE_A)
-        {
-            IReadOnlyList<STRE> value;
-            if (Index_DF_LOTE_HOME_CODE_A.Value.TryGetValue(DF_LOTE_HOME_CODE_A, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRE by DF_LOTE_HOME_CODE_B field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
-        /// <returns>List of related STRE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> FindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B)
-        {
-            return Index_DF_LOTE_HOME_CODE_B.Value[DF_LOTE_HOME_CODE_B];
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by DF_LOTE_HOME_CODE_B field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
-        /// <param name="Value">List of related STRE entities</param>
-        /// <returns>True if the list of related STRE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B, out IReadOnlyList<STRE> Value)
-        {
-            return Index_DF_LOTE_HOME_CODE_B.Value.TryGetValue(DF_LOTE_HOME_CODE_B, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRE by DF_LOTE_HOME_CODE_B field
-        /// </summary>
-        /// <param name="DF_LOTE_HOME_CODE_B">DF_LOTE_HOME_CODE_B value used to find STRE</param>
-        /// <returns>List of related STRE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRE> TryFindByDF_LOTE_HOME_CODE_B(string DF_LOTE_HOME_CODE_B)
-        {
-            IReadOnlyList<STRE> value;
-            if (Index_DF_LOTE_HOME_CODE_B.Value.TryGetValue(DF_LOTE_HOME_CODE_B, out value))
+            STRE value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_SCSFKEY = new Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>>(() => this.ToGroupedDictionary(i => i.SCSFKEY));
-            Index_TID = new Lazy<Dictionary<int, SCSFAG>>(() => this.ToDictionary(i => i.TID));
             Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = new Lazy<Dictionary<Tuple<string, string, int?, string, string>, SCSFAG>>(() => this.ToDictionary(i => Tuple.Create(i.SCSFKEY, i.YEAR_SEMESTER, i.ST_CAMPUS, i.ST_YEAR_LEVEL, i.ST_CATEGORY)));
             Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SCSFAG>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
+            Index_TID = new Lazy<Dictionary<int, SCSFAG>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -177,12 +177,45 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SCSFAG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SCSFAG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SCSFAG" /> items to added or update the base <see cref="SCSFAG" /> items</param>
+        /// <returns>A merged list of <see cref="SCSFAG" /> items</returns>
+        protected override List<SCSFAG> ApplyDeltaItems(List<SCSFAG> Items, List<SCSFAG> DeltaItems)
+        {
+            Dictionary<Tuple<string, string, int?, string, string>, int> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = Items.ToIndexDictionary(i => Tuple.Create(i.SCSFKEY, i.YEAR_SEMESTER, i.ST_CAMPUS, i.ST_YEAR_LEVEL, i.ST_CATEGORY));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SCSFAG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.TryGetValue(Tuple.Create(deltaItem.SCSFKEY, deltaItem.YEAR_SEMESTER, deltaItem.ST_CAMPUS, deltaItem.ST_YEAR_LEVEL, deltaItem.ST_CATEGORY), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SCSFKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>> Index_SCSFKEY;
-        private Lazy<Dictionary<int, SCSFAG>> Index_TID;
         private Lazy<Dictionary<Tuple<string, string, int?, string, string>, SCSFAG>> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY;
         private Lazy<NullDictionary<string, IReadOnlyList<SCSFAG>>> Index_ST_YEAR_LEVEL;
+        private Lazy<Dictionary<int, SCSFAG>> Index_TID;
 
         #endregion
 
@@ -221,48 +254,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SCSFAG> value;
             if (Index_SCSFKEY.Value.TryGetValue(SCSFKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCSFAG by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SCSFAG</param>
-        /// <returns>Related SCSFAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCSFAG FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SCSFAG by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SCSFAG</param>
-        /// <param name="Value">Related SCSFAG entity</param>
-        /// <returns>True if the related SCSFAG entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SCSFAG Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCSFAG by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SCSFAG</param>
-        /// <returns>Related SCSFAG entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCSFAG TryFindByTID(int TID)
-        {
-            SCSFAG value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -359,6 +350,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SCSFAG> value;
             if (Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <param name="Value">Related SCSFAG entity</param>
+        /// <returns>True if the related SCSFAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SCSFAG Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG TryFindByTID(int TID)
+        {
+            SCSFAG value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

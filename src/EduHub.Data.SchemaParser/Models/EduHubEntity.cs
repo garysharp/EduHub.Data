@@ -59,7 +59,7 @@ namespace EduHub.Data.SchemaParser.Models
                 new XAttribute("Name", Name),
                 new XAttribute("Description", Description),
                 new XElement("Fields", Fields.Select(f => f.ToXElement())),
-                new XElement("Indexes", Indexes.Select(f => f.ToXElement())));
+                new XElement("Indexes", Indexes.OrderBy(i => i.Name).Select(i => i.ToXElement())));
         }
 
         public override string ToString()

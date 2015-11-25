@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal PPDDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PPDKEY = new Lazy<Dictionary<string, PPD>>(() => this.ToDictionary(i => i.PPDKEY));
             Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PPD>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
+            Index_PPDKEY = new Lazy<Dictionary<string, PPD>>(() => this.ToDictionary(i => i.PPDKEY));
         }
 
         /// <summary>
@@ -106,56 +106,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PPD" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PPD" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PPD" /> items to added or update the base <see cref="PPD" /> items</param>
+        /// <returns>A merged list of <see cref="PPD" /> items</returns>
+        protected override List<PPD> ApplyDeltaItems(List<PPD> Items, List<PPD> DeltaItems)
+        {
+            Dictionary<string, int> Index_PPDKEY = Items.ToIndexDictionary(i => i.PPDKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PPD deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PPDKEY.TryGetValue(deltaItem.PPDKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PPDKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PPD>> Index_PPDKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PPD>>> Index_COUNTRY;
+        private Lazy<Dictionary<string, PPD>> Index_PPDKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find PPD by PPDKEY field
-        /// </summary>
-        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
-        /// <returns>Related PPD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PPD FindByPPDKEY(string PPDKEY)
-        {
-            return Index_PPDKEY.Value[PPDKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PPD by PPDKEY field
-        /// </summary>
-        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
-        /// <param name="Value">Related PPD entity</param>
-        /// <returns>True if the related PPD entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPPDKEY(string PPDKEY, out PPD Value)
-        {
-            return Index_PPDKEY.Value.TryGetValue(PPDKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PPD by PPDKEY field
-        /// </summary>
-        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
-        /// <returns>Related PPD entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PPD TryFindByPPDKEY(string PPDKEY)
-        {
-            PPD value;
-            if (Index_PPDKEY.Value.TryGetValue(PPDKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find PPD by COUNTRY field
@@ -190,6 +176,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PPD> value;
             if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PPD by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
+        /// <returns>Related PPD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPD FindByPPDKEY(string PPDKEY)
+        {
+            return Index_PPDKEY.Value[PPDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PPD by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
+        /// <param name="Value">Related PPD entity</param>
+        /// <returns>True if the related PPD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPPDKEY(string PPDKEY, out PPD Value)
+        {
+            return Index_PPDKEY.Value.TryGetValue(PPDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PPD by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find PPD</param>
+        /// <returns>Related PPD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPD TryFindByPPDKEY(string PPDKEY)
+        {
+            PPD value;
+            if (Index_PPDKEY.Value.TryGetValue(PPDKEY, out value))
             {
                 return value;
             }

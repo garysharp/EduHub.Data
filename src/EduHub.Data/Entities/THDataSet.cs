@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal THDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_THKEY = new Lazy<Dictionary<string, TH>>(() => this.ToDictionary(i => i.THKEY));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_THKEY = new Lazy<Dictionary<string, TH>>(() => this.ToDictionary(i => i.THKEY));
             Index_TT01KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT01KEY));
             Index_TT02KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT02KEY));
             Index_TT03KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT03KEY));
@@ -410,10 +410,38 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TH" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TH" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TH" /> items to added or update the base <see cref="TH" /> items</param>
+        /// <returns>A merged list of <see cref="TH" /> items</returns>
+        protected override List<TH> ApplyDeltaItems(List<TH> Items, List<TH> DeltaItems)
+        {
+            Dictionary<string, int> Index_THKEY = Items.ToIndexDictionary(i => i.THKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TH deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_THKEY.TryGetValue(deltaItem.THKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.THKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, TH>> Index_THKEY;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<TH>>> Index_LW_DATE;
+        private Lazy<Dictionary<string, TH>> Index_THKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT01KEY;
         private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT02KEY;
         private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT03KEY;
@@ -431,48 +459,6 @@ namespace EduHub.Data.Entities
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find TH by THKEY field
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TH</param>
-        /// <returns>Related TH entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TH FindByTHKEY(string THKEY)
-        {
-            return Index_THKEY.Value[THKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find TH by THKEY field
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TH</param>
-        /// <param name="Value">Related TH entity</param>
-        /// <returns>True if the related TH entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTHKEY(string THKEY, out TH Value)
-        {
-            return Index_THKEY.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TH by THKEY field
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TH</param>
-        /// <returns>Related TH entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TH TryFindByTHKEY(string THKEY)
-        {
-            TH value;
-            if (Index_THKEY.Value.TryGetValue(THKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find TH by LW_DATE field
@@ -507,6 +493,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TH> value;
             if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <returns>Related TH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TH FindByTHKEY(string THKEY)
+        {
+            return Index_THKEY.Value[THKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <param name="Value">Related TH entity</param>
+        /// <returns>True if the related TH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTHKEY(string THKEY, out TH Value)
+        {
+            return Index_THKEY.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <returns>Related TH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TH TryFindByTHKEY(string THKEY)
+        {
+            TH value;
+            if (Index_THKEY.Value.TryGetValue(THKEY, out value))
             {
                 return value;
             }

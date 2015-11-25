@@ -178,6 +178,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SMC_TFR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SMC_TFR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SMC_TFR" /> items to added or update the base <see cref="SMC_TFR" /> items</param>
+        /// <returns>A merged list of <see cref="SMC_TFR" /> items</returns>
+        protected override List<SMC_TFR> ApplyDeltaItems(List<SMC_TFR> Items, List<SMC_TFR> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SMC_TFR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ORIG_SCHOOL)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SMC_TFR>>> Index_ORIG_SCHOOL;

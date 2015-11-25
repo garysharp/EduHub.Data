@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KCCDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_KCCKEY = new Lazy<Dictionary<DateTime, KCC>>(() => this.ToDictionary(i => i.KCCKEY));
             Index_CURRENT_QUILT = new Lazy<NullDictionary<string, IReadOnlyList<KCC>>>(() => this.ToGroupedNullDictionary(i => i.CURRENT_QUILT));
+            Index_KCCKEY = new Lazy<Dictionary<DateTime, KCC>>(() => this.ToDictionary(i => i.KCCKEY));
         }
 
         /// <summary>
@@ -94,56 +94,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KCC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KCC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KCC" /> items to added or update the base <see cref="KCC" /> items</param>
+        /// <returns>A merged list of <see cref="KCC" /> items</returns>
+        protected override List<KCC> ApplyDeltaItems(List<KCC> Items, List<KCC> DeltaItems)
+        {
+            Dictionary<DateTime, int> Index_KCCKEY = Items.ToIndexDictionary(i => i.KCCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KCC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KCCKEY.TryGetValue(deltaItem.KCCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KCCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<DateTime, KCC>> Index_KCCKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<KCC>>> Index_CURRENT_QUILT;
+        private Lazy<Dictionary<DateTime, KCC>> Index_KCCKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KCC by KCCKEY field
-        /// </summary>
-        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
-        /// <returns>Related KCC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KCC FindByKCCKEY(DateTime KCCKEY)
-        {
-            return Index_KCCKEY.Value[KCCKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find KCC by KCCKEY field
-        /// </summary>
-        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
-        /// <param name="Value">Related KCC entity</param>
-        /// <returns>True if the related KCC entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByKCCKEY(DateTime KCCKEY, out KCC Value)
-        {
-            return Index_KCCKEY.Value.TryGetValue(KCCKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCC by KCCKEY field
-        /// </summary>
-        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
-        /// <returns>Related KCC entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KCC TryFindByKCCKEY(DateTime KCCKEY)
-        {
-            KCC value;
-            if (Index_KCCKEY.Value.TryGetValue(KCCKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KCC by CURRENT_QUILT field
@@ -178,6 +164,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KCC> value;
             if (Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCC FindByKCCKEY(DateTime KCCKEY)
+        {
+            return Index_KCCKEY.Value[KCCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <param name="Value">Related KCC entity</param>
+        /// <returns>True if the related KCC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCCKEY(DateTime KCCKEY, out KCC Value)
+        {
+            return Index_KCCKEY.Value.TryGetValue(KCCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCC TryFindByKCCKEY(DateTime KCCKEY)
+        {
+            KCC value;
+            if (Index_KCCKEY.Value.TryGetValue(KCCKEY, out value))
             {
                 return value;
             }

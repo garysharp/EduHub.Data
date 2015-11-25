@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal TTEXDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_EXAM_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TTEX>>>(() => this.ToGroupedNullDictionary(i => i.EXAM_ROOM));
             Index_GKEY = new Lazy<Dictionary<string, IReadOnlyList<TTEX>>>(() => this.ToGroupedDictionary(i => i.GKEY));
             Index_TID = new Lazy<Dictionary<int, TTEX>>(() => this.ToDictionary(i => i.TID));
-            Index_EXAM_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TTEX>>>(() => this.ToGroupedNullDictionary(i => i.EXAM_ROOM));
         }
 
         /// <summary>
@@ -80,15 +80,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TTEX" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TTEX" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TTEX" /> items to added or update the base <see cref="TTEX" /> items</param>
+        /// <returns>A merged list of <see cref="TTEX" /> items</returns>
+        protected override List<TTEX> ApplyDeltaItems(List<TTEX> Items, List<TTEX> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TTEX deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<TTEX>>> Index_EXAM_ROOM;
         private Lazy<Dictionary<string, IReadOnlyList<TTEX>>> Index_GKEY;
         private Lazy<Dictionary<int, TTEX>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TTEX>>> Index_EXAM_ROOM;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find TTEX by EXAM_ROOM field
+        /// </summary>
+        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
+        /// <returns>List of related TTEX entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTEX> FindByEXAM_ROOM(string EXAM_ROOM)
+        {
+            return Index_EXAM_ROOM.Value[EXAM_ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TTEX by EXAM_ROOM field
+        /// </summary>
+        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
+        /// <param name="Value">List of related TTEX entities</param>
+        /// <returns>True if the list of related TTEX entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXAM_ROOM(string EXAM_ROOM, out IReadOnlyList<TTEX> Value)
+        {
+            return Index_EXAM_ROOM.Value.TryGetValue(EXAM_ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTEX by EXAM_ROOM field
+        /// </summary>
+        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
+        /// <returns>List of related TTEX entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTEX> TryFindByEXAM_ROOM(string EXAM_ROOM)
+        {
+            IReadOnlyList<TTEX> value;
+            if (Index_EXAM_ROOM.Value.TryGetValue(EXAM_ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find TTEX by GKEY field
@@ -165,48 +235,6 @@ namespace EduHub.Data.Entities
         {
             TTEX value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TTEX by EXAM_ROOM field
-        /// </summary>
-        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
-        /// <returns>List of related TTEX entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTEX> FindByEXAM_ROOM(string EXAM_ROOM)
-        {
-            return Index_EXAM_ROOM.Value[EXAM_ROOM];
-        }
-
-        /// <summary>
-        /// Attempt to find TTEX by EXAM_ROOM field
-        /// </summary>
-        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
-        /// <param name="Value">List of related TTEX entities</param>
-        /// <returns>True if the list of related TTEX entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEXAM_ROOM(string EXAM_ROOM, out IReadOnlyList<TTEX> Value)
-        {
-            return Index_EXAM_ROOM.Value.TryGetValue(EXAM_ROOM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TTEX by EXAM_ROOM field
-        /// </summary>
-        /// <param name="EXAM_ROOM">EXAM_ROOM value used to find TTEX</param>
-        /// <returns>List of related TTEX entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTEX> TryFindByEXAM_ROOM(string EXAM_ROOM)
-        {
-            IReadOnlyList<TTEX> value;
-            if (Index_EXAM_ROOM.Value.TryGetValue(EXAM_ROOM, out value))
             {
                 return value;
             }

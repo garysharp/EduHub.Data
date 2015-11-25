@@ -100,6 +100,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SPEPRINT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SPEPRINT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SPEPRINT" /> items to added or update the base <see cref="SPEPRINT" /> items</param>
+        /// <returns>A merged list of <see cref="SPEPRINT" /> items</returns>
+        protected override List<SPEPRINT> ApplyDeltaItems(List<SPEPRINT> Items, List<SPEPRINT> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SPEPRINT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>> Index_CODE;

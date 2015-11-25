@@ -144,6 +144,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SK_HRMS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SK_HRMS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SK_HRMS" /> items to added or update the base <see cref="SK_HRMS" /> items</param>
+        /// <returns>A merged list of <see cref="SK_HRMS" /> items</returns>
+        protected override List<SK_HRMS> ApplyDeltaItems(List<SK_HRMS> Items, List<SK_HRMS> DeltaItems)
+        {
+            Dictionary<int, int> Index_SEQ = Items.ToIndexDictionary(i => i.SEQ);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SK_HRMS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SEQ.TryGetValue(deltaItem.SEQ, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SEQ)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, SK_HRMS>> Index_SEQ;

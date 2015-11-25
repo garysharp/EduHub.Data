@@ -57,6 +57,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TRPMODE" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TRPMODE" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TRPMODE" /> items to added or update the base <see cref="TRPMODE" /> items</param>
+        /// <returns>A merged list of <see cref="TRPMODE" /> items</returns>
+        protected override List<TRPMODE> ApplyDeltaItems(List<TRPMODE> Items, List<TRPMODE> DeltaItems)
+        {
+            Dictionary<int, int> Index_TRANSPORT_MODE_ID = Items.ToIndexDictionary(i => i.TRANSPORT_MODE_ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TRPMODE deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TRANSPORT_MODE_ID.TryGetValue(deltaItem.TRANSPORT_MODE_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TRANSPORT_MODE_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, TRPMODE>> Index_TRANSPORT_MODE_ID;

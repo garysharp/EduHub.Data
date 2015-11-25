@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal UMDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_UMKEY = new Lazy<Dictionary<int, UM>>(() => this.ToDictionary(i => i.UMKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<UM>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_UMKEY = new Lazy<Dictionary<int, UM>>(() => this.ToDictionary(i => i.UMKEY));
         }
 
         /// <summary>
@@ -95,49 +95,77 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="UM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="UM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="UM" /> items to added or update the base <see cref="UM" /> items</param>
+        /// <returns>A merged list of <see cref="UM" /> items</returns>
+        protected override List<UM> ApplyDeltaItems(List<UM> Items, List<UM> DeltaItems)
+        {
+            Dictionary<int, int> Index_UMKEY = Items.ToIndexDictionary(i => i.UMKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (UM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_UMKEY.TryGetValue(deltaItem.UMKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.UMKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, UM>> Index_UMKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>> Index_LW_DATE;
         private Lazy<NullDictionary<string, IReadOnlyList<UM>>> Index_COUNTRY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>> Index_LW_DATE;
+        private Lazy<Dictionary<int, UM>> Index_UMKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find UM by UMKEY field
+        /// Find UM by COUNTRY field
         /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find UM</param>
-        /// <returns>Related UM entity</returns>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <returns>List of related UM entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public UM FindByUMKEY(int UMKEY)
+        public IReadOnlyList<UM> FindByCOUNTRY(string COUNTRY)
         {
-            return Index_UMKEY.Value[UMKEY];
+            return Index_COUNTRY.Value[COUNTRY];
         }
 
         /// <summary>
-        /// Attempt to find UM by UMKEY field
+        /// Attempt to find UM by COUNTRY field
         /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find UM</param>
-        /// <param name="Value">Related UM entity</param>
-        /// <returns>True if the related UM entity is found</returns>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <param name="Value">List of related UM entities</param>
+        /// <returns>True if the list of related UM entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByUMKEY(int UMKEY, out UM Value)
+        public bool TryFindByCOUNTRY(string COUNTRY, out IReadOnlyList<UM> Value)
         {
-            return Index_UMKEY.Value.TryGetValue(UMKEY, out Value);
+            return Index_COUNTRY.Value.TryGetValue(COUNTRY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find UM by UMKEY field
+        /// Attempt to find UM by COUNTRY field
         /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find UM</param>
-        /// <returns>Related UM entity, or null if not found</returns>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <returns>List of related UM entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public UM TryFindByUMKEY(int UMKEY)
+        public IReadOnlyList<UM> TryFindByCOUNTRY(string COUNTRY)
         {
-            UM value;
-            if (Index_UMKEY.Value.TryGetValue(UMKEY, out value))
+            IReadOnlyList<UM> value;
+            if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
             {
                 return value;
             }
@@ -190,38 +218,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find UM by COUNTRY field
+        /// Find UM by UMKEY field
         /// </summary>
-        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
-        /// <returns>List of related UM entities</returns>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<UM> FindByCOUNTRY(string COUNTRY)
+        public UM FindByUMKEY(int UMKEY)
         {
-            return Index_COUNTRY.Value[COUNTRY];
+            return Index_UMKEY.Value[UMKEY];
         }
 
         /// <summary>
-        /// Attempt to find UM by COUNTRY field
+        /// Attempt to find UM by UMKEY field
         /// </summary>
-        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
-        /// <param name="Value">List of related UM entities</param>
-        /// <returns>True if the list of related UM entities is found</returns>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <param name="Value">Related UM entity</param>
+        /// <returns>True if the related UM entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCOUNTRY(string COUNTRY, out IReadOnlyList<UM> Value)
+        public bool TryFindByUMKEY(int UMKEY, out UM Value)
         {
-            return Index_COUNTRY.Value.TryGetValue(COUNTRY, out Value);
+            return Index_UMKEY.Value.TryGetValue(UMKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find UM by COUNTRY field
+        /// Attempt to find UM by UMKEY field
         /// </summary>
-        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
-        /// <returns>List of related UM entities, or null if not found</returns>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<UM> TryFindByCOUNTRY(string COUNTRY)
+        public UM TryFindByUMKEY(int UMKEY)
         {
-            IReadOnlyList<UM> value;
-            if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
+            UM value;
+            if (Index_UMKEY.Value.TryGetValue(UMKEY, out value))
             {
                 return value;
             }

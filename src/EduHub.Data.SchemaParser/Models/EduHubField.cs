@@ -18,10 +18,11 @@ namespace EduHub.Data.SchemaParser.Models
         public int TypeMaxLength { get; internal set; }
         public bool IsKey { get; internal set; }
         public bool IsNullable { get; internal set; }
+        public bool IsIdentity { get; internal set; }
 
         public Tuple<string, string> ForeignParentKey { get; private set; }
 
-        internal EduHubField(EduHubEntity Entity, string Name, string Description, string Type, string TypeDescription, int TypeMaxLength, bool IsNullable, Tuple<string, string> ForeignParentKey)
+        internal EduHubField(EduHubEntity Entity, string Name, string Description, string Type, string TypeDescription, int TypeMaxLength, bool IsNullable, bool IsIdentity, Tuple<string, string> ForeignParentKey)
         {
             this.Entity = Entity;
             this.Name = Name;
@@ -30,6 +31,7 @@ namespace EduHub.Data.SchemaParser.Models
             this.TypeDescription = TypeDescription;
             this.TypeMaxLength = TypeMaxLength;
             this.IsNullable = IsNullable;
+            this.IsIdentity = IsIdentity;
             this.ForeignParentKey = ForeignParentKey;
         }
 
@@ -85,6 +87,7 @@ namespace EduHub.Data.SchemaParser.Models
             contents.Add(new XAttribute("Name", Name));
             contents.Add(new XAttribute("IsKey", IsKey));
             contents.Add(new XAttribute("IsNullable", IsNullable));
+            contents.Add(new XAttribute("IsIdentity", IsIdentity));
             contents.Add(new XAttribute("Type", Type));
             contents.Add(new XAttribute("TypeDescription", TypeDescription));
             if (TypeMaxLength != 0)

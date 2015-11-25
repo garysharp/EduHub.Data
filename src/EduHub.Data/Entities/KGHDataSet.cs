@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KGHDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_KGHKEY = new Lazy<Dictionary<string, KGH>>(() => this.ToDictionary(i => i.KGHKEY));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<KGH>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_KGHKEY = new Lazy<Dictionary<string, KGH>>(() => this.ToDictionary(i => i.KGHKEY));
         }
 
         /// <summary>
@@ -193,56 +193,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KGH" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KGH" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KGH" /> items to added or update the base <see cref="KGH" /> items</param>
+        /// <returns>A merged list of <see cref="KGH" /> items</returns>
+        protected override List<KGH> ApplyDeltaItems(List<KGH> Items, List<KGH> DeltaItems)
+        {
+            Dictionary<string, int> Index_KGHKEY = Items.ToIndexDictionary(i => i.KGHKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KGH deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KGHKEY.TryGetValue(deltaItem.KGHKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KGHKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, KGH>> Index_KGHKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<KGH>>> Index_CAMPUS;
+        private Lazy<Dictionary<string, KGH>> Index_KGHKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KGH by KGHKEY field
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
-        /// <returns>Related KGH entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGH FindByKGHKEY(string KGHKEY)
-        {
-            return Index_KGHKEY.Value[KGHKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find KGH by KGHKEY field
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
-        /// <param name="Value">Related KGH entity</param>
-        /// <returns>True if the related KGH entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByKGHKEY(string KGHKEY, out KGH Value)
-        {
-            return Index_KGHKEY.Value.TryGetValue(KGHKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGH by KGHKEY field
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
-        /// <returns>Related KGH entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGH TryFindByKGHKEY(string KGHKEY)
-        {
-            KGH value;
-            if (Index_KGHKEY.Value.TryGetValue(KGHKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KGH by CAMPUS field
@@ -277,6 +263,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KGH> value;
             if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <returns>Related KGH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGH FindByKGHKEY(string KGHKEY)
+        {
+            return Index_KGHKEY.Value[KGHKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <param name="Value">Related KGH entity</param>
+        /// <returns>True if the related KGH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGHKEY(string KGHKEY, out KGH Value)
+        {
+            return Index_KGHKEY.Value.TryGetValue(KGHKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <returns>Related KGH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGH TryFindByKGHKEY(string KGHKEY)
+        {
+            KGH value;
+            if (Index_KGHKEY.Value.TryGetValue(KGHKEY, out value))
             {
                 return value;
             }

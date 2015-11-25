@@ -19,6 +19,7 @@ namespace EduHub.Data.Entities
         internal SIRHDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_PRINT_ID = new Lazy<Dictionary<int, SIRH>>(() => this.ToDictionary(i => i.PRINT_ID));
             Index_SIRHKEY = new Lazy<Dictionary<string, SIRH>>(() => this.ToDictionary(i => i.SIRHKEY));
         }
 
@@ -105,13 +106,89 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SIRH" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SIRH" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SIRH" /> items to added or update the base <see cref="SIRH" /> items</param>
+        /// <returns>A merged list of <see cref="SIRH" /> items</returns>
+        protected override List<SIRH> ApplyDeltaItems(List<SIRH> Items, List<SIRH> DeltaItems)
+        {
+            Dictionary<int, int> Index_PRINT_ID = Items.ToIndexDictionary(i => i.PRINT_ID);
+            Dictionary<string, int> Index_SIRHKEY = Items.ToIndexDictionary(i => i.SIRHKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SIRH deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PRINT_ID.TryGetValue(deltaItem.PRINT_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_SIRHKEY.TryGetValue(deltaItem.SIRHKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SIRHKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<Dictionary<int, SIRH>> Index_PRINT_ID;
         private Lazy<Dictionary<string, SIRH>> Index_SIRHKEY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SIRH by PRINT_ID field
+        /// </summary>
+        /// <param name="PRINT_ID">PRINT_ID value used to find SIRH</param>
+        /// <returns>Related SIRH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SIRH FindByPRINT_ID(int PRINT_ID)
+        {
+            return Index_PRINT_ID.Value[PRINT_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SIRH by PRINT_ID field
+        /// </summary>
+        /// <param name="PRINT_ID">PRINT_ID value used to find SIRH</param>
+        /// <param name="Value">Related SIRH entity</param>
+        /// <returns>True if the related SIRH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPRINT_ID(int PRINT_ID, out SIRH Value)
+        {
+            return Index_PRINT_ID.Value.TryGetValue(PRINT_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SIRH by PRINT_ID field
+        /// </summary>
+        /// <param name="PRINT_ID">PRINT_ID value used to find SIRH</param>
+        /// <returns>Related SIRH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SIRH TryFindByPRINT_ID(int PRINT_ID)
+        {
+            SIRH value;
+            if (Index_PRINT_ID.Value.TryGetValue(PRINT_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SIRH by SIRHKEY field

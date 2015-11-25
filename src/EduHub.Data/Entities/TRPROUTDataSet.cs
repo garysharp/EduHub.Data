@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_ROUTE_ID = new Lazy<Dictionary<int, TRPROUT>>(() => this.ToDictionary(i => i.ROUTE_ID));
-            Index_TRANSPORT_MODE_ID = new Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>>(() => this.ToGroupedNullDictionary(i => i.TRANSPORT_MODE_ID));
             Index_TRANSPORT_COMPANY_ID = new Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>>(() => this.ToGroupedNullDictionary(i => i.TRANSPORT_COMPANY_ID));
+            Index_TRANSPORT_MODE_ID = new Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>>(() => this.ToGroupedNullDictionary(i => i.TRANSPORT_MODE_ID));
         }
 
         /// <summary>
@@ -92,11 +92,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TRPROUT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TRPROUT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TRPROUT" /> items to added or update the base <see cref="TRPROUT" /> items</param>
+        /// <returns>A merged list of <see cref="TRPROUT" /> items</returns>
+        protected override List<TRPROUT> ApplyDeltaItems(List<TRPROUT> Items, List<TRPROUT> DeltaItems)
+        {
+            Dictionary<int, int> Index_ROUTE_ID = Items.ToIndexDictionary(i => i.ROUTE_ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TRPROUT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ROUTE_ID.TryGetValue(deltaItem.ROUTE_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ROUTE_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, TRPROUT>> Index_ROUTE_ID;
-        private Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>> Index_TRANSPORT_MODE_ID;
         private Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>> Index_TRANSPORT_COMPANY_ID;
+        private Lazy<NullDictionary<int?, IReadOnlyList<TRPROUT>>> Index_TRANSPORT_MODE_ID;
 
         #endregion
 
@@ -145,48 +173,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TRPROUT by TRANSPORT_MODE_ID field
-        /// </summary>
-        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
-        /// <returns>List of related TRPROUT entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TRPROUT> FindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID)
-        {
-            return Index_TRANSPORT_MODE_ID.Value[TRANSPORT_MODE_ID];
-        }
-
-        /// <summary>
-        /// Attempt to find TRPROUT by TRANSPORT_MODE_ID field
-        /// </summary>
-        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
-        /// <param name="Value">List of related TRPROUT entities</param>
-        /// <returns>True if the list of related TRPROUT entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID, out IReadOnlyList<TRPROUT> Value)
-        {
-            return Index_TRANSPORT_MODE_ID.Value.TryGetValue(TRANSPORT_MODE_ID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TRPROUT by TRANSPORT_MODE_ID field
-        /// </summary>
-        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
-        /// <returns>List of related TRPROUT entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TRPROUT> TryFindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID)
-        {
-            IReadOnlyList<TRPROUT> value;
-            if (Index_TRANSPORT_MODE_ID.Value.TryGetValue(TRANSPORT_MODE_ID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find TRPROUT by TRANSPORT_COMPANY_ID field
         /// </summary>
         /// <param name="TRANSPORT_COMPANY_ID">TRANSPORT_COMPANY_ID value used to find TRPROUT</param>
@@ -219,6 +205,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TRPROUT> value;
             if (Index_TRANSPORT_COMPANY_ID.Value.TryGetValue(TRANSPORT_COMPANY_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TRPROUT by TRANSPORT_MODE_ID field
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
+        /// <returns>List of related TRPROUT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TRPROUT> FindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID)
+        {
+            return Index_TRANSPORT_MODE_ID.Value[TRANSPORT_MODE_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find TRPROUT by TRANSPORT_MODE_ID field
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
+        /// <param name="Value">List of related TRPROUT entities</param>
+        /// <returns>True if the list of related TRPROUT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID, out IReadOnlyList<TRPROUT> Value)
+        {
+            return Index_TRANSPORT_MODE_ID.Value.TryGetValue(TRANSPORT_MODE_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TRPROUT by TRANSPORT_MODE_ID field
+        /// </summary>
+        /// <param name="TRANSPORT_MODE_ID">TRANSPORT_MODE_ID value used to find TRPROUT</param>
+        /// <returns>List of related TRPROUT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TRPROUT> TryFindByTRANSPORT_MODE_ID(int? TRANSPORT_MODE_ID)
+        {
+            IReadOnlyList<TRPROUT> value;
+            if (Index_TRANSPORT_MODE_ID.Value.TryGetValue(TRANSPORT_MODE_ID, out value))
             {
                 return value;
             }

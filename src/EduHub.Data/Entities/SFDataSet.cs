@@ -19,14 +19,30 @@ namespace EduHub.Data.Entities
         internal SFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SFKEY = new Lazy<Dictionary<string, SF>>(() => this.ToDictionary(i => i.SFKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_HOMEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.HOMEKEY));
-            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
+            Index_BIRTH_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_DEBTOR_ID = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.DEBTOR_ID));
+            Index_EMERG_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG01));
+            Index_EMERG_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG02));
             Index_FACULTY01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY01));
             Index_FACULTY02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY02));
             Index_FACULTY03 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY03));
             Index_FACULTY04 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY04));
+            Index_HOMEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.HOMEKEY));
+            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
+            Index_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LANG01));
+            Index_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LANG02));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
+            Index_MAJORA = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORA));
+            Index_MAJORB = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORB));
+            Index_MAJORC = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORC));
+            Index_OTHER_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.OTHER_LOCATION));
+            Index_POS_CODE_A = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.POS_CODE_A));
+            Index_POS_CODE_B = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.POS_CODE_B));
+            Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
+            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_SFKEY = new Lazy<Dictionary<string, SF>>(() => this.ToDictionary(i => i.SFKEY));
             Index_SUBJECT01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT01));
             Index_SUBJECT02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT02));
             Index_SUBJECT03 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT03));
@@ -37,22 +53,6 @@ namespace EduHub.Data.Entities
             Index_SUBJECT08 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT08));
             Index_SUBJECT09 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT09));
             Index_SUBJECT10 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT10));
-            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
-            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
-            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
-            Index_OTHER_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.OTHER_LOCATION));
-            Index_POS_CODE_A = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.POS_CODE_A));
-            Index_POS_CODE_B = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.POS_CODE_B));
-            Index_MAJORA = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORA));
-            Index_MAJORB = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORB));
-            Index_MAJORC = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.MAJORC));
-            Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
-            Index_BIRTH_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY));
-            Index_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LANG01));
-            Index_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.LANG02));
-            Index_EMERG_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG01));
-            Index_EMERG_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG02));
-            Index_DEBTOR_ID = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.DEBTOR_ID));
         }
 
         /// <summary>
@@ -342,16 +342,60 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SF" /> items to added or update the base <see cref="SF" /> items</param>
+        /// <returns>A merged list of <see cref="SF" /> items</returns>
+        protected override List<SF> ApplyDeltaItems(List<SF> Items, List<SF> DeltaItems)
+        {
+            Dictionary<string, int> Index_SFKEY = Items.ToIndexDictionary(i => i.SFKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SFKEY.TryGetValue(deltaItem.SFKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SFKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SF>> Index_SFKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SF>>> Index_LW_DATE;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_HOMEKEY;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_MAILKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_BIRTH_COUNTRY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_DEBTOR_ID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_EMERG_LANG01;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_EMERG_LANG02;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_FACULTY01;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_FACULTY02;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_FACULTY03;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_FACULTY04;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_HOMEKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_HOUSE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_LANG01;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_LANG02;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SF>>> Index_LW_DATE;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_MAILKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORA;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORB;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORC;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_OTHER_LOCATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_POS_CODE_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_POS_CODE_B;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_RELIGION;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_ROOM;
+        private Lazy<Dictionary<string, SF>> Index_SFKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT01;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT02;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT03;
@@ -362,60 +406,44 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT08;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT09;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT10;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SF>>> Index_CAMPUS;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_HOUSE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_OTHER_LOCATION;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_POS_CODE_A;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_POS_CODE_B;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORA;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORB;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_MAJORC;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_RELIGION;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_BIRTH_COUNTRY;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_LANG01;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_LANG02;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_EMERG_LANG01;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_EMERG_LANG02;
-        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_DEBTOR_ID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SF by SFKEY field
+        /// Find SF by BIRTH_COUNTRY field
         /// </summary>
-        /// <param name="SFKEY">SFKEY value used to find SF</param>
-        /// <returns>Related SF entity</returns>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SF FindBySFKEY(string SFKEY)
+        public IReadOnlyList<SF> FindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
         {
-            return Index_SFKEY.Value[SFKEY];
+            return Index_BIRTH_COUNTRY.Value[BIRTH_COUNTRY];
         }
 
         /// <summary>
-        /// Attempt to find SF by SFKEY field
+        /// Attempt to find SF by BIRTH_COUNTRY field
         /// </summary>
-        /// <param name="SFKEY">SFKEY value used to find SF</param>
-        /// <param name="Value">Related SF entity</param>
-        /// <returns>True if the related SF entity is found</returns>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySFKEY(string SFKEY, out SF Value)
+        public bool TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY, out IReadOnlyList<SF> Value)
         {
-            return Index_SFKEY.Value.TryGetValue(SFKEY, out Value);
+            return Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SF by SFKEY field
+        /// Attempt to find SF by BIRTH_COUNTRY field
         /// </summary>
-        /// <param name="SFKEY">SFKEY value used to find SF</param>
-        /// <returns>Related SF entity, or null if not found</returns>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SF TryFindBySFKEY(string SFKEY)
+        public IReadOnlyList<SF> TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
         {
-            SF value;
-            if (Index_SFKEY.Value.TryGetValue(SFKEY, out value))
+            IReadOnlyList<SF> value;
+            if (Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out value))
             {
                 return value;
             }
@@ -426,38 +454,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SF by LW_DATE field
+        /// Find SF by CAMPUS field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
         /// <returns>List of related SF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<SF> FindByCAMPUS(int? CAMPUS)
         {
-            return Index_LW_DATE.Value[LW_DATE];
+            return Index_CAMPUS.Value[CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find SF by LW_DATE field
+        /// Attempt to find SF by CAMPUS field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
         /// <param name="Value">List of related SF entities</param>
         /// <returns>True if the list of related SF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SF> Value)
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SF> Value)
         {
-            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SF by LW_DATE field
+        /// Attempt to find SF by CAMPUS field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
         /// <returns>List of related SF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<SF> TryFindByCAMPUS(int? CAMPUS)
         {
             IReadOnlyList<SF> value;
-            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -468,38 +496,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SF by HOMEKEY field
+        /// Find SF by DEBTOR_ID field
         /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
         /// <returns>List of related SF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByHOMEKEY(int? HOMEKEY)
+        public IReadOnlyList<SF> FindByDEBTOR_ID(string DEBTOR_ID)
         {
-            return Index_HOMEKEY.Value[HOMEKEY];
+            return Index_DEBTOR_ID.Value[DEBTOR_ID];
         }
 
         /// <summary>
-        /// Attempt to find SF by HOMEKEY field
+        /// Attempt to find SF by DEBTOR_ID field
         /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
         /// <param name="Value">List of related SF entities</param>
         /// <returns>True if the list of related SF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOMEKEY(int? HOMEKEY, out IReadOnlyList<SF> Value)
+        public bool TryFindByDEBTOR_ID(string DEBTOR_ID, out IReadOnlyList<SF> Value)
         {
-            return Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out Value);
+            return Index_DEBTOR_ID.Value.TryGetValue(DEBTOR_ID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SF by HOMEKEY field
+        /// Attempt to find SF by DEBTOR_ID field
         /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
         /// <returns>List of related SF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByHOMEKEY(int? HOMEKEY)
+        public IReadOnlyList<SF> TryFindByDEBTOR_ID(string DEBTOR_ID)
         {
             IReadOnlyList<SF> value;
-            if (Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out value))
+            if (Index_DEBTOR_ID.Value.TryGetValue(DEBTOR_ID, out value))
             {
                 return value;
             }
@@ -510,38 +538,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SF by MAILKEY field
+        /// Find SF by EMERG_LANG01 field
         /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
         /// <returns>List of related SF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByMAILKEY(int? MAILKEY)
+        public IReadOnlyList<SF> FindByEMERG_LANG01(string EMERG_LANG01)
         {
-            return Index_MAILKEY.Value[MAILKEY];
+            return Index_EMERG_LANG01.Value[EMERG_LANG01];
         }
 
         /// <summary>
-        /// Attempt to find SF by MAILKEY field
+        /// Attempt to find SF by EMERG_LANG01 field
         /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
         /// <param name="Value">List of related SF entities</param>
         /// <returns>True if the list of related SF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<SF> Value)
+        public bool TryFindByEMERG_LANG01(string EMERG_LANG01, out IReadOnlyList<SF> Value)
         {
-            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
+            return Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SF by MAILKEY field
+        /// Attempt to find SF by EMERG_LANG01 field
         /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
         /// <returns>List of related SF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByMAILKEY(int? MAILKEY)
+        public IReadOnlyList<SF> TryFindByEMERG_LANG01(string EMERG_LANG01)
         {
             IReadOnlyList<SF> value;
-            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            if (Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            return Index_EMERG_LANG02.Value[EMERG_LANG02];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG02(string EMERG_LANG02, out IReadOnlyList<SF> Value)
+        {
+            return Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out value))
             {
                 return value;
             }
@@ -710,6 +780,636 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SF> value;
             if (Index_FACULTY04.Value.TryGetValue(FACULTY04, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByHOMEKEY(int? HOMEKEY)
+        {
+            return Index_HOMEKEY.Value[HOMEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOMEKEY(int? HOMEKEY, out IReadOnlyList<SF> Value)
+        {
+            return Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByHOMEKEY(int? HOMEKEY)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByHOUSE(string HOUSE)
+        {
+            return Index_HOUSE.Value[HOUSE];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<SF> Value)
+        {
+            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByHOUSE(string HOUSE)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by LANG01 field
+        /// </summary>
+        /// <param name="LANG01">LANG01 value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByLANG01(string LANG01)
+        {
+            return Index_LANG01.Value[LANG01];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LANG01 field
+        /// </summary>
+        /// <param name="LANG01">LANG01 value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLANG01(string LANG01, out IReadOnlyList<SF> Value)
+        {
+            return Index_LANG01.Value.TryGetValue(LANG01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LANG01 field
+        /// </summary>
+        /// <param name="LANG01">LANG01 value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByLANG01(string LANG01)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_LANG01.Value.TryGetValue(LANG01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by LANG02 field
+        /// </summary>
+        /// <param name="LANG02">LANG02 value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByLANG02(string LANG02)
+        {
+            return Index_LANG02.Value[LANG02];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LANG02 field
+        /// </summary>
+        /// <param name="LANG02">LANG02 value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLANG02(string LANG02, out IReadOnlyList<SF> Value)
+        {
+            return Index_LANG02.Value.TryGetValue(LANG02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LANG02 field
+        /// </summary>
+        /// <param name="LANG02">LANG02 value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByLANG02(string LANG02)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_LANG02.Value.TryGetValue(LANG02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SF> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByMAILKEY(int? MAILKEY)
+        {
+            return Index_MAILKEY.Value[MAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<SF> Value)
+        {
+            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByMAILKEY(int? MAILKEY)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by MAJORA field
+        /// </summary>
+        /// <param name="MAJORA">MAJORA value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByMAJORA(string MAJORA)
+        {
+            return Index_MAJORA.Value[MAJORA];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORA field
+        /// </summary>
+        /// <param name="MAJORA">MAJORA value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAJORA(string MAJORA, out IReadOnlyList<SF> Value)
+        {
+            return Index_MAJORA.Value.TryGetValue(MAJORA, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORA field
+        /// </summary>
+        /// <param name="MAJORA">MAJORA value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByMAJORA(string MAJORA)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_MAJORA.Value.TryGetValue(MAJORA, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by MAJORB field
+        /// </summary>
+        /// <param name="MAJORB">MAJORB value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByMAJORB(string MAJORB)
+        {
+            return Index_MAJORB.Value[MAJORB];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORB field
+        /// </summary>
+        /// <param name="MAJORB">MAJORB value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAJORB(string MAJORB, out IReadOnlyList<SF> Value)
+        {
+            return Index_MAJORB.Value.TryGetValue(MAJORB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORB field
+        /// </summary>
+        /// <param name="MAJORB">MAJORB value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByMAJORB(string MAJORB)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_MAJORB.Value.TryGetValue(MAJORB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by MAJORC field
+        /// </summary>
+        /// <param name="MAJORC">MAJORC value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByMAJORC(string MAJORC)
+        {
+            return Index_MAJORC.Value[MAJORC];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORC field
+        /// </summary>
+        /// <param name="MAJORC">MAJORC value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAJORC(string MAJORC, out IReadOnlyList<SF> Value)
+        {
+            return Index_MAJORC.Value.TryGetValue(MAJORC, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by MAJORC field
+        /// </summary>
+        /// <param name="MAJORC">MAJORC value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByMAJORC(string MAJORC)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_MAJORC.Value.TryGetValue(MAJORC, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by OTHER_LOCATION field
+        /// </summary>
+        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByOTHER_LOCATION(string OTHER_LOCATION)
+        {
+            return Index_OTHER_LOCATION.Value[OTHER_LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by OTHER_LOCATION field
+        /// </summary>
+        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByOTHER_LOCATION(string OTHER_LOCATION, out IReadOnlyList<SF> Value)
+        {
+            return Index_OTHER_LOCATION.Value.TryGetValue(OTHER_LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by OTHER_LOCATION field
+        /// </summary>
+        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByOTHER_LOCATION(string OTHER_LOCATION)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_OTHER_LOCATION.Value.TryGetValue(OTHER_LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by POS_CODE_A field
+        /// </summary>
+        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByPOS_CODE_A(string POS_CODE_A)
+        {
+            return Index_POS_CODE_A.Value[POS_CODE_A];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by POS_CODE_A field
+        /// </summary>
+        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPOS_CODE_A(string POS_CODE_A, out IReadOnlyList<SF> Value)
+        {
+            return Index_POS_CODE_A.Value.TryGetValue(POS_CODE_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by POS_CODE_A field
+        /// </summary>
+        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByPOS_CODE_A(string POS_CODE_A)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_POS_CODE_A.Value.TryGetValue(POS_CODE_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by POS_CODE_B field
+        /// </summary>
+        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByPOS_CODE_B(string POS_CODE_B)
+        {
+            return Index_POS_CODE_B.Value[POS_CODE_B];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by POS_CODE_B field
+        /// </summary>
+        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPOS_CODE_B(string POS_CODE_B, out IReadOnlyList<SF> Value)
+        {
+            return Index_POS_CODE_B.Value.TryGetValue(POS_CODE_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by POS_CODE_B field
+        /// </summary>
+        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByPOS_CODE_B(string POS_CODE_B)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_POS_CODE_B.Value.TryGetValue(POS_CODE_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByRELIGION(string RELIGION)
+        {
+            return Index_RELIGION.Value[RELIGION];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByRELIGION(string RELIGION, out IReadOnlyList<SF> Value)
+        {
+            return Index_RELIGION.Value.TryGetValue(RELIGION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByRELIGION(string RELIGION)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_RELIGION.Value.TryGetValue(RELIGION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindByROOM(string ROOM)
+        {
+            return Index_ROOM.Value[ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM(string ROOM, out IReadOnlyList<SF> Value)
+        {
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindByROOM(string ROOM)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SF by SFKEY field
+        /// </summary>
+        /// <param name="SFKEY">SFKEY value used to find SF</param>
+        /// <returns>Related SF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SF FindBySFKEY(string SFKEY)
+        {
+            return Index_SFKEY.Value[SFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by SFKEY field
+        /// </summary>
+        /// <param name="SFKEY">SFKEY value used to find SF</param>
+        /// <param name="Value">Related SF entity</param>
+        /// <returns>True if the related SF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySFKEY(string SFKEY, out SF Value)
+        {
+            return Index_SFKEY.Value.TryGetValue(SFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by SFKEY field
+        /// </summary>
+        /// <param name="SFKEY">SFKEY value used to find SF</param>
+        /// <returns>Related SF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SF TryFindBySFKEY(string SFKEY)
+        {
+            SF value;
+            if (Index_SFKEY.Value.TryGetValue(SFKEY, out value))
             {
                 return value;
             }
@@ -1130,678 +1830,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SF> value;
             if (Index_SUBJECT10.Value.TryGetValue(SUBJECT10, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByCAMPUS(int? CAMPUS)
-        {
-            return Index_CAMPUS.Value[CAMPUS];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SF> Value)
-        {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByCAMPUS(int? CAMPUS)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByHOUSE(string HOUSE)
-        {
-            return Index_HOUSE.Value[HOUSE];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<SF> Value)
-        {
-            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByHOUSE(string HOUSE)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByROOM(string ROOM)
-        {
-            return Index_ROOM.Value[ROOM];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByROOM(string ROOM, out IReadOnlyList<SF> Value)
-        {
-            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByROOM(string ROOM)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by OTHER_LOCATION field
-        /// </summary>
-        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByOTHER_LOCATION(string OTHER_LOCATION)
-        {
-            return Index_OTHER_LOCATION.Value[OTHER_LOCATION];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by OTHER_LOCATION field
-        /// </summary>
-        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByOTHER_LOCATION(string OTHER_LOCATION, out IReadOnlyList<SF> Value)
-        {
-            return Index_OTHER_LOCATION.Value.TryGetValue(OTHER_LOCATION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by OTHER_LOCATION field
-        /// </summary>
-        /// <param name="OTHER_LOCATION">OTHER_LOCATION value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByOTHER_LOCATION(string OTHER_LOCATION)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_OTHER_LOCATION.Value.TryGetValue(OTHER_LOCATION, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by POS_CODE_A field
-        /// </summary>
-        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByPOS_CODE_A(string POS_CODE_A)
-        {
-            return Index_POS_CODE_A.Value[POS_CODE_A];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by POS_CODE_A field
-        /// </summary>
-        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPOS_CODE_A(string POS_CODE_A, out IReadOnlyList<SF> Value)
-        {
-            return Index_POS_CODE_A.Value.TryGetValue(POS_CODE_A, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by POS_CODE_A field
-        /// </summary>
-        /// <param name="POS_CODE_A">POS_CODE_A value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByPOS_CODE_A(string POS_CODE_A)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_POS_CODE_A.Value.TryGetValue(POS_CODE_A, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by POS_CODE_B field
-        /// </summary>
-        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByPOS_CODE_B(string POS_CODE_B)
-        {
-            return Index_POS_CODE_B.Value[POS_CODE_B];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by POS_CODE_B field
-        /// </summary>
-        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPOS_CODE_B(string POS_CODE_B, out IReadOnlyList<SF> Value)
-        {
-            return Index_POS_CODE_B.Value.TryGetValue(POS_CODE_B, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by POS_CODE_B field
-        /// </summary>
-        /// <param name="POS_CODE_B">POS_CODE_B value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByPOS_CODE_B(string POS_CODE_B)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_POS_CODE_B.Value.TryGetValue(POS_CODE_B, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by MAJORA field
-        /// </summary>
-        /// <param name="MAJORA">MAJORA value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByMAJORA(string MAJORA)
-        {
-            return Index_MAJORA.Value[MAJORA];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORA field
-        /// </summary>
-        /// <param name="MAJORA">MAJORA value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAJORA(string MAJORA, out IReadOnlyList<SF> Value)
-        {
-            return Index_MAJORA.Value.TryGetValue(MAJORA, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORA field
-        /// </summary>
-        /// <param name="MAJORA">MAJORA value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByMAJORA(string MAJORA)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_MAJORA.Value.TryGetValue(MAJORA, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by MAJORB field
-        /// </summary>
-        /// <param name="MAJORB">MAJORB value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByMAJORB(string MAJORB)
-        {
-            return Index_MAJORB.Value[MAJORB];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORB field
-        /// </summary>
-        /// <param name="MAJORB">MAJORB value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAJORB(string MAJORB, out IReadOnlyList<SF> Value)
-        {
-            return Index_MAJORB.Value.TryGetValue(MAJORB, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORB field
-        /// </summary>
-        /// <param name="MAJORB">MAJORB value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByMAJORB(string MAJORB)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_MAJORB.Value.TryGetValue(MAJORB, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by MAJORC field
-        /// </summary>
-        /// <param name="MAJORC">MAJORC value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByMAJORC(string MAJORC)
-        {
-            return Index_MAJORC.Value[MAJORC];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORC field
-        /// </summary>
-        /// <param name="MAJORC">MAJORC value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAJORC(string MAJORC, out IReadOnlyList<SF> Value)
-        {
-            return Index_MAJORC.Value.TryGetValue(MAJORC, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by MAJORC field
-        /// </summary>
-        /// <param name="MAJORC">MAJORC value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByMAJORC(string MAJORC)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_MAJORC.Value.TryGetValue(MAJORC, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByRELIGION(string RELIGION)
-        {
-            return Index_RELIGION.Value[RELIGION];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByRELIGION(string RELIGION, out IReadOnlyList<SF> Value)
-        {
-            return Index_RELIGION.Value.TryGetValue(RELIGION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByRELIGION(string RELIGION)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_RELIGION.Value.TryGetValue(RELIGION, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by BIRTH_COUNTRY field
-        /// </summary>
-        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
-        {
-            return Index_BIRTH_COUNTRY.Value[BIRTH_COUNTRY];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by BIRTH_COUNTRY field
-        /// </summary>
-        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY, out IReadOnlyList<SF> Value)
-        {
-            return Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by BIRTH_COUNTRY field
-        /// </summary>
-        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by LANG01 field
-        /// </summary>
-        /// <param name="LANG01">LANG01 value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByLANG01(string LANG01)
-        {
-            return Index_LANG01.Value[LANG01];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by LANG01 field
-        /// </summary>
-        /// <param name="LANG01">LANG01 value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLANG01(string LANG01, out IReadOnlyList<SF> Value)
-        {
-            return Index_LANG01.Value.TryGetValue(LANG01, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by LANG01 field
-        /// </summary>
-        /// <param name="LANG01">LANG01 value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByLANG01(string LANG01)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_LANG01.Value.TryGetValue(LANG01, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by LANG02 field
-        /// </summary>
-        /// <param name="LANG02">LANG02 value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByLANG02(string LANG02)
-        {
-            return Index_LANG02.Value[LANG02];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by LANG02 field
-        /// </summary>
-        /// <param name="LANG02">LANG02 value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLANG02(string LANG02, out IReadOnlyList<SF> Value)
-        {
-            return Index_LANG02.Value.TryGetValue(LANG02, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by LANG02 field
-        /// </summary>
-        /// <param name="LANG02">LANG02 value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByLANG02(string LANG02)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_LANG02.Value.TryGetValue(LANG02, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by EMERG_LANG01 field
-        /// </summary>
-        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByEMERG_LANG01(string EMERG_LANG01)
-        {
-            return Index_EMERG_LANG01.Value[EMERG_LANG01];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by EMERG_LANG01 field
-        /// </summary>
-        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEMERG_LANG01(string EMERG_LANG01, out IReadOnlyList<SF> Value)
-        {
-            return Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by EMERG_LANG01 field
-        /// </summary>
-        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByEMERG_LANG01(string EMERG_LANG01)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by EMERG_LANG02 field
-        /// </summary>
-        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByEMERG_LANG02(string EMERG_LANG02)
-        {
-            return Index_EMERG_LANG02.Value[EMERG_LANG02];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by EMERG_LANG02 field
-        /// </summary>
-        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEMERG_LANG02(string EMERG_LANG02, out IReadOnlyList<SF> Value)
-        {
-            return Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by EMERG_LANG02 field
-        /// </summary>
-        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByEMERG_LANG02(string EMERG_LANG02)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SF by DEBTOR_ID field
-        /// </summary>
-        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
-        /// <returns>List of related SF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> FindByDEBTOR_ID(string DEBTOR_ID)
-        {
-            return Index_DEBTOR_ID.Value[DEBTOR_ID];
-        }
-
-        /// <summary>
-        /// Attempt to find SF by DEBTOR_ID field
-        /// </summary>
-        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
-        /// <param name="Value">List of related SF entities</param>
-        /// <returns>True if the list of related SF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDEBTOR_ID(string DEBTOR_ID, out IReadOnlyList<SF> Value)
-        {
-            return Index_DEBTOR_ID.Value.TryGetValue(DEBTOR_ID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SF by DEBTOR_ID field
-        /// </summary>
-        /// <param name="DEBTOR_ID">DEBTOR_ID value used to find SF</param>
-        /// <returns>List of related SF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SF> TryFindByDEBTOR_ID(string DEBTOR_ID)
-        {
-            IReadOnlyList<SF> value;
-            if (Index_DEBTOR_ID.Value.TryGetValue(DEBTOR_ID, out value))
             {
                 return value;
             }

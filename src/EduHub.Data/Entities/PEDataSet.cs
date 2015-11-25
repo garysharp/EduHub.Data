@@ -19,15 +19,15 @@ namespace EduHub.Data.Entities
         internal PEDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PEKEY = new Lazy<Dictionary<string, PE>>(() => this.ToDictionary(i => i.PEKEY));
             Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
-            Index_HOMEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.HOMEKEY));
-            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
-            Index_LEAVEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.LEAVEKEY));
-            Index_PAYCODE = new Lazy<NullDictionary<short?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.PAYCODE));
-            Index_TAXCODE = new Lazy<NullDictionary<short?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.TAXCODE));
             Index_DEPARTMENT = new Lazy<NullDictionary<string, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.DEPARTMENT));
+            Index_HOMEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.HOMEKEY));
             Index_LEAVE_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_GROUP));
+            Index_LEAVEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.LEAVEKEY));
+            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
+            Index_PAYCODE = new Lazy<NullDictionary<short?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.PAYCODE));
+            Index_PEKEY = new Lazy<Dictionary<string, PE>>(() => this.ToDictionary(i => i.PEKEY));
+            Index_TAXCODE = new Lazy<NullDictionary<short?, IReadOnlyList<PE>>>(() => this.ToGroupedNullDictionary(i => i.TAXCODE));
         }
 
         /// <summary>
@@ -449,63 +449,49 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PE" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PE" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PE" /> items to added or update the base <see cref="PE" /> items</param>
+        /// <returns>A merged list of <see cref="PE" /> items</returns>
+        protected override List<PE> ApplyDeltaItems(List<PE> Items, List<PE> DeltaItems)
+        {
+            Dictionary<string, int> Index_PEKEY = Items.ToIndexDictionary(i => i.PEKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PE deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PEKEY.TryGetValue(deltaItem.PEKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PEKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PE>> Index_PEKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PE>>> Index_COUNTRY;
-        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_HOMEKEY;
-        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_MAILKEY;
-        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_LEAVEKEY;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PE>>> Index_PAYCODE;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PE>>> Index_TAXCODE;
         private Lazy<NullDictionary<string, IReadOnlyList<PE>>> Index_DEPARTMENT;
+        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_HOMEKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PE>>> Index_LEAVE_GROUP;
+        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_LEAVEKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<PE>>> Index_MAILKEY;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PE>>> Index_PAYCODE;
+        private Lazy<Dictionary<string, PE>> Index_PEKEY;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PE>>> Index_TAXCODE;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find PE by PEKEY field
-        /// </summary>
-        /// <param name="PEKEY">PEKEY value used to find PE</param>
-        /// <returns>Related PE entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PE FindByPEKEY(string PEKEY)
-        {
-            return Index_PEKEY.Value[PEKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by PEKEY field
-        /// </summary>
-        /// <param name="PEKEY">PEKEY value used to find PE</param>
-        /// <param name="Value">Related PE entity</param>
-        /// <returns>True if the related PE entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPEKEY(string PEKEY, out PE Value)
-        {
-            return Index_PEKEY.Value.TryGetValue(PEKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by PEKEY field
-        /// </summary>
-        /// <param name="PEKEY">PEKEY value used to find PE</param>
-        /// <returns>Related PE entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PE TryFindByPEKEY(string PEKEY)
-        {
-            PE value;
-            if (Index_PEKEY.Value.TryGetValue(PEKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find PE by COUNTRY field
@@ -540,216 +526,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PE> value;
             if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PE by HOMEKEY field
-        /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
-        /// <returns>List of related PE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> FindByHOMEKEY(int? HOMEKEY)
-        {
-            return Index_HOMEKEY.Value[HOMEKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by HOMEKEY field
-        /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
-        /// <param name="Value">List of related PE entities</param>
-        /// <returns>True if the list of related PE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOMEKEY(int? HOMEKEY, out IReadOnlyList<PE> Value)
-        {
-            return Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by HOMEKEY field
-        /// </summary>
-        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
-        /// <returns>List of related PE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> TryFindByHOMEKEY(int? HOMEKEY)
-        {
-            IReadOnlyList<PE> value;
-            if (Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PE by MAILKEY field
-        /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
-        /// <returns>List of related PE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> FindByMAILKEY(int? MAILKEY)
-        {
-            return Index_MAILKEY.Value[MAILKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by MAILKEY field
-        /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
-        /// <param name="Value">List of related PE entities</param>
-        /// <returns>True if the list of related PE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<PE> Value)
-        {
-            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by MAILKEY field
-        /// </summary>
-        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
-        /// <returns>List of related PE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> TryFindByMAILKEY(int? MAILKEY)
-        {
-            IReadOnlyList<PE> value;
-            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PE by LEAVEKEY field
-        /// </summary>
-        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
-        /// <returns>List of related PE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> FindByLEAVEKEY(int? LEAVEKEY)
-        {
-            return Index_LEAVEKEY.Value[LEAVEKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by LEAVEKEY field
-        /// </summary>
-        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
-        /// <param name="Value">List of related PE entities</param>
-        /// <returns>True if the list of related PE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLEAVEKEY(int? LEAVEKEY, out IReadOnlyList<PE> Value)
-        {
-            return Index_LEAVEKEY.Value.TryGetValue(LEAVEKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by LEAVEKEY field
-        /// </summary>
-        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
-        /// <returns>List of related PE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> TryFindByLEAVEKEY(int? LEAVEKEY)
-        {
-            IReadOnlyList<PE> value;
-            if (Index_LEAVEKEY.Value.TryGetValue(LEAVEKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PE by PAYCODE field
-        /// </summary>
-        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
-        /// <returns>List of related PE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> FindByPAYCODE(short? PAYCODE)
-        {
-            return Index_PAYCODE.Value[PAYCODE];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by PAYCODE field
-        /// </summary>
-        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
-        /// <param name="Value">List of related PE entities</param>
-        /// <returns>True if the list of related PE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPAYCODE(short? PAYCODE, out IReadOnlyList<PE> Value)
-        {
-            return Index_PAYCODE.Value.TryGetValue(PAYCODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by PAYCODE field
-        /// </summary>
-        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
-        /// <returns>List of related PE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> TryFindByPAYCODE(short? PAYCODE)
-        {
-            IReadOnlyList<PE> value;
-            if (Index_PAYCODE.Value.TryGetValue(PAYCODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PE by TAXCODE field
-        /// </summary>
-        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
-        /// <returns>List of related PE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> FindByTAXCODE(short? TAXCODE)
-        {
-            return Index_TAXCODE.Value[TAXCODE];
-        }
-
-        /// <summary>
-        /// Attempt to find PE by TAXCODE field
-        /// </summary>
-        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
-        /// <param name="Value">List of related PE entities</param>
-        /// <returns>True if the list of related PE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTAXCODE(short? TAXCODE, out IReadOnlyList<PE> Value)
-        {
-            return Index_TAXCODE.Value.TryGetValue(TAXCODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PE by TAXCODE field
-        /// </summary>
-        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
-        /// <returns>List of related PE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PE> TryFindByTAXCODE(short? TAXCODE)
-        {
-            IReadOnlyList<PE> value;
-            if (Index_TAXCODE.Value.TryGetValue(TAXCODE, out value))
             {
                 return value;
             }
@@ -802,6 +578,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find PE by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
+        /// <returns>List of related PE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> FindByHOMEKEY(int? HOMEKEY)
+        {
+            return Index_HOMEKEY.Value[HOMEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
+        /// <param name="Value">List of related PE entities</param>
+        /// <returns>True if the list of related PE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOMEKEY(int? HOMEKEY, out IReadOnlyList<PE> Value)
+        {
+            return Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find PE</param>
+        /// <returns>List of related PE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> TryFindByHOMEKEY(int? HOMEKEY)
+        {
+            IReadOnlyList<PE> value;
+            if (Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find PE by LEAVE_GROUP field
         /// </summary>
         /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PE</param>
@@ -834,6 +652,216 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PE> value;
             if (Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PE by LEAVEKEY field
+        /// </summary>
+        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
+        /// <returns>List of related PE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> FindByLEAVEKEY(int? LEAVEKEY)
+        {
+            return Index_LEAVEKEY.Value[LEAVEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by LEAVEKEY field
+        /// </summary>
+        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
+        /// <param name="Value">List of related PE entities</param>
+        /// <returns>True if the list of related PE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVEKEY(int? LEAVEKEY, out IReadOnlyList<PE> Value)
+        {
+            return Index_LEAVEKEY.Value.TryGetValue(LEAVEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by LEAVEKEY field
+        /// </summary>
+        /// <param name="LEAVEKEY">LEAVEKEY value used to find PE</param>
+        /// <returns>List of related PE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> TryFindByLEAVEKEY(int? LEAVEKEY)
+        {
+            IReadOnlyList<PE> value;
+            if (Index_LEAVEKEY.Value.TryGetValue(LEAVEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PE by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
+        /// <returns>List of related PE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> FindByMAILKEY(int? MAILKEY)
+        {
+            return Index_MAILKEY.Value[MAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
+        /// <param name="Value">List of related PE entities</param>
+        /// <returns>True if the list of related PE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<PE> Value)
+        {
+            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find PE</param>
+        /// <returns>List of related PE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> TryFindByMAILKEY(int? MAILKEY)
+        {
+            IReadOnlyList<PE> value;
+            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PE by PAYCODE field
+        /// </summary>
+        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
+        /// <returns>List of related PE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> FindByPAYCODE(short? PAYCODE)
+        {
+            return Index_PAYCODE.Value[PAYCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by PAYCODE field
+        /// </summary>
+        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
+        /// <param name="Value">List of related PE entities</param>
+        /// <returns>True if the list of related PE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPAYCODE(short? PAYCODE, out IReadOnlyList<PE> Value)
+        {
+            return Index_PAYCODE.Value.TryGetValue(PAYCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by PAYCODE field
+        /// </summary>
+        /// <param name="PAYCODE">PAYCODE value used to find PE</param>
+        /// <returns>List of related PE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> TryFindByPAYCODE(short? PAYCODE)
+        {
+            IReadOnlyList<PE> value;
+            if (Index_PAYCODE.Value.TryGetValue(PAYCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PE by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PE</param>
+        /// <returns>Related PE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PE FindByPEKEY(string PEKEY)
+        {
+            return Index_PEKEY.Value[PEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PE</param>
+        /// <param name="Value">Related PE entity</param>
+        /// <returns>True if the related PE entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPEKEY(string PEKEY, out PE Value)
+        {
+            return Index_PEKEY.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PE</param>
+        /// <returns>Related PE entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PE TryFindByPEKEY(string PEKEY)
+        {
+            PE value;
+            if (Index_PEKEY.Value.TryGetValue(PEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PE by TAXCODE field
+        /// </summary>
+        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
+        /// <returns>List of related PE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> FindByTAXCODE(short? TAXCODE)
+        {
+            return Index_TAXCODE.Value[TAXCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PE by TAXCODE field
+        /// </summary>
+        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
+        /// <param name="Value">List of related PE entities</param>
+        /// <returns>True if the list of related PE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTAXCODE(short? TAXCODE, out IReadOnlyList<PE> Value)
+        {
+            return Index_TAXCODE.Value.TryGetValue(TAXCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PE by TAXCODE field
+        /// </summary>
+        /// <param name="TAXCODE">TAXCODE value used to find PE</param>
+        /// <returns>List of related PE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PE> TryFindByTAXCODE(short? TAXCODE)
+        {
+            IReadOnlyList<PE> value;
+            if (Index_TAXCODE.Value.TryGetValue(TAXCODE, out value))
             {
                 return value;
             }

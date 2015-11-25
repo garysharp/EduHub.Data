@@ -99,6 +99,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SPOUT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SPOUT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SPOUT" /> items to added or update the base <see cref="SPOUT" /> items</param>
+        /// <returns>A merged list of <see cref="SPOUT" /> items</returns>
+        protected override List<SPOUT> ApplyDeltaItems(List<SPOUT> Items, List<SPOUT> DeltaItems)
+        {
+            Dictionary<string, int> Index_SPOUTKEY = Items.ToIndexDictionary(i => i.SPOUTKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SPOUT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SPOUTKEY.TryGetValue(deltaItem.SPOUTKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SPOUTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, SPOUT>> Index_SPOUTKEY;

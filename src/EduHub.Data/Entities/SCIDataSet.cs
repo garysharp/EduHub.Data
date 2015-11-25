@@ -19,28 +19,28 @@ namespace EduHub.Data.Entities
         internal SCIDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SCIKEY = new Lazy<Dictionary<int, SCI>>(() => this.ToDictionary(i => i.SCIKEY));
+            Index_CURRENT_QUILT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.CURRENT_QUILT));
+            Index_DESTINATION_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.DESTINATION_SCHOOL));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_SCHOOL_LINK = new Lazy<NullDictionary<string, SCI>>(() => this.ToNullDictionary(i => i.SCHOOL_LINK));
+            Index_REL_INSTR = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.REL_INSTR));
+            Index_SAM_SCH_COUNCIL = new Lazy<NullDictionary<int?, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SAM_SCH_COUNCIL));
+            Index_SCH_AOIC = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_AOIC));
+            Index_SCH_BMANAGER = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_BMANAGER));
+            Index_SCH_COUNCIL_PRES = new Lazy<NullDictionary<int?, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_COUNCIL_PRES));
+            Index_SCH_EMERG_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_EMERG_CONTACT));
             Index_SCH_PRINCIPAL = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_PRINCIPAL));
-            Index_SF_OIC = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_OIC));
-            Index_SF_VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VPRIN));
+            Index_SCH_VAC_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_VAC_CONTACT));
+            Index_SCH_VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_VPRIN));
+            Index_SCHOOL_LINK = new Lazy<NullDictionary<string, SCI>>(() => this.ToNullDictionary(i => i.SCHOOL_LINK));
+            Index_SCIKEY = new Lazy<Dictionary<int, SCI>>(() => this.ToDictionary(i => i.SCIKEY));
             Index_SF_2VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_2VPRIN));
             Index_SF_3VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_3VPRIN));
             Index_SF_APRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_APRIN));
             Index_SF_BMANAGER = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_BMANAGER));
-            Index_SF_VAC_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VAC_CONTACT));
             Index_SF_EMERG_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_EMERG_CONTACT));
-            Index_SAM_SCH_COUNCIL = new Lazy<NullDictionary<int?, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SAM_SCH_COUNCIL));
-            Index_CURRENT_QUILT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.CURRENT_QUILT));
-            Index_REL_INSTR = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.REL_INSTR));
-            Index_DESTINATION_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.DESTINATION_SCHOOL));
-            Index_SCH_AOIC = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_AOIC));
-            Index_SCH_VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_VPRIN));
-            Index_SCH_BMANAGER = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_BMANAGER));
-            Index_SCH_VAC_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_VAC_CONTACT));
-            Index_SCH_EMERG_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_EMERG_CONTACT));
-            Index_SCH_COUNCIL_PRES = new Lazy<NullDictionary<int?, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SCH_COUNCIL_PRES));
+            Index_SF_OIC = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_OIC));
+            Index_SF_VAC_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VAC_CONTACT));
+            Index_SF_VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VPRIN));
         }
 
         /// <summary>
@@ -294,68 +294,143 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SCI" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SCI" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SCI" /> items to added or update the base <see cref="SCI" /> items</param>
+        /// <returns>A merged list of <see cref="SCI" /> items</returns>
+        protected override List<SCI> ApplyDeltaItems(List<SCI> Items, List<SCI> DeltaItems)
+        {
+            NullDictionary<string, int> Index_SCHOOL_LINK = Items.ToIndexNullDictionary(i => i.SCHOOL_LINK);
+            Dictionary<int, int> Index_SCIKEY = Items.ToIndexDictionary(i => i.SCIKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SCI deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SCHOOL_LINK.TryGetValue(deltaItem.SCHOOL_LINK, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_SCIKEY.TryGetValue(deltaItem.SCIKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SCIKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SCI>> Index_SCIKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_CURRENT_QUILT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_DESTINATION_SCHOOL;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<SCI>>> Index_LW_DATE;
-        private Lazy<NullDictionary<string, SCI>> Index_SCHOOL_LINK;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_REL_INSTR;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SCI>>> Index_SAM_SCH_COUNCIL;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_AOIC;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_BMANAGER;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SCI>>> Index_SCH_COUNCIL_PRES;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_EMERG_CONTACT;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_PRINCIPAL;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_OIC;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VPRIN;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_VAC_CONTACT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_VPRIN;
+        private Lazy<NullDictionary<string, SCI>> Index_SCHOOL_LINK;
+        private Lazy<Dictionary<int, SCI>> Index_SCIKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_2VPRIN;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_3VPRIN;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_APRIN;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_BMANAGER;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VAC_CONTACT;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_EMERG_CONTACT;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SCI>>> Index_SAM_SCH_COUNCIL;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_CURRENT_QUILT;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_REL_INSTR;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_DESTINATION_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_AOIC;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_VPRIN;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_BMANAGER;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_VAC_CONTACT;
-        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SCH_EMERG_CONTACT;
-        private Lazy<NullDictionary<int?, IReadOnlyList<SCI>>> Index_SCH_COUNCIL_PRES;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_OIC;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VAC_CONTACT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VPRIN;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SCI by SCIKEY field
+        /// Find SCI by CURRENT_QUILT field
         /// </summary>
-        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
-        /// <returns>Related SCI entity</returns>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCI FindBySCIKEY(int SCIKEY)
+        public IReadOnlyList<SCI> FindByCURRENT_QUILT(string CURRENT_QUILT)
         {
-            return Index_SCIKEY.Value[SCIKEY];
+            return Index_CURRENT_QUILT.Value[CURRENT_QUILT];
         }
 
         /// <summary>
-        /// Attempt to find SCI by SCIKEY field
+        /// Attempt to find SCI by CURRENT_QUILT field
         /// </summary>
-        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
-        /// <param name="Value">Related SCI entity</param>
-        /// <returns>True if the related SCI entity is found</returns>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCIKEY(int SCIKEY, out SCI Value)
+        public bool TryFindByCURRENT_QUILT(string CURRENT_QUILT, out IReadOnlyList<SCI> Value)
         {
-            return Index_SCIKEY.Value.TryGetValue(SCIKEY, out Value);
+            return Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by SCIKEY field
+        /// Attempt to find SCI by CURRENT_QUILT field
         /// </summary>
-        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
-        /// <returns>Related SCI entity, or null if not found</returns>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCI TryFindBySCIKEY(int SCIKEY)
+        public IReadOnlyList<SCI> TryFindByCURRENT_QUILT(string CURRENT_QUILT)
         {
-            SCI value;
-            if (Index_SCIKEY.Value.TryGetValue(SCIKEY, out value))
+            IReadOnlyList<SCI> value;
+            if (Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by DESTINATION_SCHOOL field
+        /// </summary>
+        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL)
+        {
+            return Index_DESTINATION_SCHOOL.Value[DESTINATION_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by DESTINATION_SCHOOL field
+        /// </summary>
+        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL, out IReadOnlyList<SCI> Value)
+        {
+            return Index_DESTINATION_SCHOOL.Value.TryGetValue(DESTINATION_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by DESTINATION_SCHOOL field
+        /// </summary>
+        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_DESTINATION_SCHOOL.Value.TryGetValue(DESTINATION_SCHOOL, out value))
             {
                 return value;
             }
@@ -408,38 +483,248 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by SCHOOL_LINK field
+        /// Find SCI by REL_INSTR field
         /// </summary>
-        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
-        /// <returns>Related SCI entity</returns>
+        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCI FindBySCHOOL_LINK(string SCHOOL_LINK)
+        public IReadOnlyList<SCI> FindByREL_INSTR(string REL_INSTR)
         {
-            return Index_SCHOOL_LINK.Value[SCHOOL_LINK];
+            return Index_REL_INSTR.Value[REL_INSTR];
         }
 
         /// <summary>
-        /// Attempt to find SCI by SCHOOL_LINK field
+        /// Attempt to find SCI by REL_INSTR field
         /// </summary>
-        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
-        /// <param name="Value">Related SCI entity</param>
-        /// <returns>True if the related SCI entity is found</returns>
+        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL_LINK(string SCHOOL_LINK, out SCI Value)
+        public bool TryFindByREL_INSTR(string REL_INSTR, out IReadOnlyList<SCI> Value)
         {
-            return Index_SCHOOL_LINK.Value.TryGetValue(SCHOOL_LINK, out Value);
+            return Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by SCHOOL_LINK field
+        /// Attempt to find SCI by REL_INSTR field
         /// </summary>
-        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
-        /// <returns>Related SCI entity, or null if not found</returns>
+        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SCI TryFindBySCHOOL_LINK(string SCHOOL_LINK)
+        public IReadOnlyList<SCI> TryFindByREL_INSTR(string REL_INSTR)
         {
-            SCI value;
-            if (Index_SCHOOL_LINK.Value.TryGetValue(SCHOOL_LINK, out value))
+            IReadOnlyList<SCI> value;
+            if (Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SAM_SCH_COUNCIL field
+        /// </summary>
+        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL)
+        {
+            return Index_SAM_SCH_COUNCIL.Value[SAM_SCH_COUNCIL];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SAM_SCH_COUNCIL field
+        /// </summary>
+        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SAM_SCH_COUNCIL.Value.TryGetValue(SAM_SCH_COUNCIL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SAM_SCH_COUNCIL field
+        /// </summary>
+        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SAM_SCH_COUNCIL.Value.TryGetValue(SAM_SCH_COUNCIL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCH_AOIC field
+        /// </summary>
+        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySCH_AOIC(string SCH_AOIC)
+        {
+            return Index_SCH_AOIC.Value[SCH_AOIC];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_AOIC field
+        /// </summary>
+        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCH_AOIC(string SCH_AOIC, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SCH_AOIC.Value.TryGetValue(SCH_AOIC, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_AOIC field
+        /// </summary>
+        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySCH_AOIC(string SCH_AOIC)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SCH_AOIC.Value.TryGetValue(SCH_AOIC, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCH_BMANAGER field
+        /// </summary>
+        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySCH_BMANAGER(string SCH_BMANAGER)
+        {
+            return Index_SCH_BMANAGER.Value[SCH_BMANAGER];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_BMANAGER field
+        /// </summary>
+        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCH_BMANAGER(string SCH_BMANAGER, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SCH_BMANAGER.Value.TryGetValue(SCH_BMANAGER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_BMANAGER field
+        /// </summary>
+        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySCH_BMANAGER(string SCH_BMANAGER)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SCH_BMANAGER.Value.TryGetValue(SCH_BMANAGER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCH_COUNCIL_PRES field
+        /// </summary>
+        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES)
+        {
+            return Index_SCH_COUNCIL_PRES.Value[SCH_COUNCIL_PRES];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_COUNCIL_PRES field
+        /// </summary>
+        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SCH_COUNCIL_PRES.Value.TryGetValue(SCH_COUNCIL_PRES, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_COUNCIL_PRES field
+        /// </summary>
+        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SCH_COUNCIL_PRES.Value.TryGetValue(SCH_COUNCIL_PRES, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCH_EMERG_CONTACT field
+        /// </summary>
+        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT)
+        {
+            return Index_SCH_EMERG_CONTACT.Value[SCH_EMERG_CONTACT];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_EMERG_CONTACT field
+        /// </summary>
+        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SCH_EMERG_CONTACT.Value.TryGetValue(SCH_EMERG_CONTACT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCH_EMERG_CONTACT field
+        /// </summary>
+        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SCH_EMERG_CONTACT.Value.TryGetValue(SCH_EMERG_CONTACT, out value))
             {
                 return value;
             }
@@ -492,38 +777,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by SF_OIC field
+        /// Find SCI by SCH_VAC_CONTACT field
         /// </summary>
-        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
+        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
         /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySF_OIC(string SF_OIC)
+        public IReadOnlyList<SCI> FindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT)
         {
-            return Index_SF_OIC.Value[SF_OIC];
+            return Index_SCH_VAC_CONTACT.Value[SCH_VAC_CONTACT];
         }
 
         /// <summary>
-        /// Attempt to find SCI by SF_OIC field
+        /// Attempt to find SCI by SCH_VAC_CONTACT field
         /// </summary>
-        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
+        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
         /// <param name="Value">List of related SCI entities</param>
         /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySF_OIC(string SF_OIC, out IReadOnlyList<SCI> Value)
+        public bool TryFindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT, out IReadOnlyList<SCI> Value)
         {
-            return Index_SF_OIC.Value.TryGetValue(SF_OIC, out Value);
+            return Index_SCH_VAC_CONTACT.Value.TryGetValue(SCH_VAC_CONTACT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by SF_OIC field
+        /// Attempt to find SCI by SCH_VAC_CONTACT field
         /// </summary>
-        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
+        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
         /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySF_OIC(string SF_OIC)
+        public IReadOnlyList<SCI> TryFindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT)
         {
             IReadOnlyList<SCI> value;
-            if (Index_SF_OIC.Value.TryGetValue(SF_OIC, out value))
+            if (Index_SCH_VAC_CONTACT.Value.TryGetValue(SCH_VAC_CONTACT, out value))
             {
                 return value;
             }
@@ -534,38 +819,122 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by SF_VPRIN field
+        /// Find SCI by SCH_VPRIN field
         /// </summary>
-        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
+        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
         /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySF_VPRIN(string SF_VPRIN)
+        public IReadOnlyList<SCI> FindBySCH_VPRIN(string SCH_VPRIN)
         {
-            return Index_SF_VPRIN.Value[SF_VPRIN];
+            return Index_SCH_VPRIN.Value[SCH_VPRIN];
         }
 
         /// <summary>
-        /// Attempt to find SCI by SF_VPRIN field
+        /// Attempt to find SCI by SCH_VPRIN field
         /// </summary>
-        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
+        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
         /// <param name="Value">List of related SCI entities</param>
         /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySF_VPRIN(string SF_VPRIN, out IReadOnlyList<SCI> Value)
+        public bool TryFindBySCH_VPRIN(string SCH_VPRIN, out IReadOnlyList<SCI> Value)
         {
-            return Index_SF_VPRIN.Value.TryGetValue(SF_VPRIN, out Value);
+            return Index_SCH_VPRIN.Value.TryGetValue(SCH_VPRIN, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by SF_VPRIN field
+        /// Attempt to find SCI by SCH_VPRIN field
         /// </summary>
-        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
+        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
         /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySF_VPRIN(string SF_VPRIN)
+        public IReadOnlyList<SCI> TryFindBySCH_VPRIN(string SCH_VPRIN)
         {
             IReadOnlyList<SCI> value;
-            if (Index_SF_VPRIN.Value.TryGetValue(SF_VPRIN, out value))
+            if (Index_SCH_VPRIN.Value.TryGetValue(SCH_VPRIN, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCHOOL_LINK field
+        /// </summary>
+        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
+        /// <returns>Related SCI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCI FindBySCHOOL_LINK(string SCHOOL_LINK)
+        {
+            return Index_SCHOOL_LINK.Value[SCHOOL_LINK];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCHOOL_LINK field
+        /// </summary>
+        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
+        /// <param name="Value">Related SCI entity</param>
+        /// <returns>True if the related SCI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL_LINK(string SCHOOL_LINK, out SCI Value)
+        {
+            return Index_SCHOOL_LINK.Value.TryGetValue(SCHOOL_LINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCHOOL_LINK field
+        /// </summary>
+        /// <param name="SCHOOL_LINK">SCHOOL_LINK value used to find SCI</param>
+        /// <returns>Related SCI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCI TryFindBySCHOOL_LINK(string SCHOOL_LINK)
+        {
+            SCI value;
+            if (Index_SCHOOL_LINK.Value.TryGetValue(SCHOOL_LINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCI by SCIKEY field
+        /// </summary>
+        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
+        /// <returns>Related SCI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCI FindBySCIKEY(int SCIKEY)
+        {
+            return Index_SCIKEY.Value[SCIKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCIKEY field
+        /// </summary>
+        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
+        /// <param name="Value">Related SCI entity</param>
+        /// <returns>True if the related SCI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCIKEY(int SCIKEY, out SCI Value)
+        {
+            return Index_SCIKEY.Value.TryGetValue(SCIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SCIKEY field
+        /// </summary>
+        /// <param name="SCIKEY">SCIKEY value used to find SCI</param>
+        /// <returns>Related SCI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCI TryFindBySCIKEY(int SCIKEY)
+        {
+            SCI value;
+            if (Index_SCIKEY.Value.TryGetValue(SCIKEY, out value))
             {
                 return value;
             }
@@ -744,48 +1113,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by SF_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySF_VAC_CONTACT(string SF_VAC_CONTACT)
-        {
-            return Index_SF_VAC_CONTACT.Value[SF_VAC_CONTACT];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SF_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySF_VAC_CONTACT(string SF_VAC_CONTACT, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SF_VAC_CONTACT.Value.TryGetValue(SF_VAC_CONTACT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SF_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySF_VAC_CONTACT(string SF_VAC_CONTACT)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SF_VAC_CONTACT.Value.TryGetValue(SF_VAC_CONTACT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SCI by SF_EMERG_CONTACT field
         /// </summary>
         /// <param name="SF_EMERG_CONTACT">SF_EMERG_CONTACT value used to find SCI</param>
@@ -828,38 +1155,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by SAM_SCH_COUNCIL field
+        /// Find SCI by SF_OIC field
         /// </summary>
-        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
         /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL)
+        public IReadOnlyList<SCI> FindBySF_OIC(string SF_OIC)
         {
-            return Index_SAM_SCH_COUNCIL.Value[SAM_SCH_COUNCIL];
+            return Index_SF_OIC.Value[SF_OIC];
         }
 
         /// <summary>
-        /// Attempt to find SCI by SAM_SCH_COUNCIL field
+        /// Attempt to find SCI by SF_OIC field
         /// </summary>
-        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
         /// <param name="Value">List of related SCI entities</param>
         /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL, out IReadOnlyList<SCI> Value)
+        public bool TryFindBySF_OIC(string SF_OIC, out IReadOnlyList<SCI> Value)
         {
-            return Index_SAM_SCH_COUNCIL.Value.TryGetValue(SAM_SCH_COUNCIL, out Value);
+            return Index_SF_OIC.Value.TryGetValue(SF_OIC, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by SAM_SCH_COUNCIL field
+        /// Attempt to find SCI by SF_OIC field
         /// </summary>
-        /// <param name="SAM_SCH_COUNCIL">SAM_SCH_COUNCIL value used to find SCI</param>
+        /// <param name="SF_OIC">SF_OIC value used to find SCI</param>
         /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySAM_SCH_COUNCIL(int? SAM_SCH_COUNCIL)
+        public IReadOnlyList<SCI> TryFindBySF_OIC(string SF_OIC)
         {
             IReadOnlyList<SCI> value;
-            if (Index_SAM_SCH_COUNCIL.Value.TryGetValue(SAM_SCH_COUNCIL, out value))
+            if (Index_SF_OIC.Value.TryGetValue(SF_OIC, out value))
             {
                 return value;
             }
@@ -870,38 +1197,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by CURRENT_QUILT field
+        /// Find SCI by SF_VAC_CONTACT field
         /// </summary>
-        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
         /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindByCURRENT_QUILT(string CURRENT_QUILT)
+        public IReadOnlyList<SCI> FindBySF_VAC_CONTACT(string SF_VAC_CONTACT)
         {
-            return Index_CURRENT_QUILT.Value[CURRENT_QUILT];
+            return Index_SF_VAC_CONTACT.Value[SF_VAC_CONTACT];
         }
 
         /// <summary>
-        /// Attempt to find SCI by CURRENT_QUILT field
+        /// Attempt to find SCI by SF_VAC_CONTACT field
         /// </summary>
-        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
         /// <param name="Value">List of related SCI entities</param>
         /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCURRENT_QUILT(string CURRENT_QUILT, out IReadOnlyList<SCI> Value)
+        public bool TryFindBySF_VAC_CONTACT(string SF_VAC_CONTACT, out IReadOnlyList<SCI> Value)
         {
-            return Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out Value);
+            return Index_SF_VAC_CONTACT.Value.TryGetValue(SF_VAC_CONTACT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by CURRENT_QUILT field
+        /// Attempt to find SCI by SF_VAC_CONTACT field
         /// </summary>
-        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find SCI</param>
+        /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
         /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindByCURRENT_QUILT(string CURRENT_QUILT)
+        public IReadOnlyList<SCI> TryFindBySF_VAC_CONTACT(string SF_VAC_CONTACT)
         {
             IReadOnlyList<SCI> value;
-            if (Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out value))
+            if (Index_SF_VAC_CONTACT.Value.TryGetValue(SF_VAC_CONTACT, out value))
             {
                 return value;
             }
@@ -912,332 +1239,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SCI by REL_INSTR field
+        /// Find SCI by SF_VPRIN field
         /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
         /// <returns>List of related SCI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindByREL_INSTR(string REL_INSTR)
+        public IReadOnlyList<SCI> FindBySF_VPRIN(string SF_VPRIN)
         {
-            return Index_REL_INSTR.Value[REL_INSTR];
+            return Index_SF_VPRIN.Value[SF_VPRIN];
         }
 
         /// <summary>
-        /// Attempt to find SCI by REL_INSTR field
+        /// Attempt to find SCI by SF_VPRIN field
         /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
         /// <param name="Value">List of related SCI entities</param>
         /// <returns>True if the list of related SCI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByREL_INSTR(string REL_INSTR, out IReadOnlyList<SCI> Value)
+        public bool TryFindBySF_VPRIN(string SF_VPRIN, out IReadOnlyList<SCI> Value)
         {
-            return Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out Value);
+            return Index_SF_VPRIN.Value.TryGetValue(SF_VPRIN, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SCI by REL_INSTR field
+        /// Attempt to find SCI by SF_VPRIN field
         /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find SCI</param>
+        /// <param name="SF_VPRIN">SF_VPRIN value used to find SCI</param>
         /// <returns>List of related SCI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindByREL_INSTR(string REL_INSTR)
+        public IReadOnlyList<SCI> TryFindBySF_VPRIN(string SF_VPRIN)
         {
             IReadOnlyList<SCI> value;
-            if (Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by DESTINATION_SCHOOL field
-        /// </summary>
-        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL)
-        {
-            return Index_DESTINATION_SCHOOL.Value[DESTINATION_SCHOOL];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by DESTINATION_SCHOOL field
-        /// </summary>
-        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL, out IReadOnlyList<SCI> Value)
-        {
-            return Index_DESTINATION_SCHOOL.Value.TryGetValue(DESTINATION_SCHOOL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by DESTINATION_SCHOOL field
-        /// </summary>
-        /// <param name="DESTINATION_SCHOOL">DESTINATION_SCHOOL value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindByDESTINATION_SCHOOL(string DESTINATION_SCHOOL)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_DESTINATION_SCHOOL.Value.TryGetValue(DESTINATION_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_AOIC field
-        /// </summary>
-        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_AOIC(string SCH_AOIC)
-        {
-            return Index_SCH_AOIC.Value[SCH_AOIC];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_AOIC field
-        /// </summary>
-        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_AOIC(string SCH_AOIC, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_AOIC.Value.TryGetValue(SCH_AOIC, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_AOIC field
-        /// </summary>
-        /// <param name="SCH_AOIC">SCH_AOIC value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_AOIC(string SCH_AOIC)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_AOIC.Value.TryGetValue(SCH_AOIC, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_VPRIN field
-        /// </summary>
-        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_VPRIN(string SCH_VPRIN)
-        {
-            return Index_SCH_VPRIN.Value[SCH_VPRIN];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_VPRIN field
-        /// </summary>
-        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_VPRIN(string SCH_VPRIN, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_VPRIN.Value.TryGetValue(SCH_VPRIN, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_VPRIN field
-        /// </summary>
-        /// <param name="SCH_VPRIN">SCH_VPRIN value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_VPRIN(string SCH_VPRIN)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_VPRIN.Value.TryGetValue(SCH_VPRIN, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_BMANAGER field
-        /// </summary>
-        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_BMANAGER(string SCH_BMANAGER)
-        {
-            return Index_SCH_BMANAGER.Value[SCH_BMANAGER];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_BMANAGER field
-        /// </summary>
-        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_BMANAGER(string SCH_BMANAGER, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_BMANAGER.Value.TryGetValue(SCH_BMANAGER, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_BMANAGER field
-        /// </summary>
-        /// <param name="SCH_BMANAGER">SCH_BMANAGER value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_BMANAGER(string SCH_BMANAGER)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_BMANAGER.Value.TryGetValue(SCH_BMANAGER, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT)
-        {
-            return Index_SCH_VAC_CONTACT.Value[SCH_VAC_CONTACT];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_VAC_CONTACT.Value.TryGetValue(SCH_VAC_CONTACT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_VAC_CONTACT field
-        /// </summary>
-        /// <param name="SCH_VAC_CONTACT">SCH_VAC_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_VAC_CONTACT(string SCH_VAC_CONTACT)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_VAC_CONTACT.Value.TryGetValue(SCH_VAC_CONTACT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_EMERG_CONTACT field
-        /// </summary>
-        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT)
-        {
-            return Index_SCH_EMERG_CONTACT.Value[SCH_EMERG_CONTACT];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_EMERG_CONTACT field
-        /// </summary>
-        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_EMERG_CONTACT.Value.TryGetValue(SCH_EMERG_CONTACT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_EMERG_CONTACT field
-        /// </summary>
-        /// <param name="SCH_EMERG_CONTACT">SCH_EMERG_CONTACT value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_EMERG_CONTACT(string SCH_EMERG_CONTACT)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_EMERG_CONTACT.Value.TryGetValue(SCH_EMERG_CONTACT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SCI by SCH_COUNCIL_PRES field
-        /// </summary>
-        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
-        /// <returns>List of related SCI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> FindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES)
-        {
-            return Index_SCH_COUNCIL_PRES.Value[SCH_COUNCIL_PRES];
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_COUNCIL_PRES field
-        /// </summary>
-        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
-        /// <param name="Value">List of related SCI entities</param>
-        /// <returns>True if the list of related SCI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES, out IReadOnlyList<SCI> Value)
-        {
-            return Index_SCH_COUNCIL_PRES.Value.TryGetValue(SCH_COUNCIL_PRES, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCI by SCH_COUNCIL_PRES field
-        /// </summary>
-        /// <param name="SCH_COUNCIL_PRES">SCH_COUNCIL_PRES value used to find SCI</param>
-        /// <returns>List of related SCI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SCI> TryFindBySCH_COUNCIL_PRES(int? SCH_COUNCIL_PRES)
-        {
-            IReadOnlyList<SCI> value;
-            if (Index_SCH_COUNCIL_PRES.Value.TryGetValue(SCH_COUNCIL_PRES, out value))
+            if (Index_SF_VPRIN.Value.TryGetValue(SF_VPRIN, out value))
             {
                 return value;
             }

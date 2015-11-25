@@ -19,12 +19,12 @@ namespace EduHub.Data.Entities
         internal SABDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SABKEY = new Lazy<Dictionary<string, SAB>>(() => this.ToDictionary(i => i.SABKEY));
             Index_FEE_CODE_1ST = new Lazy<NullDictionary<string, IReadOnlyList<SAB>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE_1ST));
             Index_FEE_CODE_2ND = new Lazy<NullDictionary<string, IReadOnlyList<SAB>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE_2ND));
             Index_FEE_CODE_3RD = new Lazy<NullDictionary<string, IReadOnlyList<SAB>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE_3RD));
             Index_FEE_CODE_4TH = new Lazy<NullDictionary<string, IReadOnlyList<SAB>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE_4TH));
             Index_FEE_CODE_KG = new Lazy<NullDictionary<string, IReadOnlyList<SAB>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE_KG));
+            Index_SABKEY = new Lazy<Dictionary<string, SAB>>(() => this.ToDictionary(i => i.SABKEY));
         }
 
         /// <summary>
@@ -95,60 +95,46 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAB" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAB" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAB" /> items to added or update the base <see cref="SAB" /> items</param>
+        /// <returns>A merged list of <see cref="SAB" /> items</returns>
+        protected override List<SAB> ApplyDeltaItems(List<SAB> Items, List<SAB> DeltaItems)
+        {
+            Dictionary<string, int> Index_SABKEY = Items.ToIndexDictionary(i => i.SABKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAB deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SABKEY.TryGetValue(deltaItem.SABKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SABKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SAB>> Index_SABKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SAB>>> Index_FEE_CODE_1ST;
         private Lazy<NullDictionary<string, IReadOnlyList<SAB>>> Index_FEE_CODE_2ND;
         private Lazy<NullDictionary<string, IReadOnlyList<SAB>>> Index_FEE_CODE_3RD;
         private Lazy<NullDictionary<string, IReadOnlyList<SAB>>> Index_FEE_CODE_4TH;
         private Lazy<NullDictionary<string, IReadOnlyList<SAB>>> Index_FEE_CODE_KG;
+        private Lazy<Dictionary<string, SAB>> Index_SABKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SAB by SABKEY field
-        /// </summary>
-        /// <param name="SABKEY">SABKEY value used to find SAB</param>
-        /// <returns>Related SAB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAB FindBySABKEY(string SABKEY)
-        {
-            return Index_SABKEY.Value[SABKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SAB by SABKEY field
-        /// </summary>
-        /// <param name="SABKEY">SABKEY value used to find SAB</param>
-        /// <param name="Value">Related SAB entity</param>
-        /// <returns>True if the related SAB entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySABKEY(string SABKEY, out SAB Value)
-        {
-            return Index_SABKEY.Value.TryGetValue(SABKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAB by SABKEY field
-        /// </summary>
-        /// <param name="SABKEY">SABKEY value used to find SAB</param>
-        /// <returns>Related SAB entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAB TryFindBySABKEY(string SABKEY)
-        {
-            SAB value;
-            if (Index_SABKEY.Value.TryGetValue(SABKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SAB by FEE_CODE_1ST field
@@ -351,6 +337,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SAB> value;
             if (Index_FEE_CODE_KG.Value.TryGetValue(FEE_CODE_KG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAB by SABKEY field
+        /// </summary>
+        /// <param name="SABKEY">SABKEY value used to find SAB</param>
+        /// <returns>Related SAB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAB FindBySABKEY(string SABKEY)
+        {
+            return Index_SABKEY.Value[SABKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAB by SABKEY field
+        /// </summary>
+        /// <param name="SABKEY">SABKEY value used to find SAB</param>
+        /// <param name="Value">Related SAB entity</param>
+        /// <returns>True if the related SAB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySABKEY(string SABKEY, out SAB Value)
+        {
+            return Index_SABKEY.Value.TryGetValue(SABKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAB by SABKEY field
+        /// </summary>
+        /// <param name="SABKEY">SABKEY value used to find SAB</param>
+        /// <returns>Related SAB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAB TryFindBySABKEY(string SABKEY)
+        {
+            SAB value;
+            if (Index_SABKEY.Value.TryGetValue(SABKEY, out value))
             {
                 return value;
             }

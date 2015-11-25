@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal GLBANKDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_GLBANKKEY = new Lazy<Dictionary<int, GLBANK>>(() => this.ToDictionary(i => i.GLBANKKEY));
             Index_GLCODE = new Lazy<Dictionary<string, GLBANK>>(() => this.ToDictionary(i => i.GLCODE));
-            Index_GLBANKKEY = new Lazy<Dictionary<int, IReadOnlyList<GLBANK>>>(() => this.ToGroupedDictionary(i => i.GLBANKKEY));
         }
 
         /// <summary>
@@ -169,14 +169,89 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="GLBANK" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="GLBANK" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="GLBANK" /> items to added or update the base <see cref="GLBANK" /> items</param>
+        /// <returns>A merged list of <see cref="GLBANK" /> items</returns>
+        protected override List<GLBANK> ApplyDeltaItems(List<GLBANK> Items, List<GLBANK> DeltaItems)
+        {
+            Dictionary<int, int> Index_GLBANKKEY = Items.ToIndexDictionary(i => i.GLBANKKEY);
+            Dictionary<string, int> Index_GLCODE = Items.ToIndexDictionary(i => i.GLCODE);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (GLBANK deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_GLBANKKEY.TryGetValue(deltaItem.GLBANKKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_GLCODE.TryGetValue(deltaItem.GLCODE, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GLCODE)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<Dictionary<int, GLBANK>> Index_GLBANKKEY;
         private Lazy<Dictionary<string, GLBANK>> Index_GLCODE;
-        private Lazy<Dictionary<int, IReadOnlyList<GLBANK>>> Index_GLBANKKEY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBANK FindByGLBANKKEY(int GLBANKKEY)
+        {
+            return Index_GLBANKKEY.Value[GLBANKKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <param name="Value">Related GLBANK entity</param>
+        /// <returns>True if the related GLBANK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLBANKKEY(int GLBANKKEY, out GLBANK Value)
+        {
+            return Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBANK TryFindByGLBANKKEY(int GLBANKKEY)
+        {
+            GLBANK value;
+            if (Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find GLBANK by GLCODE field
@@ -211,48 +286,6 @@ namespace EduHub.Data.Entities
         {
             GLBANK value;
             if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLBANK by GLBANKKEY field
-        /// </summary>
-        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
-        /// <returns>List of related GLBANK entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLBANK> FindByGLBANKKEY(int GLBANKKEY)
-        {
-            return Index_GLBANKKEY.Value[GLBANKKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLBANKKEY field
-        /// </summary>
-        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
-        /// <param name="Value">List of related GLBANK entities</param>
-        /// <returns>True if the list of related GLBANK entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGLBANKKEY(int GLBANKKEY, out IReadOnlyList<GLBANK> Value)
-        {
-            return Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLBANKKEY field
-        /// </summary>
-        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
-        /// <returns>List of related GLBANK entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLBANK> TryFindByGLBANKKEY(int GLBANKKEY)
-        {
-            IReadOnlyList<GLBANK> value;
-            if (Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out value))
             {
                 return value;
             }

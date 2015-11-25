@@ -19,21 +19,22 @@ namespace EduHub.Data.Entities
         internal ARDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_AMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.AMETHOD));
             Index_ARKEY = new Lazy<Dictionary<string, AR>>(() => this.ToDictionary(i => i.ARKEY));
-            Index_CATEGORY = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CATEGORY));
+            Index_ARNUMBER = new Lazy<Dictionary<int, AR>>(() => this.ToDictionary(i => i.ARNUMBER));
             Index_ASSET_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.ASSET_TYPE));
+            Index_BRANCH = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.BRANCH));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_CATEGORY = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CATEGORY));
+            Index_COMPONENT_OF = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.COMPONENT_OF));
+            Index_CURR_SUPPLIER = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CURR_SUPPLIER));
+            Index_DEPARTMENT = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.DEPARTMENT));
+            Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
+            Index_ORIG_SUPPLIER = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.ORIG_SUPPLIER));
+            Index_PTE_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.PTE_GLCODE));
             Index_RELEASE_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.RELEASE_TYPE));
             Index_TAX_CATEGORY = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.TAX_CATEGORY));
-            Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
-            Index_DEPARTMENT = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.DEPARTMENT));
-            Index_BRANCH = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.BRANCH));
-            Index_ORIG_SUPPLIER = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.ORIG_SUPPLIER));
-            Index_CURR_SUPPLIER = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CURR_SUPPLIER));
-            Index_PTE_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.PTE_GLCODE));
-            Index_AMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.AMETHOD));
             Index_TMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.TMETHOD));
-            Index_COMPONENT_OF = new Lazy<NullDictionary<string, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.COMPONENT_OF));
-            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<AR>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
         }
 
         /// <summary>
@@ -386,27 +387,103 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="AR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="AR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="AR" /> items to added or update the base <see cref="AR" /> items</param>
+        /// <returns>A merged list of <see cref="AR" /> items</returns>
+        protected override List<AR> ApplyDeltaItems(List<AR> Items, List<AR> DeltaItems)
+        {
+            Dictionary<string, int> Index_ARKEY = Items.ToIndexDictionary(i => i.ARKEY);
+            Dictionary<int, int> Index_ARNUMBER = Items.ToIndexDictionary(i => i.ARNUMBER);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (AR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ARKEY.TryGetValue(deltaItem.ARKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_ARNUMBER.TryGetValue(deltaItem.ARNUMBER, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ARKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_AMETHOD;
         private Lazy<Dictionary<string, AR>> Index_ARKEY;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_CATEGORY;
+        private Lazy<Dictionary<int, AR>> Index_ARNUMBER;
         private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_ASSET_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_BRANCH;
+        private Lazy<NullDictionary<int?, IReadOnlyList<AR>>> Index_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_CATEGORY;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_COMPONENT_OF;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_CURR_SUPPLIER;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_DEPARTMENT;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_LOCATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_ORIG_SUPPLIER;
+        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_PTE_GLCODE;
         private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_RELEASE_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_TAX_CATEGORY;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_LOCATION;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_DEPARTMENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_BRANCH;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_ORIG_SUPPLIER;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_CURR_SUPPLIER;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_PTE_GLCODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_AMETHOD;
         private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_TMETHOD;
-        private Lazy<NullDictionary<string, IReadOnlyList<AR>>> Index_COMPONENT_OF;
-        private Lazy<NullDictionary<int?, IReadOnlyList<AR>>> Index_CAMPUS;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find AR by AMETHOD field
+        /// </summary>
+        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByAMETHOD(string AMETHOD)
+        {
+            return Index_AMETHOD.Value[AMETHOD];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by AMETHOD field
+        /// </summary>
+        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAMETHOD(string AMETHOD, out IReadOnlyList<AR> Value)
+        {
+            return Index_AMETHOD.Value.TryGetValue(AMETHOD, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by AMETHOD field
+        /// </summary>
+        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByAMETHOD(string AMETHOD)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_AMETHOD.Value.TryGetValue(AMETHOD, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find AR by ARKEY field
@@ -441,6 +518,174 @@ namespace EduHub.Data.Entities
         {
             AR value;
             if (Index_ARKEY.Value.TryGetValue(ARKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by ARNUMBER field
+        /// </summary>
+        /// <param name="ARNUMBER">ARNUMBER value used to find AR</param>
+        /// <returns>Related AR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AR FindByARNUMBER(int ARNUMBER)
+        {
+            return Index_ARNUMBER.Value[ARNUMBER];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ARNUMBER field
+        /// </summary>
+        /// <param name="ARNUMBER">ARNUMBER value used to find AR</param>
+        /// <param name="Value">Related AR entity</param>
+        /// <returns>True if the related AR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByARNUMBER(int ARNUMBER, out AR Value)
+        {
+            return Index_ARNUMBER.Value.TryGetValue(ARNUMBER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ARNUMBER field
+        /// </summary>
+        /// <param name="ARNUMBER">ARNUMBER value used to find AR</param>
+        /// <returns>Related AR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AR TryFindByARNUMBER(int ARNUMBER)
+        {
+            AR value;
+            if (Index_ARNUMBER.Value.TryGetValue(ARNUMBER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by ASSET_TYPE field
+        /// </summary>
+        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByASSET_TYPE(string ASSET_TYPE)
+        {
+            return Index_ASSET_TYPE.Value[ASSET_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ASSET_TYPE field
+        /// </summary>
+        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByASSET_TYPE(string ASSET_TYPE, out IReadOnlyList<AR> Value)
+        {
+            return Index_ASSET_TYPE.Value.TryGetValue(ASSET_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ASSET_TYPE field
+        /// </summary>
+        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByASSET_TYPE(string ASSET_TYPE)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_ASSET_TYPE.Value.TryGetValue(ASSET_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by BRANCH field
+        /// </summary>
+        /// <param name="BRANCH">BRANCH value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByBRANCH(string BRANCH)
+        {
+            return Index_BRANCH.Value[BRANCH];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by BRANCH field
+        /// </summary>
+        /// <param name="BRANCH">BRANCH value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBRANCH(string BRANCH, out IReadOnlyList<AR> Value)
+        {
+            return Index_BRANCH.Value.TryGetValue(BRANCH, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by BRANCH field
+        /// </summary>
+        /// <param name="BRANCH">BRANCH value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByBRANCH(string BRANCH)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_BRANCH.Value.TryGetValue(BRANCH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<AR> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -493,38 +738,248 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find AR by ASSET_TYPE field
+        /// Find AR by COMPONENT_OF field
         /// </summary>
-        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
         /// <returns>List of related AR entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByASSET_TYPE(string ASSET_TYPE)
+        public IReadOnlyList<AR> FindByCOMPONENT_OF(string COMPONENT_OF)
         {
-            return Index_ASSET_TYPE.Value[ASSET_TYPE];
+            return Index_COMPONENT_OF.Value[COMPONENT_OF];
         }
 
         /// <summary>
-        /// Attempt to find AR by ASSET_TYPE field
+        /// Attempt to find AR by COMPONENT_OF field
         /// </summary>
-        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
         /// <param name="Value">List of related AR entities</param>
         /// <returns>True if the list of related AR entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByASSET_TYPE(string ASSET_TYPE, out IReadOnlyList<AR> Value)
+        public bool TryFindByCOMPONENT_OF(string COMPONENT_OF, out IReadOnlyList<AR> Value)
         {
-            return Index_ASSET_TYPE.Value.TryGetValue(ASSET_TYPE, out Value);
+            return Index_COMPONENT_OF.Value.TryGetValue(COMPONENT_OF, out Value);
         }
 
         /// <summary>
-        /// Attempt to find AR by ASSET_TYPE field
+        /// Attempt to find AR by COMPONENT_OF field
         /// </summary>
-        /// <param name="ASSET_TYPE">ASSET_TYPE value used to find AR</param>
+        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
         /// <returns>List of related AR entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByASSET_TYPE(string ASSET_TYPE)
+        public IReadOnlyList<AR> TryFindByCOMPONENT_OF(string COMPONENT_OF)
         {
             IReadOnlyList<AR> value;
-            if (Index_ASSET_TYPE.Value.TryGetValue(ASSET_TYPE, out value))
+            if (Index_COMPONENT_OF.Value.TryGetValue(COMPONENT_OF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by CURR_SUPPLIER field
+        /// </summary>
+        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByCURR_SUPPLIER(string CURR_SUPPLIER)
+        {
+            return Index_CURR_SUPPLIER.Value[CURR_SUPPLIER];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by CURR_SUPPLIER field
+        /// </summary>
+        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCURR_SUPPLIER(string CURR_SUPPLIER, out IReadOnlyList<AR> Value)
+        {
+            return Index_CURR_SUPPLIER.Value.TryGetValue(CURR_SUPPLIER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by CURR_SUPPLIER field
+        /// </summary>
+        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByCURR_SUPPLIER(string CURR_SUPPLIER)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_CURR_SUPPLIER.Value.TryGetValue(CURR_SUPPLIER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by DEPARTMENT field
+        /// </summary>
+        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByDEPARTMENT(string DEPARTMENT)
+        {
+            return Index_DEPARTMENT.Value[DEPARTMENT];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by DEPARTMENT field
+        /// </summary>
+        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDEPARTMENT(string DEPARTMENT, out IReadOnlyList<AR> Value)
+        {
+            return Index_DEPARTMENT.Value.TryGetValue(DEPARTMENT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by DEPARTMENT field
+        /// </summary>
+        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByDEPARTMENT(string DEPARTMENT)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_DEPARTMENT.Value.TryGetValue(DEPARTMENT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByLOCATION(string LOCATION)
+        {
+            return Index_LOCATION.Value[LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<AR> Value)
+        {
+            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by ORIG_SUPPLIER field
+        /// </summary>
+        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByORIG_SUPPLIER(string ORIG_SUPPLIER)
+        {
+            return Index_ORIG_SUPPLIER.Value[ORIG_SUPPLIER];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ORIG_SUPPLIER field
+        /// </summary>
+        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIG_SUPPLIER(string ORIG_SUPPLIER, out IReadOnlyList<AR> Value)
+        {
+            return Index_ORIG_SUPPLIER.Value.TryGetValue(ORIG_SUPPLIER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by ORIG_SUPPLIER field
+        /// </summary>
+        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByORIG_SUPPLIER(string ORIG_SUPPLIER)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_ORIG_SUPPLIER.Value.TryGetValue(ORIG_SUPPLIER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AR by PTE_GLCODE field
+        /// </summary>
+        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
+        /// <returns>List of related AR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> FindByPTE_GLCODE(string PTE_GLCODE)
+        {
+            return Index_PTE_GLCODE.Value[PTE_GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find AR by PTE_GLCODE field
+        /// </summary>
+        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
+        /// <param name="Value">List of related AR entities</param>
+        /// <returns>True if the list of related AR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPTE_GLCODE(string PTE_GLCODE, out IReadOnlyList<AR> Value)
+        {
+            return Index_PTE_GLCODE.Value.TryGetValue(PTE_GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AR by PTE_GLCODE field
+        /// </summary>
+        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
+        /// <returns>List of related AR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AR> TryFindByPTE_GLCODE(string PTE_GLCODE)
+        {
+            IReadOnlyList<AR> value;
+            if (Index_PTE_GLCODE.Value.TryGetValue(PTE_GLCODE, out value))
             {
                 return value;
             }
@@ -619,300 +1074,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find AR by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByLOCATION(string LOCATION)
-        {
-            return Index_LOCATION.Value[LOCATION];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<AR> Value)
-        {
-            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByLOCATION(string LOCATION)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by DEPARTMENT field
-        /// </summary>
-        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByDEPARTMENT(string DEPARTMENT)
-        {
-            return Index_DEPARTMENT.Value[DEPARTMENT];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by DEPARTMENT field
-        /// </summary>
-        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDEPARTMENT(string DEPARTMENT, out IReadOnlyList<AR> Value)
-        {
-            return Index_DEPARTMENT.Value.TryGetValue(DEPARTMENT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by DEPARTMENT field
-        /// </summary>
-        /// <param name="DEPARTMENT">DEPARTMENT value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByDEPARTMENT(string DEPARTMENT)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_DEPARTMENT.Value.TryGetValue(DEPARTMENT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by BRANCH field
-        /// </summary>
-        /// <param name="BRANCH">BRANCH value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByBRANCH(string BRANCH)
-        {
-            return Index_BRANCH.Value[BRANCH];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by BRANCH field
-        /// </summary>
-        /// <param name="BRANCH">BRANCH value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBRANCH(string BRANCH, out IReadOnlyList<AR> Value)
-        {
-            return Index_BRANCH.Value.TryGetValue(BRANCH, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by BRANCH field
-        /// </summary>
-        /// <param name="BRANCH">BRANCH value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByBRANCH(string BRANCH)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_BRANCH.Value.TryGetValue(BRANCH, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by ORIG_SUPPLIER field
-        /// </summary>
-        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByORIG_SUPPLIER(string ORIG_SUPPLIER)
-        {
-            return Index_ORIG_SUPPLIER.Value[ORIG_SUPPLIER];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by ORIG_SUPPLIER field
-        /// </summary>
-        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByORIG_SUPPLIER(string ORIG_SUPPLIER, out IReadOnlyList<AR> Value)
-        {
-            return Index_ORIG_SUPPLIER.Value.TryGetValue(ORIG_SUPPLIER, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by ORIG_SUPPLIER field
-        /// </summary>
-        /// <param name="ORIG_SUPPLIER">ORIG_SUPPLIER value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByORIG_SUPPLIER(string ORIG_SUPPLIER)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_ORIG_SUPPLIER.Value.TryGetValue(ORIG_SUPPLIER, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by CURR_SUPPLIER field
-        /// </summary>
-        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByCURR_SUPPLIER(string CURR_SUPPLIER)
-        {
-            return Index_CURR_SUPPLIER.Value[CURR_SUPPLIER];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by CURR_SUPPLIER field
-        /// </summary>
-        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCURR_SUPPLIER(string CURR_SUPPLIER, out IReadOnlyList<AR> Value)
-        {
-            return Index_CURR_SUPPLIER.Value.TryGetValue(CURR_SUPPLIER, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by CURR_SUPPLIER field
-        /// </summary>
-        /// <param name="CURR_SUPPLIER">CURR_SUPPLIER value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByCURR_SUPPLIER(string CURR_SUPPLIER)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_CURR_SUPPLIER.Value.TryGetValue(CURR_SUPPLIER, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by PTE_GLCODE field
-        /// </summary>
-        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByPTE_GLCODE(string PTE_GLCODE)
-        {
-            return Index_PTE_GLCODE.Value[PTE_GLCODE];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by PTE_GLCODE field
-        /// </summary>
-        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPTE_GLCODE(string PTE_GLCODE, out IReadOnlyList<AR> Value)
-        {
-            return Index_PTE_GLCODE.Value.TryGetValue(PTE_GLCODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by PTE_GLCODE field
-        /// </summary>
-        /// <param name="PTE_GLCODE">PTE_GLCODE value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByPTE_GLCODE(string PTE_GLCODE)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_PTE_GLCODE.Value.TryGetValue(PTE_GLCODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByAMETHOD(string AMETHOD)
-        {
-            return Index_AMETHOD.Value[AMETHOD];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByAMETHOD(string AMETHOD, out IReadOnlyList<AR> Value)
-        {
-            return Index_AMETHOD.Value.TryGetValue(AMETHOD, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by AMETHOD field
-        /// </summary>
-        /// <param name="AMETHOD">AMETHOD value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByAMETHOD(string AMETHOD)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_AMETHOD.Value.TryGetValue(AMETHOD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find AR by TMETHOD field
         /// </summary>
         /// <param name="TMETHOD">TMETHOD value used to find AR</param>
@@ -945,90 +1106,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<AR> value;
             if (Index_TMETHOD.Value.TryGetValue(TMETHOD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by COMPONENT_OF field
-        /// </summary>
-        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByCOMPONENT_OF(string COMPONENT_OF)
-        {
-            return Index_COMPONENT_OF.Value[COMPONENT_OF];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by COMPONENT_OF field
-        /// </summary>
-        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCOMPONENT_OF(string COMPONENT_OF, out IReadOnlyList<AR> Value)
-        {
-            return Index_COMPONENT_OF.Value.TryGetValue(COMPONENT_OF, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by COMPONENT_OF field
-        /// </summary>
-        /// <param name="COMPONENT_OF">COMPONENT_OF value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByCOMPONENT_OF(string COMPONENT_OF)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_COMPONENT_OF.Value.TryGetValue(COMPONENT_OF, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find AR by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
-        /// <returns>List of related AR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> FindByCAMPUS(int? CAMPUS)
-        {
-            return Index_CAMPUS.Value[CAMPUS];
-        }
-
-        /// <summary>
-        /// Attempt to find AR by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
-        /// <param name="Value">List of related AR entities</param>
-        /// <returns>True if the list of related AR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<AR> Value)
-        {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AR by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find AR</param>
-        /// <returns>List of related AR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<AR> TryFindByCAMPUS(int? CAMPUS)
-        {
-            IReadOnlyList<AR> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }

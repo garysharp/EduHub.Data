@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_SGSCKEY = new Lazy<Dictionary<string, IReadOnlyList<SGSC>>>(() => this.ToGroupedDictionary(i => i.SGSCKEY));
-            Index_TID = new Lazy<Dictionary<int, SGSC>>(() => this.ToDictionary(i => i.TID));
             Index_SULINK = new Lazy<NullDictionary<string, IReadOnlyList<SGSC>>>(() => this.ToGroupedNullDictionary(i => i.SULINK));
+            Index_TID = new Lazy<Dictionary<int, SGSC>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -68,11 +68,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SGSC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SGSC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SGSC" /> items to added or update the base <see cref="SGSC" /> items</param>
+        /// <returns>A merged list of <see cref="SGSC" /> items</returns>
+        protected override List<SGSC> ApplyDeltaItems(List<SGSC> Items, List<SGSC> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SGSC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SGSCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SGSC>>> Index_SGSCKEY;
-        private Lazy<Dictionary<int, SGSC>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<SGSC>>> Index_SULINK;
+        private Lazy<Dictionary<int, SGSC>> Index_TID;
 
         #endregion
 
@@ -121,48 +149,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SGSC by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGSC</param>
-        /// <returns>Related SGSC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SGSC FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SGSC by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGSC</param>
-        /// <param name="Value">Related SGSC entity</param>
-        /// <returns>True if the related SGSC entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SGSC Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SGSC by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGSC</param>
-        /// <returns>Related SGSC entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SGSC TryFindByTID(int TID)
-        {
-            SGSC value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SGSC by SULINK field
         /// </summary>
         /// <param name="SULINK">SULINK value used to find SGSC</param>
@@ -195,6 +181,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SGSC> value;
             if (Index_SULINK.Value.TryGetValue(SULINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <returns>Related SGSC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGSC FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <param name="Value">Related SGSC entity</param>
+        /// <returns>True if the related SGSC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SGSC Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <returns>Related SGSC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGSC TryFindByTID(int TID)
+        {
+            SGSC value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

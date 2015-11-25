@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal STRADataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_ABS_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<STRA>>>(() => this.ToGroupedNullDictionary(i => i.ABS_TYPE));
             Index_STKEY = new Lazy<Dictionary<string, IReadOnlyList<STRA>>>(() => this.ToGroupedDictionary(i => i.STKEY));
             Index_TID = new Lazy<Dictionary<int, STRA>>(() => this.ToDictionary(i => i.TID));
-            Index_ABS_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<STRA>>>(() => this.ToGroupedNullDictionary(i => i.ABS_TYPE));
         }
 
         /// <summary>
@@ -86,15 +86,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STRA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STRA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STRA" /> items to added or update the base <see cref="STRA" /> items</param>
+        /// <returns>A merged list of <see cref="STRA" /> items</returns>
+        protected override List<STRA> ApplyDeltaItems(List<STRA> Items, List<STRA> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STRA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.STKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<short?, IReadOnlyList<STRA>>> Index_ABS_TYPE;
         private Lazy<Dictionary<string, IReadOnlyList<STRA>>> Index_STKEY;
         private Lazy<Dictionary<int, STRA>> Index_TID;
-        private Lazy<NullDictionary<short?, IReadOnlyList<STRA>>> Index_ABS_TYPE;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find STRA by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
+        /// <returns>List of related STRA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRA> FindByABS_TYPE(short? ABS_TYPE)
+        {
+            return Index_ABS_TYPE.Value[ABS_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find STRA by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
+        /// <param name="Value">List of related STRA entities</param>
+        /// <returns>True if the list of related STRA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByABS_TYPE(short? ABS_TYPE, out IReadOnlyList<STRA> Value)
+        {
+            return Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STRA by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
+        /// <returns>List of related STRA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STRA> TryFindByABS_TYPE(short? ABS_TYPE)
+        {
+            IReadOnlyList<STRA> value;
+            if (Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find STRA by STKEY field
@@ -171,48 +241,6 @@ namespace EduHub.Data.Entities
         {
             STRA value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STRA by ABS_TYPE field
-        /// </summary>
-        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
-        /// <returns>List of related STRA entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRA> FindByABS_TYPE(short? ABS_TYPE)
-        {
-            return Index_ABS_TYPE.Value[ABS_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find STRA by ABS_TYPE field
-        /// </summary>
-        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
-        /// <param name="Value">List of related STRA entities</param>
-        /// <returns>True if the list of related STRA entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByABS_TYPE(short? ABS_TYPE, out IReadOnlyList<STRA> Value)
-        {
-            return Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STRA by ABS_TYPE field
-        /// </summary>
-        /// <param name="ABS_TYPE">ABS_TYPE value used to find STRA</param>
-        /// <returns>List of related STRA entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STRA> TryFindByABS_TYPE(short? ABS_TYPE)
-        {
-            IReadOnlyList<STRA> value;
-            if (Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out value))
             {
                 return value;
             }

@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_SAMAKEY = new Lazy<Dictionary<int, IReadOnlyList<SAMA>>>(() => this.ToGroupedDictionary(i => i.SAMAKEY));
-            Index_TID = new Lazy<Dictionary<int, SAMA>>(() => this.ToDictionary(i => i.TID));
             Index_SAMAKEY_SCAM_TID = new Lazy<Dictionary<Tuple<int, int?>, SAMA>>(() => this.ToDictionary(i => Tuple.Create(i.SAMAKEY, i.SCAM_TID)));
+            Index_TID = new Lazy<Dictionary<int, SAMA>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -65,11 +65,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAMA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAMA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAMA" /> items to added or update the base <see cref="SAMA" /> items</param>
+        /// <returns>A merged list of <see cref="SAMA" /> items</returns>
+        protected override List<SAMA> ApplyDeltaItems(List<SAMA> Items, List<SAMA> DeltaItems)
+        {
+            Dictionary<Tuple<int, int?>, int> Index_SAMAKEY_SCAM_TID = Items.ToIndexDictionary(i => Tuple.Create(i.SAMAKEY, i.SCAM_TID));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAMA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SAMAKEY_SCAM_TID.TryGetValue(Tuple.Create(deltaItem.SAMAKEY, deltaItem.SCAM_TID), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SAMAKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, IReadOnlyList<SAMA>>> Index_SAMAKEY;
-        private Lazy<Dictionary<int, SAMA>> Index_TID;
         private Lazy<Dictionary<Tuple<int, int?>, SAMA>> Index_SAMAKEY_SCAM_TID;
+        private Lazy<Dictionary<int, SAMA>> Index_TID;
 
         #endregion
 
@@ -118,48 +151,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SAMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SAMA</param>
-        /// <returns>Related SAMA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAMA FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SAMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SAMA</param>
-        /// <param name="Value">Related SAMA entity</param>
-        /// <returns>True if the related SAMA entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SAMA Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SAMA</param>
-        /// <returns>Related SAMA entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAMA TryFindByTID(int TID)
-        {
-            SAMA value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SAMA by SAMAKEY and SCAM_TID fields
         /// </summary>
         /// <param name="SAMAKEY">SAMAKEY value used to find SAMA</param>
@@ -195,6 +186,48 @@ namespace EduHub.Data.Entities
         {
             SAMA value;
             if (Index_SAMAKEY_SCAM_TID.Value.TryGetValue(Tuple.Create(SAMAKEY, SCAM_TID), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SAMA</param>
+        /// <returns>Related SAMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAMA FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SAMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SAMA</param>
+        /// <param name="Value">Related SAMA entity</param>
+        /// <returns>True if the related SAMA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SAMA Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SAMA</param>
+        /// <returns>Related SAMA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAMA TryFindByTID(int TID)
+        {
+            SAMA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

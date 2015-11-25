@@ -75,6 +75,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KCV" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KCV" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KCV" /> items to added or update the base <see cref="KCV" /> items</param>
+        /// <returns>A merged list of <see cref="KCV" /> items</returns>
+        protected override List<KCV> ApplyDeltaItems(List<KCV> Items, List<KCV> DeltaItems)
+        {
+            Dictionary<string, int> Index_VISA_SUBCLASS = Items.ToIndexDictionary(i => i.VISA_SUBCLASS);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KCV deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_VISA_SUBCLASS.TryGetValue(deltaItem.VISA_SUBCLASS, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.VISA_SUBCLASS)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KCV>> Index_VISA_SUBCLASS;

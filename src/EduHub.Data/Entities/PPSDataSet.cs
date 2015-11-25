@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal PPSDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PPSKEY = new Lazy<Dictionary<string, PPS>>(() => this.ToDictionary(i => i.PPSKEY));
             Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PPS>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
             Index_POSTAL_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PPS>>>(() => this.ToGroupedNullDictionary(i => i.POSTAL_COUNTRY));
+            Index_PPSKEY = new Lazy<Dictionary<string, PPS>>(() => this.ToDictionary(i => i.PPSKEY));
         }
 
         /// <summary>
@@ -113,57 +113,43 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PPS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PPS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PPS" /> items to added or update the base <see cref="PPS" /> items</param>
+        /// <returns>A merged list of <see cref="PPS" /> items</returns>
+        protected override List<PPS> ApplyDeltaItems(List<PPS> Items, List<PPS> DeltaItems)
+        {
+            Dictionary<string, int> Index_PPSKEY = Items.ToIndexDictionary(i => i.PPSKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PPS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PPSKEY.TryGetValue(deltaItem.PPSKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PPSKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PPS>> Index_PPSKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PPS>>> Index_COUNTRY;
         private Lazy<NullDictionary<string, IReadOnlyList<PPS>>> Index_POSTAL_COUNTRY;
+        private Lazy<Dictionary<string, PPS>> Index_PPSKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find PPS by PPSKEY field
-        /// </summary>
-        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
-        /// <returns>Related PPS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PPS FindByPPSKEY(string PPSKEY)
-        {
-            return Index_PPSKEY.Value[PPSKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PPS by PPSKEY field
-        /// </summary>
-        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
-        /// <param name="Value">Related PPS entity</param>
-        /// <returns>True if the related PPS entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPPSKEY(string PPSKEY, out PPS Value)
-        {
-            return Index_PPSKEY.Value.TryGetValue(PPSKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PPS by PPSKEY field
-        /// </summary>
-        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
-        /// <returns>Related PPS entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PPS TryFindByPPSKEY(string PPSKEY)
-        {
-            PPS value;
-            if (Index_PPSKEY.Value.TryGetValue(PPSKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find PPS by COUNTRY field
@@ -240,6 +226,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PPS> value;
             if (Index_POSTAL_COUNTRY.Value.TryGetValue(POSTAL_COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPS FindByPPSKEY(string PPSKEY)
+        {
+            return Index_PPSKEY.Value[PPSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <param name="Value">Related PPS entity</param>
+        /// <returns>True if the related PPS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPPSKEY(string PPSKEY, out PPS Value)
+        {
+            return Index_PPSKEY.Value.TryGetValue(PPSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPS TryFindByPPSKEY(string PPSKEY)
+        {
+            PPS value;
+            if (Index_PPSKEY.Value.TryGetValue(PPSKEY, out value))
             {
                 return value;
             }

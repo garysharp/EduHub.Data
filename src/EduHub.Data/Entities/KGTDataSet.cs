@@ -70,6 +70,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KGT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KGT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KGT" /> items to added or update the base <see cref="KGT" /> items</param>
+        /// <returns>A merged list of <see cref="KGT" /> items</returns>
+        protected override List<KGT> ApplyDeltaItems(List<KGT> Items, List<KGT> DeltaItems)
+        {
+            Dictionary<string, int> Index_COUNTRY = Items.ToIndexDictionary(i => i.COUNTRY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KGT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_COUNTRY.TryGetValue(deltaItem.COUNTRY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.COUNTRY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KGT>> Index_COUNTRY;

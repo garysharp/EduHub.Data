@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal SMCDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SMCKEY = new Lazy<Dictionary<int, SMC>>(() => this.ToDictionary(i => i.SMCKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
-            Index_MED_CONDITION = new Lazy<NullDictionary<string, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.MED_CONDITION));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_MED_CONDITION = new Lazy<NullDictionary<string, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.MED_CONDITION));
+            Index_SMCKEY = new Lazy<Dictionary<int, SMC>>(() => this.ToDictionary(i => i.SMCKEY));
+            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<SMC>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
         }
 
         /// <summary>
@@ -163,51 +163,79 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SMC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SMC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SMC" /> items to added or update the base <see cref="SMC" /> items</param>
+        /// <returns>A merged list of <see cref="SMC" /> items</returns>
+        protected override List<SMC> ApplyDeltaItems(List<SMC> Items, List<SMC> DeltaItems)
+        {
+            Dictionary<int, int> Index_SMCKEY = Items.ToIndexDictionary(i => i.SMCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SMC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SMCKEY.TryGetValue(deltaItem.SMCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SMCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SMC>> Index_SMCKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SMC>>> Index_LW_DATE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SMC>>> Index_STUDENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<SMC>>> Index_MED_CONDITION;
         private Lazy<NullDictionary<int?, IReadOnlyList<SMC>>> Index_CAMPUS;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SMC>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SMC>>> Index_MED_CONDITION;
+        private Lazy<Dictionary<int, SMC>> Index_SMCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SMC>>> Index_STUDENT;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SMC by SMCKEY field
+        /// Find SMC by CAMPUS field
         /// </summary>
-        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
-        /// <returns>Related SMC entity</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
+        /// <returns>List of related SMC entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMC FindBySMCKEY(int SMCKEY)
+        public IReadOnlyList<SMC> FindByCAMPUS(int? CAMPUS)
         {
-            return Index_SMCKEY.Value[SMCKEY];
+            return Index_CAMPUS.Value[CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find SMC by SMCKEY field
+        /// Attempt to find SMC by CAMPUS field
         /// </summary>
-        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
-        /// <param name="Value">Related SMC entity</param>
-        /// <returns>True if the related SMC entity is found</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
+        /// <param name="Value">List of related SMC entities</param>
+        /// <returns>True if the list of related SMC entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySMCKEY(int SMCKEY, out SMC Value)
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SMC> Value)
         {
-            return Index_SMCKEY.Value.TryGetValue(SMCKEY, out Value);
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SMC by SMCKEY field
+        /// Attempt to find SMC by CAMPUS field
         /// </summary>
-        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
-        /// <returns>Related SMC entity, or null if not found</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
+        /// <returns>List of related SMC entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMC TryFindBySMCKEY(int SMCKEY)
+        public IReadOnlyList<SMC> TryFindByCAMPUS(int? CAMPUS)
         {
-            SMC value;
-            if (Index_SMCKEY.Value.TryGetValue(SMCKEY, out value))
+            IReadOnlyList<SMC> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -260,48 +288,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SMC by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SMC</param>
-        /// <returns>List of related SMC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SMC> FindBySTUDENT(string STUDENT)
-        {
-            return Index_STUDENT.Value[STUDENT];
-        }
-
-        /// <summary>
-        /// Attempt to find SMC by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SMC</param>
-        /// <param name="Value">List of related SMC entities</param>
-        /// <returns>True if the list of related SMC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<SMC> Value)
-        {
-            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SMC by STUDENT field
-        /// </summary>
-        /// <param name="STUDENT">STUDENT value used to find SMC</param>
-        /// <returns>List of related SMC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SMC> TryFindBySTUDENT(string STUDENT)
-        {
-            IReadOnlyList<SMC> value;
-            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SMC by MED_CONDITION field
         /// </summary>
         /// <param name="MED_CONDITION">MED_CONDITION value used to find SMC</param>
@@ -344,38 +330,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SMC by CAMPUS field
+        /// Find SMC by SMCKEY field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
-        /// <returns>List of related SMC entities</returns>
+        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
+        /// <returns>Related SMC entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SMC> FindByCAMPUS(int? CAMPUS)
+        public SMC FindBySMCKEY(int SMCKEY)
         {
-            return Index_CAMPUS.Value[CAMPUS];
+            return Index_SMCKEY.Value[SMCKEY];
         }
 
         /// <summary>
-        /// Attempt to find SMC by CAMPUS field
+        /// Attempt to find SMC by SMCKEY field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
+        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
+        /// <param name="Value">Related SMC entity</param>
+        /// <returns>True if the related SMC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySMCKEY(int SMCKEY, out SMC Value)
+        {
+            return Index_SMCKEY.Value.TryGetValue(SMCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMC by SMCKEY field
+        /// </summary>
+        /// <param name="SMCKEY">SMCKEY value used to find SMC</param>
+        /// <returns>Related SMC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMC TryFindBySMCKEY(int SMCKEY)
+        {
+            SMC value;
+            if (Index_SMCKEY.Value.TryGetValue(SMCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMC by STUDENT field
+        /// </summary>
+        /// <param name="STUDENT">STUDENT value used to find SMC</param>
+        /// <returns>List of related SMC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMC> FindBySTUDENT(string STUDENT)
+        {
+            return Index_STUDENT.Value[STUDENT];
+        }
+
+        /// <summary>
+        /// Attempt to find SMC by STUDENT field
+        /// </summary>
+        /// <param name="STUDENT">STUDENT value used to find SMC</param>
         /// <param name="Value">List of related SMC entities</param>
         /// <returns>True if the list of related SMC entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SMC> Value)
+        public bool TryFindBySTUDENT(string STUDENT, out IReadOnlyList<SMC> Value)
         {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+            return Index_STUDENT.Value.TryGetValue(STUDENT, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SMC by CAMPUS field
+        /// Attempt to find SMC by STUDENT field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SMC</param>
+        /// <param name="STUDENT">STUDENT value used to find SMC</param>
         /// <returns>List of related SMC entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SMC> TryFindByCAMPUS(int? CAMPUS)
+        public IReadOnlyList<SMC> TryFindBySTUDENT(string STUDENT)
         {
             IReadOnlyList<SMC> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            if (Index_STUDENT.Value.TryGetValue(STUDENT, out value))
             {
                 return value;
             }

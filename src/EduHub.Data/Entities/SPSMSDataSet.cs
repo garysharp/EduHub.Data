@@ -69,6 +69,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SPSMS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SPSMS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SPSMS" /> items to added or update the base <see cref="SPSMS" /> items</param>
+        /// <returns>A merged list of <see cref="SPSMS" /> items</returns>
+        protected override List<SPSMS> ApplyDeltaItems(List<SPSMS> Items, List<SPSMS> DeltaItems)
+        {
+            Dictionary<int, int> Index_SPSMSKEY = Items.ToIndexDictionary(i => i.SPSMSKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SPSMS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SPSMSKEY.TryGetValue(deltaItem.SPSMSKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SPSMSKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, SPSMS>> Index_SPSMSKEY;

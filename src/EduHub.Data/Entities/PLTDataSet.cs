@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal PLTDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PLTKEY = new Lazy<Dictionary<string, PLT>>(() => this.ToDictionary(i => i.PLTKEY));
-            Index_LEAVE_GROUP_LEAVE_CODE = new Lazy<Dictionary<Tuple<string, string>, PLT>>(() => this.ToDictionary(i => Tuple.Create(i.LEAVE_GROUP, i.LEAVE_CODE)));
-            Index_LEAVE_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<PLT>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_GROUP));
             Index_LEAVE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<PLT>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_CODE));
+            Index_LEAVE_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<PLT>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_GROUP));
+            Index_LEAVE_GROUP_LEAVE_CODE = new Lazy<Dictionary<Tuple<string, string>, PLT>>(() => this.ToDictionary(i => Tuple.Create(i.LEAVE_GROUP, i.LEAVE_CODE)));
+            Index_PLTKEY = new Lazy<Dictionary<string, PLT>>(() => this.ToDictionary(i => i.PLTKEY));
         }
 
         /// <summary>
@@ -159,50 +159,125 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PLT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PLT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PLT" /> items to added or update the base <see cref="PLT" /> items</param>
+        /// <returns>A merged list of <see cref="PLT" /> items</returns>
+        protected override List<PLT> ApplyDeltaItems(List<PLT> Items, List<PLT> DeltaItems)
+        {
+            Dictionary<Tuple<string, string>, int> Index_LEAVE_GROUP_LEAVE_CODE = Items.ToIndexDictionary(i => Tuple.Create(i.LEAVE_GROUP, i.LEAVE_CODE));
+            Dictionary<string, int> Index_PLTKEY = Items.ToIndexDictionary(i => i.PLTKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PLT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_LEAVE_GROUP_LEAVE_CODE.TryGetValue(Tuple.Create(deltaItem.LEAVE_GROUP, deltaItem.LEAVE_CODE), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_PLTKEY.TryGetValue(deltaItem.PLTKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PLTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PLT>> Index_PLTKEY;
-        private Lazy<Dictionary<Tuple<string, string>, PLT>> Index_LEAVE_GROUP_LEAVE_CODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<PLT>>> Index_LEAVE_GROUP;
         private Lazy<NullDictionary<string, IReadOnlyList<PLT>>> Index_LEAVE_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<PLT>>> Index_LEAVE_GROUP;
+        private Lazy<Dictionary<Tuple<string, string>, PLT>> Index_LEAVE_GROUP_LEAVE_CODE;
+        private Lazy<Dictionary<string, PLT>> Index_PLTKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find PLT by PLTKEY field
+        /// Find PLT by LEAVE_CODE field
         /// </summary>
-        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
-        /// <returns>Related PLT entity</returns>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
+        /// <returns>List of related PLT entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PLT FindByPLTKEY(string PLTKEY)
+        public IReadOnlyList<PLT> FindByLEAVE_CODE(string LEAVE_CODE)
         {
-            return Index_PLTKEY.Value[PLTKEY];
+            return Index_LEAVE_CODE.Value[LEAVE_CODE];
         }
 
         /// <summary>
-        /// Attempt to find PLT by PLTKEY field
+        /// Attempt to find PLT by LEAVE_CODE field
         /// </summary>
-        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
-        /// <param name="Value">Related PLT entity</param>
-        /// <returns>True if the related PLT entity is found</returns>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
+        /// <param name="Value">List of related PLT entities</param>
+        /// <returns>True if the list of related PLT entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPLTKEY(string PLTKEY, out PLT Value)
+        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PLT> Value)
         {
-            return Index_PLTKEY.Value.TryGetValue(PLTKEY, out Value);
+            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PLT by PLTKEY field
+        /// Attempt to find PLT by LEAVE_CODE field
         /// </summary>
-        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
-        /// <returns>Related PLT entity, or null if not found</returns>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
+        /// <returns>List of related PLT entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PLT TryFindByPLTKEY(string PLTKEY)
+        public IReadOnlyList<PLT> TryFindByLEAVE_CODE(string LEAVE_CODE)
         {
-            PLT value;
-            if (Index_PLTKEY.Value.TryGetValue(PLTKEY, out value))
+            IReadOnlyList<PLT> value;
+            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PLT by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
+        /// <returns>List of related PLT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PLT> FindByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            return Index_LEAVE_GROUP.Value[LEAVE_GROUP];
+        }
+
+        /// <summary>
+        /// Attempt to find PLT by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
+        /// <param name="Value">List of related PLT entities</param>
+        /// <returns>True if the list of related PLT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PLT> Value)
+        {
+            return Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PLT by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
+        /// <returns>List of related PLT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PLT> TryFindByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            IReadOnlyList<PLT> value;
+            if (Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out value))
             {
                 return value;
             }
@@ -258,80 +333,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PLT by LEAVE_GROUP field
+        /// Find PLT by PLTKEY field
         /// </summary>
-        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
-        /// <returns>List of related PLT entities</returns>
+        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
+        /// <returns>Related PLT entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PLT> FindByLEAVE_GROUP(string LEAVE_GROUP)
+        public PLT FindByPLTKEY(string PLTKEY)
         {
-            return Index_LEAVE_GROUP.Value[LEAVE_GROUP];
+            return Index_PLTKEY.Value[PLTKEY];
         }
 
         /// <summary>
-        /// Attempt to find PLT by LEAVE_GROUP field
+        /// Attempt to find PLT by PLTKEY field
         /// </summary>
-        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
-        /// <param name="Value">List of related PLT entities</param>
-        /// <returns>True if the list of related PLT entities is found</returns>
+        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
+        /// <param name="Value">Related PLT entity</param>
+        /// <returns>True if the related PLT entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PLT> Value)
+        public bool TryFindByPLTKEY(string PLTKEY, out PLT Value)
         {
-            return Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out Value);
+            return Index_PLTKEY.Value.TryGetValue(PLTKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PLT by LEAVE_GROUP field
+        /// Attempt to find PLT by PLTKEY field
         /// </summary>
-        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PLT</param>
-        /// <returns>List of related PLT entities, or null if not found</returns>
+        /// <param name="PLTKEY">PLTKEY value used to find PLT</param>
+        /// <returns>Related PLT entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PLT> TryFindByLEAVE_GROUP(string LEAVE_GROUP)
+        public PLT TryFindByPLTKEY(string PLTKEY)
         {
-            IReadOnlyList<PLT> value;
-            if (Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PLT by LEAVE_CODE field
-        /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
-        /// <returns>List of related PLT entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PLT> FindByLEAVE_CODE(string LEAVE_CODE)
-        {
-            return Index_LEAVE_CODE.Value[LEAVE_CODE];
-        }
-
-        /// <summary>
-        /// Attempt to find PLT by LEAVE_CODE field
-        /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
-        /// <param name="Value">List of related PLT entities</param>
-        /// <returns>True if the list of related PLT entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PLT> Value)
-        {
-            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PLT by LEAVE_CODE field
-        /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PLT</param>
-        /// <returns>List of related PLT entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PLT> TryFindByLEAVE_CODE(string LEAVE_CODE)
-        {
-            IReadOnlyList<PLT> value;
-            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            PLT value;
+            if (Index_PLTKEY.Value.TryGetValue(PLTKEY, out value))
             {
                 return value;
             }

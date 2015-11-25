@@ -20,11 +20,11 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, PEPUH>>(() => this.ToDictionary(i => i.TID));
-            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
-            Index_SUPER_FUND = new Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.SUPER_FUND));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_SUPER_FUND = new Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>>(() => this.ToGroupedNullDictionary(i => i.SUPER_FUND));
+            Index_TID = new Lazy<Dictionary<int, PEPUH>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -110,14 +110,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PEPUH" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PEPUH" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PEPUH" /> items to added or update the base <see cref="PEPUH" /> items</param>
+        /// <returns>A merged list of <see cref="PEPUH" /> items</returns>
+        protected override List<PEPUH> ApplyDeltaItems(List<PEPUH> Items, List<PEPUH> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PEPUH deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<PEPUH>>> Index_CODE;
-        private Lazy<Dictionary<int, PEPUH>> Index_TID;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PEPUH>>> Index_PAYITEM;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>> Index_SUPER_FUND;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PEPUH>>> Index_PAYITEM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPUH>>> Index_SUPER_FUND;
+        private Lazy<Dictionary<int, PEPUH>> Index_TID;
 
         #endregion
 
@@ -166,38 +194,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPUH by TID field
+        /// Find PEPUH by INITIATIVE field
         /// </summary>
-        /// <param name="TID">TID value used to find PEPUH</param>
-        /// <returns>Related PEPUH entity</returns>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <returns>List of related PEPUH entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPUH FindByTID(int TID)
+        public IReadOnlyList<PEPUH> FindByINITIATIVE(string INITIATIVE)
         {
-            return Index_TID.Value[TID];
+            return Index_INITIATIVE.Value[INITIATIVE];
         }
 
         /// <summary>
-        /// Attempt to find PEPUH by TID field
+        /// Attempt to find PEPUH by INITIATIVE field
         /// </summary>
-        /// <param name="TID">TID value used to find PEPUH</param>
-        /// <param name="Value">Related PEPUH entity</param>
-        /// <returns>True if the related PEPUH entity is found</returns>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <param name="Value">List of related PEPUH entities</param>
+        /// <returns>True if the list of related PEPUH entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PEPUH Value)
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEPUH> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEPUH by TID field
+        /// Attempt to find PEPUH by INITIATIVE field
         /// </summary>
-        /// <param name="TID">TID value used to find PEPUH</param>
-        /// <returns>Related PEPUH entity, or null if not found</returns>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <returns>List of related PEPUH entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPUH TryFindByTID(int TID)
+        public IReadOnlyList<PEPUH> TryFindByINITIATIVE(string INITIATIVE)
         {
-            PEPUH value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<PEPUH> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }
@@ -250,48 +278,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPUH by SUPER_FUND field
-        /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
-        /// <returns>List of related PEPUH entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPUH> FindBySUPER_FUND(string SUPER_FUND)
-        {
-            return Index_SUPER_FUND.Value[SUPER_FUND];
-        }
-
-        /// <summary>
-        /// Attempt to find PEPUH by SUPER_FUND field
-        /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
-        /// <param name="Value">List of related PEPUH entities</param>
-        /// <returns>True if the list of related PEPUH entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUPER_FUND(string SUPER_FUND, out IReadOnlyList<PEPUH> Value)
-        {
-            return Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEPUH by SUPER_FUND field
-        /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
-        /// <returns>List of related PEPUH entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPUH> TryFindBySUPER_FUND(string SUPER_FUND)
-        {
-            IReadOnlyList<PEPUH> value;
-            if (Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PEPUH by SUBPROGRAM field
         /// </summary>
         /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PEPUH</param>
@@ -334,38 +320,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPUH by INITIATIVE field
+        /// Find PEPUH by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
         /// <returns>List of related PEPUH entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPUH> FindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<PEPUH> FindBySUPER_FUND(string SUPER_FUND)
         {
-            return Index_INITIATIVE.Value[INITIATIVE];
+            return Index_SUPER_FUND.Value[SUPER_FUND];
         }
 
         /// <summary>
-        /// Attempt to find PEPUH by INITIATIVE field
+        /// Attempt to find PEPUH by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
         /// <param name="Value">List of related PEPUH entities</param>
         /// <returns>True if the list of related PEPUH entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEPUH> Value)
+        public bool TryFindBySUPER_FUND(string SUPER_FUND, out IReadOnlyList<PEPUH> Value)
         {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+            return Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEPUH by INITIATIVE field
+        /// Attempt to find PEPUH by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPUH</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPUH</param>
         /// <returns>List of related PEPUH entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPUH> TryFindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<PEPUH> TryFindBySUPER_FUND(string SUPER_FUND)
         {
             IReadOnlyList<PEPUH> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            if (Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PEPUH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPUH</param>
+        /// <returns>Related PEPUH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPUH FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PEPUH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPUH</param>
+        /// <param name="Value">Related PEPUH entity</param>
+        /// <returns>True if the related PEPUH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PEPUH Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEPUH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPUH</param>
+        /// <returns>Related PEPUH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPUH TryFindByTID(int TID)
+        {
+            PEPUH value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

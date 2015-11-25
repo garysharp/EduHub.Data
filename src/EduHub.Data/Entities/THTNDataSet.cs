@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal THTNDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_QKEY = new Lazy<Dictionary<string, IReadOnlyList<THTN>>>(() => this.ToGroupedDictionary(i => i.QKEY));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<THTN>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_QKEY = new Lazy<Dictionary<string, IReadOnlyList<THTN>>>(() => this.ToGroupedDictionary(i => i.QKEY));
             Index_TID = new Lazy<Dictionary<int, THTN>>(() => this.ToDictionary(i => i.TID));
         }
 
@@ -71,57 +71,43 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="THTN" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="THTN" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="THTN" /> items to added or update the base <see cref="THTN" /> items</param>
+        /// <returns>A merged list of <see cref="THTN" /> items</returns>
+        protected override List<THTN> ApplyDeltaItems(List<THTN> Items, List<THTN> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (THTN deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.QKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<THTN>>> Index_QKEY;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<THTN>>> Index_LW_DATE;
+        private Lazy<Dictionary<string, IReadOnlyList<THTN>>> Index_QKEY;
         private Lazy<Dictionary<int, THTN>> Index_TID;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find THTN by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTN</param>
-        /// <returns>List of related THTN entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTN> FindByQKEY(string QKEY)
-        {
-            return Index_QKEY.Value[QKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find THTN by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTN</param>
-        /// <param name="Value">List of related THTN entities</param>
-        /// <returns>True if the list of related THTN entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<THTN> Value)
-        {
-            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find THTN by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTN</param>
-        /// <returns>List of related THTN entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTN> TryFindByQKEY(string QKEY)
-        {
-            IReadOnlyList<THTN> value;
-            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find THTN by LW_DATE field
@@ -156,6 +142,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<THTN> value;
             if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find THTN by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find THTN</param>
+        /// <returns>List of related THTN entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<THTN> FindByQKEY(string QKEY)
+        {
+            return Index_QKEY.Value[QKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find THTN by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find THTN</param>
+        /// <param name="Value">List of related THTN entities</param>
+        /// <returns>True if the list of related THTN entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<THTN> Value)
+        {
+            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find THTN by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find THTN</param>
+        /// <returns>List of related THTN entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<THTN> TryFindByQKEY(string QKEY)
+        {
+            IReadOnlyList<THTN> value;
+            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
             {
                 return value;
             }

@@ -91,6 +91,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KERROR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KERROR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KERROR" /> items to added or update the base <see cref="KERROR" /> items</param>
+        /// <returns>A merged list of <see cref="KERROR" /> items</returns>
+        protected override List<KERROR> ApplyDeltaItems(List<KERROR> Items, List<KERROR> DeltaItems)
+        {
+            Dictionary<int, int> Index_KERROR_ID = Items.ToIndexDictionary(i => i.KERROR_ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KERROR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KERROR_ID.TryGetValue(deltaItem.KERROR_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KERROR_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, KERROR>> Index_KERROR_ID;

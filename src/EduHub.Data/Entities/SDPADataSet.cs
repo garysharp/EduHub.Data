@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal SDPADataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SDP_STUDENT = new Lazy<Dictionary<int, IReadOnlyList<SDPA>>>(() => this.ToGroupedDictionary(i => i.SDP_STUDENT));
-            Index_TID = new Lazy<Dictionary<int, SDPA>>(() => this.ToDictionary(i => i.TID));
-            Index_TAKEN_BY = new Lazy<NullDictionary<string, IReadOnlyList<SDPA>>>(() => this.ToGroupedNullDictionary(i => i.TAKEN_BY));
             Index_ACTION_TAKEN = new Lazy<NullDictionary<string, IReadOnlyList<SDPA>>>(() => this.ToGroupedNullDictionary(i => i.ACTION_TAKEN));
+            Index_SDP_STUDENT = new Lazy<Dictionary<int, IReadOnlyList<SDPA>>>(() => this.ToGroupedDictionary(i => i.SDP_STUDENT));
+            Index_TAKEN_BY = new Lazy<NullDictionary<string, IReadOnlyList<SDPA>>>(() => this.ToGroupedNullDictionary(i => i.TAKEN_BY));
+            Index_TID = new Lazy<Dictionary<int, SDPA>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -75,16 +75,86 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SDPA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SDPA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SDPA" /> items to added or update the base <see cref="SDPA" /> items</param>
+        /// <returns>A merged list of <see cref="SDPA" /> items</returns>
+        protected override List<SDPA> ApplyDeltaItems(List<SDPA> Items, List<SDPA> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SDPA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SDP_STUDENT)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, IReadOnlyList<SDPA>>> Index_SDP_STUDENT;
-        private Lazy<Dictionary<int, SDPA>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SDPA>>> Index_TAKEN_BY;
         private Lazy<NullDictionary<string, IReadOnlyList<SDPA>>> Index_ACTION_TAKEN;
+        private Lazy<Dictionary<int, IReadOnlyList<SDPA>>> Index_SDP_STUDENT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDPA>>> Index_TAKEN_BY;
+        private Lazy<Dictionary<int, SDPA>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SDPA by ACTION_TAKEN field
+        /// </summary>
+        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
+        /// <returns>List of related SDPA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDPA> FindByACTION_TAKEN(string ACTION_TAKEN)
+        {
+            return Index_ACTION_TAKEN.Value[ACTION_TAKEN];
+        }
+
+        /// <summary>
+        /// Attempt to find SDPA by ACTION_TAKEN field
+        /// </summary>
+        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
+        /// <param name="Value">List of related SDPA entities</param>
+        /// <returns>True if the list of related SDPA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByACTION_TAKEN(string ACTION_TAKEN, out IReadOnlyList<SDPA> Value)
+        {
+            return Index_ACTION_TAKEN.Value.TryGetValue(ACTION_TAKEN, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDPA by ACTION_TAKEN field
+        /// </summary>
+        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
+        /// <returns>List of related SDPA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDPA> TryFindByACTION_TAKEN(string ACTION_TAKEN)
+        {
+            IReadOnlyList<SDPA> value;
+            if (Index_ACTION_TAKEN.Value.TryGetValue(ACTION_TAKEN, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SDPA by SDP_STUDENT field
@@ -119,48 +189,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SDPA> value;
             if (Index_SDP_STUDENT.Value.TryGetValue(SDP_STUDENT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SDPA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SDPA</param>
-        /// <returns>Related SDPA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDPA FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SDPA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SDPA</param>
-        /// <param name="Value">Related SDPA entity</param>
-        /// <returns>True if the related SDPA entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SDPA Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDPA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SDPA</param>
-        /// <returns>Related SDPA entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDPA TryFindByTID(int TID)
-        {
-            SDPA value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -213,38 +241,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SDPA by ACTION_TAKEN field
+        /// Find SDPA by TID field
         /// </summary>
-        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
-        /// <returns>List of related SDPA entities</returns>
+        /// <param name="TID">TID value used to find SDPA</param>
+        /// <returns>Related SDPA entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDPA> FindByACTION_TAKEN(string ACTION_TAKEN)
+        public SDPA FindByTID(int TID)
         {
-            return Index_ACTION_TAKEN.Value[ACTION_TAKEN];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find SDPA by ACTION_TAKEN field
+        /// Attempt to find SDPA by TID field
         /// </summary>
-        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
-        /// <param name="Value">List of related SDPA entities</param>
-        /// <returns>True if the list of related SDPA entities is found</returns>
+        /// <param name="TID">TID value used to find SDPA</param>
+        /// <param name="Value">Related SDPA entity</param>
+        /// <returns>True if the related SDPA entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByACTION_TAKEN(string ACTION_TAKEN, out IReadOnlyList<SDPA> Value)
+        public bool TryFindByTID(int TID, out SDPA Value)
         {
-            return Index_ACTION_TAKEN.Value.TryGetValue(ACTION_TAKEN, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SDPA by ACTION_TAKEN field
+        /// Attempt to find SDPA by TID field
         /// </summary>
-        /// <param name="ACTION_TAKEN">ACTION_TAKEN value used to find SDPA</param>
-        /// <returns>List of related SDPA entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find SDPA</param>
+        /// <returns>Related SDPA entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDPA> TryFindByACTION_TAKEN(string ACTION_TAKEN)
+        public SDPA TryFindByTID(int TID)
         {
-            IReadOnlyList<SDPA> value;
-            if (Index_ACTION_TAKEN.Value.TryGetValue(ACTION_TAKEN, out value))
+            SDPA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

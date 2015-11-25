@@ -19,18 +19,18 @@ namespace EduHub.Data.Entities
         internal TCTQDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TCTQKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>>(() => this.ToGroupedDictionary(i => i.TCTQKEY));
-            Index_TID = new Lazy<Dictionary<int, TCTQ>>(() => this.ToDictionary(i => i.TID));
+            Index_COMPOSITE = new Lazy<NullDictionary<short?, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.COMPOSITE));
+            Index_EXTRA_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_ROOM));
+            Index_EXTRA_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_TEACH));
+            Index_GKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.GKEY));
             Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
+            Index_R1ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.R1ROOM));
+            Index_R2ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.R2ROOM));
             Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
             Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
             Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
-            Index_R1ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.R1ROOM));
-            Index_R2ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.R2ROOM));
-            Index_EXTRA_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_TEACH));
-            Index_EXTRA_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_ROOM));
-            Index_COMPOSITE = new Lazy<NullDictionary<short?, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.COMPOSITE));
-            Index_GKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.GKEY));
+            Index_TCTQKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>>(() => this.ToGroupedDictionary(i => i.TCTQKEY));
+            Index_TID = new Lazy<Dictionary<int, TCTQ>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -152,58 +152,86 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TCTQ" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TCTQ" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TCTQ" /> items to added or update the base <see cref="TCTQ" /> items</param>
+        /// <returns>A merged list of <see cref="TCTQ" /> items</returns>
+        protected override List<TCTQ> ApplyDeltaItems(List<TCTQ> Items, List<TCTQ> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TCTQ deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TCTQKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>> Index_TCTQKEY;
-        private Lazy<Dictionary<int, TCTQ>> Index_TID;
+        private Lazy<NullDictionary<short?, IReadOnlyList<TCTQ>>> Index_COMPOSITE;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_EXTRA_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_EXTRA_TEACH;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_GKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_QKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_R1ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_R2ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_SUBJ;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_T1TEACH;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_T2TEACH;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_R1ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_R2ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_EXTRA_TEACH;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_EXTRA_ROOM;
-        private Lazy<NullDictionary<short?, IReadOnlyList<TCTQ>>> Index_COMPOSITE;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_GKEY;
+        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>> Index_TCTQKEY;
+        private Lazy<Dictionary<int, TCTQ>> Index_TID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find TCTQ by TCTQKEY field
+        /// Find TCTQ by COMPOSITE field
         /// </summary>
-        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
         /// <returns>List of related TCTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByTCTQKEY(DateTime TCTQKEY)
+        public IReadOnlyList<TCTQ> FindByCOMPOSITE(short? COMPOSITE)
         {
-            return Index_TCTQKEY.Value[TCTQKEY];
+            return Index_COMPOSITE.Value[COMPOSITE];
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by TCTQKEY field
+        /// Attempt to find TCTQ by COMPOSITE field
         /// </summary>
-        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
         /// <param name="Value">List of related TCTQ entities</param>
         /// <returns>True if the list of related TCTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTCTQKEY(DateTime TCTQKEY, out IReadOnlyList<TCTQ> Value)
+        public bool TryFindByCOMPOSITE(short? COMPOSITE, out IReadOnlyList<TCTQ> Value)
         {
-            return Index_TCTQKEY.Value.TryGetValue(TCTQKEY, out Value);
+            return Index_COMPOSITE.Value.TryGetValue(COMPOSITE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by TCTQKEY field
+        /// Attempt to find TCTQ by COMPOSITE field
         /// </summary>
-        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
         /// <returns>List of related TCTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByTCTQKEY(DateTime TCTQKEY)
+        public IReadOnlyList<TCTQ> TryFindByCOMPOSITE(short? COMPOSITE)
         {
             IReadOnlyList<TCTQ> value;
-            if (Index_TCTQKEY.Value.TryGetValue(TCTQKEY, out value))
+            if (Index_COMPOSITE.Value.TryGetValue(COMPOSITE, out value))
             {
                 return value;
             }
@@ -214,38 +242,122 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TCTQ by TID field
+        /// Find TCTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TCTQ</param>
-        /// <returns>Related TCTQ entity</returns>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTQ FindByTID(int TID)
+        public IReadOnlyList<TCTQ> FindByEXTRA_ROOM(string EXTRA_ROOM)
         {
-            return Index_TID.Value[TID];
+            return Index_EXTRA_ROOM.Value[EXTRA_ROOM];
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by TID field
+        /// Attempt to find TCTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TCTQ</param>
-        /// <param name="Value">Related TCTQ entity</param>
-        /// <returns>True if the related TCTQ entity is found</returns>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TCTQ Value)
+        public bool TryFindByEXTRA_ROOM(string EXTRA_ROOM, out IReadOnlyList<TCTQ> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by TID field
+        /// Attempt to find TCTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TCTQ</param>
-        /// <returns>Related TCTQ entity, or null if not found</returns>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTQ TryFindByTID(int TID)
+        public IReadOnlyList<TCTQ> TryFindByEXTRA_ROOM(string EXTRA_ROOM)
         {
-            TCTQ value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<TCTQ> value;
+            if (Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTQ by EXTRA_TEACH field
+        /// </summary>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> FindByEXTRA_TEACH(string EXTRA_TEACH)
+        {
+            return Index_EXTRA_TEACH.Value[EXTRA_TEACH];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by EXTRA_TEACH field
+        /// </summary>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXTRA_TEACH(string EXTRA_TEACH, out IReadOnlyList<TCTQ> Value)
+        {
+            return Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by EXTRA_TEACH field
+        /// </summary>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> TryFindByEXTRA_TEACH(string EXTRA_TEACH)
+        {
+            IReadOnlyList<TCTQ> value;
+            if (Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTQ by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> FindByGKEY(string GKEY)
+        {
+            return Index_GKEY.Value[GKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGKEY(string GKEY, out IReadOnlyList<TCTQ> Value)
+        {
+            return Index_GKEY.Value.TryGetValue(GKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> TryFindByGKEY(string GKEY)
+        {
+            IReadOnlyList<TCTQ> value;
+            if (Index_GKEY.Value.TryGetValue(GKEY, out value))
             {
                 return value;
             }
@@ -288,6 +400,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TCTQ> value;
             if (Index_QKEY.Value.TryGetValue(QKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTQ by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> FindByR1ROOM(string R1ROOM)
+        {
+            return Index_R1ROOM.Value[R1ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByR1ROOM(string R1ROOM, out IReadOnlyList<TCTQ> Value)
+        {
+            return Index_R1ROOM.Value.TryGetValue(R1ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by R1ROOM field
+        /// </summary>
+        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> TryFindByR1ROOM(string R1ROOM)
+        {
+            IReadOnlyList<TCTQ> value;
+            if (Index_R1ROOM.Value.TryGetValue(R1ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTQ by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> FindByR2ROOM(string R2ROOM)
+        {
+            return Index_R2ROOM.Value[R2ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByR2ROOM(string R2ROOM, out IReadOnlyList<TCTQ> Value)
+        {
+            return Index_R2ROOM.Value.TryGetValue(R2ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by R2ROOM field
+        /// </summary>
+        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> TryFindByR2ROOM(string R2ROOM)
+        {
+            IReadOnlyList<TCTQ> value;
+            if (Index_R2ROOM.Value.TryGetValue(R2ROOM, out value))
             {
                 return value;
             }
@@ -424,38 +620,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TCTQ by R1ROOM field
+        /// Find TCTQ by TCTQKEY field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
         /// <returns>List of related TCTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByR1ROOM(string R1ROOM)
+        public IReadOnlyList<TCTQ> FindByTCTQKEY(DateTime TCTQKEY)
         {
-            return Index_R1ROOM.Value[R1ROOM];
+            return Index_TCTQKEY.Value[TCTQKEY];
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by R1ROOM field
+        /// Attempt to find TCTQ by TCTQKEY field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
         /// <param name="Value">List of related TCTQ entities</param>
         /// <returns>True if the list of related TCTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByR1ROOM(string R1ROOM, out IReadOnlyList<TCTQ> Value)
+        public bool TryFindByTCTQKEY(DateTime TCTQKEY, out IReadOnlyList<TCTQ> Value)
         {
-            return Index_R1ROOM.Value.TryGetValue(R1ROOM, out Value);
+            return Index_TCTQKEY.Value.TryGetValue(TCTQKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by R1ROOM field
+        /// Attempt to find TCTQ by TCTQKEY field
         /// </summary>
-        /// <param name="R1ROOM">R1ROOM value used to find TCTQ</param>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
         /// <returns>List of related TCTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByR1ROOM(string R1ROOM)
+        public IReadOnlyList<TCTQ> TryFindByTCTQKEY(DateTime TCTQKEY)
         {
             IReadOnlyList<TCTQ> value;
-            if (Index_R1ROOM.Value.TryGetValue(R1ROOM, out value))
+            if (Index_TCTQKEY.Value.TryGetValue(TCTQKEY, out value))
             {
                 return value;
             }
@@ -466,206 +662,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TCTQ by R2ROOM field
+        /// Find TCTQ by TID field
         /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities</returns>
+        /// <param name="TID">TID value used to find TCTQ</param>
+        /// <returns>Related TCTQ entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByR2ROOM(string R2ROOM)
+        public TCTQ FindByTID(int TID)
         {
-            return Index_R2ROOM.Value[R2ROOM];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by R2ROOM field
+        /// Attempt to find TCTQ by TID field
         /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
-        /// <param name="Value">List of related TCTQ entities</param>
-        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <param name="TID">TID value used to find TCTQ</param>
+        /// <param name="Value">Related TCTQ entity</param>
+        /// <returns>True if the related TCTQ entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByR2ROOM(string R2ROOM, out IReadOnlyList<TCTQ> Value)
+        public bool TryFindByTID(int TID, out TCTQ Value)
         {
-            return Index_R2ROOM.Value.TryGetValue(R2ROOM, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTQ by R2ROOM field
+        /// Attempt to find TCTQ by TID field
         /// </summary>
-        /// <param name="R2ROOM">R2ROOM value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find TCTQ</param>
+        /// <returns>Related TCTQ entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByR2ROOM(string R2ROOM)
+        public TCTQ TryFindByTID(int TID)
         {
-            IReadOnlyList<TCTQ> value;
-            if (Index_R2ROOM.Value.TryGetValue(R2ROOM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTQ by EXTRA_TEACH field
-        /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByEXTRA_TEACH(string EXTRA_TEACH)
-        {
-            return Index_EXTRA_TEACH.Value[EXTRA_TEACH];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by EXTRA_TEACH field
-        /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
-        /// <param name="Value">List of related TCTQ entities</param>
-        /// <returns>True if the list of related TCTQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEXTRA_TEACH(string EXTRA_TEACH, out IReadOnlyList<TCTQ> Value)
-        {
-            return Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by EXTRA_TEACH field
-        /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByEXTRA_TEACH(string EXTRA_TEACH)
-        {
-            IReadOnlyList<TCTQ> value;
-            if (Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTQ by EXTRA_ROOM field
-        /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByEXTRA_ROOM(string EXTRA_ROOM)
-        {
-            return Index_EXTRA_ROOM.Value[EXTRA_ROOM];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by EXTRA_ROOM field
-        /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
-        /// <param name="Value">List of related TCTQ entities</param>
-        /// <returns>True if the list of related TCTQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEXTRA_ROOM(string EXTRA_ROOM, out IReadOnlyList<TCTQ> Value)
-        {
-            return Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by EXTRA_ROOM field
-        /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByEXTRA_ROOM(string EXTRA_ROOM)
-        {
-            IReadOnlyList<TCTQ> value;
-            if (Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTQ by COMPOSITE field
-        /// </summary>
-        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByCOMPOSITE(short? COMPOSITE)
-        {
-            return Index_COMPOSITE.Value[COMPOSITE];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by COMPOSITE field
-        /// </summary>
-        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
-        /// <param name="Value">List of related TCTQ entities</param>
-        /// <returns>True if the list of related TCTQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCOMPOSITE(short? COMPOSITE, out IReadOnlyList<TCTQ> Value)
-        {
-            return Index_COMPOSITE.Value.TryGetValue(COMPOSITE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by COMPOSITE field
-        /// </summary>
-        /// <param name="COMPOSITE">COMPOSITE value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByCOMPOSITE(short? COMPOSITE)
-        {
-            IReadOnlyList<TCTQ> value;
-            if (Index_COMPOSITE.Value.TryGetValue(COMPOSITE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTQ by GKEY field
-        /// </summary>
-        /// <param name="GKEY">GKEY value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> FindByGKEY(string GKEY)
-        {
-            return Index_GKEY.Value[GKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by GKEY field
-        /// </summary>
-        /// <param name="GKEY">GKEY value used to find TCTQ</param>
-        /// <param name="Value">List of related TCTQ entities</param>
-        /// <returns>True if the list of related TCTQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGKEY(string GKEY, out IReadOnlyList<TCTQ> Value)
-        {
-            return Index_GKEY.Value.TryGetValue(GKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTQ by GKEY field
-        /// </summary>
-        /// <param name="GKEY">GKEY value used to find TCTQ</param>
-        /// <returns>List of related TCTQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTQ> TryFindByGKEY(string GKEY)
-        {
-            IReadOnlyList<TCTQ> value;
-            if (Index_GKEY.Value.TryGetValue(GKEY, out value))
+            TCTQ value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

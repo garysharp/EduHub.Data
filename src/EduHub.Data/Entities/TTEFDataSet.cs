@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_GKEY = new Lazy<Dictionary<string, IReadOnlyList<TTEF>>>(() => this.ToGroupedDictionary(i => i.GKEY));
-            Index_TID = new Lazy<Dictionary<int, TTEF>>(() => this.ToDictionary(i => i.TID));
-            Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<TTEF>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
             Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TTEF>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<TTEF>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
+            Index_TID = new Lazy<Dictionary<int, TTEF>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -75,12 +75,40 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TTEF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TTEF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TTEF" /> items to added or update the base <see cref="TTEF" /> items</param>
+        /// <returns>A merged list of <see cref="TTEF" /> items</returns>
+        protected override List<TTEF> ApplyDeltaItems(List<TTEF> Items, List<TTEF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TTEF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<TTEF>>> Index_GKEY;
-        private Lazy<Dictionary<int, TTEF>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TTEF>>> Index_STAFF;
         private Lazy<NullDictionary<string, IReadOnlyList<TTEF>>> Index_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<TTEF>>> Index_STAFF;
+        private Lazy<Dictionary<int, TTEF>> Index_TID;
 
         #endregion
 
@@ -129,38 +157,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TTEF by TID field
+        /// Find TTEF by ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TTEF</param>
-        /// <returns>Related TTEF entity</returns>
+        /// <param name="ROOM">ROOM value used to find TTEF</param>
+        /// <returns>List of related TTEF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTEF FindByTID(int TID)
+        public IReadOnlyList<TTEF> FindByROOM(string ROOM)
         {
-            return Index_TID.Value[TID];
+            return Index_ROOM.Value[ROOM];
         }
 
         /// <summary>
-        /// Attempt to find TTEF by TID field
+        /// Attempt to find TTEF by ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TTEF</param>
-        /// <param name="Value">Related TTEF entity</param>
-        /// <returns>True if the related TTEF entity is found</returns>
+        /// <param name="ROOM">ROOM value used to find TTEF</param>
+        /// <param name="Value">List of related TTEF entities</param>
+        /// <returns>True if the list of related TTEF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TTEF Value)
+        public bool TryFindByROOM(string ROOM, out IReadOnlyList<TTEF> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TTEF by TID field
+        /// Attempt to find TTEF by ROOM field
         /// </summary>
-        /// <param name="TID">TID value used to find TTEF</param>
-        /// <returns>Related TTEF entity, or null if not found</returns>
+        /// <param name="ROOM">ROOM value used to find TTEF</param>
+        /// <returns>List of related TTEF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTEF TryFindByTID(int TID)
+        public IReadOnlyList<TTEF> TryFindByROOM(string ROOM)
         {
-            TTEF value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<TTEF> value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
             {
                 return value;
             }
@@ -213,38 +241,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TTEF by ROOM field
+        /// Find TTEF by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TTEF</param>
-        /// <returns>List of related TTEF entities</returns>
+        /// <param name="TID">TID value used to find TTEF</param>
+        /// <returns>Related TTEF entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTEF> FindByROOM(string ROOM)
+        public TTEF FindByTID(int TID)
         {
-            return Index_ROOM.Value[ROOM];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find TTEF by ROOM field
+        /// Attempt to find TTEF by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TTEF</param>
-        /// <param name="Value">List of related TTEF entities</param>
-        /// <returns>True if the list of related TTEF entities is found</returns>
+        /// <param name="TID">TID value used to find TTEF</param>
+        /// <param name="Value">Related TTEF entity</param>
+        /// <returns>True if the related TTEF entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByROOM(string ROOM, out IReadOnlyList<TTEF> Value)
+        public bool TryFindByTID(int TID, out TTEF Value)
         {
-            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TTEF by ROOM field
+        /// Attempt to find TTEF by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TTEF</param>
-        /// <returns>List of related TTEF entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find TTEF</param>
+        /// <returns>Related TTEF entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TTEF> TryFindByROOM(string ROOM)
+        public TTEF TryFindByTID(int TID)
         {
-            IReadOnlyList<TTEF> value;
-            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            TTEF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

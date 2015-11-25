@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_GKEY = new Lazy<Dictionary<string, IReadOnlyList<TTES>>>(() => this.ToGroupedDictionary(i => i.GKEY));
-            Index_TID = new Lazy<Dictionary<int, TTES>>(() => this.ToDictionary(i => i.TID));
             Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TTES>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
+            Index_TID = new Lazy<Dictionary<int, TTES>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -113,11 +113,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TTES" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TTES" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TTES" /> items to added or update the base <see cref="TTES" /> items</param>
+        /// <returns>A merged list of <see cref="TTES" /> items</returns>
+        protected override List<TTES> ApplyDeltaItems(List<TTES> Items, List<TTES> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TTES deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<TTES>>> Index_GKEY;
-        private Lazy<Dictionary<int, TTES>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<TTES>>> Index_SUBJ;
+        private Lazy<Dictionary<int, TTES>> Index_TID;
 
         #endregion
 
@@ -166,48 +194,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TTES by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TTES</param>
-        /// <returns>Related TTES entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTES FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find TTES by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TTES</param>
-        /// <param name="Value">Related TTES entity</param>
-        /// <returns>True if the related TTES entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TTES Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TTES by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TTES</param>
-        /// <returns>Related TTES entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TTES TryFindByTID(int TID)
-        {
-            TTES value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find TTES by SUBJ field
         /// </summary>
         /// <param name="SUBJ">SUBJ value used to find TTES</param>
@@ -240,6 +226,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TTES> value;
             if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <returns>Related TTES entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TTES FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <param name="Value">Related TTES entity</param>
+        /// <returns>True if the related TTES entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out TTES Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <returns>Related TTES entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TTES TryFindByTID(int TID)
+        {
+            TTES value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

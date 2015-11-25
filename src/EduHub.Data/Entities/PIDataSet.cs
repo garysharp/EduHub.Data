@@ -19,13 +19,13 @@ namespace EduHub.Data.Entities
         internal PIDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PIKEY = new Lazy<Dictionary<short, PI>>(() => this.ToDictionary(i => i.PIKEY));
-            Index_PAYG_BOX = new Lazy<NullDictionary<short?, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.PAYG_BOX));
-            Index_BASEITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.BASEITEM));
             Index_AWARD = new Lazy<NullDictionary<string, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.AWARD));
+            Index_BASEITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.BASEITEM));
             Index_CLR_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.CLR_GLCODE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_PAYG_BOX = new Lazy<NullDictionary<short?, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.PAYG_BOX));
+            Index_PIKEY = new Lazy<Dictionary<short, PI>>(() => this.ToDictionary(i => i.PIKEY));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PI>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
         }
 
         /// <summary>
@@ -207,95 +207,81 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PI" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PI" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PI" /> items to added or update the base <see cref="PI" /> items</param>
+        /// <returns>A merged list of <see cref="PI" /> items</returns>
+        protected override List<PI> ApplyDeltaItems(List<PI> Items, List<PI> DeltaItems)
+        {
+            Dictionary<short, int> Index_PIKEY = Items.ToIndexDictionary(i => i.PIKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PI deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PIKEY.TryGetValue(deltaItem.PIKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PIKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<short, PI>> Index_PIKEY;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PI>>> Index_PAYG_BOX;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PI>>> Index_BASEITEM;
         private Lazy<NullDictionary<string, IReadOnlyList<PI>>> Index_AWARD;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PI>>> Index_BASEITEM;
         private Lazy<NullDictionary<string, IReadOnlyList<PI>>> Index_CLR_GLCODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<PI>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<PI>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PI>>> Index_PAYG_BOX;
+        private Lazy<Dictionary<short, PI>> Index_PIKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PI>>> Index_SUBPROGRAM;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find PI by PIKEY field
+        /// Find PI by AWARD field
         /// </summary>
-        /// <param name="PIKEY">PIKEY value used to find PI</param>
-        /// <returns>Related PI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PI FindByPIKEY(short PIKEY)
-        {
-            return Index_PIKEY.Value[PIKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PI by PIKEY field
-        /// </summary>
-        /// <param name="PIKEY">PIKEY value used to find PI</param>
-        /// <param name="Value">Related PI entity</param>
-        /// <returns>True if the related PI entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPIKEY(short PIKEY, out PI Value)
-        {
-            return Index_PIKEY.Value.TryGetValue(PIKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PI by PIKEY field
-        /// </summary>
-        /// <param name="PIKEY">PIKEY value used to find PI</param>
-        /// <returns>Related PI entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PI TryFindByPIKEY(short PIKEY)
-        {
-            PI value;
-            if (Index_PIKEY.Value.TryGetValue(PIKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PI by PAYG_BOX field
-        /// </summary>
-        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <param name="AWARD">AWARD value used to find PI</param>
         /// <returns>List of related PI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> FindByPAYG_BOX(short? PAYG_BOX)
+        public IReadOnlyList<PI> FindByAWARD(string AWARD)
         {
-            return Index_PAYG_BOX.Value[PAYG_BOX];
+            return Index_AWARD.Value[AWARD];
         }
 
         /// <summary>
-        /// Attempt to find PI by PAYG_BOX field
+        /// Attempt to find PI by AWARD field
         /// </summary>
-        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <param name="AWARD">AWARD value used to find PI</param>
         /// <param name="Value">List of related PI entities</param>
         /// <returns>True if the list of related PI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPAYG_BOX(short? PAYG_BOX, out IReadOnlyList<PI> Value)
+        public bool TryFindByAWARD(string AWARD, out IReadOnlyList<PI> Value)
         {
-            return Index_PAYG_BOX.Value.TryGetValue(PAYG_BOX, out Value);
+            return Index_AWARD.Value.TryGetValue(AWARD, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PI by PAYG_BOX field
+        /// Attempt to find PI by AWARD field
         /// </summary>
-        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <param name="AWARD">AWARD value used to find PI</param>
         /// <returns>List of related PI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> TryFindByPAYG_BOX(short? PAYG_BOX)
+        public IReadOnlyList<PI> TryFindByAWARD(string AWARD)
         {
             IReadOnlyList<PI> value;
-            if (Index_PAYG_BOX.Value.TryGetValue(PAYG_BOX, out value))
+            if (Index_AWARD.Value.TryGetValue(AWARD, out value))
             {
                 return value;
             }
@@ -348,48 +334,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PI by AWARD field
-        /// </summary>
-        /// <param name="AWARD">AWARD value used to find PI</param>
-        /// <returns>List of related PI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> FindByAWARD(string AWARD)
-        {
-            return Index_AWARD.Value[AWARD];
-        }
-
-        /// <summary>
-        /// Attempt to find PI by AWARD field
-        /// </summary>
-        /// <param name="AWARD">AWARD value used to find PI</param>
-        /// <param name="Value">List of related PI entities</param>
-        /// <returns>True if the list of related PI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByAWARD(string AWARD, out IReadOnlyList<PI> Value)
-        {
-            return Index_AWARD.Value.TryGetValue(AWARD, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PI by AWARD field
-        /// </summary>
-        /// <param name="AWARD">AWARD value used to find PI</param>
-        /// <returns>List of related PI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> TryFindByAWARD(string AWARD)
-        {
-            IReadOnlyList<PI> value;
-            if (Index_AWARD.Value.TryGetValue(AWARD, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PI by CLR_GLCODE field
         /// </summary>
         /// <param name="CLR_GLCODE">CLR_GLCODE value used to find PI</param>
@@ -432,48 +376,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PI by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
-        /// <returns>List of related PI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find PI by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
-        /// <param name="Value">List of related PI entities</param>
-        /// <returns>True if the list of related PI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PI> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PI by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
-        /// <returns>List of related PI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PI> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<PI> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PI by INITIATIVE field
         /// </summary>
         /// <param name="INITIATIVE">INITIATIVE value used to find PI</param>
@@ -506,6 +408,132 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PI> value;
             if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PI by PAYG_BOX field
+        /// </summary>
+        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <returns>List of related PI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PI> FindByPAYG_BOX(short? PAYG_BOX)
+        {
+            return Index_PAYG_BOX.Value[PAYG_BOX];
+        }
+
+        /// <summary>
+        /// Attempt to find PI by PAYG_BOX field
+        /// </summary>
+        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <param name="Value">List of related PI entities</param>
+        /// <returns>True if the list of related PI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPAYG_BOX(short? PAYG_BOX, out IReadOnlyList<PI> Value)
+        {
+            return Index_PAYG_BOX.Value.TryGetValue(PAYG_BOX, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PI by PAYG_BOX field
+        /// </summary>
+        /// <param name="PAYG_BOX">PAYG_BOX value used to find PI</param>
+        /// <returns>List of related PI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PI> TryFindByPAYG_BOX(short? PAYG_BOX)
+        {
+            IReadOnlyList<PI> value;
+            if (Index_PAYG_BOX.Value.TryGetValue(PAYG_BOX, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PI</param>
+        /// <returns>Related PI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PI FindByPIKEY(short PIKEY)
+        {
+            return Index_PIKEY.Value[PIKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PI</param>
+        /// <param name="Value">Related PI entity</param>
+        /// <returns>True if the related PI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPIKEY(short PIKEY, out PI Value)
+        {
+            return Index_PIKEY.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PI</param>
+        /// <returns>Related PI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PI TryFindByPIKEY(short PIKEY)
+        {
+            PI value;
+            if (Index_PIKEY.Value.TryGetValue(PIKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PI by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
+        /// <returns>List of related PI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PI> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find PI by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
+        /// <param name="Value">List of related PI entities</param>
+        /// <returns>True if the list of related PI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PI> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PI by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PI</param>
+        /// <returns>List of related PI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PI> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<PI> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }

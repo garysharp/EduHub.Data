@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal CRDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_CRKEY = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(i => i.CRKEY));
             Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_CRKEY = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(i => i.CRKEY));
             Index_PPDKEY = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.PPDKEY));
         }
 
@@ -212,57 +212,43 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="CR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="CR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="CR" /> items to added or update the base <see cref="CR" /> items</param>
+        /// <returns>A merged list of <see cref="CR" /> items</returns>
+        protected override List<CR> ApplyDeltaItems(List<CR> Items, List<CR> DeltaItems)
+        {
+            Dictionary<string, int> Index_CRKEY = Items.ToIndexDictionary(i => i.CRKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (CR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_CRKEY.TryGetValue(deltaItem.CRKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CRKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, CR>> Index_CRKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_BSB;
+        private Lazy<Dictionary<string, CR>> Index_CRKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_PPDKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find CR by CRKEY field
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CR</param>
-        /// <returns>Related CR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public CR FindByCRKEY(string CRKEY)
-        {
-            return Index_CRKEY.Value[CRKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find CR by CRKEY field
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CR</param>
-        /// <param name="Value">Related CR entity</param>
-        /// <returns>True if the related CR entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCRKEY(string CRKEY, out CR Value)
-        {
-            return Index_CRKEY.Value.TryGetValue(CRKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CR by CRKEY field
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CR</param>
-        /// <returns>Related CR entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public CR TryFindByCRKEY(string CRKEY)
-        {
-            CR value;
-            if (Index_CRKEY.Value.TryGetValue(CRKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find CR by BSB field
@@ -297,6 +283,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<CR> value;
             if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CR FindByCRKEY(string CRKEY)
+        {
+            return Index_CRKEY.Value[CRKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <param name="Value">Related CR entity</param>
+        /// <returns>True if the related CR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCRKEY(string CRKEY, out CR Value)
+        {
+            return Index_CRKEY.Value.TryGetValue(CRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CR TryFindByCRKEY(string CRKEY)
+        {
+            CR value;
+            if (Index_CRKEY.Value.TryGetValue(CRKEY, out value))
             {
                 return value;
             }

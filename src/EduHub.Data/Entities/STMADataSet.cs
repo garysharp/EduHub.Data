@@ -19,14 +19,14 @@ namespace EduHub.Data.Entities
         internal STMADataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedDictionary(i => i.SKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_TID = new Lazy<Dictionary<int, STMA>>(() => this.ToDictionary(i => i.TID));
-            Index_MKEY = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.MKEY));
             Index_CKEY = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.CKEY));
             Index_IDENT = new Lazy<NullDictionary<int?, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.IDENT));
-            Index_TTPERIOD = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.TTPERIOD));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_MKEY = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.MKEY));
             Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedDictionary(i => i.SKEY));
+            Index_TID = new Lazy<Dictionary<int, STMA>>(() => this.ToDictionary(i => i.TID));
+            Index_TTPERIOD = new Lazy<NullDictionary<string, IReadOnlyList<STMA>>>(() => this.ToGroupedNullDictionary(i => i.TTPERIOD));
         }
 
         /// <summary>
@@ -139,188 +139,48 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STMA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STMA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STMA" /> items to added or update the base <see cref="STMA" /> items</param>
+        /// <returns>A merged list of <see cref="STMA" /> items</returns>
+        protected override List<STMA> ApplyDeltaItems(List<STMA> Items, List<STMA> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STMA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<STMA>>> Index_SKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<STMA>>> Index_LW_DATE;
-        private Lazy<Dictionary<int, STMA>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_MKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_CKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<STMA>>> Index_IDENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_TTPERIOD;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<STMA>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_MKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_SCHOOL_YEAR;
+        private Lazy<Dictionary<string, IReadOnlyList<STMA>>> Index_SKEY;
+        private Lazy<Dictionary<int, STMA>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<STMA>>> Index_TTPERIOD;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find STMA by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STMA</param>
-        /// <returns>List of related STMA entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> FindBySKEY(string SKEY)
-        {
-            return Index_SKEY.Value[SKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STMA</param>
-        /// <param name="Value">List of related STMA entities</param>
-        /// <returns>True if the list of related STMA entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STMA> Value)
-        {
-            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by SKEY field
-        /// </summary>
-        /// <param name="SKEY">SKEY value used to find STMA</param>
-        /// <returns>List of related STMA entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> TryFindBySKEY(string SKEY)
-        {
-            IReadOnlyList<STMA> value;
-            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STMA by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
-        /// <returns>List of related STMA entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> FindByLW_DATE(DateTime? LW_DATE)
-        {
-            return Index_LW_DATE.Value[LW_DATE];
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
-        /// <param name="Value">List of related STMA entities</param>
-        /// <returns>True if the list of related STMA entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<STMA> Value)
-        {
-            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
-        /// <returns>List of related STMA entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> TryFindByLW_DATE(DateTime? LW_DATE)
-        {
-            IReadOnlyList<STMA> value;
-            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STMA</param>
-        /// <returns>Related STMA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STMA FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STMA</param>
-        /// <param name="Value">Related STMA entity</param>
-        /// <returns>True if the related STMA entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out STMA Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STMA</param>
-        /// <returns>Related STMA entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STMA TryFindByTID(int TID)
-        {
-            STMA value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STMA by MKEY field
-        /// </summary>
-        /// <param name="MKEY">MKEY value used to find STMA</param>
-        /// <returns>List of related STMA entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> FindByMKEY(string MKEY)
-        {
-            return Index_MKEY.Value[MKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by MKEY field
-        /// </summary>
-        /// <param name="MKEY">MKEY value used to find STMA</param>
-        /// <param name="Value">List of related STMA entities</param>
-        /// <returns>True if the list of related STMA entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMKEY(string MKEY, out IReadOnlyList<STMA> Value)
-        {
-            return Index_MKEY.Value.TryGetValue(MKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STMA by MKEY field
-        /// </summary>
-        /// <param name="MKEY">MKEY value used to find STMA</param>
-        /// <returns>List of related STMA entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> TryFindByMKEY(string MKEY)
-        {
-            IReadOnlyList<STMA> value;
-            if (Index_MKEY.Value.TryGetValue(MKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find STMA by CKEY field
@@ -407,38 +267,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STMA by TTPERIOD field
+        /// Find STMA by LW_DATE field
         /// </summary>
-        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
         /// <returns>List of related STMA entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> FindByTTPERIOD(string TTPERIOD)
+        public IReadOnlyList<STMA> FindByLW_DATE(DateTime? LW_DATE)
         {
-            return Index_TTPERIOD.Value[TTPERIOD];
+            return Index_LW_DATE.Value[LW_DATE];
         }
 
         /// <summary>
-        /// Attempt to find STMA by TTPERIOD field
+        /// Attempt to find STMA by LW_DATE field
         /// </summary>
-        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
         /// <param name="Value">List of related STMA entities</param>
         /// <returns>True if the list of related STMA entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTTPERIOD(string TTPERIOD, out IReadOnlyList<STMA> Value)
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<STMA> Value)
         {
-            return Index_TTPERIOD.Value.TryGetValue(TTPERIOD, out Value);
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STMA by TTPERIOD field
+        /// Attempt to find STMA by LW_DATE field
         /// </summary>
-        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <param name="LW_DATE">LW_DATE value used to find STMA</param>
         /// <returns>List of related STMA entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STMA> TryFindByTTPERIOD(string TTPERIOD)
+        public IReadOnlyList<STMA> TryFindByLW_DATE(DateTime? LW_DATE)
         {
             IReadOnlyList<STMA> value;
-            if (Index_TTPERIOD.Value.TryGetValue(TTPERIOD, out value))
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMA by MKEY field
+        /// </summary>
+        /// <param name="MKEY">MKEY value used to find STMA</param>
+        /// <returns>List of related STMA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> FindByMKEY(string MKEY)
+        {
+            return Index_MKEY.Value[MKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by MKEY field
+        /// </summary>
+        /// <param name="MKEY">MKEY value used to find STMA</param>
+        /// <param name="Value">List of related STMA entities</param>
+        /// <returns>True if the list of related STMA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMKEY(string MKEY, out IReadOnlyList<STMA> Value)
+        {
+            return Index_MKEY.Value.TryGetValue(MKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by MKEY field
+        /// </summary>
+        /// <param name="MKEY">MKEY value used to find STMA</param>
+        /// <returns>List of related STMA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> TryFindByMKEY(string MKEY)
+        {
+            IReadOnlyList<STMA> value;
+            if (Index_MKEY.Value.TryGetValue(MKEY, out value))
             {
                 return value;
             }
@@ -481,6 +383,132 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STMA> value;
             if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMA by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMA</param>
+        /// <returns>List of related STMA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> FindBySKEY(string SKEY)
+        {
+            return Index_SKEY.Value[SKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMA</param>
+        /// <param name="Value">List of related STMA entities</param>
+        /// <returns>True if the list of related STMA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STMA> Value)
+        {
+            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMA</param>
+        /// <returns>List of related STMA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> TryFindBySKEY(string SKEY)
+        {
+            IReadOnlyList<STMA> value;
+            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMA</param>
+        /// <returns>Related STMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STMA FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMA</param>
+        /// <param name="Value">Related STMA entity</param>
+        /// <returns>True if the related STMA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out STMA Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMA</param>
+        /// <returns>Related STMA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STMA TryFindByTID(int TID)
+        {
+            STMA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMA by TTPERIOD field
+        /// </summary>
+        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <returns>List of related STMA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> FindByTTPERIOD(string TTPERIOD)
+        {
+            return Index_TTPERIOD.Value[TTPERIOD];
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by TTPERIOD field
+        /// </summary>
+        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <param name="Value">List of related STMA entities</param>
+        /// <returns>True if the list of related STMA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTTPERIOD(string TTPERIOD, out IReadOnlyList<STMA> Value)
+        {
+            return Index_TTPERIOD.Value.TryGetValue(TTPERIOD, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMA by TTPERIOD field
+        /// </summary>
+        /// <param name="TTPERIOD">TTPERIOD value used to find STMA</param>
+        /// <returns>List of related STMA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMA> TryFindByTTPERIOD(string TTPERIOD)
+        {
+            IReadOnlyList<STMA> value;
+            if (Index_TTPERIOD.Value.TryGetValue(TTPERIOD, out value))
             {
                 return value;
             }

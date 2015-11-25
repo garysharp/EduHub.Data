@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal SKGSDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SCHOOL = new Lazy<Dictionary<string, SKGS>>(() => this.ToDictionary(i => i.SCHOOL));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SKGS>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_SCHOOL = new Lazy<Dictionary<string, SKGS>>(() => this.ToDictionary(i => i.SCHOOL));
         }
 
         /// <summary>
@@ -184,56 +184,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SKGS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SKGS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SKGS" /> items to added or update the base <see cref="SKGS" /> items</param>
+        /// <returns>A merged list of <see cref="SKGS" /> items</returns>
+        protected override List<SKGS> ApplyDeltaItems(List<SKGS> Items, List<SKGS> DeltaItems)
+        {
+            Dictionary<string, int> Index_SCHOOL = Items.ToIndexDictionary(i => i.SCHOOL);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SKGS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SCHOOL.TryGetValue(deltaItem.SCHOOL, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SCHOOL)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SKGS>> Index_SCHOOL;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<SKGS>>> Index_LW_DATE;
+        private Lazy<Dictionary<string, SKGS>> Index_SCHOOL;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SKGS by SCHOOL field
-        /// </summary>
-        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
-        /// <returns>Related SKGS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SKGS FindBySCHOOL(string SCHOOL)
-        {
-            return Index_SCHOOL.Value[SCHOOL];
-        }
-
-        /// <summary>
-        /// Attempt to find SKGS by SCHOOL field
-        /// </summary>
-        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
-        /// <param name="Value">Related SKGS entity</param>
-        /// <returns>True if the related SKGS entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL(string SCHOOL, out SKGS Value)
-        {
-            return Index_SCHOOL.Value.TryGetValue(SCHOOL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SKGS by SCHOOL field
-        /// </summary>
-        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
-        /// <returns>Related SKGS entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SKGS TryFindBySCHOOL(string SCHOOL)
-        {
-            SKGS value;
-            if (Index_SCHOOL.Value.TryGetValue(SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SKGS by LW_DATE field
@@ -268,6 +254,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SKGS> value;
             if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SKGS by SCHOOL field
+        /// </summary>
+        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
+        /// <returns>Related SKGS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SKGS FindBySCHOOL(string SCHOOL)
+        {
+            return Index_SCHOOL.Value[SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find SKGS by SCHOOL field
+        /// </summary>
+        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
+        /// <param name="Value">Related SKGS entity</param>
+        /// <returns>True if the related SKGS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL(string SCHOOL, out SKGS Value)
+        {
+            return Index_SCHOOL.Value.TryGetValue(SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SKGS by SCHOOL field
+        /// </summary>
+        /// <param name="SCHOOL">SCHOOL value used to find SKGS</param>
+        /// <returns>Related SKGS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SKGS TryFindBySCHOOL(string SCHOOL)
+        {
+            SKGS value;
+            if (Index_SCHOOL.Value.TryGetValue(SCHOOL, out value))
             {
                 return value;
             }

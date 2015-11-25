@@ -19,18 +19,18 @@ namespace EduHub.Data.Entities
         internal THTQDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_QKEY = new Lazy<Dictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedDictionary(i => i.QKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_TID = new Lazy<Dictionary<int, THTQ>>(() => this.ToDictionary(i => i.TID));
+            Index_EXTRA_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_ROOM));
+            Index_EXTRA_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_TEACH));
             Index_GKEY = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.GKEY));
-            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
             Index_IDENT = new Lazy<NullDictionary<int?, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.IDENT));
-            Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
-            Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_QKEY = new Lazy<Dictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedDictionary(i => i.QKEY));
             Index_R1ROOM = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.R1ROOM));
             Index_R2ROOM = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.R2ROOM));
-            Index_EXTRA_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_TEACH));
-            Index_EXTRA_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.EXTRA_ROOM));
+            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
+            Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
+            Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<THTQ>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
+            Index_TID = new Lazy<Dictionary<int, THTQ>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -158,58 +158,86 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="THTQ" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="THTQ" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="THTQ" /> items to added or update the base <see cref="THTQ" /> items</param>
+        /// <returns>A merged list of <see cref="THTQ" /> items</returns>
+        protected override List<THTQ> ApplyDeltaItems(List<THTQ> Items, List<THTQ> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (THTQ deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.QKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<THTQ>>> Index_QKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<THTQ>>> Index_LW_DATE;
-        private Lazy<Dictionary<int, THTQ>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_EXTRA_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_EXTRA_TEACH;
         private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_GKEY;
-        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_SUBJ;
         private Lazy<NullDictionary<int?, IReadOnlyList<THTQ>>> Index_IDENT;
-        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_T1TEACH;
-        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_T2TEACH;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<THTQ>>> Index_LW_DATE;
+        private Lazy<Dictionary<string, IReadOnlyList<THTQ>>> Index_QKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_R1ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_R2ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_EXTRA_TEACH;
-        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_EXTRA_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_SUBJ;
+        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_T1TEACH;
+        private Lazy<NullDictionary<string, IReadOnlyList<THTQ>>> Index_T2TEACH;
+        private Lazy<Dictionary<int, THTQ>> Index_TID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find THTQ by QKEY field
+        /// Find THTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTQ</param>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByQKEY(string QKEY)
+        public IReadOnlyList<THTQ> FindByEXTRA_ROOM(string EXTRA_ROOM)
         {
-            return Index_QKEY.Value[QKEY];
+            return Index_EXTRA_ROOM.Value[EXTRA_ROOM];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by QKEY field
+        /// Attempt to find THTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTQ</param>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<THTQ> Value)
+        public bool TryFindByEXTRA_ROOM(string EXTRA_ROOM, out IReadOnlyList<THTQ> Value)
         {
-            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
+            return Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by QKEY field
+        /// Attempt to find THTQ by EXTRA_ROOM field
         /// </summary>
-        /// <param name="QKEY">QKEY value used to find THTQ</param>
+        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByQKEY(string QKEY)
+        public IReadOnlyList<THTQ> TryFindByEXTRA_ROOM(string EXTRA_ROOM)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
+            if (Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out value))
             {
                 return value;
             }
@@ -220,80 +248,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by LW_DATE field
+        /// Find THTQ by EXTRA_TEACH field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<THTQ> FindByEXTRA_TEACH(string EXTRA_TEACH)
         {
-            return Index_LW_DATE.Value[LW_DATE];
+            return Index_EXTRA_TEACH.Value[EXTRA_TEACH];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by LW_DATE field
+        /// Attempt to find THTQ by EXTRA_TEACH field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<THTQ> Value)
+        public bool TryFindByEXTRA_TEACH(string EXTRA_TEACH, out IReadOnlyList<THTQ> Value)
         {
-            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+            return Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by LW_DATE field
+        /// Attempt to find THTQ by EXTRA_TEACH field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
+        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<THTQ> TryFindByEXTRA_TEACH(string EXTRA_TEACH)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find THTQ by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find THTQ</param>
-        /// <returns>Related THTQ entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public THTQ FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find THTQ by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find THTQ</param>
-        /// <param name="Value">Related THTQ entity</param>
-        /// <returns>True if the related THTQ entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out THTQ Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find THTQ by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find THTQ</param>
-        /// <returns>Related THTQ entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public THTQ TryFindByTID(int TID)
-        {
-            THTQ value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            if (Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out value))
             {
                 return value;
             }
@@ -346,48 +332,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
-        /// <returns>List of related THTQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindBySUBJ(string SUBJ)
-        {
-            return Index_SUBJ.Value[SUBJ];
-        }
-
-        /// <summary>
-        /// Attempt to find THTQ by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
-        /// <param name="Value">List of related THTQ entities</param>
-        /// <returns>True if the list of related THTQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBJ(string SUBJ, out IReadOnlyList<THTQ> Value)
-        {
-            return Index_SUBJ.Value.TryGetValue(SUBJ, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find THTQ by SUBJ field
-        /// </summary>
-        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
-        /// <returns>List of related THTQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindBySUBJ(string SUBJ)
-        {
-            IReadOnlyList<THTQ> value;
-            if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find THTQ by IDENT field
         /// </summary>
         /// <param name="IDENT">IDENT value used to find THTQ</param>
@@ -430,38 +374,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by T1TEACH field
+        /// Find THTQ by LW_DATE field
         /// </summary>
-        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
+        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByT1TEACH(string T1TEACH)
+        public IReadOnlyList<THTQ> FindByLW_DATE(DateTime? LW_DATE)
         {
-            return Index_T1TEACH.Value[T1TEACH];
+            return Index_LW_DATE.Value[LW_DATE];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by T1TEACH field
+        /// Attempt to find THTQ by LW_DATE field
         /// </summary>
-        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
+        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByT1TEACH(string T1TEACH, out IReadOnlyList<THTQ> Value)
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<THTQ> Value)
         {
-            return Index_T1TEACH.Value.TryGetValue(T1TEACH, out Value);
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by T1TEACH field
+        /// Attempt to find THTQ by LW_DATE field
         /// </summary>
-        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
+        /// <param name="LW_DATE">LW_DATE value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByT1TEACH(string T1TEACH)
+        public IReadOnlyList<THTQ> TryFindByLW_DATE(DateTime? LW_DATE)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_T1TEACH.Value.TryGetValue(T1TEACH, out value))
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
             {
                 return value;
             }
@@ -472,38 +416,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by T2TEACH field
+        /// Find THTQ by QKEY field
         /// </summary>
-        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <param name="QKEY">QKEY value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByT2TEACH(string T2TEACH)
+        public IReadOnlyList<THTQ> FindByQKEY(string QKEY)
         {
-            return Index_T2TEACH.Value[T2TEACH];
+            return Index_QKEY.Value[QKEY];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by T2TEACH field
+        /// Attempt to find THTQ by QKEY field
         /// </summary>
-        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <param name="QKEY">QKEY value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByT2TEACH(string T2TEACH, out IReadOnlyList<THTQ> Value)
+        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<THTQ> Value)
         {
-            return Index_T2TEACH.Value.TryGetValue(T2TEACH, out Value);
+            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by T2TEACH field
+        /// Attempt to find THTQ by QKEY field
         /// </summary>
-        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <param name="QKEY">QKEY value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByT2TEACH(string T2TEACH)
+        public IReadOnlyList<THTQ> TryFindByQKEY(string QKEY)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_T2TEACH.Value.TryGetValue(T2TEACH, out value))
+            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
             {
                 return value;
             }
@@ -598,38 +542,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by EXTRA_TEACH field
+        /// Find THTQ by SUBJ field
         /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
+        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByEXTRA_TEACH(string EXTRA_TEACH)
+        public IReadOnlyList<THTQ> FindBySUBJ(string SUBJ)
         {
-            return Index_EXTRA_TEACH.Value[EXTRA_TEACH];
+            return Index_SUBJ.Value[SUBJ];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by EXTRA_TEACH field
+        /// Attempt to find THTQ by SUBJ field
         /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
+        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEXTRA_TEACH(string EXTRA_TEACH, out IReadOnlyList<THTQ> Value)
+        public bool TryFindBySUBJ(string SUBJ, out IReadOnlyList<THTQ> Value)
         {
-            return Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out Value);
+            return Index_SUBJ.Value.TryGetValue(SUBJ, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by EXTRA_TEACH field
+        /// Attempt to find THTQ by SUBJ field
         /// </summary>
-        /// <param name="EXTRA_TEACH">EXTRA_TEACH value used to find THTQ</param>
+        /// <param name="SUBJ">SUBJ value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByEXTRA_TEACH(string EXTRA_TEACH)
+        public IReadOnlyList<THTQ> TryFindBySUBJ(string SUBJ)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_EXTRA_TEACH.Value.TryGetValue(EXTRA_TEACH, out value))
+            if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
             {
                 return value;
             }
@@ -640,38 +584,122 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find THTQ by EXTRA_ROOM field
+        /// Find THTQ by T1TEACH field
         /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
+        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
         /// <returns>List of related THTQ entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> FindByEXTRA_ROOM(string EXTRA_ROOM)
+        public IReadOnlyList<THTQ> FindByT1TEACH(string T1TEACH)
         {
-            return Index_EXTRA_ROOM.Value[EXTRA_ROOM];
+            return Index_T1TEACH.Value[T1TEACH];
         }
 
         /// <summary>
-        /// Attempt to find THTQ by EXTRA_ROOM field
+        /// Attempt to find THTQ by T1TEACH field
         /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
+        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
         /// <param name="Value">List of related THTQ entities</param>
         /// <returns>True if the list of related THTQ entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByEXTRA_ROOM(string EXTRA_ROOM, out IReadOnlyList<THTQ> Value)
+        public bool TryFindByT1TEACH(string T1TEACH, out IReadOnlyList<THTQ> Value)
         {
-            return Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out Value);
+            return Index_T1TEACH.Value.TryGetValue(T1TEACH, out Value);
         }
 
         /// <summary>
-        /// Attempt to find THTQ by EXTRA_ROOM field
+        /// Attempt to find THTQ by T1TEACH field
         /// </summary>
-        /// <param name="EXTRA_ROOM">EXTRA_ROOM value used to find THTQ</param>
+        /// <param name="T1TEACH">T1TEACH value used to find THTQ</param>
         /// <returns>List of related THTQ entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<THTQ> TryFindByEXTRA_ROOM(string EXTRA_ROOM)
+        public IReadOnlyList<THTQ> TryFindByT1TEACH(string T1TEACH)
         {
             IReadOnlyList<THTQ> value;
-            if (Index_EXTRA_ROOM.Value.TryGetValue(EXTRA_ROOM, out value))
+            if (Index_T1TEACH.Value.TryGetValue(T1TEACH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find THTQ by T2TEACH field
+        /// </summary>
+        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <returns>List of related THTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<THTQ> FindByT2TEACH(string T2TEACH)
+        {
+            return Index_T2TEACH.Value[T2TEACH];
+        }
+
+        /// <summary>
+        /// Attempt to find THTQ by T2TEACH field
+        /// </summary>
+        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <param name="Value">List of related THTQ entities</param>
+        /// <returns>True if the list of related THTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByT2TEACH(string T2TEACH, out IReadOnlyList<THTQ> Value)
+        {
+            return Index_T2TEACH.Value.TryGetValue(T2TEACH, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find THTQ by T2TEACH field
+        /// </summary>
+        /// <param name="T2TEACH">T2TEACH value used to find THTQ</param>
+        /// <returns>List of related THTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<THTQ> TryFindByT2TEACH(string T2TEACH)
+        {
+            IReadOnlyList<THTQ> value;
+            if (Index_T2TEACH.Value.TryGetValue(T2TEACH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find THTQ by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find THTQ</param>
+        /// <returns>Related THTQ entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public THTQ FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find THTQ by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find THTQ</param>
+        /// <param name="Value">Related THTQ entity</param>
+        /// <returns>True if the related THTQ entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out THTQ Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find THTQ by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find THTQ</param>
+        /// <returns>Related THTQ entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public THTQ TryFindByTID(int TID)
+        {
+            THTQ value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

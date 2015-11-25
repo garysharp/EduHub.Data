@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal KCD_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_KCD_TRANS_ID = new Lazy<NullDictionary<string, KCD_TFR>>(() => this.ToNullDictionary(i => i.KCD_TRANS_ID));
             Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<KCD_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
             Index_TID = new Lazy<Dictionary<int, KCD_TFR>>(() => this.ToDictionary(i => i.TID));
-            Index_KCD_TRANS_ID = new Lazy<NullDictionary<string, KCD_TFR>>(() => this.ToNullDictionary(i => i.KCD_TRANS_ID));
         }
 
         /// <summary>
@@ -107,15 +107,90 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KCD_TFR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KCD_TFR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KCD_TFR" /> items to added or update the base <see cref="KCD_TFR" /> items</param>
+        /// <returns>A merged list of <see cref="KCD_TFR" /> items</returns>
+        protected override List<KCD_TFR> ApplyDeltaItems(List<KCD_TFR> Items, List<KCD_TFR> DeltaItems)
+        {
+            NullDictionary<string, int> Index_KCD_TRANS_ID = Items.ToIndexNullDictionary(i => i.KCD_TRANS_ID);
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KCD_TFR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KCD_TRANS_ID.TryGetValue(deltaItem.KCD_TRANS_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ORIG_SCHOOL)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, KCD_TFR>> Index_KCD_TRANS_ID;
         private Lazy<Dictionary<string, IReadOnlyList<KCD_TFR>>> Index_ORIG_SCHOOL;
         private Lazy<Dictionary<int, KCD_TFR>> Index_TID;
-        private Lazy<NullDictionary<string, KCD_TFR>> Index_KCD_TRANS_ID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find KCD_TFR by KCD_TRANS_ID field
+        /// </summary>
+        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
+        /// <returns>Related KCD_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCD_TFR FindByKCD_TRANS_ID(string KCD_TRANS_ID)
+        {
+            return Index_KCD_TRANS_ID.Value[KCD_TRANS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KCD_TFR by KCD_TRANS_ID field
+        /// </summary>
+        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
+        /// <param name="Value">Related KCD_TFR entity</param>
+        /// <returns>True if the related KCD_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCD_TRANS_ID(string KCD_TRANS_ID, out KCD_TFR Value)
+        {
+            return Index_KCD_TRANS_ID.Value.TryGetValue(KCD_TRANS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCD_TFR by KCD_TRANS_ID field
+        /// </summary>
+        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
+        /// <returns>Related KCD_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCD_TFR TryFindByKCD_TRANS_ID(string KCD_TRANS_ID)
+        {
+            KCD_TFR value;
+            if (Index_KCD_TRANS_ID.Value.TryGetValue(KCD_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find KCD_TFR by ORIG_SCHOOL field
@@ -192,48 +267,6 @@ namespace EduHub.Data.Entities
         {
             KCD_TFR value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KCD_TFR by KCD_TRANS_ID field
-        /// </summary>
-        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
-        /// <returns>Related KCD_TFR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KCD_TFR FindByKCD_TRANS_ID(string KCD_TRANS_ID)
-        {
-            return Index_KCD_TRANS_ID.Value[KCD_TRANS_ID];
-        }
-
-        /// <summary>
-        /// Attempt to find KCD_TFR by KCD_TRANS_ID field
-        /// </summary>
-        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
-        /// <param name="Value">Related KCD_TFR entity</param>
-        /// <returns>True if the related KCD_TFR entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByKCD_TRANS_ID(string KCD_TRANS_ID, out KCD_TFR Value)
-        {
-            return Index_KCD_TRANS_ID.Value.TryGetValue(KCD_TRANS_ID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCD_TFR by KCD_TRANS_ID field
-        /// </summary>
-        /// <param name="KCD_TRANS_ID">KCD_TRANS_ID value used to find KCD_TFR</param>
-        /// <returns>Related KCD_TFR entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KCD_TFR TryFindByKCD_TRANS_ID(string KCD_TRANS_ID)
-        {
-            KCD_TFR value;
-            if (Index_KCD_TRANS_ID.Value.TryGetValue(KCD_TRANS_ID, out value))
             {
                 return value;
             }

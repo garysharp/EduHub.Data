@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal SDFCDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SDFCKEY = new Lazy<Dictionary<string, SDFC>>(() => this.ToDictionary(i => i.SDFCKEY));
             Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
             Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_SDFCKEY = new Lazy<Dictionary<string, SDFC>>(() => this.ToDictionary(i => i.SDFCKEY));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
         }
 
         /// <summary>
@@ -91,59 +91,45 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SDFC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SDFC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SDFC" /> items to added or update the base <see cref="SDFC" /> items</param>
+        /// <returns>A merged list of <see cref="SDFC" /> items</returns>
+        protected override List<SDFC> ApplyDeltaItems(List<SDFC> Items, List<SDFC> DeltaItems)
+        {
+            Dictionary<string, int> Index_SDFCKEY = Items.ToIndexDictionary(i => i.SDFCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SDFC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SDFCKEY.TryGetValue(deltaItem.SDFCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SDFCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SDFC>> Index_SDFCKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_GLCODE;
         private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_GST_TYPE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_INITIATIVE;
+        private Lazy<Dictionary<string, SDFC>> Index_SDFCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_SUBPROGRAM;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SDFC by SDFCKEY field
-        /// </summary>
-        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
-        /// <returns>Related SDFC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDFC FindBySDFCKEY(string SDFCKEY)
-        {
-            return Index_SDFCKEY.Value[SDFCKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SDFC by SDFCKEY field
-        /// </summary>
-        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
-        /// <param name="Value">Related SDFC entity</param>
-        /// <returns>True if the related SDFC entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySDFCKEY(string SDFCKEY, out SDFC Value)
-        {
-            return Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDFC by SDFCKEY field
-        /// </summary>
-        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
-        /// <returns>Related SDFC entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDFC TryFindBySDFCKEY(string SDFCKEY)
-        {
-            SDFC value;
-            if (Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SDFC by GLCODE field
@@ -230,48 +216,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SDFC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
-        /// <returns>List of related SDFC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDFC> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find SDFC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
-        /// <param name="Value">List of related SDFC entities</param>
-        /// <returns>True if the list of related SDFC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<SDFC> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDFC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
-        /// <returns>List of related SDFC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SDFC> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<SDFC> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SDFC by INITIATIVE field
         /// </summary>
         /// <param name="INITIATIVE">INITIATIVE value used to find SDFC</param>
@@ -304,6 +248,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SDFC> value;
             if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDFC FindBySDFCKEY(string SDFCKEY)
+        {
+            return Index_SDFCKEY.Value[SDFCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <param name="Value">Related SDFC entity</param>
+        /// <returns>True if the related SDFC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySDFCKEY(string SDFCKEY, out SDFC Value)
+        {
+            return Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDFC TryFindBySDFCKEY(string SDFCKEY)
+        {
+            SDFC value;
+            if (Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <returns>List of related SDFC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <param name="Value">List of related SDFC entities</param>
+        /// <returns>True if the list of related SDFC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<SDFC> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <returns>List of related SDFC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<SDFC> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }

@@ -19,13 +19,13 @@ namespace EduHub.Data.Entities
         internal STVDIDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedDictionary(i => i.SKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_TID = new Lazy<Dictionary<int, STVDI>>(() => this.ToDictionary(i => i.TID));
-            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
-            Index_VDOMAIN = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.VDOMAIN));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedDictionary(i => i.SKEY));
+            Index_TID = new Lazy<Dictionary<int, STVDI>>(() => this.ToDictionary(i => i.TID));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
+            Index_VDOMAIN = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.VDOMAIN));
         }
 
         /// <summary>
@@ -81,53 +81,81 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="STVDI" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="STVDI" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="STVDI" /> items to added or update the base <see cref="STVDI" /> items</param>
+        /// <returns>A merged list of <see cref="STVDI" /> items</returns>
+        protected override List<STVDI> ApplyDeltaItems(List<STVDI> Items, List<STVDI> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (STVDI deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> Index_SKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>> Index_LW_DATE;
-        private Lazy<Dictionary<int, STVDI>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_SCHOOL_YEAR;
         private Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>> Index_CAMPUS;
-        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_VDOMAIN;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_SCHOOL_YEAR;
+        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> Index_SKEY;
+        private Lazy<Dictionary<int, STVDI>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_VDIMENSION;
+        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_VDOMAIN;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find STVDI by SKEY field
+        /// Find STVDI by CAMPUS field
         /// </summary>
-        /// <param name="SKEY">SKEY value used to find STVDI</param>
+        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
         /// <returns>List of related STVDI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> FindBySKEY(string SKEY)
+        public IReadOnlyList<STVDI> FindByCAMPUS(int? CAMPUS)
         {
-            return Index_SKEY.Value[SKEY];
+            return Index_CAMPUS.Value[CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find STVDI by SKEY field
+        /// Attempt to find STVDI by CAMPUS field
         /// </summary>
-        /// <param name="SKEY">SKEY value used to find STVDI</param>
+        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
         /// <param name="Value">List of related STVDI entities</param>
         /// <returns>True if the list of related STVDI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STVDI> Value)
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<STVDI> Value)
         {
-            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STVDI by SKEY field
+        /// Attempt to find STVDI by CAMPUS field
         /// </summary>
-        /// <param name="SKEY">SKEY value used to find STVDI</param>
+        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
         /// <returns>List of related STVDI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> TryFindBySKEY(string SKEY)
+        public IReadOnlyList<STVDI> TryFindByCAMPUS(int? CAMPUS)
         {
             IReadOnlyList<STVDI> value;
-            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -180,48 +208,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STVDI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STVDI</param>
-        /// <returns>Related STVDI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STVDI FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find STVDI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STVDI</param>
-        /// <param name="Value">Related STVDI entity</param>
-        /// <returns>True if the related STVDI entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out STVDI Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STVDI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find STVDI</param>
-        /// <returns>Related STVDI entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public STVDI TryFindByTID(int TID)
-        {
-            STVDI value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find STVDI by SCHOOL_YEAR field
         /// </summary>
         /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDI</param>
@@ -264,38 +250,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STVDI by CAMPUS field
+        /// Find STVDI by SKEY field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
+        /// <param name="SKEY">SKEY value used to find STVDI</param>
         /// <returns>List of related STVDI entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> FindByCAMPUS(int? CAMPUS)
+        public IReadOnlyList<STVDI> FindBySKEY(string SKEY)
         {
-            return Index_CAMPUS.Value[CAMPUS];
+            return Index_SKEY.Value[SKEY];
         }
 
         /// <summary>
-        /// Attempt to find STVDI by CAMPUS field
+        /// Attempt to find STVDI by SKEY field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
+        /// <param name="SKEY">SKEY value used to find STVDI</param>
         /// <param name="Value">List of related STVDI entities</param>
         /// <returns>True if the list of related STVDI entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<STVDI> Value)
+        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STVDI> Value)
         {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STVDI by CAMPUS field
+        /// Attempt to find STVDI by SKEY field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find STVDI</param>
+        /// <param name="SKEY">SKEY value used to find STVDI</param>
         /// <returns>List of related STVDI entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> TryFindByCAMPUS(int? CAMPUS)
+        public IReadOnlyList<STVDI> TryFindBySKEY(string SKEY)
         {
             IReadOnlyList<STVDI> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
             {
                 return value;
             }
@@ -306,38 +292,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find STVDI by VDOMAIN field
+        /// Find STVDI by TID field
         /// </summary>
-        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
-        /// <returns>List of related STVDI entities</returns>
+        /// <param name="TID">TID value used to find STVDI</param>
+        /// <returns>Related STVDI entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> FindByVDOMAIN(string VDOMAIN)
+        public STVDI FindByTID(int TID)
         {
-            return Index_VDOMAIN.Value[VDOMAIN];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find STVDI by VDOMAIN field
+        /// Attempt to find STVDI by TID field
         /// </summary>
-        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
-        /// <param name="Value">List of related STVDI entities</param>
-        /// <returns>True if the list of related STVDI entities is found</returns>
+        /// <param name="TID">TID value used to find STVDI</param>
+        /// <param name="Value">Related STVDI entity</param>
+        /// <returns>True if the related STVDI entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByVDOMAIN(string VDOMAIN, out IReadOnlyList<STVDI> Value)
+        public bool TryFindByTID(int TID, out STVDI Value)
         {
-            return Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find STVDI by VDOMAIN field
+        /// Attempt to find STVDI by TID field
         /// </summary>
-        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
-        /// <returns>List of related STVDI entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find STVDI</param>
+        /// <returns>Related STVDI entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> TryFindByVDOMAIN(string VDOMAIN)
+        public STVDI TryFindByTID(int TID)
         {
-            IReadOnlyList<STVDI> value;
-            if (Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out value))
+            STVDI value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -380,6 +366,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STVDI> value;
             if (Index_VDIMENSION.Value.TryGetValue(VDIMENSION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STVDI by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
+        /// <returns>List of related STVDI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDI> FindByVDOMAIN(string VDOMAIN)
+        {
+            return Index_VDOMAIN.Value[VDOMAIN];
+        }
+
+        /// <summary>
+        /// Attempt to find STVDI by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
+        /// <param name="Value">List of related STVDI entities</param>
+        /// <returns>True if the list of related STVDI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVDOMAIN(string VDOMAIN, out IReadOnlyList<STVDI> Value)
+        {
+            return Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STVDI by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDI</param>
+        /// <returns>List of related STVDI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDI> TryFindByVDOMAIN(string VDOMAIN)
+        {
+            IReadOnlyList<STVDI> value;
+            if (Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out value))
             {
                 return value;
             }

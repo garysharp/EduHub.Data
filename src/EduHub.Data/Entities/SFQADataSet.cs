@@ -67,6 +67,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SFQA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SFQA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SFQA" /> items to added or update the base <see cref="SFQA" /> items</param>
+        /// <returns>A merged list of <see cref="SFQA" /> items</returns>
+        protected override List<SFQA> ApplyDeltaItems(List<SFQA> Items, List<SFQA> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SFQA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TEACH)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SFQA>>> Index_TEACH;

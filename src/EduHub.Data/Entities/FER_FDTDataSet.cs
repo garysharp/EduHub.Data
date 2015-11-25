@@ -763,6 +763,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="FER_FDT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="FER_FDT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="FER_FDT" /> items to added or update the base <see cref="FER_FDT" /> items</param>
+        /// <returns>A merged list of <see cref="FER_FDT" /> items</returns>
+        protected override List<FER_FDT> ApplyDeltaItems(List<FER_FDT> Items, List<FER_FDT> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (FER_FDT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SOURCE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<FER_FDT>>> Index_SOURCE;

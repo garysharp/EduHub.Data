@@ -66,6 +66,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SCEN_CLV" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SCEN_CLV" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SCEN_CLV" /> items to added or update the base <see cref="SCEN_CLV" /> items</param>
+        /// <returns>A merged list of <see cref="SCEN_CLV" /> items</returns>
+        protected override List<SCEN_CLV> ApplyDeltaItems(List<SCEN_CLV> Items, List<SCEN_CLV> DeltaItems)
+        {
+            Dictionary<int, int> Index_ID = Items.ToIndexDictionary(i => i.ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SCEN_CLV deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ID.TryGetValue(deltaItem.ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, SCEN_CLV>> Index_ID;

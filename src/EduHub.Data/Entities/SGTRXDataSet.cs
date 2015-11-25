@@ -76,6 +76,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SGTRX" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SGTRX" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SGTRX" /> items to added or update the base <see cref="SGTRX" /> items</param>
+        /// <returns>A merged list of <see cref="SGTRX" /> items</returns>
+        protected override List<SGTRX> ApplyDeltaItems(List<SGTRX> Items, List<SGTRX> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SGTRX deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SGTRXKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SGTRX>>> Index_SGTRXKEY;

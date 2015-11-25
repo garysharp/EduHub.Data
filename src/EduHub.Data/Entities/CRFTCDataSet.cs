@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_FTC_CODE = new Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedNullDictionary(i => i.FTC_CODE));
             Index_TID = new Lazy<Dictionary<int, CRFTC>>(() => this.ToDictionary(i => i.TID));
             Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
-            Index_FTC_CODE = new Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedNullDictionary(i => i.FTC_CODE));
         }
 
         /// <summary>
@@ -93,12 +93,40 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="CRFTC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="CRFTC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="CRFTC" /> items to added or update the base <see cref="CRFTC" /> items</param>
+        /// <returns>A merged list of <see cref="CRFTC" /> items</returns>
+        protected override List<CRFTC> ApplyDeltaItems(List<CRFTC> Items, List<CRFTC> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (CRFTC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>> Index_FTC_CODE;
         private Lazy<Dictionary<int, CRFTC>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>> Index_TRREF;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>> Index_FTC_CODE;
 
         #endregion
 
@@ -137,6 +165,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<CRFTC> value;
             if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> FindByFTC_CODE(string FTC_CODE)
+        {
+            return Index_FTC_CODE.Value[FTC_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <param name="Value">List of related CRFTC entities</param>
+        /// <returns>True if the list of related CRFTC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFTC_CODE(string FTC_CODE, out IReadOnlyList<CRFTC> Value)
+        {
+            return Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> TryFindByFTC_CODE(string FTC_CODE)
+        {
+            IReadOnlyList<CRFTC> value;
+            if (Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out value))
             {
                 return value;
             }
@@ -221,48 +291,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<CRFTC> value;
             if (Index_TRREF.Value.TryGetValue(TRREF, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find CRFTC by FTC_CODE field
-        /// </summary>
-        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
-        /// <returns>List of related CRFTC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRFTC> FindByFTC_CODE(string FTC_CODE)
-        {
-            return Index_FTC_CODE.Value[FTC_CODE];
-        }
-
-        /// <summary>
-        /// Attempt to find CRFTC by FTC_CODE field
-        /// </summary>
-        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
-        /// <param name="Value">List of related CRFTC entities</param>
-        /// <returns>True if the list of related CRFTC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFTC_CODE(string FTC_CODE, out IReadOnlyList<CRFTC> Value)
-        {
-            return Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CRFTC by FTC_CODE field
-        /// </summary>
-        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
-        /// <returns>List of related CRFTC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRFTC> TryFindByFTC_CODE(string FTC_CODE)
-        {
-            IReadOnlyList<CRFTC> value;
-            if (Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out value))
             {
                 return value;
             }

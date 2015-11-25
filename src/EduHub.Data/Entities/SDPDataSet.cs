@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal SDPDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SDPKEY = new Lazy<Dictionary<int, SDP>>(() => this.ToDictionary(i => i.SDPKEY));
             Index_INCIDENT_KEY = new Lazy<NullDictionary<int?, IReadOnlyList<SDP>>>(() => this.ToGroupedNullDictionary(i => i.INCIDENT_KEY));
+            Index_SDPKEY = new Lazy<Dictionary<int, SDP>>(() => this.ToDictionary(i => i.SDPKEY));
             Index_STUDENT_KEY = new Lazy<NullDictionary<string, IReadOnlyList<SDP>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT_KEY));
         }
 
@@ -80,57 +80,43 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SDP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SDP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SDP" /> items to added or update the base <see cref="SDP" /> items</param>
+        /// <returns>A merged list of <see cref="SDP" /> items</returns>
+        protected override List<SDP> ApplyDeltaItems(List<SDP> Items, List<SDP> DeltaItems)
+        {
+            Dictionary<int, int> Index_SDPKEY = Items.ToIndexDictionary(i => i.SDPKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SDP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SDPKEY.TryGetValue(deltaItem.SDPKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SDPKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SDP>> Index_SDPKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<SDP>>> Index_INCIDENT_KEY;
+        private Lazy<Dictionary<int, SDP>> Index_SDPKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SDP>>> Index_STUDENT_KEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SDP by SDPKEY field
-        /// </summary>
-        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
-        /// <returns>Related SDP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDP FindBySDPKEY(int SDPKEY)
-        {
-            return Index_SDPKEY.Value[SDPKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SDP by SDPKEY field
-        /// </summary>
-        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
-        /// <param name="Value">Related SDP entity</param>
-        /// <returns>True if the related SDP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySDPKEY(int SDPKEY, out SDP Value)
-        {
-            return Index_SDPKEY.Value.TryGetValue(SDPKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDP by SDPKEY field
-        /// </summary>
-        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
-        /// <returns>Related SDP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SDP TryFindBySDPKEY(int SDPKEY)
-        {
-            SDP value;
-            if (Index_SDPKEY.Value.TryGetValue(SDPKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SDP by INCIDENT_KEY field
@@ -165,6 +151,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SDP> value;
             if (Index_INCIDENT_KEY.Value.TryGetValue(INCIDENT_KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDP by SDPKEY field
+        /// </summary>
+        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
+        /// <returns>Related SDP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDP FindBySDPKEY(int SDPKEY)
+        {
+            return Index_SDPKEY.Value[SDPKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SDP by SDPKEY field
+        /// </summary>
+        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
+        /// <param name="Value">Related SDP entity</param>
+        /// <returns>True if the related SDP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySDPKEY(int SDPKEY, out SDP Value)
+        {
+            return Index_SDPKEY.Value.TryGetValue(SDPKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDP by SDPKEY field
+        /// </summary>
+        /// <param name="SDPKEY">SDPKEY value used to find SDP</param>
+        /// <returns>Related SDP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDP TryFindBySDPKEY(int SDPKEY)
+        {
+            SDP value;
+            if (Index_SDPKEY.Value.TryGetValue(SDPKEY, out value))
             {
                 return value;
             }

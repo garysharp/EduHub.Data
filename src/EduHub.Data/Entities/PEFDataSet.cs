@@ -20,12 +20,12 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, PEF>>(() => this.ToDictionary(i => i.TID));
-            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
-            Index_TRCENTRE = new Lazy<NullDictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.TRCENTRE));
-            Index_PAY_STEP = new Lazy<NullDictionary<short?, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.PAY_STEP));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_PAY_STEP = new Lazy<NullDictionary<short?, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.PAY_STEP));
+            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_TID = new Lazy<Dictionary<int, PEF>>(() => this.ToDictionary(i => i.TID));
+            Index_TRCENTRE = new Lazy<NullDictionary<string, IReadOnlyList<PEF>>>(() => this.ToGroupedNullDictionary(i => i.TRCENTRE));
         }
 
         /// <summary>
@@ -177,15 +177,43 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PEF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PEF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PEF" /> items to added or update the base <see cref="PEF" /> items</param>
+        /// <returns>A merged list of <see cref="PEF" /> items</returns>
+        protected override List<PEF> ApplyDeltaItems(List<PEF> Items, List<PEF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PEF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<PEF>>> Index_CODE;
-        private Lazy<Dictionary<int, PEF>> Index_TID;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PEF>>> Index_PAYITEM;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEF>>> Index_TRCENTRE;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PEF>>> Index_PAY_STEP;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEF>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<PEF>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PEF>>> Index_PAY_STEP;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PEF>>> Index_PAYITEM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEF>>> Index_SUBPROGRAM;
+        private Lazy<Dictionary<int, PEF>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEF>>> Index_TRCENTRE;
 
         #endregion
 
@@ -234,122 +262,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEF by TID field
+        /// Find PEF by INITIATIVE field
         /// </summary>
-        /// <param name="TID">TID value used to find PEF</param>
-        /// <returns>Related PEF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEF FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find PEF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEF</param>
-        /// <param name="Value">Related PEF entity</param>
-        /// <returns>True if the related PEF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PEF Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEF</param>
-        /// <returns>Related PEF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEF TryFindByTID(int TID)
-        {
-            PEF value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PEF by PAYITEM field
-        /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
         /// <returns>List of related PEF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> FindByPAYITEM(short? PAYITEM)
+        public IReadOnlyList<PEF> FindByINITIATIVE(string INITIATIVE)
         {
-            return Index_PAYITEM.Value[PAYITEM];
+            return Index_INITIATIVE.Value[INITIATIVE];
         }
 
         /// <summary>
-        /// Attempt to find PEF by PAYITEM field
+        /// Attempt to find PEF by INITIATIVE field
         /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
         /// <param name="Value">List of related PEF entities</param>
         /// <returns>True if the list of related PEF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPAYITEM(short? PAYITEM, out IReadOnlyList<PEF> Value)
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEF> Value)
         {
-            return Index_PAYITEM.Value.TryGetValue(PAYITEM, out Value);
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEF by PAYITEM field
+        /// Attempt to find PEF by INITIATIVE field
         /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
         /// <returns>List of related PEF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> TryFindByPAYITEM(short? PAYITEM)
+        public IReadOnlyList<PEF> TryFindByINITIATIVE(string INITIATIVE)
         {
             IReadOnlyList<PEF> value;
-            if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PEF by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
-        /// <returns>List of related PEF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> FindByTRCENTRE(string TRCENTRE)
-        {
-            return Index_TRCENTRE.Value[TRCENTRE];
-        }
-
-        /// <summary>
-        /// Attempt to find PEF by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
-        /// <param name="Value">List of related PEF entities</param>
-        /// <returns>True if the list of related PEF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRCENTRE(string TRCENTRE, out IReadOnlyList<PEF> Value)
-        {
-            return Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEF by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
-        /// <returns>List of related PEF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> TryFindByTRCENTRE(string TRCENTRE)
-        {
-            IReadOnlyList<PEF> value;
-            if (Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out value))
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }
@@ -402,6 +346,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find PEF by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <returns>List of related PEF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEF> FindByPAYITEM(short? PAYITEM)
+        {
+            return Index_PAYITEM.Value[PAYITEM];
+        }
+
+        /// <summary>
+        /// Attempt to find PEF by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <param name="Value">List of related PEF entities</param>
+        /// <returns>True if the list of related PEF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPAYITEM(short? PAYITEM, out IReadOnlyList<PEF> Value)
+        {
+            return Index_PAYITEM.Value.TryGetValue(PAYITEM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEF by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PEF</param>
+        /// <returns>List of related PEF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEF> TryFindByPAYITEM(short? PAYITEM)
+        {
+            IReadOnlyList<PEF> value;
+            if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find PEF by SUBPROGRAM field
         /// </summary>
         /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PEF</param>
@@ -444,38 +430,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEF by INITIATIVE field
+        /// Find PEF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
-        /// <returns>List of related PEF entities</returns>
+        /// <param name="TID">TID value used to find PEF</param>
+        /// <returns>Related PEF entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> FindByINITIATIVE(string INITIATIVE)
+        public PEF FindByTID(int TID)
         {
-            return Index_INITIATIVE.Value[INITIATIVE];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find PEF by INITIATIVE field
+        /// Attempt to find PEF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
+        /// <param name="TID">TID value used to find PEF</param>
+        /// <param name="Value">Related PEF entity</param>
+        /// <returns>True if the related PEF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PEF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEF</param>
+        /// <returns>Related PEF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEF TryFindByTID(int TID)
+        {
+            PEF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PEF by TRCENTRE field
+        /// </summary>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
+        /// <returns>List of related PEF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEF> FindByTRCENTRE(string TRCENTRE)
+        {
+            return Index_TRCENTRE.Value[TRCENTRE];
+        }
+
+        /// <summary>
+        /// Attempt to find PEF by TRCENTRE field
+        /// </summary>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
         /// <param name="Value">List of related PEF entities</param>
         /// <returns>True if the list of related PEF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEF> Value)
+        public bool TryFindByTRCENTRE(string TRCENTRE, out IReadOnlyList<PEF> Value)
         {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+            return Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEF by INITIATIVE field
+        /// Attempt to find PEF by TRCENTRE field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEF</param>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEF</param>
         /// <returns>List of related PEF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEF> TryFindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<PEF> TryFindByTRCENTRE(string TRCENTRE)
         {
             IReadOnlyList<PEF> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            if (Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out value))
             {
                 return value;
             }

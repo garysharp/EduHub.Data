@@ -19,13 +19,13 @@ namespace EduHub.Data.Entities
         internal SXABCONVDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SXABCONV_ID = new Lazy<Dictionary<int, SXABCONV>>(() => this.ToDictionary(i => i.SXABCONV_ID));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_STKEY_ABSENCE_DATE = new Lazy<Dictionary<Tuple<string, DateTime?>, SXABCONV>>(() => this.ToDictionary(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE)));
-            Index_STKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.STKEY));
-            Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
             Index_AM_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.AM_TYPE));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_PM_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.PM_TYPE));
+            Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
+            Index_STKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>>(() => this.ToGroupedNullDictionary(i => i.STKEY));
+            Index_STKEY_ABSENCE_DATE = new Lazy<Dictionary<Tuple<string, DateTime?>, SXABCONV>>(() => this.ToDictionary(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE)));
+            Index_SXABCONV_ID = new Lazy<Dictionary<int, SXABCONV>>(() => this.ToDictionary(i => i.SXABCONV_ID));
         }
 
         /// <summary>
@@ -87,53 +87,86 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SXABCONV" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SXABCONV" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SXABCONV" /> items to added or update the base <see cref="SXABCONV" /> items</param>
+        /// <returns>A merged list of <see cref="SXABCONV" /> items</returns>
+        protected override List<SXABCONV> ApplyDeltaItems(List<SXABCONV> Items, List<SXABCONV> DeltaItems)
+        {
+            Dictionary<Tuple<string, DateTime?>, int> Index_STKEY_ABSENCE_DATE = Items.ToIndexDictionary(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE));
+            Dictionary<int, int> Index_SXABCONV_ID = Items.ToIndexDictionary(i => i.SXABCONV_ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SXABCONV deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_STKEY_ABSENCE_DATE.TryGetValue(Tuple.Create(deltaItem.STKEY, deltaItem.ABSENCE_DATE), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_SXABCONV_ID.TryGetValue(deltaItem.SXABCONV_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SXABCONV_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SXABCONV>> Index_SXABCONV_ID;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SXABCONV>>> Index_LW_DATE;
-        private Lazy<Dictionary<Tuple<string, DateTime?>, SXABCONV>> Index_STKEY_ABSENCE_DATE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>> Index_STKEY;
-        private Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>> Index_ST_YEAR_LEVEL;
         private Lazy<NullDictionary<short?, IReadOnlyList<SXABCONV>>> Index_AM_TYPE;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SXABCONV>>> Index_LW_DATE;
         private Lazy<NullDictionary<short?, IReadOnlyList<SXABCONV>>> Index_PM_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>> Index_ST_YEAR_LEVEL;
+        private Lazy<NullDictionary<string, IReadOnlyList<SXABCONV>>> Index_STKEY;
+        private Lazy<Dictionary<Tuple<string, DateTime?>, SXABCONV>> Index_STKEY_ABSENCE_DATE;
+        private Lazy<Dictionary<int, SXABCONV>> Index_SXABCONV_ID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SXABCONV by SXABCONV_ID field
+        /// Find SXABCONV by AM_TYPE field
         /// </summary>
-        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
-        /// <returns>Related SXABCONV entity</returns>
+        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SXABCONV FindBySXABCONV_ID(int SXABCONV_ID)
+        public IReadOnlyList<SXABCONV> FindByAM_TYPE(short? AM_TYPE)
         {
-            return Index_SXABCONV_ID.Value[SXABCONV_ID];
+            return Index_AM_TYPE.Value[AM_TYPE];
         }
 
         /// <summary>
-        /// Attempt to find SXABCONV by SXABCONV_ID field
+        /// Attempt to find SXABCONV by AM_TYPE field
         /// </summary>
-        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
-        /// <param name="Value">Related SXABCONV entity</param>
-        /// <returns>True if the related SXABCONV entity is found</returns>
+        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
+        /// <param name="Value">List of related SXABCONV entities</param>
+        /// <returns>True if the list of related SXABCONV entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySXABCONV_ID(int SXABCONV_ID, out SXABCONV Value)
+        public bool TryFindByAM_TYPE(short? AM_TYPE, out IReadOnlyList<SXABCONV> Value)
         {
-            return Index_SXABCONV_ID.Value.TryGetValue(SXABCONV_ID, out Value);
+            return Index_AM_TYPE.Value.TryGetValue(AM_TYPE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SXABCONV by SXABCONV_ID field
+        /// Attempt to find SXABCONV by AM_TYPE field
         /// </summary>
-        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
-        /// <returns>Related SXABCONV entity, or null if not found</returns>
+        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SXABCONV TryFindBySXABCONV_ID(int SXABCONV_ID)
+        public IReadOnlyList<SXABCONV> TryFindByAM_TYPE(short? AM_TYPE)
         {
-            SXABCONV value;
-            if (Index_SXABCONV_ID.Value.TryGetValue(SXABCONV_ID, out value))
+            IReadOnlyList<SXABCONV> value;
+            if (Index_AM_TYPE.Value.TryGetValue(AM_TYPE, out value))
             {
                 return value;
             }
@@ -176,6 +209,132 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SXABCONV> value;
             if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXABCONV by PM_TYPE field
+        /// </summary>
+        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> FindByPM_TYPE(short? PM_TYPE)
+        {
+            return Index_PM_TYPE.Value[PM_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by PM_TYPE field
+        /// </summary>
+        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
+        /// <param name="Value">List of related SXABCONV entities</param>
+        /// <returns>True if the list of related SXABCONV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPM_TYPE(short? PM_TYPE, out IReadOnlyList<SXABCONV> Value)
+        {
+            return Index_PM_TYPE.Value.TryGetValue(PM_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by PM_TYPE field
+        /// </summary>
+        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> TryFindByPM_TYPE(short? PM_TYPE)
+        {
+            IReadOnlyList<SXABCONV> value;
+            if (Index_PM_TYPE.Value.TryGetValue(PM_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXABCONV by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> FindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            return Index_ST_YEAR_LEVEL.Value[ST_YEAR_LEVEL];
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
+        /// <param name="Value">List of related SXABCONV entities</param>
+        /// <returns>True if the list of related SXABCONV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL, out IReadOnlyList<SXABCONV> Value)
+        {
+            return Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            IReadOnlyList<SXABCONV> value;
+            if (Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXABCONV by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> FindBySTKEY(string STKEY)
+        {
+            return Index_STKEY.Value[STKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
+        /// <param name="Value">List of related SXABCONV entities</param>
+        /// <returns>True if the list of related SXABCONV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTKEY(string STKEY, out IReadOnlyList<SXABCONV> Value)
+        {
+            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXABCONV by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
+        /// <returns>List of related SXABCONV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXABCONV> TryFindBySTKEY(string STKEY)
+        {
+            IReadOnlyList<SXABCONV> value;
+            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
             {
                 return value;
             }
@@ -231,164 +390,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SXABCONV by STKEY field
+        /// Find SXABCONV by SXABCONV_ID field
         /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities</returns>
+        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
+        /// <returns>Related SXABCONV entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> FindBySTKEY(string STKEY)
+        public SXABCONV FindBySXABCONV_ID(int SXABCONV_ID)
         {
-            return Index_STKEY.Value[STKEY];
+            return Index_SXABCONV_ID.Value[SXABCONV_ID];
         }
 
         /// <summary>
-        /// Attempt to find SXABCONV by STKEY field
+        /// Attempt to find SXABCONV by SXABCONV_ID field
         /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
-        /// <param name="Value">List of related SXABCONV entities</param>
-        /// <returns>True if the list of related SXABCONV entities is found</returns>
+        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
+        /// <param name="Value">Related SXABCONV entity</param>
+        /// <returns>True if the related SXABCONV entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTKEY(string STKEY, out IReadOnlyList<SXABCONV> Value)
+        public bool TryFindBySXABCONV_ID(int SXABCONV_ID, out SXABCONV Value)
         {
-            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
+            return Index_SXABCONV_ID.Value.TryGetValue(SXABCONV_ID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SXABCONV by STKEY field
+        /// Attempt to find SXABCONV by SXABCONV_ID field
         /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities, or null if not found</returns>
+        /// <param name="SXABCONV_ID">SXABCONV_ID value used to find SXABCONV</param>
+        /// <returns>Related SXABCONV entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> TryFindBySTKEY(string STKEY)
+        public SXABCONV TryFindBySXABCONV_ID(int SXABCONV_ID)
         {
-            IReadOnlyList<SXABCONV> value;
-            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SXABCONV by ST_YEAR_LEVEL field
-        /// </summary>
-        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> FindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
-        {
-            return Index_ST_YEAR_LEVEL.Value[ST_YEAR_LEVEL];
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by ST_YEAR_LEVEL field
-        /// </summary>
-        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
-        /// <param name="Value">List of related SXABCONV entities</param>
-        /// <returns>True if the list of related SXABCONV entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL, out IReadOnlyList<SXABCONV> Value)
-        {
-            return Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by ST_YEAR_LEVEL field
-        /// </summary>
-        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
-        {
-            IReadOnlyList<SXABCONV> value;
-            if (Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SXABCONV by AM_TYPE field
-        /// </summary>
-        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> FindByAM_TYPE(short? AM_TYPE)
-        {
-            return Index_AM_TYPE.Value[AM_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by AM_TYPE field
-        /// </summary>
-        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
-        /// <param name="Value">List of related SXABCONV entities</param>
-        /// <returns>True if the list of related SXABCONV entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByAM_TYPE(short? AM_TYPE, out IReadOnlyList<SXABCONV> Value)
-        {
-            return Index_AM_TYPE.Value.TryGetValue(AM_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by AM_TYPE field
-        /// </summary>
-        /// <param name="AM_TYPE">AM_TYPE value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> TryFindByAM_TYPE(short? AM_TYPE)
-        {
-            IReadOnlyList<SXABCONV> value;
-            if (Index_AM_TYPE.Value.TryGetValue(AM_TYPE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SXABCONV by PM_TYPE field
-        /// </summary>
-        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> FindByPM_TYPE(short? PM_TYPE)
-        {
-            return Index_PM_TYPE.Value[PM_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by PM_TYPE field
-        /// </summary>
-        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
-        /// <param name="Value">List of related SXABCONV entities</param>
-        /// <returns>True if the list of related SXABCONV entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPM_TYPE(short? PM_TYPE, out IReadOnlyList<SXABCONV> Value)
-        {
-            return Index_PM_TYPE.Value.TryGetValue(PM_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXABCONV by PM_TYPE field
-        /// </summary>
-        /// <param name="PM_TYPE">PM_TYPE value used to find SXABCONV</param>
-        /// <returns>List of related SXABCONV entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SXABCONV> TryFindByPM_TYPE(short? PM_TYPE)
-        {
-            IReadOnlyList<SXABCONV> value;
-            if (Index_PM_TYPE.Value.TryGetValue(PM_TYPE, out value))
+            SXABCONV value;
+            if (Index_SXABCONV_ID.Value.TryGetValue(SXABCONV_ID, out value))
             {
                 return value;
             }

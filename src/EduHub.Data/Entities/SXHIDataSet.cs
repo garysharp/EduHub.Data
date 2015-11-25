@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal SXHIDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TID = new Lazy<Dictionary<int, SXHI>>(() => this.ToDictionary(i => i.TID));
             Index_SKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXHI>>>(() => this.ToGroupedNullDictionary(i => i.SKEY));
+            Index_TID = new Lazy<Dictionary<int, SXHI>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -163,56 +163,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SXHI" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SXHI" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SXHI" /> items to added or update the base <see cref="SXHI" /> items</param>
+        /// <returns>A merged list of <see cref="SXHI" /> items</returns>
+        protected override List<SXHI> ApplyDeltaItems(List<SXHI> Items, List<SXHI> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SXHI deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TID)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SXHI>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<SXHI>>> Index_SKEY;
+        private Lazy<Dictionary<int, SXHI>> Index_TID;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SXHI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SXHI</param>
-        /// <returns>Related SXHI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SXHI FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SXHI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SXHI</param>
-        /// <param name="Value">Related SXHI entity</param>
-        /// <returns>True if the related SXHI entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SXHI Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXHI by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SXHI</param>
-        /// <returns>Related SXHI entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SXHI TryFindByTID(int TID)
-        {
-            SXHI value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SXHI by SKEY field
@@ -247,6 +233,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SXHI> value;
             if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXHI FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <param name="Value">Related SXHI entity</param>
+        /// <returns>True if the related SXHI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SXHI Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXHI TryFindByTID(int TID)
+        {
+            SXHI value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

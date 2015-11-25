@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<AKK>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, AKK>>(() => this.ToDictionary(i => i.TID));
             Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<AKK>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
+            Index_TID = new Lazy<Dictionary<int, AKK>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -62,11 +62,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="AKK" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="AKK" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="AKK" /> items to added or update the base <see cref="AKK" /> items</param>
+        /// <returns>A merged list of <see cref="AKK" /> items</returns>
+        protected override List<AKK> ApplyDeltaItems(List<AKK> Items, List<AKK> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (AKK deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<AKK>>> Index_CODE;
-        private Lazy<Dictionary<int, AKK>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<AKK>>> Index_STAFF;
+        private Lazy<Dictionary<int, AKK>> Index_TID;
 
         #endregion
 
@@ -115,48 +143,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find AKK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find AKK</param>
-        /// <returns>Related AKK entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public AKK FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find AKK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find AKK</param>
-        /// <param name="Value">Related AKK entity</param>
-        /// <returns>True if the related AKK entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out AKK Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AKK by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find AKK</param>
-        /// <returns>Related AKK entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public AKK TryFindByTID(int TID)
-        {
-            AKK value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find AKK by STAFF field
         /// </summary>
         /// <param name="STAFF">STAFF value used to find AKK</param>
@@ -189,6 +175,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<AKK> value;
             if (Index_STAFF.Value.TryGetValue(STAFF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AKK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find AKK</param>
+        /// <returns>Related AKK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKK FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find AKK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find AKK</param>
+        /// <param name="Value">Related AKK entity</param>
+        /// <returns>True if the related AKK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out AKK Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AKK by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find AKK</param>
+        /// <returns>Related AKK entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKK TryFindByTID(int TID)
+        {
+            AKK value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

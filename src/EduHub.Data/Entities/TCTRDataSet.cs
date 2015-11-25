@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal TCTRDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TCTRKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTR>>>(() => this.ToGroupedDictionary(i => i.TCTRKEY));
-            Index_TID = new Lazy<Dictionary<int, TCTR>>(() => this.ToDictionary(i => i.TID));
-            Index_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTR>>>(() => this.ToGroupedNullDictionary(i => i.TEACH));
             Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<TCTR>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_TCTRKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTR>>>(() => this.ToGroupedDictionary(i => i.TCTRKEY));
+            Index_TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTR>>>(() => this.ToGroupedNullDictionary(i => i.TEACH));
+            Index_TID = new Lazy<Dictionary<int, TCTR>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -87,16 +87,86 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TCTR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TCTR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TCTR" /> items to added or update the base <see cref="TCTR" /> items</param>
+        /// <returns>A merged list of <see cref="TCTR" /> items</returns>
+        protected override List<TCTR> ApplyDeltaItems(List<TCTR> Items, List<TCTR> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TCTR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TCTRKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTR>>> Index_TCTRKEY;
-        private Lazy<Dictionary<int, TCTR>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTR>>> Index_TEACH;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTR>>> Index_ROOM;
+        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTR>>> Index_TCTRKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTR>>> Index_TEACH;
+        private Lazy<Dictionary<int, TCTR>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find TCTR by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find TCTR</param>
+        /// <returns>List of related TCTR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTR> FindByROOM(string ROOM)
+        {
+            return Index_ROOM.Value[ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTR by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find TCTR</param>
+        /// <param name="Value">List of related TCTR entities</param>
+        /// <returns>True if the list of related TCTR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM(string ROOM, out IReadOnlyList<TCTR> Value)
+        {
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTR by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find TCTR</param>
+        /// <returns>List of related TCTR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTR> TryFindByROOM(string ROOM)
+        {
+            IReadOnlyList<TCTR> value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find TCTR by TCTRKEY field
@@ -131,48 +201,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<TCTR> value;
             if (Index_TCTRKEY.Value.TryGetValue(TCTRKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTR by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTR</param>
-        /// <returns>Related TCTR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTR FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTR by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTR</param>
-        /// <param name="Value">Related TCTR entity</param>
-        /// <returns>True if the related TCTR entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out TCTR Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTR by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find TCTR</param>
-        /// <returns>Related TCTR entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TCTR TryFindByTID(int TID)
-        {
-            TCTR value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -225,38 +253,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TCTR by ROOM field
+        /// Find TCTR by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TCTR</param>
-        /// <returns>List of related TCTR entities</returns>
+        /// <param name="TID">TID value used to find TCTR</param>
+        /// <returns>Related TCTR entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTR> FindByROOM(string ROOM)
+        public TCTR FindByTID(int TID)
         {
-            return Index_ROOM.Value[ROOM];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find TCTR by ROOM field
+        /// Attempt to find TCTR by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TCTR</param>
-        /// <param name="Value">List of related TCTR entities</param>
-        /// <returns>True if the list of related TCTR entities is found</returns>
+        /// <param name="TID">TID value used to find TCTR</param>
+        /// <param name="Value">Related TCTR entity</param>
+        /// <returns>True if the related TCTR entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByROOM(string ROOM, out IReadOnlyList<TCTR> Value)
+        public bool TryFindByTID(int TID, out TCTR Value)
         {
-            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TCTR by ROOM field
+        /// Attempt to find TCTR by TID field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find TCTR</param>
-        /// <returns>List of related TCTR entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find TCTR</param>
+        /// <returns>Related TCTR entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTR> TryFindByROOM(string ROOM)
+        public TCTR TryFindByTID(int TID)
         {
-            IReadOnlyList<TCTR> value;
-            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            TCTR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

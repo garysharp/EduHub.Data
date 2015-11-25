@@ -60,6 +60,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAP" /> items to added or update the base <see cref="SAP" /> items</param>
+        /// <returns>A merged list of <see cref="SAP" /> items</returns>
+        protected override List<SAP> ApplyDeltaItems(List<SAP> Items, List<SAP> DeltaItems)
+        {
+            Dictionary<string, int> Index_SAPKEY = Items.ToIndexDictionary(i => i.SAPKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SAPKEY.TryGetValue(deltaItem.SAPKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SAPKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, SAP>> Index_SAPKEY;

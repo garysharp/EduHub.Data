@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SUPRDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_PREREQUISITE = new Lazy<NullDictionary<string, IReadOnlyList<SUPR>>>(() => this.ToGroupedNullDictionary(i => i.PREREQUISITE));
             Index_SUPRKEY = new Lazy<Dictionary<string, IReadOnlyList<SUPR>>>(() => this.ToGroupedDictionary(i => i.SUPRKEY));
             Index_TID = new Lazy<Dictionary<int, SUPR>>(() => this.ToDictionary(i => i.TID));
-            Index_PREREQUISITE = new Lazy<NullDictionary<string, IReadOnlyList<SUPR>>>(() => this.ToGroupedNullDictionary(i => i.PREREQUISITE));
         }
 
         /// <summary>
@@ -65,15 +65,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SUPR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SUPR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SUPR" /> items to added or update the base <see cref="SUPR" /> items</param>
+        /// <returns>A merged list of <see cref="SUPR" /> items</returns>
+        protected override List<SUPR> ApplyDeltaItems(List<SUPR> Items, List<SUPR> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SUPR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SUPRKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SUPR>>> Index_PREREQUISITE;
         private Lazy<Dictionary<string, IReadOnlyList<SUPR>>> Index_SUPRKEY;
         private Lazy<Dictionary<int, SUPR>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SUPR>>> Index_PREREQUISITE;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SUPR by PREREQUISITE field
+        /// </summary>
+        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
+        /// <returns>List of related SUPR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SUPR> FindByPREREQUISITE(string PREREQUISITE)
+        {
+            return Index_PREREQUISITE.Value[PREREQUISITE];
+        }
+
+        /// <summary>
+        /// Attempt to find SUPR by PREREQUISITE field
+        /// </summary>
+        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
+        /// <param name="Value">List of related SUPR entities</param>
+        /// <returns>True if the list of related SUPR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPREREQUISITE(string PREREQUISITE, out IReadOnlyList<SUPR> Value)
+        {
+            return Index_PREREQUISITE.Value.TryGetValue(PREREQUISITE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SUPR by PREREQUISITE field
+        /// </summary>
+        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
+        /// <returns>List of related SUPR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SUPR> TryFindByPREREQUISITE(string PREREQUISITE)
+        {
+            IReadOnlyList<SUPR> value;
+            if (Index_PREREQUISITE.Value.TryGetValue(PREREQUISITE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SUPR by SUPRKEY field
@@ -150,48 +220,6 @@ namespace EduHub.Data.Entities
         {
             SUPR value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SUPR by PREREQUISITE field
-        /// </summary>
-        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
-        /// <returns>List of related SUPR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SUPR> FindByPREREQUISITE(string PREREQUISITE)
-        {
-            return Index_PREREQUISITE.Value[PREREQUISITE];
-        }
-
-        /// <summary>
-        /// Attempt to find SUPR by PREREQUISITE field
-        /// </summary>
-        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
-        /// <param name="Value">List of related SUPR entities</param>
-        /// <returns>True if the list of related SUPR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPREREQUISITE(string PREREQUISITE, out IReadOnlyList<SUPR> Value)
-        {
-            return Index_PREREQUISITE.Value.TryGetValue(PREREQUISITE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SUPR by PREREQUISITE field
-        /// </summary>
-        /// <param name="PREREQUISITE">PREREQUISITE value used to find SUPR</param>
-        /// <returns>List of related SUPR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SUPR> TryFindByPREREQUISITE(string PREREQUISITE)
-        {
-            IReadOnlyList<SUPR> value;
-            if (Index_PREREQUISITE.Value.TryGetValue(PREREQUISITE, out value))
             {
                 return value;
             }

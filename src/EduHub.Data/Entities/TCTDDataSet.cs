@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal TCTDDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTD>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
             Index_TCTDKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>>(() => this.ToGroupedDictionary(i => i.TCTDKEY));
             Index_TID = new Lazy<Dictionary<int, TCTD>>(() => this.ToDictionary(i => i.TID));
-            Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTD>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
         }
 
         /// <summary>
@@ -77,15 +77,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TCTD" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TCTD" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TCTD" /> items to added or update the base <see cref="TCTD" /> items</param>
+        /// <returns>A merged list of <see cref="TCTD" /> items</returns>
+        protected override List<TCTD> ApplyDeltaItems(List<TCTD> Items, List<TCTD> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TCTD deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TCTDKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTD>>> Index_QKEY;
         private Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>> Index_TCTDKEY;
         private Lazy<Dictionary<int, TCTD>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TCTD>>> Index_QKEY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> FindByQKEY(string QKEY)
+        {
+            return Index_QKEY.Value[QKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <param name="Value">List of related TCTD entities</param>
+        /// <returns>True if the list of related TCTD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<TCTD> Value)
+        {
+            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> TryFindByQKEY(string QKEY)
+        {
+            IReadOnlyList<TCTD> value;
+            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find TCTD by TCTDKEY field
@@ -162,48 +232,6 @@ namespace EduHub.Data.Entities
         {
             TCTD value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TCTD by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find TCTD</param>
-        /// <returns>List of related TCTD entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTD> FindByQKEY(string QKEY)
-        {
-            return Index_QKEY.Value[QKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find TCTD by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find TCTD</param>
-        /// <param name="Value">List of related TCTD entities</param>
-        /// <returns>True if the list of related TCTD entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<TCTD> Value)
-        {
-            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TCTD by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find TCTD</param>
-        /// <returns>List of related TCTD entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TCTD> TryFindByQKEY(string QKEY)
-        {
-            IReadOnlyList<TCTD> value;
-            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
             {
                 return value;
             }

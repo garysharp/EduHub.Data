@@ -19,16 +19,16 @@ namespace EduHub.Data.Entities
         internal CRFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, CRF>>(() => this.ToDictionary(i => i.TID));
-            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
-            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
-            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
-            Index_DEL_CODE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.DEL_CODE));
             Index_ATKEY = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.ATKEY));
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_DEL_CODE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.DEL_CODE));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
             Index_INVOICEGST = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.INVOICEGST));
             Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
-            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_TID = new Lazy<Dictionary<int, CRF>>(() => this.ToDictionary(i => i.TID));
+            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
         }
 
         /// <summary>
@@ -288,182 +288,84 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="CRF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="CRF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="CRF" /> items to added or update the base <see cref="CRF" /> items</param>
+        /// <returns>A merged list of <see cref="CRF" /> items</returns>
+        protected override List<CRF> ApplyDeltaItems(List<CRF> Items, List<CRF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (CRF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> Index_CODE;
-        private Lazy<Dictionary<int, CRF>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_TRREF;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_GST_TYPE;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_BSB;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_DEL_CODE;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_ATKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_BSB;
+        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_DEL_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_INITIATIVE;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_INVOICEGST;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_SUBPROGRAM;
-        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_INITIATIVE;
+        private Lazy<Dictionary<int, CRF>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_TRREF;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find CRF by CODE field
+        /// Find CRF by ATKEY field
         /// </summary>
-        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <param name="ATKEY">ATKEY value used to find CRF</param>
         /// <returns>List of related CRF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> FindByCODE(string CODE)
+        public IReadOnlyList<CRF> FindByATKEY(string ATKEY)
         {
-            return Index_CODE.Value[CODE];
+            return Index_ATKEY.Value[ATKEY];
         }
 
         /// <summary>
-        /// Attempt to find CRF by CODE field
+        /// Attempt to find CRF by ATKEY field
         /// </summary>
-        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <param name="ATKEY">ATKEY value used to find CRF</param>
         /// <param name="Value">List of related CRF entities</param>
         /// <returns>True if the list of related CRF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCODE(string CODE, out IReadOnlyList<CRF> Value)
+        public bool TryFindByATKEY(string ATKEY, out IReadOnlyList<CRF> Value)
         {
-            return Index_CODE.Value.TryGetValue(CODE, out Value);
+            return Index_ATKEY.Value.TryGetValue(ATKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find CRF by CODE field
+        /// Attempt to find CRF by ATKEY field
         /// </summary>
-        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <param name="ATKEY">ATKEY value used to find CRF</param>
         /// <returns>List of related CRF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> TryFindByCODE(string CODE)
+        public IReadOnlyList<CRF> TryFindByATKEY(string ATKEY)
         {
             IReadOnlyList<CRF> value;
-            if (Index_CODE.Value.TryGetValue(CODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find CRF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find CRF</param>
-        /// <returns>Related CRF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public CRF FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find CRF</param>
-        /// <param name="Value">Related CRF entity</param>
-        /// <returns>True if the related CRF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out CRF Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find CRF</param>
-        /// <returns>Related CRF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public CRF TryFindByTID(int TID)
-        {
-            CRF value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find CRF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find CRF</param>
-        /// <returns>List of related CRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> FindByTRREF(string TRREF)
-        {
-            return Index_TRREF.Value[TRREF];
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find CRF</param>
-        /// <param name="Value">List of related CRF entities</param>
-        /// <returns>True if the list of related CRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<CRF> Value)
-        {
-            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by TRREF field
-        /// </summary>
-        /// <param name="TRREF">TRREF value used to find CRF</param>
-        /// <returns>List of related CRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> TryFindByTRREF(string TRREF)
-        {
-            IReadOnlyList<CRF> value;
-            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find CRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
-        /// <returns>List of related CRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> FindByGST_TYPE(string GST_TYPE)
-        {
-            return Index_GST_TYPE.Value[GST_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
-        /// <param name="Value">List of related CRF entities</param>
-        /// <returns>True if the list of related CRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<CRF> Value)
-        {
-            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
-        /// <returns>List of related CRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> TryFindByGST_TYPE(string GST_TYPE)
-        {
-            IReadOnlyList<CRF> value;
-            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            if (Index_ATKEY.Value.TryGetValue(ATKEY, out value))
             {
                 return value;
             }
@@ -516,6 +418,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find CRF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <returns>List of related CRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <param name="Value">List of related CRF entities</param>
+        /// <returns>True if the list of related CRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<CRF> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRF</param>
+        /// <returns>List of related CRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<CRF> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find CRF by DEL_CODE field
         /// </summary>
         /// <param name="DEL_CODE">DEL_CODE value used to find CRF</param>
@@ -558,38 +502,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find CRF by ATKEY field
+        /// Find CRF by GST_TYPE field
         /// </summary>
-        /// <param name="ATKEY">ATKEY value used to find CRF</param>
+        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
         /// <returns>List of related CRF entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> FindByATKEY(string ATKEY)
+        public IReadOnlyList<CRF> FindByGST_TYPE(string GST_TYPE)
         {
-            return Index_ATKEY.Value[ATKEY];
+            return Index_GST_TYPE.Value[GST_TYPE];
         }
 
         /// <summary>
-        /// Attempt to find CRF by ATKEY field
+        /// Attempt to find CRF by GST_TYPE field
         /// </summary>
-        /// <param name="ATKEY">ATKEY value used to find CRF</param>
+        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
         /// <param name="Value">List of related CRF entities</param>
         /// <returns>True if the list of related CRF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByATKEY(string ATKEY, out IReadOnlyList<CRF> Value)
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<CRF> Value)
         {
-            return Index_ATKEY.Value.TryGetValue(ATKEY, out Value);
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find CRF by ATKEY field
+        /// Attempt to find CRF by GST_TYPE field
         /// </summary>
-        /// <param name="ATKEY">ATKEY value used to find CRF</param>
+        /// <param name="GST_TYPE">GST_TYPE value used to find CRF</param>
         /// <returns>List of related CRF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> TryFindByATKEY(string ATKEY)
+        public IReadOnlyList<CRF> TryFindByGST_TYPE(string GST_TYPE)
         {
             IReadOnlyList<CRF> value;
-            if (Index_ATKEY.Value.TryGetValue(ATKEY, out value))
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
+        /// <returns>List of related CRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
+        /// <param name="Value">List of related CRF entities</param>
+        /// <returns>True if the list of related CRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<CRF> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
+        /// <returns>List of related CRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<CRF> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }
@@ -684,38 +670,80 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find CRF by INITIATIVE field
+        /// Find CRF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
-        /// <returns>List of related CRF entities</returns>
+        /// <param name="TID">TID value used to find CRF</param>
+        /// <returns>Related CRF entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> FindByINITIATIVE(string INITIATIVE)
+        public CRF FindByTID(int TID)
         {
-            return Index_INITIATIVE.Value[INITIATIVE];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find CRF by INITIATIVE field
+        /// Attempt to find CRF by TID field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
+        /// <param name="TID">TID value used to find CRF</param>
+        /// <param name="Value">Related CRF entity</param>
+        /// <returns>True if the related CRF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out CRF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find CRF</param>
+        /// <returns>Related CRF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CRF TryFindByTID(int TID)
+        {
+            CRF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find CRF</param>
+        /// <returns>List of related CRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> FindByTRREF(string TRREF)
+        {
+            return Index_TRREF.Value[TRREF];
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find CRF</param>
         /// <param name="Value">List of related CRF entities</param>
         /// <returns>True if the list of related CRF entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<CRF> Value)
+        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<CRF> Value)
         {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
         }
 
         /// <summary>
-        /// Attempt to find CRF by INITIATIVE field
+        /// Attempt to find CRF by TRREF field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find CRF</param>
+        /// <param name="TRREF">TRREF value used to find CRF</param>
         /// <returns>List of related CRF entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<CRF> TryFindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<CRF> TryFindByTRREF(string TRREF)
         {
             IReadOnlyList<CRF> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
             {
                 return value;
             }

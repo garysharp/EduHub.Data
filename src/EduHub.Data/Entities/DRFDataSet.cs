@@ -19,15 +19,15 @@ namespace EduHub.Data.Entities
         internal DRFDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_TID = new Lazy<Dictionary<int, DRF>>(() => this.ToDictionary(i => i.TID));
             Index_TRBATCH = new Lazy<NullDictionary<int?, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.TRBATCH));
             Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
-            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
-            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
-            Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
-            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<DRF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
 
         /// <summary>
@@ -230,21 +230,91 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="DRF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="DRF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="DRF" /> items to added or update the base <see cref="DRF" /> items</param>
+        /// <returns>A merged list of <see cref="DRF" /> items</returns>
+        protected override List<DRF> ApplyDeltaItems(List<DRF> Items, List<DRF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (DRF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_BSB;
         private Lazy<Dictionary<string, IReadOnlyList<DRF>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_FEE_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_SUBPROGRAM;
         private Lazy<Dictionary<int, DRF>> Index_TID;
         private Lazy<NullDictionary<int?, IReadOnlyList<DRF>>> Index_TRBATCH;
         private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_TRREF;
-        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_GST_TYPE;
-        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_BSB;
-        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_FEE_CODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_SUBPROGRAM;
-        private Lazy<NullDictionary<string, IReadOnlyList<DRF>>> Index_INITIATIVE;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find DRF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DRF</param>
+        /// <returns>List of related DRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DRF</param>
+        /// <param name="Value">List of related DRF entities</param>
+        /// <returns>True if the list of related DRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<DRF> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find DRF</param>
+        /// <returns>List of related DRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<DRF> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find DRF by CODE field
@@ -279,6 +349,174 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<DRF> value;
             if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DRF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
+        /// <returns>List of related DRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> FindByFEE_CODE(string FEE_CODE)
+        {
+            return Index_FEE_CODE.Value[FEE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
+        /// <param name="Value">List of related DRF entities</param>
+        /// <returns>True if the list of related DRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<DRF> Value)
+        {
+            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
+        /// <returns>List of related DRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> TryFindByFEE_CODE(string FEE_CODE)
+        {
+            IReadOnlyList<DRF> value;
+            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DRF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
+        /// <returns>List of related DRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
+        /// <param name="Value">List of related DRF entities</param>
+        /// <returns>True if the list of related DRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<DRF> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
+        /// <returns>List of related DRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<DRF> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
+        /// <returns>List of related DRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
+        /// <param name="Value">List of related DRF entities</param>
+        /// <returns>True if the list of related DRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<DRF> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
+        /// <returns>List of related DRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<DRF> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DRF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
+        /// <returns>List of related DRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
+        /// <param name="Value">List of related DRF entities</param>
+        /// <returns>True if the list of related DRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<DRF> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DRF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
+        /// <returns>List of related DRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DRF> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<DRF> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }
@@ -405,216 +643,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<DRF> value;
             if (Index_TRREF.Value.TryGetValue(TRREF, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
-        /// <returns>List of related DRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> FindByGST_TYPE(string GST_TYPE)
-        {
-            return Index_GST_TYPE.Value[GST_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
-        /// <param name="Value">List of related DRF entities</param>
-        /// <returns>True if the list of related DRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<DRF> Value)
-        {
-            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find DRF</param>
-        /// <returns>List of related DRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> TryFindByGST_TYPE(string GST_TYPE)
-        {
-            IReadOnlyList<DRF> value;
-            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DRF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find DRF</param>
-        /// <returns>List of related DRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> FindByBSB(string BSB)
-        {
-            return Index_BSB.Value[BSB];
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find DRF</param>
-        /// <param name="Value">List of related DRF entities</param>
-        /// <returns>True if the list of related DRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBSB(string BSB, out IReadOnlyList<DRF> Value)
-        {
-            return Index_BSB.Value.TryGetValue(BSB, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find DRF</param>
-        /// <returns>List of related DRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> TryFindByBSB(string BSB)
-        {
-            IReadOnlyList<DRF> value;
-            if (Index_BSB.Value.TryGetValue(BSB, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DRF by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
-        /// <returns>List of related DRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> FindByFEE_CODE(string FEE_CODE)
-        {
-            return Index_FEE_CODE.Value[FEE_CODE];
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
-        /// <param name="Value">List of related DRF entities</param>
-        /// <returns>True if the list of related DRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<DRF> Value)
-        {
-            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find DRF</param>
-        /// <returns>List of related DRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> TryFindByFEE_CODE(string FEE_CODE)
-        {
-            IReadOnlyList<DRF> value;
-            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DRF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
-        /// <returns>List of related DRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
-        /// <param name="Value">List of related DRF entities</param>
-        /// <returns>True if the list of related DRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<DRF> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find DRF</param>
-        /// <returns>List of related DRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<DRF> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DRF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
-        /// <returns>List of related DRF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> FindByINITIATIVE(string INITIATIVE)
-        {
-            return Index_INITIATIVE.Value[INITIATIVE];
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
-        /// <param name="Value">List of related DRF entities</param>
-        /// <returns>True if the list of related DRF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<DRF> Value)
-        {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DRF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find DRF</param>
-        /// <returns>List of related DRF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<DRF> TryFindByINITIATIVE(string INITIATIVE)
-        {
-            IReadOnlyList<DRF> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }

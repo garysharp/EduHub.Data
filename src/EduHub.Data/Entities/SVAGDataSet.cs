@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SVAGDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SVAGKEY = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(i => i.SVAGKEY));
             Index_COHORT = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.COHORT));
             Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_SVAGKEY = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(i => i.SVAGKEY));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
         }
 
@@ -171,58 +171,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SVAG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SVAG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SVAG" /> items to added or update the base <see cref="SVAG" /> items</param>
+        /// <returns>A merged list of <see cref="SVAG" /> items</returns>
+        protected override List<SVAG> ApplyDeltaItems(List<SVAG> Items, List<SVAG> DeltaItems)
+        {
+            Dictionary<int, int> Index_SVAGKEY = Items.ToIndexDictionary(i => i.SVAGKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SVAG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SVAGKEY.TryGetValue(deltaItem.SVAGKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SVAGKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SVAG>> Index_SVAGKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_COHORT;
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_SCHOOL_YEAR;
+        private Lazy<Dictionary<int, SVAG>> Index_SVAGKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_VDIMENSION;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SVAG by SVAGKEY field
-        /// </summary>
-        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
-        /// <returns>Related SVAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SVAG FindBySVAGKEY(int SVAGKEY)
-        {
-            return Index_SVAGKEY.Value[SVAGKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SVAG by SVAGKEY field
-        /// </summary>
-        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
-        /// <param name="Value">Related SVAG entity</param>
-        /// <returns>True if the related SVAG entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySVAGKEY(int SVAGKEY, out SVAG Value)
-        {
-            return Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SVAG by SVAGKEY field
-        /// </summary>
-        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
-        /// <returns>Related SVAG entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SVAG TryFindBySVAGKEY(int SVAGKEY)
-        {
-            SVAG value;
-            if (Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SVAG by COHORT field
@@ -299,6 +285,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SVAG> value;
             if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SVAG FindBySVAGKEY(int SVAGKEY)
+        {
+            return Index_SVAGKEY.Value[SVAGKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <param name="Value">Related SVAG entity</param>
+        /// <returns>True if the related SVAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySVAGKEY(int SVAGKEY, out SVAG Value)
+        {
+            return Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SVAG TryFindBySVAGKEY(int SVAGKEY)
+        {
+            SVAG value;
+            if (Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out value))
             {
                 return value;
             }

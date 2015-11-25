@@ -73,6 +73,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAII" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAII" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAII" /> items to added or update the base <see cref="SAII" /> items</param>
+        /// <returns>A merged list of <see cref="SAII" /> items</returns>
+        protected override List<SAII> ApplyDeltaItems(List<SAII> Items, List<SAII> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAII deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.INVOLVEMENTID)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, IReadOnlyList<SAII>>> Index_INVOLVEMENTID;

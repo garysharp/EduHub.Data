@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_FAM_CODE = new Lazy<Dictionary<string, IReadOnlyList<DFB>>>(() => this.ToGroupedDictionary(i => i.FAM_CODE));
-            Index_TID = new Lazy<Dictionary<int, DFB>>(() => this.ToDictionary(i => i.TID));
             Index_REFERENCE_NO = new Lazy<NullDictionary<string, IReadOnlyList<DFB>>>(() => this.ToGroupedNullDictionary(i => i.REFERENCE_NO));
+            Index_TID = new Lazy<Dictionary<int, DFB>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -86,11 +86,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="DFB" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="DFB" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="DFB" /> items to added or update the base <see cref="DFB" /> items</param>
+        /// <returns>A merged list of <see cref="DFB" /> items</returns>
+        protected override List<DFB> ApplyDeltaItems(List<DFB> Items, List<DFB> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (DFB deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.FAM_CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<DFB>>> Index_FAM_CODE;
-        private Lazy<Dictionary<int, DFB>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<DFB>>> Index_REFERENCE_NO;
+        private Lazy<Dictionary<int, DFB>> Index_TID;
 
         #endregion
 
@@ -139,48 +167,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFB</param>
-        /// <returns>Related DFB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFB FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find DFB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFB</param>
-        /// <param name="Value">Related DFB entity</param>
-        /// <returns>True if the related DFB entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out DFB Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DFB by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFB</param>
-        /// <returns>Related DFB entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFB TryFindByTID(int TID)
-        {
-            DFB value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find DFB by REFERENCE_NO field
         /// </summary>
         /// <param name="REFERENCE_NO">REFERENCE_NO value used to find DFB</param>
@@ -213,6 +199,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<DFB> value;
             if (Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <returns>Related DFB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFB FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <param name="Value">Related DFB entity</param>
+        /// <returns>True if the related DFB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFB Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <returns>Related DFB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFB TryFindByTID(int TID)
+        {
+            DFB value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

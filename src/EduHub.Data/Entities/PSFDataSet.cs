@@ -70,6 +70,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PSF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PSF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PSF" /> items to added or update the base <see cref="PSF" /> items</param>
+        /// <returns>A merged list of <see cref="PSF" /> items</returns>
+        protected override List<PSF> ApplyDeltaItems(List<PSF> Items, List<PSF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PSF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PSKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<short, IReadOnlyList<PSF>>> Index_PSKEY;

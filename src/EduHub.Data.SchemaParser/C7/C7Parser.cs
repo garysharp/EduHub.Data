@@ -81,52 +81,32 @@ namespace EduHub.Data.SchemaParser.C7
                         {
                             throw new InvalidOperationException("Invalid schema command");
                         }
-                        
+
                         // Push to state
                         state.Push(values => values.Any(v => directives.Any(d => v == d)));
-
-                        Console.WriteLine($"IF {directive}:");
                     }
                     else if (line.StartsWith("#ELSE"))
                     {
                         // Push inverse to state
                         var directive = state.Pop();
                         // Inverse
-                        Console.WriteLine($"ELSE:");
                         state.Push(values => !directive(values));
                     }
                     else if (line.StartsWith("#ENDIF"))
                     {
                         // Pop state
                         var directive = state.Pop();
-
-                        Console.WriteLine($"ENDIF;");
                     }
-                    else
+                    else if (status)
                     {
-                        if (status)
-                        {
-                            yield return originalLine;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Threw away line: {originalLine}");
-                        }
+                        yield return originalLine;
                     }
 
                     status = state.Count == 0 || state.All(s => s(directiveValues));
                 }
-                else
+                else if (status)
                 {
-                    // Test state
-                    if (status)
-                    {
-                        yield return originalLine;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Threw away line: {originalLine}");
-                    }
+                    yield return originalLine;
                 }
             }
         }
@@ -210,6 +190,7 @@ namespace EduHub.Data.SchemaParser.C7
                                 TypeDescription: typeDescription,
                                 TypeMaxLength: typeMaxLength,
                                 IsNullable: true,
+                                IsIdentity: false,
                                 ForeignParentKey: foreignParentKey);
                         }
                         else
@@ -298,6 +279,7 @@ namespace EduHub.Data.SchemaParser.C7
                         TypeDescription: Field.TypeDescription,
                         TypeMaxLength: Field.TypeMaxLength,
                         IsNullable: Field.IsNullable,
+                        IsIdentity: Field.IsIdentity,
                         ForeignParentKey: Field.ForeignParentKey);
                 }
             }

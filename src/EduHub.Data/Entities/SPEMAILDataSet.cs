@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal SPEMAILDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SPEMAILKEY = new Lazy<Dictionary<string, SPEMAIL>>(() => this.ToDictionary(i => i.SPEMAILKEY));
             Index_REPORT = new Lazy<NullDictionary<string, IReadOnlyList<SPEMAIL>>>(() => this.ToGroupedNullDictionary(i => i.REPORT));
+            Index_SPEMAILKEY = new Lazy<Dictionary<string, SPEMAIL>>(() => this.ToDictionary(i => i.SPEMAILKEY));
         }
 
         /// <summary>
@@ -85,56 +85,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SPEMAIL" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SPEMAIL" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SPEMAIL" /> items to added or update the base <see cref="SPEMAIL" /> items</param>
+        /// <returns>A merged list of <see cref="SPEMAIL" /> items</returns>
+        protected override List<SPEMAIL> ApplyDeltaItems(List<SPEMAIL> Items, List<SPEMAIL> DeltaItems)
+        {
+            Dictionary<string, int> Index_SPEMAILKEY = Items.ToIndexDictionary(i => i.SPEMAILKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SPEMAIL deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SPEMAILKEY.TryGetValue(deltaItem.SPEMAILKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SPEMAILKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SPEMAIL>> Index_SPEMAILKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SPEMAIL>>> Index_REPORT;
+        private Lazy<Dictionary<string, SPEMAIL>> Index_SPEMAILKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SPEMAIL by SPEMAILKEY field
-        /// </summary>
-        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <returns>Related SPEMAIL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPEMAIL FindBySPEMAILKEY(string SPEMAILKEY)
-        {
-            return Index_SPEMAILKEY.Value[SPEMAILKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SPEMAIL by SPEMAILKEY field
-        /// </summary>
-        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <param name="Value">Related SPEMAIL entity</param>
-        /// <returns>True if the related SPEMAIL entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySPEMAILKEY(string SPEMAILKEY, out SPEMAIL Value)
-        {
-            return Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPEMAIL by SPEMAILKEY field
-        /// </summary>
-        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <returns>Related SPEMAIL entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPEMAIL TryFindBySPEMAILKEY(string SPEMAILKEY)
-        {
-            SPEMAIL value;
-            if (Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SPEMAIL by REPORT field
@@ -169,6 +155,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SPEMAIL> value;
             if (Index_REPORT.Value.TryGetValue(REPORT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEMAIL FindBySPEMAILKEY(string SPEMAILKEY)
+        {
+            return Index_SPEMAILKEY.Value[SPEMAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <param name="Value">Related SPEMAIL entity</param>
+        /// <returns>True if the related SPEMAIL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPEMAILKEY(string SPEMAILKEY, out SPEMAIL Value)
+        {
+            return Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEMAIL TryFindBySPEMAILKEY(string SPEMAILKEY)
+        {
+            SPEMAIL value;
+            if (Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out value))
             {
                 return value;
             }

@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_DEST_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<ST_TFRIO>>>(() => this.ToGroupedDictionary(i => i.DEST_SCHOOL));
-            Index_TID = new Lazy<Dictionary<int, ST_TFRIO>>(() => this.ToDictionary(i => i.TID));
             Index_ST_TRANS_ID = new Lazy<NullDictionary<string, ST_TFRIO>>(() => this.ToNullDictionary(i => i.ST_TRANS_ID));
+            Index_TID = new Lazy<Dictionary<int, ST_TFRIO>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -89,11 +89,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="ST_TFRIO" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="ST_TFRIO" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="ST_TFRIO" /> items to added or update the base <see cref="ST_TFRIO" /> items</param>
+        /// <returns>A merged list of <see cref="ST_TFRIO" /> items</returns>
+        protected override List<ST_TFRIO> ApplyDeltaItems(List<ST_TFRIO> Items, List<ST_TFRIO> DeltaItems)
+        {
+            NullDictionary<string, int> Index_ST_TRANS_ID = Items.ToIndexNullDictionary(i => i.ST_TRANS_ID);
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (ST_TFRIO deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ST_TRANS_ID.TryGetValue(deltaItem.ST_TRANS_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.DEST_SCHOOL)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<ST_TFRIO>>> Index_DEST_SCHOOL;
-        private Lazy<Dictionary<int, ST_TFRIO>> Index_TID;
         private Lazy<NullDictionary<string, ST_TFRIO>> Index_ST_TRANS_ID;
+        private Lazy<Dictionary<int, ST_TFRIO>> Index_TID;
 
         #endregion
 
@@ -142,48 +175,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find ST_TFRIO by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ST_TFRIO</param>
-        /// <returns>Related ST_TFRIO entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ST_TFRIO FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find ST_TFRIO by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ST_TFRIO</param>
-        /// <param name="Value">Related ST_TFRIO entity</param>
-        /// <returns>True if the related ST_TFRIO entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out ST_TFRIO Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST_TFRIO by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find ST_TFRIO</param>
-        /// <returns>Related ST_TFRIO entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ST_TFRIO TryFindByTID(int TID)
-        {
-            ST_TFRIO value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find ST_TFRIO by ST_TRANS_ID field
         /// </summary>
         /// <param name="ST_TRANS_ID">ST_TRANS_ID value used to find ST_TFRIO</param>
@@ -216,6 +207,48 @@ namespace EduHub.Data.Entities
         {
             ST_TFRIO value;
             if (Index_ST_TRANS_ID.Value.TryGetValue(ST_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST_TFRIO by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFRIO</param>
+        /// <returns>Related ST_TFRIO entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFRIO FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFRIO by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFRIO</param>
+        /// <param name="Value">Related ST_TFRIO entity</param>
+        /// <returns>True if the related ST_TFRIO entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out ST_TFRIO Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFRIO by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFRIO</param>
+        /// <returns>Related ST_TFRIO entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFRIO TryFindByTID(int TID)
+        {
+            ST_TFRIO value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_SMCDKEY = new Lazy<Dictionary<int, IReadOnlyList<SMCD>>>(() => this.ToGroupedDictionary(i => i.SMCDKEY));
-            Index_TID = new Lazy<Dictionary<int, SMCD>>(() => this.ToDictionary(i => i.TID));
             Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<SMCD>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
+            Index_TID = new Lazy<Dictionary<int, SMCD>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -77,11 +77,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SMCD" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SMCD" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SMCD" /> items to added or update the base <see cref="SMCD" /> items</param>
+        /// <returns>A merged list of <see cref="SMCD" /> items</returns>
+        protected override List<SMCD> ApplyDeltaItems(List<SMCD> Items, List<SMCD> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SMCD deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SMCDKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, IReadOnlyList<SMCD>>> Index_SMCDKEY;
-        private Lazy<Dictionary<int, SMCD>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<SMCD>>> Index_STAFF;
+        private Lazy<Dictionary<int, SMCD>> Index_TID;
 
         #endregion
 
@@ -130,48 +158,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SMCD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMCD</param>
-        /// <returns>Related SMCD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMCD FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SMCD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMCD</param>
-        /// <param name="Value">Related SMCD entity</param>
-        /// <returns>True if the related SMCD entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SMCD Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SMCD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMCD</param>
-        /// <returns>Related SMCD entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMCD TryFindByTID(int TID)
-        {
-            SMCD value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SMCD by STAFF field
         /// </summary>
         /// <param name="STAFF">STAFF value used to find SMCD</param>
@@ -204,6 +190,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SMCD> value;
             if (Index_STAFF.Value.TryGetValue(STAFF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <returns>Related SMCD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMCD FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <param name="Value">Related SMCD entity</param>
+        /// <returns>True if the related SMCD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SMCD Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <returns>Related SMCD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMCD TryFindByTID(int TID)
+        {
+            SMCD value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

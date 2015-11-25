@@ -99,6 +99,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KBANK" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KBANK" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KBANK" /> items to added or update the base <see cref="KBANK" /> items</param>
+        /// <returns>A merged list of <see cref="KBANK" /> items</returns>
+        protected override List<KBANK> ApplyDeltaItems(List<KBANK> Items, List<KBANK> DeltaItems)
+        {
+            Dictionary<string, int> Index_GLCODE = Items.ToIndexDictionary(i => i.GLCODE);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KBANK deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_GLCODE.TryGetValue(deltaItem.GLCODE, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GLCODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KBANK>> Index_GLCODE;

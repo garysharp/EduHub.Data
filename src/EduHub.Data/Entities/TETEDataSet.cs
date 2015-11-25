@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal TETEDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<TETE>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
             Index_TETEKEY = new Lazy<Dictionary<int, IReadOnlyList<TETE>>>(() => this.ToGroupedDictionary(i => i.TETEKEY));
             Index_TID = new Lazy<Dictionary<int, TETE>>(() => this.ToDictionary(i => i.TID));
-            Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<TETE>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
         }
 
         /// <summary>
@@ -80,15 +80,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TETE" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TETE" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TETE" /> items to added or update the base <see cref="TETE" /> items</param>
+        /// <returns>A merged list of <see cref="TETE" /> items</returns>
+        protected override List<TETE> ApplyDeltaItems(List<TETE> Items, List<TETE> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TETE deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TETEKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<TETE>>> Index_LOCATION;
         private Lazy<Dictionary<int, IReadOnlyList<TETE>>> Index_TETEKEY;
         private Lazy<Dictionary<int, TETE>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<TETE>>> Index_LOCATION;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find TETE by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TETE</param>
+        /// <returns>List of related TETE entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TETE> FindByLOCATION(string LOCATION)
+        {
+            return Index_LOCATION.Value[LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find TETE by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TETE</param>
+        /// <param name="Value">List of related TETE entities</param>
+        /// <returns>True if the list of related TETE entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<TETE> Value)
+        {
+            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TETE by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TETE</param>
+        /// <returns>List of related TETE entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TETE> TryFindByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<TETE> value;
+            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find TETE by TETEKEY field
@@ -165,48 +235,6 @@ namespace EduHub.Data.Entities
         {
             TETE value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find TETE by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find TETE</param>
-        /// <returns>List of related TETE entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TETE> FindByLOCATION(string LOCATION)
-        {
-            return Index_LOCATION.Value[LOCATION];
-        }
-
-        /// <summary>
-        /// Attempt to find TETE by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find TETE</param>
-        /// <param name="Value">List of related TETE entities</param>
-        /// <returns>True if the list of related TETE entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<TETE> Value)
-        {
-            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TETE by LOCATION field
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find TETE</param>
-        /// <returns>List of related TETE entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TETE> TryFindByLOCATION(string LOCATION)
-        {
-            IReadOnlyList<TETE> value;
-            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
             {
                 return value;
             }

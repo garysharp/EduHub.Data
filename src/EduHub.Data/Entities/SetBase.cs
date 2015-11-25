@@ -20,11 +20,12 @@ namespace EduHub.Data.Entities
         /// </summary>
         protected static Action<T, string> MapperNoOp = (entity, field) => { };
         private Lazy<List<T>> Items;
+        private DateTime? age;
 
         internal SetBase(EduHubContext Context)
         {
             this.Context = Context;
-            this.Items = new Lazy<List<T>>(LoadCsv);
+            this.Items = new Lazy<List<T>>(Load);
         }
 
         /// <summary>
@@ -40,6 +41,14 @@ namespace EduHub.Data.Entities
         protected abstract Action<T, string>[] BuildMapper(IReadOnlyList<string> Headers);
 
         /// <summary>
+        /// Merges delta entities
+        /// </summary>
+        /// <param name="Items">Base items</param>
+        /// <param name="DeltaItems">Delta items to added or update the base items</param>
+        /// <returns>A merged list of sorted items where possible</returns>
+        protected abstract List<T> ApplyDeltaItems(List<T> Items, List<T> DeltaItems);
+
+        /// <summary>
         /// Data Set Location
         /// </summary>
         public string Filename
@@ -51,6 +60,17 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Data Set Delta Location
+        /// </summary>
+        public string FilenameDelta
+        {
+            get
+            {
+                return Path.Combine(Context.EduHubDirectory, $"{Name}_{Context.EduHubSiteIdentifier}_D.csv");
+            }
+        }
+
+        /// <summary>
         /// Indicates if the eduHub Directory contains this data set
         /// </summary>
         public bool IsAvailable
@@ -58,6 +78,22 @@ namespace EduHub.Data.Entities
             get
             {
                 return File.Exists(Filename);
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the eduHub Directory contains this data set and a newer matching delta file
+        /// </summary>
+        public bool IsDeltaAvailable
+        {
+            get
+            {
+                var filename = Filename;
+                var filenameDelta = FilenameDelta;
+
+                return File.Exists(filename) &&
+                    File.Exists(filenameDelta) &&
+                    File.GetLastWriteTime(filename) < File.GetLastWriteTime(filenameDelta);
             }
         }
 
@@ -79,19 +115,72 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                var filename = Filename;
-                if (File.Exists(filename))
+                if (age.HasValue)
                 {
-                    return File.GetLastWriteTime(filename);
+                    return age.Value;
                 }
                 else
                 {
-                    return null;
+                    return CalculateAge();
                 }
             }
         }
 
-        private List<T> LoadCsv()
+        private DateTime? CalculateAge()
+        {
+            var filename = Filename;
+            if (File.Exists(filename))
+            {
+                var ageBase = File.GetLastWriteTime(filename);
+                var filenameDelta = FilenameDelta;
+                if (File.Exists(filenameDelta))
+                {
+                    var ageDelta = File.GetLastWriteTime(filenameDelta);
+                    if (ageDelta > ageBase)
+                    {
+                        return ageDelta;
+                    }
+                    else
+                    {
+                        return ageBase;
+                    }
+                }
+                else
+                {
+                    return ageBase;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private List<T> Load()
+        {
+            List<T> items;
+
+            // Throw an exception if the dataset is unavailable
+            EnsureAvailable();
+
+            // Load daily/base CSV data
+            items = LoadCsv(Filename);
+
+            // Check for delta
+            if (IsDeltaAvailable)
+            {
+                var deltaItems = LoadCsv(FilenameDelta);
+
+                items = ApplyDeltaItems(items, deltaItems);
+            }
+
+            // Store dataset age values
+            age = CalculateAge();
+
+            return items;
+        }
+
+        private List<T> LoadCsv(string Filename)
         {
             List<T> items = new List<T>();
 

@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SFAQDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<SFAQ>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
             Index_SFAQKEY = new Lazy<Dictionary<string, IReadOnlyList<SFAQ>>>(() => this.ToGroupedDictionary(i => i.SFAQKEY));
             Index_TID = new Lazy<Dictionary<int, SFAQ>>(() => this.ToDictionary(i => i.TID));
-            Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<SFAQ>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
         }
 
         /// <summary>
@@ -71,15 +71,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SFAQ" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SFAQ" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SFAQ" /> items to added or update the base <see cref="SFAQ" /> items</param>
+        /// <returns>A merged list of <see cref="SFAQ" /> items</returns>
+        protected override List<SFAQ> ApplyDeltaItems(List<SFAQ> Items, List<SFAQ> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SFAQ deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SFAQKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SFAQ>>> Index_QKEY;
         private Lazy<Dictionary<string, IReadOnlyList<SFAQ>>> Index_SFAQKEY;
         private Lazy<Dictionary<int, SFAQ>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SFAQ>>> Index_QKEY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SFAQ by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find SFAQ</param>
+        /// <returns>List of related SFAQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SFAQ> FindByQKEY(string QKEY)
+        {
+            return Index_QKEY.Value[QKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SFAQ by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find SFAQ</param>
+        /// <param name="Value">List of related SFAQ entities</param>
+        /// <returns>True if the list of related SFAQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<SFAQ> Value)
+        {
+            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SFAQ by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find SFAQ</param>
+        /// <returns>List of related SFAQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SFAQ> TryFindByQKEY(string QKEY)
+        {
+            IReadOnlyList<SFAQ> value;
+            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SFAQ by SFAQKEY field
@@ -156,48 +226,6 @@ namespace EduHub.Data.Entities
         {
             SFAQ value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SFAQ by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find SFAQ</param>
-        /// <returns>List of related SFAQ entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SFAQ> FindByQKEY(string QKEY)
-        {
-            return Index_QKEY.Value[QKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SFAQ by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find SFAQ</param>
-        /// <param name="Value">List of related SFAQ entities</param>
-        /// <returns>True if the list of related SFAQ entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<SFAQ> Value)
-        {
-            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SFAQ by QKEY field
-        /// </summary>
-        /// <param name="QKEY">QKEY value used to find SFAQ</param>
-        /// <returns>List of related SFAQ entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SFAQ> TryFindByQKEY(string QKEY)
-        {
-            IReadOnlyList<SFAQ> value;
-            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
             {
                 return value;
             }

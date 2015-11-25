@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal PCDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PCKEY = new Lazy<Dictionary<string, PC>>(() => this.ToDictionary(i => i.PCKEY));
             Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_PCKEY = new Lazy<Dictionary<string, PC>>(() => this.ToDictionary(i => i.PCKEY));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
         }
 
         /// <summary>
@@ -72,58 +72,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PC" /> items to added or update the base <see cref="PC" /> items</param>
+        /// <returns>A merged list of <see cref="PC" /> items</returns>
+        protected override List<PC> ApplyDeltaItems(List<PC> Items, List<PC> DeltaItems)
+        {
+            Dictionary<string, int> Index_PCKEY = Items.ToIndexDictionary(i => i.PCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PCKEY.TryGetValue(deltaItem.PCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PC>> Index_PCKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_GLCODE;
-        private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_INITIATIVE;
+        private Lazy<Dictionary<string, PC>> Index_PCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_SUBPROGRAM;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find PC by PCKEY field
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PC</param>
-        /// <returns>Related PC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PC FindByPCKEY(string PCKEY)
-        {
-            return Index_PCKEY.Value[PCKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PC by PCKEY field
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PC</param>
-        /// <param name="Value">Related PC entity</param>
-        /// <returns>True if the related PC entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPCKEY(string PCKEY, out PC Value)
-        {
-            return Index_PCKEY.Value.TryGetValue(PCKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PC by PCKEY field
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PC</param>
-        /// <returns>Related PC entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PC TryFindByPCKEY(string PCKEY)
-        {
-            PC value;
-            if (Index_PCKEY.Value.TryGetValue(PCKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find PC by GLCODE field
@@ -168,48 +154,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
-        /// <returns>List of related PC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PC> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find PC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
-        /// <param name="Value">List of related PC entities</param>
-        /// <returns>True if the list of related PC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PC> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PC by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
-        /// <returns>List of related PC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PC> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<PC> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PC by INITIATIVE field
         /// </summary>
         /// <param name="INITIATIVE">INITIATIVE value used to find PC</param>
@@ -242,6 +186,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PC> value;
             if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PC FindByPCKEY(string PCKEY)
+        {
+            return Index_PCKEY.Value[PCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <param name="Value">Related PC entity</param>
+        /// <returns>True if the related PC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPCKEY(string PCKEY, out PC Value)
+        {
+            return Index_PCKEY.Value.TryGetValue(PCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PC TryFindByPCKEY(string PCKEY)
+        {
+            PC value;
+            if (Index_PCKEY.Value.TryGetValue(PCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <returns>List of related PC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <param name="Value">List of related PC entities</param>
+        /// <returns>True if the list of related PC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PC> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <returns>List of related PC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<PC> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }

@@ -162,6 +162,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TRSTACC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TRSTACC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TRSTACC" /> items to added or update the base <see cref="TRSTACC" /> items</param>
+        /// <returns>A merged list of <see cref="TRSTACC" /> items</returns>
+        protected override List<TRSTACC> ApplyDeltaItems(List<TRSTACC> Items, List<TRSTACC> DeltaItems)
+        {
+            Dictionary<int, int> Index_STACCKEY = Items.ToIndexDictionary(i => i.STACCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TRSTACC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_STACCKEY.TryGetValue(deltaItem.STACCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.STACCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<int, TRSTACC>> Index_STACCKEY;

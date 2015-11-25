@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal SADataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SAKEY = new Lazy<Dictionary<string, SA>>(() => this.ToDictionary(i => i.SAKEY));
             Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<SA>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
             Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<SA>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<SA>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<SA>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_SAKEY = new Lazy<Dictionary<string, SA>>(() => this.ToDictionary(i => i.SAKEY));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<SA>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
         }
 
         /// <summary>
@@ -100,59 +100,45 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SA" /> items to added or update the base <see cref="SA" /> items</param>
+        /// <returns>A merged list of <see cref="SA" /> items</returns>
+        protected override List<SA> ApplyDeltaItems(List<SA> Items, List<SA> DeltaItems)
+        {
+            Dictionary<string, int> Index_SAKEY = Items.ToIndexDictionary(i => i.SAKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SAKEY.TryGetValue(deltaItem.SAKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SAKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SA>> Index_SAKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SA>>> Index_GLCODE;
         private Lazy<NullDictionary<string, IReadOnlyList<SA>>> Index_GST_TYPE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SA>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<SA>>> Index_INITIATIVE;
+        private Lazy<Dictionary<string, SA>> Index_SAKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SA>>> Index_SUBPROGRAM;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find SA by SAKEY field
-        /// </summary>
-        /// <param name="SAKEY">SAKEY value used to find SA</param>
-        /// <returns>Related SA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SA FindBySAKEY(string SAKEY)
-        {
-            return Index_SAKEY.Value[SAKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SA by SAKEY field
-        /// </summary>
-        /// <param name="SAKEY">SAKEY value used to find SA</param>
-        /// <param name="Value">Related SA entity</param>
-        /// <returns>True if the related SA entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySAKEY(string SAKEY, out SA Value)
-        {
-            return Index_SAKEY.Value.TryGetValue(SAKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SA by SAKEY field
-        /// </summary>
-        /// <param name="SAKEY">SAKEY value used to find SA</param>
-        /// <returns>Related SA entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SA TryFindBySAKEY(string SAKEY)
-        {
-            SA value;
-            if (Index_SAKEY.Value.TryGetValue(SAKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find SA by GLCODE field
@@ -239,48 +225,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SA by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
-        /// <returns>List of related SA entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SA> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find SA by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
-        /// <param name="Value">List of related SA entities</param>
-        /// <returns>True if the list of related SA entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<SA> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SA by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
-        /// <returns>List of related SA entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SA> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<SA> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SA by INITIATIVE field
         /// </summary>
         /// <param name="INITIATIVE">INITIATIVE value used to find SA</param>
@@ -313,6 +257,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SA> value;
             if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SA by SAKEY field
+        /// </summary>
+        /// <param name="SAKEY">SAKEY value used to find SA</param>
+        /// <returns>Related SA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SA FindBySAKEY(string SAKEY)
+        {
+            return Index_SAKEY.Value[SAKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SA by SAKEY field
+        /// </summary>
+        /// <param name="SAKEY">SAKEY value used to find SA</param>
+        /// <param name="Value">Related SA entity</param>
+        /// <returns>True if the related SA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAKEY(string SAKEY, out SA Value)
+        {
+            return Index_SAKEY.Value.TryGetValue(SAKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SA by SAKEY field
+        /// </summary>
+        /// <param name="SAKEY">SAKEY value used to find SA</param>
+        /// <returns>Related SA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SA TryFindBySAKEY(string SAKEY)
+        {
+            SA value;
+            if (Index_SAKEY.Value.TryGetValue(SAKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SA by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
+        /// <returns>List of related SA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SA> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find SA by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
+        /// <param name="Value">List of related SA entities</param>
+        /// <returns>True if the list of related SA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<SA> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SA by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SA</param>
+        /// <returns>List of related SA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SA> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<SA> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }

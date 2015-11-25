@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SGSGDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_SGLINK = new Lazy<NullDictionary<string, IReadOnlyList<SGSG>>>(() => this.ToGroupedNullDictionary(i => i.SGLINK));
             Index_SGSGKEY = new Lazy<Dictionary<string, IReadOnlyList<SGSG>>>(() => this.ToGroupedDictionary(i => i.SGSGKEY));
             Index_TID = new Lazy<Dictionary<int, SGSG>>(() => this.ToDictionary(i => i.TID));
-            Index_SGLINK = new Lazy<NullDictionary<string, IReadOnlyList<SGSG>>>(() => this.ToGroupedNullDictionary(i => i.SGLINK));
         }
 
         /// <summary>
@@ -62,15 +62,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SGSG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SGSG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SGSG" /> items to added or update the base <see cref="SGSG" /> items</param>
+        /// <returns>A merged list of <see cref="SGSG" /> items</returns>
+        protected override List<SGSG> ApplyDeltaItems(List<SGSG> Items, List<SGSG> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SGSG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SGSGKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SGSG>>> Index_SGLINK;
         private Lazy<Dictionary<string, IReadOnlyList<SGSG>>> Index_SGSGKEY;
         private Lazy<Dictionary<int, SGSG>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SGSG>>> Index_SGLINK;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SGSG by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
+        /// <returns>List of related SGSG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSG> FindBySGLINK(string SGLINK)
+        {
+            return Index_SGLINK.Value[SGLINK];
+        }
+
+        /// <summary>
+        /// Attempt to find SGSG by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
+        /// <param name="Value">List of related SGSG entities</param>
+        /// <returns>True if the list of related SGSG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGLINK(string SGLINK, out IReadOnlyList<SGSG> Value)
+        {
+            return Index_SGLINK.Value.TryGetValue(SGLINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGSG by SGLINK field
+        /// </summary>
+        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
+        /// <returns>List of related SGSG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSG> TryFindBySGLINK(string SGLINK)
+        {
+            IReadOnlyList<SGSG> value;
+            if (Index_SGLINK.Value.TryGetValue(SGLINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SGSG by SGSGKEY field
@@ -147,48 +217,6 @@ namespace EduHub.Data.Entities
         {
             SGSG value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SGSG by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
-        /// <returns>List of related SGSG entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SGSG> FindBySGLINK(string SGLINK)
-        {
-            return Index_SGLINK.Value[SGLINK];
-        }
-
-        /// <summary>
-        /// Attempt to find SGSG by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
-        /// <param name="Value">List of related SGSG entities</param>
-        /// <returns>True if the list of related SGSG entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySGLINK(string SGLINK, out IReadOnlyList<SGSG> Value)
-        {
-            return Index_SGLINK.Value.TryGetValue(SGLINK, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SGSG by SGLINK field
-        /// </summary>
-        /// <param name="SGLINK">SGLINK value used to find SGSG</param>
-        /// <returns>List of related SGSG entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SGSG> TryFindBySGLINK(string SGLINK)
-        {
-            IReadOnlyList<SGSG> value;
-            if (Index_SGLINK.Value.TryGetValue(SGLINK, out value))
             {
                 return value;
             }

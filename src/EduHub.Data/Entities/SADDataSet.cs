@@ -19,10 +19,10 @@ namespace EduHub.Data.Entities
         internal SADDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SADKEY = new Lazy<Dictionary<int, SAD>>(() => this.ToDictionary(i => i.SADKEY));
+            Index_AREA_DUTY_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.AREA_DUTY_TEACHER));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
             Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
-            Index_AREA_DUTY_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.AREA_DUTY_TEACHER));
+            Index_SADKEY = new Lazy<Dictionary<int, SAD>>(() => this.ToDictionary(i => i.SADKEY));
         }
 
         /// <summary>
@@ -111,50 +111,78 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SAD" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SAD" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SAD" /> items to added or update the base <see cref="SAD" /> items</param>
+        /// <returns>A merged list of <see cref="SAD" /> items</returns>
+        protected override List<SAD> ApplyDeltaItems(List<SAD> Items, List<SAD> DeltaItems)
+        {
+            Dictionary<int, int> Index_SADKEY = Items.ToIndexDictionary(i => i.SADKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SAD deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SADKEY.TryGetValue(deltaItem.SADKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SADKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, SAD>> Index_SADKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SAD>>> Index_AREA_DUTY_TEACHER;
         private Lazy<NullDictionary<int?, IReadOnlyList<SAD>>> Index_CAMPUS;
         private Lazy<NullDictionary<string, IReadOnlyList<SAD>>> Index_ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<SAD>>> Index_AREA_DUTY_TEACHER;
+        private Lazy<Dictionary<int, SAD>> Index_SADKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SAD by SADKEY field
+        /// Find SAD by AREA_DUTY_TEACHER field
         /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SAD</param>
-        /// <returns>Related SAD entity</returns>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <returns>List of related SAD entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAD FindBySADKEY(int SADKEY)
+        public IReadOnlyList<SAD> FindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
         {
-            return Index_SADKEY.Value[SADKEY];
+            return Index_AREA_DUTY_TEACHER.Value[AREA_DUTY_TEACHER];
         }
 
         /// <summary>
-        /// Attempt to find SAD by SADKEY field
+        /// Attempt to find SAD by AREA_DUTY_TEACHER field
         /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SAD</param>
-        /// <param name="Value">Related SAD entity</param>
-        /// <returns>True if the related SAD entity is found</returns>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <param name="Value">List of related SAD entities</param>
+        /// <returns>True if the list of related SAD entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySADKEY(int SADKEY, out SAD Value)
+        public bool TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER, out IReadOnlyList<SAD> Value)
         {
-            return Index_SADKEY.Value.TryGetValue(SADKEY, out Value);
+            return Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SAD by SADKEY field
+        /// Attempt to find SAD by AREA_DUTY_TEACHER field
         /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SAD</param>
-        /// <returns>Related SAD entity, or null if not found</returns>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <returns>List of related SAD entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SAD TryFindBySADKEY(int SADKEY)
+        public IReadOnlyList<SAD> TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
         {
-            SAD value;
-            if (Index_SADKEY.Value.TryGetValue(SADKEY, out value))
+            IReadOnlyList<SAD> value;
+            if (Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out value))
             {
                 return value;
             }
@@ -249,38 +277,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SAD by AREA_DUTY_TEACHER field
+        /// Find SAD by SADKEY field
         /// </summary>
-        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
-        /// <returns>List of related SAD entities</returns>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SAD> FindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
+        public SAD FindBySADKEY(int SADKEY)
         {
-            return Index_AREA_DUTY_TEACHER.Value[AREA_DUTY_TEACHER];
+            return Index_SADKEY.Value[SADKEY];
         }
 
         /// <summary>
-        /// Attempt to find SAD by AREA_DUTY_TEACHER field
+        /// Attempt to find SAD by SADKEY field
         /// </summary>
-        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
-        /// <param name="Value">List of related SAD entities</param>
-        /// <returns>True if the list of related SAD entities is found</returns>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <param name="Value">Related SAD entity</param>
+        /// <returns>True if the related SAD entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER, out IReadOnlyList<SAD> Value)
+        public bool TryFindBySADKEY(int SADKEY, out SAD Value)
         {
-            return Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out Value);
+            return Index_SADKEY.Value.TryGetValue(SADKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SAD by AREA_DUTY_TEACHER field
+        /// Attempt to find SAD by SADKEY field
         /// </summary>
-        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
-        /// <returns>List of related SAD entities, or null if not found</returns>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SAD> TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
+        public SAD TryFindBySADKEY(int SADKEY)
         {
-            IReadOnlyList<SAD> value;
-            if (Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out value))
+            SAD value;
+            if (Index_SADKEY.Value.TryGetValue(SADKEY, out value))
             {
                 return value;
             }

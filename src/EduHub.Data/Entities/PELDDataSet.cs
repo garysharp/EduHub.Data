@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal PELDDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_LEAVE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<PELD>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_CODE));
             Index_PEKEY = new Lazy<Dictionary<string, IReadOnlyList<PELD>>>(() => this.ToGroupedDictionary(i => i.PEKEY));
-            Index_TID = new Lazy<Dictionary<int, PELD>>(() => this.ToDictionary(i => i.TID));
             Index_PEKEY_LEAVE_CODE = new Lazy<Dictionary<Tuple<string, string>, PELD>>(() => this.ToDictionary(i => Tuple.Create(i.PEKEY, i.LEAVE_CODE)));
             Index_PLTKEY = new Lazy<NullDictionary<string, IReadOnlyList<PELD>>>(() => this.ToGroupedNullDictionary(i => i.PLTKEY));
-            Index_LEAVE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<PELD>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_CODE));
+            Index_TID = new Lazy<Dictionary<int, PELD>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -94,17 +94,92 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PELD" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PELD" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PELD" /> items to added or update the base <see cref="PELD" /> items</param>
+        /// <returns>A merged list of <see cref="PELD" /> items</returns>
+        protected override List<PELD> ApplyDeltaItems(List<PELD> Items, List<PELD> DeltaItems)
+        {
+            Dictionary<Tuple<string, string>, int> Index_PEKEY_LEAVE_CODE = Items.ToIndexDictionary(i => Tuple.Create(i.PEKEY, i.LEAVE_CODE));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PELD deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PEKEY_LEAVE_CODE.TryGetValue(Tuple.Create(deltaItem.PEKEY, deltaItem.LEAVE_CODE), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PEKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<PELD>>> Index_LEAVE_CODE;
         private Lazy<Dictionary<string, IReadOnlyList<PELD>>> Index_PEKEY;
-        private Lazy<Dictionary<int, PELD>> Index_TID;
         private Lazy<Dictionary<Tuple<string, string>, PELD>> Index_PEKEY_LEAVE_CODE;
         private Lazy<NullDictionary<string, IReadOnlyList<PELD>>> Index_PLTKEY;
-        private Lazy<NullDictionary<string, IReadOnlyList<PELD>>> Index_LEAVE_CODE;
+        private Lazy<Dictionary<int, PELD>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find PELD by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
+        /// <returns>List of related PELD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELD> FindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            return Index_LEAVE_CODE.Value[LEAVE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PELD by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
+        /// <param name="Value">List of related PELD entities</param>
+        /// <returns>True if the list of related PELD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PELD> Value)
+        {
+            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PELD by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
+        /// <returns>List of related PELD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELD> TryFindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            IReadOnlyList<PELD> value;
+            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find PELD by PEKEY field
@@ -139,48 +214,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PELD> value;
             if (Index_PEKEY.Value.TryGetValue(PEKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PELD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PELD</param>
-        /// <returns>Related PELD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PELD FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find PELD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PELD</param>
-        /// <param name="Value">Related PELD entity</param>
-        /// <returns>True if the related PELD entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PELD Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PELD by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PELD</param>
-        /// <returns>Related PELD entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PELD TryFindByTID(int TID)
-        {
-            PELD value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -278,38 +311,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PELD by LEAVE_CODE field
+        /// Find PELD by TID field
         /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
-        /// <returns>List of related PELD entities</returns>
+        /// <param name="TID">TID value used to find PELD</param>
+        /// <returns>Related PELD entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PELD> FindByLEAVE_CODE(string LEAVE_CODE)
+        public PELD FindByTID(int TID)
         {
-            return Index_LEAVE_CODE.Value[LEAVE_CODE];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find PELD by LEAVE_CODE field
+        /// Attempt to find PELD by TID field
         /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
-        /// <param name="Value">List of related PELD entities</param>
-        /// <returns>True if the list of related PELD entities is found</returns>
+        /// <param name="TID">TID value used to find PELD</param>
+        /// <param name="Value">Related PELD entity</param>
+        /// <returns>True if the related PELD entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PELD> Value)
+        public bool TryFindByTID(int TID, out PELD Value)
         {
-            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PELD by LEAVE_CODE field
+        /// Attempt to find PELD by TID field
         /// </summary>
-        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELD</param>
-        /// <returns>List of related PELD entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find PELD</param>
+        /// <returns>Related PELD entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PELD> TryFindByLEAVE_CODE(string LEAVE_CODE)
+        public PELD TryFindByTID(int TID)
         {
-            IReadOnlyList<PELD> value;
-            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            PELD value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

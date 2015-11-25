@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SMDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_ROOM = new Lazy<Dictionary<string, SM>>(() => this.ToDictionary(i => i.ROOM));
-            Index_FACULTY = new Lazy<NullDictionary<string, IReadOnlyList<SM>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SM>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_FACULTY = new Lazy<NullDictionary<string, IReadOnlyList<SM>>>(() => this.ToGroupedNullDictionary(i => i.FACULTY));
+            Index_ROOM = new Lazy<Dictionary<string, SM>>(() => this.ToDictionary(i => i.ROOM));
             Index_STAFF_CODE = new Lazy<NullDictionary<string, IReadOnlyList<SM>>>(() => this.ToGroupedNullDictionary(i => i.STAFF_CODE));
         }
 
@@ -96,11 +96,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SM" /> items to added or update the base <see cref="SM" /> items</param>
+        /// <returns>A merged list of <see cref="SM" /> items</returns>
+        protected override List<SM> ApplyDeltaItems(List<SM> Items, List<SM> DeltaItems)
+        {
+            Dictionary<string, int> Index_ROOM = Items.ToIndexDictionary(i => i.ROOM);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_ROOM.TryGetValue(deltaItem.ROOM, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ROOM)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SM>> Index_ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<SM>>> Index_FACULTY;
         private Lazy<NullDictionary<int?, IReadOnlyList<SM>>> Index_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<SM>>> Index_FACULTY;
+        private Lazy<Dictionary<string, SM>> Index_ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<SM>>> Index_STAFF_CODE;
 
         #endregion
@@ -108,38 +136,38 @@ namespace EduHub.Data.Entities
         #region Index Methods
 
         /// <summary>
-        /// Find SM by ROOM field
+        /// Find SM by CAMPUS field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find SM</param>
-        /// <returns>Related SM entity</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
+        /// <returns>List of related SM entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SM FindByROOM(string ROOM)
+        public IReadOnlyList<SM> FindByCAMPUS(int? CAMPUS)
         {
-            return Index_ROOM.Value[ROOM];
+            return Index_CAMPUS.Value[CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find SM by ROOM field
+        /// Attempt to find SM by CAMPUS field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find SM</param>
-        /// <param name="Value">Related SM entity</param>
-        /// <returns>True if the related SM entity is found</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
+        /// <param name="Value">List of related SM entities</param>
+        /// <returns>True if the list of related SM entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByROOM(string ROOM, out SM Value)
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SM> Value)
         {
-            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SM by ROOM field
+        /// Attempt to find SM by CAMPUS field
         /// </summary>
-        /// <param name="ROOM">ROOM value used to find SM</param>
-        /// <returns>Related SM entity, or null if not found</returns>
+        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
+        /// <returns>List of related SM entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SM TryFindByROOM(string ROOM)
+        public IReadOnlyList<SM> TryFindByCAMPUS(int? CAMPUS)
         {
-            SM value;
-            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            IReadOnlyList<SM> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -192,38 +220,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SM by CAMPUS field
+        /// Find SM by ROOM field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
-        /// <returns>List of related SM entities</returns>
+        /// <param name="ROOM">ROOM value used to find SM</param>
+        /// <returns>Related SM entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SM> FindByCAMPUS(int? CAMPUS)
+        public SM FindByROOM(string ROOM)
         {
-            return Index_CAMPUS.Value[CAMPUS];
+            return Index_ROOM.Value[ROOM];
         }
 
         /// <summary>
-        /// Attempt to find SM by CAMPUS field
+        /// Attempt to find SM by ROOM field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
-        /// <param name="Value">List of related SM entities</param>
-        /// <returns>True if the list of related SM entities is found</returns>
+        /// <param name="ROOM">ROOM value used to find SM</param>
+        /// <param name="Value">Related SM entity</param>
+        /// <returns>True if the related SM entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SM> Value)
+        public bool TryFindByROOM(string ROOM, out SM Value)
         {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SM by CAMPUS field
+        /// Attempt to find SM by ROOM field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find SM</param>
-        /// <returns>List of related SM entities, or null if not found</returns>
+        /// <param name="ROOM">ROOM value used to find SM</param>
+        /// <returns>Related SM entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SM> TryFindByCAMPUS(int? CAMPUS)
+        public SM TryFindByROOM(string ROOM)
         {
-            IReadOnlyList<SM> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            SM value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
             {
                 return value;
             }

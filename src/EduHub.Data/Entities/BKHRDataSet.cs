@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_BKHRKEY = new Lazy<Dictionary<string, IReadOnlyList<BKHR>>>(() => this.ToGroupedDictionary(i => i.BKHRKEY));
-            Index_TID = new Lazy<Dictionary<int, BKHR>>(() => this.ToDictionary(i => i.TID));
-            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<BKHR>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
             Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<BKHR>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
+            Index_STUDENT = new Lazy<NullDictionary<string, IReadOnlyList<BKHR>>>(() => this.ToGroupedNullDictionary(i => i.STUDENT));
+            Index_TID = new Lazy<Dictionary<int, BKHR>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -81,12 +81,40 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="BKHR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="BKHR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="BKHR" /> items to added or update the base <see cref="BKHR" /> items</param>
+        /// <returns>A merged list of <see cref="BKHR" /> items</returns>
+        protected override List<BKHR> ApplyDeltaItems(List<BKHR> Items, List<BKHR> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (BKHR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.BKHRKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<BKHR>>> Index_BKHRKEY;
-        private Lazy<Dictionary<int, BKHR>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<BKHR>>> Index_STUDENT;
         private Lazy<NullDictionary<string, IReadOnlyList<BKHR>>> Index_STAFF;
+        private Lazy<NullDictionary<string, IReadOnlyList<BKHR>>> Index_STUDENT;
+        private Lazy<Dictionary<int, BKHR>> Index_TID;
 
         #endregion
 
@@ -135,38 +163,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find BKHR by TID field
+        /// Find BKHR by STAFF field
         /// </summary>
-        /// <param name="TID">TID value used to find BKHR</param>
-        /// <returns>Related BKHR entity</returns>
+        /// <param name="STAFF">STAFF value used to find BKHR</param>
+        /// <returns>List of related BKHR entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public BKHR FindByTID(int TID)
+        public IReadOnlyList<BKHR> FindBySTAFF(string STAFF)
         {
-            return Index_TID.Value[TID];
+            return Index_STAFF.Value[STAFF];
         }
 
         /// <summary>
-        /// Attempt to find BKHR by TID field
+        /// Attempt to find BKHR by STAFF field
         /// </summary>
-        /// <param name="TID">TID value used to find BKHR</param>
-        /// <param name="Value">Related BKHR entity</param>
-        /// <returns>True if the related BKHR entity is found</returns>
+        /// <param name="STAFF">STAFF value used to find BKHR</param>
+        /// <param name="Value">List of related BKHR entities</param>
+        /// <returns>True if the list of related BKHR entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out BKHR Value)
+        public bool TryFindBySTAFF(string STAFF, out IReadOnlyList<BKHR> Value)
         {
-            return Index_TID.Value.TryGetValue(TID, out Value);
+            return Index_STAFF.Value.TryGetValue(STAFF, out Value);
         }
 
         /// <summary>
-        /// Attempt to find BKHR by TID field
+        /// Attempt to find BKHR by STAFF field
         /// </summary>
-        /// <param name="TID">TID value used to find BKHR</param>
-        /// <returns>Related BKHR entity, or null if not found</returns>
+        /// <param name="STAFF">STAFF value used to find BKHR</param>
+        /// <returns>List of related BKHR entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public BKHR TryFindByTID(int TID)
+        public IReadOnlyList<BKHR> TryFindBySTAFF(string STAFF)
         {
-            BKHR value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
+            IReadOnlyList<BKHR> value;
+            if (Index_STAFF.Value.TryGetValue(STAFF, out value))
             {
                 return value;
             }
@@ -219,38 +247,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find BKHR by STAFF field
+        /// Find BKHR by TID field
         /// </summary>
-        /// <param name="STAFF">STAFF value used to find BKHR</param>
-        /// <returns>List of related BKHR entities</returns>
+        /// <param name="TID">TID value used to find BKHR</param>
+        /// <returns>Related BKHR entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<BKHR> FindBySTAFF(string STAFF)
+        public BKHR FindByTID(int TID)
         {
-            return Index_STAFF.Value[STAFF];
+            return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find BKHR by STAFF field
+        /// Attempt to find BKHR by TID field
         /// </summary>
-        /// <param name="STAFF">STAFF value used to find BKHR</param>
-        /// <param name="Value">List of related BKHR entities</param>
-        /// <returns>True if the list of related BKHR entities is found</returns>
+        /// <param name="TID">TID value used to find BKHR</param>
+        /// <param name="Value">Related BKHR entity</param>
+        /// <returns>True if the related BKHR entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTAFF(string STAFF, out IReadOnlyList<BKHR> Value)
+        public bool TryFindByTID(int TID, out BKHR Value)
         {
-            return Index_STAFF.Value.TryGetValue(STAFF, out Value);
+            return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find BKHR by STAFF field
+        /// Attempt to find BKHR by TID field
         /// </summary>
-        /// <param name="STAFF">STAFF value used to find BKHR</param>
-        /// <returns>List of related BKHR entities, or null if not found</returns>
+        /// <param name="TID">TID value used to find BKHR</param>
+        /// <returns>Related BKHR entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<BKHR> TryFindBySTAFF(string STAFF)
+        public BKHR TryFindByTID(int TID)
         {
-            IReadOnlyList<BKHR> value;
-            if (Index_STAFF.Value.TryGetValue(STAFF, out value))
+            BKHR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

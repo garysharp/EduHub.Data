@@ -19,14 +19,14 @@ namespace EduHub.Data.Entities
         internal KGCDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_KGCKEY = new Lazy<Dictionary<string, KGC>>(() => this.ToDictionary(i => i.KGCKEY));
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_KGCKEY = new Lazy<Dictionary<string, KGC>>(() => this.ToDictionary(i => i.KGCKEY));
+            Index_MAX_AC_YR = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.MAX_AC_YR));
+            Index_MIN_AC_YR = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.MIN_AC_YR));
+            Index_NEXT_HG = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_HG));
+            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
             Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
             Index_TEACHER_B = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER_B));
-            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
-            Index_MIN_AC_YR = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.MIN_AC_YR));
-            Index_MAX_AC_YR = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.MAX_AC_YR));
-            Index_NEXT_HG = new Lazy<NullDictionary<string, IReadOnlyList<KGC>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_HG));
         }
 
         /// <summary>
@@ -97,20 +97,90 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KGC" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KGC" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KGC" /> items to added or update the base <see cref="KGC" /> items</param>
+        /// <returns>A merged list of <see cref="KGC" /> items</returns>
+        protected override List<KGC> ApplyDeltaItems(List<KGC> Items, List<KGC> DeltaItems)
+        {
+            Dictionary<string, int> Index_KGCKEY = Items.ToIndexDictionary(i => i.KGCKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KGC deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KGCKEY.TryGetValue(deltaItem.KGCKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KGCKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, KGC>> Index_KGCKEY;
         private Lazy<NullDictionary<int?, IReadOnlyList<KGC>>> Index_CAMPUS;
+        private Lazy<Dictionary<string, KGC>> Index_KGCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_MAX_AC_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_MIN_AC_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_NEXT_HG;
+        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_TEACHER;
         private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_TEACHER_B;
-        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_ROOM;
-        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_MIN_AC_YR;
-        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_MAX_AC_YR;
-        private Lazy<NullDictionary<string, IReadOnlyList<KGC>>> Index_NEXT_HG;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find KGC by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <returns>List of related KGC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <param name="Value">List of related KGC entities</param>
+        /// <returns>True if the list of related KGC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<KGC> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <returns>List of related KGC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<KGC> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find KGC by KGCKEY field
@@ -155,38 +225,164 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find KGC by CAMPUS field
+        /// Find KGC by MAX_AC_YR field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
         /// <returns>List of related KGC entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> FindByCAMPUS(int? CAMPUS)
+        public IReadOnlyList<KGC> FindByMAX_AC_YR(string MAX_AC_YR)
         {
-            return Index_CAMPUS.Value[CAMPUS];
+            return Index_MAX_AC_YR.Value[MAX_AC_YR];
         }
 
         /// <summary>
-        /// Attempt to find KGC by CAMPUS field
+        /// Attempt to find KGC by MAX_AC_YR field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
         /// <param name="Value">List of related KGC entities</param>
         /// <returns>True if the list of related KGC entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<KGC> Value)
+        public bool TryFindByMAX_AC_YR(string MAX_AC_YR, out IReadOnlyList<KGC> Value)
         {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+            return Index_MAX_AC_YR.Value.TryGetValue(MAX_AC_YR, out Value);
         }
 
         /// <summary>
-        /// Attempt to find KGC by CAMPUS field
+        /// Attempt to find KGC by MAX_AC_YR field
         /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find KGC</param>
+        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
         /// <returns>List of related KGC entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> TryFindByCAMPUS(int? CAMPUS)
+        public IReadOnlyList<KGC> TryFindByMAX_AC_YR(string MAX_AC_YR)
         {
             IReadOnlyList<KGC> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            if (Index_MAX_AC_YR.Value.TryGetValue(MAX_AC_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGC by MIN_AC_YR field
+        /// </summary>
+        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
+        /// <returns>List of related KGC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> FindByMIN_AC_YR(string MIN_AC_YR)
+        {
+            return Index_MIN_AC_YR.Value[MIN_AC_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by MIN_AC_YR field
+        /// </summary>
+        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
+        /// <param name="Value">List of related KGC entities</param>
+        /// <returns>True if the list of related KGC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMIN_AC_YR(string MIN_AC_YR, out IReadOnlyList<KGC> Value)
+        {
+            return Index_MIN_AC_YR.Value.TryGetValue(MIN_AC_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by MIN_AC_YR field
+        /// </summary>
+        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
+        /// <returns>List of related KGC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> TryFindByMIN_AC_YR(string MIN_AC_YR)
+        {
+            IReadOnlyList<KGC> value;
+            if (Index_MIN_AC_YR.Value.TryGetValue(MIN_AC_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGC by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
+        /// <returns>List of related KGC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> FindByNEXT_HG(string NEXT_HG)
+        {
+            return Index_NEXT_HG.Value[NEXT_HG];
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
+        /// <param name="Value">List of related KGC entities</param>
+        /// <returns>True if the list of related KGC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_HG(string NEXT_HG, out IReadOnlyList<KGC> Value)
+        {
+            return Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
+        /// <returns>List of related KGC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> TryFindByNEXT_HG(string NEXT_HG)
+        {
+            IReadOnlyList<KGC> value;
+            if (Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGC by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find KGC</param>
+        /// <returns>List of related KGC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> FindByROOM(string ROOM)
+        {
+            return Index_ROOM.Value[ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find KGC</param>
+        /// <param name="Value">List of related KGC entities</param>
+        /// <returns>True if the list of related KGC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM(string ROOM, out IReadOnlyList<KGC> Value)
+        {
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGC by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find KGC</param>
+        /// <returns>List of related KGC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGC> TryFindByROOM(string ROOM)
+        {
+            IReadOnlyList<KGC> value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
             {
                 return value;
             }
@@ -271,174 +467,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KGC> value;
             if (Index_TEACHER_B.Value.TryGetValue(TEACHER_B, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KGC by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find KGC</param>
-        /// <returns>List of related KGC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> FindByROOM(string ROOM)
-        {
-            return Index_ROOM.Value[ROOM];
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find KGC</param>
-        /// <param name="Value">List of related KGC entities</param>
-        /// <returns>True if the list of related KGC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByROOM(string ROOM, out IReadOnlyList<KGC> Value)
-        {
-            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by ROOM field
-        /// </summary>
-        /// <param name="ROOM">ROOM value used to find KGC</param>
-        /// <returns>List of related KGC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> TryFindByROOM(string ROOM)
-        {
-            IReadOnlyList<KGC> value;
-            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KGC by MIN_AC_YR field
-        /// </summary>
-        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
-        /// <returns>List of related KGC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> FindByMIN_AC_YR(string MIN_AC_YR)
-        {
-            return Index_MIN_AC_YR.Value[MIN_AC_YR];
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by MIN_AC_YR field
-        /// </summary>
-        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
-        /// <param name="Value">List of related KGC entities</param>
-        /// <returns>True if the list of related KGC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMIN_AC_YR(string MIN_AC_YR, out IReadOnlyList<KGC> Value)
-        {
-            return Index_MIN_AC_YR.Value.TryGetValue(MIN_AC_YR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by MIN_AC_YR field
-        /// </summary>
-        /// <param name="MIN_AC_YR">MIN_AC_YR value used to find KGC</param>
-        /// <returns>List of related KGC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> TryFindByMIN_AC_YR(string MIN_AC_YR)
-        {
-            IReadOnlyList<KGC> value;
-            if (Index_MIN_AC_YR.Value.TryGetValue(MIN_AC_YR, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KGC by MAX_AC_YR field
-        /// </summary>
-        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
-        /// <returns>List of related KGC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> FindByMAX_AC_YR(string MAX_AC_YR)
-        {
-            return Index_MAX_AC_YR.Value[MAX_AC_YR];
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by MAX_AC_YR field
-        /// </summary>
-        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
-        /// <param name="Value">List of related KGC entities</param>
-        /// <returns>True if the list of related KGC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByMAX_AC_YR(string MAX_AC_YR, out IReadOnlyList<KGC> Value)
-        {
-            return Index_MAX_AC_YR.Value.TryGetValue(MAX_AC_YR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by MAX_AC_YR field
-        /// </summary>
-        /// <param name="MAX_AC_YR">MAX_AC_YR value used to find KGC</param>
-        /// <returns>List of related KGC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> TryFindByMAX_AC_YR(string MAX_AC_YR)
-        {
-            IReadOnlyList<KGC> value;
-            if (Index_MAX_AC_YR.Value.TryGetValue(MAX_AC_YR, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KGC by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
-        /// <returns>List of related KGC entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> FindByNEXT_HG(string NEXT_HG)
-        {
-            return Index_NEXT_HG.Value[NEXT_HG];
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
-        /// <param name="Value">List of related KGC entities</param>
-        /// <returns>True if the list of related KGC entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByNEXT_HG(string NEXT_HG, out IReadOnlyList<KGC> Value)
-        {
-            return Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGC by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find KGC</param>
-        /// <returns>List of related KGC entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<KGC> TryFindByNEXT_HG(string NEXT_HG)
-        {
-            IReadOnlyList<KGC> value;
-            if (Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out value))
             {
                 return value;
             }

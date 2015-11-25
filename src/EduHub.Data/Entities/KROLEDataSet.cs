@@ -60,6 +60,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KROLE" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KROLE" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KROLE" /> items to added or update the base <see cref="KROLE" /> items</param>
+        /// <returns>A merged list of <see cref="KROLE" /> items</returns>
+        protected override List<KROLE> ApplyDeltaItems(List<KROLE> Items, List<KROLE> DeltaItems)
+        {
+            Dictionary<string, int> Index_KROLEKEY = Items.ToIndexDictionary(i => i.KROLEKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KROLE deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KROLEKEY.TryGetValue(deltaItem.KROLEKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KROLEKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, KROLE>> Index_KROLEKEY;

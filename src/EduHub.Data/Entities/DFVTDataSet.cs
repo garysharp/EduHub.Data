@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_FAMILY = new Lazy<Dictionary<string, IReadOnlyList<DFVT>>>(() => this.ToGroupedDictionary(i => i.FAMILY));
-            Index_TID = new Lazy<Dictionary<int, DFVT>>(() => this.ToDictionary(i => i.TID));
             Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DFVT>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_TID = new Lazy<Dictionary<int, DFVT>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -104,11 +104,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="DFVT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="DFVT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="DFVT" /> items to added or update the base <see cref="DFVT" /> items</param>
+        /// <returns>A merged list of <see cref="DFVT" /> items</returns>
+        protected override List<DFVT> ApplyDeltaItems(List<DFVT> Items, List<DFVT> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (DFVT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.FAMILY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<DFVT>>> Index_FAMILY;
-        private Lazy<Dictionary<int, DFVT>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<DFVT>>> Index_GST_TYPE;
+        private Lazy<Dictionary<int, DFVT>> Index_TID;
 
         #endregion
 
@@ -157,48 +185,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find DFVT by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFVT</param>
-        /// <returns>Related DFVT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFVT FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find DFVT by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFVT</param>
-        /// <param name="Value">Related DFVT entity</param>
-        /// <returns>True if the related DFVT entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out DFVT Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DFVT by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find DFVT</param>
-        /// <returns>Related DFVT entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DFVT TryFindByTID(int TID)
-        {
-            DFVT value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find DFVT by GST_TYPE field
         /// </summary>
         /// <param name="GST_TYPE">GST_TYPE value used to find DFVT</param>
@@ -231,6 +217,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<DFVT> value;
             if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <returns>Related DFVT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFVT FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <param name="Value">Related DFVT entity</param>
+        /// <returns>True if the related DFVT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFVT Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <returns>Related DFVT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFVT TryFindByTID(int TID)
+        {
+            DFVT value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

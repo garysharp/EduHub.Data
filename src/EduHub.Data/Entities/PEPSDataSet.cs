@@ -20,13 +20,13 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, PEPS>>(() => this.ToDictionary(i => i.TID));
-            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
-            Index_PAY_STEP = new Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.PAY_STEP));
-            Index_SUPER_FUND = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.SUPER_FUND));
-            Index_TRCENTRE = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.TRCENTRE));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_PAY_STEP = new Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.PAY_STEP));
+            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_SUPER_FUND = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.SUPER_FUND));
+            Index_TID = new Lazy<Dictionary<int, PEPS>>(() => this.ToDictionary(i => i.TID));
+            Index_TRCENTRE = new Lazy<NullDictionary<string, IReadOnlyList<PEPS>>>(() => this.ToGroupedNullDictionary(i => i.TRCENTRE));
         }
 
         /// <summary>
@@ -124,16 +124,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PEPS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PEPS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PEPS" /> items to added or update the base <see cref="PEPS" /> items</param>
+        /// <returns>A merged list of <see cref="PEPS" /> items</returns>
+        protected override List<PEPS> ApplyDeltaItems(List<PEPS> Items, List<PEPS> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PEPS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<PEPS>>> Index_CODE;
-        private Lazy<Dictionary<int, PEPS>> Index_TID;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>> Index_PAYITEM;
-        private Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>> Index_PAY_STEP;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_SUPER_FUND;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_TRCENTRE;
-        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_SUBPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>> Index_PAY_STEP;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PEPS>>> Index_PAYITEM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_SUPER_FUND;
+        private Lazy<Dictionary<int, PEPS>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<PEPS>>> Index_TRCENTRE;
 
         #endregion
 
@@ -182,80 +210,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPS by TID field
+        /// Find PEPS by INITIATIVE field
         /// </summary>
-        /// <param name="TID">TID value used to find PEPS</param>
-        /// <returns>Related PEPS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPS FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find PEPS by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEPS</param>
-        /// <param name="Value">Related PEPS entity</param>
-        /// <returns>True if the related PEPS entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PEPS Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEPS by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEPS</param>
-        /// <returns>Related PEPS entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPS TryFindByTID(int TID)
-        {
-            PEPS value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PEPS by PAYITEM field
-        /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
         /// <returns>List of related PEPS entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> FindByPAYITEM(short? PAYITEM)
+        public IReadOnlyList<PEPS> FindByINITIATIVE(string INITIATIVE)
         {
-            return Index_PAYITEM.Value[PAYITEM];
+            return Index_INITIATIVE.Value[INITIATIVE];
         }
 
         /// <summary>
-        /// Attempt to find PEPS by PAYITEM field
+        /// Attempt to find PEPS by INITIATIVE field
         /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
         /// <param name="Value">List of related PEPS entities</param>
         /// <returns>True if the list of related PEPS entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPAYITEM(short? PAYITEM, out IReadOnlyList<PEPS> Value)
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEPS> Value)
         {
-            return Index_PAYITEM.Value.TryGetValue(PAYITEM, out Value);
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEPS by PAYITEM field
+        /// Attempt to find PEPS by INITIATIVE field
         /// </summary>
-        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
         /// <returns>List of related PEPS entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> TryFindByPAYITEM(short? PAYITEM)
+        public IReadOnlyList<PEPS> TryFindByINITIATIVE(string INITIATIVE)
         {
             IReadOnlyList<PEPS> value;
-            if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }
@@ -308,80 +294,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPS by SUPER_FUND field
+        /// Find PEPS by PAYITEM field
         /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
+        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
         /// <returns>List of related PEPS entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> FindBySUPER_FUND(string SUPER_FUND)
+        public IReadOnlyList<PEPS> FindByPAYITEM(short? PAYITEM)
         {
-            return Index_SUPER_FUND.Value[SUPER_FUND];
+            return Index_PAYITEM.Value[PAYITEM];
         }
 
         /// <summary>
-        /// Attempt to find PEPS by SUPER_FUND field
+        /// Attempt to find PEPS by PAYITEM field
         /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
+        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
         /// <param name="Value">List of related PEPS entities</param>
         /// <returns>True if the list of related PEPS entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUPER_FUND(string SUPER_FUND, out IReadOnlyList<PEPS> Value)
+        public bool TryFindByPAYITEM(short? PAYITEM, out IReadOnlyList<PEPS> Value)
         {
-            return Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out Value);
+            return Index_PAYITEM.Value.TryGetValue(PAYITEM, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEPS by SUPER_FUND field
+        /// Attempt to find PEPS by PAYITEM field
         /// </summary>
-        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
+        /// <param name="PAYITEM">PAYITEM value used to find PEPS</param>
         /// <returns>List of related PEPS entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> TryFindBySUPER_FUND(string SUPER_FUND)
+        public IReadOnlyList<PEPS> TryFindByPAYITEM(short? PAYITEM)
         {
             IReadOnlyList<PEPS> value;
-            if (Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find PEPS by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
-        /// <returns>List of related PEPS entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> FindByTRCENTRE(string TRCENTRE)
-        {
-            return Index_TRCENTRE.Value[TRCENTRE];
-        }
-
-        /// <summary>
-        /// Attempt to find PEPS by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
-        /// <param name="Value">List of related PEPS entities</param>
-        /// <returns>True if the list of related PEPS entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTRCENTRE(string TRCENTRE, out IReadOnlyList<PEPS> Value)
-        {
-            return Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEPS by TRCENTRE field
-        /// </summary>
-        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
-        /// <returns>List of related PEPS entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> TryFindByTRCENTRE(string TRCENTRE)
-        {
-            IReadOnlyList<PEPS> value;
-            if (Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out value))
+            if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
             {
                 return value;
             }
@@ -434,38 +378,122 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPS by INITIATIVE field
+        /// Find PEPS by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
         /// <returns>List of related PEPS entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> FindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<PEPS> FindBySUPER_FUND(string SUPER_FUND)
         {
-            return Index_INITIATIVE.Value[INITIATIVE];
+            return Index_SUPER_FUND.Value[SUPER_FUND];
         }
 
         /// <summary>
-        /// Attempt to find PEPS by INITIATIVE field
+        /// Attempt to find PEPS by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
         /// <param name="Value">List of related PEPS entities</param>
         /// <returns>True if the list of related PEPS entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PEPS> Value)
+        public bool TryFindBySUPER_FUND(string SUPER_FUND, out IReadOnlyList<PEPS> Value)
         {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+            return Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out Value);
         }
 
         /// <summary>
-        /// Attempt to find PEPS by INITIATIVE field
+        /// Attempt to find PEPS by SUPER_FUND field
         /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find PEPS</param>
+        /// <param name="SUPER_FUND">SUPER_FUND value used to find PEPS</param>
         /// <returns>List of related PEPS entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<PEPS> TryFindByINITIATIVE(string INITIATIVE)
+        public IReadOnlyList<PEPS> TryFindBySUPER_FUND(string SUPER_FUND)
         {
             IReadOnlyList<PEPS> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            if (Index_SUPER_FUND.Value.TryGetValue(SUPER_FUND, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PEPS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPS</param>
+        /// <returns>Related PEPS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPS FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PEPS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPS</param>
+        /// <param name="Value">Related PEPS entity</param>
+        /// <returns>True if the related PEPS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PEPS Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEPS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPS</param>
+        /// <returns>Related PEPS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPS TryFindByTID(int TID)
+        {
+            PEPS value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PEPS by TRCENTRE field
+        /// </summary>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
+        /// <returns>List of related PEPS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEPS> FindByTRCENTRE(string TRCENTRE)
+        {
+            return Index_TRCENTRE.Value[TRCENTRE];
+        }
+
+        /// <summary>
+        /// Attempt to find PEPS by TRCENTRE field
+        /// </summary>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
+        /// <param name="Value">List of related PEPS entities</param>
+        /// <returns>True if the list of related PEPS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRCENTRE(string TRCENTRE, out IReadOnlyList<PEPS> Value)
+        {
+            return Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEPS by TRCENTRE field
+        /// </summary>
+        /// <param name="TRCENTRE">TRCENTRE value used to find PEPS</param>
+        /// <returns>List of related PEPS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PEPS> TryFindByTRCENTRE(string TRCENTRE)
+        {
+            IReadOnlyList<PEPS> value;
+            if (Index_TRCENTRE.Value.TryGetValue(TRCENTRE, out value))
             {
                 return value;
             }

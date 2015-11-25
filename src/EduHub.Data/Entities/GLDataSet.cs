@@ -343,6 +343,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="GL" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="GL" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="GL" /> items to added or update the base <see cref="GL" /> items</param>
+        /// <returns>A merged list of <see cref="GL" /> items</returns>
+        protected override List<GL> ApplyDeltaItems(List<GL> Items, List<GL> DeltaItems)
+        {
+            Dictionary<string, int> Index_CODE = Items.ToIndexDictionary(i => i.CODE);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (GL deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_CODE.TryGetValue(deltaItem.CODE, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, GL>> Index_CODE;

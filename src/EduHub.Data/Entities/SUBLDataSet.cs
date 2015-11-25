@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_BLKEY = new Lazy<Dictionary<string, IReadOnlyList<SUBL>>>(() => this.ToGroupedDictionary(i => i.BLKEY));
-            Index_TID = new Lazy<Dictionary<int, SUBL>>(() => this.ToDictionary(i => i.TID));
             Index_BOOK = new Lazy<NullDictionary<string, IReadOnlyList<SUBL>>>(() => this.ToGroupedNullDictionary(i => i.BOOK));
+            Index_TID = new Lazy<Dictionary<int, SUBL>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -74,11 +74,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SUBL" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SUBL" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SUBL" /> items to added or update the base <see cref="SUBL" /> items</param>
+        /// <returns>A merged list of <see cref="SUBL" /> items</returns>
+        protected override List<SUBL> ApplyDeltaItems(List<SUBL> Items, List<SUBL> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SUBL deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.BLKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SUBL>>> Index_BLKEY;
-        private Lazy<Dictionary<int, SUBL>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<SUBL>>> Index_BOOK;
+        private Lazy<Dictionary<int, SUBL>> Index_TID;
 
         #endregion
 
@@ -127,48 +155,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SUBL by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SUBL</param>
-        /// <returns>Related SUBL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SUBL FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SUBL by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SUBL</param>
-        /// <param name="Value">Related SUBL entity</param>
-        /// <returns>True if the related SUBL entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SUBL Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SUBL by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SUBL</param>
-        /// <returns>Related SUBL entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SUBL TryFindByTID(int TID)
-        {
-            SUBL value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find SUBL by BOOK field
         /// </summary>
         /// <param name="BOOK">BOOK value used to find SUBL</param>
@@ -201,6 +187,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SUBL> value;
             if (Index_BOOK.Value.TryGetValue(BOOK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SUBL by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SUBL</param>
+        /// <returns>Related SUBL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SUBL FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SUBL by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SUBL</param>
+        /// <param name="Value">Related SUBL entity</param>
+        /// <returns>True if the related SUBL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SUBL Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SUBL by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SUBL</param>
+        /// <returns>Related SUBL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SUBL TryFindByTID(int TID)
+        {
+            SUBL value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

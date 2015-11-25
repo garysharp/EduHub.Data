@@ -66,6 +66,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PLG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PLG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PLG" /> items to added or update the base <see cref="PLG" /> items</param>
+        /// <returns>A merged list of <see cref="PLG" /> items</returns>
+        protected override List<PLG> ApplyDeltaItems(List<PLG> Items, List<PLG> DeltaItems)
+        {
+            Dictionary<string, int> Index_LEAVE_GROUP = Items.ToIndexDictionary(i => i.LEAVE_GROUP);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PLG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_LEAVE_GROUP.TryGetValue(deltaItem.LEAVE_GROUP, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.LEAVE_GROUP)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, PLG>> Index_LEAVE_GROUP;

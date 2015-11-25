@@ -19,15 +19,15 @@ namespace EduHub.Data.Entities
         internal GLCFDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_GST_BOX = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_BOX));
+            Index_GST_SALE_PURCH = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_SALE_PURCH));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_TID = new Lazy<Dictionary<int, GLCF>>(() => this.ToDictionary(i => i.TID));
             Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
-            Index_GST_BOX = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_BOX));
-            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
-            Index_GST_SALE_PURCH = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.GST_SALE_PURCH));
-            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
-            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
-            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<GLCF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
 
         /// <summary>
@@ -248,21 +248,91 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="GLCF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="GLCF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="GLCF" /> items to added or update the base <see cref="GLCF" /> items</param>
+        /// <returns>A merged list of <see cref="GLCF" /> items</returns>
+        protected override List<GLCF> ApplyDeltaItems(List<GLCF> Items, List<GLCF> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (GLCF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_BSB;
         private Lazy<Dictionary<string, IReadOnlyList<GLCF>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_BOX;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_SALE_PURCH;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_INITIATIVE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_SUBPROGRAM;
         private Lazy<Dictionary<int, GLCF>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_TRREF;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_BOX;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_TYPE;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_GST_SALE_PURCH;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_BSB;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_SUBPROGRAM;
-        private Lazy<NullDictionary<string, IReadOnlyList<GLCF>>> Index_INITIATIVE;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find GLCF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find GLCF by CODE field
@@ -297,6 +367,216 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<GLCF> value;
             if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindByGST_BOX(string GST_BOX)
+        {
+            return Index_GST_BOX.Value[GST_BOX];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_BOX(string GST_BOX, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_GST_BOX.Value.TryGetValue(GST_BOX, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindByGST_BOX(string GST_BOX)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_GST_BOX.Value.TryGetValue(GST_BOX, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindByGST_SALE_PURCH(string GST_SALE_PURCH)
+        {
+            return Index_GST_SALE_PURCH.Value[GST_SALE_PURCH];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_SALE_PURCH(string GST_SALE_PURCH, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindByGST_SALE_PURCH(string GST_SALE_PURCH)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
+        /// <returns>List of related GLCF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
+        /// <param name="Value">List of related GLCF entities</param>
+        /// <returns>True if the list of related GLCF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<GLCF> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
+        /// <returns>List of related GLCF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCF> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<GLCF> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }
@@ -381,258 +661,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<GLCF> value;
             if (Index_TRREF.Value.TryGetValue(TRREF, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by GST_BOX field
-        /// </summary>
-        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindByGST_BOX(string GST_BOX)
-        {
-            return Index_GST_BOX.Value[GST_BOX];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_BOX field
-        /// </summary>
-        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGST_BOX(string GST_BOX, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_GST_BOX.Value.TryGetValue(GST_BOX, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_BOX field
-        /// </summary>
-        /// <param name="GST_BOX">GST_BOX value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindByGST_BOX(string GST_BOX)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_GST_BOX.Value.TryGetValue(GST_BOX, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindByGST_TYPE(string GST_TYPE)
-        {
-            return Index_GST_TYPE.Value[GST_TYPE];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_TYPE field
-        /// </summary>
-        /// <param name="GST_TYPE">GST_TYPE value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindByGST_TYPE(string GST_TYPE)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by GST_SALE_PURCH field
-        /// </summary>
-        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindByGST_SALE_PURCH(string GST_SALE_PURCH)
-        {
-            return Index_GST_SALE_PURCH.Value[GST_SALE_PURCH];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_SALE_PURCH field
-        /// </summary>
-        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByGST_SALE_PURCH(string GST_SALE_PURCH, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by GST_SALE_PURCH field
-        /// </summary>
-        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindByGST_SALE_PURCH(string GST_SALE_PURCH)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindByBSB(string BSB)
-        {
-            return Index_BSB.Value[BSB];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByBSB(string BSB, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_BSB.Value.TryGetValue(BSB, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by BSB field
-        /// </summary>
-        /// <param name="BSB">BSB value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindByBSB(string BSB)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_BSB.Value.TryGetValue(BSB, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            return Index_SUBPROGRAM.Value[SUBPROGRAM];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by SUBPROGRAM field
-        /// </summary>
-        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindBySUBPROGRAM(string SUBPROGRAM)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLCF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
-        /// <returns>List of related GLCF entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> FindByINITIATIVE(string INITIATIVE)
-        {
-            return Index_INITIATIVE.Value[INITIATIVE];
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
-        /// <param name="Value">List of related GLCF entities</param>
-        /// <returns>True if the list of related GLCF entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<GLCF> Value)
-        {
-            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCF by INITIATIVE field
-        /// </summary>
-        /// <param name="INITIATIVE">INITIATIVE value used to find GLCF</param>
-        /// <returns>List of related GLCF entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<GLCF> TryFindByINITIATIVE(string INITIATIVE)
-        {
-            IReadOnlyList<GLCF> value;
-            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
             {
                 return value;
             }

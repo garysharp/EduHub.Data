@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SABTDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<SABT>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
             Index_SABTKEY = new Lazy<Dictionary<string, IReadOnlyList<SABT>>>(() => this.ToGroupedDictionary(i => i.SABTKEY));
             Index_TID = new Lazy<Dictionary<int, SABT>>(() => this.ToDictionary(i => i.TID));
-            Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<SABT>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
         }
 
         /// <summary>
@@ -68,15 +68,85 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SABT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SABT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SABT" /> items to added or update the base <see cref="SABT" /> items</param>
+        /// <returns>A merged list of <see cref="SABT" /> items</returns>
+        protected override List<SABT> ApplyDeltaItems(List<SABT> Items, List<SABT> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SABT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SABTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SABT>>> Index_FEE_CODE;
         private Lazy<Dictionary<string, IReadOnlyList<SABT>>> Index_SABTKEY;
         private Lazy<Dictionary<int, SABT>> Index_TID;
-        private Lazy<NullDictionary<string, IReadOnlyList<SABT>>> Index_FEE_CODE;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SABT by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
+        /// <returns>List of related SABT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SABT> FindByFEE_CODE(string FEE_CODE)
+        {
+            return Index_FEE_CODE.Value[FEE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SABT by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
+        /// <param name="Value">List of related SABT entities</param>
+        /// <returns>True if the list of related SABT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<SABT> Value)
+        {
+            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SABT by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
+        /// <returns>List of related SABT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SABT> TryFindByFEE_CODE(string FEE_CODE)
+        {
+            IReadOnlyList<SABT> value;
+            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SABT by SABTKEY field
@@ -153,48 +223,6 @@ namespace EduHub.Data.Entities
         {
             SABT value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SABT by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
-        /// <returns>List of related SABT entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SABT> FindByFEE_CODE(string FEE_CODE)
-        {
-            return Index_FEE_CODE.Value[FEE_CODE];
-        }
-
-        /// <summary>
-        /// Attempt to find SABT by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
-        /// <param name="Value">List of related SABT entities</param>
-        /// <returns>True if the list of related SABT entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<SABT> Value)
-        {
-            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SABT by FEE_CODE field
-        /// </summary>
-        /// <param name="FEE_CODE">FEE_CODE value used to find SABT</param>
-        /// <returns>List of related SABT entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SABT> TryFindByFEE_CODE(string FEE_CODE)
-        {
-            IReadOnlyList<SABT> value;
-            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
             {
                 return value;
             }

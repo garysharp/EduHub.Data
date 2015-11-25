@@ -88,6 +88,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SGAM" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SGAM" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SGAM" /> items to added or update the base <see cref="SGAM" /> items</param>
+        /// <returns>A merged list of <see cref="SGAM" /> items</returns>
+        protected override List<SGAM> ApplyDeltaItems(List<SGAM> Items, List<SGAM> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SGAM deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SGAMKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SGAM>>> Index_SGAMKEY;

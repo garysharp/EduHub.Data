@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal DF_TFRDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_DF_TRANS_ID = new Lazy<NullDictionary<string, DF_TFR>>(() => this.ToNullDictionary(i => i.DF_TRANS_ID));
             Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<DF_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
             Index_TID = new Lazy<Dictionary<int, DF_TFR>>(() => this.ToDictionary(i => i.TID));
-            Index_DF_TRANS_ID = new Lazy<NullDictionary<string, DF_TFR>>(() => this.ToNullDictionary(i => i.DF_TRANS_ID));
         }
 
         /// <summary>
@@ -365,15 +365,90 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="DF_TFR" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="DF_TFR" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="DF_TFR" /> items to added or update the base <see cref="DF_TFR" /> items</param>
+        /// <returns>A merged list of <see cref="DF_TFR" /> items</returns>
+        protected override List<DF_TFR> ApplyDeltaItems(List<DF_TFR> Items, List<DF_TFR> DeltaItems)
+        {
+            NullDictionary<string, int> Index_DF_TRANS_ID = Items.ToIndexNullDictionary(i => i.DF_TRANS_ID);
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (DF_TFR deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_DF_TRANS_ID.TryGetValue(deltaItem.DF_TRANS_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.ORIG_SCHOOL)
+                .ToList();
+        }
+
         #region Index Fields
 
+        private Lazy<NullDictionary<string, DF_TFR>> Index_DF_TRANS_ID;
         private Lazy<Dictionary<string, IReadOnlyList<DF_TFR>>> Index_ORIG_SCHOOL;
         private Lazy<Dictionary<int, DF_TFR>> Index_TID;
-        private Lazy<NullDictionary<string, DF_TFR>> Index_DF_TRANS_ID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR FindByDF_TRANS_ID(string DF_TRANS_ID)
+        {
+            return Index_DF_TRANS_ID.Value[DF_TRANS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <param name="Value">Related DF_TFR entity</param>
+        /// <returns>True if the related DF_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDF_TRANS_ID(string DF_TRANS_ID, out DF_TFR Value)
+        {
+            return Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR TryFindByDF_TRANS_ID(string DF_TRANS_ID)
+        {
+            DF_TFR value;
+            if (Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find DF_TFR by ORIG_SCHOOL field
@@ -450,48 +525,6 @@ namespace EduHub.Data.Entities
         {
             DF_TFR value;
             if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find DF_TFR by DF_TRANS_ID field
-        /// </summary>
-        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
-        /// <returns>Related DF_TFR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DF_TFR FindByDF_TRANS_ID(string DF_TRANS_ID)
-        {
-            return Index_DF_TRANS_ID.Value[DF_TRANS_ID];
-        }
-
-        /// <summary>
-        /// Attempt to find DF_TFR by DF_TRANS_ID field
-        /// </summary>
-        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
-        /// <param name="Value">Related DF_TFR entity</param>
-        /// <returns>True if the related DF_TFR entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDF_TRANS_ID(string DF_TRANS_ID, out DF_TFR Value)
-        {
-            return Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DF_TFR by DF_TRANS_ID field
-        /// </summary>
-        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
-        /// <returns>Related DF_TFR entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public DF_TFR TryFindByDF_TRANS_ID(string DF_TRANS_ID)
-        {
-            DF_TFR value;
-            if (Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out value))
             {
                 return value;
             }

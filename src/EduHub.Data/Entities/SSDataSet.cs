@@ -19,11 +19,11 @@ namespace EduHub.Data.Entities
         internal SSDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SSKEY = new Lazy<Dictionary<string, SS>>(() => this.ToDictionary(i => i.SSKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_FROM_HOMEGROUP = new Lazy<NullDictionary<string, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.FROM_HOMEGROUP));
-            Index_TO_HOMEGROUP = new Lazy<NullDictionary<string, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.TO_HOMEGROUP));
             Index_DEFAULT_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.DEFAULT_TEACHER));
+            Index_FROM_HOMEGROUP = new Lazy<NullDictionary<string, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.FROM_HOMEGROUP));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_SSKEY = new Lazy<Dictionary<string, SS>>(() => this.ToDictionary(i => i.SSKEY));
+            Index_TO_HOMEGROUP = new Lazy<NullDictionary<string, IReadOnlyList<SS>>>(() => this.ToGroupedNullDictionary(i => i.TO_HOMEGROUP));
         }
 
         /// <summary>
@@ -73,93 +73,79 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SS" /> items to added or update the base <see cref="SS" /> items</param>
+        /// <returns>A merged list of <see cref="SS" /> items</returns>
+        protected override List<SS> ApplyDeltaItems(List<SS> Items, List<SS> DeltaItems)
+        {
+            Dictionary<string, int> Index_SSKEY = Items.ToIndexDictionary(i => i.SSKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SSKEY.TryGetValue(deltaItem.SSKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SSKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SS>> Index_SSKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SS>>> Index_LW_DATE;
-        private Lazy<NullDictionary<string, IReadOnlyList<SS>>> Index_FROM_HOMEGROUP;
-        private Lazy<NullDictionary<string, IReadOnlyList<SS>>> Index_TO_HOMEGROUP;
         private Lazy<NullDictionary<string, IReadOnlyList<SS>>> Index_DEFAULT_TEACHER;
+        private Lazy<NullDictionary<string, IReadOnlyList<SS>>> Index_FROM_HOMEGROUP;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SS>>> Index_LW_DATE;
+        private Lazy<Dictionary<string, SS>> Index_SSKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SS>>> Index_TO_HOMEGROUP;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SS by SSKEY field
+        /// Find SS by DEFAULT_TEACHER field
         /// </summary>
-        /// <param name="SSKEY">SSKEY value used to find SS</param>
-        /// <returns>Related SS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SS FindBySSKEY(string SSKEY)
-        {
-            return Index_SSKEY.Value[SSKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find SS by SSKEY field
-        /// </summary>
-        /// <param name="SSKEY">SSKEY value used to find SS</param>
-        /// <param name="Value">Related SS entity</param>
-        /// <returns>True if the related SS entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySSKEY(string SSKEY, out SS Value)
-        {
-            return Index_SSKEY.Value.TryGetValue(SSKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SS by SSKEY field
-        /// </summary>
-        /// <param name="SSKEY">SSKEY value used to find SS</param>
-        /// <returns>Related SS entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SS TryFindBySSKEY(string SSKEY)
-        {
-            SS value;
-            if (Index_SSKEY.Value.TryGetValue(SSKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SS by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
         /// <returns>List of related SS entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SS> FindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<SS> FindByDEFAULT_TEACHER(string DEFAULT_TEACHER)
         {
-            return Index_LW_DATE.Value[LW_DATE];
+            return Index_DEFAULT_TEACHER.Value[DEFAULT_TEACHER];
         }
 
         /// <summary>
-        /// Attempt to find SS by LW_DATE field
+        /// Attempt to find SS by DEFAULT_TEACHER field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
         /// <param name="Value">List of related SS entities</param>
         /// <returns>True if the list of related SS entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SS> Value)
+        public bool TryFindByDEFAULT_TEACHER(string DEFAULT_TEACHER, out IReadOnlyList<SS> Value)
         {
-            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+            return Index_DEFAULT_TEACHER.Value.TryGetValue(DEFAULT_TEACHER, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SS by LW_DATE field
+        /// Attempt to find SS by DEFAULT_TEACHER field
         /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
         /// <returns>List of related SS entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SS> TryFindByLW_DATE(DateTime? LW_DATE)
+        public IReadOnlyList<SS> TryFindByDEFAULT_TEACHER(string DEFAULT_TEACHER)
         {
             IReadOnlyList<SS> value;
-            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            if (Index_DEFAULT_TEACHER.Value.TryGetValue(DEFAULT_TEACHER, out value))
             {
                 return value;
             }
@@ -212,6 +198,90 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find SS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <returns>List of related SS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SS> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find SS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <param name="Value">List of related SS entities</param>
+        /// <returns>True if the list of related SS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SS> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SS</param>
+        /// <returns>List of related SS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SS> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<SS> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SS by SSKEY field
+        /// </summary>
+        /// <param name="SSKEY">SSKEY value used to find SS</param>
+        /// <returns>Related SS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SS FindBySSKEY(string SSKEY)
+        {
+            return Index_SSKEY.Value[SSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SS by SSKEY field
+        /// </summary>
+        /// <param name="SSKEY">SSKEY value used to find SS</param>
+        /// <param name="Value">Related SS entity</param>
+        /// <returns>True if the related SS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySSKEY(string SSKEY, out SS Value)
+        {
+            return Index_SSKEY.Value.TryGetValue(SSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SS by SSKEY field
+        /// </summary>
+        /// <param name="SSKEY">SSKEY value used to find SS</param>
+        /// <returns>Related SS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SS TryFindBySSKEY(string SSKEY)
+        {
+            SS value;
+            if (Index_SSKEY.Value.TryGetValue(SSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find SS by TO_HOMEGROUP field
         /// </summary>
         /// <param name="TO_HOMEGROUP">TO_HOMEGROUP value used to find SS</param>
@@ -244,48 +314,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SS> value;
             if (Index_TO_HOMEGROUP.Value.TryGetValue(TO_HOMEGROUP, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SS by DEFAULT_TEACHER field
-        /// </summary>
-        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
-        /// <returns>List of related SS entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SS> FindByDEFAULT_TEACHER(string DEFAULT_TEACHER)
-        {
-            return Index_DEFAULT_TEACHER.Value[DEFAULT_TEACHER];
-        }
-
-        /// <summary>
-        /// Attempt to find SS by DEFAULT_TEACHER field
-        /// </summary>
-        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
-        /// <param name="Value">List of related SS entities</param>
-        /// <returns>True if the list of related SS entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByDEFAULT_TEACHER(string DEFAULT_TEACHER, out IReadOnlyList<SS> Value)
-        {
-            return Index_DEFAULT_TEACHER.Value.TryGetValue(DEFAULT_TEACHER, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SS by DEFAULT_TEACHER field
-        /// </summary>
-        /// <param name="DEFAULT_TEACHER">DEFAULT_TEACHER value used to find SS</param>
-        /// <returns>List of related SS entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SS> TryFindByDEFAULT_TEACHER(string DEFAULT_TEACHER)
-        {
-            IReadOnlyList<SS> value;
-            if (Index_DEFAULT_TEACHER.Value.TryGetValue(DEFAULT_TEACHER, out value))
             {
                 return value;
             }

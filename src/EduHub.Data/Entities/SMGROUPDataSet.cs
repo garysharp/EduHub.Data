@@ -20,9 +20,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_GROUPKEY = new Lazy<Dictionary<string, IReadOnlyList<SMGROUP>>>(() => this.ToGroupedDictionary(i => i.GROUPKEY));
-            Index_TID = new Lazy<Dictionary<int, SMGROUP>>(() => this.ToDictionary(i => i.TID));
             Index_GROUPKEY_ROOM = new Lazy<Dictionary<Tuple<string, string>, SMGROUP>>(() => this.ToDictionary(i => Tuple.Create(i.GROUPKEY, i.ROOM)));
             Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SMGROUP>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_TID = new Lazy<Dictionary<int, SMGROUP>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -63,12 +63,45 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SMGROUP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SMGROUP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SMGROUP" /> items to added or update the base <see cref="SMGROUP" /> items</param>
+        /// <returns>A merged list of <see cref="SMGROUP" /> items</returns>
+        protected override List<SMGROUP> ApplyDeltaItems(List<SMGROUP> Items, List<SMGROUP> DeltaItems)
+        {
+            Dictionary<Tuple<string, string>, int> Index_GROUPKEY_ROOM = Items.ToIndexDictionary(i => Tuple.Create(i.GROUPKEY, i.ROOM));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SMGROUP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_GROUPKEY_ROOM.TryGetValue(Tuple.Create(deltaItem.GROUPKEY, deltaItem.ROOM), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.GROUPKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SMGROUP>>> Index_GROUPKEY;
-        private Lazy<Dictionary<int, SMGROUP>> Index_TID;
         private Lazy<Dictionary<Tuple<string, string>, SMGROUP>> Index_GROUPKEY_ROOM;
         private Lazy<NullDictionary<string, IReadOnlyList<SMGROUP>>> Index_ROOM;
+        private Lazy<Dictionary<int, SMGROUP>> Index_TID;
 
         #endregion
 
@@ -107,48 +140,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SMGROUP> value;
             if (Index_GROUPKEY.Value.TryGetValue(GROUPKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SMGROUP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMGROUP</param>
-        /// <returns>Related SMGROUP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMGROUP FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SMGROUP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMGROUP</param>
-        /// <param name="Value">Related SMGROUP entity</param>
-        /// <returns>True if the related SMGROUP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SMGROUP Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SMGROUP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SMGROUP</param>
-        /// <returns>Related SMGROUP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SMGROUP TryFindByTID(int TID)
-        {
-            SMGROUP value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -236,6 +227,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SMGROUP> value;
             if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMGROUP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMGROUP</param>
+        /// <returns>Related SMGROUP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMGROUP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SMGROUP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMGROUP</param>
+        /// <param name="Value">Related SMGROUP entity</param>
+        /// <returns>True if the related SMGROUP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SMGROUP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMGROUP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMGROUP</param>
+        /// <returns>Related SMGROUP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMGROUP TryFindByTID(int TID)
+        {
+            SMGROUP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

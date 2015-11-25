@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal PFDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_PFKEY = new Lazy<Dictionary<string, PF>>(() => this.ToDictionary(i => i.PFKEY));
             Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<PF>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
+            Index_PFKEY = new Lazy<Dictionary<string, PF>>(() => this.ToDictionary(i => i.PFKEY));
         }
 
         /// <summary>
@@ -70,56 +70,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PF" /> items to added or update the base <see cref="PF" /> items</param>
+        /// <returns>A merged list of <see cref="PF" /> items</returns>
+        protected override List<PF> ApplyDeltaItems(List<PF> Items, List<PF> DeltaItems)
+        {
+            Dictionary<string, int> Index_PFKEY = Items.ToIndexDictionary(i => i.PFKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_PFKEY.TryGetValue(deltaItem.PFKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.PFKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, PF>> Index_PFKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<PF>>> Index_GLCODE;
+        private Lazy<Dictionary<string, PF>> Index_PFKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find PF by PFKEY field
-        /// </summary>
-        /// <param name="PFKEY">PFKEY value used to find PF</param>
-        /// <returns>Related PF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PF FindByPFKEY(string PFKEY)
-        {
-            return Index_PFKEY.Value[PFKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find PF by PFKEY field
-        /// </summary>
-        /// <param name="PFKEY">PFKEY value used to find PF</param>
-        /// <param name="Value">Related PF entity</param>
-        /// <returns>True if the related PF entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPFKEY(string PFKEY, out PF Value)
-        {
-            return Index_PFKEY.Value.TryGetValue(PFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PF by PFKEY field
-        /// </summary>
-        /// <param name="PFKEY">PFKEY value used to find PF</param>
-        /// <returns>Related PF entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PF TryFindByPFKEY(string PFKEY)
-        {
-            PF value;
-            if (Index_PFKEY.Value.TryGetValue(PFKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find PF by GLCODE field
@@ -154,6 +140,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PF> value;
             if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PF by PFKEY field
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PF</param>
+        /// <returns>Related PF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PF FindByPFKEY(string PFKEY)
+        {
+            return Index_PFKEY.Value[PFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PF by PFKEY field
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PF</param>
+        /// <param name="Value">Related PF entity</param>
+        /// <returns>True if the related PF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPFKEY(string PFKEY, out PF Value)
+        {
+            return Index_PFKEY.Value.TryGetValue(PFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PF by PFKEY field
+        /// </summary>
+        /// <param name="PFKEY">PFKEY value used to find PF</param>
+        /// <returns>Related PF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PF TryFindByPFKEY(string PFKEY)
+        {
+            PF value;
+            if (Index_PFKEY.Value.TryGetValue(PFKEY, out value))
             {
                 return value;
             }

@@ -19,8 +19,8 @@ namespace EduHub.Data.Entities
         internal KGSTDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_KGSTKEY = new Lazy<Dictionary<string, KGST>>(() => this.ToDictionary(i => i.KGSTKEY));
             Index_GLGST_CODE = new Lazy<NullDictionary<string, IReadOnlyList<KGST>>>(() => this.ToGroupedNullDictionary(i => i.GLGST_CODE));
+            Index_KGSTKEY = new Lazy<Dictionary<string, KGST>>(() => this.ToDictionary(i => i.KGSTKEY));
         }
 
         /// <summary>
@@ -76,56 +76,42 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="KGST" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="KGST" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="KGST" /> items to added or update the base <see cref="KGST" /> items</param>
+        /// <returns>A merged list of <see cref="KGST" /> items</returns>
+        protected override List<KGST> ApplyDeltaItems(List<KGST> Items, List<KGST> DeltaItems)
+        {
+            Dictionary<string, int> Index_KGSTKEY = Items.ToIndexDictionary(i => i.KGSTKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (KGST deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_KGSTKEY.TryGetValue(deltaItem.KGSTKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.KGSTKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, KGST>> Index_KGSTKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<KGST>>> Index_GLGST_CODE;
+        private Lazy<Dictionary<string, KGST>> Index_KGSTKEY;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find KGST by KGSTKEY field
-        /// </summary>
-        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
-        /// <returns>Related KGST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGST FindByKGSTKEY(string KGSTKEY)
-        {
-            return Index_KGSTKEY.Value[KGSTKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find KGST by KGSTKEY field
-        /// </summary>
-        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
-        /// <param name="Value">Related KGST entity</param>
-        /// <returns>True if the related KGST entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByKGSTKEY(string KGSTKEY, out KGST Value)
-        {
-            return Index_KGSTKEY.Value.TryGetValue(KGSTKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGST by KGSTKEY field
-        /// </summary>
-        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
-        /// <returns>Related KGST entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public KGST TryFindByKGSTKEY(string KGSTKEY)
-        {
-            KGST value;
-            if (Index_KGSTKEY.Value.TryGetValue(KGSTKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find KGST by GLGST_CODE field
@@ -160,6 +146,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<KGST> value;
             if (Index_GLGST_CODE.Value.TryGetValue(GLGST_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGST by KGSTKEY field
+        /// </summary>
+        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
+        /// <returns>Related KGST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGST FindByKGSTKEY(string KGSTKEY)
+        {
+            return Index_KGSTKEY.Value[KGSTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGST by KGSTKEY field
+        /// </summary>
+        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
+        /// <param name="Value">Related KGST entity</param>
+        /// <returns>True if the related KGST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGSTKEY(string KGSTKEY, out KGST Value)
+        {
+            return Index_KGSTKEY.Value.TryGetValue(KGSTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGST by KGSTKEY field
+        /// </summary>
+        /// <param name="KGSTKEY">KGSTKEY value used to find KGST</param>
+        /// <returns>Related KGST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGST TryFindByKGSTKEY(string KGSTKEY)
+        {
+            KGST value;
+            if (Index_KGSTKEY.Value.TryGetValue(KGSTKEY, out value))
             {
                 return value;
             }

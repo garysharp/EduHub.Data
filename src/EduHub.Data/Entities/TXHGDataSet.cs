@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal TXHGDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_TXHG_ID = new Lazy<Dictionary<int, TXHG>>(() => this.ToDictionary(i => i.TXHG_ID));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<TXHG>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_TXHG_ID = new Lazy<Dictionary<int, TXHG>>(() => this.ToDictionary(i => i.TXHG_ID));
         }
 
         /// <summary>
@@ -68,49 +68,77 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TXHG" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TXHG" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TXHG" /> items to added or update the base <see cref="TXHG" /> items</param>
+        /// <returns>A merged list of <see cref="TXHG" /> items</returns>
+        protected override List<TXHG> ApplyDeltaItems(List<TXHG> Items, List<TXHG> DeltaItems)
+        {
+            Dictionary<int, int> Index_TXHG_ID = Items.ToIndexDictionary(i => i.TXHG_ID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TXHG deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TXHG_ID.TryGetValue(deltaItem.TXHG_ID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TXHG_ID)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, TXHG>> Index_TXHG_ID;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>> Index_LW_DATE;
         private Lazy<NullDictionary<string, IReadOnlyList<TXHG>>> Index_HOME_GROUP;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>> Index_LW_DATE;
+        private Lazy<Dictionary<int, TXHG>> Index_TXHG_ID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find TXHG by TXHG_ID field
+        /// Find TXHG by HOME_GROUP field
         /// </summary>
-        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
-        /// <returns>Related TXHG entity</returns>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <returns>List of related TXHG entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TXHG FindByTXHG_ID(int TXHG_ID)
+        public IReadOnlyList<TXHG> FindByHOME_GROUP(string HOME_GROUP)
         {
-            return Index_TXHG_ID.Value[TXHG_ID];
+            return Index_HOME_GROUP.Value[HOME_GROUP];
         }
 
         /// <summary>
-        /// Attempt to find TXHG by TXHG_ID field
+        /// Attempt to find TXHG by HOME_GROUP field
         /// </summary>
-        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
-        /// <param name="Value">Related TXHG entity</param>
-        /// <returns>True if the related TXHG entity is found</returns>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <param name="Value">List of related TXHG entities</param>
+        /// <returns>True if the list of related TXHG entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTXHG_ID(int TXHG_ID, out TXHG Value)
+        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<TXHG> Value)
         {
-            return Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out Value);
+            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TXHG by TXHG_ID field
+        /// Attempt to find TXHG by HOME_GROUP field
         /// </summary>
-        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
-        /// <returns>Related TXHG entity, or null if not found</returns>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <returns>List of related TXHG entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public TXHG TryFindByTXHG_ID(int TXHG_ID)
+        public IReadOnlyList<TXHG> TryFindByHOME_GROUP(string HOME_GROUP)
         {
-            TXHG value;
-            if (Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out value))
+            IReadOnlyList<TXHG> value;
+            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
             {
                 return value;
             }
@@ -163,38 +191,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find TXHG by HOME_GROUP field
+        /// Find TXHG by TXHG_ID field
         /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
-        /// <returns>List of related TXHG entities</returns>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TXHG> FindByHOME_GROUP(string HOME_GROUP)
+        public TXHG FindByTXHG_ID(int TXHG_ID)
         {
-            return Index_HOME_GROUP.Value[HOME_GROUP];
+            return Index_TXHG_ID.Value[TXHG_ID];
         }
 
         /// <summary>
-        /// Attempt to find TXHG by HOME_GROUP field
+        /// Attempt to find TXHG by TXHG_ID field
         /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
-        /// <param name="Value">List of related TXHG entities</param>
-        /// <returns>True if the list of related TXHG entities is found</returns>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <param name="Value">Related TXHG entity</param>
+        /// <returns>True if the related TXHG entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<TXHG> Value)
+        public bool TryFindByTXHG_ID(int TXHG_ID, out TXHG Value)
         {
-            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
+            return Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find TXHG by HOME_GROUP field
+        /// Attempt to find TXHG by TXHG_ID field
         /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
-        /// <returns>List of related TXHG entities, or null if not found</returns>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<TXHG> TryFindByHOME_GROUP(string HOME_GROUP)
+        public TXHG TryFindByTXHG_ID(int TXHG_ID)
         {
-            IReadOnlyList<TXHG> value;
-            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
+            TXHG value;
+            if (Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out value))
             {
                 return value;
             }

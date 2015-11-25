@@ -19,9 +19,9 @@ namespace EduHub.Data.Entities
         internal SPUDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_SPUKEY = new Lazy<Dictionary<string, SPU>>(() => this.ToDictionary(i => i.SPUKEY));
-            Index_MAILING_LIST = new Lazy<NullDictionary<string, IReadOnlyList<SPU>>>(() => this.ToGroupedNullDictionary(i => i.MAILING_LIST));
             Index_HOME_LANGUAGE = new Lazy<NullDictionary<string, IReadOnlyList<SPU>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANGUAGE));
+            Index_MAILING_LIST = new Lazy<NullDictionary<string, IReadOnlyList<SPU>>>(() => this.ToGroupedNullDictionary(i => i.MAILING_LIST));
+            Index_SPUKEY = new Lazy<Dictionary<string, SPU>>(() => this.ToDictionary(i => i.SPUKEY));
         }
 
         /// <summary>
@@ -92,49 +92,77 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SPU" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SPU" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SPU" /> items to added or update the base <see cref="SPU" /> items</param>
+        /// <returns>A merged list of <see cref="SPU" /> items</returns>
+        protected override List<SPU> ApplyDeltaItems(List<SPU> Items, List<SPU> DeltaItems)
+        {
+            Dictionary<string, int> Index_SPUKEY = Items.ToIndexDictionary(i => i.SPUKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SPU deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SPUKEY.TryGetValue(deltaItem.SPUKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SPUKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, SPU>> Index_SPUKEY;
-        private Lazy<NullDictionary<string, IReadOnlyList<SPU>>> Index_MAILING_LIST;
         private Lazy<NullDictionary<string, IReadOnlyList<SPU>>> Index_HOME_LANGUAGE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SPU>>> Index_MAILING_LIST;
+        private Lazy<Dictionary<string, SPU>> Index_SPUKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SPU by SPUKEY field
+        /// Find SPU by HOME_LANGUAGE field
         /// </summary>
-        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
-        /// <returns>Related SPU entity</returns>
+        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
+        /// <returns>List of related SPU entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPU FindBySPUKEY(string SPUKEY)
+        public IReadOnlyList<SPU> FindByHOME_LANGUAGE(string HOME_LANGUAGE)
         {
-            return Index_SPUKEY.Value[SPUKEY];
+            return Index_HOME_LANGUAGE.Value[HOME_LANGUAGE];
         }
 
         /// <summary>
-        /// Attempt to find SPU by SPUKEY field
+        /// Attempt to find SPU by HOME_LANGUAGE field
         /// </summary>
-        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
-        /// <param name="Value">Related SPU entity</param>
-        /// <returns>True if the related SPU entity is found</returns>
+        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
+        /// <param name="Value">List of related SPU entities</param>
+        /// <returns>True if the list of related SPU entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySPUKEY(string SPUKEY, out SPU Value)
+        public bool TryFindByHOME_LANGUAGE(string HOME_LANGUAGE, out IReadOnlyList<SPU> Value)
         {
-            return Index_SPUKEY.Value.TryGetValue(SPUKEY, out Value);
+            return Index_HOME_LANGUAGE.Value.TryGetValue(HOME_LANGUAGE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SPU by SPUKEY field
+        /// Attempt to find SPU by HOME_LANGUAGE field
         /// </summary>
-        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
-        /// <returns>Related SPU entity, or null if not found</returns>
+        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
+        /// <returns>List of related SPU entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPU TryFindBySPUKEY(string SPUKEY)
+        public IReadOnlyList<SPU> TryFindByHOME_LANGUAGE(string HOME_LANGUAGE)
         {
-            SPU value;
-            if (Index_SPUKEY.Value.TryGetValue(SPUKEY, out value))
+            IReadOnlyList<SPU> value;
+            if (Index_HOME_LANGUAGE.Value.TryGetValue(HOME_LANGUAGE, out value))
             {
                 return value;
             }
@@ -187,38 +215,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SPU by HOME_LANGUAGE field
+        /// Find SPU by SPUKEY field
         /// </summary>
-        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
-        /// <returns>List of related SPU entities</returns>
+        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
+        /// <returns>Related SPU entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SPU> FindByHOME_LANGUAGE(string HOME_LANGUAGE)
+        public SPU FindBySPUKEY(string SPUKEY)
         {
-            return Index_HOME_LANGUAGE.Value[HOME_LANGUAGE];
+            return Index_SPUKEY.Value[SPUKEY];
         }
 
         /// <summary>
-        /// Attempt to find SPU by HOME_LANGUAGE field
+        /// Attempt to find SPU by SPUKEY field
         /// </summary>
-        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
-        /// <param name="Value">List of related SPU entities</param>
-        /// <returns>True if the list of related SPU entities is found</returns>
+        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
+        /// <param name="Value">Related SPU entity</param>
+        /// <returns>True if the related SPU entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOME_LANGUAGE(string HOME_LANGUAGE, out IReadOnlyList<SPU> Value)
+        public bool TryFindBySPUKEY(string SPUKEY, out SPU Value)
         {
-            return Index_HOME_LANGUAGE.Value.TryGetValue(HOME_LANGUAGE, out Value);
+            return Index_SPUKEY.Value.TryGetValue(SPUKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SPU by HOME_LANGUAGE field
+        /// Attempt to find SPU by SPUKEY field
         /// </summary>
-        /// <param name="HOME_LANGUAGE">HOME_LANGUAGE value used to find SPU</param>
-        /// <returns>List of related SPU entities, or null if not found</returns>
+        /// <param name="SPUKEY">SPUKEY value used to find SPU</param>
+        /// <returns>Related SPU entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SPU> TryFindByHOME_LANGUAGE(string HOME_LANGUAGE)
+        public SPU TryFindBySPUKEY(string SPUKEY)
         {
-            IReadOnlyList<SPU> value;
-            if (Index_HOME_LANGUAGE.Value.TryGetValue(HOME_LANGUAGE, out value))
+            SPU value;
+            if (Index_SPUKEY.Value.TryGetValue(SPUKEY, out value))
             {
                 return value;
             }

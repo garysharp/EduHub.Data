@@ -57,6 +57,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="TCAT" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="TCAT" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="TCAT" /> items to added or update the base <see cref="TCAT" /> items</param>
+        /// <returns>A merged list of <see cref="TCAT" /> items</returns>
+        protected override List<TCAT> ApplyDeltaItems(List<TCAT> Items, List<TCAT> DeltaItems)
+        {
+            Dictionary<string, int> Index_TCATKEY = Items.ToIndexDictionary(i => i.TCATKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (TCAT deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TCATKEY.TryGetValue(deltaItem.TCATKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.TCATKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, TCAT>> Index_TCATKEY;

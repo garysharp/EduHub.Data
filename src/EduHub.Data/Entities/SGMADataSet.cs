@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_SGMAKEY = new Lazy<Dictionary<string, IReadOnlyList<SGMA>>>(() => this.ToGroupedDictionary(i => i.SGMAKEY));
-            Index_TID = new Lazy<Dictionary<int, SGMA>>(() => this.ToDictionary(i => i.TID));
             Index_SGMAKEY_SGM_TID_MEMBER_PERSON_TYPE_MEMBER_LINK_DF_PARTICIPATION = new Lazy<Dictionary<Tuple<string, int?, string, string, string>, SGMA>>(() => this.ToDictionary(i => Tuple.Create(i.SGMAKEY, i.SGM_TID, i.MEMBER_PERSON_TYPE, i.MEMBER_LINK, i.DF_PARTICIPATION)));
+            Index_TID = new Lazy<Dictionary<int, SGMA>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -74,11 +74,44 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SGMA" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SGMA" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SGMA" /> items to added or update the base <see cref="SGMA" /> items</param>
+        /// <returns>A merged list of <see cref="SGMA" /> items</returns>
+        protected override List<SGMA> ApplyDeltaItems(List<SGMA> Items, List<SGMA> DeltaItems)
+        {
+            Dictionary<Tuple<string, int?, string, string, string>, int> Index_SGMAKEY_SGM_TID_MEMBER_PERSON_TYPE_MEMBER_LINK_DF_PARTICIPATION = Items.ToIndexDictionary(i => Tuple.Create(i.SGMAKEY, i.SGM_TID, i.MEMBER_PERSON_TYPE, i.MEMBER_LINK, i.DF_PARTICIPATION));
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SGMA deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SGMAKEY_SGM_TID_MEMBER_PERSON_TYPE_MEMBER_LINK_DF_PARTICIPATION.TryGetValue(Tuple.Create(deltaItem.SGMAKEY, deltaItem.SGM_TID, deltaItem.MEMBER_PERSON_TYPE, deltaItem.MEMBER_LINK, deltaItem.DF_PARTICIPATION), out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SGMAKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<SGMA>>> Index_SGMAKEY;
-        private Lazy<Dictionary<int, SGMA>> Index_TID;
         private Lazy<Dictionary<Tuple<string, int?, string, string, string>, SGMA>> Index_SGMAKEY_SGM_TID_MEMBER_PERSON_TYPE_MEMBER_LINK_DF_PARTICIPATION;
+        private Lazy<Dictionary<int, SGMA>> Index_TID;
 
         #endregion
 
@@ -117,48 +150,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SGMA> value;
             if (Index_SGMAKEY.Value.TryGetValue(SGMAKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SGMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGMA</param>
-        /// <returns>Related SGMA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SGMA FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find SGMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGMA</param>
-        /// <param name="Value">Related SGMA entity</param>
-        /// <returns>True if the related SGMA entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SGMA Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SGMA by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find SGMA</param>
-        /// <returns>Related SGMA entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SGMA TryFindByTID(int TID)
-        {
-            SGMA value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }
@@ -213,6 +204,48 @@ namespace EduHub.Data.Entities
         {
             SGMA value;
             if (Index_SGMAKEY_SGM_TID_MEMBER_PERSON_TYPE_MEMBER_LINK_DF_PARTICIPATION.Value.TryGetValue(Tuple.Create(SGMAKEY, SGM_TID, MEMBER_PERSON_TYPE, MEMBER_LINK, DF_PARTICIPATION), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGMA</param>
+        /// <returns>Related SGMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGMA FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SGMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGMA</param>
+        /// <param name="Value">Related SGMA entity</param>
+        /// <returns>True if the related SGMA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SGMA Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGMA</param>
+        /// <returns>Related SGMA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGMA TryFindByTID(int TID)
+        {
+            SGMA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

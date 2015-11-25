@@ -19,35 +19,35 @@ namespace EduHub.Data.Entities
         internal STDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_STKEY = new Lazy<Dictionary<string, ST>>(() => this.ToDictionary(i => i.STKEY));
-            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
-            Index_FAMILY = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMILY));
-            Index_FAMB = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMB));
-            Index_FAMC = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMC));
-            Index_REGISTRATION = new Lazy<Dictionary<int, IReadOnlyList<ST>>>(() => this.ToGroupedDictionary(i => i.REGISTRATION));
-            Index_PREVIOUS_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.PREVIOUS_SCHOOL));
-            Index_TAG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.TAG));
-            Index_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP));
-            Index_NEXT_HG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_HG));
-            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
-            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
-            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
-            Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
-            Index_REL_INSTR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.REL_INSTR));
-            Index_VISA_SUBCLASS = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.VISA_SUBCLASS));
             Index_BIRTH_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY));
-            Index_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANG));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
             Index_DOCTOR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.DOCTOR));
             Index_EMERG_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG01));
             Index_EMERG_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG02));
-            Index_LANGUAGE_PREVIOUS_SCHOOLING = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LANGUAGE_PREVIOUS_SCHOOLING));
-            Index_NEXT_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_SCHOOL));
             Index_EXIT_CAT01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_CAT01));
             Index_EXIT_CAT02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_CAT02));
             Index_EXIT_DEST01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_DEST01));
             Index_EXIT_DEST02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_DEST02));
+            Index_FAMB = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMB));
+            Index_FAMC = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMC));
+            Index_FAMILY = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMILY));
+            Index_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP));
+            Index_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANG));
+            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
             Index_INAC_ABS_CODE = new Lazy<NullDictionary<short?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.INAC_ABS_CODE));
+            Index_LANGUAGE_PREVIOUS_SCHOOLING = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LANGUAGE_PREVIOUS_SCHOOLING));
             Index_LOTE_HOME_CODE = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LOTE_HOME_CODE));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_NEXT_HG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_HG));
+            Index_NEXT_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_SCHOOL));
+            Index_PREVIOUS_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.PREVIOUS_SCHOOL));
+            Index_REGISTRATION = new Lazy<Dictionary<int, ST>>(() => this.ToDictionary(i => i.REGISTRATION));
+            Index_REL_INSTR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.REL_INSTR));
+            Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
+            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_STKEY = new Lazy<Dictionary<string, ST>>(() => this.ToDictionary(i => i.STKEY));
+            Index_TAG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.TAG));
+            Index_VISA_SUBCLASS = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.VISA_SUBCLASS));
         }
 
         /// <summary>
@@ -580,713 +580,74 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="ST" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="ST" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="ST" /> items to added or update the base <see cref="ST" /> items</param>
+        /// <returns>A merged list of <see cref="ST" /> items</returns>
+        protected override List<ST> ApplyDeltaItems(List<ST> Items, List<ST> DeltaItems)
+        {
+            Dictionary<int, int> Index_REGISTRATION = Items.ToIndexDictionary(i => i.REGISTRATION);
+            Dictionary<string, int> Index_STKEY = Items.ToIndexDictionary(i => i.STKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (ST deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_REGISTRATION.TryGetValue(deltaItem.REGISTRATION, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+                if (Index_STKEY.TryGetValue(deltaItem.STKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.STKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<string, ST>> Index_STKEY;
-        private Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>> Index_LW_DATE;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMILY;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMB;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMC;
-        private Lazy<Dictionary<int, IReadOnlyList<ST>>> Index_REGISTRATION;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_PREVIOUS_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_TAG;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_GROUP;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_HG;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_SCHOOL_YEAR;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOUSE;
-        private Lazy<NullDictionary<int?, IReadOnlyList<ST>>> Index_CAMPUS;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_RELIGION;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_REL_INSTR;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_VISA_SUBCLASS;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_BIRTH_COUNTRY;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_LANG;
+        private Lazy<NullDictionary<int?, IReadOnlyList<ST>>> Index_CAMPUS;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_DOCTOR;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EMERG_LANG01;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EMERG_LANG02;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_LANGUAGE_PREVIOUS_SCHOOLING;
-        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_SCHOOL;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_CAT01;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_CAT02;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_DEST01;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_DEST02;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMB;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMC;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMILY;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_GROUP;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_LANG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOUSE;
         private Lazy<NullDictionary<short?, IReadOnlyList<ST>>> Index_INAC_ABS_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_LANGUAGE_PREVIOUS_SCHOOLING;
         private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_LOTE_HOME_CODE;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_HG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_SCHOOL;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_PREVIOUS_SCHOOL;
+        private Lazy<Dictionary<int, ST>> Index_REGISTRATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_REL_INSTR;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_RELIGION;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_SCHOOL_YEAR;
+        private Lazy<Dictionary<string, ST>> Index_STKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_TAG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_VISA_SUBCLASS;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find ST by STKEY field
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find ST</param>
-        /// <returns>Related ST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ST FindBySTKEY(string STKEY)
-        {
-            return Index_STKEY.Value[STKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by STKEY field
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find ST</param>
-        /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the related ST entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySTKEY(string STKEY, out ST Value)
-        {
-            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by STKEY field
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find ST</param>
-        /// <returns>Related ST entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public ST TryFindBySTKEY(string STKEY)
-        {
-            ST value;
-            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByLW_DATE(DateTime? LW_DATE)
-        {
-            return Index_LW_DATE.Value[LW_DATE];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<ST> Value)
-        {
-            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by LW_DATE field
-        /// </summary>
-        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByLW_DATE(DateTime? LW_DATE)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by FAMILY field
-        /// </summary>
-        /// <param name="FAMILY">FAMILY value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByFAMILY(string FAMILY)
-        {
-            return Index_FAMILY.Value[FAMILY];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMILY field
-        /// </summary>
-        /// <param name="FAMILY">FAMILY value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFAMILY(string FAMILY, out IReadOnlyList<ST> Value)
-        {
-            return Index_FAMILY.Value.TryGetValue(FAMILY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMILY field
-        /// </summary>
-        /// <param name="FAMILY">FAMILY value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByFAMILY(string FAMILY)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_FAMILY.Value.TryGetValue(FAMILY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by FAMB field
-        /// </summary>
-        /// <param name="FAMB">FAMB value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByFAMB(string FAMB)
-        {
-            return Index_FAMB.Value[FAMB];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMB field
-        /// </summary>
-        /// <param name="FAMB">FAMB value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFAMB(string FAMB, out IReadOnlyList<ST> Value)
-        {
-            return Index_FAMB.Value.TryGetValue(FAMB, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMB field
-        /// </summary>
-        /// <param name="FAMB">FAMB value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByFAMB(string FAMB)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_FAMB.Value.TryGetValue(FAMB, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by FAMC field
-        /// </summary>
-        /// <param name="FAMC">FAMC value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByFAMC(string FAMC)
-        {
-            return Index_FAMC.Value[FAMC];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMC field
-        /// </summary>
-        /// <param name="FAMC">FAMC value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFAMC(string FAMC, out IReadOnlyList<ST> Value)
-        {
-            return Index_FAMC.Value.TryGetValue(FAMC, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by FAMC field
-        /// </summary>
-        /// <param name="FAMC">FAMC value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByFAMC(string FAMC)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_FAMC.Value.TryGetValue(FAMC, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by REGISTRATION field
-        /// </summary>
-        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByREGISTRATION(int REGISTRATION)
-        {
-            return Index_REGISTRATION.Value[REGISTRATION];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REGISTRATION field
-        /// </summary>
-        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByREGISTRATION(int REGISTRATION, out IReadOnlyList<ST> Value)
-        {
-            return Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REGISTRATION field
-        /// </summary>
-        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByREGISTRATION(int REGISTRATION)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
-        {
-            return Index_PREVIOUS_SCHOOL.Value[PREVIOUS_SCHOOL];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL, out IReadOnlyList<ST> Value)
-        {
-            return Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by PREVIOUS_SCHOOL field
-        /// </summary>
-        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by TAG field
-        /// </summary>
-        /// <param name="TAG">TAG value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByTAG(string TAG)
-        {
-            return Index_TAG.Value[TAG];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by TAG field
-        /// </summary>
-        /// <param name="TAG">TAG value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTAG(string TAG, out IReadOnlyList<ST> Value)
-        {
-            return Index_TAG.Value.TryGetValue(TAG, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by TAG field
-        /// </summary>
-        /// <param name="TAG">TAG value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByTAG(string TAG)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_TAG.Value.TryGetValue(TAG, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by HOME_GROUP field
-        /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByHOME_GROUP(string HOME_GROUP)
-        {
-            return Index_HOME_GROUP.Value[HOME_GROUP];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by HOME_GROUP field
-        /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<ST> Value)
-        {
-            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by HOME_GROUP field
-        /// </summary>
-        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByHOME_GROUP(string HOME_GROUP)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByNEXT_HG(string NEXT_HG)
-        {
-            return Index_NEXT_HG.Value[NEXT_HG];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByNEXT_HG(string NEXT_HG, out IReadOnlyList<ST> Value)
-        {
-            return Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by NEXT_HG field
-        /// </summary>
-        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByNEXT_HG(string NEXT_HG)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<ST> Value)
-        {
-            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByHOUSE(string HOUSE)
-        {
-            return Index_HOUSE.Value[HOUSE];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<ST> Value)
-        {
-            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by HOUSE field
-        /// </summary>
-        /// <param name="HOUSE">HOUSE value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByHOUSE(string HOUSE)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByCAMPUS(int? CAMPUS)
-        {
-            return Index_CAMPUS.Value[CAMPUS];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<ST> Value)
-        {
-            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by CAMPUS field
-        /// </summary>
-        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByCAMPUS(int? CAMPUS)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByRELIGION(string RELIGION)
-        {
-            return Index_RELIGION.Value[RELIGION];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByRELIGION(string RELIGION, out IReadOnlyList<ST> Value)
-        {
-            return Index_RELIGION.Value.TryGetValue(RELIGION, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by RELIGION field
-        /// </summary>
-        /// <param name="RELIGION">RELIGION value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByRELIGION(string RELIGION)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_RELIGION.Value.TryGetValue(RELIGION, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by REL_INSTR field
-        /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByREL_INSTR(string REL_INSTR)
-        {
-            return Index_REL_INSTR.Value[REL_INSTR];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REL_INSTR field
-        /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByREL_INSTR(string REL_INSTR, out IReadOnlyList<ST> Value)
-        {
-            return Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REL_INSTR field
-        /// </summary>
-        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByREL_INSTR(string REL_INSTR)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByVISA_SUBCLASS(string VISA_SUBCLASS)
-        {
-            return Index_VISA_SUBCLASS.Value[VISA_SUBCLASS];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByVISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<ST> Value)
-        {
-            return Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by VISA_SUBCLASS field
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByVISA_SUBCLASS(string VISA_SUBCLASS)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find ST by BIRTH_COUNTRY field
@@ -1331,38 +692,38 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find ST by HOME_LANG field
+        /// Find ST by CAMPUS field
         /// </summary>
-        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
         /// <returns>List of related ST entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByHOME_LANG(string HOME_LANG)
+        public IReadOnlyList<ST> FindByCAMPUS(int? CAMPUS)
         {
-            return Index_HOME_LANG.Value[HOME_LANG];
+            return Index_CAMPUS.Value[CAMPUS];
         }
 
         /// <summary>
-        /// Attempt to find ST by HOME_LANG field
+        /// Attempt to find ST by CAMPUS field
         /// </summary>
-        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
         /// <param name="Value">List of related ST entities</param>
         /// <returns>True if the list of related ST entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByHOME_LANG(string HOME_LANG, out IReadOnlyList<ST> Value)
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<ST> Value)
         {
-            return Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out Value);
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
         }
 
         /// <summary>
-        /// Attempt to find ST by HOME_LANG field
+        /// Attempt to find ST by CAMPUS field
         /// </summary>
-        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
         /// <returns>List of related ST entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByHOME_LANG(string HOME_LANG)
+        public IReadOnlyList<ST> TryFindByCAMPUS(int? CAMPUS)
         {
             IReadOnlyList<ST> value;
-            if (Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out value))
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
             {
                 return value;
             }
@@ -1489,90 +850,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<ST> value;
             if (Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by LANGUAGE_PREVIOUS_SCHOOLING field
-        /// </summary>
-        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
-        {
-            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value[LANGUAGE_PREVIOUS_SCHOOLING];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
-        /// </summary>
-        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING, out IReadOnlyList<ST> Value)
-        {
-            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
-        /// </summary>
-        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by NEXT_SCHOOL field
-        /// </summary>
-        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
-        /// <returns>List of related ST entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> FindByNEXT_SCHOOL(string NEXT_SCHOOL)
-        {
-            return Index_NEXT_SCHOOL.Value[NEXT_SCHOOL];
-        }
-
-        /// <summary>
-        /// Attempt to find ST by NEXT_SCHOOL field
-        /// </summary>
-        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
-        /// <param name="Value">List of related ST entities</param>
-        /// <returns>True if the list of related ST entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByNEXT_SCHOOL(string NEXT_SCHOOL, out IReadOnlyList<ST> Value)
-        {
-            return Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by NEXT_SCHOOL field
-        /// </summary>
-        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
-        /// <returns>List of related ST entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<ST> TryFindByNEXT_SCHOOL(string NEXT_SCHOOL)
-        {
-            IReadOnlyList<ST> value;
-            if (Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out value))
             {
                 return value;
             }
@@ -1751,6 +1028,258 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMB(string FAMB)
+        {
+            return Index_FAMB.Value[FAMB];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMB(string FAMB, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMB.Value.TryGetValue(FAMB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMB(string FAMB)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMB.Value.TryGetValue(FAMB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMC(string FAMC)
+        {
+            return Index_FAMC.Value[FAMC];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMC(string FAMC, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMC.Value.TryGetValue(FAMC, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMC(string FAMC)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMC.Value.TryGetValue(FAMC, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMILY(string FAMILY)
+        {
+            return Index_FAMILY.Value[FAMILY];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMILY(string FAMILY, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMILY.Value.TryGetValue(FAMILY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMILY(string FAMILY)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMILY.Value.TryGetValue(FAMILY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOME_GROUP(string HOME_GROUP)
+        {
+            return Index_HOME_GROUP.Value[HOME_GROUP];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOME_GROUP(string HOME_GROUP)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOME_LANG(string HOME_LANG)
+        {
+            return Index_HOME_LANG.Value[HOME_LANG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_LANG(string HOME_LANG, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOME_LANG(string HOME_LANG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOUSE(string HOUSE)
+        {
+            return Index_HOUSE.Value[HOUSE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOUSE(string HOUSE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find ST by INAC_ABS_CODE field
         /// </summary>
         /// <param name="INAC_ABS_CODE">INAC_ABS_CODE value used to find ST</param>
@@ -1793,6 +1322,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
+        {
+            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value[LANGUAGE_PREVIOUS_SCHOOLING];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING, out IReadOnlyList<ST> Value)
+        {
+            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find ST by LOTE_HOME_CODE field
         /// </summary>
         /// <param name="LOTE_HOME_CODE">LOTE_HOME_CODE value used to find ST</param>
@@ -1825,6 +1396,468 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<ST> value;
             if (Index_LOTE_HOME_CODE.Value.TryGetValue(LOTE_HOME_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<ST> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByNEXT_HG(string NEXT_HG)
+        {
+            return Index_NEXT_HG.Value[NEXT_HG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_HG(string NEXT_HG, out IReadOnlyList<ST> Value)
+        {
+            return Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByNEXT_HG(string NEXT_HG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByNEXT_SCHOOL(string NEXT_SCHOOL)
+        {
+            return Index_NEXT_SCHOOL.Value[NEXT_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_SCHOOL(string NEXT_SCHOOL, out IReadOnlyList<ST> Value)
+        {
+            return Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByNEXT_SCHOOL(string NEXT_SCHOOL)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
+        {
+            return Index_PREVIOUS_SCHOOL.Value[PREVIOUS_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL, out IReadOnlyList<ST> Value)
+        {
+            return Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST FindByREGISTRATION(int REGISTRATION)
+        {
+            return Index_REGISTRATION.Value[REGISTRATION];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the related ST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREGISTRATION(int REGISTRATION, out ST Value)
+        {
+            return Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST TryFindByREGISTRATION(int REGISTRATION)
+        {
+            ST value;
+            if (Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByREL_INSTR(string REL_INSTR)
+        {
+            return Index_REL_INSTR.Value[REL_INSTR];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREL_INSTR(string REL_INSTR, out IReadOnlyList<ST> Value)
+        {
+            return Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByREL_INSTR(string REL_INSTR)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByRELIGION(string RELIGION)
+        {
+            return Index_RELIGION.Value[RELIGION];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByRELIGION(string RELIGION, out IReadOnlyList<ST> Value)
+        {
+            return Index_RELIGION.Value.TryGetValue(RELIGION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByRELIGION(string RELIGION)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_RELIGION.Value.TryGetValue(RELIGION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<ST> Value)
+        {
+            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST FindBySTKEY(string STKEY)
+        {
+            return Index_STKEY.Value[STKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the related ST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTKEY(string STKEY, out ST Value)
+        {
+            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST TryFindBySTKEY(string STKEY)
+        {
+            ST value;
+            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByTAG(string TAG)
+        {
+            return Index_TAG.Value[TAG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTAG(string TAG, out IReadOnlyList<ST> Value)
+        {
+            return Index_TAG.Value.TryGetValue(TAG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByTAG(string TAG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_TAG.Value.TryGetValue(TAG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            return Index_VISA_SUBCLASS.Value[VISA_SUBCLASS];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<ST> Value)
+        {
+            return Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out value))
             {
                 return value;
             }

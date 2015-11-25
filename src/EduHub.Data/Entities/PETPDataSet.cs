@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PETP>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, PETP>>(() => this.ToDictionary(i => i.TID));
             Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PETP>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
+            Index_TID = new Lazy<Dictionary<int, PETP>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -86,11 +86,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PETP" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PETP" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PETP" /> items to added or update the base <see cref="PETP" /> items</param>
+        /// <returns>A merged list of <see cref="PETP" /> items</returns>
+        protected override List<PETP> ApplyDeltaItems(List<PETP> Items, List<PETP> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PETP deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<PETP>>> Index_CODE;
-        private Lazy<Dictionary<int, PETP>> Index_TID;
         private Lazy<NullDictionary<short?, IReadOnlyList<PETP>>> Index_PAYITEM;
+        private Lazy<Dictionary<int, PETP>> Index_TID;
 
         #endregion
 
@@ -139,48 +167,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PETP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PETP</param>
-        /// <returns>Related PETP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PETP FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find PETP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PETP</param>
-        /// <param name="Value">Related PETP entity</param>
-        /// <returns>True if the related PETP entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PETP Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PETP by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PETP</param>
-        /// <returns>Related PETP entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PETP TryFindByTID(int TID)
-        {
-            PETP value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PETP by PAYITEM field
         /// </summary>
         /// <param name="PAYITEM">PAYITEM value used to find PETP</param>
@@ -213,6 +199,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PETP> value;
             if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <returns>Related PETP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PETP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <param name="Value">Related PETP entity</param>
+        /// <returns>True if the related PETP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PETP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <returns>Related PETP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PETP TryFindByTID(int TID)
+        {
+            PETP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

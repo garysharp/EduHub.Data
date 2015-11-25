@@ -36,5 +36,53 @@ namespace EduHub.Data
                     g => g.Key,
                     g => (IReadOnlyList<TSource>)g.ToList().AsReadOnly());
         }
+
+        internal static Dictionary<TKey, int> ToIndexDictionary<TSource, TKey>(this IList<TSource> Source, Func<TSource, TKey> KeySelector)
+        {
+            Dictionary<TKey, int> dictionary = new Dictionary<TKey, int>(Source.Count);
+
+            for (int i = 0; i < Source.Count; i++)
+            {
+                dictionary.Add(KeySelector(Source[i]), i);
+            }
+
+            return dictionary;
+        }
+
+        internal static NullDictionary<TKey, int> ToIndexNullDictionary<TSource, TKey>(this IList<TSource> Source, Func<TSource, TKey> KeySelector)
+        {
+            NullDictionary<TKey, int> dictionary = new NullDictionary<TKey, int>(Source.Count);
+
+            for (int i = 0; i < Source.Count; i++)
+            {
+                dictionary.Add(KeySelector(Source[i]), i);
+            }
+
+            return dictionary;
+        }
+
+        internal static IEnumerable<T> Remove<T>(this IList<T> Source, HashSet<int> Indexes)
+        {
+            int[] removeIndexes = new int[Indexes.Count];
+            Indexes.CopyTo(removeIndexes);
+            Array.Sort(removeIndexes);
+
+            int index = 0;
+
+            foreach (var removeNext in removeIndexes)
+            {
+                while (index < removeNext)
+                {
+                    yield return Source[index];
+                    index++;
+                }
+                index++;
+            }
+
+            for (; index < Source.Count; index++)
+            {
+                yield return Source[index];
+            }
+        }
     }
 }

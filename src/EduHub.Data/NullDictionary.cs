@@ -13,8 +13,13 @@ namespace EduHub.Data
         private Dictionary<TKey, TValue> dictionary;
 
         public NullDictionary()
+            : this(0)
         {
-            dictionary = new Dictionary<TKey, TValue>();
+        }
+
+        public NullDictionary(int Capacity)
+        {
+            dictionary = new Dictionary<TKey, TValue>(Capacity);
         }
 
         public TValue this[TKey key]

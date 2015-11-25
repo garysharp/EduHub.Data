@@ -20,8 +20,8 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PEPY>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, PEPY>>(() => this.ToDictionary(i => i.TID));
             Index_PURPOSE = new Lazy<NullDictionary<string, IReadOnlyList<PEPY>>>(() => this.ToGroupedNullDictionary(i => i.PURPOSE));
+            Index_TID = new Lazy<Dictionary<int, PEPY>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
@@ -71,11 +71,39 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="PEPY" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="PEPY" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="PEPY" /> items to added or update the base <see cref="PEPY" /> items</param>
+        /// <returns>A merged list of <see cref="PEPY" /> items</returns>
+        protected override List<PEPY> ApplyDeltaItems(List<PEPY> Items, List<PEPY> DeltaItems)
+        {
+            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (PEPY deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.CODE)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<PEPY>>> Index_CODE;
-        private Lazy<Dictionary<int, PEPY>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<PEPY>>> Index_PURPOSE;
+        private Lazy<Dictionary<int, PEPY>> Index_TID;
 
         #endregion
 
@@ -124,48 +152,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find PEPY by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEPY</param>
-        /// <returns>Related PEPY entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPY FindByTID(int TID)
-        {
-            return Index_TID.Value[TID];
-        }
-
-        /// <summary>
-        /// Attempt to find PEPY by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEPY</param>
-        /// <param name="Value">Related PEPY entity</param>
-        /// <returns>True if the related PEPY entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out PEPY Value)
-        {
-            return Index_TID.Value.TryGetValue(TID, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PEPY by TID field
-        /// </summary>
-        /// <param name="TID">TID value used to find PEPY</param>
-        /// <returns>Related PEPY entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public PEPY TryFindByTID(int TID)
-        {
-            PEPY value;
-            if (Index_TID.Value.TryGetValue(TID, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Find PEPY by PURPOSE field
         /// </summary>
         /// <param name="PURPOSE">PURPOSE value used to find PEPY</param>
@@ -198,6 +184,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<PEPY> value;
             if (Index_PURPOSE.Value.TryGetValue(PURPOSE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PEPY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPY</param>
+        /// <returns>Related PEPY entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPY FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PEPY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPY</param>
+        /// <param name="Value">Related PEPY entity</param>
+        /// <returns>True if the related PEPY entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PEPY Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PEPY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PEPY</param>
+        /// <returns>Related PEPY entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PEPY TryFindByTID(int TID)
+        {
+            PEPY value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
             }

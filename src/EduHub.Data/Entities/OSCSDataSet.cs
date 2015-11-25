@@ -19,15 +19,15 @@ namespace EduHub.Data.Entities
         internal OSCSDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_OSCSKEY = new Lazy<Dictionary<int, OSCS>>(() => this.ToDictionary(i => i.OSCSKEY));
             Index_ADULT_A_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ADULT_A_COUNTRY));
             Index_ADULT_B_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ADULT_B_COUNTRY));
-            Index_ZEROMTH_CAT = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ZEROMTH_CAT));
-            Index_ZEROMTH_CAT_DEST = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ZEROMTH_CAT_DEST));
             Index_BIRTH_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY));
             Index_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANG));
+            Index_OSCSKEY = new Lazy<Dictionary<int, OSCS>>(() => this.ToDictionary(i => i.OSCSKEY));
             Index_SIXMTH_CAT = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.SIXMTH_CAT));
             Index_SIXMTH_CAT_DEST = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.SIXMTH_CAT_DEST));
+            Index_ZEROMTH_CAT = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ZEROMTH_CAT));
+            Index_ZEROMTH_CAT_DEST = new Lazy<NullDictionary<string, IReadOnlyList<OSCS>>>(() => this.ToGroupedNullDictionary(i => i.ZEROMTH_CAT_DEST));
         }
 
         /// <summary>
@@ -422,63 +422,49 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="OSCS" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="OSCS" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="OSCS" /> items to added or update the base <see cref="OSCS" /> items</param>
+        /// <returns>A merged list of <see cref="OSCS" /> items</returns>
+        protected override List<OSCS> ApplyDeltaItems(List<OSCS> Items, List<OSCS> DeltaItems)
+        {
+            Dictionary<int, int> Index_OSCSKEY = Items.ToIndexDictionary(i => i.OSCSKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (OSCS deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_OSCSKEY.TryGetValue(deltaItem.OSCSKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.OSCSKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
-        private Lazy<Dictionary<int, OSCS>> Index_OSCSKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ADULT_A_COUNTRY;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ADULT_B_COUNTRY;
-        private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ZEROMTH_CAT;
-        private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ZEROMTH_CAT_DEST;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_BIRTH_COUNTRY;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_HOME_LANG;
+        private Lazy<Dictionary<int, OSCS>> Index_OSCSKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_SIXMTH_CAT;
         private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_SIXMTH_CAT_DEST;
+        private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ZEROMTH_CAT;
+        private Lazy<NullDictionary<string, IReadOnlyList<OSCS>>> Index_ZEROMTH_CAT_DEST;
 
         #endregion
 
         #region Index Methods
-
-        /// <summary>
-        /// Find OSCS by OSCSKEY field
-        /// </summary>
-        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
-        /// <returns>Related OSCS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public OSCS FindByOSCSKEY(int OSCSKEY)
-        {
-            return Index_OSCSKEY.Value[OSCSKEY];
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by OSCSKEY field
-        /// </summary>
-        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
-        /// <param name="Value">Related OSCS entity</param>
-        /// <returns>True if the related OSCS entity is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByOSCSKEY(int OSCSKEY, out OSCS Value)
-        {
-            return Index_OSCSKEY.Value.TryGetValue(OSCSKEY, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by OSCSKEY field
-        /// </summary>
-        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
-        /// <returns>Related OSCS entity, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public OSCS TryFindByOSCSKEY(int OSCSKEY)
-        {
-            OSCS value;
-            if (Index_OSCSKEY.Value.TryGetValue(OSCSKEY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Find OSCS by ADULT_A_COUNTRY field
@@ -555,90 +541,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<OSCS> value;
             if (Index_ADULT_B_COUNTRY.Value.TryGetValue(ADULT_B_COUNTRY, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find OSCS by ZEROMTH_CAT field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
-        /// <returns>List of related OSCS entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<OSCS> FindByZEROMTH_CAT(string ZEROMTH_CAT)
-        {
-            return Index_ZEROMTH_CAT.Value[ZEROMTH_CAT];
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by ZEROMTH_CAT field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
-        /// <param name="Value">List of related OSCS entities</param>
-        /// <returns>True if the list of related OSCS entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByZEROMTH_CAT(string ZEROMTH_CAT, out IReadOnlyList<OSCS> Value)
-        {
-            return Index_ZEROMTH_CAT.Value.TryGetValue(ZEROMTH_CAT, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by ZEROMTH_CAT field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
-        /// <returns>List of related OSCS entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<OSCS> TryFindByZEROMTH_CAT(string ZEROMTH_CAT)
-        {
-            IReadOnlyList<OSCS> value;
-            if (Index_ZEROMTH_CAT.Value.TryGetValue(ZEROMTH_CAT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find OSCS by ZEROMTH_CAT_DEST field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
-        /// <returns>List of related OSCS entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<OSCS> FindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST)
-        {
-            return Index_ZEROMTH_CAT_DEST.Value[ZEROMTH_CAT_DEST];
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by ZEROMTH_CAT_DEST field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
-        /// <param name="Value">List of related OSCS entities</param>
-        /// <returns>True if the list of related OSCS entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST, out IReadOnlyList<OSCS> Value)
-        {
-            return Index_ZEROMTH_CAT_DEST.Value.TryGetValue(ZEROMTH_CAT_DEST, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find OSCS by ZEROMTH_CAT_DEST field
-        /// </summary>
-        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
-        /// <returns>List of related OSCS entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<OSCS> TryFindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST)
-        {
-            IReadOnlyList<OSCS> value;
-            if (Index_ZEROMTH_CAT_DEST.Value.TryGetValue(ZEROMTH_CAT_DEST, out value))
             {
                 return value;
             }
@@ -733,6 +635,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find OSCS by OSCSKEY field
+        /// </summary>
+        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
+        /// <returns>Related OSCS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public OSCS FindByOSCSKEY(int OSCSKEY)
+        {
+            return Index_OSCSKEY.Value[OSCSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by OSCSKEY field
+        /// </summary>
+        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
+        /// <param name="Value">Related OSCS entity</param>
+        /// <returns>True if the related OSCS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByOSCSKEY(int OSCSKEY, out OSCS Value)
+        {
+            return Index_OSCSKEY.Value.TryGetValue(OSCSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by OSCSKEY field
+        /// </summary>
+        /// <param name="OSCSKEY">OSCSKEY value used to find OSCS</param>
+        /// <returns>Related OSCS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public OSCS TryFindByOSCSKEY(int OSCSKEY)
+        {
+            OSCS value;
+            if (Index_OSCSKEY.Value.TryGetValue(OSCSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find OSCS by SIXMTH_CAT field
         /// </summary>
         /// <param name="SIXMTH_CAT">SIXMTH_CAT value used to find OSCS</param>
@@ -807,6 +751,90 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<OSCS> value;
             if (Index_SIXMTH_CAT_DEST.Value.TryGetValue(SIXMTH_CAT_DEST, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find OSCS by ZEROMTH_CAT field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
+        /// <returns>List of related OSCS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<OSCS> FindByZEROMTH_CAT(string ZEROMTH_CAT)
+        {
+            return Index_ZEROMTH_CAT.Value[ZEROMTH_CAT];
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by ZEROMTH_CAT field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
+        /// <param name="Value">List of related OSCS entities</param>
+        /// <returns>True if the list of related OSCS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByZEROMTH_CAT(string ZEROMTH_CAT, out IReadOnlyList<OSCS> Value)
+        {
+            return Index_ZEROMTH_CAT.Value.TryGetValue(ZEROMTH_CAT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by ZEROMTH_CAT field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT">ZEROMTH_CAT value used to find OSCS</param>
+        /// <returns>List of related OSCS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<OSCS> TryFindByZEROMTH_CAT(string ZEROMTH_CAT)
+        {
+            IReadOnlyList<OSCS> value;
+            if (Index_ZEROMTH_CAT.Value.TryGetValue(ZEROMTH_CAT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find OSCS by ZEROMTH_CAT_DEST field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
+        /// <returns>List of related OSCS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<OSCS> FindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST)
+        {
+            return Index_ZEROMTH_CAT_DEST.Value[ZEROMTH_CAT_DEST];
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by ZEROMTH_CAT_DEST field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
+        /// <param name="Value">List of related OSCS entities</param>
+        /// <returns>True if the list of related OSCS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST, out IReadOnlyList<OSCS> Value)
+        {
+            return Index_ZEROMTH_CAT_DEST.Value.TryGetValue(ZEROMTH_CAT_DEST, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find OSCS by ZEROMTH_CAT_DEST field
+        /// </summary>
+        /// <param name="ZEROMTH_CAT_DEST">ZEROMTH_CAT_DEST value used to find OSCS</param>
+        /// <returns>List of related OSCS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<OSCS> TryFindByZEROMTH_CAT_DEST(string ZEROMTH_CAT_DEST)
+        {
+            IReadOnlyList<OSCS> value;
+            if (Index_ZEROMTH_CAT_DEST.Value.TryGetValue(ZEROMTH_CAT_DEST, out value))
             {
                 return value;
             }

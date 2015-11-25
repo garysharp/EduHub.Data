@@ -75,6 +75,34 @@ namespace EduHub.Data.Entities
             return mapper;
         }
 
+        /// <summary>
+        /// Merges <see cref="SCSF" /> delta entities
+        /// </summary>
+        /// <param name="Items">Base <see cref="SCSF" /> items</param>
+        /// <param name="DeltaItems">Delta <see cref="SCSF" /> items to added or update the base <see cref="SCSF" /> items</param>
+        /// <returns>A merged list of <see cref="SCSF" /> items</returns>
+        protected override List<SCSF> ApplyDeltaItems(List<SCSF> Items, List<SCSF> DeltaItems)
+        {
+            Dictionary<string, int> Index_SCSFKEY = Items.ToIndexDictionary(i => i.SCSFKEY);
+            HashSet<int> removeIndexes = new HashSet<int>();
+
+            foreach (SCSF deltaItem in DeltaItems)
+            {
+                int index;
+
+                if (Index_SCSFKEY.TryGetValue(deltaItem.SCSFKEY, out index))
+                {
+                    removeIndexes.Add(index);
+                }
+            }
+
+            return Items
+                .Remove(removeIndexes)
+                .Concat(DeltaItems)
+                .OrderBy(i => i.SCSFKEY)
+                .ToList();
+        }
+
         #region Index Fields
 
         private Lazy<Dictionary<string, SCSF>> Index_SCSFKEY;
