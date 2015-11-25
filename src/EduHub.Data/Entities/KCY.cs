@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,85 +7,140 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Year Levels
     /// </summary>
-    public partial class KCY : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KCY : EntityBase
     {
-#region Navigation Property Cache
-        private SF _TEACHER_SF;
-        private SF _TEACHER_B_SF;
-        private KCY _NEXT_YR_KCY;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SF Cache_TEACHER_SF;
+        private SF Cache_TEACHER_B_SF;
+        private KCY Cache_NEXT_YR_KCY;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<KCY> Cache_KCYKEY_KCY_NEXT_YR;
+        private IReadOnlyList<KGC> Cache_KCYKEY_KGC_MIN_AC_YR;
+        private IReadOnlyList<KGC> Cache_KCYKEY_KGC_MAX_AC_YR;
+        private IReadOnlyList<SC> Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR;
+        private IReadOnlyList<SCSFAG> Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL;
+        private IReadOnlyList<SG> Cache_KCYKEY_SG_CAND_FIRST_YR;
+        private IReadOnlyList<SG> Cache_KCYKEY_SG_CAND_LAST_YR;
+        private IReadOnlyList<SG> Cache_KCYKEY_SG_FUT_FIRST_YR;
+        private IReadOnlyList<SG> Cache_KCYKEY_SG_FUT_LAST_YR;
+        private IReadOnlyList<ST> Cache_KCYKEY_ST_SCHOOL_YEAR;
+        private IReadOnlyList<ST_TFR> Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW;
+        private IReadOnlyList<STMA> Cache_KCYKEY_STMA_SCHOOL_YEAR;
+        private IReadOnlyList<STRE> Cache_KCYKEY_STRE_ST_SCHOOL_YEAR;
+        private IReadOnlyList<STVDI> Cache_KCYKEY_STVDI_SCHOOL_YEAR;
+        private IReadOnlyList<STVDO> Cache_KCYKEY_STVDO_SCHOOL_YEAR;
+        private IReadOnlyList<SU> Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR;
+        private IReadOnlyList<SVAG> Cache_KCYKEY_SVAG_SCHOOL_YEAR;
+        private IReadOnlyList<SXAB> Cache_KCYKEY_SXAB_ST_YEAR_LEVEL;
+        private IReadOnlyList<SXABCONV> Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL;
+        private IReadOnlyList<SXAS> Cache_KCYKEY_SXAS_ST_YEAR_LEVEL;
+        private IReadOnlyList<TE> Cache_KCYKEY_TE_START_YEAR;
+        private IReadOnlyList<TE> Cache_KCYKEY_TE_END_YEAR;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08;
+        private IReadOnlyList<TT> Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Year level code
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string KCYKEY { get; internal set; }
+
         /// <summary>
         /// Year level title
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Numeric year level value that supports array indexing and age validation
         /// </summary>
         public short? NUM_EQVT { get; internal set; }
+
         /// <summary>
         /// Short description
         /// [Alphanumeric (10)]
         /// </summary>
         public string SHORT_DESC { get; internal set; }
+
         /// <summary>
         /// Staff code of first or only year level Coordinator
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER { get; internal set; }
+
         /// <summary>
         /// Staff code of second year level Coordinator (if any)
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER_B { get; internal set; }
+
         /// <summary>
         /// Year level to which promoted from this year level
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string NEXT_YR { get; internal set; }
+
         /// <summary>
         /// This year level is final year level at school? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string FINAL_YR { get; internal set; }
+
         /// <summary>
         /// Are CSF results required for this year level? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string CSF_REQUIRED { get; internal set; }
+
         /// <summary>
         /// Are Half day absences recorded for this year? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string HALF_DAY_ABS { get; internal set; }
+
         /// <summary>
         /// Are Period absences recorded for this year? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string PERIOD_ABS { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SF (Staff) related entity by [KCY.TEACHER]-&gt;[SF.SFKEY]
@@ -94,18 +150,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER != null)
-                {
-                    if (_TEACHER_SF == null)
-                    {
-                        _TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
-                    }
-                    return _TEACHER_SF;
-                }
-                else
+                if (TEACHER == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_SF == null)
+                {
+                    Cache_TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
+                }
+
+                return Cache_TEACHER_SF;
             }
         }
 
@@ -117,18 +171,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER_B != null)
-                {
-                    if (_TEACHER_B_SF == null)
-                    {
-                        _TEACHER_B_SF = Context.SF.FindBySFKEY(TEACHER_B);
-                    }
-                    return _TEACHER_B_SF;
-                }
-                else
+                if (TEACHER_B == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_B_SF == null)
+                {
+                    Cache_TEACHER_B_SF = Context.SF.FindBySFKEY(TEACHER_B);
+                }
+
+                return Cache_TEACHER_B_SF;
             }
         }
 
@@ -140,361 +192,582 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (NEXT_YR != null)
-                {
-                    if (_NEXT_YR_KCY == null)
-                    {
-                        _NEXT_YR_KCY = Context.KCY.FindByKCYKEY(NEXT_YR);
-                    }
-                    return _NEXT_YR_KCY;
-                }
-                else
+                if (NEXT_YR == null)
                 {
                     return null;
                 }
+                if (Cache_NEXT_YR_KCY == null)
+                {
+                    Cache_NEXT_YR_KCY = Context.KCY.FindByKCYKEY(NEXT_YR);
+                }
+
+                return Cache_NEXT_YR_KCY;
+            }
+        }
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        /// <summary>
+        /// KCY (Year Levels) related entities by [KCY.KCYKEY]-&gt;[KCY.NEXT_YR]
+        /// Year level code
+        /// </summary>
+        public IReadOnlyList<KCY> KCYKEY_KCY_NEXT_YR
+        {
+            get
+            {
+                if (Cache_KCYKEY_KCY_NEXT_YR == null &&
+                    !Context.KCY.TryFindByNEXT_YR(KCYKEY, out Cache_KCYKEY_KCY_NEXT_YR))
+                {
+                    Cache_KCYKEY_KCY_NEXT_YR = new List<KCY>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_KCY_NEXT_YR;
             }
         }
 
         /// <summary>
-        /// KCY (Year Levels) related entities by [KCY.NEXT_YR]-&gt;[KCY.KCYKEY]
+        /// KGC (Home Groups) related entities by [KCY.KCYKEY]-&gt;[KGC.MIN_AC_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<KCY> KCY_NEXT_YR
+        public IReadOnlyList<KGC> KCYKEY_KGC_MIN_AC_YR
         {
             get
             {
-                return Context.KCY.FindKCYByNEXT_YR(KCYKEY);
+                if (Cache_KCYKEY_KGC_MIN_AC_YR == null &&
+                    !Context.KGC.TryFindByMIN_AC_YR(KCYKEY, out Cache_KCYKEY_KGC_MIN_AC_YR))
+                {
+                    Cache_KCYKEY_KGC_MIN_AC_YR = new List<KGC>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_KGC_MIN_AC_YR;
             }
         }
 
         /// <summary>
-        /// KGC (Home Groups) related entities by [KGC.MIN_AC_YR]-&gt;[KCY.KCYKEY]
+        /// KGC (Home Groups) related entities by [KCY.KCYKEY]-&gt;[KGC.MAX_AC_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<KGC> KGC_MIN_AC_YR
+        public IReadOnlyList<KGC> KCYKEY_KGC_MAX_AC_YR
         {
             get
             {
-                return Context.KCY.FindKGCByMIN_AC_YR(KCYKEY);
+                if (Cache_KCYKEY_KGC_MAX_AC_YR == null &&
+                    !Context.KGC.TryFindByMAX_AC_YR(KCYKEY, out Cache_KCYKEY_KGC_MAX_AC_YR))
+                {
+                    Cache_KCYKEY_KGC_MAX_AC_YR = new List<KGC>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_KGC_MAX_AC_YR;
             }
         }
 
         /// <summary>
-        /// KGC (Home Groups) related entities by [KGC.MAX_AC_YR]-&gt;[KCY.KCYKEY]
+        /// SC (Courses) related entities by [KCY.KCYKEY]-&gt;[SC.SUBJECT_ACADEMIC_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<KGC> KGC_MAX_AC_YR
+        public IReadOnlyList<SC> KCYKEY_SC_SUBJECT_ACADEMIC_YEAR
         {
             get
             {
-                return Context.KCY.FindKGCByMAX_AC_YR(KCYKEY);
+                if (Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR == null &&
+                    !Context.SC.TryFindBySUBJECT_ACADEMIC_YEAR(KCYKEY, out Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR))
+                {
+                    Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR = new List<SC>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR;
             }
         }
 
         /// <summary>
-        /// SC (Courses) related entities by [SC.SUBJECT_ACADEMIC_YEAR]-&gt;[KCY.KCYKEY]
+        /// SCSFAG (CSF Data Aggregates) related entities by [KCY.KCYKEY]-&gt;[SCSFAG.ST_YEAR_LEVEL]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SC> SC_SUBJECT_ACADEMIC_YEAR
+        public IReadOnlyList<SCSFAG> KCYKEY_SCSFAG_ST_YEAR_LEVEL
         {
             get
             {
-                return Context.KCY.FindSCBySUBJECT_ACADEMIC_YEAR(KCYKEY);
+                if (Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL == null &&
+                    !Context.SCSFAG.TryFindByST_YEAR_LEVEL(KCYKEY, out Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL))
+                {
+                    Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL = new List<SCSFAG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL;
             }
         }
 
         /// <summary>
-        /// SCSFAG (CSF Data Aggregates) related entities by [SCSFAG.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
+        /// SG (Student Groupings) related entities by [KCY.KCYKEY]-&gt;[SG.CAND_FIRST_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SCSFAG> SCSFAG_ST_YEAR_LEVEL
+        public IReadOnlyList<SG> KCYKEY_SG_CAND_FIRST_YR
         {
             get
             {
-                return Context.KCY.FindSCSFAGByST_YEAR_LEVEL(KCYKEY);
+                if (Cache_KCYKEY_SG_CAND_FIRST_YR == null &&
+                    !Context.SG.TryFindByCAND_FIRST_YR(KCYKEY, out Cache_KCYKEY_SG_CAND_FIRST_YR))
+                {
+                    Cache_KCYKEY_SG_CAND_FIRST_YR = new List<SG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SG_CAND_FIRST_YR;
             }
         }
 
         /// <summary>
-        /// SG (Student Groupings) related entities by [SG.CAND_FIRST_YR]-&gt;[KCY.KCYKEY]
+        /// SG (Student Groupings) related entities by [KCY.KCYKEY]-&gt;[SG.CAND_LAST_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SG> SG_CAND_FIRST_YR
+        public IReadOnlyList<SG> KCYKEY_SG_CAND_LAST_YR
         {
             get
             {
-                return Context.KCY.FindSGByCAND_FIRST_YR(KCYKEY);
+                if (Cache_KCYKEY_SG_CAND_LAST_YR == null &&
+                    !Context.SG.TryFindByCAND_LAST_YR(KCYKEY, out Cache_KCYKEY_SG_CAND_LAST_YR))
+                {
+                    Cache_KCYKEY_SG_CAND_LAST_YR = new List<SG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SG_CAND_LAST_YR;
             }
         }
 
         /// <summary>
-        /// SG (Student Groupings) related entities by [SG.CAND_LAST_YR]-&gt;[KCY.KCYKEY]
+        /// SG (Student Groupings) related entities by [KCY.KCYKEY]-&gt;[SG.FUT_FIRST_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SG> SG_CAND_LAST_YR
+        public IReadOnlyList<SG> KCYKEY_SG_FUT_FIRST_YR
         {
             get
             {
-                return Context.KCY.FindSGByCAND_LAST_YR(KCYKEY);
+                if (Cache_KCYKEY_SG_FUT_FIRST_YR == null &&
+                    !Context.SG.TryFindByFUT_FIRST_YR(KCYKEY, out Cache_KCYKEY_SG_FUT_FIRST_YR))
+                {
+                    Cache_KCYKEY_SG_FUT_FIRST_YR = new List<SG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SG_FUT_FIRST_YR;
             }
         }
 
         /// <summary>
-        /// SG (Student Groupings) related entities by [SG.FUT_FIRST_YR]-&gt;[KCY.KCYKEY]
+        /// SG (Student Groupings) related entities by [KCY.KCYKEY]-&gt;[SG.FUT_LAST_YR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SG> SG_FUT_FIRST_YR
+        public IReadOnlyList<SG> KCYKEY_SG_FUT_LAST_YR
         {
             get
             {
-                return Context.KCY.FindSGByFUT_FIRST_YR(KCYKEY);
+                if (Cache_KCYKEY_SG_FUT_LAST_YR == null &&
+                    !Context.SG.TryFindByFUT_LAST_YR(KCYKEY, out Cache_KCYKEY_SG_FUT_LAST_YR))
+                {
+                    Cache_KCYKEY_SG_FUT_LAST_YR = new List<SG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SG_FUT_LAST_YR;
             }
         }
 
         /// <summary>
-        /// SG (Student Groupings) related entities by [SG.FUT_LAST_YR]-&gt;[KCY.KCYKEY]
+        /// ST (Students) related entities by [KCY.KCYKEY]-&gt;[ST.SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SG> SG_FUT_LAST_YR
+        public IReadOnlyList<ST> KCYKEY_ST_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindSGByFUT_LAST_YR(KCYKEY);
+                if (Cache_KCYKEY_ST_SCHOOL_YEAR == null &&
+                    !Context.ST.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_ST_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_ST_SCHOOL_YEAR = new List<ST>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_ST_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// ST (Students) related entities by [ST.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// ST_TFR (ST Transfer) related entities by [KCY.KCYKEY]-&gt;[ST_TFR.SCHOOL_YEAR_NEW]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<ST> ST_SCHOOL_YEAR
+        public IReadOnlyList<ST_TFR> KCYKEY_ST_TFR_SCHOOL_YEAR_NEW
         {
             get
             {
-                return Context.KCY.FindSTBySCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW == null &&
+                    !Context.ST_TFR.TryFindBySCHOOL_YEAR_NEW(KCYKEY, out Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW))
+                {
+                    Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW = new List<ST_TFR>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW;
             }
         }
 
         /// <summary>
-        /// ST_TFR (ST Transfer) related entities by [ST_TFR.SCHOOL_YEAR_NEW]-&gt;[KCY.KCYKEY]
+        /// STMA (Subject Selections &amp; Marks) related entities by [KCY.KCYKEY]-&gt;[STMA.SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<ST_TFR> ST_TFR_SCHOOL_YEAR_NEW
+        public IReadOnlyList<STMA> KCYKEY_STMA_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindST_TFRBySCHOOL_YEAR_NEW(KCYKEY);
+                if (Cache_KCYKEY_STMA_SCHOOL_YEAR == null &&
+                    !Context.STMA.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STMA_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_STMA_SCHOOL_YEAR = new List<STMA>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_STMA_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// STMA (Subject Selections &amp; Marks) related entities by [STMA.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// STRE (Student Re-Enrolment) related entities by [KCY.KCYKEY]-&gt;[STRE.ST_SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<STMA> STMA_SCHOOL_YEAR
+        public IReadOnlyList<STRE> KCYKEY_STRE_ST_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindSTMABySCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_STRE_ST_SCHOOL_YEAR == null &&
+                    !Context.STRE.TryFindByST_SCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STRE_ST_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_STRE_ST_SCHOOL_YEAR = new List<STRE>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_STRE_ST_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// STVDI (VELS Dimension Results) related entities by [KCY.KCYKEY]-&gt;[STVDI.SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<STRE> STRE_ST_SCHOOL_YEAR
+        public IReadOnlyList<STVDI> KCYKEY_STVDI_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindSTREByST_SCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_STVDI_SCHOOL_YEAR == null &&
+                    !Context.STVDI.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDI_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_STVDI_SCHOOL_YEAR = new List<STVDI>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_STVDI_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// STVDI (VELS Dimension Results) related entities by [STVDI.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// STVDO (VELS Domain Results) related entities by [KCY.KCYKEY]-&gt;[STVDO.SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<STVDI> STVDI_SCHOOL_YEAR
+        public IReadOnlyList<STVDO> KCYKEY_STVDO_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindSTVDIBySCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_STVDO_SCHOOL_YEAR == null &&
+                    !Context.STVDO.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDO_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_STVDO_SCHOOL_YEAR = new List<STVDO>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_STVDO_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// STVDO (VELS Domain Results) related entities by [STVDO.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// SU (Subjects) related entities by [KCY.KCYKEY]-&gt;[SU.SUBJECT_ACADEMIC_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<STVDO> STVDO_SCHOOL_YEAR
+        public IReadOnlyList<SU> KCYKEY_SU_SUBJECT_ACADEMIC_YEAR
         {
             get
             {
-                return Context.KCY.FindSTVDOBySCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR == null &&
+                    !Context.SU.TryFindBySUBJECT_ACADEMIC_YEAR(KCYKEY, out Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR))
+                {
+                    Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR = new List<SU>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR;
             }
         }
 
         /// <summary>
-        /// SU (Subjects) related entities by [SU.SUBJECT_ACADEMIC_YEAR]-&gt;[KCY.KCYKEY]
+        /// SVAG (VELS Aggregated Dimensions) related entities by [KCY.KCYKEY]-&gt;[SVAG.SCHOOL_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SU> SU_SUBJECT_ACADEMIC_YEAR
+        public IReadOnlyList<SVAG> KCYKEY_SVAG_SCHOOL_YEAR
         {
             get
             {
-                return Context.KCY.FindSUBySUBJECT_ACADEMIC_YEAR(KCYKEY);
+                if (Cache_KCYKEY_SVAG_SCHOOL_YEAR == null &&
+                    !Context.SVAG.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_SVAG_SCHOOL_YEAR))
+                {
+                    Cache_KCYKEY_SVAG_SCHOOL_YEAR = new List<SVAG>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SVAG_SCHOOL_YEAR;
             }
         }
 
         /// <summary>
-        /// SVAG (VELS Aggregated Dimensions) related entities by [SVAG.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
+        /// SXAB (Student Half-Day Absences) related entities by [KCY.KCYKEY]-&gt;[SXAB.ST_YEAR_LEVEL]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SVAG> SVAG_SCHOOL_YEAR
+        public IReadOnlyList<SXAB> KCYKEY_SXAB_ST_YEAR_LEVEL
         {
             get
             {
-                return Context.KCY.FindSVAGBySCHOOL_YEAR(KCYKEY);
+                if (Cache_KCYKEY_SXAB_ST_YEAR_LEVEL == null &&
+                    !Context.SXAB.TryFindByST_YEAR_LEVEL(KCYKEY, out Cache_KCYKEY_SXAB_ST_YEAR_LEVEL))
+                {
+                    Cache_KCYKEY_SXAB_ST_YEAR_LEVEL = new List<SXAB>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SXAB_ST_YEAR_LEVEL;
             }
         }
 
         /// <summary>
-        /// SXAB (Student Half-Day Absences) related entities by [SXAB.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
+        /// SXABCONV (Converted Student Half-Day Absences) related entities by [KCY.KCYKEY]-&gt;[SXABCONV.ST_YEAR_LEVEL]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SXAB> SXAB_ST_YEAR_LEVEL
+        public IReadOnlyList<SXABCONV> KCYKEY_SXABCONV_ST_YEAR_LEVEL
         {
             get
             {
-                return Context.KCY.FindSXABByST_YEAR_LEVEL(KCYKEY);
+                if (Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL == null &&
+                    !Context.SXABCONV.TryFindByST_YEAR_LEVEL(KCYKEY, out Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL))
+                {
+                    Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL = new List<SXABCONV>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL;
             }
         }
 
         /// <summary>
-        /// SXABCONV (Converted Student Half-Day Absences) related entities by [SXABCONV.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
+        /// SXAS (Student Scheduled Sessions) related entities by [KCY.KCYKEY]-&gt;[SXAS.ST_YEAR_LEVEL]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SXABCONV> SXABCONV_ST_YEAR_LEVEL
+        public IReadOnlyList<SXAS> KCYKEY_SXAS_ST_YEAR_LEVEL
         {
             get
             {
-                return Context.KCY.FindSXABCONVByST_YEAR_LEVEL(KCYKEY);
+                if (Cache_KCYKEY_SXAS_ST_YEAR_LEVEL == null &&
+                    !Context.SXAS.TryFindByST_YEAR_LEVEL(KCYKEY, out Cache_KCYKEY_SXAS_ST_YEAR_LEVEL))
+                {
+                    Cache_KCYKEY_SXAS_ST_YEAR_LEVEL = new List<SXAS>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_SXAS_ST_YEAR_LEVEL;
             }
         }
 
         /// <summary>
-        /// SXAS (Student Scheduled Sessions) related entities by [SXAS.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
+        /// TE (Calendar Events) related entities by [KCY.KCYKEY]-&gt;[TE.START_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<SXAS> SXAS_ST_YEAR_LEVEL
+        public IReadOnlyList<TE> KCYKEY_TE_START_YEAR
         {
             get
             {
-                return Context.KCY.FindSXASByST_YEAR_LEVEL(KCYKEY);
+                if (Cache_KCYKEY_TE_START_YEAR == null &&
+                    !Context.TE.TryFindBySTART_YEAR(KCYKEY, out Cache_KCYKEY_TE_START_YEAR))
+                {
+                    Cache_KCYKEY_TE_START_YEAR = new List<TE>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TE_START_YEAR;
             }
         }
 
         /// <summary>
-        /// TE (Calendar Events) related entities by [TE.START_YEAR]-&gt;[KCY.KCYKEY]
+        /// TE (Calendar Events) related entities by [KCY.KCYKEY]-&gt;[TE.END_YEAR]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TE> TE_START_YEAR
+        public IReadOnlyList<TE> KCYKEY_TE_END_YEAR
         {
             get
             {
-                return Context.KCY.FindTEBySTART_YEAR(KCYKEY);
+                if (Cache_KCYKEY_TE_END_YEAR == null &&
+                    !Context.TE.TryFindByEND_YEAR(KCYKEY, out Cache_KCYKEY_TE_END_YEAR))
+                {
+                    Cache_KCYKEY_TE_END_YEAR = new List<TE>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TE_END_YEAR;
             }
         }
 
         /// <summary>
-        /// TE (Calendar Events) related entities by [TE.END_YEAR]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR01]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TE> TE_END_YEAR
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01
         {
             get
             {
-                return Context.KCY.FindTEByEND_YEAR(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR01(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR01;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR01]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR02]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR01
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR01(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR02(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR02;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR02]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR03]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR02
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR02(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR03(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR03;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR03]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR04]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR03
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR03(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR04(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR04;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR04]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR05]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR04
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR04(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR05(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR05;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR05]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR06]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR05
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR05(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR06(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR06;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR06]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR07]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR06
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR06(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR07(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR07;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR07]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR08]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR07
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR07(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR08(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR08;
             }
         }
 
         /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR08]-&gt;[KCY.KCYKEY]
+        /// TT (Timetable Grid Templates) related entities by [KCY.KCYKEY]-&gt;[TT.SUBJECT_ACADEMIC_YEAR09]
+        /// Year level code
         /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR08
+        public IReadOnlyList<TT> KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09
         {
             get
             {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR08(KCYKEY);
+                if (Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09 == null &&
+                    !Context.TT.TryFindBySUBJECT_ACADEMIC_YEAR09(KCYKEY, out Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09))
+                {
+                    Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09 = new List<TT>().AsReadOnly();
+                }
+
+                return Cache_KCYKEY_TT_SUBJECT_ACADEMIC_YEAR09;
             }
         }
 
-        /// <summary>
-        /// TT (Timetable Grid Templates) related entities by [TT.SUBJECT_ACADEMIC_YEAR09]-&gt;[KCY.KCYKEY]
-        /// </summary>
-        public IReadOnlyList<TT> TT_SUBJECT_ACADEMIC_YEAR09
-        {
-            get
-            {
-                return Context.KCY.FindTTBySUBJECT_ACADEMIC_YEAR09(KCYKEY);
-            }
-        }
-#endregion
+        #endregion
+
     }
 }

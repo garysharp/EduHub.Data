@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Absence by Cohort Aggregations Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SACAGDataSet : SetBase<SACAG>
     {
-        private Lazy<Dictionary<int, SACAG>> SACAG_IDIndex;
-
-
-        internal SACAGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SACAG_IDIndex = new Lazy<Dictionary<int, SACAG>>(() => this.ToDictionary(e => e.SACAG_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SACAG"; } }
 
-        /// <summary>
-        /// Find SACAG by SACAG_ID key field
-        /// </summary>
-        /// <param name="Key">SACAG_ID value used to find SACAG</param>
-        /// <returns>Related SACAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SACAG_ID value didn't match any SACAG entities</exception>
-        public SACAG FindBySACAG_ID(int Key)
+        internal SACAGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SACAG result;
-            if (SACAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SACAG_ID = new Lazy<Dictionary<int, SACAG>>(() => this.ToDictionary(i => i.SACAG_ID));
         }
-
-        /// <summary>
-        /// Attempt to find SACAG by SACAG_ID key field
-        /// </summary>
-        /// <param name="Key">SACAG_ID value used to find SACAG</param>
-        /// <param name="Value">Related SACAG entity</param>
-        /// <returns>True if the SACAG entity is found</returns>
-        public bool TryFindBySACAG_ID(int Key, out SACAG Value)
-        {
-            return SACAG_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SACAG by SACAG_ID key field
-        /// </summary>
-        /// <param name="Key">SACAG_ID value used to find SACAG</param>
-        /// <returns>Related SACAG entity, or null if not found</returns>
-        public SACAG TryFindBySACAG_ID(int Key)
-        {
-            SACAG result;
-            if (SACAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SACAG" />
@@ -126,5 +74,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SACAG>> Index_SACAG_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SACAG by SACAG_ID field
+        /// </summary>
+        /// <param name="SACAG_ID">SACAG_ID value used to find SACAG</param>
+        /// <returns>Related SACAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SACAG FindBySACAG_ID(int SACAG_ID)
+        {
+            return Index_SACAG_ID.Value[SACAG_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SACAG by SACAG_ID field
+        /// </summary>
+        /// <param name="SACAG_ID">SACAG_ID value used to find SACAG</param>
+        /// <param name="Value">Related SACAG entity</param>
+        /// <returns>True if the related SACAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySACAG_ID(int SACAG_ID, out SACAG Value)
+        {
+            return Index_SACAG_ID.Value.TryGetValue(SACAG_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SACAG by SACAG_ID field
+        /// </summary>
+        /// <param name="SACAG_ID">SACAG_ID value used to find SACAG</param>
+        /// <returns>Related SACAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SACAG TryFindBySACAG_ID(int SACAG_ID)
+        {
+            SACAG value;
+            if (Index_SACAG_ID.Value.TryGetValue(SACAG_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

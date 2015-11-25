@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,24 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Actual Sessions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TXASDataSet : SetBase<TXAS>
     {
-        private Lazy<Dictionary<int, TXAS>> TIDIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SXAS>>> SXAS_TXAS_IDForeignIndex;
-
-        internal TXASDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, TXAS>>(() => this.ToDictionary(e => e.TID));
-
-            SXAS_TXAS_IDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SXAS>>>(() =>
-                    Context.SXAS
-                          .Where(e => e.TXAS_ID != null)
-                          .GroupBy(e => e.TXAS_ID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAS>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TXAS"; } }
 
-        /// <summary>
-        /// Find TXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find TXAS</param>
-        /// <returns>Related TXAS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any TXAS entities</exception>
-        public TXAS FindByTID(int Key)
+        internal TXASDataSet(EduHubContext Context)
+            : base(Context)
         {
-            TXAS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, TXAS>>(() => this.ToDictionary(i => i.TID));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TXAS>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_SUBJECT = new Lazy<NullDictionary<string, IReadOnlyList<TXAS>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT));
+            Index_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<TXAS>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER));
+            Index_LOCATION = new Lazy<NullDictionary<string, IReadOnlyList<TXAS>>>(() => this.ToGroupedNullDictionary(i => i.LOCATION));
+            Index_SCL_LINK = new Lazy<NullDictionary<string, IReadOnlyList<TXAS>>>(() => this.ToGroupedNullDictionary(i => i.SCL_LINK));
         }
-
-        /// <summary>
-        /// Attempt to find TXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find TXAS</param>
-        /// <param name="Value">Related TXAS entity</param>
-        /// <returns>True if the TXAS entity is found</returns>
-        public bool TryFindByTID(int Key, out TXAS Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find TXAS</param>
-        /// <returns>Related TXAS entity, or null if not found</returns>
-        public TXAS TryFindByTID(int Key)
-        {
-            TXAS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SXAS (Student Scheduled Sessions) entities by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
-        /// </summary>
-        /// <param name="TID">TID value used to find SXAS entities</param>
-        /// <returns>A list of related SXAS entities</returns>
-        public IReadOnlyList<SXAS> FindSXASByTXAS_ID(int TID)
-        {
-            IReadOnlyList<SXAS> result;
-            if (SXAS_TXAS_IDForeignIndex.Value.TryGetValue(TID, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXAS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXAS entities by [SXAS.TXAS_ID]-&gt;[TXAS.TID]
-        /// </summary>
-        /// <param name="TID">TID value used to find SXAS entities</param>
-        /// <param name="Value">A list of related SXAS entities</param>
-        /// <returns>True if any SXAS entities are found</returns>
-        public bool TryFindSXASByTXAS_ID(int TID, out IReadOnlyList<SXAS> Value)
-        {
-            return SXAS_TXAS_IDForeignIndex.Value.TryGetValue(TID, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TXAS" />
@@ -185,5 +100,273 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, TXAS>> Index_TID;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<TXAS>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<TXAS>>> Index_SUBJECT;
+        private Lazy<NullDictionary<string, IReadOnlyList<TXAS>>> Index_TEACHER;
+        private Lazy<NullDictionary<string, IReadOnlyList<TXAS>>> Index_LOCATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<TXAS>>> Index_SCL_LINK;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TXAS</param>
+        /// <returns>Related TXAS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TXAS FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TXAS</param>
+        /// <param name="Value">Related TXAS entity</param>
+        /// <returns>True if the related TXAS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out TXAS Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TXAS</param>
+        /// <returns>Related TXAS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TXAS TryFindByTID(int TID)
+        {
+            TXAS value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXAS</param>
+        /// <returns>List of related TXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXAS</param>
+        /// <param name="Value">List of related TXAS entities</param>
+        /// <returns>True if the list of related TXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<TXAS> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXAS</param>
+        /// <returns>List of related TXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<TXAS> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXAS by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find TXAS</param>
+        /// <returns>List of related TXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> FindBySUBJECT(string SUBJECT)
+        {
+            return Index_SUBJECT.Value[SUBJECT];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find TXAS</param>
+        /// <param name="Value">List of related TXAS entities</param>
+        /// <returns>True if the list of related TXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBJECT(string SUBJECT, out IReadOnlyList<TXAS> Value)
+        {
+            return Index_SUBJECT.Value.TryGetValue(SUBJECT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find TXAS</param>
+        /// <returns>List of related TXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> TryFindBySUBJECT(string SUBJECT)
+        {
+            IReadOnlyList<TXAS> value;
+            if (Index_SUBJECT.Value.TryGetValue(SUBJECT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXAS by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TXAS</param>
+        /// <returns>List of related TXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> FindByTEACHER(string TEACHER)
+        {
+            return Index_TEACHER.Value[TEACHER];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TXAS</param>
+        /// <param name="Value">List of related TXAS entities</param>
+        /// <returns>True if the list of related TXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTEACHER(string TEACHER, out IReadOnlyList<TXAS> Value)
+        {
+            return Index_TEACHER.Value.TryGetValue(TEACHER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by TEACHER field
+        /// </summary>
+        /// <param name="TEACHER">TEACHER value used to find TXAS</param>
+        /// <returns>List of related TXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> TryFindByTEACHER(string TEACHER)
+        {
+            IReadOnlyList<TXAS> value;
+            if (Index_TEACHER.Value.TryGetValue(TEACHER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXAS by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TXAS</param>
+        /// <returns>List of related TXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> FindByLOCATION(string LOCATION)
+        {
+            return Index_LOCATION.Value[LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TXAS</param>
+        /// <param name="Value">List of related TXAS entities</param>
+        /// <returns>True if the list of related TXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOCATION(string LOCATION, out IReadOnlyList<TXAS> Value)
+        {
+            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find TXAS</param>
+        /// <returns>List of related TXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> TryFindByLOCATION(string LOCATION)
+        {
+            IReadOnlyList<TXAS> value;
+            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXAS by SCL_LINK field
+        /// </summary>
+        /// <param name="SCL_LINK">SCL_LINK value used to find TXAS</param>
+        /// <returns>List of related TXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> FindBySCL_LINK(string SCL_LINK)
+        {
+            return Index_SCL_LINK.Value[SCL_LINK];
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by SCL_LINK field
+        /// </summary>
+        /// <param name="SCL_LINK">SCL_LINK value used to find TXAS</param>
+        /// <param name="Value">List of related TXAS entities</param>
+        /// <returns>True if the list of related TXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCL_LINK(string SCL_LINK, out IReadOnlyList<TXAS> Value)
+        {
+            return Index_SCL_LINK.Value.TryGetValue(SCL_LINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXAS by SCL_LINK field
+        /// </summary>
+        /// <param name="SCL_LINK">SCL_LINK value used to find TXAS</param>
+        /// <returns>List of related TXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXAS> TryFindBySCL_LINK(string SCL_LINK)
+        {
+            IReadOnlyList<TXAS> value;
+            if (Index_SCL_LINK.Value.TryGetValue(SCL_LINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS Recipients Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPREPLYDataSet : SetBase<SPREPLY>
     {
-        private Lazy<Dictionary<int, SPREPLY>> TIDIndex;
-
-
-        internal SPREPLYDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SPREPLY>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPREPLY"; } }
 
-        /// <summary>
-        /// Find SPREPLY by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPREPLY</param>
-        /// <returns>Related SPREPLY entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SPREPLY entities</exception>
-        public SPREPLY FindByTID(int Key)
+        internal SPREPLYDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPREPLY result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, SPREPLY>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find SPREPLY by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPREPLY</param>
-        /// <param name="Value">Related SPREPLY entity</param>
-        /// <returns>True if the SPREPLY entity is found</returns>
-        public bool TryFindByTID(int Key, out SPREPLY Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPREPLY by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPREPLY</param>
-        /// <returns>Related SPREPLY entity, or null if not found</returns>
-        public SPREPLY TryFindByTID(int Key)
-        {
-            SPREPLY result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPREPLY" />
@@ -89,7 +38,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
-                        mapper[i] = (e, v) => e.CODE = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.CODE = int.Parse(v);
                         break;
                     case "SPRECIP_TID":
                         mapper[i] = (e, v) => e.SPRECIP_TID = v == null ? (int?)null : int.Parse(v);
@@ -120,5 +69,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>> Index_CODE;
+        private Lazy<Dictionary<int, SPREPLY>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPREPLY by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPREPLY</param>
+        /// <returns>List of related SPREPLY entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPREPLY> FindByCODE(int CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SPREPLY by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPREPLY</param>
+        /// <param name="Value">List of related SPREPLY entities</param>
+        /// <returns>True if the list of related SPREPLY entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(int CODE, out IReadOnlyList<SPREPLY> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPREPLY by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPREPLY</param>
+        /// <returns>List of related SPREPLY entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPREPLY> TryFindByCODE(int CODE)
+        {
+            IReadOnlyList<SPREPLY> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SPREPLY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPREPLY</param>
+        /// <returns>Related SPREPLY entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPREPLY FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SPREPLY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPREPLY</param>
+        /// <param name="Value">Related SPREPLY entity</param>
+        /// <returns>True if the related SPREPLY entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SPREPLY Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPREPLY by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPREPLY</param>
+        /// <returns>Related SPREPLY entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPREPLY TryFindByTID(int TID)
+        {
+            SPREPLY value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

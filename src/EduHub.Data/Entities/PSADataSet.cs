@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Award Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PSADataSet : SetBase<PSA>
     {
-        private Lazy<Dictionary<string, PSA>> PSAKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<PI>>> PI_AWARDForeignIndex;
-
-        internal PSADataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PSAKEYIndex = new Lazy<Dictionary<string, PSA>>(() => this.ToDictionary(e => e.PSAKEY));
-
-            PI_AWARDForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PI>>>(() =>
-                    Context.PI
-                          .Where(e => e.AWARD != null)
-                          .GroupBy(e => e.AWARD)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PI>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PSA"; } }
 
-        /// <summary>
-        /// Find PSA by PSAKEY key field
-        /// </summary>
-        /// <param name="Key">PSAKEY value used to find PSA</param>
-        /// <returns>Related PSA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PSAKEY value didn't match any PSA entities</exception>
-        public PSA FindByPSAKEY(string Key)
+        internal PSADataSet(EduHubContext Context)
+            : base(Context)
         {
-            PSA result;
-            if (PSAKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PSAKEY = new Lazy<Dictionary<string, PSA>>(() => this.ToDictionary(i => i.PSAKEY));
         }
-
-        /// <summary>
-        /// Attempt to find PSA by PSAKEY key field
-        /// </summary>
-        /// <param name="Key">PSAKEY value used to find PSA</param>
-        /// <param name="Value">Related PSA entity</param>
-        /// <returns>True if the PSA entity is found</returns>
-        public bool TryFindByPSAKEY(string Key, out PSA Value)
-        {
-            return PSAKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PSA by PSAKEY key field
-        /// </summary>
-        /// <param name="Key">PSAKEY value used to find PSA</param>
-        /// <returns>Related PSA entity, or null if not found</returns>
-        public PSA TryFindByPSAKEY(string Key)
-        {
-            PSA result;
-            if (PSAKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all PI (Pay Items) entities by [PI.AWARD]-&gt;[PSA.PSAKEY]
-        /// </summary>
-        /// <param name="PSAKEY">PSAKEY value used to find PI entities</param>
-        /// <returns>A list of related PI entities</returns>
-        public IReadOnlyList<PI> FindPIByAWARD(string PSAKEY)
-        {
-            IReadOnlyList<PI> result;
-            if (PI_AWARDForeignIndex.Value.TryGetValue(PSAKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PI entities by [PI.AWARD]-&gt;[PSA.PSAKEY]
-        /// </summary>
-        /// <param name="PSAKEY">PSAKEY value used to find PI entities</param>
-        /// <param name="Value">A list of related PI entities</param>
-        /// <returns>True if any PI entities are found</returns>
-        public bool TryFindPIByAWARD(string PSAKEY, out IReadOnlyList<PI> Value)
-        {
-            return PI_AWARDForeignIndex.Value.TryGetValue(PSAKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PSA" />
@@ -149,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, PSA>> Index_PSAKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PSA by PSAKEY field
+        /// </summary>
+        /// <param name="PSAKEY">PSAKEY value used to find PSA</param>
+        /// <returns>Related PSA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PSA FindByPSAKEY(string PSAKEY)
+        {
+            return Index_PSAKEY.Value[PSAKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PSA by PSAKEY field
+        /// </summary>
+        /// <param name="PSAKEY">PSAKEY value used to find PSA</param>
+        /// <param name="Value">Related PSA entity</param>
+        /// <returns>True if the related PSA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPSAKEY(string PSAKEY, out PSA Value)
+        {
+            return Index_PSAKEY.Value.TryGetValue(PSAKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PSA by PSAKEY field
+        /// </summary>
+        /// <param name="PSAKEY">PSAKEY value used to find PSA</param>
+        /// <returns>Related PSA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PSA TryFindByPSAKEY(string PSAKEY)
+        {
+            PSA value;
+            if (Index_PSAKEY.Value.TryGetValue(PSAKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

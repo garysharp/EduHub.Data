@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,375 +8,39 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Families Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DFDataSet : SetBase<DF>
     {
-        private Lazy<Dictionary<string, DF>> DFKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<DFB>>> DFB_FAM_CODEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> DFF_CODEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<DFHI>>> DFHI_FKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<DFVT>>> DFVT_FAMILYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMILYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMBForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_FAMCForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STSB>>> STSB_FAMILYForeignIndex;
-
-        internal DFDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            DFKEYIndex = new Lazy<Dictionary<string, DF>>(() => this.ToDictionary(e => e.DFKEY));
-
-            DFB_FAM_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFB>>>(() =>
-                    Context.DFB
-                          .Where(e => e.FAM_CODE != null)
-                          .GroupBy(e => e.FAM_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFB>)g.ToList()
-                          .AsReadOnly()));
-
-            DFF_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() =>
-                    Context.DFF
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFF>)g.ToList()
-                          .AsReadOnly()));
-
-            DFHI_FKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFHI>>>(() =>
-                    Context.DFHI
-                          .Where(e => e.FKEY != null)
-                          .GroupBy(e => e.FKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFHI>)g.ToList()
-                          .AsReadOnly()));
-
-            DFVT_FAMILYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFVT>>>(() =>
-                    Context.DFVT
-                          .Where(e => e.FAMILY != null)
-                          .GroupBy(e => e.FAMILY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFVT>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_FAMILYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.FAMILY != null)
-                          .GroupBy(e => e.FAMILY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_FAMBForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.FAMB != null)
-                          .GroupBy(e => e.FAMB)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_FAMCForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.FAMC != null)
-                          .GroupBy(e => e.FAMC)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-            STSB_FAMILYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STSB>>>(() =>
-                    Context.STSB
-                          .Where(e => e.FAMILY != null)
-                          .GroupBy(e => e.FAMILY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STSB>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "DF"; } }
 
-        /// <summary>
-        /// Find DF by DFKEY key field
-        /// </summary>
-        /// <param name="Key">DFKEY value used to find DF</param>
-        /// <returns>Related DF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">DFKEY value didn't match any DF entities</exception>
-        public DF FindByDFKEY(string Key)
+        internal DFDataSet(EduHubContext Context)
+            : base(Context)
         {
-            DF result;
-            if (DFKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_DFKEY = new Lazy<Dictionary<string, DF>>(() => this.ToDictionary(i => i.DFKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_BPAY_REFERENCE = new Lazy<NullDictionary<string, DF>>(() => this.ToNullDictionary(i => i.BPAY_REFERENCE));
+            Index_NATIVE_LANG_A = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.NATIVE_LANG_A));
+            Index_OTHER_LANG_A = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.OTHER_LANG_A));
+            Index_BIRTH_COUNTRY_A = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY_A));
+            Index_LOTE_HOME_CODE_A = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.LOTE_HOME_CODE_A));
+            Index_NATIVE_LANG_B = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.NATIVE_LANG_B));
+            Index_OTHER_LANG_B = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.OTHER_LANG_B));
+            Index_BIRTH_COUNTRY_B = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY_B));
+            Index_LOTE_HOME_CODE_B = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.LOTE_HOME_CODE_B));
+            Index_PREF_NOTICE_LANG = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.PREF_NOTICE_LANG));
+            Index_HOMEKEY = new Lazy<NullDictionary<int?, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.HOMEKEY));
+            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
+            Index_BILLINGKEY = new Lazy<NullDictionary<int?, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.BILLINGKEY));
+            Index_DOCTOR = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.DOCTOR));
+            Index_EMERG_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG01));
+            Index_EMERG_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG02));
+            Index_EMERG_LANG03 = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG03));
+            Index_EMERG_LANG04 = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG04));
+            Index_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<DF>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANG));
         }
-
-        /// <summary>
-        /// Attempt to find DF by DFKEY key field
-        /// </summary>
-        /// <param name="Key">DFKEY value used to find DF</param>
-        /// <param name="Value">Related DF entity</param>
-        /// <returns>True if the DF entity is found</returns>
-        public bool TryFindByDFKEY(string Key, out DF Value)
-        {
-            return DFKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DF by DFKEY key field
-        /// </summary>
-        /// <param name="Key">DFKEY value used to find DF</param>
-        /// <returns>Related DF entity, or null if not found</returns>
-        public DF TryFindByDFKEY(string Key)
-        {
-            DF result;
-            if (DFKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all DFB (BPAY Receipts) entities by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFB entities</param>
-        /// <returns>A list of related DFB entities</returns>
-        public IReadOnlyList<DFB> FindDFBByFAM_CODE(string DFKEY)
-        {
-            IReadOnlyList<DFB> result;
-            if (DFB_FAM_CODEForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFB entities by [DFB.FAM_CODE]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFB entities</param>
-        /// <param name="Value">A list of related DFB entities</param>
-        /// <returns>True if any DFB entities are found</returns>
-        public bool TryFindDFBByFAM_CODE(string DFKEY, out IReadOnlyList<DFB> Value)
-        {
-            return DFB_FAM_CODEForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DFF (Family Financial Transactions) entities by [DFF.CODE]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFF entities</param>
-        /// <returns>A list of related DFF entities</returns>
-        public IReadOnlyList<DFF> FindDFFByCODE(string DFKEY)
-        {
-            IReadOnlyList<DFF> result;
-            if (DFF_CODEForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFF entities by [DFF.CODE]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFF entities</param>
-        /// <param name="Value">A list of related DFF entities</param>
-        /// <returns>True if any DFF entities are found</returns>
-        public bool TryFindDFFByCODE(string DFKEY, out IReadOnlyList<DFF> Value)
-        {
-            return DFF_CODEForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DFHI (Family History) entities by [DFHI.FKEY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFHI entities</param>
-        /// <returns>A list of related DFHI entities</returns>
-        public IReadOnlyList<DFHI> FindDFHIByFKEY(string DFKEY)
-        {
-            IReadOnlyList<DFHI> result;
-            if (DFHI_FKEYForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFHI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFHI entities by [DFHI.FKEY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFHI entities</param>
-        /// <param name="Value">A list of related DFHI entities</param>
-        /// <returns>True if any DFHI entities are found</returns>
-        public bool TryFindDFHIByFKEY(string DFKEY, out IReadOnlyList<DFHI> Value)
-        {
-            return DFHI_FKEYForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DFVT (Family Voluntary Transactions) entities by [DFVT.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFVT entities</param>
-        /// <returns>A list of related DFVT entities</returns>
-        public IReadOnlyList<DFVT> FindDFVTByFAMILY(string DFKEY)
-        {
-            IReadOnlyList<DFVT> result;
-            if (DFVT_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFVT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFVT entities by [DFVT.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find DFVT entities</param>
-        /// <param name="Value">A list of related DFVT entities</param>
-        /// <returns>True if any DFVT entities are found</returns>
-        public bool TryFindDFVTByFAMILY(string DFKEY, out IReadOnlyList<DFVT> Value)
-        {
-            return DFVT_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByFAMILY(string DFKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByFAMILY(string DFKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.FAMB]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByFAMB(string DFKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_FAMBForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.FAMB]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByFAMB(string DFKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_FAMBForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.FAMC]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByFAMC(string DFKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_FAMCForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.FAMC]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByFAMC(string DFKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_FAMCForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STSB (Family Invoice Allocations) entities by [STSB.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find STSB entities</param>
-        /// <returns>A list of related STSB entities</returns>
-        public IReadOnlyList<STSB> FindSTSBByFAMILY(string DFKEY)
-        {
-            IReadOnlyList<STSB> result;
-            if (STSB_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STSB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STSB entities by [STSB.FAMILY]-&gt;[DF.DFKEY]
-        /// </summary>
-        /// <param name="DFKEY">DFKEY value used to find STSB entities</param>
-        /// <param name="Value">A list of related STSB entities</param>
-        /// <returns>True if any STSB entities are found</returns>
-        public bool TryFindSTSBByFAMILY(string DFKEY, out IReadOnlyList<STSB> Value)
-        {
-            return STSB_FAMILYForeignIndex.Value.TryGetValue(DFKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="DF" />
@@ -772,5 +436,918 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, DF>> Index_DFKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<DF>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, DF>> Index_BPAY_REFERENCE;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_NATIVE_LANG_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_OTHER_LANG_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_BIRTH_COUNTRY_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_LOTE_HOME_CODE_A;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_NATIVE_LANG_B;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_OTHER_LANG_B;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_BIRTH_COUNTRY_B;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_LOTE_HOME_CODE_B;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_PREF_NOTICE_LANG;
+        private Lazy<NullDictionary<int?, IReadOnlyList<DF>>> Index_HOMEKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<DF>>> Index_MAILKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<DF>>> Index_BILLINGKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_DOCTOR;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_EMERG_LANG01;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_EMERG_LANG02;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_EMERG_LANG03;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_EMERG_LANG04;
+        private Lazy<NullDictionary<string, IReadOnlyList<DF>>> Index_HOME_LANG;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find DF by DFKEY field
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DF</param>
+        /// <returns>Related DF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF FindByDFKEY(string DFKEY)
+        {
+            return Index_DFKEY.Value[DFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by DFKEY field
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DF</param>
+        /// <param name="Value">Related DF entity</param>
+        /// <returns>True if the related DF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDFKEY(string DFKEY, out DF Value)
+        {
+            return Index_DFKEY.Value.TryGetValue(DFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by DFKEY field
+        /// </summary>
+        /// <param name="DFKEY">DFKEY value used to find DF</param>
+        /// <returns>Related DF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF TryFindByDFKEY(string DFKEY)
+        {
+            DF value;
+            if (Index_DFKEY.Value.TryGetValue(DFKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<DF> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by BPAY_REFERENCE field
+        /// </summary>
+        /// <param name="BPAY_REFERENCE">BPAY_REFERENCE value used to find DF</param>
+        /// <returns>Related DF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF FindByBPAY_REFERENCE(string BPAY_REFERENCE)
+        {
+            return Index_BPAY_REFERENCE.Value[BPAY_REFERENCE];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BPAY_REFERENCE field
+        /// </summary>
+        /// <param name="BPAY_REFERENCE">BPAY_REFERENCE value used to find DF</param>
+        /// <param name="Value">Related DF entity</param>
+        /// <returns>True if the related DF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBPAY_REFERENCE(string BPAY_REFERENCE, out DF Value)
+        {
+            return Index_BPAY_REFERENCE.Value.TryGetValue(BPAY_REFERENCE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BPAY_REFERENCE field
+        /// </summary>
+        /// <param name="BPAY_REFERENCE">BPAY_REFERENCE value used to find DF</param>
+        /// <returns>Related DF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF TryFindByBPAY_REFERENCE(string BPAY_REFERENCE)
+        {
+            DF value;
+            if (Index_BPAY_REFERENCE.Value.TryGetValue(BPAY_REFERENCE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by NATIVE_LANG_A field
+        /// </summary>
+        /// <param name="NATIVE_LANG_A">NATIVE_LANG_A value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByNATIVE_LANG_A(string NATIVE_LANG_A)
+        {
+            return Index_NATIVE_LANG_A.Value[NATIVE_LANG_A];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by NATIVE_LANG_A field
+        /// </summary>
+        /// <param name="NATIVE_LANG_A">NATIVE_LANG_A value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNATIVE_LANG_A(string NATIVE_LANG_A, out IReadOnlyList<DF> Value)
+        {
+            return Index_NATIVE_LANG_A.Value.TryGetValue(NATIVE_LANG_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by NATIVE_LANG_A field
+        /// </summary>
+        /// <param name="NATIVE_LANG_A">NATIVE_LANG_A value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByNATIVE_LANG_A(string NATIVE_LANG_A)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_NATIVE_LANG_A.Value.TryGetValue(NATIVE_LANG_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by OTHER_LANG_A field
+        /// </summary>
+        /// <param name="OTHER_LANG_A">OTHER_LANG_A value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByOTHER_LANG_A(string OTHER_LANG_A)
+        {
+            return Index_OTHER_LANG_A.Value[OTHER_LANG_A];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by OTHER_LANG_A field
+        /// </summary>
+        /// <param name="OTHER_LANG_A">OTHER_LANG_A value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByOTHER_LANG_A(string OTHER_LANG_A, out IReadOnlyList<DF> Value)
+        {
+            return Index_OTHER_LANG_A.Value.TryGetValue(OTHER_LANG_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by OTHER_LANG_A field
+        /// </summary>
+        /// <param name="OTHER_LANG_A">OTHER_LANG_A value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByOTHER_LANG_A(string OTHER_LANG_A)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_OTHER_LANG_A.Value.TryGetValue(OTHER_LANG_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by BIRTH_COUNTRY_A field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_A">BIRTH_COUNTRY_A value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByBIRTH_COUNTRY_A(string BIRTH_COUNTRY_A)
+        {
+            return Index_BIRTH_COUNTRY_A.Value[BIRTH_COUNTRY_A];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BIRTH_COUNTRY_A field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_A">BIRTH_COUNTRY_A value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBIRTH_COUNTRY_A(string BIRTH_COUNTRY_A, out IReadOnlyList<DF> Value)
+        {
+            return Index_BIRTH_COUNTRY_A.Value.TryGetValue(BIRTH_COUNTRY_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BIRTH_COUNTRY_A field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_A">BIRTH_COUNTRY_A value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByBIRTH_COUNTRY_A(string BIRTH_COUNTRY_A)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_BIRTH_COUNTRY_A.Value.TryGetValue(BIRTH_COUNTRY_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_A">LOTE_HOME_CODE_A value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByLOTE_HOME_CODE_A(string LOTE_HOME_CODE_A)
+        {
+            return Index_LOTE_HOME_CODE_A.Value[LOTE_HOME_CODE_A];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_A">LOTE_HOME_CODE_A value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOTE_HOME_CODE_A(string LOTE_HOME_CODE_A, out IReadOnlyList<DF> Value)
+        {
+            return Index_LOTE_HOME_CODE_A.Value.TryGetValue(LOTE_HOME_CODE_A, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LOTE_HOME_CODE_A field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_A">LOTE_HOME_CODE_A value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByLOTE_HOME_CODE_A(string LOTE_HOME_CODE_A)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_LOTE_HOME_CODE_A.Value.TryGetValue(LOTE_HOME_CODE_A, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by NATIVE_LANG_B field
+        /// </summary>
+        /// <param name="NATIVE_LANG_B">NATIVE_LANG_B value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByNATIVE_LANG_B(string NATIVE_LANG_B)
+        {
+            return Index_NATIVE_LANG_B.Value[NATIVE_LANG_B];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by NATIVE_LANG_B field
+        /// </summary>
+        /// <param name="NATIVE_LANG_B">NATIVE_LANG_B value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNATIVE_LANG_B(string NATIVE_LANG_B, out IReadOnlyList<DF> Value)
+        {
+            return Index_NATIVE_LANG_B.Value.TryGetValue(NATIVE_LANG_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by NATIVE_LANG_B field
+        /// </summary>
+        /// <param name="NATIVE_LANG_B">NATIVE_LANG_B value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByNATIVE_LANG_B(string NATIVE_LANG_B)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_NATIVE_LANG_B.Value.TryGetValue(NATIVE_LANG_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by OTHER_LANG_B field
+        /// </summary>
+        /// <param name="OTHER_LANG_B">OTHER_LANG_B value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByOTHER_LANG_B(string OTHER_LANG_B)
+        {
+            return Index_OTHER_LANG_B.Value[OTHER_LANG_B];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by OTHER_LANG_B field
+        /// </summary>
+        /// <param name="OTHER_LANG_B">OTHER_LANG_B value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByOTHER_LANG_B(string OTHER_LANG_B, out IReadOnlyList<DF> Value)
+        {
+            return Index_OTHER_LANG_B.Value.TryGetValue(OTHER_LANG_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by OTHER_LANG_B field
+        /// </summary>
+        /// <param name="OTHER_LANG_B">OTHER_LANG_B value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByOTHER_LANG_B(string OTHER_LANG_B)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_OTHER_LANG_B.Value.TryGetValue(OTHER_LANG_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by BIRTH_COUNTRY_B field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_B">BIRTH_COUNTRY_B value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByBIRTH_COUNTRY_B(string BIRTH_COUNTRY_B)
+        {
+            return Index_BIRTH_COUNTRY_B.Value[BIRTH_COUNTRY_B];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BIRTH_COUNTRY_B field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_B">BIRTH_COUNTRY_B value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBIRTH_COUNTRY_B(string BIRTH_COUNTRY_B, out IReadOnlyList<DF> Value)
+        {
+            return Index_BIRTH_COUNTRY_B.Value.TryGetValue(BIRTH_COUNTRY_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BIRTH_COUNTRY_B field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY_B">BIRTH_COUNTRY_B value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByBIRTH_COUNTRY_B(string BIRTH_COUNTRY_B)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_BIRTH_COUNTRY_B.Value.TryGetValue(BIRTH_COUNTRY_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_B">LOTE_HOME_CODE_B value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByLOTE_HOME_CODE_B(string LOTE_HOME_CODE_B)
+        {
+            return Index_LOTE_HOME_CODE_B.Value[LOTE_HOME_CODE_B];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_B">LOTE_HOME_CODE_B value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOTE_HOME_CODE_B(string LOTE_HOME_CODE_B, out IReadOnlyList<DF> Value)
+        {
+            return Index_LOTE_HOME_CODE_B.Value.TryGetValue(LOTE_HOME_CODE_B, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by LOTE_HOME_CODE_B field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE_B">LOTE_HOME_CODE_B value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByLOTE_HOME_CODE_B(string LOTE_HOME_CODE_B)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_LOTE_HOME_CODE_B.Value.TryGetValue(LOTE_HOME_CODE_B, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by PREF_NOTICE_LANG field
+        /// </summary>
+        /// <param name="PREF_NOTICE_LANG">PREF_NOTICE_LANG value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByPREF_NOTICE_LANG(string PREF_NOTICE_LANG)
+        {
+            return Index_PREF_NOTICE_LANG.Value[PREF_NOTICE_LANG];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by PREF_NOTICE_LANG field
+        /// </summary>
+        /// <param name="PREF_NOTICE_LANG">PREF_NOTICE_LANG value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPREF_NOTICE_LANG(string PREF_NOTICE_LANG, out IReadOnlyList<DF> Value)
+        {
+            return Index_PREF_NOTICE_LANG.Value.TryGetValue(PREF_NOTICE_LANG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by PREF_NOTICE_LANG field
+        /// </summary>
+        /// <param name="PREF_NOTICE_LANG">PREF_NOTICE_LANG value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByPREF_NOTICE_LANG(string PREF_NOTICE_LANG)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_PREF_NOTICE_LANG.Value.TryGetValue(PREF_NOTICE_LANG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByHOMEKEY(int? HOMEKEY)
+        {
+            return Index_HOMEKEY.Value[HOMEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOMEKEY(int? HOMEKEY, out IReadOnlyList<DF> Value)
+        {
+            return Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by HOMEKEY field
+        /// </summary>
+        /// <param name="HOMEKEY">HOMEKEY value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByHOMEKEY(int? HOMEKEY)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_HOMEKEY.Value.TryGetValue(HOMEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByMAILKEY(int? MAILKEY)
+        {
+            return Index_MAILKEY.Value[MAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<DF> Value)
+        {
+            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByMAILKEY(int? MAILKEY)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by BILLINGKEY field
+        /// </summary>
+        /// <param name="BILLINGKEY">BILLINGKEY value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByBILLINGKEY(int? BILLINGKEY)
+        {
+            return Index_BILLINGKEY.Value[BILLINGKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BILLINGKEY field
+        /// </summary>
+        /// <param name="BILLINGKEY">BILLINGKEY value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBILLINGKEY(int? BILLINGKEY, out IReadOnlyList<DF> Value)
+        {
+            return Index_BILLINGKEY.Value.TryGetValue(BILLINGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by BILLINGKEY field
+        /// </summary>
+        /// <param name="BILLINGKEY">BILLINGKEY value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByBILLINGKEY(int? BILLINGKEY)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_BILLINGKEY.Value.TryGetValue(BILLINGKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByDOCTOR(string DOCTOR)
+        {
+            return Index_DOCTOR.Value[DOCTOR];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDOCTOR(string DOCTOR, out IReadOnlyList<DF> Value)
+        {
+            return Index_DOCTOR.Value.TryGetValue(DOCTOR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByDOCTOR(string DOCTOR)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_DOCTOR.Value.TryGetValue(DOCTOR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByEMERG_LANG01(string EMERG_LANG01)
+        {
+            return Index_EMERG_LANG01.Value[EMERG_LANG01];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG01(string EMERG_LANG01, out IReadOnlyList<DF> Value)
+        {
+            return Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByEMERG_LANG01(string EMERG_LANG01)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            return Index_EMERG_LANG02.Value[EMERG_LANG02];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG02(string EMERG_LANG02, out IReadOnlyList<DF> Value)
+        {
+            return Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by EMERG_LANG03 field
+        /// </summary>
+        /// <param name="EMERG_LANG03">EMERG_LANG03 value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByEMERG_LANG03(string EMERG_LANG03)
+        {
+            return Index_EMERG_LANG03.Value[EMERG_LANG03];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG03 field
+        /// </summary>
+        /// <param name="EMERG_LANG03">EMERG_LANG03 value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG03(string EMERG_LANG03, out IReadOnlyList<DF> Value)
+        {
+            return Index_EMERG_LANG03.Value.TryGetValue(EMERG_LANG03, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG03 field
+        /// </summary>
+        /// <param name="EMERG_LANG03">EMERG_LANG03 value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByEMERG_LANG03(string EMERG_LANG03)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_EMERG_LANG03.Value.TryGetValue(EMERG_LANG03, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by EMERG_LANG04 field
+        /// </summary>
+        /// <param name="EMERG_LANG04">EMERG_LANG04 value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByEMERG_LANG04(string EMERG_LANG04)
+        {
+            return Index_EMERG_LANG04.Value[EMERG_LANG04];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG04 field
+        /// </summary>
+        /// <param name="EMERG_LANG04">EMERG_LANG04 value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG04(string EMERG_LANG04, out IReadOnlyList<DF> Value)
+        {
+            return Index_EMERG_LANG04.Value.TryGetValue(EMERG_LANG04, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by EMERG_LANG04 field
+        /// </summary>
+        /// <param name="EMERG_LANG04">EMERG_LANG04 value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByEMERG_LANG04(string EMERG_LANG04)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_EMERG_LANG04.Value.TryGetValue(EMERG_LANG04, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find DF</param>
+        /// <returns>List of related DF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> FindByHOME_LANG(string HOME_LANG)
+        {
+            return Index_HOME_LANG.Value[HOME_LANG];
+        }
+
+        /// <summary>
+        /// Attempt to find DF by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find DF</param>
+        /// <param name="Value">List of related DF entities</param>
+        /// <returns>True if the list of related DF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_LANG(string HOME_LANG, out IReadOnlyList<DF> Value)
+        {
+            return Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find DF</param>
+        /// <returns>List of related DF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF> TryFindByHOME_LANG(string HOME_LANG)
+        {
+            IReadOnlyList<DF> value;
+            if (Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

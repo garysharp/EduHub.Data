@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Categories Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPECDataSet : SetBase<KPEC>
     {
-        private Lazy<Dictionary<string, KPEC>> KPECKEYIndex;
-
-
-        internal KPECDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KPECKEYIndex = new Lazy<Dictionary<string, KPEC>>(() => this.ToDictionary(e => e.KPECKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KPEC"; } }
 
-        /// <summary>
-        /// Find KPEC by KPECKEY key field
-        /// </summary>
-        /// <param name="Key">KPECKEY value used to find KPEC</param>
-        /// <returns>Related KPEC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KPECKEY value didn't match any KPEC entities</exception>
-        public KPEC FindByKPECKEY(string Key)
+        internal KPECDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KPEC result;
-            if (KPECKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KPECKEY = new Lazy<Dictionary<string, KPEC>>(() => this.ToDictionary(i => i.KPECKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KPEC by KPECKEY key field
-        /// </summary>
-        /// <param name="Key">KPECKEY value used to find KPEC</param>
-        /// <param name="Value">Related KPEC entity</param>
-        /// <returns>True if the KPEC entity is found</returns>
-        public bool TryFindByKPECKEY(string Key, out KPEC Value)
-        {
-            return KPECKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KPEC by KPECKEY key field
-        /// </summary>
-        /// <param name="Key">KPECKEY value used to find KPEC</param>
-        /// <returns>Related KPEC entity, or null if not found</returns>
-        public KPEC TryFindByKPECKEY(string Key)
-        {
-            KPEC result;
-            if (KPECKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KPEC" />
@@ -108,5 +56,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KPEC>> Index_KPECKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KPEC by KPECKEY field
+        /// </summary>
+        /// <param name="KPECKEY">KPECKEY value used to find KPEC</param>
+        /// <returns>Related KPEC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPEC FindByKPECKEY(string KPECKEY)
+        {
+            return Index_KPECKEY.Value[KPECKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KPEC by KPECKEY field
+        /// </summary>
+        /// <param name="KPECKEY">KPECKEY value used to find KPEC</param>
+        /// <param name="Value">Related KPEC entity</param>
+        /// <returns>True if the related KPEC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKPECKEY(string KPECKEY, out KPEC Value)
+        {
+            return Index_KPECKEY.Value.TryGetValue(KPECKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPEC by KPECKEY field
+        /// </summary>
+        /// <param name="KPECKEY">KPECKEY value used to find KPEC</param>
+        /// <returns>Related KPEC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPEC TryFindByKPECKEY(string KPECKEY)
+        {
+            KPEC value;
+            if (Index_KPECKEY.Value.TryGetValue(KPECKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

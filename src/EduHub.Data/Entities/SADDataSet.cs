@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,185 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accidents Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SADDataSet : SetBase<SAD>
     {
-        private Lazy<Dictionary<int, SAD>> SADKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SADP>>> SADP_ACCIDENTIDForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SADW>>> SADW_ACCIDENTIDForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SAI>>> SAI_ACCIDENTIDForeignIndex;
-
-        internal SADDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SADKEYIndex = new Lazy<Dictionary<int, SAD>>(() => this.ToDictionary(e => e.SADKEY));
-
-            SADP_ACCIDENTIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SADP>>>(() =>
-                    Context.SADP
-                          .Where(e => e.ACCIDENTID != null)
-                          .GroupBy(e => e.ACCIDENTID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SADP>)g.ToList()
-                          .AsReadOnly()));
-
-            SADW_ACCIDENTIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SADW>>>(() =>
-                    Context.SADW
-                          .Where(e => e.ACCIDENTID != null)
-                          .GroupBy(e => e.ACCIDENTID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SADW>)g.ToList()
-                          .AsReadOnly()));
-
-            SAI_ACCIDENTIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAI>>>(() =>
-                    Context.SAI
-                          .Where(e => e.ACCIDENTID != null)
-                          .GroupBy(e => e.ACCIDENTID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAI>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SAD"; } }
 
-        /// <summary>
-        /// Find SAD by SADKEY key field
-        /// </summary>
-        /// <param name="Key">SADKEY value used to find SAD</param>
-        /// <returns>Related SAD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SADKEY value didn't match any SAD entities</exception>
-        public SAD FindBySADKEY(int Key)
+        internal SADDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SAD result;
-            if (SADKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SADKEY = new Lazy<Dictionary<int, SAD>>(() => this.ToDictionary(i => i.SADKEY));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
+            Index_AREA_DUTY_TEACHER = new Lazy<NullDictionary<string, IReadOnlyList<SAD>>>(() => this.ToGroupedNullDictionary(i => i.AREA_DUTY_TEACHER));
         }
-
-        /// <summary>
-        /// Attempt to find SAD by SADKEY key field
-        /// </summary>
-        /// <param name="Key">SADKEY value used to find SAD</param>
-        /// <param name="Value">Related SAD entity</param>
-        /// <returns>True if the SAD entity is found</returns>
-        public bool TryFindBySADKEY(int Key, out SAD Value)
-        {
-            return SADKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAD by SADKEY key field
-        /// </summary>
-        /// <param name="Key">SADKEY value used to find SAD</param>
-        /// <returns>Related SAD entity, or null if not found</returns>
-        public SAD TryFindBySADKEY(int Key)
-        {
-            SAD result;
-            if (SADKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SADP (Accident Prevention Measures) entities by [SADP.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SADP entities</param>
-        /// <returns>A list of related SADP entities</returns>
-        public IReadOnlyList<SADP> FindSADPByACCIDENTID(int SADKEY)
-        {
-            IReadOnlyList<SADP> result;
-            if (SADP_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SADP>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SADP entities by [SADP.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SADP entities</param>
-        /// <param name="Value">A list of related SADP entities</param>
-        /// <returns>True if any SADP entities are found</returns>
-        public bool TryFindSADPByACCIDENTID(int SADKEY, out IReadOnlyList<SADP> Value)
-        {
-            return SADP_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SADW (Accident Witnesses) entities by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SADW entities</param>
-        /// <returns>A list of related SADW entities</returns>
-        public IReadOnlyList<SADW> FindSADWByACCIDENTID(int SADKEY)
-        {
-            IReadOnlyList<SADW> result;
-            if (SADW_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SADW>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SADW entities by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SADW entities</param>
-        /// <param name="Value">A list of related SADW entities</param>
-        /// <returns>True if any SADW entities are found</returns>
-        public bool TryFindSADWByACCIDENTID(int SADKEY, out IReadOnlyList<SADW> Value)
-        {
-            return SADW_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SAI (Accident Involvements/Sickbay Visits) entities by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SAI entities</param>
-        /// <returns>A list of related SAI entities</returns>
-        public IReadOnlyList<SAI> FindSAIByACCIDENTID(int SADKEY)
-        {
-            IReadOnlyList<SAI> result;
-            if (SAI_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAI entities by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
-        /// </summary>
-        /// <param name="SADKEY">SADKEY value used to find SAI entities</param>
-        /// <param name="Value">A list of related SAI entities</param>
-        /// <returns>True if any SAI entities are found</returns>
-        public bool TryFindSAIByACCIDENTID(int SADKEY, out IReadOnlyList<SAI> Value)
-        {
-            return SAI_ACCIDENTIDForeignIndex.Value.TryGetValue(SADKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SAD" />
@@ -273,5 +110,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SAD>> Index_SADKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SAD>>> Index_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<SAD>>> Index_ROOM;
+        private Lazy<NullDictionary<string, IReadOnlyList<SAD>>> Index_AREA_DUTY_TEACHER;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SAD by SADKEY field
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAD FindBySADKEY(int SADKEY)
+        {
+            return Index_SADKEY.Value[SADKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by SADKEY field
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <param name="Value">Related SAD entity</param>
+        /// <returns>True if the related SAD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySADKEY(int SADKEY, out SAD Value)
+        {
+            return Index_SADKEY.Value.TryGetValue(SADKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by SADKEY field
+        /// </summary>
+        /// <param name="SADKEY">SADKEY value used to find SAD</param>
+        /// <returns>Related SAD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAD TryFindBySADKEY(int SADKEY)
+        {
+            SAD value;
+            if (Index_SADKEY.Value.TryGetValue(SADKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAD by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SAD</param>
+        /// <returns>List of related SAD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SAD</param>
+        /// <param name="Value">List of related SAD entities</param>
+        /// <returns>True if the list of related SAD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SAD> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SAD</param>
+        /// <returns>List of related SAD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<SAD> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAD by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SAD</param>
+        /// <returns>List of related SAD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> FindByROOM(string ROOM)
+        {
+            return Index_ROOM.Value[ROOM];
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SAD</param>
+        /// <param name="Value">List of related SAD entities</param>
+        /// <returns>True if the list of related SAD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM(string ROOM, out IReadOnlyList<SAD> Value)
+        {
+            return Index_ROOM.Value.TryGetValue(ROOM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by ROOM field
+        /// </summary>
+        /// <param name="ROOM">ROOM value used to find SAD</param>
+        /// <returns>List of related SAD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> TryFindByROOM(string ROOM)
+        {
+            IReadOnlyList<SAD> value;
+            if (Index_ROOM.Value.TryGetValue(ROOM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAD by AREA_DUTY_TEACHER field
+        /// </summary>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <returns>List of related SAD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> FindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
+        {
+            return Index_AREA_DUTY_TEACHER.Value[AREA_DUTY_TEACHER];
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by AREA_DUTY_TEACHER field
+        /// </summary>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <param name="Value">List of related SAD entities</param>
+        /// <returns>True if the list of related SAD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER, out IReadOnlyList<SAD> Value)
+        {
+            return Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAD by AREA_DUTY_TEACHER field
+        /// </summary>
+        /// <param name="AREA_DUTY_TEACHER">AREA_DUTY_TEACHER value used to find SAD</param>
+        /// <returns>List of related SAD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAD> TryFindByAREA_DUTY_TEACHER(string AREA_DUTY_TEACHER)
+        {
+            IReadOnlyList<SAD> value;
+            if (Index_AREA_DUTY_TEACHER.Value.TryGetValue(AREA_DUTY_TEACHER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

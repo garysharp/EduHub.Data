@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 School Message Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SEC_MSGDataSet : SetBase<SEC_MSG>
     {
-        private Lazy<Dictionary<int, SEC_MSG>> SCHOOLMSGIDIndex;
-
-
-        internal SEC_MSGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SCHOOLMSGIDIndex = new Lazy<Dictionary<int, SEC_MSG>>(() => this.ToDictionary(e => e.SCHOOLMSGID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SEC_MSG"; } }
 
-        /// <summary>
-        /// Find SEC_MSG by SCHOOLMSGID key field
-        /// </summary>
-        /// <param name="Key">SCHOOLMSGID value used to find SEC_MSG</param>
-        /// <returns>Related SEC_MSG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SCHOOLMSGID value didn't match any SEC_MSG entities</exception>
-        public SEC_MSG FindBySCHOOLMSGID(int Key)
+        internal SEC_MSGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SEC_MSG result;
-            if (SCHOOLMSGIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SCHOOLMSGID = new Lazy<Dictionary<int, SEC_MSG>>(() => this.ToDictionary(i => i.SCHOOLMSGID));
         }
-
-        /// <summary>
-        /// Attempt to find SEC_MSG by SCHOOLMSGID key field
-        /// </summary>
-        /// <param name="Key">SCHOOLMSGID value used to find SEC_MSG</param>
-        /// <param name="Value">Related SEC_MSG entity</param>
-        /// <returns>True if the SEC_MSG entity is found</returns>
-        public bool TryFindBySCHOOLMSGID(int Key, out SEC_MSG Value)
-        {
-            return SCHOOLMSGIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SEC_MSG by SCHOOLMSGID key field
-        /// </summary>
-        /// <param name="Key">SCHOOLMSGID value used to find SEC_MSG</param>
-        /// <returns>Related SEC_MSG entity, or null if not found</returns>
-        public SEC_MSG TryFindBySCHOOLMSGID(int Key)
-        {
-            SEC_MSG result;
-            if (SCHOOLMSGIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_MSG" />
@@ -105,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SEC_MSG>> Index_SCHOOLMSGID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SEC_MSG by SCHOOLMSGID field
+        /// </summary>
+        /// <param name="SCHOOLMSGID">SCHOOLMSGID value used to find SEC_MSG</param>
+        /// <returns>Related SEC_MSG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_MSG FindBySCHOOLMSGID(int SCHOOLMSGID)
+        {
+            return Index_SCHOOLMSGID.Value[SCHOOLMSGID];
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_MSG by SCHOOLMSGID field
+        /// </summary>
+        /// <param name="SCHOOLMSGID">SCHOOLMSGID value used to find SEC_MSG</param>
+        /// <param name="Value">Related SEC_MSG entity</param>
+        /// <returns>True if the related SEC_MSG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOLMSGID(int SCHOOLMSGID, out SEC_MSG Value)
+        {
+            return Index_SCHOOLMSGID.Value.TryGetValue(SCHOOLMSGID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_MSG by SCHOOLMSGID field
+        /// </summary>
+        /// <param name="SCHOOLMSGID">SCHOOLMSGID value used to find SEC_MSG</param>
+        /// <returns>Related SEC_MSG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_MSG TryFindBySCHOOLMSGID(int SCHOOLMSGID)
+        {
+            SEC_MSG value;
+            if (Index_SCHOOLMSGID.Value.TryGetValue(SCHOOLMSGID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

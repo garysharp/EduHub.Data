@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,46 +7,69 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Medical Conditions
     /// </summary>
-    public partial class KCM : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KCM : EntityBase
     {
-#region Field Properties
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<SMC> Cache_KCMKEY_SMC_MED_CONDITION;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Medical Condition code
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KCMKEY { get; internal set; }
+
         /// <summary>
         /// Long description
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Foreign Navigation Properties
 
         /// <summary>
-        /// SMC (Student Medical Conditions) related entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
+        /// SMC (Student Medical Conditions) related entities by [KCM.KCMKEY]-&gt;[SMC.MED_CONDITION]
+        /// Medical Condition code
         /// </summary>
-        public IReadOnlyList<SMC> SMC_MED_CONDITION
+        public IReadOnlyList<SMC> KCMKEY_SMC_MED_CONDITION
         {
             get
             {
-                return Context.KCM.FindSMCByMED_CONDITION(KCMKEY);
+                if (Cache_KCMKEY_SMC_MED_CONDITION == null &&
+                    !Context.SMC.TryFindByMED_CONDITION(KCMKEY, out Cache_KCMKEY_SMC_MED_CONDITION))
+                {
+                    Cache_KCMKEY_SMC_MED_CONDITION = new List<SMC>().AsReadOnly();
+                }
+
+                return Cache_KCMKEY_SMC_MED_CONDITION;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

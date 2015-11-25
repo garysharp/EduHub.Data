@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KBANKDataSet : SetBase<KBANK>
     {
-        private Lazy<Dictionary<string, KBANK>> GLCODEIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<PN>>> PN_DD_GLCODEForeignIndex;
-
-        internal KBANKDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            GLCODEIndex = new Lazy<Dictionary<string, KBANK>>(() => this.ToDictionary(e => e.GLCODE));
-
-            PN_DD_GLCODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PN>>>(() =>
-                    Context.PN
-                          .Where(e => e.DD_GLCODE != null)
-                          .GroupBy(e => e.DD_GLCODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PN>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KBANK"; } }
 
-        /// <summary>
-        /// Find KBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find KBANK</param>
-        /// <returns>Related KBANK entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">GLCODE value didn't match any KBANK entities</exception>
-        public KBANK FindByGLCODE(string Key)
+        internal KBANKDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KBANK result;
-            if (GLCODEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_GLCODE = new Lazy<Dictionary<string, KBANK>>(() => this.ToDictionary(i => i.GLCODE));
         }
-
-        /// <summary>
-        /// Attempt to find KBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find KBANK</param>
-        /// <param name="Value">Related KBANK entity</param>
-        /// <returns>True if the KBANK entity is found</returns>
-        public bool TryFindByGLCODE(string Key, out KBANK Value)
-        {
-            return GLCODEIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find KBANK</param>
-        /// <returns>Related KBANK entity, or null if not found</returns>
-        public KBANK TryFindByGLCODE(string Key)
-        {
-            KBANK result;
-            if (GLCODEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all PN (Payroll Groups) entities by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
-        /// </summary>
-        /// <param name="GLCODE">GLCODE value used to find PN entities</param>
-        /// <returns>A list of related PN entities</returns>
-        public IReadOnlyList<PN> FindPNByDD_GLCODE(string GLCODE)
-        {
-            IReadOnlyList<PN> result;
-            if (PN_DD_GLCODEForeignIndex.Value.TryGetValue(GLCODE, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PN>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PN entities by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
-        /// </summary>
-        /// <param name="GLCODE">GLCODE value used to find PN entities</param>
-        /// <param name="Value">A list of related PN entities</param>
-        /// <returns>True if any PN entities are found</returns>
-        public bool TryFindPNByDD_GLCODE(string GLCODE, out IReadOnlyList<PN> Value)
-        {
-            return PN_DD_GLCODEForeignIndex.Value.TryGetValue(GLCODE, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KBANK" />
@@ -188,5 +98,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KBANK>> Index_GLCODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find KBANK</param>
+        /// <returns>Related KBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBANK FindByGLCODE(string GLCODE)
+        {
+            return Index_GLCODE.Value[GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find KBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find KBANK</param>
+        /// <param name="Value">Related KBANK entity</param>
+        /// <returns>True if the related KBANK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLCODE(string GLCODE, out KBANK Value)
+        {
+            return Index_GLCODE.Value.TryGetValue(GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find KBANK</param>
+        /// <returns>Related KBANK entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBANK TryFindByGLCODE(string GLCODE)
+        {
+            KBANK value;
+            if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

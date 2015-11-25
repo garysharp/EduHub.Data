@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored SQL Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class QSDataSet : SetBase<QS>
     {
-        private Lazy<Dictionary<string, QS>> QSKEYIndex;
-
-
-        internal QSDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            QSKEYIndex = new Lazy<Dictionary<string, QS>>(() => this.ToDictionary(e => e.QSKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "QS"; } }
 
-        /// <summary>
-        /// Find QS by QSKEY key field
-        /// </summary>
-        /// <param name="Key">QSKEY value used to find QS</param>
-        /// <returns>Related QS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">QSKEY value didn't match any QS entities</exception>
-        public QS FindByQSKEY(string Key)
+        internal QSDataSet(EduHubContext Context)
+            : base(Context)
         {
-            QS result;
-            if (QSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_QSKEY = new Lazy<Dictionary<string, QS>>(() => this.ToDictionary(i => i.QSKEY));
         }
-
-        /// <summary>
-        /// Attempt to find QS by QSKEY key field
-        /// </summary>
-        /// <param name="Key">QSKEY value used to find QS</param>
-        /// <param name="Value">Related QS entity</param>
-        /// <returns>True if the QS entity is found</returns>
-        public bool TryFindByQSKEY(string Key, out QS Value)
-        {
-            return QSKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find QS by QSKEY key field
-        /// </summary>
-        /// <param name="Key">QSKEY value used to find QS</param>
-        /// <returns>Related QS entity, or null if not found</returns>
-        public QS TryFindByQSKEY(string Key)
-        {
-            QS result;
-            if (QSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="QS" />
@@ -111,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, QS>> Index_QSKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find QS by QSKEY field
+        /// </summary>
+        /// <param name="QSKEY">QSKEY value used to find QS</param>
+        /// <returns>Related QS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public QS FindByQSKEY(string QSKEY)
+        {
+            return Index_QSKEY.Value[QSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find QS by QSKEY field
+        /// </summary>
+        /// <param name="QSKEY">QSKEY value used to find QS</param>
+        /// <param name="Value">Related QS entity</param>
+        /// <returns>True if the related QS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQSKEY(string QSKEY, out QS Value)
+        {
+            return Index_QSKEY.Value.TryGetValue(QSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find QS by QSKEY field
+        /// </summary>
+        /// <param name="QSKEY">QSKEY value used to find QS</param>
+        /// <returns>Related QS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public QS TryFindByQSKEY(string QSKEY)
+        {
+            QS value;
+            if (Index_QSKEY.Value.TryGetValue(QSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

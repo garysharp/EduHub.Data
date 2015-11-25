@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,159 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Cohorts for data aggregation Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCOHORTDataSet : SetBase<KCOHORT>
     {
-        private Lazy<Dictionary<string, KCOHORT>> COHORTIndex;
-        private Lazy<Dictionary<string, KCOHORT>> DESCRIPTIONIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SVAG>>> SVAG_COHORTForeignIndex;
-
-        internal KCOHORTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            COHORTIndex = new Lazy<Dictionary<string, KCOHORT>>(() => this.ToDictionary(e => e.COHORT));
-            DESCRIPTIONIndex = new Lazy<Dictionary<string, KCOHORT>>(() => this.ToDictionary(e => e.DESCRIPTION));
-
-            SVAG_COHORTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SVAG>>>(() =>
-                    Context.SVAG
-                          .Where(e => e.COHORT != null)
-                          .GroupBy(e => e.COHORT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SVAG>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCOHORT"; } }
 
-        /// <summary>
-        /// Find KCOHORT by COHORT key field
-        /// </summary>
-        /// <param name="Key">COHORT value used to find KCOHORT</param>
-        /// <returns>Related KCOHORT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">COHORT value didn't match any KCOHORT entities</exception>
-        public KCOHORT FindByCOHORT(string Key)
+        internal KCOHORTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCOHORT result;
-            if (COHORTIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_COHORT = new Lazy<Dictionary<string, KCOHORT>>(() => this.ToDictionary(i => i.COHORT));
+            Index_DESCRIPTION = new Lazy<NullDictionary<string, IReadOnlyList<KCOHORT>>>(() => this.ToGroupedNullDictionary(i => i.DESCRIPTION));
         }
-
-        /// <summary>
-        /// Attempt to find KCOHORT by COHORT key field
-        /// </summary>
-        /// <param name="Key">COHORT value used to find KCOHORT</param>
-        /// <param name="Value">Related KCOHORT entity</param>
-        /// <returns>True if the KCOHORT entity is found</returns>
-        public bool TryFindByCOHORT(string Key, out KCOHORT Value)
-        {
-            return COHORTIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCOHORT by COHORT key field
-        /// </summary>
-        /// <param name="Key">COHORT value used to find KCOHORT</param>
-        /// <returns>Related KCOHORT entity, or null if not found</returns>
-        public KCOHORT TryFindByCOHORT(string Key)
-        {
-            KCOHORT result;
-            if (COHORTIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KCOHORT by DESCRIPTION key field
-        /// </summary>
-        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
-        /// <returns>Related KCOHORT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">DESCRIPTION value didn't match any KCOHORT entities</exception>
-        public KCOHORT FindByDESCRIPTION(string Key)
-        {
-            KCOHORT result;
-            if (DESCRIPTIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find KCOHORT by DESCRIPTION key field
-        /// </summary>
-        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
-        /// <param name="Value">Related KCOHORT entity</param>
-        /// <returns>True if the KCOHORT entity is found</returns>
-        public bool TryFindByDESCRIPTION(string Key, out KCOHORT Value)
-        {
-            return DESCRIPTIONIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCOHORT by DESCRIPTION key field
-        /// </summary>
-        /// <param name="Key">DESCRIPTION value used to find KCOHORT</param>
-        /// <returns>Related KCOHORT entity, or null if not found</returns>
-        public KCOHORT TryFindByDESCRIPTION(string Key)
-        {
-            KCOHORT result;
-            if (DESCRIPTIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SVAG (VELS Aggregated Dimensions) entities by [SVAG.COHORT]-&gt;[KCOHORT.COHORT]
-        /// </summary>
-        /// <param name="COHORT">COHORT value used to find SVAG entities</param>
-        /// <returns>A list of related SVAG entities</returns>
-        public IReadOnlyList<SVAG> FindSVAGByCOHORT(string COHORT)
-        {
-            IReadOnlyList<SVAG> result;
-            if (SVAG_COHORTForeignIndex.Value.TryGetValue(COHORT, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SVAG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SVAG entities by [SVAG.COHORT]-&gt;[KCOHORT.COHORT]
-        /// </summary>
-        /// <param name="COHORT">COHORT value used to find SVAG entities</param>
-        /// <param name="Value">A list of related SVAG entities</param>
-        /// <returns>True if any SVAG entities are found</returns>
-        public bool TryFindSVAGByCOHORT(string COHORT, out IReadOnlyList<SVAG> Value)
-        {
-            return SVAG_COHORTForeignIndex.Value.TryGetValue(COHORT, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCOHORT" />
@@ -202,5 +63,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KCOHORT>> Index_COHORT;
+        private Lazy<NullDictionary<string, IReadOnlyList<KCOHORT>>> Index_DESCRIPTION;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCOHORT by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCOHORT FindByCOHORT(string COHORT)
+        {
+            return Index_COHORT.Value[COHORT];
+        }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find KCOHORT</param>
+        /// <param name="Value">Related KCOHORT entity</param>
+        /// <returns>True if the related KCOHORT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOHORT(string COHORT, out KCOHORT Value)
+        {
+            return Index_COHORT.Value.TryGetValue(COHORT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find KCOHORT</param>
+        /// <returns>Related KCOHORT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCOHORT TryFindByCOHORT(string COHORT)
+        {
+            KCOHORT value;
+            if (Index_COHORT.Value.TryGetValue(COHORT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCOHORT by DESCRIPTION field
+        /// </summary>
+        /// <param name="DESCRIPTION">DESCRIPTION value used to find KCOHORT</param>
+        /// <returns>List of related KCOHORT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCOHORT> FindByDESCRIPTION(string DESCRIPTION)
+        {
+            return Index_DESCRIPTION.Value[DESCRIPTION];
+        }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by DESCRIPTION field
+        /// </summary>
+        /// <param name="DESCRIPTION">DESCRIPTION value used to find KCOHORT</param>
+        /// <param name="Value">List of related KCOHORT entities</param>
+        /// <returns>True if the list of related KCOHORT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDESCRIPTION(string DESCRIPTION, out IReadOnlyList<KCOHORT> Value)
+        {
+            return Index_DESCRIPTION.Value.TryGetValue(DESCRIPTION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCOHORT by DESCRIPTION field
+        /// </summary>
+        /// <param name="DESCRIPTION">DESCRIPTION value used to find KCOHORT</param>
+        /// <returns>List of related KCOHORT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCOHORT> TryFindByDESCRIPTION(string DESCRIPTION)
+        {
+            IReadOnlyList<KCOHORT> value;
+            if (Index_DESCRIPTION.Value.TryGetValue(DESCRIPTION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,90 +7,116 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fees
     /// </summary>
-    public partial class SDFC : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SDFC : EntityBase
     {
-#region Navigation Property Cache
-        private GL _GLCODE_GL;
-        private KGST _GST_TYPE_KGST;
-        private KGLSUB _SUBPROGRAM_KGLSUB;
-        private KGLINIT _INITIATIVE_KGLINIT;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private GL Cache_GLCODE_GL;
+        private KGST Cache_GST_TYPE_KGST;
+        private KGLSUB Cache_SUBPROGRAM_KGLSUB;
+        private KGLINIT Cache_INITIATIVE_KGLINIT;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<DRF> Cache_SDFCKEY_DRF_FEE_CODE;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Prime Key
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string SDFCKEY { get; internal set; }
+
         /// <summary>
         /// Fees table title
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Group for reports only
         /// [Alphanumeric (10)]
         /// </summary>
         public string SDGROUP { get; internal set; }
+
         /// <summary>
         /// Fees tables to be used for auto transactions?
         /// [Alphanumeric (1)]
         /// </summary>
         public string STATEMENT { get; internal set; }
+
         /// <summary>
         /// Method of fees calculation
         /// [Alphanumeric (1)]
         /// </summary>
         public string METHOD { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// </summary>
         public decimal? AMOUNT { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// </summary>
         public decimal? GROSS_AMOUNT { get; internal set; }
+
         /// <summary>
         /// One GL key for each category
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string GLCODE { get; internal set; }
+
         /// <summary>
         /// What GST applies to this fee
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string GST_TYPE { get; internal set; }
+
         /// <summary>
         /// For every fee there is a subprogram
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SUBPROGRAM { get; internal set; }
+
         /// <summary>
         /// A subprogram always belongs to a program
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string GLPROGRAM { get; internal set; }
+
         /// <summary>
         /// Fee might belong to an Initiative
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string INITIATIVE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// GL (General Ledger) related entity by [SDFC.GLCODE]-&gt;[GL.CODE]
@@ -99,18 +126,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (GLCODE != null)
-                {
-                    if (_GLCODE_GL == null)
-                    {
-                        _GLCODE_GL = Context.GL.FindByCODE(GLCODE);
-                    }
-                    return _GLCODE_GL;
-                }
-                else
+                if (GLCODE == null)
                 {
                     return null;
                 }
+                if (Cache_GLCODE_GL == null)
+                {
+                    Cache_GLCODE_GL = Context.GL.FindByCODE(GLCODE);
+                }
+
+                return Cache_GLCODE_GL;
             }
         }
 
@@ -122,18 +147,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (GST_TYPE != null)
-                {
-                    if (_GST_TYPE_KGST == null)
-                    {
-                        _GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
-                    }
-                    return _GST_TYPE_KGST;
-                }
-                else
+                if (GST_TYPE == null)
                 {
                     return null;
                 }
+                if (Cache_GST_TYPE_KGST == null)
+                {
+                    Cache_GST_TYPE_KGST = Context.KGST.FindByKGSTKEY(GST_TYPE);
+                }
+
+                return Cache_GST_TYPE_KGST;
             }
         }
 
@@ -145,18 +168,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBPROGRAM != null)
-                {
-                    if (_SUBPROGRAM_KGLSUB == null)
-                    {
-                        _SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
-                    }
-                    return _SUBPROGRAM_KGLSUB;
-                }
-                else
+                if (SUBPROGRAM == null)
                 {
                     return null;
                 }
+                if (Cache_SUBPROGRAM_KGLSUB == null)
+                {
+                    Cache_SUBPROGRAM_KGLSUB = Context.KGLSUB.FindBySUBPROGRAM(SUBPROGRAM);
+                }
+
+                return Cache_SUBPROGRAM_KGLSUB;
             }
         }
 
@@ -168,31 +189,42 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (INITIATIVE != null)
-                {
-                    if (_INITIATIVE_KGLINIT == null)
-                    {
-                        _INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
-                    }
-                    return _INITIATIVE_KGLINIT;
-                }
-                else
+                if (INITIATIVE == null)
                 {
                     return null;
                 }
+                if (Cache_INITIATIVE_KGLINIT == null)
+                {
+                    Cache_INITIATIVE_KGLINIT = Context.KGLINIT.FindByINITIATIVE(INITIATIVE);
+                }
+
+                return Cache_INITIATIVE_KGLINIT;
             }
         }
 
+        #endregion
+
+        #region Foreign Navigation Properties
+
         /// <summary>
-        /// DRF (DR Transactions) related entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
+        /// DRF (DR Transactions) related entities by [SDFC.SDFCKEY]-&gt;[DRF.FEE_CODE]
+        /// Prime Key
         /// </summary>
-        public IReadOnlyList<DRF> DRF_FEE_CODE
+        public IReadOnlyList<DRF> SDFCKEY_DRF_FEE_CODE
         {
             get
             {
-                return Context.SDFC.FindDRFByFEE_CODE(SDFCKEY);
+                if (Cache_SDFCKEY_DRF_FEE_CODE == null &&
+                    !Context.DRF.TryFindByFEE_CODE(SDFCKEY, out Cache_SDFCKEY_DRF_FEE_CODE))
+                {
+                    Cache_SDFCKEY_DRF_FEE_CODE = new List<DRF>().AsReadOnly();
+                }
+
+                return Cache_SDFCKEY_DRF_FEE_CODE;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

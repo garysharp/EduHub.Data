@@ -347,8 +347,6 @@
 // EduHub.Data\src\EduHub.Data\Entities\KTIEDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSQ.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSQDataSet.cs
-// EduHub.Data\src\EduHub.Data\Entities\KSI.cs
-// EduHub.Data\src\EduHub.Data\Entities\KSIDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSF.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSFDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KSC.cs

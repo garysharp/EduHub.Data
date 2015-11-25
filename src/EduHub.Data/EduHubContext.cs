@@ -104,7 +104,6 @@ namespace EduHub.Data
         private KSADataSet _KSA;
         private KSCDataSet _KSC;
         private KSFDataSet _KSF;
-        private KSIDataSet _KSI;
         private KSQDataSet _KSQ;
         private KTIEDataSet _KTIE;
         private KTMDataSet _KTM;
@@ -376,7 +375,6 @@ namespace EduHub.Data
             _KSA = new KSADataSet(this);
             _KSC = new KSCDataSet(this);
             _KSF = new KSFDataSet(this);
-            _KSI = new KSIDataSet(this);
             _KSQ = new KSQDataSet(this);
             _KTIE = new KTIEDataSet(this);
             _KTM = new KTMDataSet(this);
@@ -651,7 +649,6 @@ namespace EduHub.Data
             yield return "KSA";
             yield return "KSC";
             yield return "KSF";
-            yield return "KSI";
             yield return "KSQ";
             yield return "KTIE";
             yield return "KTM";
@@ -1296,11 +1293,6 @@ namespace EduHub.Data
         /// Faculties
         /// </summary>
         public KSFDataSet KSF { get { return _KSF; } }
-
-        /// <summary>
-        /// Institutions
-        /// </summary>
-        public KSIDataSet KSI { get { return _KSI; } }
 
         /// <summary>
         /// Available Qualifications

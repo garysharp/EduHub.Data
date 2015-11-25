@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SGAMDataSet : SetBase<SGAM>
     {
-
-
-        internal SGAMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SGAM"; } }
 
+        internal SGAMDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SGAMKEY = new Lazy<Dictionary<string, IReadOnlyList<SGAM>>>(() => this.ToGroupedDictionary(i => i.SGAMKEY));
+            Index_TID = new Lazy<Dictionary<int, SGAM>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SGAM" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SGAMKEY":
                         mapper[i] = (e, v) => e.SGAMKEY = v;
@@ -88,5 +87,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SGAM>>> Index_SGAMKEY;
+        private Lazy<Dictionary<int, SGAM>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SGAM by SGAMKEY field
+        /// </summary>
+        /// <param name="SGAMKEY">SGAMKEY value used to find SGAM</param>
+        /// <returns>List of related SGAM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGAM> FindBySGAMKEY(string SGAMKEY)
+        {
+            return Index_SGAMKEY.Value[SGAMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SGAM by SGAMKEY field
+        /// </summary>
+        /// <param name="SGAMKEY">SGAMKEY value used to find SGAM</param>
+        /// <param name="Value">List of related SGAM entities</param>
+        /// <returns>True if the list of related SGAM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGAMKEY(string SGAMKEY, out IReadOnlyList<SGAM> Value)
+        {
+            return Index_SGAMKEY.Value.TryGetValue(SGAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGAM by SGAMKEY field
+        /// </summary>
+        /// <param name="SGAMKEY">SGAMKEY value used to find SGAM</param>
+        /// <returns>List of related SGAM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGAM> TryFindBySGAMKEY(string SGAMKEY)
+        {
+            IReadOnlyList<SGAM> value;
+            if (Index_SGAMKEY.Value.TryGetValue(SGAMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGAM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGAM</param>
+        /// <returns>Related SGAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGAM FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SGAM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGAM</param>
+        /// <param name="Value">Related SGAM entity</param>
+        /// <returns>True if the related SGAM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SGAM Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGAM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGAM</param>
+        /// <returns>Related SGAM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGAM TryFindByTID(int TID)
+        {
+            SGAM value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

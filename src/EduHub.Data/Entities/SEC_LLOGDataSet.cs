@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Login Log Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SEC_LLOGDataSet : SetBase<SEC_LLOG>
     {
-        private Lazy<Dictionary<int, SEC_LLOG>> LOGINLOGIDIndex;
-
-
-        internal SEC_LLOGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            LOGINLOGIDIndex = new Lazy<Dictionary<int, SEC_LLOG>>(() => this.ToDictionary(e => e.LOGINLOGID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SEC_LLOG"; } }
 
-        /// <summary>
-        /// Find SEC_LLOG by LOGINLOGID key field
-        /// </summary>
-        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
-        /// <returns>Related SEC_LLOG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">LOGINLOGID value didn't match any SEC_LLOG entities</exception>
-        public SEC_LLOG FindByLOGINLOGID(int Key)
+        internal SEC_LLOGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SEC_LLOG result;
-            if (LOGINLOGIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_LOGINLOGID = new Lazy<Dictionary<int, SEC_LLOG>>(() => this.ToDictionary(i => i.LOGINLOGID));
         }
-
-        /// <summary>
-        /// Attempt to find SEC_LLOG by LOGINLOGID key field
-        /// </summary>
-        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
-        /// <param name="Value">Related SEC_LLOG entity</param>
-        /// <returns>True if the SEC_LLOG entity is found</returns>
-        public bool TryFindByLOGINLOGID(int Key, out SEC_LLOG Value)
-        {
-            return LOGINLOGIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SEC_LLOG by LOGINLOGID key field
-        /// </summary>
-        /// <param name="Key">LOGINLOGID value used to find SEC_LLOG</param>
-        /// <returns>Related SEC_LLOG entity, or null if not found</returns>
-        public SEC_LLOG TryFindByLOGINLOGID(int Key)
-        {
-            SEC_LLOG result;
-            if (LOGINLOGIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_LLOG" />
@@ -135,5 +83,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SEC_LLOG>> Index_LOGINLOGID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SEC_LLOG by LOGINLOGID field
+        /// </summary>
+        /// <param name="LOGINLOGID">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <returns>Related SEC_LLOG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_LLOG FindByLOGINLOGID(int LOGINLOGID)
+        {
+            return Index_LOGINLOGID.Value[LOGINLOGID];
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_LLOG by LOGINLOGID field
+        /// </summary>
+        /// <param name="LOGINLOGID">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <param name="Value">Related SEC_LLOG entity</param>
+        /// <returns>True if the related SEC_LLOG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOGINLOGID(int LOGINLOGID, out SEC_LLOG Value)
+        {
+            return Index_LOGINLOGID.Value.TryGetValue(LOGINLOGID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_LLOG by LOGINLOGID field
+        /// </summary>
+        /// <param name="LOGINLOGID">LOGINLOGID value used to find SEC_LLOG</param>
+        /// <returns>Related SEC_LLOG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_LLOG TryFindByLOGINLOGID(int LOGINLOGID)
+        {
+            SEC_LLOG value;
+            if (Index_LOGINLOGID.Value.TryGetValue(LOGINLOGID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

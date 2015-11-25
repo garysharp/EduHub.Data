@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPay Data Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class BPAY_DATDataSet : SetBase<BPAY_DAT>
     {
-        private Lazy<Dictionary<int, BPAY_DAT>> TIDIndex;
-
-
-        internal BPAY_DATDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, BPAY_DAT>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "BPAY_DAT"; } }
 
-        /// <summary>
-        /// Find BPAY_DAT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find BPAY_DAT</param>
-        /// <returns>Related BPAY_DAT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any BPAY_DAT entities</exception>
-        public BPAY_DAT FindByTID(int Key)
+        internal BPAY_DATDataSet(EduHubContext Context)
+            : base(Context)
         {
-            BPAY_DAT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, BPAY_DAT>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find BPAY_DAT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find BPAY_DAT</param>
-        /// <param name="Value">Related BPAY_DAT entity</param>
-        /// <returns>True if the BPAY_DAT entity is found</returns>
-        public bool TryFindByTID(int Key, out BPAY_DAT Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find BPAY_DAT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find BPAY_DAT</param>
-        /// <returns>Related BPAY_DAT entity, or null if not found</returns>
-        public BPAY_DAT TryFindByTID(int Key)
-        {
-            BPAY_DAT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="BPAY_DAT" />
@@ -138,5 +86,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, BPAY_DAT>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find BPAY_DAT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find BPAY_DAT</param>
+        /// <returns>Related BPAY_DAT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public BPAY_DAT FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find BPAY_DAT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find BPAY_DAT</param>
+        /// <param name="Value">Related BPAY_DAT entity</param>
+        /// <returns>True if the related BPAY_DAT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out BPAY_DAT Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find BPAY_DAT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find BPAY_DAT</param>
+        /// <returns>Related BPAY_DAT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public BPAY_DAT TryFindByTID(int TID)
+        {
+            BPAY_DAT value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

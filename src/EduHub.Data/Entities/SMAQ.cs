@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,56 +7,70 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Room Availability in Quilt
     /// </summary>
-    public partial class SMAQ : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SMAQ : EntityBase
     {
-#region Navigation Property Cache
-        private SM _SMAQKEY_SM;
-        private TH _QKEY_TH;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SM Cache_SMAQKEY_SM;
+        private TH Cache_QKEY_TH;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Room key
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SMAQKEY { get; internal set; }
+
         /// <summary>
         /// Quilt
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string QKEY { get; internal set; }
+
         /// <summary>
         /// Day of the timetable cycle
         /// </summary>
         public short? DAY_NUMBER { get; internal set; }
+
         /// <summary>
         /// Start available period
         /// </summary>
         public short? START_PERIOD { get; internal set; }
+
         /// <summary>
         /// End available period
         /// </summary>
         public short? END_PERIOD { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SM (Rooms) related entity by [SMAQ.SMAQKEY]-&gt;[SM.ROOM]
@@ -65,18 +80,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SMAQKEY != null)
+                if (Cache_SMAQKEY_SM == null)
                 {
-                    if (_SMAQKEY_SM == null)
-                    {
-                        _SMAQKEY_SM = Context.SM.FindByROOM(SMAQKEY);
-                    }
-                    return _SMAQKEY_SM;
+                    Cache_SMAQKEY_SM = Context.SM.FindByROOM(SMAQKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SMAQKEY_SM;
             }
         }
 
@@ -88,20 +97,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (QKEY != null)
-                {
-                    if (_QKEY_TH == null)
-                    {
-                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
-                    }
-                    return _QKEY_TH;
-                }
-                else
+                if (QKEY == null)
                 {
                     return null;
                 }
+                if (Cache_QKEY_TH == null)
+                {
+                    Cache_QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                }
+
+                return Cache_QKEY_TH;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Suspension Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STSPDataSet : SetBase<STSP>
     {
-
-
-        internal STSPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "STSP"; } }
 
+        internal STSPDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SPKEY = new Lazy<Dictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedDictionary(i => i.SPKEY));
+            Index_TID = new Lazy<Dictionary<int, STSP>>(() => this.ToDictionary(i => i.TID));
+            Index_REF_TEACHERA = new Lazy<NullDictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedNullDictionary(i => i.REF_TEACHERA));
+            Index_REF_TEACHERB = new Lazy<NullDictionary<string, IReadOnlyList<STSP>>>(() => this.ToGroupedNullDictionary(i => i.REF_TEACHERB));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="STSP" />
@@ -36,7 +37,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SPKEY":
                         mapper[i] = (e, v) => e.SPKEY = v;
@@ -166,5 +167,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<STSP>>> Index_SPKEY;
+        private Lazy<Dictionary<int, STSP>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<STSP>>> Index_REF_TEACHERA;
+        private Lazy<NullDictionary<string, IReadOnlyList<STSP>>> Index_REF_TEACHERB;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <returns>List of related STSP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> FindBySPKEY(string SPKEY)
+        {
+            return Index_SPKEY.Value[SPKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <param name="Value">List of related STSP entities</param>
+        /// <returns>True if the list of related STSP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPKEY(string SPKEY, out IReadOnlyList<STSP> Value)
+        {
+            return Index_SPKEY.Value.TryGetValue(SPKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by SPKEY field
+        /// </summary>
+        /// <param name="SPKEY">SPKEY value used to find STSP</param>
+        /// <returns>List of related STSP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> TryFindBySPKEY(string SPKEY)
+        {
+            IReadOnlyList<STSP> value;
+            if (Index_SPKEY.Value.TryGetValue(SPKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <returns>Related STSP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <param name="Value">Related STSP entity</param>
+        /// <returns>True if the related STSP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out STSP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STSP</param>
+        /// <returns>Related STSP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STSP TryFindByTID(int TID)
+        {
+            STSP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSP by REF_TEACHERA field
+        /// </summary>
+        /// <param name="REF_TEACHERA">REF_TEACHERA value used to find STSP</param>
+        /// <returns>List of related STSP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> FindByREF_TEACHERA(string REF_TEACHERA)
+        {
+            return Index_REF_TEACHERA.Value[REF_TEACHERA];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by REF_TEACHERA field
+        /// </summary>
+        /// <param name="REF_TEACHERA">REF_TEACHERA value used to find STSP</param>
+        /// <param name="Value">List of related STSP entities</param>
+        /// <returns>True if the list of related STSP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREF_TEACHERA(string REF_TEACHERA, out IReadOnlyList<STSP> Value)
+        {
+            return Index_REF_TEACHERA.Value.TryGetValue(REF_TEACHERA, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by REF_TEACHERA field
+        /// </summary>
+        /// <param name="REF_TEACHERA">REF_TEACHERA value used to find STSP</param>
+        /// <returns>List of related STSP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> TryFindByREF_TEACHERA(string REF_TEACHERA)
+        {
+            IReadOnlyList<STSP> value;
+            if (Index_REF_TEACHERA.Value.TryGetValue(REF_TEACHERA, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STSP by REF_TEACHERB field
+        /// </summary>
+        /// <param name="REF_TEACHERB">REF_TEACHERB value used to find STSP</param>
+        /// <returns>List of related STSP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> FindByREF_TEACHERB(string REF_TEACHERB)
+        {
+            return Index_REF_TEACHERB.Value[REF_TEACHERB];
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by REF_TEACHERB field
+        /// </summary>
+        /// <param name="REF_TEACHERB">REF_TEACHERB value used to find STSP</param>
+        /// <param name="Value">List of related STSP entities</param>
+        /// <returns>True if the list of related STSP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREF_TEACHERB(string REF_TEACHERB, out IReadOnlyList<STSP> Value)
+        {
+            return Index_REF_TEACHERB.Value.TryGetValue(REF_TEACHERB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STSP by REF_TEACHERB field
+        /// </summary>
+        /// <param name="REF_TEACHERB">REF_TEACHERB value used to find STSP</param>
+        /// <returns>List of related STSP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STSP> TryFindByREF_TEACHERB(string REF_TEACHERB)
+        {
+            IReadOnlyList<STSP> value;
+            if (Index_REF_TEACHERB.Value.TryGetValue(REF_TEACHERB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

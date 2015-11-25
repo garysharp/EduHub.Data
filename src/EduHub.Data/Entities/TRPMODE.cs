@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,67 +7,106 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Transport Modes
     /// </summary>
-    public partial class TRPMODE : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class TRPMODE : EntityBase
     {
-#region Field Properties
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<STTRIPS> Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE;
+        private IReadOnlyList<STTRIPS> Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE;
+        private IReadOnlyList<TRPROUT> Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transport Modes
         /// </summary>
         public int TRANSPORT_MODE_ID { get; internal set; }
+
         /// <summary>
         /// Transport Desc
         /// [Alphanumeric (60)]
         /// </summary>
         public string TRANSPORT_MODE_DESC { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Foreign Navigation Properties
 
         /// <summary>
-        /// STTRIPS (Student Trips) related entities by [STTRIPS.AM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// STTRIPS (Student Trips) related entities by [TRPMODE.TRANSPORT_MODE_ID]-&gt;[STTRIPS.AM_TRANSPORT_MODE]
+        /// Transport Modes
         /// </summary>
-        public IReadOnlyList<STTRIPS> STTRIPS_AM_TRANSPORT_MODE
+        public IReadOnlyList<STTRIPS> TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE
         {
             get
             {
-                return Context.TRPMODE.FindSTTRIPSByAM_TRANSPORT_MODE(TRANSPORT_MODE_ID);
+                if (Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE == null &&
+                    !Context.STTRIPS.TryFindByAM_TRANSPORT_MODE(TRANSPORT_MODE_ID, out Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE))
+                {
+                    Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE = new List<STTRIPS>().AsReadOnly();
+                }
+
+                return Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE;
             }
         }
 
         /// <summary>
-        /// STTRIPS (Student Trips) related entities by [STTRIPS.PM_TRANSPORT_MODE]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// STTRIPS (Student Trips) related entities by [TRPMODE.TRANSPORT_MODE_ID]-&gt;[STTRIPS.PM_TRANSPORT_MODE]
+        /// Transport Modes
         /// </summary>
-        public IReadOnlyList<STTRIPS> STTRIPS_PM_TRANSPORT_MODE
+        public IReadOnlyList<STTRIPS> TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE
         {
             get
             {
-                return Context.TRPMODE.FindSTTRIPSByPM_TRANSPORT_MODE(TRANSPORT_MODE_ID);
+                if (Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE == null &&
+                    !Context.STTRIPS.TryFindByPM_TRANSPORT_MODE(TRANSPORT_MODE_ID, out Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE))
+                {
+                    Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE = new List<STTRIPS>().AsReadOnly();
+                }
+
+                return Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE;
             }
         }
 
         /// <summary>
-        /// TRPROUT (Student Transport Routes) related entities by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
+        /// TRPROUT (Student Transport Routes) related entities by [TRPMODE.TRANSPORT_MODE_ID]-&gt;[TRPROUT.TRANSPORT_MODE_ID]
+        /// Transport Modes
         /// </summary>
-        public IReadOnlyList<TRPROUT> TRPROUT_TRANSPORT_MODE_ID
+        public IReadOnlyList<TRPROUT> TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID
         {
             get
             {
-                return Context.TRPMODE.FindTRPROUTByTRANSPORT_MODE_ID(TRANSPORT_MODE_ID);
+                if (Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID == null &&
+                    !Context.TRPROUT.TryFindByTRANSPORT_MODE_ID(TRANSPORT_MODE_ID, out Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID))
+                {
+                    Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID = new List<TRPROUT>().AsReadOnly();
+                }
+
+                return Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

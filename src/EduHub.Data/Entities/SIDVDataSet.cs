@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Incident Victims/Recipients Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SIDVDataSet : SetBase<SIDV>
     {
-        private Lazy<Dictionary<int, SIDV>> TIDIndex;
-
-
-        internal SIDVDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SIDV>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SIDV"; } }
 
-        /// <summary>
-        /// Find SIDV by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SIDV</param>
-        /// <returns>Related SIDV entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SIDV entities</exception>
-        public SIDV FindByTID(int Key)
+        internal SIDVDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SIDV result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_INCIDENT_KEY = new Lazy<Dictionary<int, IReadOnlyList<SIDV>>>(() => this.ToGroupedDictionary(i => i.INCIDENT_KEY));
+            Index_TID = new Lazy<Dictionary<int, SIDV>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find SIDV by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SIDV</param>
-        /// <param name="Value">Related SIDV entity</param>
-        /// <returns>True if the SIDV entity is found</returns>
-        public bool TryFindByTID(int Key, out SIDV Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SIDV by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SIDV</param>
-        /// <returns>Related SIDV entity, or null if not found</returns>
-        public SIDV TryFindByTID(int Key)
-        {
-            SIDV result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SIDV" />
@@ -89,7 +38,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "INCIDENT_KEY":
-                        mapper[i] = (e, v) => e.INCIDENT_KEY = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.INCIDENT_KEY = int.Parse(v);
                         break;
                     case "RECIPIENT_TYPE":
                         mapper[i] = (e, v) => e.RECIPIENT_TYPE = v;
@@ -126,5 +75,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, IReadOnlyList<SIDV>>> Index_INCIDENT_KEY;
+        private Lazy<Dictionary<int, SIDV>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SIDV by INCIDENT_KEY field
+        /// </summary>
+        /// <param name="INCIDENT_KEY">INCIDENT_KEY value used to find SIDV</param>
+        /// <returns>List of related SIDV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SIDV> FindByINCIDENT_KEY(int INCIDENT_KEY)
+        {
+            return Index_INCIDENT_KEY.Value[INCIDENT_KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SIDV by INCIDENT_KEY field
+        /// </summary>
+        /// <param name="INCIDENT_KEY">INCIDENT_KEY value used to find SIDV</param>
+        /// <param name="Value">List of related SIDV entities</param>
+        /// <returns>True if the list of related SIDV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINCIDENT_KEY(int INCIDENT_KEY, out IReadOnlyList<SIDV> Value)
+        {
+            return Index_INCIDENT_KEY.Value.TryGetValue(INCIDENT_KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SIDV by INCIDENT_KEY field
+        /// </summary>
+        /// <param name="INCIDENT_KEY">INCIDENT_KEY value used to find SIDV</param>
+        /// <returns>List of related SIDV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SIDV> TryFindByINCIDENT_KEY(int INCIDENT_KEY)
+        {
+            IReadOnlyList<SIDV> value;
+            if (Index_INCIDENT_KEY.Value.TryGetValue(INCIDENT_KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SIDV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SIDV</param>
+        /// <returns>Related SIDV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SIDV FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SIDV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SIDV</param>
+        /// <param name="Value">Related SIDV entity</param>
+        /// <returns>True if the related SIDV entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SIDV Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SIDV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SIDV</param>
+        /// <returns>Related SIDV entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SIDV TryFindByTID(int TID)
+        {
+            SIDV value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

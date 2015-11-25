@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Medicare Levy Parameters Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PML_NEWDataSet : SetBase<PML_NEW>
     {
-        private Lazy<Dictionary<short, PML_NEW>> SCALEIndex;
-
-
-        internal PML_NEWDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SCALEIndex = new Lazy<Dictionary<short, PML_NEW>>(() => this.ToDictionary(e => e.SCALE));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PML_NEW"; } }
 
-        /// <summary>
-        /// Find PML_NEW by SCALE key field
-        /// </summary>
-        /// <param name="Key">SCALE value used to find PML_NEW</param>
-        /// <returns>Related PML_NEW entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SCALE value didn't match any PML_NEW entities</exception>
-        public PML_NEW FindBySCALE(short Key)
+        internal PML_NEWDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PML_NEW result;
-            if (SCALEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SCALE = new Lazy<Dictionary<short, PML_NEW>>(() => this.ToDictionary(i => i.SCALE));
         }
-
-        /// <summary>
-        /// Attempt to find PML_NEW by SCALE key field
-        /// </summary>
-        /// <param name="Key">SCALE value used to find PML_NEW</param>
-        /// <param name="Value">Related PML_NEW entity</param>
-        /// <returns>True if the PML_NEW entity is found</returns>
-        public bool TryFindBySCALE(short Key, out PML_NEW Value)
-        {
-            return SCALEIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PML_NEW by SCALE key field
-        /// </summary>
-        /// <param name="Key">SCALE value used to find PML_NEW</param>
-        /// <returns>Related PML_NEW entity, or null if not found</returns>
-        public PML_NEW TryFindBySCALE(short Key)
-        {
-            PML_NEW result;
-            if (SCALEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PML_NEW" />
@@ -132,5 +80,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<short, PML_NEW>> Index_SCALE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PML_NEW by SCALE field
+        /// </summary>
+        /// <param name="SCALE">SCALE value used to find PML_NEW</param>
+        /// <returns>Related PML_NEW entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PML_NEW FindBySCALE(short SCALE)
+        {
+            return Index_SCALE.Value[SCALE];
+        }
+
+        /// <summary>
+        /// Attempt to find PML_NEW by SCALE field
+        /// </summary>
+        /// <param name="SCALE">SCALE value used to find PML_NEW</param>
+        /// <param name="Value">Related PML_NEW entity</param>
+        /// <returns>True if the related PML_NEW entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCALE(short SCALE, out PML_NEW Value)
+        {
+            return Index_SCALE.Value.TryGetValue(SCALE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PML_NEW by SCALE field
+        /// </summary>
+        /// <param name="SCALE">SCALE value used to find PML_NEW</param>
+        /// <returns>Related PML_NEW entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PML_NEW TryFindBySCALE(short SCALE)
+        {
+            PML_NEW value;
+            if (Index_SCALE.Value.TryGetValue(SCALE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 Error Log Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SEC_ELOGDataSet : SetBase<SEC_ELOG>
     {
-        private Lazy<Dictionary<int, SEC_ELOG>> ERRORCOUNTIndex;
-
-
-        internal SEC_ELOGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            ERRORCOUNTIndex = new Lazy<Dictionary<int, SEC_ELOG>>(() => this.ToDictionary(e => e.ERRORCOUNT));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SEC_ELOG"; } }
 
-        /// <summary>
-        /// Find SEC_ELOG by ERRORCOUNT key field
-        /// </summary>
-        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
-        /// <returns>Related SEC_ELOG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ERRORCOUNT value didn't match any SEC_ELOG entities</exception>
-        public SEC_ELOG FindByERRORCOUNT(int Key)
+        internal SEC_ELOGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SEC_ELOG result;
-            if (ERRORCOUNTIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ERRORCOUNT = new Lazy<Dictionary<int, SEC_ELOG>>(() => this.ToDictionary(i => i.ERRORCOUNT));
         }
-
-        /// <summary>
-        /// Attempt to find SEC_ELOG by ERRORCOUNT key field
-        /// </summary>
-        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
-        /// <param name="Value">Related SEC_ELOG entity</param>
-        /// <returns>True if the SEC_ELOG entity is found</returns>
-        public bool TryFindByERRORCOUNT(int Key, out SEC_ELOG Value)
-        {
-            return ERRORCOUNTIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SEC_ELOG by ERRORCOUNT key field
-        /// </summary>
-        /// <param name="Key">ERRORCOUNT value used to find SEC_ELOG</param>
-        /// <returns>Related SEC_ELOG entity, or null if not found</returns>
-        public SEC_ELOG TryFindByERRORCOUNT(int Key)
-        {
-            SEC_ELOG result;
-            if (ERRORCOUNTIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_ELOG" />
@@ -105,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SEC_ELOG>> Index_ERRORCOUNT;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SEC_ELOG by ERRORCOUNT field
+        /// </summary>
+        /// <param name="ERRORCOUNT">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <returns>Related SEC_ELOG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_ELOG FindByERRORCOUNT(int ERRORCOUNT)
+        {
+            return Index_ERRORCOUNT.Value[ERRORCOUNT];
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_ELOG by ERRORCOUNT field
+        /// </summary>
+        /// <param name="ERRORCOUNT">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <param name="Value">Related SEC_ELOG entity</param>
+        /// <returns>True if the related SEC_ELOG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByERRORCOUNT(int ERRORCOUNT, out SEC_ELOG Value)
+        {
+            return Index_ERRORCOUNT.Value.TryGetValue(ERRORCOUNT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_ELOG by ERRORCOUNT field
+        /// </summary>
+        /// <param name="ERRORCOUNT">ERRORCOUNT value used to find SEC_ELOG</param>
+        /// <returns>Related SEC_ELOG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_ELOG TryFindByERRORCOUNT(int ERRORCOUNT)
+        {
+            SEC_ELOG value;
+            if (Index_ERRORCOUNT.Value.TryGetValue(ERRORCOUNT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

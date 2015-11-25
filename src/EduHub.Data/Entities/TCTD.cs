@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,64 +7,80 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Period Information
     /// </summary>
-    public partial class TCTD : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class TCTD : EntityBase
     {
-#region Navigation Property Cache
-        private TC _TCTDKEY_TC;
-        private TH _QKEY_TH;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private TC Cache_TCTDKEY_TC;
+        private TH Cache_QKEY_TH;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Owner relation
         /// </summary>
-        public DateTime? TCTDKEY { get; internal set; }
+        public DateTime TCTDKEY { get; internal set; }
+
         /// <summary>
         /// Associated Quilt
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string QKEY { get; internal set; }
+
         /// <summary>
         /// Time slot number
         /// </summary>
         public short? TIME_INDEX { get; internal set; }
+
         /// <summary>
         /// Start time of each period hhmm 24 hr clock
         /// </summary>
         public DateTime? TIME_START { get; internal set; }
+
         /// <summary>
         /// End time of each period hhmm 24 hr clock
         /// </summary>
         public DateTime? TIME_END { get; internal set; }
+
         /// <summary>
         /// What the time slot is for
         /// </summary>
         public short? TIME_TYPE { get; internal set; }
+
         /// <summary>
         /// A caption for the timeslot
         /// [Alphanumeric (20)]
         /// </summary>
         public string TIME_NAME { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// TC (Calendar) related entity by [TCTD.TCTDKEY]-&gt;[TC.TCKEY]
@@ -73,18 +90,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TCTDKEY.HasValue)
+                if (Cache_TCTDKEY_TC == null)
                 {
-                    if (_TCTDKEY_TC == null)
-                    {
-                        _TCTDKEY_TC = Context.TC.FindByTCKEY(TCTDKEY.Value);
-                    }
-                    return _TCTDKEY_TC;
+                    Cache_TCTDKEY_TC = Context.TC.FindByTCKEY(TCTDKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_TCTDKEY_TC;
             }
         }
 
@@ -96,20 +107,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (QKEY != null)
-                {
-                    if (_QKEY_TH == null)
-                    {
-                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
-                    }
-                    return _QKEY_TH;
-                }
-                else
+                if (QKEY == null)
                 {
                     return null;
                 }
+                if (Cache_QKEY_TH == null)
+                {
+                    Cache_QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                }
+
+                return Cache_QKEY_TH;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student History Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SXHIDataSet : SetBase<SXHI>
     {
-        private Lazy<Dictionary<int, SXHI>> TIDIndex;
-
-
-        internal SXHIDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SXHI>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SXHI"; } }
 
-        /// <summary>
-        /// Find SXHI by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXHI</param>
-        /// <returns>Related SXHI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SXHI entities</exception>
-        public SXHI FindByTID(int Key)
+        internal SXHIDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SXHI result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, SXHI>>(() => this.ToDictionary(i => i.TID));
+            Index_SKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXHI>>>(() => this.ToGroupedNullDictionary(i => i.SKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SXHI by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXHI</param>
-        /// <param name="Value">Related SXHI entity</param>
-        /// <returns>True if the SXHI entity is found</returns>
-        public bool TryFindByTID(int Key, out SXHI Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXHI by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXHI</param>
-        /// <returns>Related SXHI entity, or null if not found</returns>
-        public SXHI TryFindByTID(int Key)
-        {
-            SXHI result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SXHI" />
@@ -213,5 +162,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SXHI>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SXHI>>> Index_SKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXHI FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <param name="Value">Related SXHI entity</param>
+        /// <returns>True if the related SXHI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SXHI Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXHI</param>
+        /// <returns>Related SXHI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXHI TryFindByTID(int TID)
+        {
+            SXHI value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXHI by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find SXHI</param>
+        /// <returns>List of related SXHI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXHI> FindBySKEY(string SKEY)
+        {
+            return Index_SKEY.Value[SKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find SXHI</param>
+        /// <param name="Value">List of related SXHI entities</param>
+        /// <returns>True if the list of related SXHI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<SXHI> Value)
+        {
+            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXHI by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find SXHI</param>
+        /// <returns>List of related SXHI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXHI> TryFindBySKEY(string SKEY)
+        {
+            IReadOnlyList<SXHI> value;
+            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

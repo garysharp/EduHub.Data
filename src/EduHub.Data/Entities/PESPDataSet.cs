@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Super Payment Transactions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PESPDataSet : SetBase<PESP>
     {
-
-
-        internal PESPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PESP"; } }
 
+        internal PESPDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PESP>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, PESP>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PESP" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -85,5 +84,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<PESP>>> Index_CODE;
+        private Lazy<Dictionary<int, PESP>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PESP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESP</param>
+        /// <returns>List of related PESP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PESP> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PESP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESP</param>
+        /// <param name="Value">List of related PESP entities</param>
+        /// <returns>True if the list of related PESP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<PESP> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PESP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESP</param>
+        /// <returns>List of related PESP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PESP> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<PESP> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PESP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESP</param>
+        /// <returns>Related PESP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PESP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PESP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESP</param>
+        /// <param name="Value">Related PESP entity</param>
+        /// <returns>True if the related PESP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PESP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PESP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESP</param>
+        /// <returns>Related PESP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PESP TryFindByTID(int TID)
+        {
+            PESP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

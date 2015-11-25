@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Locations Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class AKLDataSet : SetBase<AKL>
     {
-        private Lazy<Dictionary<string, AKL>> LOCATIONIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_LOCATIONForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> ARF_LOCATIONForeignIndex;
-
-        internal AKLDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            LOCATIONIndex = new Lazy<Dictionary<string, AKL>>(() => this.ToDictionary(e => e.LOCATION));
-
-            AR_LOCATIONForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
-                    Context.AR
-                          .Where(e => e.LOCATION != null)
-                          .GroupBy(e => e.LOCATION)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
-                          .AsReadOnly()));
-
-            ARF_LOCATIONForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() =>
-                    Context.ARF
-                          .Where(e => e.LOCATION != null)
-                          .GroupBy(e => e.LOCATION)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ARF>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "AKL"; } }
 
-        /// <summary>
-        /// Find AKL by LOCATION key field
-        /// </summary>
-        /// <param name="Key">LOCATION value used to find AKL</param>
-        /// <returns>Related AKL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">LOCATION value didn't match any AKL entities</exception>
-        public AKL FindByLOCATION(string Key)
+        internal AKLDataSet(EduHubContext Context)
+            : base(Context)
         {
-            AKL result;
-            if (LOCATIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_LOCATION = new Lazy<Dictionary<string, AKL>>(() => this.ToDictionary(i => i.LOCATION));
         }
-
-        /// <summary>
-        /// Attempt to find AKL by LOCATION key field
-        /// </summary>
-        /// <param name="Key">LOCATION value used to find AKL</param>
-        /// <param name="Value">Related AKL entity</param>
-        /// <returns>True if the AKL entity is found</returns>
-        public bool TryFindByLOCATION(string Key, out AKL Value)
-        {
-            return LOCATIONIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AKL by LOCATION key field
-        /// </summary>
-        /// <param name="Key">LOCATION value used to find AKL</param>
-        /// <returns>Related AKL entity, or null if not found</returns>
-        public AKL TryFindByLOCATION(string Key)
-        {
-            AKL result;
-            if (LOCATIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all AR (Assets) entities by [AR.LOCATION]-&gt;[AKL.LOCATION]
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find AR entities</param>
-        /// <returns>A list of related AR entities</returns>
-        public IReadOnlyList<AR> FindARByLOCATION(string LOCATION)
-        {
-            IReadOnlyList<AR> result;
-            if (AR_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<AR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all AR entities by [AR.LOCATION]-&gt;[AKL.LOCATION]
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find AR entities</param>
-        /// <param name="Value">A list of related AR entities</param>
-        /// <returns>True if any AR entities are found</returns>
-        public bool TryFindARByLOCATION(string LOCATION, out IReadOnlyList<AR> Value)
-        {
-            return AR_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out Value);
-        }
-
-        /// <summary>
-        /// Find all ARF (Asset Financial Transactions) entities by [ARF.LOCATION]-&gt;[AKL.LOCATION]
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find ARF entities</param>
-        /// <returns>A list of related ARF entities</returns>
-        public IReadOnlyList<ARF> FindARFByLOCATION(string LOCATION)
-        {
-            IReadOnlyList<ARF> result;
-            if (ARF_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ARF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ARF entities by [ARF.LOCATION]-&gt;[AKL.LOCATION]
-        /// </summary>
-        /// <param name="LOCATION">LOCATION value used to find ARF entities</param>
-        /// <param name="Value">A list of related ARF entities</param>
-        /// <returns>True if any ARF entities are found</returns>
-        public bool TryFindARFByLOCATION(string LOCATION, out IReadOnlyList<ARF> Value)
-        {
-            return ARF_LOCATIONForeignIndex.Value.TryGetValue(LOCATION, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="AKL" />
@@ -208,5 +80,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, AKL>> Index_LOCATION;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find AKL by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AKL</param>
+        /// <returns>Related AKL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKL FindByLOCATION(string LOCATION)
+        {
+            return Index_LOCATION.Value[LOCATION];
+        }
+
+        /// <summary>
+        /// Attempt to find AKL by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AKL</param>
+        /// <param name="Value">Related AKL entity</param>
+        /// <returns>True if the related AKL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOCATION(string LOCATION, out AKL Value)
+        {
+            return Index_LOCATION.Value.TryGetValue(LOCATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AKL by LOCATION field
+        /// </summary>
+        /// <param name="LOCATION">LOCATION value used to find AKL</param>
+        /// <returns>Related AKL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKL TryFindByLOCATION(string LOCATION)
+        {
+            AKL value;
+            if (Index_LOCATION.Value.TryGetValue(LOCATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

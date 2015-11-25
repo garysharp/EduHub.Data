@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSEF Receipt details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KEMADataSet : SetBase<KEMA>
     {
-        private Lazy<Dictionary<int, KEMA>> TIDIndex;
-
-
-        internal KEMADataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, KEMA>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KEMA"; } }
 
-        /// <summary>
-        /// Find KEMA by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KEMA</param>
-        /// <returns>Related KEMA entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KEMA entities</exception>
-        public KEMA FindByTID(int Key)
+        internal KEMADataSet(EduHubContext Context)
+            : base(Context)
         {
-            KEMA result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, KEMA>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find KEMA by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KEMA</param>
-        /// <param name="Value">Related KEMA entity</param>
-        /// <returns>True if the KEMA entity is found</returns>
-        public bool TryFindByTID(int Key, out KEMA Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KEMA by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KEMA</param>
-        /// <returns>Related KEMA entity, or null if not found</returns>
-        public KEMA TryFindByTID(int Key)
-        {
-            KEMA result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KEMA" />
@@ -120,5 +68,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KEMA>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KEMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KEMA</param>
+        /// <returns>Related KEMA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KEMA FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KEMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KEMA</param>
+        /// <param name="Value">Related KEMA entity</param>
+        /// <returns>True if the related KEMA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KEMA Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KEMA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KEMA</param>
+        /// <returns>Related KEMA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KEMA TryFindByTID(int TID)
+        {
+            KEMA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

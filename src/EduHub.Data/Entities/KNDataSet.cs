@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Notes Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KNDataSet : SetBase<KN>
     {
-        private Lazy<Dictionary<string, KN>> NOTE_IDIndex;
-
-
-        internal KNDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            NOTE_IDIndex = new Lazy<Dictionary<string, KN>>(() => this.ToDictionary(e => e.NOTE_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KN"; } }
 
-        /// <summary>
-        /// Find KN by NOTE_ID key field
-        /// </summary>
-        /// <param name="Key">NOTE_ID value used to find KN</param>
-        /// <returns>Related KN entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">NOTE_ID value didn't match any KN entities</exception>
-        public KN FindByNOTE_ID(string Key)
+        internal KNDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KN result;
-            if (NOTE_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_NOTE_ID = new Lazy<Dictionary<string, KN>>(() => this.ToDictionary(i => i.NOTE_ID));
         }
-
-        /// <summary>
-        /// Attempt to find KN by NOTE_ID key field
-        /// </summary>
-        /// <param name="Key">NOTE_ID value used to find KN</param>
-        /// <param name="Value">Related KN entity</param>
-        /// <returns>True if the KN entity is found</returns>
-        public bool TryFindByNOTE_ID(string Key, out KN Value)
-        {
-            return NOTE_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KN by NOTE_ID key field
-        /// </summary>
-        /// <param name="Key">NOTE_ID value used to find KN</param>
-        /// <returns>Related KN entity, or null if not found</returns>
-        public KN TryFindByNOTE_ID(string Key)
-        {
-            KN result;
-            if (NOTE_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KN" />
@@ -114,5 +62,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KN>> Index_NOTE_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KN by NOTE_ID field
+        /// </summary>
+        /// <param name="NOTE_ID">NOTE_ID value used to find KN</param>
+        /// <returns>Related KN entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KN FindByNOTE_ID(string NOTE_ID)
+        {
+            return Index_NOTE_ID.Value[NOTE_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KN by NOTE_ID field
+        /// </summary>
+        /// <param name="NOTE_ID">NOTE_ID value used to find KN</param>
+        /// <param name="Value">Related KN entity</param>
+        /// <returns>True if the related KN entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNOTE_ID(string NOTE_ID, out KN Value)
+        {
+            return Index_NOTE_ID.Value.TryGetValue(NOTE_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KN by NOTE_ID field
+        /// </summary>
+        /// <param name="NOTE_ID">NOTE_ID value used to find KN</param>
+        /// <returns>Related KN entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KN TryFindByNOTE_ID(string NOTE_ID)
+        {
+            KN value;
+            if (Index_NOTE_ID.Value.TryGetValue(NOTE_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

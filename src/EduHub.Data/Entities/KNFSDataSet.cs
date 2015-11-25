@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family/Student ID Sequence Numbers Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KNFSDataSet : SetBase<KNFS>
     {
-        private Lazy<Dictionary<string, KNFS>> KNFSKEYIndex;
-
-
-        internal KNFSDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KNFSKEYIndex = new Lazy<Dictionary<string, KNFS>>(() => this.ToDictionary(e => e.KNFSKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KNFS"; } }
 
-        /// <summary>
-        /// Find KNFS by KNFSKEY key field
-        /// </summary>
-        /// <param name="Key">KNFSKEY value used to find KNFS</param>
-        /// <returns>Related KNFS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KNFSKEY value didn't match any KNFS entities</exception>
-        public KNFS FindByKNFSKEY(string Key)
+        internal KNFSDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KNFS result;
-            if (KNFSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KNFSKEY = new Lazy<Dictionary<string, KNFS>>(() => this.ToDictionary(i => i.KNFSKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KNFS by KNFSKEY key field
-        /// </summary>
-        /// <param name="Key">KNFSKEY value used to find KNFS</param>
-        /// <param name="Value">Related KNFS entity</param>
-        /// <returns>True if the KNFS entity is found</returns>
-        public bool TryFindByKNFSKEY(string Key, out KNFS Value)
-        {
-            return KNFSKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KNFS by KNFSKEY key field
-        /// </summary>
-        /// <param name="Key">KNFSKEY value used to find KNFS</param>
-        /// <returns>Related KNFS entity, or null if not found</returns>
-        public KNFS TryFindByKNFSKEY(string Key)
-        {
-            KNFS result;
-            if (KNFSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KNFS" />
@@ -108,5 +56,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KNFS>> Index_KNFSKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KNFS by KNFSKEY field
+        /// </summary>
+        /// <param name="KNFSKEY">KNFSKEY value used to find KNFS</param>
+        /// <returns>Related KNFS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KNFS FindByKNFSKEY(string KNFSKEY)
+        {
+            return Index_KNFSKEY.Value[KNFSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KNFS by KNFSKEY field
+        /// </summary>
+        /// <param name="KNFSKEY">KNFSKEY value used to find KNFS</param>
+        /// <param name="Value">Related KNFS entity</param>
+        /// <returns>True if the related KNFS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKNFSKEY(string KNFSKEY, out KNFS Value)
+        {
+            return Index_KNFSKEY.Value.TryGetValue(KNFSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KNFS by KNFSKEY field
+        /// </summary>
+        /// <param name="KNFSKEY">KNFSKEY value used to find KNFS</param>
+        /// <returns>Related KNFS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KNFS TryFindByKNFSKEY(string KNFSKEY)
+        {
+            KNFS value;
+            if (Index_KNFSKEY.Value.TryGetValue(KNFSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

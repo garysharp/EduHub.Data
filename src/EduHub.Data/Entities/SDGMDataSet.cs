@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SDGMDataSet : SetBase<SDGM>
     {
-
-
-        internal SDGMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SDGM"; } }
 
+        internal SDGMDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SDGMKEY = new Lazy<Dictionary<string, IReadOnlyList<SDGM>>>(() => this.ToGroupedDictionary(i => i.SDGMKEY));
+            Index_TID = new Lazy<Dictionary<int, SDGM>>(() => this.ToDictionary(i => i.TID));
+            Index_PERSON_LINK = new Lazy<NullDictionary<string, IReadOnlyList<SDGM>>>(() => this.ToGroupedNullDictionary(i => i.PERSON_LINK));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SDGM" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SDGMKEY":
                         mapper[i] = (e, v) => e.SDGMKEY = v;
@@ -70,5 +70,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SDGM>>> Index_SDGMKEY;
+        private Lazy<Dictionary<int, SDGM>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDGM>>> Index_PERSON_LINK;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SDGM by SDGMKEY field
+        /// </summary>
+        /// <param name="SDGMKEY">SDGMKEY value used to find SDGM</param>
+        /// <returns>List of related SDGM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> FindBySDGMKEY(string SDGMKEY)
+        {
+            return Index_SDGMKEY.Value[SDGMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by SDGMKEY field
+        /// </summary>
+        /// <param name="SDGMKEY">SDGMKEY value used to find SDGM</param>
+        /// <param name="Value">List of related SDGM entities</param>
+        /// <returns>True if the list of related SDGM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySDGMKEY(string SDGMKEY, out IReadOnlyList<SDGM> Value)
+        {
+            return Index_SDGMKEY.Value.TryGetValue(SDGMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by SDGMKEY field
+        /// </summary>
+        /// <param name="SDGMKEY">SDGMKEY value used to find SDGM</param>
+        /// <returns>List of related SDGM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> TryFindBySDGMKEY(string SDGMKEY)
+        {
+            IReadOnlyList<SDGM> value;
+            if (Index_SDGMKEY.Value.TryGetValue(SDGMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDGM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SDGM</param>
+        /// <returns>Related SDGM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDGM FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SDGM</param>
+        /// <param name="Value">Related SDGM entity</param>
+        /// <returns>True if the related SDGM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SDGM Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SDGM</param>
+        /// <returns>Related SDGM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDGM TryFindByTID(int TID)
+        {
+            SDGM value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <returns>List of related SDGM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> FindByPERSON_LINK(string PERSON_LINK)
+        {
+            return Index_PERSON_LINK.Value[PERSON_LINK];
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <param name="Value">List of related SDGM entities</param>
+        /// <returns>True if the list of related SDGM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPERSON_LINK(string PERSON_LINK, out IReadOnlyList<SDGM> Value)
+        {
+            return Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDGM by PERSON_LINK field
+        /// </summary>
+        /// <param name="PERSON_LINK">PERSON_LINK value used to find SDGM</param>
+        /// <returns>List of related SDGM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDGM> TryFindByPERSON_LINK(string PERSON_LINK)
+        {
+            IReadOnlyList<SDGM> value;
+            if (Index_PERSON_LINK.Value.TryGetValue(PERSON_LINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

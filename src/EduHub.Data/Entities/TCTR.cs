@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,81 +7,100 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Replacements
     /// </summary>
-    public partial class TCTR : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class TCTR : EntityBase
     {
-#region Navigation Property Cache
-        private TC _TCTRKEY_TC;
-        private SF _TEACH_SF;
-        private SM _ROOM_SM;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private TC Cache_TCTRKEY_TC;
+        private SF Cache_TEACH_SF;
+        private SM Cache_ROOM_SM;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Replacement date
         /// </summary>
-        public DateTime? TCTRKEY { get; internal set; }
+        public DateTime TCTRKEY { get; internal set; }
+
         /// <summary>
         /// TCTQ record that the replacement is for
         /// </summary>
         public int? TCTQ_TID { get; internal set; }
+
         /// <summary>
         /// Replacement teacher
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACH { get; internal set; }
+
         /// <summary>
         /// Replacement room
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string ROOM { get; internal set; }
+
         /// <summary>
         /// Comments
         /// [Memo]
         /// </summary>
         public string COMMENT_R { get; internal set; }
+
         /// <summary>
         /// Is replacement to be counted as an extra
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string COUNT_EXTRAS { get; internal set; }
+
         /// <summary>
         /// % count 0 - 100 of a full extra
         /// </summary>
         public double? EXTRAS_VALUE { get; internal set; }
+
         /// <summary>
         /// The absentee record that this belongs to
         /// </summary>
         public int? ABSENTEE_TID { get; internal set; }
+
         /// <summary>
         /// Flag if replacement teacher is a clash
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string TEACHER_CLASH { get; internal set; }
+
         /// <summary>
         /// Flag if replacement room is a clash
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ROOM_CLASH { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// TC (Calendar) related entity by [TCTR.TCTRKEY]-&gt;[TC.TCKEY]
@@ -90,18 +110,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TCTRKEY.HasValue)
+                if (Cache_TCTRKEY_TC == null)
                 {
-                    if (_TCTRKEY_TC == null)
-                    {
-                        _TCTRKEY_TC = Context.TC.FindByTCKEY(TCTRKEY.Value);
-                    }
-                    return _TCTRKEY_TC;
+                    Cache_TCTRKEY_TC = Context.TC.FindByTCKEY(TCTRKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_TCTRKEY_TC;
             }
         }
 
@@ -113,18 +127,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACH != null)
-                {
-                    if (_TEACH_SF == null)
-                    {
-                        _TEACH_SF = Context.SF.FindBySFKEY(TEACH);
-                    }
-                    return _TEACH_SF;
-                }
-                else
+                if (TEACH == null)
                 {
                     return null;
                 }
+                if (Cache_TEACH_SF == null)
+                {
+                    Cache_TEACH_SF = Context.SF.FindBySFKEY(TEACH);
+                }
+
+                return Cache_TEACH_SF;
             }
         }
 
@@ -136,20 +148,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROOM != null)
-                {
-                    if (_ROOM_SM == null)
-                    {
-                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
-                    }
-                    return _ROOM_SM;
-                }
-                else
+                if (ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_ROOM_SM == null)
+                {
+                    Cache_ROOM_SM = Context.SM.FindByROOM(ROOM);
+                }
+
+                return Cache_ROOM_SM;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

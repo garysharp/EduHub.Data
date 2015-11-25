@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,62 +7,77 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Staff
     /// </summary>
-    public partial class TTEF : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class TTEF : EntityBase
     {
-#region Navigation Property Cache
-        private TT _GKEY_TT;
-        private SF _STAFF_SF;
-        private SM _ROOM_SM;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private TT Cache_GKEY_TT;
+        private SF Cache_STAFF_SF;
+        private SM Cache_ROOM_SM;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Grid involved in exam
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string GKEY { get; internal set; }
+
         /// <summary>
         /// Exam period to which this staff belongs
         /// </summary>
         public int? TTEP_TID { get; internal set; }
+
         /// <summary>
         /// Staff start time
         /// </summary>
         public DateTime? TIME_START { get; internal set; }
+
         /// <summary>
         /// Staff end time
         /// </summary>
         public DateTime? TIME_END { get; internal set; }
+
         /// <summary>
         /// Staff member
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string STAFF { get; internal set; }
+
         /// <summary>
         /// Room where Exam is to be held
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string ROOM { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// TT (Timetable Grid Templates) related entity by [TTEF.GKEY]-&gt;[TT.TTKEY]
@@ -71,18 +87,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (GKEY != null)
+                if (Cache_GKEY_TT == null)
                 {
-                    if (_GKEY_TT == null)
-                    {
-                        _GKEY_TT = Context.TT.FindByTTKEY(GKEY);
-                    }
-                    return _GKEY_TT;
+                    Cache_GKEY_TT = Context.TT.FindByTTKEY(GKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_GKEY_TT;
             }
         }
 
@@ -94,18 +104,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (STAFF != null)
-                {
-                    if (_STAFF_SF == null)
-                    {
-                        _STAFF_SF = Context.SF.FindBySFKEY(STAFF);
-                    }
-                    return _STAFF_SF;
-                }
-                else
+                if (STAFF == null)
                 {
                     return null;
                 }
+                if (Cache_STAFF_SF == null)
+                {
+                    Cache_STAFF_SF = Context.SF.FindBySFKEY(STAFF);
+                }
+
+                return Cache_STAFF_SF;
             }
         }
 
@@ -117,20 +125,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROOM != null)
-                {
-                    if (_ROOM_SM == null)
-                    {
-                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
-                    }
-                    return _ROOM_SM;
-                }
-                else
+                if (ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_ROOM_SM == null)
+                {
+                    Cache_ROOM_SM = Context.SM.FindByROOM(ROOM);
+                }
+
+                return Cache_ROOM_SM;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

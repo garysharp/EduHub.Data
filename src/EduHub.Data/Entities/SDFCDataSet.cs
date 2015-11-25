@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,23 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Sundry Debtor Fees Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SDFCDataSet : SetBase<SDFC>
     {
-        private Lazy<Dictionary<string, SDFC>> SDFCKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<DRF>>> DRF_FEE_CODEForeignIndex;
-
-        internal SDFCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SDFCKEYIndex = new Lazy<Dictionary<string, SDFC>>(() => this.ToDictionary(e => e.SDFCKEY));
-
-            DRF_FEE_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DRF>>>(() =>
-                    Context.DRF
-                          .Where(e => e.FEE_CODE != null)
-                          .GroupBy(e => e.FEE_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRF>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SDFC"; } }
 
-        /// <summary>
-        /// Find SDFC by SDFCKEY key field
-        /// </summary>
-        /// <param name="Key">SDFCKEY value used to find SDFC</param>
-        /// <returns>Related SDFC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SDFCKEY value didn't match any SDFC entities</exception>
-        public SDFC FindBySDFCKEY(string Key)
+        internal SDFCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SDFC result;
-            if (SDFCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SDFCKEY = new Lazy<Dictionary<string, SDFC>>(() => this.ToDictionary(i => i.SDFCKEY));
+            Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<SDFC>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find SDFC by SDFCKEY key field
-        /// </summary>
-        /// <param name="Key">SDFCKEY value used to find SDFC</param>
-        /// <param name="Value">Related SDFC entity</param>
-        /// <returns>True if the SDFC entity is found</returns>
-        public bool TryFindBySDFCKEY(string Key, out SDFC Value)
-        {
-            return SDFCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SDFC by SDFCKEY key field
-        /// </summary>
-        /// <param name="Key">SDFCKEY value used to find SDFC</param>
-        /// <returns>Related SDFC entity, or null if not found</returns>
-        public SDFC TryFindBySDFCKEY(string Key)
-        {
-            SDFC result;
-            if (SDFCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all DRF (DR Transactions) entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
-        /// </summary>
-        /// <param name="SDFCKEY">SDFCKEY value used to find DRF entities</param>
-        /// <returns>A list of related DRF entities</returns>
-        public IReadOnlyList<DRF> FindDRFByFEE_CODE(string SDFCKEY)
-        {
-            IReadOnlyList<DRF> result;
-            if (DRF_FEE_CODEForeignIndex.Value.TryGetValue(SDFCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DRF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DRF entities by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
-        /// </summary>
-        /// <param name="SDFCKEY">SDFCKEY value used to find DRF entities</param>
-        /// <param name="Value">A list of related DRF entities</param>
-        /// <returns>True if any DRF entities are found</returns>
-        public bool TryFindDRFByFEE_CODE(string SDFCKEY, out IReadOnlyList<DRF> Value)
-        {
-            return DRF_FEE_CODEForeignIndex.Value.TryGetValue(SDFCKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SDFC" />
@@ -176,5 +90,230 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SDFC>> Index_SDFCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_GLCODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<SDFC>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDFC FindBySDFCKEY(string SDFCKEY)
+        {
+            return Index_SDFCKEY.Value[SDFCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <param name="Value">Related SDFC entity</param>
+        /// <returns>True if the related SDFC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySDFCKEY(string SDFCKEY, out SDFC Value)
+        {
+            return Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SDFCKEY field
+        /// </summary>
+        /// <param name="SDFCKEY">SDFCKEY value used to find SDFC</param>
+        /// <returns>Related SDFC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SDFC TryFindBySDFCKEY(string SDFCKEY)
+        {
+            SDFC value;
+            if (Index_SDFCKEY.Value.TryGetValue(SDFCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> FindByGLCODE(string GLCODE)
+        {
+            return Index_GLCODE.Value[GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find SDFC</param>
+        /// <param name="Value">List of related SDFC entities</param>
+        /// <returns>True if the list of related SDFC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLCODE(string GLCODE, out IReadOnlyList<SDFC> Value)
+        {
+            return Index_GLCODE.Value.TryGetValue(GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> TryFindByGLCODE(string GLCODE)
+        {
+            IReadOnlyList<SDFC> value;
+            if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find SDFC</param>
+        /// <param name="Value">List of related SDFC entities</param>
+        /// <returns>True if the list of related SDFC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<SDFC> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<SDFC> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <returns>List of related SDFC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <param name="Value">List of related SDFC entities</param>
+        /// <returns>True if the list of related SDFC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<SDFC> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find SDFC</param>
+        /// <returns>List of related SDFC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<SDFC> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SDFC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find SDFC</param>
+        /// <param name="Value">List of related SDFC entities</param>
+        /// <returns>True if the list of related SDFC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<SDFC> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SDFC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find SDFC</param>
+        /// <returns>List of related SDFC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SDFC> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<SDFC> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

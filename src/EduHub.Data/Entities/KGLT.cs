@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,57 +7,88 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Account Types
     /// </summary>
-    public partial class KGLT : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KGLT : EntityBase
     {
-#region Field Properties
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<GL> Cache_GL_TYPE_GL_GL_TYPE;
+        private IReadOnlyList<GLPREV> Cache_GL_TYPE_GLPREV_GL_TYPE;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Type key, eg I
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string GL_TYPE { get; internal set; }
+
         /// <summary>
         /// eg, INCOME
         /// [Alphanumeric (30)]
         /// </summary>
         public string TITLE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Foreign Navigation Properties
 
         /// <summary>
-        /// GL (General Ledger) related entities by [GL.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// GL (General Ledger) related entities by [KGLT.GL_TYPE]-&gt;[GL.GL_TYPE]
+        /// Type key, eg I
         /// </summary>
-        public IReadOnlyList<GL> GL_GL_TYPE
+        public IReadOnlyList<GL> GL_TYPE_GL_GL_TYPE
         {
             get
             {
-                return Context.KGLT.FindGLByGL_TYPE(GL_TYPE);
+                if (Cache_GL_TYPE_GL_GL_TYPE == null &&
+                    !Context.GL.TryFindByGL_TYPE(GL_TYPE, out Cache_GL_TYPE_GL_GL_TYPE))
+                {
+                    Cache_GL_TYPE_GL_GL_TYPE = new List<GL>().AsReadOnly();
+                }
+
+                return Cache_GL_TYPE_GL_GL_TYPE;
             }
         }
 
         /// <summary>
-        /// GLPREV (Last Years General Ledger) related entities by [GLPREV.GL_TYPE]-&gt;[KGLT.GL_TYPE]
+        /// GLPREV (Last Years General Ledger) related entities by [KGLT.GL_TYPE]-&gt;[GLPREV.GL_TYPE]
+        /// Type key, eg I
         /// </summary>
-        public IReadOnlyList<GLPREV> GLPREV_GL_TYPE
+        public IReadOnlyList<GLPREV> GL_TYPE_GLPREV_GL_TYPE
         {
             get
             {
-                return Context.KGLT.FindGLPREVByGL_TYPE(GL_TYPE);
+                if (Cache_GL_TYPE_GLPREV_GL_TYPE == null &&
+                    !Context.GLPREV.TryFindByGL_TYPE(GL_TYPE, out Cache_GL_TYPE_GLPREV_GL_TYPE))
+                {
+                    Cache_GL_TYPE_GLPREV_GL_TYPE = new List<GLPREV>().AsReadOnly();
+                }
+
+                return Cache_GL_TYPE_GLPREV_GL_TYPE;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

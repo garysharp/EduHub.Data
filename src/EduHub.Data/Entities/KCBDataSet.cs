@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Behaviour Classifications Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCBDataSet : SetBase<KCB>
     {
-        private Lazy<Dictionary<string, KCB>> KCBKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SID>>> SID_INCIDENT_TYPEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STMB>>> STMB_B_CODEForeignIndex;
-
-        internal KCBDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KCBKEYIndex = new Lazy<Dictionary<string, KCB>>(() => this.ToDictionary(e => e.KCBKEY));
-
-            SID_INCIDENT_TYPEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SID>>>(() =>
-                    Context.SID
-                          .Where(e => e.INCIDENT_TYPE != null)
-                          .GroupBy(e => e.INCIDENT_TYPE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SID>)g.ToList()
-                          .AsReadOnly()));
-
-            STMB_B_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STMB>>>(() =>
-                    Context.STMB
-                          .Where(e => e.B_CODE != null)
-                          .GroupBy(e => e.B_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMB>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCB"; } }
 
-        /// <summary>
-        /// Find KCB by KCBKEY key field
-        /// </summary>
-        /// <param name="Key">KCBKEY value used to find KCB</param>
-        /// <returns>Related KCB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KCBKEY value didn't match any KCB entities</exception>
-        public KCB FindByKCBKEY(string Key)
+        internal KCBDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCB result;
-            if (KCBKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KCBKEY = new Lazy<Dictionary<string, KCB>>(() => this.ToDictionary(i => i.KCBKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KCB by KCBKEY key field
-        /// </summary>
-        /// <param name="Key">KCBKEY value used to find KCB</param>
-        /// <param name="Value">Related KCB entity</param>
-        /// <returns>True if the KCB entity is found</returns>
-        public bool TryFindByKCBKEY(string Key, out KCB Value)
-        {
-            return KCBKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCB by KCBKEY key field
-        /// </summary>
-        /// <param name="Key">KCBKEY value used to find KCB</param>
-        /// <returns>Related KCB entity, or null if not found</returns>
-        public KCB TryFindByKCBKEY(string Key)
-        {
-            KCB result;
-            if (KCBKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SID (Disciplinary Incidents) entities by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
-        /// </summary>
-        /// <param name="KCBKEY">KCBKEY value used to find SID entities</param>
-        /// <returns>A list of related SID entities</returns>
-        public IReadOnlyList<SID> FindSIDByINCIDENT_TYPE(string KCBKEY)
-        {
-            IReadOnlyList<SID> result;
-            if (SID_INCIDENT_TYPEForeignIndex.Value.TryGetValue(KCBKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SID>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SID entities by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
-        /// </summary>
-        /// <param name="KCBKEY">KCBKEY value used to find SID entities</param>
-        /// <param name="Value">A list of related SID entities</param>
-        /// <returns>True if any SID entities are found</returns>
-        public bool TryFindSIDByINCIDENT_TYPE(string KCBKEY, out IReadOnlyList<SID> Value)
-        {
-            return SID_INCIDENT_TYPEForeignIndex.Value.TryGetValue(KCBKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STMB (Student Merit Behaviour Details) entities by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
-        /// </summary>
-        /// <param name="KCBKEY">KCBKEY value used to find STMB entities</param>
-        /// <returns>A list of related STMB entities</returns>
-        public IReadOnlyList<STMB> FindSTMBByB_CODE(string KCBKEY)
-        {
-            IReadOnlyList<STMB> result;
-            if (STMB_B_CODEForeignIndex.Value.TryGetValue(KCBKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STMB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STMB entities by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
-        /// </summary>
-        /// <param name="KCBKEY">KCBKEY value used to find STMB entities</param>
-        /// <param name="Value">A list of related STMB entities</param>
-        /// <returns>True if any STMB entities are found</returns>
-        public bool TryFindSTMBByB_CODE(string KCBKEY, out IReadOnlyList<STMB> Value)
-        {
-            return STMB_B_CODEForeignIndex.Value.TryGetValue(KCBKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCB" />
@@ -187,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KCB>> Index_KCBKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCB by KCBKEY field
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find KCB</param>
+        /// <returns>Related KCB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCB FindByKCBKEY(string KCBKEY)
+        {
+            return Index_KCBKEY.Value[KCBKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KCB by KCBKEY field
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find KCB</param>
+        /// <param name="Value">Related KCB entity</param>
+        /// <returns>True if the related KCB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCBKEY(string KCBKEY, out KCB Value)
+        {
+            return Index_KCBKEY.Value.TryGetValue(KCBKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCB by KCBKEY field
+        /// </summary>
+        /// <param name="KCBKEY">KCBKEY value used to find KCB</param>
+        /// <returns>Related KCB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCB TryFindByKCBKEY(string KCBKEY)
+        {
+            KCB value;
+            if (Index_KCBKEY.Value.TryGetValue(KCBKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

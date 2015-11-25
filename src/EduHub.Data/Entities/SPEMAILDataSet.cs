@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report email templates Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPEMAILDataSet : SetBase<SPEMAIL>
     {
-        private Lazy<Dictionary<string, SPEMAIL>> SPEMAILKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>> SPEPRINT_CODEForeignIndex;
-
-        internal SPEMAILDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SPEMAILKEYIndex = new Lazy<Dictionary<string, SPEMAIL>>(() => this.ToDictionary(e => e.SPEMAILKEY));
-
-            SPEPRINT_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>>(() =>
-                    Context.SPEPRINT
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPEPRINT>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPEMAIL"; } }
 
-        /// <summary>
-        /// Find SPEMAIL by SPEMAILKEY key field
-        /// </summary>
-        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <returns>Related SPEMAIL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SPEMAILKEY value didn't match any SPEMAIL entities</exception>
-        public SPEMAIL FindBySPEMAILKEY(string Key)
+        internal SPEMAILDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPEMAIL result;
-            if (SPEMAILKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SPEMAILKEY = new Lazy<Dictionary<string, SPEMAIL>>(() => this.ToDictionary(i => i.SPEMAILKEY));
+            Index_REPORT = new Lazy<NullDictionary<string, IReadOnlyList<SPEMAIL>>>(() => this.ToGroupedNullDictionary(i => i.REPORT));
         }
-
-        /// <summary>
-        /// Attempt to find SPEMAIL by SPEMAILKEY key field
-        /// </summary>
-        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <param name="Value">Related SPEMAIL entity</param>
-        /// <returns>True if the SPEMAIL entity is found</returns>
-        public bool TryFindBySPEMAILKEY(string Key, out SPEMAIL Value)
-        {
-            return SPEMAILKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPEMAIL by SPEMAILKEY key field
-        /// </summary>
-        /// <param name="Key">SPEMAILKEY value used to find SPEMAIL</param>
-        /// <returns>Related SPEMAIL entity, or null if not found</returns>
-        public SPEMAIL TryFindBySPEMAILKEY(string Key)
-        {
-            SPEMAIL result;
-            if (SPEMAILKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SPEPRINT (Report file audit) entities by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
-        /// </summary>
-        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEPRINT entities</param>
-        /// <returns>A list of related SPEPRINT entities</returns>
-        public IReadOnlyList<SPEPRINT> FindSPEPRINTByCODE(string SPEMAILKEY)
-        {
-            IReadOnlyList<SPEPRINT> result;
-            if (SPEPRINT_CODEForeignIndex.Value.TryGetValue(SPEMAILKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SPEPRINT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SPEPRINT entities by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
-        /// </summary>
-        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEPRINT entities</param>
-        /// <param name="Value">A list of related SPEPRINT entities</param>
-        /// <returns>True if any SPEPRINT entities are found</returns>
-        public bool TryFindSPEPRINTByCODE(string SPEMAILKEY, out IReadOnlyList<SPEPRINT> Value)
-        {
-            return SPEPRINT_CODEForeignIndex.Value.TryGetValue(SPEMAILKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPEMAIL" />
@@ -173,5 +84,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SPEMAIL>> Index_SPEMAILKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SPEMAIL>>> Index_REPORT;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEMAIL FindBySPEMAILKEY(string SPEMAILKEY)
+        {
+            return Index_SPEMAILKEY.Value[SPEMAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <param name="Value">Related SPEMAIL entity</param>
+        /// <returns>True if the related SPEMAIL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPEMAILKEY(string SPEMAILKEY, out SPEMAIL Value)
+        {
+            return Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by SPEMAILKEY field
+        /// </summary>
+        /// <param name="SPEMAILKEY">SPEMAILKEY value used to find SPEMAIL</param>
+        /// <returns>Related SPEMAIL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEMAIL TryFindBySPEMAILKEY(string SPEMAILKEY)
+        {
+            SPEMAIL value;
+            if (Index_SPEMAILKEY.Value.TryGetValue(SPEMAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SPEMAIL by REPORT field
+        /// </summary>
+        /// <param name="REPORT">REPORT value used to find SPEMAIL</param>
+        /// <returns>List of related SPEMAIL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPEMAIL> FindByREPORT(string REPORT)
+        {
+            return Index_REPORT.Value[REPORT];
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by REPORT field
+        /// </summary>
+        /// <param name="REPORT">REPORT value used to find SPEMAIL</param>
+        /// <param name="Value">List of related SPEMAIL entities</param>
+        /// <returns>True if the list of related SPEMAIL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREPORT(string REPORT, out IReadOnlyList<SPEMAIL> Value)
+        {
+            return Index_REPORT.Value.TryGetValue(REPORT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPEMAIL by REPORT field
+        /// </summary>
+        /// <param name="REPORT">REPORT value used to find SPEMAIL</param>
+        /// <returns>List of related SPEMAIL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPEMAIL> TryFindByREPORT(string REPORT)
+        {
+            IReadOnlyList<SPEMAIL> value;
+            if (Index_REPORT.Value.TryGetValue(REPORT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

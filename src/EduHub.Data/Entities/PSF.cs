@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,55 +7,69 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Pay Steps or Pay Class
     /// </summary>
-    public partial class PSF : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class PSF : EntityBase
     {
-#region Navigation Property Cache
-        private PS _PSKEY_PS;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private PS Cache_PSKEY_PS;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// TID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Pay Step or Pay Class code
         /// </summary>
-        public short? PSKEY { get; internal set; }
+        public short PSKEY { get; internal set; }
+
         /// <summary>
         /// Date from which this step/class
         /// will be current. Does not automatically
         /// update rates from this date
         /// </summary>
         public DateTime? EFFECTIVE_FROM_DATE { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// </summary>
         public DateTime? EFFECTIVE_TO_DATE { get; internal set; }
+
         /// <summary>
         /// Annual Earnings
         /// </summary>
         public decimal? ANNUAL_RATE { get; internal set; }
+
         /// <summary>
         /// Hourly Rate for Wkly &amp; Fortnightly
         /// </summary>
         public decimal? HOURLY_RATE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// PS (Pay Steps or Pay Class) related entity by [PSF.PSKEY]-&gt;[PS.PSKEY]
@@ -64,20 +79,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PSKEY.HasValue)
+                if (Cache_PSKEY_PS == null)
                 {
-                    if (_PSKEY_PS == null)
-                    {
-                        _PSKEY_PS = Context.PS.FindByPSKEY(PSKEY.Value);
-                    }
-                    return _PSKEY_PS;
+                    Cache_PSKEY_PS = Context.PS.FindByPSKEY(PSKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_PSKEY_PS;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

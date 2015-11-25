@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,185 +8,23 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Members Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAMDataSet : SetBase<SAM>
     {
-        private Lazy<Dictionary<int, SAM>> SAMKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SAMA>>> SAMA_SAMAKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SCI>>> SCI_SAM_SCH_COUNCILForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SCI>>> SCI_SCH_COUNCIL_PRESForeignIndex;
-
-        internal SAMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SAMKEYIndex = new Lazy<Dictionary<int, SAM>>(() => this.ToDictionary(e => e.SAMKEY));
-
-            SAMA_SAMAKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAMA>>>(() =>
-                    Context.SAMA
-                          .Where(e => e.SAMAKEY != null)
-                          .GroupBy(e => e.SAMAKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAMA>)g.ToList()
-                          .AsReadOnly()));
-
-            SCI_SAM_SCH_COUNCILForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SCI>>>(() =>
-                    Context.SCI
-                          .Where(e => e.SAM_SCH_COUNCIL != null)
-                          .GroupBy(e => e.SAM_SCH_COUNCIL.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
-                          .AsReadOnly()));
-
-            SCI_SCH_COUNCIL_PRESForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SCI>>>(() =>
-                    Context.SCI
-                          .Where(e => e.SCH_COUNCIL_PRES != null)
-                          .GroupBy(e => e.SCH_COUNCIL_PRES.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SAM"; } }
 
-        /// <summary>
-        /// Find SAM by SAMKEY key field
-        /// </summary>
-        /// <param name="Key">SAMKEY value used to find SAM</param>
-        /// <returns>Related SAM entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SAMKEY value didn't match any SAM entities</exception>
-        public SAM FindBySAMKEY(int Key)
+        internal SAMDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SAM result;
-            if (SAMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SAMKEY = new Lazy<Dictionary<int, SAM>>(() => this.ToDictionary(i => i.SAMKEY));
+            Index_ASSOC_NAME = new Lazy<NullDictionary<string, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ASSOC_NAME));
+            Index_ASSOC_POSN = new Lazy<NullDictionary<string, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ASSOC_POSN));
+            Index_ADDRESSKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.ADDRESSKEY));
+            Index_MAILKEY = new Lazy<NullDictionary<int?, IReadOnlyList<SAM>>>(() => this.ToGroupedNullDictionary(i => i.MAILKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SAM by SAMKEY key field
-        /// </summary>
-        /// <param name="Key">SAMKEY value used to find SAM</param>
-        /// <param name="Value">Related SAM entity</param>
-        /// <returns>True if the SAM entity is found</returns>
-        public bool TryFindBySAMKEY(int Key, out SAM Value)
-        {
-            return SAMKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAM by SAMKEY key field
-        /// </summary>
-        /// <param name="Key">SAMKEY value used to find SAM</param>
-        /// <returns>Related SAM entity, or null if not found</returns>
-        public SAM TryFindBySAMKEY(int Key)
-        {
-            SAM result;
-            if (SAMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SAMA (Association Member Attendances) entities by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SAMA entities</param>
-        /// <returns>A list of related SAMA entities</returns>
-        public IReadOnlyList<SAMA> FindSAMABySAMAKEY(int SAMKEY)
-        {
-            IReadOnlyList<SAMA> result;
-            if (SAMA_SAMAKEYForeignIndex.Value.TryGetValue(SAMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAMA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAMA entities by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SAMA entities</param>
-        /// <param name="Value">A list of related SAMA entities</param>
-        /// <returns>True if any SAMA entities are found</returns>
-        public bool TryFindSAMABySAMAKEY(int SAMKEY, out IReadOnlyList<SAMA> Value)
-        {
-            return SAMA_SAMAKEYForeignIndex.Value.TryGetValue(SAMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SCI (School Information) entities by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
-        /// <returns>A list of related SCI entities</returns>
-        public IReadOnlyList<SCI> FindSCIBySAM_SCH_COUNCIL(int SAMKEY)
-        {
-            IReadOnlyList<SCI> result;
-            if (SCI_SAM_SCH_COUNCILForeignIndex.Value.TryGetValue(SAMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SCI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SCI entities by [SCI.SAM_SCH_COUNCIL]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
-        /// <param name="Value">A list of related SCI entities</param>
-        /// <returns>True if any SCI entities are found</returns>
-        public bool TryFindSCIBySAM_SCH_COUNCIL(int SAMKEY, out IReadOnlyList<SCI> Value)
-        {
-            return SCI_SAM_SCH_COUNCILForeignIndex.Value.TryGetValue(SAMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SCI (School Information) entities by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
-        /// <returns>A list of related SCI entities</returns>
-        public IReadOnlyList<SCI> FindSCIBySCH_COUNCIL_PRES(int SAMKEY)
-        {
-            IReadOnlyList<SCI> result;
-            if (SCI_SCH_COUNCIL_PRESForeignIndex.Value.TryGetValue(SAMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SCI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SCI entities by [SCI.SCH_COUNCIL_PRES]-&gt;[SAM.SAMKEY]
-        /// </summary>
-        /// <param name="SAMKEY">SAMKEY value used to find SCI entities</param>
-        /// <param name="Value">A list of related SCI entities</param>
-        /// <returns>True if any SCI entities are found</returns>
-        public bool TryFindSCIBySCH_COUNCIL_PRES(int SAMKEY, out IReadOnlyList<SCI> Value)
-        {
-            return SCI_SCH_COUNCIL_PRESForeignIndex.Value.TryGetValue(SAMKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SAM" />
@@ -297,5 +135,230 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SAM>> Index_SAMKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SAM>>> Index_ASSOC_NAME;
+        private Lazy<NullDictionary<string, IReadOnlyList<SAM>>> Index_ASSOC_POSN;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SAM>>> Index_ADDRESSKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SAM>>> Index_MAILKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAM FindBySAMKEY(int SAMKEY)
+        {
+            return Index_SAMKEY.Value[SAMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <param name="Value">Related SAM entity</param>
+        /// <returns>True if the related SAM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAMKEY(int SAMKEY, out SAM Value)
+        {
+            return Index_SAMKEY.Value.TryGetValue(SAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by SAMKEY field
+        /// </summary>
+        /// <param name="SAMKEY">SAMKEY value used to find SAM</param>
+        /// <returns>Related SAM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAM TryFindBySAMKEY(int SAMKEY)
+        {
+            SAM value;
+            if (Index_SAMKEY.Value.TryGetValue(SAMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAM by ASSOC_NAME field
+        /// </summary>
+        /// <param name="ASSOC_NAME">ASSOC_NAME value used to find SAM</param>
+        /// <returns>List of related SAM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> FindByASSOC_NAME(string ASSOC_NAME)
+        {
+            return Index_ASSOC_NAME.Value[ASSOC_NAME];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ASSOC_NAME field
+        /// </summary>
+        /// <param name="ASSOC_NAME">ASSOC_NAME value used to find SAM</param>
+        /// <param name="Value">List of related SAM entities</param>
+        /// <returns>True if the list of related SAM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByASSOC_NAME(string ASSOC_NAME, out IReadOnlyList<SAM> Value)
+        {
+            return Index_ASSOC_NAME.Value.TryGetValue(ASSOC_NAME, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ASSOC_NAME field
+        /// </summary>
+        /// <param name="ASSOC_NAME">ASSOC_NAME value used to find SAM</param>
+        /// <returns>List of related SAM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> TryFindByASSOC_NAME(string ASSOC_NAME)
+        {
+            IReadOnlyList<SAM> value;
+            if (Index_ASSOC_NAME.Value.TryGetValue(ASSOC_NAME, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAM by ASSOC_POSN field
+        /// </summary>
+        /// <param name="ASSOC_POSN">ASSOC_POSN value used to find SAM</param>
+        /// <returns>List of related SAM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> FindByASSOC_POSN(string ASSOC_POSN)
+        {
+            return Index_ASSOC_POSN.Value[ASSOC_POSN];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ASSOC_POSN field
+        /// </summary>
+        /// <param name="ASSOC_POSN">ASSOC_POSN value used to find SAM</param>
+        /// <param name="Value">List of related SAM entities</param>
+        /// <returns>True if the list of related SAM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByASSOC_POSN(string ASSOC_POSN, out IReadOnlyList<SAM> Value)
+        {
+            return Index_ASSOC_POSN.Value.TryGetValue(ASSOC_POSN, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ASSOC_POSN field
+        /// </summary>
+        /// <param name="ASSOC_POSN">ASSOC_POSN value used to find SAM</param>
+        /// <returns>List of related SAM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> TryFindByASSOC_POSN(string ASSOC_POSN)
+        {
+            IReadOnlyList<SAM> value;
+            if (Index_ASSOC_POSN.Value.TryGetValue(ASSOC_POSN, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAM by ADDRESSKEY field
+        /// </summary>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> FindByADDRESSKEY(int? ADDRESSKEY)
+        {
+            return Index_ADDRESSKEY.Value[ADDRESSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ADDRESSKEY field
+        /// </summary>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <param name="Value">List of related SAM entities</param>
+        /// <returns>True if the list of related SAM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByADDRESSKEY(int? ADDRESSKEY, out IReadOnlyList<SAM> Value)
+        {
+            return Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by ADDRESSKEY field
+        /// </summary>
+        /// <param name="ADDRESSKEY">ADDRESSKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> TryFindByADDRESSKEY(int? ADDRESSKEY)
+        {
+            IReadOnlyList<SAM> value;
+            if (Index_ADDRESSKEY.Value.TryGetValue(ADDRESSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAM by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> FindByMAILKEY(int? MAILKEY)
+        {
+            return Index_MAILKEY.Value[MAILKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SAM</param>
+        /// <param name="Value">List of related SAM entities</param>
+        /// <returns>True if the list of related SAM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAILKEY(int? MAILKEY, out IReadOnlyList<SAM> Value)
+        {
+            return Index_MAILKEY.Value.TryGetValue(MAILKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAM by MAILKEY field
+        /// </summary>
+        /// <param name="MAILKEY">MAILKEY value used to find SAM</param>
+        /// <returns>List of related SAM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAM> TryFindByMAILKEY(int? MAILKEY)
+        {
+            IReadOnlyList<SAM> value;
+            if (Index_MAILKEY.Value.TryGetValue(MAILKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

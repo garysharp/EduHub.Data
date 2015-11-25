@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,44 +7,66 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Faculties
     /// </summary>
-    public partial class KSF : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KSF : EntityBase
     {
-#region Navigation Property Cache
-        private SF _COORDINATOR_SF;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SF Cache_COORDINATOR_SF;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<SF> Cache_KSFKEY_SF_FACULTY01;
+        private IReadOnlyList<SF> Cache_KSFKEY_SF_FACULTY02;
+        private IReadOnlyList<SF> Cache_KSFKEY_SF_FACULTY03;
+        private IReadOnlyList<SF> Cache_KSFKEY_SF_FACULTY04;
+        private IReadOnlyList<SM> Cache_KSFKEY_SM_FACULTY;
+        private IReadOnlyList<SU> Cache_KSFKEY_SU_FACULTY;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Faculty code
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KSFKEY { get; internal set; }
+
         /// <summary>
         /// Faculty name
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Staff code of KLA co-ordinator
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string COORDINATOR { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SF (Staff) related entity by [KSF.COORDINATOR]-&gt;[SF.SFKEY]
@@ -53,86 +76,132 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (COORDINATOR != null)
-                {
-                    if (_COORDINATOR_SF == null)
-                    {
-                        _COORDINATOR_SF = Context.SF.FindBySFKEY(COORDINATOR);
-                    }
-                    return _COORDINATOR_SF;
-                }
-                else
+                if (COORDINATOR == null)
                 {
                     return null;
                 }
+                if (Cache_COORDINATOR_SF == null)
+                {
+                    Cache_COORDINATOR_SF = Context.SF.FindBySFKEY(COORDINATOR);
+                }
+
+                return Cache_COORDINATOR_SF;
+            }
+        }
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        /// <summary>
+        /// SF (Staff) related entities by [KSF.KSFKEY]-&gt;[SF.FACULTY01]
+        /// Faculty code
+        /// </summary>
+        public IReadOnlyList<SF> KSFKEY_SF_FACULTY01
+        {
+            get
+            {
+                if (Cache_KSFKEY_SF_FACULTY01 == null &&
+                    !Context.SF.TryFindByFACULTY01(KSFKEY, out Cache_KSFKEY_SF_FACULTY01))
+                {
+                    Cache_KSFKEY_SF_FACULTY01 = new List<SF>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SF_FACULTY01;
             }
         }
 
         /// <summary>
-        /// SF (Staff) related entities by [SF.FACULTY01]-&gt;[KSF.KSFKEY]
+        /// SF (Staff) related entities by [KSF.KSFKEY]-&gt;[SF.FACULTY02]
+        /// Faculty code
         /// </summary>
-        public IReadOnlyList<SF> SF_FACULTY01
+        public IReadOnlyList<SF> KSFKEY_SF_FACULTY02
         {
             get
             {
-                return Context.KSF.FindSFByFACULTY01(KSFKEY);
+                if (Cache_KSFKEY_SF_FACULTY02 == null &&
+                    !Context.SF.TryFindByFACULTY02(KSFKEY, out Cache_KSFKEY_SF_FACULTY02))
+                {
+                    Cache_KSFKEY_SF_FACULTY02 = new List<SF>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SF_FACULTY02;
             }
         }
 
         /// <summary>
-        /// SF (Staff) related entities by [SF.FACULTY02]-&gt;[KSF.KSFKEY]
+        /// SF (Staff) related entities by [KSF.KSFKEY]-&gt;[SF.FACULTY03]
+        /// Faculty code
         /// </summary>
-        public IReadOnlyList<SF> SF_FACULTY02
+        public IReadOnlyList<SF> KSFKEY_SF_FACULTY03
         {
             get
             {
-                return Context.KSF.FindSFByFACULTY02(KSFKEY);
+                if (Cache_KSFKEY_SF_FACULTY03 == null &&
+                    !Context.SF.TryFindByFACULTY03(KSFKEY, out Cache_KSFKEY_SF_FACULTY03))
+                {
+                    Cache_KSFKEY_SF_FACULTY03 = new List<SF>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SF_FACULTY03;
             }
         }
 
         /// <summary>
-        /// SF (Staff) related entities by [SF.FACULTY03]-&gt;[KSF.KSFKEY]
+        /// SF (Staff) related entities by [KSF.KSFKEY]-&gt;[SF.FACULTY04]
+        /// Faculty code
         /// </summary>
-        public IReadOnlyList<SF> SF_FACULTY03
+        public IReadOnlyList<SF> KSFKEY_SF_FACULTY04
         {
             get
             {
-                return Context.KSF.FindSFByFACULTY03(KSFKEY);
+                if (Cache_KSFKEY_SF_FACULTY04 == null &&
+                    !Context.SF.TryFindByFACULTY04(KSFKEY, out Cache_KSFKEY_SF_FACULTY04))
+                {
+                    Cache_KSFKEY_SF_FACULTY04 = new List<SF>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SF_FACULTY04;
             }
         }
 
         /// <summary>
-        /// SF (Staff) related entities by [SF.FACULTY04]-&gt;[KSF.KSFKEY]
+        /// SM (Rooms) related entities by [KSF.KSFKEY]-&gt;[SM.FACULTY]
+        /// Faculty code
         /// </summary>
-        public IReadOnlyList<SF> SF_FACULTY04
+        public IReadOnlyList<SM> KSFKEY_SM_FACULTY
         {
             get
             {
-                return Context.KSF.FindSFByFACULTY04(KSFKEY);
+                if (Cache_KSFKEY_SM_FACULTY == null &&
+                    !Context.SM.TryFindByFACULTY(KSFKEY, out Cache_KSFKEY_SM_FACULTY))
+                {
+                    Cache_KSFKEY_SM_FACULTY = new List<SM>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SM_FACULTY;
             }
         }
 
         /// <summary>
-        /// SM (Rooms) related entities by [SM.FACULTY]-&gt;[KSF.KSFKEY]
+        /// SU (Subjects) related entities by [KSF.KSFKEY]-&gt;[SU.FACULTY]
+        /// Faculty code
         /// </summary>
-        public IReadOnlyList<SM> SM_FACULTY
+        public IReadOnlyList<SU> KSFKEY_SU_FACULTY
         {
             get
             {
-                return Context.KSF.FindSMByFACULTY(KSFKEY);
+                if (Cache_KSFKEY_SU_FACULTY == null &&
+                    !Context.SU.TryFindByFACULTY(KSFKEY, out Cache_KSFKEY_SU_FACULTY))
+                {
+                    Cache_KSFKEY_SU_FACULTY = new List<SU>().AsReadOnly();
+                }
+
+                return Cache_KSFKEY_SU_FACULTY;
             }
         }
 
-        /// <summary>
-        /// SU (Subjects) related entities by [SU.FACULTY]-&gt;[KSF.KSFKEY]
-        /// </summary>
-        public IReadOnlyList<SU> SU_FACULTY
-        {
-            get
-            {
-                return Context.KSF.FindSUByFACULTY(KSFKEY);
-            }
-        }
-#endregion
+        #endregion
+
     }
 }

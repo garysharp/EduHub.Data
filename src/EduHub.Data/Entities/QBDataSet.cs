@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Batch Headers Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class QBDataSet : SetBase<QB>
     {
-        private Lazy<Dictionary<int, QB>> QBKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<DRF>>> DRF_TRBATCHForeignIndex;
-
-        internal QBDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            QBKEYIndex = new Lazy<Dictionary<int, QB>>(() => this.ToDictionary(e => e.QBKEY));
-
-            DRF_TRBATCHForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<DRF>>>(() =>
-                    Context.DRF
-                          .Where(e => e.TRBATCH != null)
-                          .GroupBy(e => e.TRBATCH.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DRF>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "QB"; } }
 
-        /// <summary>
-        /// Find QB by QBKEY key field
-        /// </summary>
-        /// <param name="Key">QBKEY value used to find QB</param>
-        /// <returns>Related QB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">QBKEY value didn't match any QB entities</exception>
-        public QB FindByQBKEY(int Key)
+        internal QBDataSet(EduHubContext Context)
+            : base(Context)
         {
-            QB result;
-            if (QBKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_QBKEY = new Lazy<Dictionary<int, QB>>(() => this.ToDictionary(i => i.QBKEY));
         }
-
-        /// <summary>
-        /// Attempt to find QB by QBKEY key field
-        /// </summary>
-        /// <param name="Key">QBKEY value used to find QB</param>
-        /// <param name="Value">Related QB entity</param>
-        /// <returns>True if the QB entity is found</returns>
-        public bool TryFindByQBKEY(int Key, out QB Value)
-        {
-            return QBKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find QB by QBKEY key field
-        /// </summary>
-        /// <param name="Key">QBKEY value used to find QB</param>
-        /// <returns>Related QB entity, or null if not found</returns>
-        public QB TryFindByQBKEY(int Key)
-        {
-            QB result;
-            if (QBKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all DRF (DR Transactions) entities by [DRF.TRBATCH]-&gt;[QB.QBKEY]
-        /// </summary>
-        /// <param name="QBKEY">QBKEY value used to find DRF entities</param>
-        /// <returns>A list of related DRF entities</returns>
-        public IReadOnlyList<DRF> FindDRFByTRBATCH(int QBKEY)
-        {
-            IReadOnlyList<DRF> result;
-            if (DRF_TRBATCHForeignIndex.Value.TryGetValue(QBKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DRF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DRF entities by [DRF.TRBATCH]-&gt;[QB.QBKEY]
-        /// </summary>
-        /// <param name="QBKEY">QBKEY value used to find DRF entities</param>
-        /// <param name="Value">A list of related DRF entities</param>
-        /// <returns>True if any DRF entities are found</returns>
-        public bool TryFindDRFByTRBATCH(int QBKEY, out IReadOnlyList<DRF> Value)
-        {
-            return DRF_TRBATCHForeignIndex.Value.TryGetValue(QBKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="QB" />
@@ -176,5 +86,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, QB>> Index_QBKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find QB by QBKEY field
+        /// </summary>
+        /// <param name="QBKEY">QBKEY value used to find QB</param>
+        /// <returns>Related QB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public QB FindByQBKEY(int QBKEY)
+        {
+            return Index_QBKEY.Value[QBKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find QB by QBKEY field
+        /// </summary>
+        /// <param name="QBKEY">QBKEY value used to find QB</param>
+        /// <param name="Value">Related QB entity</param>
+        /// <returns>True if the related QB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQBKEY(int QBKEY, out QB Value)
+        {
+            return Index_QBKEY.Value.TryGetValue(QBKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find QB by QBKEY field
+        /// </summary>
+        /// <param name="QBKEY">QBKEY value used to find QB</param>
+        /// <returns>Related QB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public QB TryFindByQBKEY(int QBKEY)
+        {
+            QB value;
+            if (Index_QBKEY.Value.TryGetValue(QBKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

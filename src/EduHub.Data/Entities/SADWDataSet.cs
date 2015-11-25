@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Witnesses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SADWDataSet : SetBase<SADW>
     {
-
-
-        internal SADWDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SADW"; } }
 
+        internal SADWDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_ACCIDENTID = new Lazy<Dictionary<int, IReadOnlyList<SADW>>>(() => this.ToGroupedDictionary(i => i.ACCIDENTID));
+            Index_TID = new Lazy<Dictionary<int, SADW>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SADW" />
@@ -36,10 +35,10 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "ACCIDENTID":
-                        mapper[i] = (e, v) => e.ACCIDENTID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.ACCIDENTID = int.Parse(v);
                         break;
                     case "WITNESS_TYPE":
                         mapper[i] = (e, v) => e.WITNESS_TYPE = v;
@@ -79,5 +78,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, IReadOnlyList<SADW>>> Index_ACCIDENTID;
+        private Lazy<Dictionary<int, SADW>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SADW by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SADW</param>
+        /// <returns>List of related SADW entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SADW> FindByACCIDENTID(int ACCIDENTID)
+        {
+            return Index_ACCIDENTID.Value[ACCIDENTID];
+        }
+
+        /// <summary>
+        /// Attempt to find SADW by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SADW</param>
+        /// <param name="Value">List of related SADW entities</param>
+        /// <returns>True if the list of related SADW entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByACCIDENTID(int ACCIDENTID, out IReadOnlyList<SADW> Value)
+        {
+            return Index_ACCIDENTID.Value.TryGetValue(ACCIDENTID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SADW by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SADW</param>
+        /// <returns>List of related SADW entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SADW> TryFindByACCIDENTID(int ACCIDENTID)
+        {
+            IReadOnlyList<SADW> value;
+            if (Index_ACCIDENTID.Value.TryGetValue(ACCIDENTID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SADW by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADW</param>
+        /// <returns>Related SADW entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADW FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SADW by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADW</param>
+        /// <param name="Value">Related SADW entity</param>
+        /// <returns>True if the related SADW entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SADW Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SADW by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SADW</param>
+        /// <returns>Related SADW entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADW TryFindByTID(int TID)
+        {
+            SADW value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// eCASES21 User Sessions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SEC_USRDataSet : SetBase<SEC_USR>
     {
-        private Lazy<Dictionary<int, SEC_USR>> ROWIDIndex;
-
-
-        internal SEC_USRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            ROWIDIndex = new Lazy<Dictionary<int, SEC_USR>>(() => this.ToDictionary(e => e.ROWID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SEC_USR"; } }
 
-        /// <summary>
-        /// Find SEC_USR by ROWID key field
-        /// </summary>
-        /// <param name="Key">ROWID value used to find SEC_USR</param>
-        /// <returns>Related SEC_USR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ROWID value didn't match any SEC_USR entities</exception>
-        public SEC_USR FindByROWID(int Key)
+        internal SEC_USRDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SEC_USR result;
-            if (ROWIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ROWID = new Lazy<Dictionary<int, SEC_USR>>(() => this.ToDictionary(i => i.ROWID));
         }
-
-        /// <summary>
-        /// Attempt to find SEC_USR by ROWID key field
-        /// </summary>
-        /// <param name="Key">ROWID value used to find SEC_USR</param>
-        /// <param name="Value">Related SEC_USR entity</param>
-        /// <returns>True if the SEC_USR entity is found</returns>
-        public bool TryFindByROWID(int Key, out SEC_USR Value)
-        {
-            return ROWIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SEC_USR by ROWID key field
-        /// </summary>
-        /// <param name="Key">ROWID value used to find SEC_USR</param>
-        /// <returns>Related SEC_USR entity, or null if not found</returns>
-        public SEC_USR TryFindByROWID(int Key)
-        {
-            SEC_USR result;
-            if (ROWIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SEC_USR" />
@@ -105,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SEC_USR>> Index_ROWID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SEC_USR by ROWID field
+        /// </summary>
+        /// <param name="ROWID">ROWID value used to find SEC_USR</param>
+        /// <returns>Related SEC_USR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_USR FindByROWID(int ROWID)
+        {
+            return Index_ROWID.Value[ROWID];
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_USR by ROWID field
+        /// </summary>
+        /// <param name="ROWID">ROWID value used to find SEC_USR</param>
+        /// <param name="Value">Related SEC_USR entity</param>
+        /// <returns>True if the related SEC_USR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROWID(int ROWID, out SEC_USR Value)
+        {
+            return Index_ROWID.Value.TryGetValue(ROWID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SEC_USR by ROWID field
+        /// </summary>
+        /// <param name="ROWID">ROWID value used to find SEC_USR</param>
+        /// <returns>Related SEC_USR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SEC_USR TryFindByROWID(int ROWID)
+        {
+            SEC_USR value;
+            if (Index_ROWID.Value.TryGetValue(ROWID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Class Sizes Validation Data Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_ACVDataSet : SetBase<SCEN_ACV>
     {
-        private Lazy<Dictionary<int, SCEN_ACV>> IDIndex;
-
-
-        internal SCEN_ACVDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            IDIndex = new Lazy<Dictionary<int, SCEN_ACV>>(() => this.ToDictionary(e => e.ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCEN_ACV"; } }
 
-        /// <summary>
-        /// Find SCEN_ACV by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACV</param>
-        /// <returns>Related SCEN_ACV entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any SCEN_ACV entities</exception>
-        public SCEN_ACV FindByID(int Key)
+        internal SCEN_ACVDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SCEN_ACV result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ID = new Lazy<Dictionary<int, SCEN_ACV>>(() => this.ToDictionary(i => i.ID));
         }
-
-        /// <summary>
-        /// Attempt to find SCEN_ACV by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACV</param>
-        /// <param name="Value">Related SCEN_ACV entity</param>
-        /// <returns>True if the SCEN_ACV entity is found</returns>
-        public bool TryFindByID(int Key, out SCEN_ACV Value)
-        {
-            return IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCEN_ACV by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACV</param>
-        /// <returns>Related SCEN_ACV entity, or null if not found</returns>
-        public SCEN_ACV TryFindByID(int Key)
-        {
-            SCEN_ACV result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCEN_ACV" />
@@ -120,5 +68,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SCEN_ACV>> Index_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCEN_ACV by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACV</param>
+        /// <returns>Related SCEN_ACV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_ACV FindByID(int ID)
+        {
+            return Index_ID.Value[ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_ACV by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACV</param>
+        /// <param name="Value">Related SCEN_ACV entity</param>
+        /// <returns>True if the related SCEN_ACV entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByID(int ID, out SCEN_ACV Value)
+        {
+            return Index_ID.Value.TryGetValue(ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_ACV by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACV</param>
+        /// <returns>Related SCEN_ACV entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_ACV TryFindByID(int ID)
+        {
+            SCEN_ACV value;
+            if (Index_ID.Value.TryGetValue(ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

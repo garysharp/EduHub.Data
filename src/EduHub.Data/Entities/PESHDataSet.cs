@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Super LTD History Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PESHDataSet : SetBase<PESH>
     {
-
-
-        internal PESHDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PESH"; } }
 
+        internal PESHDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PESH>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, PESH>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PESH" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -160,5 +159,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<PESH>>> Index_CODE;
+        private Lazy<Dictionary<int, PESH>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PESH by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESH</param>
+        /// <returns>List of related PESH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PESH> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PESH by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESH</param>
+        /// <param name="Value">List of related PESH entities</param>
+        /// <returns>True if the list of related PESH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<PESH> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PESH by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PESH</param>
+        /// <returns>List of related PESH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PESH> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<PESH> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PESH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESH</param>
+        /// <returns>Related PESH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PESH FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PESH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESH</param>
+        /// <param name="Value">Related PESH entity</param>
+        /// <returns>True if the related PESH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PESH Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PESH by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PESH</param>
+        /// <returns>Related PESH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PESH TryFindByTID(int TID)
+        {
+            PESH value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

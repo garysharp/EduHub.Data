@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial Data Export Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class FDT_EXPDataSet : SetBase<FDT_EXP>
     {
-        private Lazy<Dictionary<int, FDT_EXP>> TIDIndex;
-
-
-        internal FDT_EXPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, FDT_EXP>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "FDT_EXP"; } }
 
-        /// <summary>
-        /// Find FDT_EXP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find FDT_EXP</param>
-        /// <returns>Related FDT_EXP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any FDT_EXP entities</exception>
-        public FDT_EXP FindByTID(int Key)
+        internal FDT_EXPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            FDT_EXP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_DEST = new Lazy<Dictionary<string, IReadOnlyList<FDT_EXP>>>(() => this.ToGroupedDictionary(i => i.DEST));
+            Index_TID = new Lazy<Dictionary<int, FDT_EXP>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find FDT_EXP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find FDT_EXP</param>
-        /// <param name="Value">Related FDT_EXP entity</param>
-        /// <returns>True if the FDT_EXP entity is found</returns>
-        public bool TryFindByTID(int Key, out FDT_EXP Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find FDT_EXP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find FDT_EXP</param>
-        /// <returns>Related FDT_EXP entity, or null if not found</returns>
-        public FDT_EXP TryFindByTID(int Key)
-        {
-            FDT_EXP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="FDT_EXP" />
@@ -126,5 +75,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<FDT_EXP>>> Index_DEST;
+        private Lazy<Dictionary<int, FDT_EXP>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find FDT_EXP by DEST field
+        /// </summary>
+        /// <param name="DEST">DEST value used to find FDT_EXP</param>
+        /// <returns>List of related FDT_EXP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<FDT_EXP> FindByDEST(string DEST)
+        {
+            return Index_DEST.Value[DEST];
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_EXP by DEST field
+        /// </summary>
+        /// <param name="DEST">DEST value used to find FDT_EXP</param>
+        /// <param name="Value">List of related FDT_EXP entities</param>
+        /// <returns>True if the list of related FDT_EXP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDEST(string DEST, out IReadOnlyList<FDT_EXP> Value)
+        {
+            return Index_DEST.Value.TryGetValue(DEST, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_EXP by DEST field
+        /// </summary>
+        /// <param name="DEST">DEST value used to find FDT_EXP</param>
+        /// <returns>List of related FDT_EXP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<FDT_EXP> TryFindByDEST(string DEST)
+        {
+            IReadOnlyList<FDT_EXP> value;
+            if (Index_DEST.Value.TryGetValue(DEST, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find FDT_EXP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find FDT_EXP</param>
+        /// <returns>Related FDT_EXP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FDT_EXP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_EXP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find FDT_EXP</param>
+        /// <param name="Value">Related FDT_EXP entity</param>
+        /// <returns>True if the related FDT_EXP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out FDT_EXP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_EXP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find FDT_EXP</param>
+        /// <returns>Related FDT_EXP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FDT_EXP TryFindByTID(int TID)
+        {
+            FDT_EXP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

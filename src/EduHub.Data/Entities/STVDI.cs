@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,71 +7,87 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Dimension Results
     /// </summary>
-    public partial class STVDI : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class STVDI : EntityBase
     {
-#region Navigation Property Cache
-        private ST _SKEY_ST;
-        private KCY _SCHOOL_YEAR_KCY;
-        private SCI _CAMPUS_SCI;
-        private KDO _VDOMAIN_KDO;
-        private KDI _VDIMENSION_KDI;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private ST Cache_SKEY_ST;
+        private KCY Cache_SCHOOL_YEAR_KCY;
+        private SCI Cache_CAMPUS_SCI;
+        private KDO Cache_VDOMAIN_KDO;
+        private KDI Cache_VDIMENSION_KDI;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Student ID
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string SKEY { get; internal set; }
+
         /// <summary>
         /// Year level at the time of result
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SCHOOL_YEAR { get; internal set; }
+
         /// <summary>
         /// Campus at the time of the result
         /// </summary>
         public int? CAMPUS { get; internal set; }
+
         /// <summary>
         /// YYYY.S eg 2005.1
         /// [Alphanumeric (6)]
         /// </summary>
         public string YEAR_SEMESTER { get; internal set; }
+
         /// <summary>
         /// Link to domain
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string VDOMAIN { get; internal set; }
+
         /// <summary>
         /// Link to dimension
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string VDIMENSION { get; internal set; }
+
         /// <summary>
         /// Numerical assessment for the dimension - could be NA
         /// [Alphanumeric (4)]
         /// </summary>
         public string SCORE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// ST (Students) related entity by [STVDI.SKEY]-&gt;[ST.STKEY]
@@ -80,18 +97,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SKEY != null)
+                if (Cache_SKEY_ST == null)
                 {
-                    if (_SKEY_ST == null)
-                    {
-                        _SKEY_ST = Context.ST.FindBySTKEY(SKEY);
-                    }
-                    return _SKEY_ST;
+                    Cache_SKEY_ST = Context.ST.FindBySTKEY(SKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SKEY_ST;
             }
         }
 
@@ -103,18 +114,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SCHOOL_YEAR != null)
-                {
-                    if (_SCHOOL_YEAR_KCY == null)
-                    {
-                        _SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
-                    }
-                    return _SCHOOL_YEAR_KCY;
-                }
-                else
+                if (SCHOOL_YEAR == null)
                 {
                     return null;
                 }
+                if (Cache_SCHOOL_YEAR_KCY == null)
+                {
+                    Cache_SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
+                }
+
+                return Cache_SCHOOL_YEAR_KCY;
             }
         }
 
@@ -126,18 +135,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (CAMPUS.HasValue)
-                {
-                    if (_CAMPUS_SCI == null)
-                    {
-                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
-                    }
-                    return _CAMPUS_SCI;
-                }
-                else
+                if (CAMPUS == null)
                 {
                     return null;
                 }
+                if (Cache_CAMPUS_SCI == null)
+                {
+                    Cache_CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                }
+
+                return Cache_CAMPUS_SCI;
             }
         }
 
@@ -149,18 +156,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (VDOMAIN != null)
-                {
-                    if (_VDOMAIN_KDO == null)
-                    {
-                        _VDOMAIN_KDO = Context.KDO.FindByKDOKEY(VDOMAIN);
-                    }
-                    return _VDOMAIN_KDO;
-                }
-                else
+                if (VDOMAIN == null)
                 {
                     return null;
                 }
+                if (Cache_VDOMAIN_KDO == null)
+                {
+                    Cache_VDOMAIN_KDO = Context.KDO.FindByKDOKEY(VDOMAIN);
+                }
+
+                return Cache_VDOMAIN_KDO;
             }
         }
 
@@ -172,20 +177,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (VDIMENSION != null)
-                {
-                    if (_VDIMENSION_KDI == null)
-                    {
-                        _VDIMENSION_KDI = Context.KDI.FindByKDIKEY(VDIMENSION);
-                    }
-                    return _VDIMENSION_KDI;
-                }
-                else
+                if (VDIMENSION == null)
                 {
                     return null;
                 }
+                if (Cache_VDIMENSION_KDI == null)
+                {
+                    Cache_VDIMENSION_KDI = Context.KDI.FindByKDIKEY(VDIMENSION);
+                }
+
+                return Cache_VDIMENSION_KDI;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

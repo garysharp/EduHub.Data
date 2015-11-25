@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,49 +7,67 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Reports for emailing
     /// </summary>
-    public partial class KREPORT : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KREPORT : EntityBase
     {
-#region Navigation Property Cache
-        private KROLE _ROLE_CODE_KROLE;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private KROLE Cache_ROLE_CODE_KROLE;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<SPEMAIL> Cache_KREPORTKEY_SPEMAIL_REPORT;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Report name
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KREPORTKEY { get; internal set; }
+
         /// <summary>
         /// Description
         /// [Alphanumeric (50)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Role for the code
         /// [Uppercase Alphanumeric (2)]
         /// </summary>
         public string ROLE_CODE { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// [Alphanumeric (80)]
         /// </summary>
         public string REPORT_NAME { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// KROLE (Role Codes) related entity by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
@@ -58,31 +77,42 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROLE_CODE != null)
-                {
-                    if (_ROLE_CODE_KROLE == null)
-                    {
-                        _ROLE_CODE_KROLE = Context.KROLE.FindByKROLEKEY(ROLE_CODE);
-                    }
-                    return _ROLE_CODE_KROLE;
-                }
-                else
+                if (ROLE_CODE == null)
                 {
                     return null;
                 }
+                if (Cache_ROLE_CODE_KROLE == null)
+                {
+                    Cache_ROLE_CODE_KROLE = Context.KROLE.FindByKROLEKEY(ROLE_CODE);
+                }
+
+                return Cache_ROLE_CODE_KROLE;
             }
         }
 
+        #endregion
+
+        #region Foreign Navigation Properties
+
         /// <summary>
-        /// SPEMAIL (Report email templates) related entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
+        /// SPEMAIL (Report email templates) related entities by [KREPORT.KREPORTKEY]-&gt;[SPEMAIL.REPORT]
+        /// Report name
         /// </summary>
-        public IReadOnlyList<SPEMAIL> SPEMAIL_REPORT
+        public IReadOnlyList<SPEMAIL> KREPORTKEY_SPEMAIL_REPORT
         {
             get
             {
-                return Context.KREPORT.FindSPEMAILByREPORT(KREPORTKEY);
+                if (Cache_KREPORTKEY_SPEMAIL_REPORT == null &&
+                    !Context.SPEMAIL.TryFindByREPORT(KREPORTKEY, out Cache_KREPORTKEY_SPEMAIL_REPORT))
+                {
+                    Cache_KREPORTKEY_SPEMAIL_REPORT = new List<SPEMAIL>().AsReadOnly();
+                }
+
+                return Cache_KREPORTKEY_SPEMAIL_REPORT;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

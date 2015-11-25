@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Standard Disciplinary Actions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KAMDataSet : SetBase<KAM>
     {
-        private Lazy<Dictionary<string, KAM>> KAMKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SDPA>>> SDPA_ACTION_TAKENForeignIndex;
-
-        internal KAMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KAMKEYIndex = new Lazy<Dictionary<string, KAM>>(() => this.ToDictionary(e => e.KAMKEY));
-
-            SDPA_ACTION_TAKENForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SDPA>>>(() =>
-                    Context.SDPA
-                          .Where(e => e.ACTION_TAKEN != null)
-                          .GroupBy(e => e.ACTION_TAKEN)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDPA>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KAM"; } }
 
-        /// <summary>
-        /// Find KAM by KAMKEY key field
-        /// </summary>
-        /// <param name="Key">KAMKEY value used to find KAM</param>
-        /// <returns>Related KAM entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KAMKEY value didn't match any KAM entities</exception>
-        public KAM FindByKAMKEY(string Key)
+        internal KAMDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KAM result;
-            if (KAMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KAMKEY = new Lazy<Dictionary<string, KAM>>(() => this.ToDictionary(i => i.KAMKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KAM by KAMKEY key field
-        /// </summary>
-        /// <param name="Key">KAMKEY value used to find KAM</param>
-        /// <param name="Value">Related KAM entity</param>
-        /// <returns>True if the KAM entity is found</returns>
-        public bool TryFindByKAMKEY(string Key, out KAM Value)
-        {
-            return KAMKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KAM by KAMKEY key field
-        /// </summary>
-        /// <param name="Key">KAMKEY value used to find KAM</param>
-        /// <returns>Related KAM entity, or null if not found</returns>
-        public KAM TryFindByKAMKEY(string Key)
-        {
-            KAM result;
-            if (KAMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SDPA (Disciplinary Actions) entities by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
-        /// </summary>
-        /// <param name="KAMKEY">KAMKEY value used to find SDPA entities</param>
-        /// <returns>A list of related SDPA entities</returns>
-        public IReadOnlyList<SDPA> FindSDPAByACTION_TAKEN(string KAMKEY)
-        {
-            IReadOnlyList<SDPA> result;
-            if (SDPA_ACTION_TAKENForeignIndex.Value.TryGetValue(KAMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SDPA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SDPA entities by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
-        /// </summary>
-        /// <param name="KAMKEY">KAMKEY value used to find SDPA entities</param>
-        /// <param name="Value">A list of related SDPA entities</param>
-        /// <returns>True if any SDPA entities are found</returns>
-        public bool TryFindSDPAByACTION_TAKEN(string KAMKEY, out IReadOnlyList<SDPA> Value)
-        {
-            return SDPA_ACTION_TAKENForeignIndex.Value.TryGetValue(KAMKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KAM" />
@@ -149,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KAM>> Index_KAMKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KAM by KAMKEY field
+        /// </summary>
+        /// <param name="KAMKEY">KAMKEY value used to find KAM</param>
+        /// <returns>Related KAM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAM FindByKAMKEY(string KAMKEY)
+        {
+            return Index_KAMKEY.Value[KAMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KAM by KAMKEY field
+        /// </summary>
+        /// <param name="KAMKEY">KAMKEY value used to find KAM</param>
+        /// <param name="Value">Related KAM entity</param>
+        /// <returns>True if the related KAM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKAMKEY(string KAMKEY, out KAM Value)
+        {
+            return Index_KAMKEY.Value.TryGetValue(KAMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KAM by KAMKEY field
+        /// </summary>
+        /// <param name="KAMKEY">KAMKEY value used to find KAM</param>
+        /// <returns>Related KAM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAM TryFindByKAMKEY(string KAMKEY)
+        {
+            KAM value;
+            if (Index_KAMKEY.Value.TryGetValue(KAMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

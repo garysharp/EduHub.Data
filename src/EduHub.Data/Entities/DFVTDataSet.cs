@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family Voluntary Transactions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DFVTDataSet : SetBase<DFVT>
     {
-
-
-        internal DFVTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "DFVT"; } }
 
+        internal DFVTDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_FAMILY = new Lazy<Dictionary<string, IReadOnlyList<DFVT>>>(() => this.ToGroupedDictionary(i => i.FAMILY));
+            Index_TID = new Lazy<Dictionary<int, DFVT>>(() => this.ToDictionary(i => i.TID));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<DFVT>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="DFVT" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "FAMILY":
                         mapper[i] = (e, v) => e.FAMILY = v;
@@ -103,5 +103,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<DFVT>>> Index_FAMILY;
+        private Lazy<Dictionary<int, DFVT>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFVT>>> Index_GST_TYPE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find DFVT by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find DFVT</param>
+        /// <returns>List of related DFVT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFVT> FindByFAMILY(string FAMILY)
+        {
+            return Index_FAMILY.Value[FAMILY];
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find DFVT</param>
+        /// <param name="Value">List of related DFVT entities</param>
+        /// <returns>True if the list of related DFVT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMILY(string FAMILY, out IReadOnlyList<DFVT> Value)
+        {
+            return Index_FAMILY.Value.TryGetValue(FAMILY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find DFVT</param>
+        /// <returns>List of related DFVT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFVT> TryFindByFAMILY(string FAMILY)
+        {
+            IReadOnlyList<DFVT> value;
+            if (Index_FAMILY.Value.TryGetValue(FAMILY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <returns>Related DFVT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFVT FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <param name="Value">Related DFVT entity</param>
+        /// <returns>True if the related DFVT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFVT Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFVT</param>
+        /// <returns>Related DFVT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFVT TryFindByTID(int TID)
+        {
+            DFVT value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFVT by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DFVT</param>
+        /// <returns>List of related DFVT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFVT> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DFVT</param>
+        /// <param name="Value">List of related DFVT entities</param>
+        /// <returns>True if the list of related DFVT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<DFVT> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFVT by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find DFVT</param>
+        /// <returns>List of related DFVT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFVT> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<DFVT> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

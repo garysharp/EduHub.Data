@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Tax Scales Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PX_NEWDataSet : SetBase<PX_NEW>
     {
-        private Lazy<Dictionary<short, PX_NEW>> PXKEYIndex;
-
-
-        internal PX_NEWDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PXKEYIndex = new Lazy<Dictionary<short, PX_NEW>>(() => this.ToDictionary(e => e.PXKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PX_NEW"; } }
 
-        /// <summary>
-        /// Find PX_NEW by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX_NEW</param>
-        /// <returns>Related PX_NEW entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PXKEY value didn't match any PX_NEW entities</exception>
-        public PX_NEW FindByPXKEY(short Key)
+        internal PX_NEWDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PX_NEW result;
-            if (PXKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PXKEY = new Lazy<Dictionary<short, PX_NEW>>(() => this.ToDictionary(i => i.PXKEY));
         }
-
-        /// <summary>
-        /// Attempt to find PX_NEW by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX_NEW</param>
-        /// <param name="Value">Related PX_NEW entity</param>
-        /// <returns>True if the PX_NEW entity is found</returns>
-        public bool TryFindByPXKEY(short Key, out PX_NEW Value)
-        {
-            return PXKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PX_NEW by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX_NEW</param>
-        /// <returns>Related PX_NEW entity, or null if not found</returns>
-        public PX_NEW TryFindByPXKEY(short Key)
-        {
-            PX_NEW result;
-            if (PXKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PX_NEW" />
@@ -297,5 +245,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<short, PX_NEW>> Index_PXKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PX_NEW by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX_NEW</param>
+        /// <returns>Related PX_NEW entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PX_NEW FindByPXKEY(short PXKEY)
+        {
+            return Index_PXKEY.Value[PXKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PX_NEW by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX_NEW</param>
+        /// <param name="Value">Related PX_NEW entity</param>
+        /// <returns>True if the related PX_NEW entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPXKEY(short PXKEY, out PX_NEW Value)
+        {
+            return Index_PXKEY.Value.TryGetValue(PXKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PX_NEW by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX_NEW</param>
+        /// <returns>Related PX_NEW entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PX_NEW TryFindByPXKEY(short PXKEY)
+        {
+            PX_NEW value;
+            if (Index_PXKEY.Value.TryGetValue(PXKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

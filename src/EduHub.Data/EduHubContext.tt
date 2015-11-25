@@ -14,7 +14,7 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Xml.Linq" #>
 <#
-    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"CASES21v56 Schema.xml"));
+    var schema = LoadSchema(this.Host.ResolvePath(@"CASES21v56 Schema v2.xml"));
 #>
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace EduHub.Data
     {
 #region Set Fields
 <#
-    foreach (var entity in schema)
+    foreach (EduHubEntity entity in schema.Entities)
     {
 #>
         private <#=entity.Name#>DataSet _<#=entity.Name#>;
@@ -41,7 +41,7 @@ namespace EduHub.Data
         private void Initialize()
         {
 <#
-    foreach (var entity in schema)
+    foreach (EduHubEntity entity in schema.Entities)
     {
 #>
             _<#=entity.Name#> = new <#=entity.Name#>DataSet(this);
@@ -56,7 +56,7 @@ namespace EduHub.Data
         public IEnumerable<string> GetNames()
         {
 <#
-    foreach (var entity in schema)
+    foreach (EduHubEntity entity in schema.Entities)
     {
 #>
             yield return "<#= entity.Name #>";
@@ -65,7 +65,7 @@ namespace EduHub.Data
 #>
         }
 <#
-    foreach (var entity in schema)
+    foreach (EduHubEntity entity in schema.Entities)
     {
 #>
 
@@ -79,48 +79,32 @@ namespace EduHub.Data
     }
 }
 <#+
-    public class C7Entity
+    public class EduHubSchema
     {
-        public string Name;
-        public string Description;
-        public List<C7Field> Fields;
+        public List<EduHubEntity> Entities;
     }
 
-    public class C7Field
+    public class EduHubEntity
     {
+        public EduHubSchema Schema;
+
         public string Name;
-        public string TypeKey;
-        public string Type;
-        public string TypeName;
-        public string TypeDescription;
-        public int TypePrecision;
-        public bool IsKey;
         public string Description;
-        public string RelationshipEntity;
-        public string RelationshipField;
     }
 
-    static IEnumerable<C7Entity> RetrieveEntitiesFromSchema(string Filename)
+    static EduHubSchema LoadSchema(string Filename)
     {
-        return XElement.Load(Filename)
-            .Elements("Element")
-            .Select(e => new C7Entity()
-            {
-                Name = e.Attribute("Name").Value,
-                Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
-                Fields = e.Elements("Field").Select(f => new C7Field()
+        var schema = new EduHubSchema();
+
+        schema.Entities = XElement.Load(Filename)
+            .Elements("Entity")
+            .Select(e => new EduHubEntity()
                 {
-                    Name = f.Attribute("Name").Value,
-                    TypeKey = f.Attribute("TypeKey").Value,
-                    Type = f.Attribute("Type").Value,
-                    TypeName = f.Attribute("TypeName").Value,
-                    TypeDescription = f.Attribute("TypeDescription").Value,
-                    TypePrecision = int.Parse(f.Attribute("TypePrecision").Value),
-                    IsKey = bool.Parse(f.Attribute("IsKey").Value),
-                    RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
-                    RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
-                    Description = f.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
-                }).ToList()
-            }).ToList();
+                    Schema = schema,
+                    Name = e.Attribute("Name").Value,
+                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
+                }).ToList();
+
+        return schema;
     }
 #>

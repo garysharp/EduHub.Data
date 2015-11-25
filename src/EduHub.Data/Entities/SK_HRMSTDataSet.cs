@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// HRMS Temp Import Table Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SK_HRMSTDataSet : SetBase<SK_HRMST>
     {
-        private Lazy<Dictionary<int, SK_HRMST>> SEQIndex;
-
-
-        internal SK_HRMSTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SEQIndex = new Lazy<Dictionary<int, SK_HRMST>>(() => this.ToDictionary(e => e.SEQ));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SK_HRMST"; } }
 
-        /// <summary>
-        /// Find SK_HRMST by SEQ key field
-        /// </summary>
-        /// <param name="Key">SEQ value used to find SK_HRMST</param>
-        /// <returns>Related SK_HRMST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SEQ value didn't match any SK_HRMST entities</exception>
-        public SK_HRMST FindBySEQ(int Key)
+        internal SK_HRMSTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SK_HRMST result;
-            if (SEQIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SEQ = new Lazy<Dictionary<int, SK_HRMST>>(() => this.ToDictionary(i => i.SEQ));
         }
-
-        /// <summary>
-        /// Attempt to find SK_HRMST by SEQ key field
-        /// </summary>
-        /// <param name="Key">SEQ value used to find SK_HRMST</param>
-        /// <param name="Value">Related SK_HRMST entity</param>
-        /// <returns>True if the SK_HRMST entity is found</returns>
-        public bool TryFindBySEQ(int Key, out SK_HRMST Value)
-        {
-            return SEQIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SK_HRMST by SEQ key field
-        /// </summary>
-        /// <param name="Key">SEQ value used to find SK_HRMST</param>
-        /// <returns>Related SK_HRMST entity, or null if not found</returns>
-        public SK_HRMST TryFindBySEQ(int Key)
-        {
-            SK_HRMST result;
-            if (SEQIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SK_HRMST" />
@@ -186,5 +134,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SK_HRMST>> Index_SEQ;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SK_HRMST by SEQ field
+        /// </summary>
+        /// <param name="SEQ">SEQ value used to find SK_HRMST</param>
+        /// <returns>Related SK_HRMST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SK_HRMST FindBySEQ(int SEQ)
+        {
+            return Index_SEQ.Value[SEQ];
+        }
+
+        /// <summary>
+        /// Attempt to find SK_HRMST by SEQ field
+        /// </summary>
+        /// <param name="SEQ">SEQ value used to find SK_HRMST</param>
+        /// <param name="Value">Related SK_HRMST entity</param>
+        /// <returns>True if the related SK_HRMST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySEQ(int SEQ, out SK_HRMST Value)
+        {
+            return Index_SEQ.Value.TryGetValue(SEQ, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SK_HRMST by SEQ field
+        /// </summary>
+        /// <param name="SEQ">SEQ value used to find SK_HRMST</param>
+        /// <returns>Related SK_HRMST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SK_HRMST TryFindBySEQ(int SEQ)
+        {
+            SK_HRMST value;
+            if (Index_SEQ.Value.TryGetValue(SEQ, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

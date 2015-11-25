@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,49 +7,61 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Prerequisites
     /// </summary>
-    public partial class SUPR : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SUPR : EntityBase
     {
-#region Navigation Property Cache
-        private SU _SUPRKEY_SU;
-        private SU _PREREQUISITE_SU;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SU Cache_SUPRKEY_SU;
+        private SU Cache_PREREQUISITE_SU;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Subject code of this subject
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUPRKEY { get; internal set; }
+
         /// <summary>
         /// Subject code of this subject's prerequisite
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string PREREQUISITE { get; internal set; }
+
         /// <summary>
         /// Result as prerequisite (not implemented)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string RESULT { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SU (Subjects) related entity by [SUPR.SUPRKEY]-&gt;[SU.SUKEY]
@@ -58,18 +71,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUPRKEY != null)
+                if (Cache_SUPRKEY_SU == null)
                 {
-                    if (_SUPRKEY_SU == null)
-                    {
-                        _SUPRKEY_SU = Context.SU.FindBySUKEY(SUPRKEY);
-                    }
-                    return _SUPRKEY_SU;
+                    Cache_SUPRKEY_SU = Context.SU.FindBySUKEY(SUPRKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SUPRKEY_SU;
             }
         }
 
@@ -81,20 +88,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PREREQUISITE != null)
-                {
-                    if (_PREREQUISITE_SU == null)
-                    {
-                        _PREREQUISITE_SU = Context.SU.FindBySUKEY(PREREQUISITE);
-                    }
-                    return _PREREQUISITE_SU;
-                }
-                else
+                if (PREREQUISITE == null)
                 {
                     return null;
                 }
+                if (Cache_PREREQUISITE_SU == null)
+                {
+                    Cache_PREREQUISITE_SU = Context.SU.FindBySUKEY(PREREQUISITE);
+                }
+
+                return Cache_PREREQUISITE_SU;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

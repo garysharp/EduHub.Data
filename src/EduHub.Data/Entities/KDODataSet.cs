@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Domains Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDODataSet : SetBase<KDO>
     {
-        private Lazy<Dictionary<string, KDO>> KDOKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> STVDI_VDOMAINForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STVDO>>> STVDO_VDOMAINForeignIndex;
-
-        internal KDODataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KDOKEYIndex = new Lazy<Dictionary<string, KDO>>(() => this.ToDictionary(e => e.KDOKEY));
-
-            STVDI_VDOMAINForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() =>
-                    Context.STVDI
-                          .Where(e => e.VDOMAIN != null)
-                          .GroupBy(e => e.VDOMAIN)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDI>)g.ToList()
-                          .AsReadOnly()));
-
-            STVDO_VDOMAINForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STVDO>>>(() =>
-                    Context.STVDO
-                          .Where(e => e.VDOMAIN != null)
-                          .GroupBy(e => e.VDOMAIN)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDO>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KDO"; } }
 
-        /// <summary>
-        /// Find KDO by KDOKEY key field
-        /// </summary>
-        /// <param name="Key">KDOKEY value used to find KDO</param>
-        /// <returns>Related KDO entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KDOKEY value didn't match any KDO entities</exception>
-        public KDO FindByKDOKEY(string Key)
+        internal KDODataSet(EduHubContext Context)
+            : base(Context)
         {
-            KDO result;
-            if (KDOKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KDOKEY = new Lazy<Dictionary<string, KDO>>(() => this.ToDictionary(i => i.KDOKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KDO by KDOKEY key field
-        /// </summary>
-        /// <param name="Key">KDOKEY value used to find KDO</param>
-        /// <param name="Value">Related KDO entity</param>
-        /// <returns>True if the KDO entity is found</returns>
-        public bool TryFindByKDOKEY(string Key, out KDO Value)
-        {
-            return KDOKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KDO by KDOKEY key field
-        /// </summary>
-        /// <param name="Key">KDOKEY value used to find KDO</param>
-        /// <returns>Related KDO entity, or null if not found</returns>
-        public KDO TryFindByKDOKEY(string Key)
-        {
-            KDO result;
-            if (KDOKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all STVDI (VELS Dimension Results) entities by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
-        /// </summary>
-        /// <param name="KDOKEY">KDOKEY value used to find STVDI entities</param>
-        /// <returns>A list of related STVDI entities</returns>
-        public IReadOnlyList<STVDI> FindSTVDIByVDOMAIN(string KDOKEY)
-        {
-            IReadOnlyList<STVDI> result;
-            if (STVDI_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STVDI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STVDI entities by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
-        /// </summary>
-        /// <param name="KDOKEY">KDOKEY value used to find STVDI entities</param>
-        /// <param name="Value">A list of related STVDI entities</param>
-        /// <returns>True if any STVDI entities are found</returns>
-        public bool TryFindSTVDIByVDOMAIN(string KDOKEY, out IReadOnlyList<STVDI> Value)
-        {
-            return STVDI_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STVDO (VELS Domain Results) entities by [STVDO.VDOMAIN]-&gt;[KDO.KDOKEY]
-        /// </summary>
-        /// <param name="KDOKEY">KDOKEY value used to find STVDO entities</param>
-        /// <returns>A list of related STVDO entities</returns>
-        public IReadOnlyList<STVDO> FindSTVDOByVDOMAIN(string KDOKEY)
-        {
-            IReadOnlyList<STVDO> result;
-            if (STVDO_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STVDO>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STVDO entities by [STVDO.VDOMAIN]-&gt;[KDO.KDOKEY]
-        /// </summary>
-        /// <param name="KDOKEY">KDOKEY value used to find STVDO entities</param>
-        /// <param name="Value">A list of related STVDO entities</param>
-        /// <returns>True if any STVDO entities are found</returns>
-        public bool TryFindSTVDOByVDOMAIN(string KDOKEY, out IReadOnlyList<STVDO> Value)
-        {
-            return STVDO_VDOMAINForeignIndex.Value.TryGetValue(KDOKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KDO" />
@@ -187,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KDO>> Index_KDOKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KDO by KDOKEY field
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find KDO</param>
+        /// <returns>Related KDO entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KDO FindByKDOKEY(string KDOKEY)
+        {
+            return Index_KDOKEY.Value[KDOKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KDO by KDOKEY field
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find KDO</param>
+        /// <param name="Value">Related KDO entity</param>
+        /// <returns>True if the related KDO entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKDOKEY(string KDOKEY, out KDO Value)
+        {
+            return Index_KDOKEY.Value.TryGetValue(KDOKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KDO by KDOKEY field
+        /// </summary>
+        /// <param name="KDOKEY">KDOKEY value used to find KDO</param>
+        /// <returns>Related KDO entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KDO TryFindByKDOKEY(string KDOKEY)
+        {
+            KDO value;
+            if (Index_KDOKEY.Value.TryGetValue(KDOKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

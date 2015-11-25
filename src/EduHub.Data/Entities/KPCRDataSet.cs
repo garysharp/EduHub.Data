@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contact Relationship Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPCRDataSet : SetBase<KPCR>
     {
-        private Lazy<Dictionary<string, KPCR>> KPCRKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<KPCL>>> KPCL_CONTACT_TYPEForeignIndex;
-
-        internal KPCRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KPCRKEYIndex = new Lazy<Dictionary<string, KPCR>>(() => this.ToDictionary(e => e.KPCRKEY));
-
-            KPCL_CONTACT_TYPEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<KPCL>>>(() =>
-                    Context.KPCL
-                          .Where(e => e.CONTACT_TYPE != null)
-                          .GroupBy(e => e.CONTACT_TYPE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KPCL>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KPCR"; } }
 
-        /// <summary>
-        /// Find KPCR by KPCRKEY key field
-        /// </summary>
-        /// <param name="Key">KPCRKEY value used to find KPCR</param>
-        /// <returns>Related KPCR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KPCRKEY value didn't match any KPCR entities</exception>
-        public KPCR FindByKPCRKEY(string Key)
+        internal KPCRDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KPCR result;
-            if (KPCRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KPCRKEY = new Lazy<Dictionary<string, KPCR>>(() => this.ToDictionary(i => i.KPCRKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KPCR by KPCRKEY key field
-        /// </summary>
-        /// <param name="Key">KPCRKEY value used to find KPCR</param>
-        /// <param name="Value">Related KPCR entity</param>
-        /// <returns>True if the KPCR entity is found</returns>
-        public bool TryFindByKPCRKEY(string Key, out KPCR Value)
-        {
-            return KPCRKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KPCR by KPCRKEY key field
-        /// </summary>
-        /// <param name="Key">KPCRKEY value used to find KPCR</param>
-        /// <returns>Related KPCR entity, or null if not found</returns>
-        public KPCR TryFindByKPCRKEY(string Key)
-        {
-            KPCR result;
-            if (KPCRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all KPCL (Contact Links) entities by [KPCL.CONTACT_TYPE]-&gt;[KPCR.KPCRKEY]
-        /// </summary>
-        /// <param name="KPCRKEY">KPCRKEY value used to find KPCL entities</param>
-        /// <returns>A list of related KPCL entities</returns>
-        public IReadOnlyList<KPCL> FindKPCLByCONTACT_TYPE(string KPCRKEY)
-        {
-            IReadOnlyList<KPCL> result;
-            if (KPCL_CONTACT_TYPEForeignIndex.Value.TryGetValue(KPCRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<KPCL>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all KPCL entities by [KPCL.CONTACT_TYPE]-&gt;[KPCR.KPCRKEY]
-        /// </summary>
-        /// <param name="KPCRKEY">KPCRKEY value used to find KPCL entities</param>
-        /// <param name="Value">A list of related KPCL entities</param>
-        /// <returns>True if any KPCL entities are found</returns>
-        public bool TryFindKPCLByCONTACT_TYPE(string KPCRKEY, out IReadOnlyList<KPCL> Value)
-        {
-            return KPCL_CONTACT_TYPEForeignIndex.Value.TryGetValue(KPCRKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KPCR" />
@@ -146,5 +56,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KPCR>> Index_KPCRKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KPCR by KPCRKEY field
+        /// </summary>
+        /// <param name="KPCRKEY">KPCRKEY value used to find KPCR</param>
+        /// <returns>Related KPCR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPCR FindByKPCRKEY(string KPCRKEY)
+        {
+            return Index_KPCRKEY.Value[KPCRKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KPCR by KPCRKEY field
+        /// </summary>
+        /// <param name="KPCRKEY">KPCRKEY value used to find KPCR</param>
+        /// <param name="Value">Related KPCR entity</param>
+        /// <returns>True if the related KPCR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKPCRKEY(string KPCRKEY, out KPCR Value)
+        {
+            return Index_KPCRKEY.Value.TryGetValue(KPCRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPCR by KPCRKEY field
+        /// </summary>
+        /// <param name="KPCRKEY">KPCRKEY value used to find KPCR</param>
+        /// <returns>Related KPCR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPCR TryFindByKPCRKEY(string KPCRKEY)
+        {
+            KPCR value;
+            if (Index_KPCRKEY.Value.TryGetValue(KPCRKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

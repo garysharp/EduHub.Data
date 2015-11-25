@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PRMS Order Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPRMSDataSet : SetBase<KPRMS>
     {
-        private Lazy<Dictionary<int, KPRMS>> TIDIndex;
-
-
-        internal KPRMSDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, KPRMS>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KPRMS"; } }
 
-        /// <summary>
-        /// Find KPRMS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KPRMS</param>
-        /// <returns>Related KPRMS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KPRMS entities</exception>
-        public KPRMS FindByTID(int Key)
+        internal KPRMSDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KPRMS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, KPRMS>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find KPRMS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KPRMS</param>
-        /// <param name="Value">Related KPRMS entity</param>
-        /// <returns>True if the KPRMS entity is found</returns>
-        public bool TryFindByTID(int Key, out KPRMS Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KPRMS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KPRMS</param>
-        /// <returns>Related KPRMS entity, or null if not found</returns>
-        public KPRMS TryFindByTID(int Key)
-        {
-            KPRMS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KPRMS" />
@@ -153,5 +101,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KPRMS>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KPRMS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KPRMS</param>
+        /// <returns>Related KPRMS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPRMS FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KPRMS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KPRMS</param>
+        /// <param name="Value">Related KPRMS entity</param>
+        /// <returns>True if the related KPRMS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KPRMS Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPRMS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KPRMS</param>
+        /// <returns>Related KPRMS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPRMS TryFindByTID(int TID)
+        {
+            KPRMS value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

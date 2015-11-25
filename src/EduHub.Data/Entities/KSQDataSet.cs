@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Available Qualifications Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KSQDataSet : SetBase<KSQ>
     {
-        private Lazy<Dictionary<string, KSQ>> KSQKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SFQA>>> SFQA_QUALIFICATIONForeignIndex;
-
-        internal KSQDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KSQKEYIndex = new Lazy<Dictionary<string, KSQ>>(() => this.ToDictionary(e => e.KSQKEY));
-
-            SFQA_QUALIFICATIONForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SFQA>>>(() =>
-                    Context.SFQA
-                          .Where(e => e.QUALIFICATION != null)
-                          .GroupBy(e => e.QUALIFICATION)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SFQA>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KSQ"; } }
 
-        /// <summary>
-        /// Find KSQ by KSQKEY key field
-        /// </summary>
-        /// <param name="Key">KSQKEY value used to find KSQ</param>
-        /// <returns>Related KSQ entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KSQKEY value didn't match any KSQ entities</exception>
-        public KSQ FindByKSQKEY(string Key)
+        internal KSQDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KSQ result;
-            if (KSQKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KSQKEY = new Lazy<Dictionary<string, KSQ>>(() => this.ToDictionary(i => i.KSQKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KSQ by KSQKEY key field
-        /// </summary>
-        /// <param name="Key">KSQKEY value used to find KSQ</param>
-        /// <param name="Value">Related KSQ entity</param>
-        /// <returns>True if the KSQ entity is found</returns>
-        public bool TryFindByKSQKEY(string Key, out KSQ Value)
-        {
-            return KSQKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KSQ by KSQKEY key field
-        /// </summary>
-        /// <param name="Key">KSQKEY value used to find KSQ</param>
-        /// <returns>Related KSQ entity, or null if not found</returns>
-        public KSQ TryFindByKSQKEY(string Key)
-        {
-            KSQ result;
-            if (KSQKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SFQA (Staff Qualifications) entities by [SFQA.QUALIFICATION]-&gt;[KSQ.KSQKEY]
-        /// </summary>
-        /// <param name="KSQKEY">KSQKEY value used to find SFQA entities</param>
-        /// <returns>A list of related SFQA entities</returns>
-        public IReadOnlyList<SFQA> FindSFQAByQUALIFICATION(string KSQKEY)
-        {
-            IReadOnlyList<SFQA> result;
-            if (SFQA_QUALIFICATIONForeignIndex.Value.TryGetValue(KSQKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SFQA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SFQA entities by [SFQA.QUALIFICATION]-&gt;[KSQ.KSQKEY]
-        /// </summary>
-        /// <param name="KSQKEY">KSQKEY value used to find SFQA entities</param>
-        /// <param name="Value">A list of related SFQA entities</param>
-        /// <returns>True if any SFQA entities are found</returns>
-        public bool TryFindSFQAByQUALIFICATION(string KSQKEY, out IReadOnlyList<SFQA> Value)
-        {
-            return SFQA_QUALIFICATIONForeignIndex.Value.TryGetValue(KSQKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KSQ" />
@@ -143,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KSQ>> Index_KSQKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KSQ by KSQKEY field
+        /// </summary>
+        /// <param name="KSQKEY">KSQKEY value used to find KSQ</param>
+        /// <returns>Related KSQ entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KSQ FindByKSQKEY(string KSQKEY)
+        {
+            return Index_KSQKEY.Value[KSQKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KSQ by KSQKEY field
+        /// </summary>
+        /// <param name="KSQKEY">KSQKEY value used to find KSQ</param>
+        /// <param name="Value">Related KSQ entity</param>
+        /// <returns>True if the related KSQ entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKSQKEY(string KSQKEY, out KSQ Value)
+        {
+            return Index_KSQKEY.Value.TryGetValue(KSQKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KSQ by KSQKEY field
+        /// </summary>
+        /// <param name="KSQKEY">KSQKEY value used to find KSQ</param>
+        /// <returns>Related KSQ entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KSQ TryFindByKSQKEY(string KSQKEY)
+        {
+            KSQ value;
+            if (Index_KSQKEY.Value.TryGetValue(KSQKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

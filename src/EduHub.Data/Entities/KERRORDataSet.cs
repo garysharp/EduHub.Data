@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Import or Update Errors Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KERRORDataSet : SetBase<KERROR>
     {
-        private Lazy<Dictionary<int, KERROR>> KERROR_IDIndex;
-
-
-        internal KERRORDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KERROR_IDIndex = new Lazy<Dictionary<int, KERROR>>(() => this.ToDictionary(e => e.KERROR_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KERROR"; } }
 
-        /// <summary>
-        /// Find KERROR by KERROR_ID key field
-        /// </summary>
-        /// <param name="Key">KERROR_ID value used to find KERROR</param>
-        /// <returns>Related KERROR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KERROR_ID value didn't match any KERROR entities</exception>
-        public KERROR FindByKERROR_ID(int Key)
+        internal KERRORDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KERROR result;
-            if (KERROR_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KERROR_ID = new Lazy<Dictionary<int, KERROR>>(() => this.ToDictionary(i => i.KERROR_ID));
+            Index_SPOUTKEY = new Lazy<NullDictionary<string, IReadOnlyList<KERROR>>>(() => this.ToGroupedNullDictionary(i => i.SPOUTKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KERROR by KERROR_ID key field
-        /// </summary>
-        /// <param name="Key">KERROR_ID value used to find KERROR</param>
-        /// <param name="Value">Related KERROR entity</param>
-        /// <returns>True if the KERROR entity is found</returns>
-        public bool TryFindByKERROR_ID(int Key, out KERROR Value)
-        {
-            return KERROR_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KERROR by KERROR_ID key field
-        /// </summary>
-        /// <param name="Key">KERROR_ID value used to find KERROR</param>
-        /// <returns>Related KERROR entity, or null if not found</returns>
-        public KERROR TryFindByKERROR_ID(int Key)
-        {
-            KERROR result;
-            if (KERROR_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KERROR" />
@@ -141,5 +90,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KERROR>> Index_KERROR_ID;
+        private Lazy<NullDictionary<string, IReadOnlyList<KERROR>>> Index_SPOUTKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KERROR by KERROR_ID field
+        /// </summary>
+        /// <param name="KERROR_ID">KERROR_ID value used to find KERROR</param>
+        /// <returns>Related KERROR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KERROR FindByKERROR_ID(int KERROR_ID)
+        {
+            return Index_KERROR_ID.Value[KERROR_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KERROR by KERROR_ID field
+        /// </summary>
+        /// <param name="KERROR_ID">KERROR_ID value used to find KERROR</param>
+        /// <param name="Value">Related KERROR entity</param>
+        /// <returns>True if the related KERROR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKERROR_ID(int KERROR_ID, out KERROR Value)
+        {
+            return Index_KERROR_ID.Value.TryGetValue(KERROR_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KERROR by KERROR_ID field
+        /// </summary>
+        /// <param name="KERROR_ID">KERROR_ID value used to find KERROR</param>
+        /// <returns>Related KERROR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KERROR TryFindByKERROR_ID(int KERROR_ID)
+        {
+            KERROR value;
+            if (Index_KERROR_ID.Value.TryGetValue(KERROR_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KERROR by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR</param>
+        /// <returns>List of related KERROR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KERROR> FindBySPOUTKEY(string SPOUTKEY)
+        {
+            return Index_SPOUTKEY.Value[SPOUTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KERROR by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR</param>
+        /// <param name="Value">List of related KERROR entities</param>
+        /// <returns>True if the list of related KERROR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPOUTKEY(string SPOUTKEY, out IReadOnlyList<KERROR> Value)
+        {
+            return Index_SPOUTKEY.Value.TryGetValue(SPOUTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KERROR by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR</param>
+        /// <returns>List of related KERROR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KERROR> TryFindBySPOUTKEY(string SPOUTKEY)
+        {
+            IReadOnlyList<KERROR> value;
+            if (Index_SPOUTKEY.Value.TryGetValue(SPOUTKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

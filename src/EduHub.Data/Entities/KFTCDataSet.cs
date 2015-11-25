@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Fuel Tax Credit Rates Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KFTCDataSet : SetBase<KFTC>
     {
-        private Lazy<Dictionary<string, KFTC>> KFTCKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> CRFTC_FTC_CODEForeignIndex;
-
-        internal KFTCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KFTCKEYIndex = new Lazy<Dictionary<string, KFTC>>(() => this.ToDictionary(e => e.KFTCKEY));
-
-            CRFTC_FTC_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() =>
-                    Context.CRFTC
-                          .Where(e => e.FTC_CODE != null)
-                          .GroupBy(e => e.FTC_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRFTC>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KFTC"; } }
 
-        /// <summary>
-        /// Find KFTC by KFTCKEY key field
-        /// </summary>
-        /// <param name="Key">KFTCKEY value used to find KFTC</param>
-        /// <returns>Related KFTC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KFTCKEY value didn't match any KFTC entities</exception>
-        public KFTC FindByKFTCKEY(string Key)
+        internal KFTCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KFTC result;
-            if (KFTCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KFTCKEY = new Lazy<Dictionary<string, KFTC>>(() => this.ToDictionary(i => i.KFTCKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KFTC by KFTCKEY key field
-        /// </summary>
-        /// <param name="Key">KFTCKEY value used to find KFTC</param>
-        /// <param name="Value">Related KFTC entity</param>
-        /// <returns>True if the KFTC entity is found</returns>
-        public bool TryFindByKFTCKEY(string Key, out KFTC Value)
-        {
-            return KFTCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KFTC by KFTCKEY key field
-        /// </summary>
-        /// <param name="Key">KFTCKEY value used to find KFTC</param>
-        /// <returns>Related KFTC entity, or null if not found</returns>
-        public KFTC TryFindByKFTCKEY(string Key)
-        {
-            KFTC result;
-            if (KFTCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all CRFTC (Creditor Fuel Tax Credits) entities by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
-        /// </summary>
-        /// <param name="KFTCKEY">KFTCKEY value used to find CRFTC entities</param>
-        /// <returns>A list of related CRFTC entities</returns>
-        public IReadOnlyList<CRFTC> FindCRFTCByFTC_CODE(string KFTCKEY)
-        {
-            IReadOnlyList<CRFTC> result;
-            if (CRFTC_FTC_CODEForeignIndex.Value.TryGetValue(KFTCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<CRFTC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all CRFTC entities by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
-        /// </summary>
-        /// <param name="KFTCKEY">KFTCKEY value used to find CRFTC entities</param>
-        /// <param name="Value">A list of related CRFTC entities</param>
-        /// <returns>True if any CRFTC entities are found</returns>
-        public bool TryFindCRFTCByFTC_CODE(string KFTCKEY, out IReadOnlyList<CRFTC> Value)
-        {
-            return CRFTC_FTC_CODEForeignIndex.Value.TryGetValue(KFTCKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KFTC" />
@@ -164,5 +74,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KFTC>> Index_KFTCKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KFTC by KFTCKEY field
+        /// </summary>
+        /// <param name="KFTCKEY">KFTCKEY value used to find KFTC</param>
+        /// <returns>Related KFTC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KFTC FindByKFTCKEY(string KFTCKEY)
+        {
+            return Index_KFTCKEY.Value[KFTCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KFTC by KFTCKEY field
+        /// </summary>
+        /// <param name="KFTCKEY">KFTCKEY value used to find KFTC</param>
+        /// <param name="Value">Related KFTC entity</param>
+        /// <returns>True if the related KFTC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKFTCKEY(string KFTCKEY, out KFTC Value)
+        {
+            return Index_KFTCKEY.Value.TryGetValue(KFTCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KFTC by KFTCKEY field
+        /// </summary>
+        /// <param name="KFTCKEY">KFTCKEY value used to find KFTC</param>
+        /// <returns>Related KFTC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KFTC TryFindByKFTCKEY(string KFTCKEY)
+        {
+            KFTC value;
+            if (Index_KFTCKEY.Value.TryGetValue(KFTCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

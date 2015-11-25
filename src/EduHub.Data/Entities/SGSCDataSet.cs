@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject/Class Eligibility Criteria Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SGSCDataSet : SetBase<SGSC>
     {
-
-
-        internal SGSCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SGSC"; } }
 
+        internal SGSCDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SGSCKEY = new Lazy<Dictionary<string, IReadOnlyList<SGSC>>>(() => this.ToGroupedDictionary(i => i.SGSCKEY));
+            Index_TID = new Lazy<Dictionary<int, SGSC>>(() => this.ToDictionary(i => i.TID));
+            Index_SULINK = new Lazy<NullDictionary<string, IReadOnlyList<SGSC>>>(() => this.ToGroupedNullDictionary(i => i.SULINK));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SGSC" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SGSCKEY":
                         mapper[i] = (e, v) => e.SGSCKEY = v;
@@ -67,5 +67,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SGSC>>> Index_SGSCKEY;
+        private Lazy<Dictionary<int, SGSC>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SGSC>>> Index_SULINK;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SGSC by SGSCKEY field
+        /// </summary>
+        /// <param name="SGSCKEY">SGSCKEY value used to find SGSC</param>
+        /// <returns>List of related SGSC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSC> FindBySGSCKEY(string SGSCKEY)
+        {
+            return Index_SGSCKEY.Value[SGSCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by SGSCKEY field
+        /// </summary>
+        /// <param name="SGSCKEY">SGSCKEY value used to find SGSC</param>
+        /// <param name="Value">List of related SGSC entities</param>
+        /// <returns>True if the list of related SGSC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGSCKEY(string SGSCKEY, out IReadOnlyList<SGSC> Value)
+        {
+            return Index_SGSCKEY.Value.TryGetValue(SGSCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by SGSCKEY field
+        /// </summary>
+        /// <param name="SGSCKEY">SGSCKEY value used to find SGSC</param>
+        /// <returns>List of related SGSC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSC> TryFindBySGSCKEY(string SGSCKEY)
+        {
+            IReadOnlyList<SGSC> value;
+            if (Index_SGSCKEY.Value.TryGetValue(SGSCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <returns>Related SGSC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGSC FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <param name="Value">Related SGSC entity</param>
+        /// <returns>True if the related SGSC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SGSC Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGSC</param>
+        /// <returns>Related SGSC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGSC TryFindByTID(int TID)
+        {
+            SGSC value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGSC by SULINK field
+        /// </summary>
+        /// <param name="SULINK">SULINK value used to find SGSC</param>
+        /// <returns>List of related SGSC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSC> FindBySULINK(string SULINK)
+        {
+            return Index_SULINK.Value[SULINK];
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by SULINK field
+        /// </summary>
+        /// <param name="SULINK">SULINK value used to find SGSC</param>
+        /// <param name="Value">List of related SGSC entities</param>
+        /// <returns>True if the list of related SGSC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySULINK(string SULINK, out IReadOnlyList<SGSC> Value)
+        {
+            return Index_SULINK.Value.TryGetValue(SULINK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGSC by SULINK field
+        /// </summary>
+        /// <param name="SULINK">SULINK value used to find SGSC</param>
+        /// <returns>List of related SGSC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGSC> TryFindBySULINK(string SULINK)
+        {
+            IReadOnlyList<SGSC> value;
+            if (Index_SULINK.Value.TryGetValue(SULINK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,128 +7,202 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Depreciation Methods
     /// </summary>
-    public partial class KADM : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KADM : EntityBase
     {
-#region Field Properties
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<AKC> Cache_KADMKEY_AKC_DEPN_AMETHOD;
+        private IReadOnlyList<AKC> Cache_KADMKEY_AKC_DEPN_TMETHOD;
+        private IReadOnlyList<AKCT> Cache_KADMKEY_AKCT_DEPN_TMETHOD;
+        private IReadOnlyList<AR> Cache_KADMKEY_AR_AMETHOD;
+        private IReadOnlyList<AR> Cache_KADMKEY_AR_TMETHOD;
+        private IReadOnlyList<ARF> Cache_KADMKEY_ARF_AMETHOD;
+        private IReadOnlyList<ARF> Cache_KADMKEY_ARF_TMETHOD;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Method Code
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string KADMKEY { get; internal set; }
+
         /// <summary>
         /// Method Description
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Detail description of calculation,
         /// eg. calculation examples
         /// [Memo]
         /// </summary>
         public string DETAIL { get; internal set; }
+
         /// <summary>
         /// Date-Based method Y/N?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DATE_BASED { get; internal set; }
+
         /// <summary>
         /// Is this method used for tax depreciation Y/N?
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string TAX { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Foreign Navigation Properties
 
         /// <summary>
-        /// AKC (Assets - Categories) related entities by [AKC.DEPN_AMETHOD]-&gt;[KADM.KADMKEY]
+        /// AKC (Assets - Categories) related entities by [KADM.KADMKEY]-&gt;[AKC.DEPN_AMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<AKC> AKC_DEPN_AMETHOD
+        public IReadOnlyList<AKC> KADMKEY_AKC_DEPN_AMETHOD
         {
             get
             {
-                return Context.KADM.FindAKCByDEPN_AMETHOD(KADMKEY);
+                if (Cache_KADMKEY_AKC_DEPN_AMETHOD == null &&
+                    !Context.AKC.TryFindByDEPN_AMETHOD(KADMKEY, out Cache_KADMKEY_AKC_DEPN_AMETHOD))
+                {
+                    Cache_KADMKEY_AKC_DEPN_AMETHOD = new List<AKC>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_AKC_DEPN_AMETHOD;
             }
         }
 
         /// <summary>
-        /// AKC (Assets - Categories) related entities by [AKC.DEPN_TMETHOD]-&gt;[KADM.KADMKEY]
+        /// AKC (Assets - Categories) related entities by [KADM.KADMKEY]-&gt;[AKC.DEPN_TMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<AKC> AKC_DEPN_TMETHOD
+        public IReadOnlyList<AKC> KADMKEY_AKC_DEPN_TMETHOD
         {
             get
             {
-                return Context.KADM.FindAKCByDEPN_TMETHOD(KADMKEY);
+                if (Cache_KADMKEY_AKC_DEPN_TMETHOD == null &&
+                    !Context.AKC.TryFindByDEPN_TMETHOD(KADMKEY, out Cache_KADMKEY_AKC_DEPN_TMETHOD))
+                {
+                    Cache_KADMKEY_AKC_DEPN_TMETHOD = new List<AKC>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_AKC_DEPN_TMETHOD;
             }
         }
 
         /// <summary>
-        /// AKCT (Assets - Categories Tax) related entities by [AKCT.DEPN_TMETHOD]-&gt;[KADM.KADMKEY]
+        /// AKCT (Assets - Categories Tax) related entities by [KADM.KADMKEY]-&gt;[AKCT.DEPN_TMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<AKCT> AKCT_DEPN_TMETHOD
+        public IReadOnlyList<AKCT> KADMKEY_AKCT_DEPN_TMETHOD
         {
             get
             {
-                return Context.KADM.FindAKCTByDEPN_TMETHOD(KADMKEY);
+                if (Cache_KADMKEY_AKCT_DEPN_TMETHOD == null &&
+                    !Context.AKCT.TryFindByDEPN_TMETHOD(KADMKEY, out Cache_KADMKEY_AKCT_DEPN_TMETHOD))
+                {
+                    Cache_KADMKEY_AKCT_DEPN_TMETHOD = new List<AKCT>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_AKCT_DEPN_TMETHOD;
             }
         }
 
         /// <summary>
-        /// AR (Assets) related entities by [AR.AMETHOD]-&gt;[KADM.KADMKEY]
+        /// AR (Assets) related entities by [KADM.KADMKEY]-&gt;[AR.AMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<AR> AR_AMETHOD
+        public IReadOnlyList<AR> KADMKEY_AR_AMETHOD
         {
             get
             {
-                return Context.KADM.FindARByAMETHOD(KADMKEY);
+                if (Cache_KADMKEY_AR_AMETHOD == null &&
+                    !Context.AR.TryFindByAMETHOD(KADMKEY, out Cache_KADMKEY_AR_AMETHOD))
+                {
+                    Cache_KADMKEY_AR_AMETHOD = new List<AR>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_AR_AMETHOD;
             }
         }
 
         /// <summary>
-        /// AR (Assets) related entities by [AR.TMETHOD]-&gt;[KADM.KADMKEY]
+        /// AR (Assets) related entities by [KADM.KADMKEY]-&gt;[AR.TMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<AR> AR_TMETHOD
+        public IReadOnlyList<AR> KADMKEY_AR_TMETHOD
         {
             get
             {
-                return Context.KADM.FindARByTMETHOD(KADMKEY);
+                if (Cache_KADMKEY_AR_TMETHOD == null &&
+                    !Context.AR.TryFindByTMETHOD(KADMKEY, out Cache_KADMKEY_AR_TMETHOD))
+                {
+                    Cache_KADMKEY_AR_TMETHOD = new List<AR>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_AR_TMETHOD;
             }
         }
 
         /// <summary>
-        /// ARF (Asset Financial Transactions) related entities by [ARF.AMETHOD]-&gt;[KADM.KADMKEY]
+        /// ARF (Asset Financial Transactions) related entities by [KADM.KADMKEY]-&gt;[ARF.AMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<ARF> ARF_AMETHOD
+        public IReadOnlyList<ARF> KADMKEY_ARF_AMETHOD
         {
             get
             {
-                return Context.KADM.FindARFByAMETHOD(KADMKEY);
+                if (Cache_KADMKEY_ARF_AMETHOD == null &&
+                    !Context.ARF.TryFindByAMETHOD(KADMKEY, out Cache_KADMKEY_ARF_AMETHOD))
+                {
+                    Cache_KADMKEY_ARF_AMETHOD = new List<ARF>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_ARF_AMETHOD;
             }
         }
 
         /// <summary>
-        /// ARF (Asset Financial Transactions) related entities by [ARF.TMETHOD]-&gt;[KADM.KADMKEY]
+        /// ARF (Asset Financial Transactions) related entities by [KADM.KADMKEY]-&gt;[ARF.TMETHOD]
+        /// Method Code
         /// </summary>
-        public IReadOnlyList<ARF> ARF_TMETHOD
+        public IReadOnlyList<ARF> KADMKEY_ARF_TMETHOD
         {
             get
             {
-                return Context.KADM.FindARFByTMETHOD(KADMKEY);
+                if (Cache_KADMKEY_ARF_TMETHOD == null &&
+                    !Context.ARF.TryFindByTMETHOD(KADMKEY, out Cache_KADMKEY_ARF_TMETHOD))
+                {
+                    Cache_KADMKEY_ARF_TMETHOD = new List<ARF>().AsReadOnly();
+                }
+
+                return Cache_KADMKEY_ARF_TMETHOD;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

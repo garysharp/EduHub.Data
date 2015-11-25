@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,67 +7,82 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects per Home Group
     /// </summary>
-    public partial class SSHG : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SSHG : EntityBase
     {
-#region Navigation Property Cache
-        private KGC _HOMEGROUP_KGC;
-        private SS _SUBJECT_SS;
-        private SF _TEACHER_SF;
-        private ST _STUDENT_ST;
-        private KGC _TEACHING_HG_KGC;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private KGC Cache_HOMEGROUP_KGC;
+        private SS Cache_SUBJECT_SS;
+        private SF Cache_TEACHER_SF;
+        private ST Cache_STUDENT_ST;
+        private KGC Cache_TEACHING_HG_KGC;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Record identifier
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Home group ID
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string HOMEGROUP { get; internal set; }
+
         /// <summary>
         /// Subject ID
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string SUBJECT { get; internal set; }
+
         /// <summary>
         /// Teacher ID
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER { get; internal set; }
+
         /// <summary>
         /// Student ID
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string STUDENT { get; internal set; }
+
         /// <summary>
         /// IN or OUT
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string VARIATION { get; internal set; }
+
         /// <summary>
         /// ID of home group with which an IN variation will be taken. ZZZ otherwise.
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string TEACHING_HG { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// KGC (Home Groups) related entity by [SSHG.HOMEGROUP]-&gt;[KGC.KGCKEY]
@@ -76,18 +92,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (HOMEGROUP != null)
-                {
-                    if (_HOMEGROUP_KGC == null)
-                    {
-                        _HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(HOMEGROUP);
-                    }
-                    return _HOMEGROUP_KGC;
-                }
-                else
+                if (HOMEGROUP == null)
                 {
                     return null;
                 }
+                if (Cache_HOMEGROUP_KGC == null)
+                {
+                    Cache_HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(HOMEGROUP);
+                }
+
+                return Cache_HOMEGROUP_KGC;
             }
         }
 
@@ -99,18 +113,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJECT != null)
+                if (Cache_SUBJECT_SS == null)
                 {
-                    if (_SUBJECT_SS == null)
-                    {
-                        _SUBJECT_SS = Context.SS.FindBySSKEY(SUBJECT);
-                    }
-                    return _SUBJECT_SS;
+                    Cache_SUBJECT_SS = Context.SS.FindBySSKEY(SUBJECT);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SUBJECT_SS;
             }
         }
 
@@ -122,18 +130,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER != null)
-                {
-                    if (_TEACHER_SF == null)
-                    {
-                        _TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
-                    }
-                    return _TEACHER_SF;
-                }
-                else
+                if (TEACHER == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_SF == null)
+                {
+                    Cache_TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
+                }
+
+                return Cache_TEACHER_SF;
             }
         }
 
@@ -145,18 +151,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (STUDENT != null)
-                {
-                    if (_STUDENT_ST == null)
-                    {
-                        _STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
-                    }
-                    return _STUDENT_ST;
-                }
-                else
+                if (STUDENT == null)
                 {
                     return null;
                 }
+                if (Cache_STUDENT_ST == null)
+                {
+                    Cache_STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
+                }
+
+                return Cache_STUDENT_ST;
             }
         }
 
@@ -168,20 +172,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHING_HG != null)
-                {
-                    if (_TEACHING_HG_KGC == null)
-                    {
-                        _TEACHING_HG_KGC = Context.KGC.FindByKGCKEY(TEACHING_HG);
-                    }
-                    return _TEACHING_HG_KGC;
-                }
-                else
+                if (TEACHING_HG == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHING_HG_KGC == null)
+                {
+                    Cache_TEACHING_HG_KGC = Context.KGC.FindByKGCKEY(TEACHING_HG);
+                }
+
+                return Cache_TEACHING_HG_KGC;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

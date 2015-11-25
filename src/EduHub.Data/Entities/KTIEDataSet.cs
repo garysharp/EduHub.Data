@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Import Errors Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KTIEDataSet : SetBase<KTIE>
     {
-        private Lazy<Dictionary<int, KTIE>> RECORD_IDIndex;
-
-
-        internal KTIEDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            RECORD_IDIndex = new Lazy<Dictionary<int, KTIE>>(() => this.ToDictionary(e => e.RECORD_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KTIE"; } }
 
-        /// <summary>
-        /// Find KTIE by RECORD_ID key field
-        /// </summary>
-        /// <param name="Key">RECORD_ID value used to find KTIE</param>
-        /// <returns>Related KTIE entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">RECORD_ID value didn't match any KTIE entities</exception>
-        public KTIE FindByRECORD_ID(int Key)
+        internal KTIEDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KTIE result;
-            if (RECORD_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_RECORD_ID = new Lazy<Dictionary<int, KTIE>>(() => this.ToDictionary(i => i.RECORD_ID));
         }
-
-        /// <summary>
-        /// Attempt to find KTIE by RECORD_ID key field
-        /// </summary>
-        /// <param name="Key">RECORD_ID value used to find KTIE</param>
-        /// <param name="Value">Related KTIE entity</param>
-        /// <returns>True if the KTIE entity is found</returns>
-        public bool TryFindByRECORD_ID(int Key, out KTIE Value)
-        {
-            return RECORD_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KTIE by RECORD_ID key field
-        /// </summary>
-        /// <param name="Key">RECORD_ID value used to find KTIE</param>
-        /// <returns>Related KTIE entity, or null if not found</returns>
-        public KTIE TryFindByRECORD_ID(int Key)
-        {
-            KTIE result;
-            if (RECORD_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KTIE" />
@@ -105,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KTIE>> Index_RECORD_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KTIE by RECORD_ID field
+        /// </summary>
+        /// <param name="RECORD_ID">RECORD_ID value used to find KTIE</param>
+        /// <returns>Related KTIE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTIE FindByRECORD_ID(int RECORD_ID)
+        {
+            return Index_RECORD_ID.Value[RECORD_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KTIE by RECORD_ID field
+        /// </summary>
+        /// <param name="RECORD_ID">RECORD_ID value used to find KTIE</param>
+        /// <param name="Value">Related KTIE entity</param>
+        /// <returns>True if the related KTIE entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByRECORD_ID(int RECORD_ID, out KTIE Value)
+        {
+            return Index_RECORD_ID.Value.TryGetValue(RECORD_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTIE by RECORD_ID field
+        /// </summary>
+        /// <param name="RECORD_ID">RECORD_ID value used to find KTIE</param>
+        /// <returns>Related KTIE entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTIE TryFindByRECORD_ID(int RECORD_ID)
+        {
+            KTIE value;
+            if (Index_RECORD_ID.Value.TryGetValue(RECORD_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

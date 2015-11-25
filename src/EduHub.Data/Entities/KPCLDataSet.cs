@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contact Links Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPCLDataSet : SetBase<KPCL>
     {
-        private Lazy<Dictionary<int, KPCL>> KPCLKEYIndex;
-
-
-        internal KPCLDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KPCLKEYIndex = new Lazy<Dictionary<int, KPCL>>(() => this.ToDictionary(e => e.KPCLKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KPCL"; } }
 
-        /// <summary>
-        /// Find KPCL by KPCLKEY key field
-        /// </summary>
-        /// <param name="Key">KPCLKEY value used to find KPCL</param>
-        /// <returns>Related KPCL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KPCLKEY value didn't match any KPCL entities</exception>
-        public KPCL FindByKPCLKEY(int Key)
+        internal KPCLDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KPCL result;
-            if (KPCLKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KPCLKEY = new Lazy<Dictionary<int, KPCL>>(() => this.ToDictionary(i => i.KPCLKEY));
+            Index_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<KPCL>>>(() => this.ToGroupedNullDictionary(i => i.CONTACT));
+            Index_CONTACT_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<KPCL>>>(() => this.ToGroupedNullDictionary(i => i.CONTACT_TYPE));
         }
-
-        /// <summary>
-        /// Attempt to find KPCL by KPCLKEY key field
-        /// </summary>
-        /// <param name="Key">KPCLKEY value used to find KPCL</param>
-        /// <param name="Value">Related KPCL entity</param>
-        /// <returns>True if the KPCL entity is found</returns>
-        public bool TryFindByKPCLKEY(int Key, out KPCL Value)
-        {
-            return KPCLKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KPCL by KPCLKEY key field
-        /// </summary>
-        /// <param name="Key">KPCLKEY value used to find KPCL</param>
-        /// <returns>Related KPCL entity, or null if not found</returns>
-        public KPCL TryFindByKPCLKEY(int Key)
-        {
-            KPCL result;
-            if (KPCLKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KPCL" />
@@ -120,5 +70,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KPCL>> Index_KPCLKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KPCL>>> Index_CONTACT;
+        private Lazy<NullDictionary<string, IReadOnlyList<KPCL>>> Index_CONTACT_TYPE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KPCL by KPCLKEY field
+        /// </summary>
+        /// <param name="KPCLKEY">KPCLKEY value used to find KPCL</param>
+        /// <returns>Related KPCL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPCL FindByKPCLKEY(int KPCLKEY)
+        {
+            return Index_KPCLKEY.Value[KPCLKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by KPCLKEY field
+        /// </summary>
+        /// <param name="KPCLKEY">KPCLKEY value used to find KPCL</param>
+        /// <param name="Value">Related KPCL entity</param>
+        /// <returns>True if the related KPCL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKPCLKEY(int KPCLKEY, out KPCL Value)
+        {
+            return Index_KPCLKEY.Value.TryGetValue(KPCLKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by KPCLKEY field
+        /// </summary>
+        /// <param name="KPCLKEY">KPCLKEY value used to find KPCL</param>
+        /// <returns>Related KPCL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPCL TryFindByKPCLKEY(int KPCLKEY)
+        {
+            KPCL value;
+            if (Index_KPCLKEY.Value.TryGetValue(KPCLKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KPCL by CONTACT field
+        /// </summary>
+        /// <param name="CONTACT">CONTACT value used to find KPCL</param>
+        /// <returns>List of related KPCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KPCL> FindByCONTACT(string CONTACT)
+        {
+            return Index_CONTACT.Value[CONTACT];
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by CONTACT field
+        /// </summary>
+        /// <param name="CONTACT">CONTACT value used to find KPCL</param>
+        /// <param name="Value">List of related KPCL entities</param>
+        /// <returns>True if the list of related KPCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCONTACT(string CONTACT, out IReadOnlyList<KPCL> Value)
+        {
+            return Index_CONTACT.Value.TryGetValue(CONTACT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by CONTACT field
+        /// </summary>
+        /// <param name="CONTACT">CONTACT value used to find KPCL</param>
+        /// <returns>List of related KPCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KPCL> TryFindByCONTACT(string CONTACT)
+        {
+            IReadOnlyList<KPCL> value;
+            if (Index_CONTACT.Value.TryGetValue(CONTACT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KPCL by CONTACT_TYPE field
+        /// </summary>
+        /// <param name="CONTACT_TYPE">CONTACT_TYPE value used to find KPCL</param>
+        /// <returns>List of related KPCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KPCL> FindByCONTACT_TYPE(string CONTACT_TYPE)
+        {
+            return Index_CONTACT_TYPE.Value[CONTACT_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by CONTACT_TYPE field
+        /// </summary>
+        /// <param name="CONTACT_TYPE">CONTACT_TYPE value used to find KPCL</param>
+        /// <param name="Value">List of related KPCL entities</param>
+        /// <returns>True if the list of related KPCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCONTACT_TYPE(string CONTACT_TYPE, out IReadOnlyList<KPCL> Value)
+        {
+            return Index_CONTACT_TYPE.Value.TryGetValue(CONTACT_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPCL by CONTACT_TYPE field
+        /// </summary>
+        /// <param name="CONTACT_TYPE">CONTACT_TYPE value used to find KPCL</param>
+        /// <returns>List of related KPCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KPCL> TryFindByCONTACT_TYPE(string CONTACT_TYPE)
+        {
+            IReadOnlyList<KPCL> value;
+            if (Index_CONTACT_TYPE.Value.TryGetValue(CONTACT_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

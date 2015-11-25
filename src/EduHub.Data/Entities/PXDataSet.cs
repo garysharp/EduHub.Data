@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Tax Scales Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PXDataSet : SetBase<PX>
     {
-        private Lazy<Dictionary<short, PX>> PXKEYIndex;
-
-        private Lazy<Dictionary<short, IReadOnlyList<PE>>> PE_TAXCODEForeignIndex;
-
-        internal PXDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PXKEYIndex = new Lazy<Dictionary<short, PX>>(() => this.ToDictionary(e => e.PXKEY));
-
-            PE_TAXCODEForeignIndex =
-                new Lazy<Dictionary<short, IReadOnlyList<PE>>>(() =>
-                    Context.PE
-                          .Where(e => e.TAXCODE != null)
-                          .GroupBy(e => e.TAXCODE.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PX"; } }
 
-        /// <summary>
-        /// Find PX by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX</param>
-        /// <returns>Related PX entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PXKEY value didn't match any PX entities</exception>
-        public PX FindByPXKEY(short Key)
+        internal PXDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PX result;
-            if (PXKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PXKEY = new Lazy<Dictionary<short, PX>>(() => this.ToDictionary(i => i.PXKEY));
         }
-
-        /// <summary>
-        /// Attempt to find PX by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX</param>
-        /// <param name="Value">Related PX entity</param>
-        /// <returns>True if the PX entity is found</returns>
-        public bool TryFindByPXKEY(short Key, out PX Value)
-        {
-            return PXKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PX by PXKEY key field
-        /// </summary>
-        /// <param name="Key">PXKEY value used to find PX</param>
-        /// <returns>Related PX entity, or null if not found</returns>
-        public PX TryFindByPXKEY(short Key)
-        {
-            PX result;
-            if (PXKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all PE (Employees) entities by [PE.TAXCODE]-&gt;[PX.PXKEY]
-        /// </summary>
-        /// <param name="PXKEY">PXKEY value used to find PE entities</param>
-        /// <returns>A list of related PE entities</returns>
-        public IReadOnlyList<PE> FindPEByTAXCODE(short PXKEY)
-        {
-            IReadOnlyList<PE> result;
-            if (PE_TAXCODEForeignIndex.Value.TryGetValue(PXKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PE entities by [PE.TAXCODE]-&gt;[PX.PXKEY]
-        /// </summary>
-        /// <param name="PXKEY">PXKEY value used to find PE entities</param>
-        /// <param name="Value">A list of related PE entities</param>
-        /// <returns>True if any PE entities are found</returns>
-        public bool TryFindPEByTAXCODE(short PXKEY, out IReadOnlyList<PE> Value)
-        {
-            return PE_TAXCODEForeignIndex.Value.TryGetValue(PXKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PX" />
@@ -335,5 +245,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<short, PX>> Index_PXKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PX by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX</param>
+        /// <returns>Related PX entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PX FindByPXKEY(short PXKEY)
+        {
+            return Index_PXKEY.Value[PXKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PX by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX</param>
+        /// <param name="Value">Related PX entity</param>
+        /// <returns>True if the related PX entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPXKEY(short PXKEY, out PX Value)
+        {
+            return Index_PXKEY.Value.TryGetValue(PXKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PX by PXKEY field
+        /// </summary>
+        /// <param name="PXKEY">PXKEY value used to find PX</param>
+        /// <returns>Related PX entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PX TryFindByPXKEY(short PXKEY)
+        {
+            PX value;
+            if (Index_PXKEY.Value.TryGetValue(PXKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

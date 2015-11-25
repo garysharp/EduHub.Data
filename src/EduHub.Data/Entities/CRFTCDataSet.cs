@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Creditor Fuel Tax Credits Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class CRFTCDataSet : SetBase<CRFTC>
     {
-        private Lazy<Dictionary<string, CRFTC>> TRREFIndex;
-
-
-        internal CRFTCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TRREFIndex = new Lazy<Dictionary<string, CRFTC>>(() => this.ToDictionary(e => e.TRREF));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "CRFTC"; } }
 
-        /// <summary>
-        /// Find CRFTC by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find CRFTC</param>
-        /// <returns>Related CRFTC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any CRFTC entities</exception>
-        public CRFTC FindByTRREF(string Key)
+        internal CRFTCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            CRFTC result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, CRFTC>>(() => this.ToDictionary(i => i.TID));
+            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
+            Index_FTC_CODE = new Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>>(() => this.ToGroupedNullDictionary(i => i.FTC_CODE));
         }
-
-        /// <summary>
-        /// Attempt to find CRFTC by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find CRFTC</param>
-        /// <param name="Value">Related CRFTC entity</param>
-        /// <returns>True if the CRFTC entity is found</returns>
-        public bool TryFindByTRREF(string Key, out CRFTC Value)
-        {
-            return TRREFIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CRFTC by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find CRFTC</param>
-        /// <returns>Related CRFTC entity, or null if not found</returns>
-        public CRFTC TryFindByTRREF(string Key)
-        {
-            CRFTC result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="CRFTC" />
@@ -86,7 +37,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -141,5 +92,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> Index_CODE;
+        private Lazy<Dictionary<int, CRFTC>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>> Index_TRREF;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRFTC>>> Index_FTC_CODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find CRFTC by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRFTC</param>
+        /// <param name="Value">List of related CRFTC entities</param>
+        /// <returns>True if the list of related CRFTC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<CRFTC> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<CRFTC> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRFTC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find CRFTC</param>
+        /// <returns>Related CRFTC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CRFTC FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find CRFTC</param>
+        /// <param name="Value">Related CRFTC entity</param>
+        /// <returns>True if the related CRFTC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out CRFTC Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find CRFTC</param>
+        /// <returns>Related CRFTC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CRFTC TryFindByTID(int TID)
+        {
+            CRFTC value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRFTC by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> FindByTRREF(string TRREF)
+        {
+            return Index_TRREF.Value[TRREF];
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find CRFTC</param>
+        /// <param name="Value">List of related CRFTC entities</param>
+        /// <returns>True if the list of related CRFTC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<CRFTC> Value)
+        {
+            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> TryFindByTRREF(string TRREF)
+        {
+            IReadOnlyList<CRFTC> value;
+            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> FindByFTC_CODE(string FTC_CODE)
+        {
+            return Index_FTC_CODE.Value[FTC_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <param name="Value">List of related CRFTC entities</param>
+        /// <returns>True if the list of related CRFTC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFTC_CODE(string FTC_CODE, out IReadOnlyList<CRFTC> Value)
+        {
+            return Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRFTC by FTC_CODE field
+        /// </summary>
+        /// <param name="FTC_CODE">FTC_CODE value used to find CRFTC</param>
+        /// <returns>List of related CRFTC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRFTC> TryFindByFTC_CODE(string FTC_CODE)
+        {
+            IReadOnlyList<CRFTC> value;
+            if (Index_FTC_CODE.Value.TryGetValue(FTC_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

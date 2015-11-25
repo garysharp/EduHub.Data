@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Temporary Group Transactions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SGTRXDataSet : SetBase<SGTRX>
     {
-
-
-        internal SGTRXDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SGTRX"; } }
 
+        internal SGTRXDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SGTRXKEY = new Lazy<Dictionary<string, IReadOnlyList<SGTRX>>>(() => this.ToGroupedDictionary(i => i.SGTRXKEY));
+            Index_TID = new Lazy<Dictionary<int, SGTRX>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SGTRX" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SGTRXKEY":
                         mapper[i] = (e, v) => e.SGTRXKEY = v;
@@ -76,5 +75,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SGTRX>>> Index_SGTRXKEY;
+        private Lazy<Dictionary<int, SGTRX>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SGTRX by SGTRXKEY field
+        /// </summary>
+        /// <param name="SGTRXKEY">SGTRXKEY value used to find SGTRX</param>
+        /// <returns>List of related SGTRX entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGTRX> FindBySGTRXKEY(string SGTRXKEY)
+        {
+            return Index_SGTRXKEY.Value[SGTRXKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SGTRX by SGTRXKEY field
+        /// </summary>
+        /// <param name="SGTRXKEY">SGTRXKEY value used to find SGTRX</param>
+        /// <param name="Value">List of related SGTRX entities</param>
+        /// <returns>True if the list of related SGTRX entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGTRXKEY(string SGTRXKEY, out IReadOnlyList<SGTRX> Value)
+        {
+            return Index_SGTRXKEY.Value.TryGetValue(SGTRXKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGTRX by SGTRXKEY field
+        /// </summary>
+        /// <param name="SGTRXKEY">SGTRXKEY value used to find SGTRX</param>
+        /// <returns>List of related SGTRX entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SGTRX> TryFindBySGTRXKEY(string SGTRXKEY)
+        {
+            IReadOnlyList<SGTRX> value;
+            if (Index_SGTRXKEY.Value.TryGetValue(SGTRXKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SGTRX by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGTRX</param>
+        /// <returns>Related SGTRX entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGTRX FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SGTRX by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGTRX</param>
+        /// <param name="Value">Related SGTRX entity</param>
+        /// <returns>True if the related SGTRX entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SGTRX Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SGTRX by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SGTRX</param>
+        /// <returns>Related SGTRX entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SGTRX TryFindByTID(int TID)
+        {
+            SGTRX value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

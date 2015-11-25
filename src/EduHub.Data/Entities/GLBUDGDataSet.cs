@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Budgets Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLBUDGDataSet : SetBase<GLBUDG>
     {
-        private Lazy<Dictionary<string, GLBUDG>> BUDGETKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<GLFBUDG>>> GLFBUDG_BKEYForeignIndex;
-
-        internal GLBUDGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            BUDGETKEYIndex = new Lazy<Dictionary<string, GLBUDG>>(() => this.ToDictionary(e => e.BUDGETKEY));
-
-            GLFBUDG_BKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<GLFBUDG>>>(() =>
-                    Context.GLFBUDG
-                          .Where(e => e.BKEY != null)
-                          .GroupBy(e => e.BKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFBUDG>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "GLBUDG"; } }
 
-        /// <summary>
-        /// Find GLBUDG by BUDGETKEY key field
-        /// </summary>
-        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
-        /// <returns>Related GLBUDG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">BUDGETKEY value didn't match any GLBUDG entities</exception>
-        public GLBUDG FindByBUDGETKEY(string Key)
+        internal GLBUDGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            GLBUDG result;
-            if (BUDGETKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_BUDGETKEY = new Lazy<Dictionary<string, GLBUDG>>(() => this.ToDictionary(i => i.BUDGETKEY));
+            Index_CODE = new Lazy<NullDictionary<string, IReadOnlyList<GLBUDG>>>(() => this.ToGroupedNullDictionary(i => i.CODE));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<GLBUDG>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find GLBUDG by BUDGETKEY key field
-        /// </summary>
-        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
-        /// <param name="Value">Related GLBUDG entity</param>
-        /// <returns>True if the GLBUDG entity is found</returns>
-        public bool TryFindByBUDGETKEY(string Key, out GLBUDG Value)
-        {
-            return BUDGETKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLBUDG by BUDGETKEY key field
-        /// </summary>
-        /// <param name="Key">BUDGETKEY value used to find GLBUDG</param>
-        /// <returns>Related GLBUDG entity, or null if not found</returns>
-        public GLBUDG TryFindByBUDGETKEY(string Key)
-        {
-            GLBUDG result;
-            if (BUDGETKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all GLFBUDG (SP2 dummy table) entities by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
-        /// </summary>
-        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLFBUDG entities</param>
-        /// <returns>A list of related GLFBUDG entities</returns>
-        public IReadOnlyList<GLFBUDG> FindGLFBUDGByBKEY(string BUDGETKEY)
-        {
-            IReadOnlyList<GLFBUDG> result;
-            if (GLFBUDG_BKEYForeignIndex.Value.TryGetValue(BUDGETKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<GLFBUDG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all GLFBUDG entities by [GLFBUDG.BKEY]-&gt;[GLBUDG.BUDGETKEY]
-        /// </summary>
-        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLFBUDG entities</param>
-        /// <param name="Value">A list of related GLFBUDG entities</param>
-        /// <returns>True if any GLFBUDG entities are found</returns>
-        public bool TryFindGLFBUDGByBKEY(string BUDGETKEY, out IReadOnlyList<GLFBUDG> Value)
-        {
-            return GLFBUDG_BKEYForeignIndex.Value.TryGetValue(BUDGETKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="GLBUDG" />
@@ -353,5 +265,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, GLBUDG>> Index_BUDGETKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLBUDG>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLBUDG>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find GLBUDG by BUDGETKEY field
+        /// </summary>
+        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLBUDG</param>
+        /// <returns>Related GLBUDG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBUDG FindByBUDGETKEY(string BUDGETKEY)
+        {
+            return Index_BUDGETKEY.Value[BUDGETKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by BUDGETKEY field
+        /// </summary>
+        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLBUDG</param>
+        /// <param name="Value">Related GLBUDG entity</param>
+        /// <returns>True if the related GLBUDG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBUDGETKEY(string BUDGETKEY, out GLBUDG Value)
+        {
+            return Index_BUDGETKEY.Value.TryGetValue(BUDGETKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by BUDGETKEY field
+        /// </summary>
+        /// <param name="BUDGETKEY">BUDGETKEY value used to find GLBUDG</param>
+        /// <returns>Related GLBUDG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBUDG TryFindByBUDGETKEY(string BUDGETKEY)
+        {
+            GLBUDG value;
+            if (Index_BUDGETKEY.Value.TryGetValue(BUDGETKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLBUDG by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLBUDG</param>
+        /// <returns>List of related GLBUDG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBUDG> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLBUDG</param>
+        /// <param name="Value">List of related GLBUDG entities</param>
+        /// <returns>True if the list of related GLBUDG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<GLBUDG> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLBUDG</param>
+        /// <returns>List of related GLBUDG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBUDG> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<GLBUDG> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLBUDG by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLBUDG</param>
+        /// <returns>List of related GLBUDG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBUDG> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLBUDG</param>
+        /// <param name="Value">List of related GLBUDG entities</param>
+        /// <returns>True if the list of related GLBUDG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<GLBUDG> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBUDG by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLBUDG</param>
+        /// <returns>List of related GLBUDG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBUDG> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<GLBUDG> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

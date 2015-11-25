@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Assets - Categories Tax Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class AKCTDataSet : SetBase<AKCT>
     {
-        private Lazy<Dictionary<string, AKCT>> CATEGORYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_TAX_CATEGORYForeignIndex;
-
-        internal AKCTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            CATEGORYIndex = new Lazy<Dictionary<string, AKCT>>(() => this.ToDictionary(e => e.CATEGORY));
-
-            AR_TAX_CATEGORYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
-                    Context.AR
-                          .Where(e => e.TAX_CATEGORY != null)
-                          .GroupBy(e => e.TAX_CATEGORY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "AKCT"; } }
 
-        /// <summary>
-        /// Find AKCT by CATEGORY key field
-        /// </summary>
-        /// <param name="Key">CATEGORY value used to find AKCT</param>
-        /// <returns>Related AKCT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">CATEGORY value didn't match any AKCT entities</exception>
-        public AKCT FindByCATEGORY(string Key)
+        internal AKCTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            AKCT result;
-            if (CATEGORYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CATEGORY = new Lazy<Dictionary<string, AKCT>>(() => this.ToDictionary(i => i.CATEGORY));
+            Index_DEPN_TMETHOD = new Lazy<NullDictionary<string, IReadOnlyList<AKCT>>>(() => this.ToGroupedNullDictionary(i => i.DEPN_TMETHOD));
         }
-
-        /// <summary>
-        /// Attempt to find AKCT by CATEGORY key field
-        /// </summary>
-        /// <param name="Key">CATEGORY value used to find AKCT</param>
-        /// <param name="Value">Related AKCT entity</param>
-        /// <returns>True if the AKCT entity is found</returns>
-        public bool TryFindByCATEGORY(string Key, out AKCT Value)
-        {
-            return CATEGORYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AKCT by CATEGORY key field
-        /// </summary>
-        /// <param name="Key">CATEGORY value used to find AKCT</param>
-        /// <returns>Related AKCT entity, or null if not found</returns>
-        public AKCT TryFindByCATEGORY(string Key)
-        {
-            AKCT result;
-            if (CATEGORYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all AR (Assets) entities by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
-        /// </summary>
-        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
-        /// <returns>A list of related AR entities</returns>
-        public IReadOnlyList<AR> FindARByTAX_CATEGORY(string CATEGORY)
-        {
-            IReadOnlyList<AR> result;
-            if (AR_TAX_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<AR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all AR entities by [AR.TAX_CATEGORY]-&gt;[AKCT.CATEGORY]
-        /// </summary>
-        /// <param name="CATEGORY">CATEGORY value used to find AR entities</param>
-        /// <param name="Value">A list of related AR entities</param>
-        /// <returns>True if any AR entities are found</returns>
-        public bool TryFindARByTAX_CATEGORY(string CATEGORY, out IReadOnlyList<AR> Value)
-        {
-            return AR_TAX_CATEGORYForeignIndex.Value.TryGetValue(CATEGORY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="AKCT" />
@@ -152,5 +63,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, AKCT>> Index_CATEGORY;
+        private Lazy<NullDictionary<string, IReadOnlyList<AKCT>>> Index_DEPN_TMETHOD;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find AKCT by CATEGORY field
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AKCT</param>
+        /// <returns>Related AKCT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKCT FindByCATEGORY(string CATEGORY)
+        {
+            return Index_CATEGORY.Value[CATEGORY];
+        }
+
+        /// <summary>
+        /// Attempt to find AKCT by CATEGORY field
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AKCT</param>
+        /// <param name="Value">Related AKCT entity</param>
+        /// <returns>True if the related AKCT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCATEGORY(string CATEGORY, out AKCT Value)
+        {
+            return Index_CATEGORY.Value.TryGetValue(CATEGORY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AKCT by CATEGORY field
+        /// </summary>
+        /// <param name="CATEGORY">CATEGORY value used to find AKCT</param>
+        /// <returns>Related AKCT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKCT TryFindByCATEGORY(string CATEGORY)
+        {
+            AKCT value;
+            if (Index_CATEGORY.Value.TryGetValue(CATEGORY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find AKCT by DEPN_TMETHOD field
+        /// </summary>
+        /// <param name="DEPN_TMETHOD">DEPN_TMETHOD value used to find AKCT</param>
+        /// <returns>List of related AKCT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AKCT> FindByDEPN_TMETHOD(string DEPN_TMETHOD)
+        {
+            return Index_DEPN_TMETHOD.Value[DEPN_TMETHOD];
+        }
+
+        /// <summary>
+        /// Attempt to find AKCT by DEPN_TMETHOD field
+        /// </summary>
+        /// <param name="DEPN_TMETHOD">DEPN_TMETHOD value used to find AKCT</param>
+        /// <param name="Value">List of related AKCT entities</param>
+        /// <returns>True if the list of related AKCT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDEPN_TMETHOD(string DEPN_TMETHOD, out IReadOnlyList<AKCT> Value)
+        {
+            return Index_DEPN_TMETHOD.Value.TryGetValue(DEPN_TMETHOD, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AKCT by DEPN_TMETHOD field
+        /// </summary>
+        /// <param name="DEPN_TMETHOD">DEPN_TMETHOD value used to find AKCT</param>
+        /// <returns>List of related AKCT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AKCT> TryFindByDEPN_TMETHOD(string DEPN_TMETHOD)
+        {
+            IReadOnlyList<AKCT> value;
+            if (Index_DEPN_TMETHOD.Value.TryGetValue(DEPN_TMETHOD, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

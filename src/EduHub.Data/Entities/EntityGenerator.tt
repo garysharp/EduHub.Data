@@ -15,24 +15,21 @@
 <#
     var manager = TemplateFileManager.Create(this);
     manager.IsAutoIndentEnabled = false;
-    var schema = RetrieveEntitiesFromSchema(this.Host.ResolvePath(@"..\CASES21v56 Schema.xml"));
-    foreach (var entity in schema)
+#>
+<#
+    // Load Schema
+    var schema = LoadSchema(this.Host.ResolvePath(@"..\CASES21v56 Schema v2.xml"));
+#>
+<#
+    // Iterate Entities
+    foreach (EduHubEntity entity in schema.Entities)
     {
-        var foreignDependanciesFields = schema
-            .SelectMany(e => e.Fields, (e,f) => Tuple.Create(e, f))
-            .Where(r => r.Item2.RelationshipEntity == entity.Name)
-            .Select(r => Tuple.Create(r.Item1, r.Item2, entity.Fields.First(f => f.Name == r.Item2.RelationshipField)))
-            .ToList();
-
-        var keyFields = entity.Fields.Where(f => f.IsKey).ToList();
-
-        var foreignFields = entity.Fields.Where(f => f.RelationshipEntity != null).ToList();
-
+        // Write Entity DataSet Code
         manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
-        #>
+#>
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -40,151 +37,33 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #> Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class <#= entity.Name #>DataSet : SetBase<<#= entity.Name #>>
     {
-<#
-        foreach (var field in keyFields)
-        {
-#>
-        private Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>> <#= field.Name #>Index;
-<#
-        }
-#>
-
-<#
-        foreach (var dependantField in foreignDependanciesFields)
-        {
-#>
-        private Lazy<Dictionary<<#= dependantField.Item3.TypeName #>, IReadOnlyList<<#= dependantField.Item1.Name #>>>> <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex;
-<#
-        }
-#>
-
-        internal <#= entity.Name #>DataSet(EduHubContext Context)
-            : base(Context)
-        {
-<#
-        foreach (var field in keyFields)
-        {
-#>
-            <#= field.Name #>Index = new Lazy<Dictionary<<#= field.TypeName #>, <#= entity.Name #>>>(() => this.ToDictionary(e => e.<#= field.Name #>));
-<#
-        }
-#>
-
-<#
-        foreach (var dependantField in foreignDependanciesFields)
-        {
-#>
-            <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex =
-                new Lazy<Dictionary<<#= dependantField.Item3.TypeName #>, IReadOnlyList<<#= dependantField.Item1.Name #>>>>(() =>
-                    Context.<#= dependantField.Item1.Name #>
-                          .Where(e => e.<#= dependantField.Item2.Name #> != null)
-                          .GroupBy(e => e.<#= dependantField.Item2.Name #><#= dependantField.Item2.TypeName.EndsWith("?") ? ".Value" : "" #>)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<<#= dependantField.Item1.Name #>>)g.ToList()
-                          .AsReadOnly()));
-
-<#
-        }
-#>
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "<#= entity.Name #>"; } }
 
+        internal <#= entity.Name #>DataSet(EduHubContext Context)
+            : base(Context)
+        {
 <#
-        foreach (var field in keyFields)
+        if (entity.Indexes.Count > 0)
         {
 #>
-        /// <summary>
-        /// Find <#= entity.Name #> by <#= field.Name #> key field
-        /// </summary>
-        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
-        /// <returns>Related <#= entity.Name #> entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><#= field.Name #> value didn't match any <#= entity.Name #> entities</exception>
-        public <#= entity.Name #> FindBy<#= field.Name #>(<#= field.TypeName #> Key)
-        {
-            <#= entity.Name #> result;
-            if (<#= field.Name #>Index.Value.TryGetValue(Key, out result))
+<#
+            foreach (EduHubIndex index in entity.Indexes)
             {
-                return result;
+#>
+            <#= index.IndexBuilder #>;
+<#
             }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find <#= entity.Name #> by <#= field.Name #> key field
-        /// </summary>
-        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
-        /// <param name="Value">Related <#= entity.Name #> entity</param>
-        /// <returns>True if the <#= entity.Name #> entity is found</returns>
-        public bool TryFindBy<#= field.Name #>(<#= field.TypeName #> Key, out <#= entity.Name #> Value)
-        {
-            return <#= field.Name #>Index.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find <#= entity.Name #> by <#= field.Name #> key field
-        /// </summary>
-        /// <param name="Key"><#= field.Name #> value used to find <#= entity.Name #></param>
-        /// <returns>Related <#= entity.Name #> entity, or null if not found</returns>
-        public <#= entity.Name #> TryFindBy<#= field.Name #>(<#= field.TypeName #> Key)
-        {
-            <#= entity.Name #> result;
-            if (<#= field.Name #>Index.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
+#>
 <#
         }
 #>
-<#
-        foreach (var dependantField in foreignDependanciesFields)
-        {
-#>
-        /// <summary>
-        /// Find all <#= dependantField.Item1.Name #> (<#= dependantField.Item1.Description #>) entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#= entity.Name #>.<#= dependantField.Item3.Name #>]
-        /// </summary>
-        /// <param name="<#= dependantField.Item3.Name #>"><#= dependantField.Item3.Name #> value used to find <#= dependantField.Item1.Name #> entities</param>
-        /// <returns>A list of related <#= dependantField.Item1.Name #> entities</returns>
-        public IReadOnlyList<<#= dependantField.Item1.Name #>> Find<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.TypeName #> <#= dependantField.Item3.Name #>)
-        {
-            IReadOnlyList<<#= dependantField.Item1.Name #>> result;
-            if (<#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex.Value.TryGetValue(<#= dependantField.Item3.Name #>, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<<#= dependantField.Item1.Name #>>().AsReadOnly();
-            }
         }
-
-        /// <summary>
-        /// Attempt to find all <#= dependantField.Item1.Name #> entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#= entity.Name #>.<#= dependantField.Item3.Name #>]
-        /// </summary>
-        /// <param name="<#= dependantField.Item3.Name #>"><#= dependantField.Item3.Name #> value used to find <#= dependantField.Item1.Name #> entities</param>
-        /// <param name="Value">A list of related <#= dependantField.Item1.Name #> entities</param>
-        /// <returns>True if any <#= dependantField.Item1.Name #> entities are found</returns>
-        public bool TryFind<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.TypeName #> <#= dependantField.Item3.Name #>, out IReadOnlyList<<#= dependantField.Item1.Name #>> Value)
-        {
-            return <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>ForeignIndex.Value.TryGetValue(<#= dependantField.Item3.Name #>, out Value);
-        }
-
-<#
-        }
-#>
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="<#= entity.Name #>" />
@@ -198,11 +77,11 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
 <#
-        foreach (var field in entity.Fields)
+        foreach (EduHubField field in entity.Fields)
         {
 #>
                     case "<#= field.Name #>":
-                        mapper[i] = (e, v) => e.<#= field.Name #> = <#= DetermineMapperConversion(field.TypeName) #>
+                        mapper[i] = (e, v) => e.<#= field.Name #> = <#= field.MapperConverter #>
                         break;
 <#
         }
@@ -215,13 +94,111 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+<#
+        if (entity.Indexes.Count > 0)
+        {
+#>
+
+        #region Index Fields
+
+<#
+        foreach (EduHubIndex index in entity.Indexes)
+        {
+#>
+        private <#= index.FrameworkType #> <#= index.Name #>;
+<#
+        }
+#>
+
+        #endregion
+
+        #region Index Methods
+
+<#
+        foreach (EduHubIndex index in entity.Indexes)
+        {
+#>
+        /// <summary>
+        /// <#= index.CommentSummary #>
+        /// </summary>
+<#
+            foreach (EduHubField field in index.Fields)
+            {
+#>
+        /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
+<#
+            }
+#>
+        /// <returns><#= index.CommentReturns #></returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public <#= index.FrameworkValueType #> FindBy<#= index.Key #>(<#= index.Parameters #>)
+        {
+            return <#= index.Name #>.Value[<#= index.ParametersPass #>];
+        }
+
+        /// <summary>
+        /// <#= index.CommentTrySummary #>
+        /// </summary>
+<#
+            foreach (EduHubField field in index.Fields)
+            {
+#>
+        /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
+<#
+            }
+#>
+        /// <param name="Value"><#= index.CommentReturns #></param>
+        /// <returns><#= index.CommentTryReturns #></returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBy<#= index.Key #>(<#= index.Parameters #>, out <#= index.FrameworkValueType #> Value)
+        {
+            return <#= index.Name #>.Value.TryGetValue(<#= index.ParametersPass #>, out Value);
+        }
+
+        /// <summary>
+        /// <#= index.CommentTrySummary #>
+        /// </summary>
+<#
+            foreach (EduHubField field in index.Fields)
+            {
+#>
+        /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
+<#
+            }
+#>
+        /// <returns><#= index.CommentReturns #>, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public <#= index.FrameworkValueType #> TryFindBy<#= index.Key #>(<#= index.Parameters #>)
+        {
+            <#= index.FrameworkValueType #> value;
+            if (<#= index.Name #>.Value.TryGetValue(<#= index.ParametersPass #>, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+<#
+        }
+#>
+        #endregion
+<#
+        }
+#>
+
     }
 }
 <#
         manager.EndBlock();
+
+        // Write Entity Code
         manager.StartNewFile(string.Format(@"{0}.cs", entity.Name));
-        #>
+#>
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -229,262 +206,633 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// <#= entity.Description #>
     /// </summary>
-    public partial class <#= entity.Name #> : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class <#= entity.Name #> : EntityBase
     {
+
 <#
-        if (foreignFields.Count > 0)
+        if (entity.NavigationFields.Count > 0)
         {
 #>
-#region Navigation Property Cache
+        #region Navigation Property Cache
+
 <#
-        foreach (var field in foreignFields)
-        {
+            foreach (var field in entity.NavigationFields)
+            {
+                EduHubField parentField = field.ForeignParent;
+                EduHubIndex index = field.ForeignParentIndex;
 #>
-        private <#=field.RelationshipEntity#> _<#=field.Name#>_<#=field.RelationshipEntity#>;
+        private <#= index.FrameworkValueType #> Cache_<#= field.Name #>_<#= parentField.Entity.Name #>;
 <#
-        }
+            }
 #>
-#endregion
+
+        #endregion
 
 <#
         }
 #>
-#region Field Properties
 <#
-        foreach (var field in entity.Fields)
+        if (entity.ForeignFields.Count > 0)
         {
+#>
+        #region Foreign Navigation Properties
+
+<#
+        foreach (EduHubField foreignField in entity.ForeignFields)
+        {
+            EduHubField field = foreignField.ForeignParent;
+            EduHubIndex index = foreignField.Index;
+#>
+        private <#= index.FrameworkValueType #> Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>;
+<#
+        }
+#>
+
+        #endregion
+
+<#
+        }
+#>
+        #region Field Properties
+<#
+        foreach (EduHubField field in entity.Fields)
+        {
+#>
+
+        /// <summary>
+<#= field.CommentSummaryWithType #>
+        /// </summary>
+        public <#=field.FrameworkType#> <#=field.Name#> { get; internal set; }
+<#
+        }
+#>
+
+        #endregion
+<#
+        if (entity.NavigationFields.Count > 0)
+        {
+#>
+
+        #region Navigation Properties
+
+<#
+        foreach (EduHubField field in entity.NavigationFields)
+        {
+            EduHubField parentField = field.ForeignParent;
+            EduHubIndex index = field.ForeignParentIndex;
 #>
         /// <summary>
-<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim())) #>
-<# if (field.TypeName == "string") { #>        /// [<#=field.TypeDescription#><# if (field.TypePrecision != 0) { #> (<#=field.TypePrecision#>)<#}#>]
-<#} #>
+        /// <#= parentField.Entity.Name #> (<#= parentField.Entity.Description #>) related entity by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= parentField.Entity.Name #>.<#= parentField.Name #>]
+<#= field.CommentSummary #>
         /// </summary>
-        public <#=field.TypeName#> <#=field.Name#> { get; internal set; }
-<#
-        }
-#>
-#endregion
-<#
-        if (foreignFields.Count > 0 || foreignDependanciesFields.Count > 0)
-        {
-#>
-
-#region Navigation Properties
-<#
-        foreach (var field in foreignFields)
-        {
-#>
-
-        /// <summary>
-        /// <#=field.RelationshipEntity#> (<#=schema.First(e => e.Name == field.RelationshipEntity).Description#>) related entity by [<#=entity.Name#>.<#=field.Name#>]-&gt;[<#=field.RelationshipEntity#>.<#=field.RelationshipField#>]
-<#=string.Join(Environment.NewLine, field.Description.Split('\n').Select(d => "        /// " + d.Trim()))#>
-        /// </summary>
-        public <#=field.RelationshipEntity#> <#=field.Name#>_<#=field.RelationshipEntity#>
+        public <#= index.FrameworkValueType #> <#= field.Name #>_<#= parentField.Entity.Name #>
         {
             get
             {
-<#=DetermineNavigationPropertyContent(field)#>
+<#
+            if (field.IsNullable && !parentField.IsNullable)
+            {
+#>
+                if (<#= field.Name #> == null)
+                {
+                    return null;
+                }
+<#
+            }
+#>
+                if (Cache_<#= field.Name #>_<#= parentField.Entity.Name #> == null)
+                {
+                    Cache_<#= field.Name #>_<#= parentField.Entity.Name #> = Context.<#= parentField.Entity.Name #>.FindBy<#= index.Key #>(<#= field.PassExpression(parentField) #>);
+                }
+
+                return Cache_<#= field.Name #>_<#= parentField.Entity.Name #>;
             }
         }
+
+<#
+        }
+#>
+        #endregion
 <#
         }
 #>
 <#
-        foreach (var dependantField in foreignDependanciesFields)
+        if (entity.ForeignFields.Count > 0)
         {
 #>
 
+        #region Foreign Navigation Properties
+
+<#
+        foreach (EduHubField foreignField in entity.ForeignFields)
+        {
+            EduHubField field = foreignField.ForeignParent;
+            EduHubIndex index = foreignField.Index;
+#>
         /// <summary>
-        /// <#= dependantField.Item1.Name #> (<#= dependantField.Item1.Description #>) related entities by [<#= dependantField.Item1.Name #>.<#= dependantField.Item2.Name #>]-&gt;[<#=entity.Name#>.<#= dependantField.Item3.Name #>]
+<#
+            if (index.IsUnique)
+            {
+#>
+        /// <#= foreignField.Entity.Name #> (<#= foreignField.Entity.Description #>) related entity by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= foreignField.Entity.Name #>.<#= foreignField.Name #>]
+<#
+            }
+            else
+            {
+#>
+        /// <#= foreignField.Entity.Name #> (<#= foreignField.Entity.Description #>) related entities by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= foreignField.Entity.Name #>.<#= foreignField.Name #>]
+<#
+            }
+#>
+<#= field.CommentSummary #>
         /// </summary>
-        public IReadOnlyList<<#= dependantField.Item1.Name #>> <#= dependantField.Item1.Name #>_<#= dependantField.Item2.Name #>
+        public <#= index.FrameworkValueType #> <#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>
         {
             get
             {
-                return Context.<#= entity.Name #>.Find<#= dependantField.Item1.Name #>By<#= dependantField.Item2.Name #>(<#= dependantField.Item3.Name #>);
+<#
+            if (field.IsNullable && !foreignField.IsNullable)
+            {
+#>
+                if (<#= field.Name #> == null)
+                {
+                    return null;
+                }
+<#
+            }
+#>
+                if (Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> == null &&
+                    !Context.<#= foreignField.Entity.Name #>.TryFindBy<#= index.Key #>(<#= field.PassExpression(foreignField) #>, out Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>))
+                {
+<#
+            if (index.IsUnique)
+            {
+#>
+                    Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> = null;
+<#
+            }
+            else
+            {
+#>
+                    Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> = new List<<#= foreignField.Entity.Name #>>().AsReadOnly();
+<#
+            }
+#>
+                }
+
+                return Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>;
             }
         }
+
 <#
         }
 #>
-#endregion
+        #endregion
 <#
         }
 #>
+
     }
 }
 <#
         manager.EndBlock();
     }
     manager.Process(true);
-#><#+
-    public class C7Entity
+#>
+<#+
+    public class EduHubSchema
     {
-        public string Name;
-        public string Description;
-        public List<C7Field> Fields;
+        public List<EduHubEntity> Entities;
     }
 
-    public class C7Field
+    public class EduHubEntity
     {
+        public EduHubSchema Schema;
+
         public string Name;
-        public string TypeKey;
+        public string Description;
+
+        public List<EduHubField> Fields;
+        public List<EduHubIndex> Indexes;
+
+        public List<EduHubField> NavigationFields
+        {
+            get
+            {
+                return Fields
+                    .Where(f => f.ForeignParentKey != null)
+                    .ToList();
+            }
+        }
+
+        public List<EduHubField> ForeignFields
+        {
+            get
+            {
+                return Schema
+                    .Entities
+                    .SelectMany(e => e.Fields)
+                    .Where(f => f.ForeignParentIndex != null && f.ForeignParent.Entity == this)
+                    .ToList();
+            }
+        }
+    }
+
+    public class EduHubField
+    {
+        public EduHubEntity Entity;
+
+        public string Name;
+        public string Description;
+
         public string Type;
-        public string TypeName;
         public string TypeDescription;
-        public int TypePrecision;
+        public int TypeMaxLength;
+
         public bool IsKey;
-        public string Description;
-        public string RelationshipEntity;
-        public string RelationshipField;
-    }
+        public bool IsNullable;
 
-    static string DetermineMapperConversion(string TypeName)
-    {
-        switch (TypeName)
+        public string ForeignParentKey;
+
+        public string FrameworkType
         {
-            case "string":
-                return "v;";
-            case "int":
-                return "int.Parse(v);";
-            case "int?":
-                return "v == null ? (int?)null : int.Parse(v);";
-            case "short":
-                return "short.Parse(v);";
-            case "short?":
-                return "v == null ? (short?)null : short.Parse(v);";
-            case "decimal":
-                return "decimal.Parse(v);";
-            case "decimal?":
-                return "v == null ? (decimal?)null : decimal.Parse(v);";
-            case "double":
-                return "double.Parse(v);";
-            case "double?":
-                return "v == null ? (double?)null : double.Parse(v);";
-            case "DateTime":
-                return "DateTime.Parse(v);";
-            case "DateTime?":
-                return "v == null ? (DateTime?)null : DateTime.Parse(v);";
-            case "byte[]":
-                return "null; // eduHub is not encoding byte arrays";
-            default:
-                throw new ArgumentException("Unsupported Type: " + TypeName);
-        }
-    }
-
-    static string DetermineNavigationPropertyContent(C7Field Field)
-    {
-        StringBuilder content = new StringBuilder();
-
-        if (Field.TypeName.EndsWith("?")) // Nullable Type
-        {
-            content
-                .Append("                ").AppendLine(string.Format("if ({0}.HasValue)", Field.Name))
-                .Append("                ").AppendLine("{")
-                .Append("                ").AppendLine(string.Format("    if (_{0}_{1} == null)", Field.Name, Field.RelationshipEntity))
-                .Append("                ").AppendLine("    {")
-                .Append("                ").AppendLine(string.Format("        _{0}_{1} = Context.{1}.FindBy{2}({0}.Value);", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
-                .Append("                ").AppendLine("    }")
-                .Append("                ").AppendLine(string.Format("    return _{0}_{1};", Field.Name, Field.RelationshipEntity))
-                .Append("                ").AppendLine("}")
-                .Append("                ").AppendLine("else")
-                .Append("                ").AppendLine("{")
-                .Append("                ").AppendLine("    return null;")
-                .Append("                ").Append("}");
-        }
-        else if (Field.TypeName == "string") // String Reference Type
-        {
-            content
-                .Append("                ").AppendLine(string.Format("if ({0} != null)", Field.Name))
-                .Append("                ").AppendLine("{")
-                .Append("                ").AppendLine(string.Format("    if (_{0}_{1} == null)", Field.Name, Field.RelationshipEntity))
-                .Append("                ").AppendLine("    {")
-                .Append("                ").AppendLine(string.Format("        _{0}_{1} = Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
-                .Append("                ").AppendLine("    }")
-                .Append("                ").AppendLine(string.Format("    return _{0}_{1};", Field.Name, Field.RelationshipEntity))
-                .Append("                ").AppendLine("}")
-                .Append("                ").AppendLine("else")
-                .Append("                ").AppendLine("{")
-                .Append("                ").AppendLine("    return null;")
-                .Append("                ").Append("}");
-        }
-        else // Others
-        {
-            content
-                .Append("                ").AppendLine(string.Format("if (_{0}_{1} != null)", Field.Name, Field.RelationshipEntity))
-                .Append("                ").AppendLine("{")
-                .Append("                ").AppendLine(string.Format("    _{0}_{1} = Context.{1}.FindBy{2}({0});", Field.Name, Field.RelationshipEntity, Field.RelationshipField))
-                .Append("                ").AppendLine("}")
-                .Append("                ").Append(string.Format("return _{0}_{1};", Field.Name, Field.RelationshipEntity));
-        }
-
-        return content.ToString();
-    }
-
-    static IEnumerable<C7Entity> RetrieveEntitiesFromSchema(string Filename)
-    {
-        return XElement.Load(Filename)
-            .Elements("Element")
-            .Select(e => new C7Entity()
+            get
             {
-                Name = e.Attribute("Name").Value,
-                Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
-                Fields = e.Elements("Field").Select(f => new C7Field()
+                if (Type == "string" || Type == "byte[]")
+                    return Type;
+                if (!IsNullable)
+                    return Type;
+                else
+                    return string.Format("{0}?", Type);
+            }
+        }
+
+        public EduHubField ForeignParent
+        {
+            get
+            {
+                if (ForeignParentKey == null)
                 {
-                    Name = f.Attribute("Name").Value,
-                    TypeKey = f.Attribute("TypeKey").Value,
-                    Type = f.Attribute("Type").Value,
-                    TypeName = f.Attribute("TypeName").Value,
-                    TypeDescription = f.Attribute("TypeDescription").Value,
-                    TypePrecision = int.Parse(f.Attribute("TypePrecision").Value),
-                    IsKey = bool.Parse(f.Attribute("IsKey").Value),
-                    RelationshipEntity = f.Attribute("RelationshipEntity") == null ? null : f.Attribute("RelationshipEntity").Value,
-                    RelationshipField = f.Attribute("RelationshipField") == null ? null : f.Attribute("RelationshipField").Value,
-                    Description = f.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
-                }).ToList()
-            }).ToList();
-    }
-
-    const string dbColumnsSql =
-@"SELECT t.TABLE_NAME, c.COLUMN_NAME, c.DATA_TYPE, c.IS_NULLABLE
-    FROM INFORMATION_SCHEMA.TABLES t
-        JOIN INFORMATION_SCHEMA.COLUMNS c ON c.TABLE_SCHEMA=t.TABLE_SCHEMA AND c.TABLE_CATALOG=t.TABLE_CATALOG AND c.TABLE_NAME=t.TABLE_NAME
-WHERE
-    t.TABLE_TYPE='BASE TABLE' AND
-    NOT t.TABLE_NAME LIKE 'CAZSYS_%'
-ORDER BY t.TABLE_NAME, c.ORDINAL_POSITION";
-
-    static IEnumerable<C7Entity> RetrieveTablesFromDatabase()
-    {
-        return RetrieveColumnsFromDatabase()
-            .GroupBy(c => c.Item1)
-            .Select(g => new C7Entity()
-            {
-                Name = g.Key,
-                Fields = g.Select(i => i.Item2).ToList()
-            });
-    }
-
-    static IEnumerable<Tuple<string, C7Field>> RetrieveColumnsFromDatabase()
-    {
-        using (var dbConnection = new SqlConnection("Data Source=(local);Initial Catalog=C21CLONE;Integrated Security=True;MultipleActiveResultSets=True"))
-        {
-            dbConnection.Open();
-            using (var dbCommand = new SqlCommand(dbColumnsSql, dbConnection))
-            {
-                using (var dbReader = dbCommand.ExecuteReader())
+                    return null;
+                }
+                else
                 {
-                    while (dbReader.Read())
-                    {
-                        yield return Tuple.Create(dbReader.GetString(0), new C7Field()
-                        {
-                            Name = dbReader.GetString(1),
-                            TypeDescription = dbReader.GetString(2)
-                        });
-                    }
+                    var entityName = ForeignParentKey.Substring(0, ForeignParentKey.IndexOf(':'));
+                    var fieldName = ForeignParentKey.Substring(ForeignParentKey.IndexOf(':') + 1);
+
+                    return Entity.Schema.Entities.First(e => e.Name == entityName).Fields.First(f => f.Name == fieldName);
                 }
             }
-            dbConnection.Close();
         }
+
+        public EduHubIndex ForeignParentIndex
+        {
+            get
+            {
+                if (ForeignParentKey == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return ForeignParent.Index;
+                }
+            }
+        }
+
+        public EduHubIndex Index
+        {
+            get
+            {
+                return Entity.Indexes.FirstOrDefault(i => i.Fields.Count == 1 && i.Fields[0] == this);
+            }
+        }
+
+        public string PassExpression(EduHubField CompareField)
+        {
+            if (!CompareField.FrameworkType.EndsWith("?") && FrameworkType.EndsWith("?"))
+            {
+                return string.Format("{0}.Value", Name);
+            }
+            else
+            {
+                return Name;
+            }
+        }
+
+        public string CommentSummaryWithType
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+                if (Description.Length == 0)
+                {
+                    builder.AppendLine("        /// &lt;No documentation available&gt;");
+                }
+                else
+                {
+                    foreach (var descriptionLine in Description.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        builder.Append("        /// ").AppendLine(descriptionLine);
+                    }
+                }
+                if (Type == "string")
+                {
+                    if (TypeMaxLength == 0)
+                    {
+                        builder.Append("        /// [").Append(TypeDescription).Append("]");
+                    }
+                    else
+                    {
+                        builder.Append("        /// [").Append(TypeDescription).Append(" (").Append(TypeMaxLength).Append(")]");
+                    }
+                }
+                return builder.ToString().TrimEnd();
+            }
+        }
+
+        public string CommentSummary
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+                if (Description.Length == 0)
+                {
+                    builder.AppendLine("        /// &lt;No documentation available&gt;");
+                }
+                else
+                {
+                    foreach (var descriptionLine in Description.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        builder.Append("        /// ").AppendLine(descriptionLine);
+                    }
+                }
+                return builder.ToString().TrimEnd();
+            }
+        }
+
+        public string MapperConverter
+        {
+            get
+            {
+                if (Type == "string")
+                {
+                    return "v;";
+                }
+                if (Type == "byte[]")
+                {
+                    return "null; // eduHub is not encoding byte arrays";
+                }
+                if (IsNullable)
+                {
+                    switch (Type)
+                    {
+                        case "int":
+                            return "v == null ? (int?)null : int.Parse(v);";
+                        case "short":
+                            return "v == null ? (short?)null : short.Parse(v);";
+                        case "decimal":
+                            return "v == null ? (decimal?)null : decimal.Parse(v);";
+                        case "double":
+                            return "v == null ? (double?)null : double.Parse(v);";
+                        case "DateTime":
+                            return "v == null ? (DateTime?)null : DateTime.Parse(v);";
+                    }
+                }
+                else
+                {
+                    switch (Type)
+                    {
+                        case "int":
+                            return "int.Parse(v);";
+                        case "short":
+                            return "short.Parse(v);";
+                        case "decimal":
+                            return "decimal.Parse(v);";
+                        case "double":
+                            return "double.Parse(v);";
+                        case "DateTime":
+                            return "DateTime.Parse(v);";
+                    }
+                }
+                throw new ArgumentException("Unsupported Type: " + Type);
+            }
+        }
+    }
+
+    public class EduHubIndex
+    {
+        public EduHubEntity Entity;
+
+        public string Name;
+
+        public List<EduHubField> Fields;
+
+        public bool IsUnique;
+
+        public string Key
+        {
+            get
+            {
+                return string.Join("_", Fields.Select(f => f.Name));
+            }
+        }
+
+        public string FrameworkKeyType
+        {
+            get
+            {
+                if (Fields.Count == 1)
+                {
+                    return Fields[0].FrameworkType;
+                }
+                else
+                {
+                    return string.Format("Tuple<{0}>", string.Join(", ", Fields.Select(f => f.FrameworkType)));
+                }
+            }
+        }
+
+        public bool FrameworkKeyNullable
+        {
+            get
+            {
+                return Fields.Count == 1 && Fields[0].IsNullable;
+            }
+        }
+
+        public string FrameworkValueType
+        {
+            get
+            {
+                return IsUnique ? Entity.Name : string.Format("IReadOnlyList<{0}>", Entity.Name);
+            }
+        }
+
+        public string FrameworkValueBuilder
+        {
+            get
+            {
+                if (Fields.Count == 1)
+                {
+                    return string.Format("i => i.{0}", Fields[0].Name);
+                }
+                else
+                {
+                    return string.Format("i => Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("i.{0}", f.Name))));
+                }
+            }
+        }
+
+        public string FrameworkType
+        {
+            get
+            {
+                return string.Format("Lazy<{0}<{1}, {2}>>",
+                    FrameworkKeyNullable ? "NullDictionary" : "Dictionary",
+                    FrameworkKeyType,
+                    FrameworkValueType);
+            }
+        }
+
+        public string IndexBuilder
+        {
+            get
+            {
+                return string.Format("{0} = new {1}(() => this.To{2}{3}Dictionary({4}))",
+                    Name,
+                    FrameworkType,
+                    IsUnique ? null : "Grouped",
+                    FrameworkKeyNullable ? "Null" : null,
+                    FrameworkValueBuilder);
+            }
+        }
+
+        public string Parameters
+        {
+            get
+            {
+                return string.Join(", ", Fields.Select(f => string.Format("{0} {1}", f.FrameworkType, f.Name)));
+            }
+        }
+
+        public string ParametersPass
+        {
+            get
+            {
+                if (Fields.Count == 1)
+                {
+                    return Fields[0].Name;
+                }
+                else
+                {
+                    return string.Format("Tuple.Create({0})", string.Join(", ", Fields.Select(f => f.Name)));
+                }
+            }
+        }
+
+        public string CommentSummary
+        {
+            get
+            {
+                if (Fields.Count == 1)
+                {
+                    return string.Format("Find {0} by {1} field", Entity.Name, Fields[0].Name);
+                }
+                else
+                {
+                    return string.Format("Find {0} by {1} and {2} fields",
+                        Entity.Name,
+                        string.Join(", ", Fields.Take(Fields.Count - 1).Select(f => f.Name)),
+                        Fields.Last().Name);
+                }
+            }
+        }
+
+        public string CommentTrySummary
+        {
+            get
+            {
+                if (Fields.Count == 1)
+                {
+                    return string.Format("Attempt to find {0} by {1} field", Entity.Name, Fields[0].Name);
+                }
+                else
+                {
+                    return string.Format("Attempt to find {0} by {1} and {2} fields",
+                        Entity.Name,
+                        string.Join(", ", Fields.Take(Fields.Count - 1).Select(f => f.Name)),
+                        Fields.Last().Name);
+                }
+            }
+        }
+
+        public string CommentReturns
+        {
+            get
+            {
+                if (IsUnique)
+                {
+                    return string.Format("Related {0} entity", Entity.Name);
+                }
+                else
+                {
+                    return string.Format("List of related {0} entities", Entity.Name);
+                }
+            }
+        }
+
+        public string CommentTryReturns
+        {
+            get
+            {
+                if (IsUnique)
+                {
+                    return string.Format("True if the related {0} entity is found", Entity.Name);
+                }
+                else
+                {
+                    return string.Format("True if the list of related {0} entities is found", Entity.Name);
+                }
+            }
+        }
+    }
+
+    static EduHubSchema LoadSchema(string Filename)
+    {
+        var schema = new EduHubSchema();
+
+        schema.Entities = XElement.Load(Filename)
+            .Elements("Entity")
+            .Select(e => {
+                var entity = new EduHubEntity() {
+                    Schema = schema,
+                    Name = e.Attribute("Name").Value,
+                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
+                };
+                // Load Fields
+                entity.Fields = e.Element("Fields").Elements("Field").Select(f => new EduHubField() {
+                    Entity = entity,
+                    Name = f.Attribute("Name").Value,
+                    Description = f.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
+                    Type = f.Attribute("Type").Value,
+                    TypeDescription = f.Attribute("TypeDescription").Value,
+                    TypeMaxLength = f.Attribute("TypeMaxLength") == null ? 0 : int.Parse(f.Attribute("TypeMaxLength").Value),
+                    IsKey = bool.Parse(f.Attribute("IsKey").Value),
+                    IsNullable = bool.Parse(f.Attribute("IsNullable").Value),
+                    ForeignParentKey = f.Attribute("ForeignParent") == null ? null : f.Attribute("ForeignParent").Value
+                }).ToList();
+                // Load Indexes
+                entity.Indexes = e.Element("Indexes").Elements("Index").Select(i => new EduHubIndex() {
+                    Entity = entity,
+                    Name = i.Attribute("Name").Value,
+                    IsUnique = bool.Parse(i.Attribute("IsUnique").Value),
+                    Fields = i.Elements("Field").Select(fn => entity.Fields.First(f => f.Name == fn.Value)).ToList()
+                }).ToList();
+                return entity;
+            }).ToList();
+
+        return schema;
     }
 #>

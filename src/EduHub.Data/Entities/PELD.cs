@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,88 +7,109 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Details
     /// </summary>
-    public partial class PELD : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class PELD : EntityBase
     {
-#region Navigation Property Cache
-        private PLT _PLTKEY_PLT;
-        private PE _PEKEY_PE;
-        private PLC _LEAVE_CODE_PLC;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private PLT Cache_PLTKEY_PLT;
+        private PE Cache_PEKEY_PE;
+        private PLC Cache_LEAVE_CODE_PLC;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (unique)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// PLT KEY
         /// [Uppercase Alphanumeric (16)]
         /// </summary>
         public string PLTKEY { get; internal set; }
+
         /// <summary>
         /// EMPLOYEE KEY
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string PEKEY { get; internal set; }
+
         /// <summary>
         /// Leave Type Code eg Sick,LSL,RDO
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string LEAVE_CODE { get; internal set; }
+
         /// <summary>
         /// Date the entitlement started
         /// Default is employee start date
         /// </summary>
         public DateTime? LEAVE_STARTDATE { get; internal set; }
+
         /// <summary>
         /// Date leave was last calculated
         /// </summary>
         public DateTime? LAST_CALC_DATE { get; internal set; }
+
         /// <summary>
         /// Date of last anniversary
         /// </summary>
         public DateTime? LAST_ANNIV_DATE { get; internal set; }
+
         /// <summary>
         /// Date of next anniversary
         /// </summary>
         public DateTime? ANNIVERSARY_DATE { get; internal set; }
+
         /// <summary>
         /// Hours of accumulated entitlement
         /// </summary>
         public double? LEAVE_ENT_HOURS { get; internal set; }
+
         /// <summary>
         /// Hours of prorata hours
         /// </summary>
         public double? LEAVE_PRORATA_HOURS { get; internal set; }
+
         /// <summary>
         /// Step within the period length
         /// employement
         /// </summary>
         public short? PERIOD_LENGTH_STEP { get; internal set; }
+
         /// <summary>
         /// Worked hours
         /// </summary>
         public double? WORKED { get; internal set; }
+
         /// <summary>
         /// Hours should have worked
         /// </summary>
         public double? STANDARD { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// PLT (Leave Group Types) related entity by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
@@ -97,18 +119,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PLTKEY != null)
-                {
-                    if (_PLTKEY_PLT == null)
-                    {
-                        _PLTKEY_PLT = Context.PLT.FindByPLTKEY(PLTKEY);
-                    }
-                    return _PLTKEY_PLT;
-                }
-                else
+                if (PLTKEY == null)
                 {
                     return null;
                 }
+                if (Cache_PLTKEY_PLT == null)
+                {
+                    Cache_PLTKEY_PLT = Context.PLT.FindByPLTKEY(PLTKEY);
+                }
+
+                return Cache_PLTKEY_PLT;
             }
         }
 
@@ -120,18 +140,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PEKEY != null)
+                if (Cache_PEKEY_PE == null)
                 {
-                    if (_PEKEY_PE == null)
-                    {
-                        _PEKEY_PE = Context.PE.FindByPEKEY(PEKEY);
-                    }
-                    return _PEKEY_PE;
+                    Cache_PEKEY_PE = Context.PE.FindByPEKEY(PEKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_PEKEY_PE;
             }
         }
 
@@ -143,20 +157,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (LEAVE_CODE != null)
-                {
-                    if (_LEAVE_CODE_PLC == null)
-                    {
-                        _LEAVE_CODE_PLC = Context.PLC.FindByPLCKEY(LEAVE_CODE);
-                    }
-                    return _LEAVE_CODE_PLC;
-                }
-                else
+                if (LEAVE_CODE == null)
                 {
                     return null;
                 }
+                if (Cache_LEAVE_CODE_PLC == null)
+                {
+                    Cache_LEAVE_CODE_PLC = Context.PLC.FindByPLCKEY(LEAVE_CODE);
+                }
+
+                return Cache_LEAVE_CODE_PLC;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

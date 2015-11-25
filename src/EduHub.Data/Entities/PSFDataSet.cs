@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Future Pay Steps or Pay Class Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PSFDataSet : SetBase<PSF>
     {
-
-
-        internal PSFDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PSF"; } }
 
+        internal PSFDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_PSKEY = new Lazy<Dictionary<short, IReadOnlyList<PSF>>>(() => this.ToGroupedDictionary(i => i.PSKEY));
+            Index_TID = new Lazy<Dictionary<int, PSF>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PSF" />
@@ -36,10 +35,10 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "PSKEY":
-                        mapper[i] = (e, v) => e.PSKEY = v == null ? (short?)null : short.Parse(v);
+                        mapper[i] = (e, v) => e.PSKEY = short.Parse(v);
                         break;
                     case "EFFECTIVE_FROM_DATE":
                         mapper[i] = (e, v) => e.EFFECTIVE_FROM_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
@@ -70,5 +69,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<short, IReadOnlyList<PSF>>> Index_PSKEY;
+        private Lazy<Dictionary<int, PSF>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PSF by PSKEY field
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PSF</param>
+        /// <returns>List of related PSF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PSF> FindByPSKEY(short PSKEY)
+        {
+            return Index_PSKEY.Value[PSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PSF by PSKEY field
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PSF</param>
+        /// <param name="Value">List of related PSF entities</param>
+        /// <returns>True if the list of related PSF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPSKEY(short PSKEY, out IReadOnlyList<PSF> Value)
+        {
+            return Index_PSKEY.Value.TryGetValue(PSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PSF by PSKEY field
+        /// </summary>
+        /// <param name="PSKEY">PSKEY value used to find PSF</param>
+        /// <returns>List of related PSF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PSF> TryFindByPSKEY(short PSKEY)
+        {
+            IReadOnlyList<PSF> value;
+            if (Index_PSKEY.Value.TryGetValue(PSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PSF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PSF</param>
+        /// <returns>Related PSF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PSF FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PSF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PSF</param>
+        /// <param name="Value">Related PSF entity</param>
+        /// <returns>True if the related PSF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PSF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PSF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PSF</param>
+        /// <returns>Related PSF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PSF TryFindByTID(int TID)
+        {
+            PSF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

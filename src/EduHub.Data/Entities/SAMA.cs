@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,46 +7,58 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Association Member Attendances
     /// </summary>
-    public partial class SAMA : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SAMA : EntityBase
     {
-#region Navigation Property Cache
-        private SAM _SAMAKEY_SAM;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SAM Cache_SAMAKEY_SAM;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// ID of school association member
         /// </summary>
-        public int? SAMAKEY { get; internal set; }
+        public int SAMAKEY { get; internal set; }
+
         /// <summary>
         /// ID of school association meeting
         /// </summary>
         public int? SCAM_TID { get; internal set; }
+
         /// <summary>
         /// Attended? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ATTENDED { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SAM (School Association Members) related entity by [SAMA.SAMAKEY]-&gt;[SAM.SAMKEY]
@@ -55,20 +68,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SAMAKEY.HasValue)
+                if (Cache_SAMAKEY_SAM == null)
                 {
-                    if (_SAMAKEY_SAM == null)
-                    {
-                        _SAMAKEY_SAM = Context.SAM.FindBySAMKEY(SAMAKEY.Value);
-                    }
-                    return _SAMAKEY_SAM;
+                    Cache_SAMAKEY_SAM = Context.SAM.FindBySAMKEY(SAMAKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SAMAKEY_SAM;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

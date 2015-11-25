@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvements/Sickbay Visits Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAIDataSet : SetBase<SAI>
     {
-        private Lazy<Dictionary<int, SAI>> SAIKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SAII>>> SAII_INVOLVEMENTIDForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SAIM>>> SAIM_INVOLVEMENTIDForeignIndex;
-
-        internal SAIDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SAIKEYIndex = new Lazy<Dictionary<int, SAI>>(() => this.ToDictionary(e => e.SAIKEY));
-
-            SAII_INVOLVEMENTIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAII>>>(() =>
-                    Context.SAII
-                          .Where(e => e.INVOLVEMENTID != null)
-                          .GroupBy(e => e.INVOLVEMENTID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAII>)g.ToList()
-                          .AsReadOnly()));
-
-            SAIM_INVOLVEMENTIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAIM>>>(() =>
-                    Context.SAIM
-                          .Where(e => e.INVOLVEMENTID != null)
-                          .GroupBy(e => e.INVOLVEMENTID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAIM>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SAI"; } }
 
-        /// <summary>
-        /// Find SAI by SAIKEY key field
-        /// </summary>
-        /// <param name="Key">SAIKEY value used to find SAI</param>
-        /// <returns>Related SAI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SAIKEY value didn't match any SAI entities</exception>
-        public SAI FindBySAIKEY(int Key)
+        internal SAIDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SAI result;
-            if (SAIKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SAIKEY = new Lazy<Dictionary<int, SAI>>(() => this.ToDictionary(i => i.SAIKEY));
+            Index_ACCIDENTID = new Lazy<NullDictionary<int?, IReadOnlyList<SAI>>>(() => this.ToGroupedNullDictionary(i => i.ACCIDENTID));
         }
-
-        /// <summary>
-        /// Attempt to find SAI by SAIKEY key field
-        /// </summary>
-        /// <param name="Key">SAIKEY value used to find SAI</param>
-        /// <param name="Value">Related SAI entity</param>
-        /// <returns>True if the SAI entity is found</returns>
-        public bool TryFindBySAIKEY(int Key, out SAI Value)
-        {
-            return SAIKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAI by SAIKEY key field
-        /// </summary>
-        /// <param name="Key">SAIKEY value used to find SAI</param>
-        /// <returns>Related SAI entity, or null if not found</returns>
-        public SAI TryFindBySAIKEY(int Key)
-        {
-            SAI result;
-            if (SAIKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SAII (Accident Involvement Injuries) entities by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
-        /// </summary>
-        /// <param name="SAIKEY">SAIKEY value used to find SAII entities</param>
-        /// <returns>A list of related SAII entities</returns>
-        public IReadOnlyList<SAII> FindSAIIByINVOLVEMENTID(int SAIKEY)
-        {
-            IReadOnlyList<SAII> result;
-            if (SAII_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAII>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAII entities by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
-        /// </summary>
-        /// <param name="SAIKEY">SAIKEY value used to find SAII entities</param>
-        /// <param name="Value">A list of related SAII entities</param>
-        /// <returns>True if any SAII entities are found</returns>
-        public bool TryFindSAIIByINVOLVEMENTID(int SAIKEY, out IReadOnlyList<SAII> Value)
-        {
-            return SAII_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SAIM (Sickbay Medication Administrations) entities by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
-        /// </summary>
-        /// <param name="SAIKEY">SAIKEY value used to find SAIM entities</param>
-        /// <returns>A list of related SAIM entities</returns>
-        public IReadOnlyList<SAIM> FindSAIMByINVOLVEMENTID(int SAIKEY)
-        {
-            IReadOnlyList<SAIM> result;
-            if (SAIM_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAIM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAIM entities by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
-        /// </summary>
-        /// <param name="SAIKEY">SAIKEY value used to find SAIM entities</param>
-        /// <param name="Value">A list of related SAIM entities</param>
-        /// <returns>True if any SAIM entities are found</returns>
-        public bool TryFindSAIMByINVOLVEMENTID(int SAIKEY, out IReadOnlyList<SAIM> Value)
-        {
-            return SAIM_INVOLVEMENTIDForeignIndex.Value.TryGetValue(SAIKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SAI" />
@@ -286,5 +159,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SAI>> Index_SAIKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SAI>>> Index_ACCIDENTID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SAI by SAIKEY field
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAI</param>
+        /// <returns>Related SAI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAI FindBySAIKEY(int SAIKEY)
+        {
+            return Index_SAIKEY.Value[SAIKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAI by SAIKEY field
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAI</param>
+        /// <param name="Value">Related SAI entity</param>
+        /// <returns>True if the related SAI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAIKEY(int SAIKEY, out SAI Value)
+        {
+            return Index_SAIKEY.Value.TryGetValue(SAIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAI by SAIKEY field
+        /// </summary>
+        /// <param name="SAIKEY">SAIKEY value used to find SAI</param>
+        /// <returns>Related SAI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAI TryFindBySAIKEY(int SAIKEY)
+        {
+            SAI value;
+            if (Index_SAIKEY.Value.TryGetValue(SAIKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SAI by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SAI</param>
+        /// <returns>List of related SAI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAI> FindByACCIDENTID(int? ACCIDENTID)
+        {
+            return Index_ACCIDENTID.Value[ACCIDENTID];
+        }
+
+        /// <summary>
+        /// Attempt to find SAI by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SAI</param>
+        /// <param name="Value">List of related SAI entities</param>
+        /// <returns>True if the list of related SAI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByACCIDENTID(int? ACCIDENTID, out IReadOnlyList<SAI> Value)
+        {
+            return Index_ACCIDENTID.Value.TryGetValue(ACCIDENTID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAI by ACCIDENTID field
+        /// </summary>
+        /// <param name="ACCIDENTID">ACCIDENTID value used to find SAI</param>
+        /// <returns>List of related SAI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SAI> TryFindByACCIDENTID(int? ACCIDENTID)
+        {
+            IReadOnlyList<SAI> value;
+            if (Index_ACCIDENTID.Value.TryGetValue(ACCIDENTID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

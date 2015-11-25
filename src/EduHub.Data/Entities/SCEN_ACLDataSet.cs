@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Archived Census Class Sizes Data Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_ACLDataSet : SetBase<SCEN_ACL>
     {
-        private Lazy<Dictionary<int, SCEN_ACL>> IDIndex;
-
-
-        internal SCEN_ACLDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            IDIndex = new Lazy<Dictionary<int, SCEN_ACL>>(() => this.ToDictionary(e => e.ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCEN_ACL"; } }
 
-        /// <summary>
-        /// Find SCEN_ACL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACL</param>
-        /// <returns>Related SCEN_ACL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any SCEN_ACL entities</exception>
-        public SCEN_ACL FindByID(int Key)
+        internal SCEN_ACLDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SCEN_ACL result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ID = new Lazy<Dictionary<int, SCEN_ACL>>(() => this.ToDictionary(i => i.ID));
         }
-
-        /// <summary>
-        /// Attempt to find SCEN_ACL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACL</param>
-        /// <param name="Value">Related SCEN_ACL entity</param>
-        /// <returns>True if the SCEN_ACL entity is found</returns>
-        public bool TryFindByID(int Key, out SCEN_ACL Value)
-        {
-            return IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCEN_ACL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_ACL</param>
-        /// <returns>Related SCEN_ACL entity, or null if not found</returns>
-        public SCEN_ACL TryFindByID(int Key)
-        {
-            SCEN_ACL result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCEN_ACL" />
@@ -168,5 +116,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SCEN_ACL>> Index_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCEN_ACL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACL</param>
+        /// <returns>Related SCEN_ACL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_ACL FindByID(int ID)
+        {
+            return Index_ID.Value[ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_ACL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACL</param>
+        /// <param name="Value">Related SCEN_ACL entity</param>
+        /// <returns>True if the related SCEN_ACL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByID(int ID, out SCEN_ACL Value)
+        {
+            return Index_ID.Value.TryGetValue(ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_ACL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_ACL</param>
+        /// <returns>Related SCEN_ACL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_ACL TryFindByID(int ID)
+        {
+            SCEN_ACL value;
+            if (Index_ID.Value.TryGetValue(ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

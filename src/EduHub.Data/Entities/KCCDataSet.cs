@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Dates for Absences Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCCDataSet : SetBase<KCC>
     {
-        private Lazy<Dictionary<DateTime, KCC>> KCCKEYIndex;
-
-
-        internal KCCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KCCKEYIndex = new Lazy<Dictionary<DateTime, KCC>>(() => this.ToDictionary(e => e.KCCKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCC"; } }
 
-        /// <summary>
-        /// Find KCC by KCCKEY key field
-        /// </summary>
-        /// <param name="Key">KCCKEY value used to find KCC</param>
-        /// <returns>Related KCC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KCCKEY value didn't match any KCC entities</exception>
-        public KCC FindByKCCKEY(DateTime Key)
+        internal KCCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCC result;
-            if (KCCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KCCKEY = new Lazy<Dictionary<DateTime, KCC>>(() => this.ToDictionary(i => i.KCCKEY));
+            Index_CURRENT_QUILT = new Lazy<NullDictionary<string, IReadOnlyList<KCC>>>(() => this.ToGroupedNullDictionary(i => i.CURRENT_QUILT));
         }
-
-        /// <summary>
-        /// Attempt to find KCC by KCCKEY key field
-        /// </summary>
-        /// <param name="Key">KCCKEY value used to find KCC</param>
-        /// <param name="Value">Related KCC entity</param>
-        /// <returns>True if the KCC entity is found</returns>
-        public bool TryFindByKCCKEY(DateTime Key, out KCC Value)
-        {
-            return KCCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCC by KCCKEY key field
-        /// </summary>
-        /// <param name="Key">KCCKEY value used to find KCC</param>
-        /// <returns>Related KCC entity, or null if not found</returns>
-        public KCC TryFindByKCCKEY(DateTime Key)
-        {
-            KCC result;
-            if (KCCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCC" />
@@ -144,5 +93,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<DateTime, KCC>> Index_KCCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KCC>>> Index_CURRENT_QUILT;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCC FindByKCCKEY(DateTime KCCKEY)
+        {
+            return Index_KCCKEY.Value[KCCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <param name="Value">Related KCC entity</param>
+        /// <returns>True if the related KCC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCCKEY(DateTime KCCKEY, out KCC Value)
+        {
+            return Index_KCCKEY.Value.TryGetValue(KCCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by KCCKEY field
+        /// </summary>
+        /// <param name="KCCKEY">KCCKEY value used to find KCC</param>
+        /// <returns>Related KCC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCC TryFindByKCCKEY(DateTime KCCKEY)
+        {
+            KCC value;
+            if (Index_KCCKEY.Value.TryGetValue(KCCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCC by CURRENT_QUILT field
+        /// </summary>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find KCC</param>
+        /// <returns>List of related KCC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCC> FindByCURRENT_QUILT(string CURRENT_QUILT)
+        {
+            return Index_CURRENT_QUILT.Value[CURRENT_QUILT];
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by CURRENT_QUILT field
+        /// </summary>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find KCC</param>
+        /// <param name="Value">List of related KCC entities</param>
+        /// <returns>True if the list of related KCC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCURRENT_QUILT(string CURRENT_QUILT, out IReadOnlyList<KCC> Value)
+        {
+            return Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCC by CURRENT_QUILT field
+        /// </summary>
+        /// <param name="CURRENT_QUILT">CURRENT_QUILT value used to find KCC</param>
+        /// <returns>List of related KCC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCC> TryFindByCURRENT_QUILT(string CURRENT_QUILT)
+        {
+            IReadOnlyList<KCC> value;
+            if (Index_CURRENT_QUILT.Value.TryGetValue(CURRENT_QUILT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,159 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Bank Account Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLBANKDataSet : SetBase<GLBANK>
     {
-        private Lazy<Dictionary<string, GLBANK>> GLCODEIndex;
-        private Lazy<Dictionary<int, GLBANK>> GLBANKKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>> GLFBANK_CODEForeignIndex;
-
-        internal GLBANKDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            GLCODEIndex = new Lazy<Dictionary<string, GLBANK>>(() => this.ToDictionary(e => e.GLCODE));
-            GLBANKKEYIndex = new Lazy<Dictionary<int, GLBANK>>(() => this.ToDictionary(e => e.GLBANKKEY));
-
-            GLFBANK_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>>(() =>
-                    Context.GLFBANK
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<GLFBANK>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "GLBANK"; } }
 
-        /// <summary>
-        /// Find GLBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find GLBANK</param>
-        /// <returns>Related GLBANK entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">GLCODE value didn't match any GLBANK entities</exception>
-        public GLBANK FindByGLCODE(string Key)
+        internal GLBANKDataSet(EduHubContext Context)
+            : base(Context)
         {
-            GLBANK result;
-            if (GLCODEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_GLCODE = new Lazy<Dictionary<string, GLBANK>>(() => this.ToDictionary(i => i.GLCODE));
+            Index_GLBANKKEY = new Lazy<Dictionary<int, IReadOnlyList<GLBANK>>>(() => this.ToGroupedDictionary(i => i.GLBANKKEY));
         }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find GLBANK</param>
-        /// <param name="Value">Related GLBANK entity</param>
-        /// <returns>True if the GLBANK entity is found</returns>
-        public bool TryFindByGLCODE(string Key, out GLBANK Value)
-        {
-            return GLCODEIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLCODE key field
-        /// </summary>
-        /// <param name="Key">GLCODE value used to find GLBANK</param>
-        /// <returns>Related GLBANK entity, or null if not found</returns>
-        public GLBANK TryFindByGLCODE(string Key)
-        {
-            GLBANK result;
-            if (GLCODEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLBANK by GLBANKKEY key field
-        /// </summary>
-        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
-        /// <returns>Related GLBANK entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">GLBANKKEY value didn't match any GLBANK entities</exception>
-        public GLBANK FindByGLBANKKEY(int Key)
-        {
-            GLBANK result;
-            if (GLBANKKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLBANKKEY key field
-        /// </summary>
-        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
-        /// <param name="Value">Related GLBANK entity</param>
-        /// <returns>True if the GLBANK entity is found</returns>
-        public bool TryFindByGLBANKKEY(int Key, out GLBANK Value)
-        {
-            return GLBANKKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLBANK by GLBANKKEY key field
-        /// </summary>
-        /// <param name="Key">GLBANKKEY value used to find GLBANK</param>
-        /// <returns>Related GLBANK entity, or null if not found</returns>
-        public GLBANK TryFindByGLBANKKEY(int Key)
-        {
-            GLBANK result;
-            if (GLBANKKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all GLFBANK (Financial Commitments) entities by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
-        /// </summary>
-        /// <param name="GLCODE">GLCODE value used to find GLFBANK entities</param>
-        /// <returns>A list of related GLFBANK entities</returns>
-        public IReadOnlyList<GLFBANK> FindGLFBANKByCODE(string GLCODE)
-        {
-            IReadOnlyList<GLFBANK> result;
-            if (GLFBANK_CODEForeignIndex.Value.TryGetValue(GLCODE, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<GLFBANK>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all GLFBANK entities by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
-        /// </summary>
-        /// <param name="GLCODE">GLCODE value used to find GLFBANK entities</param>
-        /// <param name="Value">A list of related GLFBANK entities</param>
-        /// <returns>True if any GLFBANK entities are found</returns>
-        public bool TryFindGLFBANKByCODE(string GLCODE, out IReadOnlyList<GLFBANK> Value)
-        {
-            return GLFBANK_CODEForeignIndex.Value.TryGetValue(GLCODE, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="GLBANK" />
@@ -307,5 +168,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, GLBANK>> Index_GLCODE;
+        private Lazy<Dictionary<int, IReadOnlyList<GLBANK>>> Index_GLBANKKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find GLBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBANK FindByGLCODE(string GLCODE)
+        {
+            return Index_GLCODE.Value[GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find GLBANK</param>
+        /// <param name="Value">Related GLBANK entity</param>
+        /// <returns>True if the related GLBANK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLCODE(string GLCODE, out GLBANK Value)
+        {
+            return Index_GLCODE.Value.TryGetValue(GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find GLBANK</param>
+        /// <returns>Related GLBANK entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLBANK TryFindByGLCODE(string GLCODE)
+        {
+            GLBANK value;
+            if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>List of related GLBANK entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBANK> FindByGLBANKKEY(int GLBANKKEY)
+        {
+            return Index_GLBANKKEY.Value[GLBANKKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <param name="Value">List of related GLBANK entities</param>
+        /// <returns>True if the list of related GLBANK entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLBANKKEY(int GLBANKKEY, out IReadOnlyList<GLBANK> Value)
+        {
+            return Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLBANK by GLBANKKEY field
+        /// </summary>
+        /// <param name="GLBANKKEY">GLBANKKEY value used to find GLBANK</param>
+        /// <returns>List of related GLBANK entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLBANK> TryFindByGLBANKKEY(int GLBANKKEY)
+        {
+            IReadOnlyList<GLBANK> value;
+            if (Index_GLBANKKEY.Value.TryGetValue(GLBANKKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

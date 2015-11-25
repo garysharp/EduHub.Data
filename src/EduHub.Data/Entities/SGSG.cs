@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,44 +7,55 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Group Membership Eligibility Criteria
     /// </summary>
-    public partial class SGSG : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SGSG : EntityBase
     {
-#region Navigation Property Cache
-        private SG _SGSGKEY_SG;
-        private SG _SGLINK_SG;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SG Cache_SGSGKEY_SG;
+        private SG Cache_SGLINK_SG;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Code of group for which this is a criterion
         /// [Uppercase Alphanumeric (12)]
         /// </summary>
         public string SGSGKEY { get; internal set; }
+
         /// <summary>
         /// Code of group membership of which is a criterion for membership in group SGSGKEY
         /// [Uppercase Alphanumeric (12)]
         /// </summary>
         public string SGLINK { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SG (Student Groupings) related entity by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
@@ -53,18 +65,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SGSGKEY != null)
+                if (Cache_SGSGKEY_SG == null)
                 {
-                    if (_SGSGKEY_SG == null)
-                    {
-                        _SGSGKEY_SG = Context.SG.FindBySGKEY(SGSGKEY);
-                    }
-                    return _SGSGKEY_SG;
+                    Cache_SGSGKEY_SG = Context.SG.FindBySGKEY(SGSGKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SGSGKEY_SG;
             }
         }
 
@@ -76,20 +82,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SGLINK != null)
-                {
-                    if (_SGLINK_SG == null)
-                    {
-                        _SGLINK_SG = Context.SG.FindBySGKEY(SGLINK);
-                    }
-                    return _SGLINK_SG;
-                }
-                else
+                if (SGLINK == null)
                 {
                     return null;
                 }
+                if (Cache_SGLINK_SG == null)
+                {
+                    Cache_SGLINK_SG = Context.SG.FindBySGKEY(SGLINK);
+                }
+
+                return Cache_SGLINK_SG;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

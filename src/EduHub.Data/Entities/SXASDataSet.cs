@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,25 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Scheduled Sessions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SXASDataSet : SetBase<SXAS>
     {
-        private Lazy<Dictionary<int, SXAS>> TIDIndex;
-
-
-        internal SXASDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SXAS>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SXAS"; } }
 
-        /// <summary>
-        /// Find SXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXAS</param>
-        /// <returns>Related SXAS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SXAS entities</exception>
-        public SXAS FindByTID(int Key)
+        internal SXASDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SXAS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, SXAS>>(() => this.ToDictionary(i => i.TID));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_TXAS_ID = new Lazy<NullDictionary<int?, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.TXAS_ID));
+            Index_STKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.STKEY));
+            Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
+            Index_EXP_ABS_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.EXP_ABS_TYPE));
+            Index_ACT_ABS_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<SXAS>>>(() => this.ToGroupedNullDictionary(i => i.ACT_ABS_TYPE));
         }
-
-        /// <summary>
-        /// Attempt to find SXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXAS</param>
-        /// <param name="Value">Related SXAS entity</param>
-        /// <returns>True if the SXAS entity is found</returns>
-        public bool TryFindByTID(int Key, out SXAS Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SXAS by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SXAS</param>
-        /// <returns>Related SXAS entity, or null if not found</returns>
-        public SXAS TryFindByTID(int Key)
-        {
-            SXAS result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SXAS" />
@@ -144,5 +98,316 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SXAS>> Index_TID;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SXAS>>> Index_LW_DATE;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SXAS>>> Index_TXAS_ID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SXAS>>> Index_STKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SXAS>>> Index_ST_YEAR_LEVEL;
+        private Lazy<NullDictionary<short?, IReadOnlyList<SXAS>>> Index_EXP_ABS_TYPE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<SXAS>>> Index_ACT_ABS_TYPE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXAS</param>
+        /// <returns>Related SXAS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXAS FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXAS</param>
+        /// <param name="Value">Related SXAS entity</param>
+        /// <returns>True if the related SXAS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SXAS Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SXAS</param>
+        /// <returns>Related SXAS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SXAS TryFindByTID(int TID)
+        {
+            SXAS value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by TXAS_ID field
+        /// </summary>
+        /// <param name="TXAS_ID">TXAS_ID value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindByTXAS_ID(int? TXAS_ID)
+        {
+            return Index_TXAS_ID.Value[TXAS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by TXAS_ID field
+        /// </summary>
+        /// <param name="TXAS_ID">TXAS_ID value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTXAS_ID(int? TXAS_ID, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_TXAS_ID.Value.TryGetValue(TXAS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by TXAS_ID field
+        /// </summary>
+        /// <param name="TXAS_ID">TXAS_ID value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindByTXAS_ID(int? TXAS_ID)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_TXAS_ID.Value.TryGetValue(TXAS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindBySTKEY(string STKEY)
+        {
+            return Index_STKEY.Value[STKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTKEY(string STKEY, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindBySTKEY(string STKEY)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            return Index_ST_YEAR_LEVEL.Value[ST_YEAR_LEVEL];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by EXP_ABS_TYPE field
+        /// </summary>
+        /// <param name="EXP_ABS_TYPE">EXP_ABS_TYPE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindByEXP_ABS_TYPE(short? EXP_ABS_TYPE)
+        {
+            return Index_EXP_ABS_TYPE.Value[EXP_ABS_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by EXP_ABS_TYPE field
+        /// </summary>
+        /// <param name="EXP_ABS_TYPE">EXP_ABS_TYPE value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXP_ABS_TYPE(short? EXP_ABS_TYPE, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_EXP_ABS_TYPE.Value.TryGetValue(EXP_ABS_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by EXP_ABS_TYPE field
+        /// </summary>
+        /// <param name="EXP_ABS_TYPE">EXP_ABS_TYPE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindByEXP_ABS_TYPE(short? EXP_ABS_TYPE)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_EXP_ABS_TYPE.Value.TryGetValue(EXP_ABS_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SXAS by ACT_ABS_TYPE field
+        /// </summary>
+        /// <param name="ACT_ABS_TYPE">ACT_ABS_TYPE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> FindByACT_ABS_TYPE(short? ACT_ABS_TYPE)
+        {
+            return Index_ACT_ABS_TYPE.Value[ACT_ABS_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by ACT_ABS_TYPE field
+        /// </summary>
+        /// <param name="ACT_ABS_TYPE">ACT_ABS_TYPE value used to find SXAS</param>
+        /// <param name="Value">List of related SXAS entities</param>
+        /// <returns>True if the list of related SXAS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByACT_ABS_TYPE(short? ACT_ABS_TYPE, out IReadOnlyList<SXAS> Value)
+        {
+            return Index_ACT_ABS_TYPE.Value.TryGetValue(ACT_ABS_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAS by ACT_ABS_TYPE field
+        /// </summary>
+        /// <param name="ACT_ABS_TYPE">ACT_ABS_TYPE value used to find SXAS</param>
+        /// <returns>List of related SXAS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAS> TryFindByACT_ABS_TYPE(short? ACT_ABS_TYPE)
+        {
+            IReadOnlyList<SXAS> value;
+            if (Index_ACT_ABS_TYPE.Value.TryGetValue(ACT_ABS_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

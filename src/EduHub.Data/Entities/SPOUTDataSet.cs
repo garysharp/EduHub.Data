@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Stored Procedure Return Values Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPOUTDataSet : SetBase<SPOUT>
     {
-        private Lazy<Dictionary<string, SPOUT>> SPOUTKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<KERROR>>> KERROR_SPOUTKEYForeignIndex;
-
-        internal SPOUTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SPOUTKEYIndex = new Lazy<Dictionary<string, SPOUT>>(() => this.ToDictionary(e => e.SPOUTKEY));
-
-            KERROR_SPOUTKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<KERROR>>>(() =>
-                    Context.KERROR
-                          .Where(e => e.SPOUTKEY != null)
-                          .GroupBy(e => e.SPOUTKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KERROR>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPOUT"; } }
 
-        /// <summary>
-        /// Find SPOUT by SPOUTKEY key field
-        /// </summary>
-        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
-        /// <returns>Related SPOUT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SPOUTKEY value didn't match any SPOUT entities</exception>
-        public SPOUT FindBySPOUTKEY(string Key)
+        internal SPOUTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPOUT result;
-            if (SPOUTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SPOUTKEY = new Lazy<Dictionary<string, SPOUT>>(() => this.ToDictionary(i => i.SPOUTKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SPOUT by SPOUTKEY key field
-        /// </summary>
-        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
-        /// <param name="Value">Related SPOUT entity</param>
-        /// <returns>True if the SPOUT entity is found</returns>
-        public bool TryFindBySPOUTKEY(string Key, out SPOUT Value)
-        {
-            return SPOUTKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPOUT by SPOUTKEY key field
-        /// </summary>
-        /// <param name="Key">SPOUTKEY value used to find SPOUT</param>
-        /// <returns>Related SPOUT entity, or null if not found</returns>
-        public SPOUT TryFindBySPOUTKEY(string Key)
-        {
-            SPOUT result;
-            if (SPOUTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all KERROR (Import or Update Errors) entities by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
-        /// </summary>
-        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR entities</param>
-        /// <returns>A list of related KERROR entities</returns>
-        public IReadOnlyList<KERROR> FindKERRORBySPOUTKEY(string SPOUTKEY)
-        {
-            IReadOnlyList<KERROR> result;
-            if (KERROR_SPOUTKEYForeignIndex.Value.TryGetValue(SPOUTKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<KERROR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all KERROR entities by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
-        /// </summary>
-        /// <param name="SPOUTKEY">SPOUTKEY value used to find KERROR entities</param>
-        /// <param name="Value">A list of related KERROR entities</param>
-        /// <returns>True if any KERROR entities are found</returns>
-        public bool TryFindKERRORBySPOUTKEY(string SPOUTKEY, out IReadOnlyList<KERROR> Value)
-        {
-            return KERROR_SPOUTKEYForeignIndex.Value.TryGetValue(SPOUTKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPOUT" />
@@ -188,5 +98,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SPOUT>> Index_SPOUTKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPOUT by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find SPOUT</param>
+        /// <returns>Related SPOUT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPOUT FindBySPOUTKEY(string SPOUTKEY)
+        {
+            return Index_SPOUTKEY.Value[SPOUTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SPOUT by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find SPOUT</param>
+        /// <param name="Value">Related SPOUT entity</param>
+        /// <returns>True if the related SPOUT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPOUTKEY(string SPOUTKEY, out SPOUT Value)
+        {
+            return Index_SPOUTKEY.Value.TryGetValue(SPOUTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPOUT by SPOUTKEY field
+        /// </summary>
+        /// <param name="SPOUTKEY">SPOUTKEY value used to find SPOUT</param>
+        /// <returns>Related SPOUT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPOUT TryFindBySPOUTKEY(string SPOUTKEY)
+        {
+            SPOUT value;
+            if (Index_SPOUTKEY.Value.TryGetValue(SPOUTKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

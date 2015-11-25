@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Census Class Sizes Data Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_CLDataSet : SetBase<SCEN_CL>
     {
-        private Lazy<Dictionary<int, SCEN_CL>> IDIndex;
-
-
-        internal SCEN_CLDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            IDIndex = new Lazy<Dictionary<int, SCEN_CL>>(() => this.ToDictionary(e => e.ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCEN_CL"; } }
 
-        /// <summary>
-        /// Find SCEN_CL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_CL</param>
-        /// <returns>Related SCEN_CL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any SCEN_CL entities</exception>
-        public SCEN_CL FindByID(int Key)
+        internal SCEN_CLDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SCEN_CL result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ID = new Lazy<Dictionary<int, SCEN_CL>>(() => this.ToDictionary(i => i.ID));
         }
-
-        /// <summary>
-        /// Attempt to find SCEN_CL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_CL</param>
-        /// <param name="Value">Related SCEN_CL entity</param>
-        /// <returns>True if the SCEN_CL entity is found</returns>
-        public bool TryFindByID(int Key, out SCEN_CL Value)
-        {
-            return IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCEN_CL by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find SCEN_CL</param>
-        /// <returns>Related SCEN_CL entity, or null if not found</returns>
-        public SCEN_CL TryFindByID(int Key)
-        {
-            SCEN_CL result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCEN_CL" />
@@ -165,5 +113,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SCEN_CL>> Index_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCEN_CL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_CL</param>
+        /// <returns>Related SCEN_CL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_CL FindByID(int ID)
+        {
+            return Index_ID.Value[ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_CL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_CL</param>
+        /// <param name="Value">Related SCEN_CL entity</param>
+        /// <returns>True if the related SCEN_CL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByID(int ID, out SCEN_CL Value)
+        {
+            return Index_ID.Value.TryGetValue(ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCEN_CL by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find SCEN_CL</param>
+        /// <returns>Related SCEN_CL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCEN_CL TryFindByID(int ID)
+        {
+            SCEN_CL value;
+            if (Index_ID.Value.TryGetValue(ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

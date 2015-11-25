@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Transport Company Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KTRCMPDataSet : SetBase<KTRCMP>
     {
-        private Lazy<Dictionary<int, KTRCMP>> COMPANY_IDIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>> TRPROUT_TRANSPORT_COMPANY_IDForeignIndex;
-
-        internal KTRCMPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            COMPANY_IDIndex = new Lazy<Dictionary<int, KTRCMP>>(() => this.ToDictionary(e => e.COMPANY_ID));
-
-            TRPROUT_TRANSPORT_COMPANY_IDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<TRPROUT>>>(() =>
-                    Context.TRPROUT
-                          .Where(e => e.TRANSPORT_COMPANY_ID != null)
-                          .GroupBy(e => e.TRANSPORT_COMPANY_ID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TRPROUT>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KTRCMP"; } }
 
-        /// <summary>
-        /// Find KTRCMP by COMPANY_ID key field
-        /// </summary>
-        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
-        /// <returns>Related KTRCMP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">COMPANY_ID value didn't match any KTRCMP entities</exception>
-        public KTRCMP FindByCOMPANY_ID(int Key)
+        internal KTRCMPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KTRCMP result;
-            if (COMPANY_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_COMPANY_ID = new Lazy<Dictionary<int, KTRCMP>>(() => this.ToDictionary(i => i.COMPANY_ID));
+            Index_COMPANY_CODE = new Lazy<NullDictionary<string, KTRCMP>>(() => this.ToNullDictionary(i => i.COMPANY_CODE));
+            Index_COMPANY_NAME = new Lazy<NullDictionary<string, KTRCMP>>(() => this.ToNullDictionary(i => i.COMPANY_NAME));
         }
-
-        /// <summary>
-        /// Attempt to find KTRCMP by COMPANY_ID key field
-        /// </summary>
-        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
-        /// <param name="Value">Related KTRCMP entity</param>
-        /// <returns>True if the KTRCMP entity is found</returns>
-        public bool TryFindByCOMPANY_ID(int Key, out KTRCMP Value)
-        {
-            return COMPANY_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KTRCMP by COMPANY_ID key field
-        /// </summary>
-        /// <param name="Key">COMPANY_ID value used to find KTRCMP</param>
-        /// <returns>Related KTRCMP entity, or null if not found</returns>
-        public KTRCMP TryFindByCOMPANY_ID(int Key)
-        {
-            KTRCMP result;
-            if (COMPANY_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all TRPROUT (Student Transport Routes) entities by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
-        /// </summary>
-        /// <param name="COMPANY_ID">COMPANY_ID value used to find TRPROUT entities</param>
-        /// <returns>A list of related TRPROUT entities</returns>
-        public IReadOnlyList<TRPROUT> FindTRPROUTByTRANSPORT_COMPANY_ID(int COMPANY_ID)
-        {
-            IReadOnlyList<TRPROUT> result;
-            if (TRPROUT_TRANSPORT_COMPANY_IDForeignIndex.Value.TryGetValue(COMPANY_ID, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<TRPROUT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all TRPROUT entities by [TRPROUT.TRANSPORT_COMPANY_ID]-&gt;[KTRCMP.COMPANY_ID]
-        /// </summary>
-        /// <param name="COMPANY_ID">COMPANY_ID value used to find TRPROUT entities</param>
-        /// <param name="Value">A list of related TRPROUT entities</param>
-        /// <returns>True if any TRPROUT entities are found</returns>
-        public bool TryFindTRPROUTByTRANSPORT_COMPANY_ID(int COMPANY_ID, out IReadOnlyList<TRPROUT> Value)
-        {
-            return TRPROUT_TRANSPORT_COMPANY_IDForeignIndex.Value.TryGetValue(COMPANY_ID, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KTRCMP" />
@@ -179,5 +91,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KTRCMP>> Index_COMPANY_ID;
+        private Lazy<NullDictionary<string, KTRCMP>> Index_COMPANY_CODE;
+        private Lazy<NullDictionary<string, KTRCMP>> Index_COMPANY_NAME;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP FindByCOMPANY_ID(int COMPANY_ID)
+        {
+            return Index_COMPANY_ID.Value[COMPANY_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <param name="Value">Related KTRCMP entity</param>
+        /// <returns>True if the related KTRCMP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOMPANY_ID(int COMPANY_ID, out KTRCMP Value)
+        {
+            return Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_ID field
+        /// </summary>
+        /// <param name="COMPANY_ID">COMPANY_ID value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP TryFindByCOMPANY_ID(int COMPANY_ID)
+        {
+            KTRCMP value;
+            if (Index_COMPANY_ID.Value.TryGetValue(COMPANY_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KTRCMP by COMPANY_CODE field
+        /// </summary>
+        /// <param name="COMPANY_CODE">COMPANY_CODE value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP FindByCOMPANY_CODE(string COMPANY_CODE)
+        {
+            return Index_COMPANY_CODE.Value[COMPANY_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_CODE field
+        /// </summary>
+        /// <param name="COMPANY_CODE">COMPANY_CODE value used to find KTRCMP</param>
+        /// <param name="Value">Related KTRCMP entity</param>
+        /// <returns>True if the related KTRCMP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOMPANY_CODE(string COMPANY_CODE, out KTRCMP Value)
+        {
+            return Index_COMPANY_CODE.Value.TryGetValue(COMPANY_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_CODE field
+        /// </summary>
+        /// <param name="COMPANY_CODE">COMPANY_CODE value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP TryFindByCOMPANY_CODE(string COMPANY_CODE)
+        {
+            KTRCMP value;
+            if (Index_COMPANY_CODE.Value.TryGetValue(COMPANY_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KTRCMP by COMPANY_NAME field
+        /// </summary>
+        /// <param name="COMPANY_NAME">COMPANY_NAME value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP FindByCOMPANY_NAME(string COMPANY_NAME)
+        {
+            return Index_COMPANY_NAME.Value[COMPANY_NAME];
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_NAME field
+        /// </summary>
+        /// <param name="COMPANY_NAME">COMPANY_NAME value used to find KTRCMP</param>
+        /// <param name="Value">Related KTRCMP entity</param>
+        /// <returns>True if the related KTRCMP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOMPANY_NAME(string COMPANY_NAME, out KTRCMP Value)
+        {
+            return Index_COMPANY_NAME.Value.TryGetValue(COMPANY_NAME, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTRCMP by COMPANY_NAME field
+        /// </summary>
+        /// <param name="COMPANY_NAME">COMPANY_NAME value used to find KTRCMP</param>
+        /// <returns>Related KTRCMP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTRCMP TryFindByCOMPANY_NAME(string COMPANY_NAME)
+        {
+            KTRCMP value;
+            if (Index_COMPANY_NAME.Value.TryGetValue(COMPANY_NAME, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

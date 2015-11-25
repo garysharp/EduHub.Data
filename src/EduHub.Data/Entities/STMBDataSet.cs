@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Merit Behaviour Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STMBDataSet : SetBase<STMB>
     {
-
-
-        internal STMBDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "STMB"; } }
 
+        internal STMBDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STMB>>>(() => this.ToGroupedDictionary(i => i.SKEY));
+            Index_TID = new Lazy<Dictionary<int, STMB>>(() => this.ToDictionary(i => i.TID));
+            Index_B_CODE = new Lazy<NullDictionary<string, IReadOnlyList<STMB>>>(() => this.ToGroupedNullDictionary(i => i.B_CODE));
+            Index_AWARD = new Lazy<NullDictionary<string, IReadOnlyList<STMB>>>(() => this.ToGroupedNullDictionary(i => i.AWARD));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="STMB" />
@@ -36,7 +37,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SKEY":
                         mapper[i] = (e, v) => e.SKEY = v;
@@ -88,5 +89,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<STMB>>> Index_SKEY;
+        private Lazy<Dictionary<int, STMB>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<STMB>>> Index_B_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<STMB>>> Index_AWARD;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find STMB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMB</param>
+        /// <returns>List of related STMB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> FindBySKEY(string SKEY)
+        {
+            return Index_SKEY.Value[SKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMB</param>
+        /// <param name="Value">List of related STMB entities</param>
+        /// <returns>True if the list of related STMB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySKEY(string SKEY, out IReadOnlyList<STMB> Value)
+        {
+            return Index_SKEY.Value.TryGetValue(SKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by SKEY field
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STMB</param>
+        /// <returns>List of related STMB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> TryFindBySKEY(string SKEY)
+        {
+            IReadOnlyList<STMB> value;
+            if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMB</param>
+        /// <returns>Related STMB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STMB FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMB</param>
+        /// <param name="Value">Related STMB entity</param>
+        /// <returns>True if the related STMB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out STMB Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find STMB</param>
+        /// <returns>Related STMB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public STMB TryFindByTID(int TID)
+        {
+            STMB value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMB by B_CODE field
+        /// </summary>
+        /// <param name="B_CODE">B_CODE value used to find STMB</param>
+        /// <returns>List of related STMB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> FindByB_CODE(string B_CODE)
+        {
+            return Index_B_CODE.Value[B_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by B_CODE field
+        /// </summary>
+        /// <param name="B_CODE">B_CODE value used to find STMB</param>
+        /// <param name="Value">List of related STMB entities</param>
+        /// <returns>True if the list of related STMB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByB_CODE(string B_CODE, out IReadOnlyList<STMB> Value)
+        {
+            return Index_B_CODE.Value.TryGetValue(B_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by B_CODE field
+        /// </summary>
+        /// <param name="B_CODE">B_CODE value used to find STMB</param>
+        /// <returns>List of related STMB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> TryFindByB_CODE(string B_CODE)
+        {
+            IReadOnlyList<STMB> value;
+            if (Index_B_CODE.Value.TryGetValue(B_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STMB by AWARD field
+        /// </summary>
+        /// <param name="AWARD">AWARD value used to find STMB</param>
+        /// <returns>List of related STMB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> FindByAWARD(string AWARD)
+        {
+            return Index_AWARD.Value[AWARD];
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by AWARD field
+        /// </summary>
+        /// <param name="AWARD">AWARD value used to find STMB</param>
+        /// <param name="Value">List of related STMB entities</param>
+        /// <returns>True if the list of related STMB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAWARD(string AWARD, out IReadOnlyList<STMB> Value)
+        {
+            return Index_AWARD.Value.TryGetValue(AWARD, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STMB by AWARD field
+        /// </summary>
+        /// <param name="AWARD">AWARD value used to find STMB</param>
+        /// <returns>List of related STMB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STMB> TryFindByAWARD(string AWARD)
+        {
+            IReadOnlyList<STMB> value;
+            if (Index_AWARD.Value.TryGetValue(AWARD, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,527 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Addresses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class UMDataSet : SetBase<UM>
     {
-        private Lazy<Dictionary<int, UM>> UMKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<DF>>> DF_HOMEKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<DF>>> DF_MAILKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<DF>>> DF_BILLINGKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<PE>>> PE_HOMEKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<PE>>> PE_MAILKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<PE>>> PE_LEAVEKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SAM>>> SAM_ADDRESSKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SAM>>> SAM_MAILKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SF>>> SF_HOMEKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SF>>> SF_MAILKEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_AM_PICKUP_ADDRESS_IDForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>> STTRIPS_PM_SETDOWN_ADDRESS_IDForeignIndex;
-
-        internal UMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            UMKEYIndex = new Lazy<Dictionary<int, UM>>(() => this.ToDictionary(e => e.UMKEY));
-
-            DF_HOMEKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<DF>>>(() =>
-                    Context.DF
-                          .Where(e => e.HOMEKEY != null)
-                          .GroupBy(e => e.HOMEKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DF>)g.ToList()
-                          .AsReadOnly()));
-
-            DF_MAILKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<DF>>>(() =>
-                    Context.DF
-                          .Where(e => e.MAILKEY != null)
-                          .GroupBy(e => e.MAILKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DF>)g.ToList()
-                          .AsReadOnly()));
-
-            DF_BILLINGKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<DF>>>(() =>
-                    Context.DF
-                          .Where(e => e.BILLINGKEY != null)
-                          .GroupBy(e => e.BILLINGKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DF>)g.ToList()
-                          .AsReadOnly()));
-
-            PE_HOMEKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<PE>>>(() =>
-                    Context.PE
-                          .Where(e => e.HOMEKEY != null)
-                          .GroupBy(e => e.HOMEKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
-                          .AsReadOnly()));
-
-            PE_MAILKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<PE>>>(() =>
-                    Context.PE
-                          .Where(e => e.MAILKEY != null)
-                          .GroupBy(e => e.MAILKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
-                          .AsReadOnly()));
-
-            PE_LEAVEKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<PE>>>(() =>
-                    Context.PE
-                          .Where(e => e.LEAVEKEY != null)
-                          .GroupBy(e => e.LEAVEKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
-                          .AsReadOnly()));
-
-            SAM_ADDRESSKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAM>>>(() =>
-                    Context.SAM
-                          .Where(e => e.ADDRESSKEY != null)
-                          .GroupBy(e => e.ADDRESSKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAM>)g.ToList()
-                          .AsReadOnly()));
-
-            SAM_MAILKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SAM>>>(() =>
-                    Context.SAM
-                          .Where(e => e.MAILKEY != null)
-                          .GroupBy(e => e.MAILKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAM>)g.ToList()
-                          .AsReadOnly()));
-
-            SF_HOMEKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SF>>>(() =>
-                    Context.SF
-                          .Where(e => e.HOMEKEY != null)
-                          .GroupBy(e => e.HOMEKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
-                          .AsReadOnly()));
-
-            SF_MAILKEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SF>>>(() =>
-                    Context.SF
-                          .Where(e => e.MAILKEY != null)
-                          .GroupBy(e => e.MAILKEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
-                          .AsReadOnly()));
-
-            STTRIPS_AM_PICKUP_ADDRESS_IDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
-                    Context.STTRIPS
-                          .Where(e => e.AM_PICKUP_ADDRESS_ID != null)
-                          .GroupBy(e => e.AM_PICKUP_ADDRESS_ID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
-                          .AsReadOnly()));
-
-            STTRIPS_PM_SETDOWN_ADDRESS_IDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<STTRIPS>>>(() =>
-                    Context.STTRIPS
-                          .Where(e => e.PM_SETDOWN_ADDRESS_ID != null)
-                          .GroupBy(e => e.PM_SETDOWN_ADDRESS_ID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "UM"; } }
 
-        /// <summary>
-        /// Find UM by UMKEY key field
-        /// </summary>
-        /// <param name="Key">UMKEY value used to find UM</param>
-        /// <returns>Related UM entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">UMKEY value didn't match any UM entities</exception>
-        public UM FindByUMKEY(int Key)
+        internal UMDataSet(EduHubContext Context)
+            : base(Context)
         {
-            UM result;
-            if (UMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_UMKEY = new Lazy<Dictionary<int, UM>>(() => this.ToDictionary(i => i.UMKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<UM>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
         }
-
-        /// <summary>
-        /// Attempt to find UM by UMKEY key field
-        /// </summary>
-        /// <param name="Key">UMKEY value used to find UM</param>
-        /// <param name="Value">Related UM entity</param>
-        /// <returns>True if the UM entity is found</returns>
-        public bool TryFindByUMKEY(int Key, out UM Value)
-        {
-            return UMKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find UM by UMKEY key field
-        /// </summary>
-        /// <param name="Key">UMKEY value used to find UM</param>
-        /// <returns>Related UM entity, or null if not found</returns>
-        public UM TryFindByUMKEY(int Key)
-        {
-            UM result;
-            if (UMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all DF (Families) entities by [DF.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <returns>A list of related DF entities</returns>
-        public IReadOnlyList<DF> FindDFByHOMEKEY(int UMKEY)
-        {
-            IReadOnlyList<DF> result;
-            if (DF_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DF entities by [DF.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <param name="Value">A list of related DF entities</param>
-        /// <returns>True if any DF entities are found</returns>
-        public bool TryFindDFByHOMEKEY(int UMKEY, out IReadOnlyList<DF> Value)
-        {
-            return DF_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DF (Families) entities by [DF.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <returns>A list of related DF entities</returns>
-        public IReadOnlyList<DF> FindDFByMAILKEY(int UMKEY)
-        {
-            IReadOnlyList<DF> result;
-            if (DF_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DF entities by [DF.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <param name="Value">A list of related DF entities</param>
-        /// <returns>True if any DF entities are found</returns>
-        public bool TryFindDFByMAILKEY(int UMKEY, out IReadOnlyList<DF> Value)
-        {
-            return DF_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DF (Families) entities by [DF.BILLINGKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <returns>A list of related DF entities</returns>
-        public IReadOnlyList<DF> FindDFByBILLINGKEY(int UMKEY)
-        {
-            IReadOnlyList<DF> result;
-            if (DF_BILLINGKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DF entities by [DF.BILLINGKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find DF entities</param>
-        /// <param name="Value">A list of related DF entities</param>
-        /// <returns>True if any DF entities are found</returns>
-        public bool TryFindDFByBILLINGKEY(int UMKEY, out IReadOnlyList<DF> Value)
-        {
-            return DF_BILLINGKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all PE (Employees) entities by [PE.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <returns>A list of related PE entities</returns>
-        public IReadOnlyList<PE> FindPEByHOMEKEY(int UMKEY)
-        {
-            IReadOnlyList<PE> result;
-            if (PE_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PE entities by [PE.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <param name="Value">A list of related PE entities</param>
-        /// <returns>True if any PE entities are found</returns>
-        public bool TryFindPEByHOMEKEY(int UMKEY, out IReadOnlyList<PE> Value)
-        {
-            return PE_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all PE (Employees) entities by [PE.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <returns>A list of related PE entities</returns>
-        public IReadOnlyList<PE> FindPEByMAILKEY(int UMKEY)
-        {
-            IReadOnlyList<PE> result;
-            if (PE_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PE entities by [PE.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <param name="Value">A list of related PE entities</param>
-        /// <returns>True if any PE entities are found</returns>
-        public bool TryFindPEByMAILKEY(int UMKEY, out IReadOnlyList<PE> Value)
-        {
-            return PE_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all PE (Employees) entities by [PE.LEAVEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <returns>A list of related PE entities</returns>
-        public IReadOnlyList<PE> FindPEByLEAVEKEY(int UMKEY)
-        {
-            IReadOnlyList<PE> result;
-            if (PE_LEAVEKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PE entities by [PE.LEAVEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find PE entities</param>
-        /// <param name="Value">A list of related PE entities</param>
-        /// <returns>True if any PE entities are found</returns>
-        public bool TryFindPEByLEAVEKEY(int UMKEY, out IReadOnlyList<PE> Value)
-        {
-            return PE_LEAVEKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SAM (School Association Members) entities by [SAM.ADDRESSKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SAM entities</param>
-        /// <returns>A list of related SAM entities</returns>
-        public IReadOnlyList<SAM> FindSAMByADDRESSKEY(int UMKEY)
-        {
-            IReadOnlyList<SAM> result;
-            if (SAM_ADDRESSKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAM entities by [SAM.ADDRESSKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SAM entities</param>
-        /// <param name="Value">A list of related SAM entities</param>
-        /// <returns>True if any SAM entities are found</returns>
-        public bool TryFindSAMByADDRESSKEY(int UMKEY, out IReadOnlyList<SAM> Value)
-        {
-            return SAM_ADDRESSKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SAM (School Association Members) entities by [SAM.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SAM entities</param>
-        /// <returns>A list of related SAM entities</returns>
-        public IReadOnlyList<SAM> FindSAMByMAILKEY(int UMKEY)
-        {
-            IReadOnlyList<SAM> result;
-            if (SAM_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAM entities by [SAM.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SAM entities</param>
-        /// <param name="Value">A list of related SAM entities</param>
-        /// <returns>True if any SAM entities are found</returns>
-        public bool TryFindSAMByMAILKEY(int UMKEY, out IReadOnlyList<SAM> Value)
-        {
-            return SAM_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SF (Staff) entities by [SF.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SF entities</param>
-        /// <returns>A list of related SF entities</returns>
-        public IReadOnlyList<SF> FindSFByHOMEKEY(int UMKEY)
-        {
-            IReadOnlyList<SF> result;
-            if (SF_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SF entities by [SF.HOMEKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SF entities</param>
-        /// <param name="Value">A list of related SF entities</param>
-        /// <returns>True if any SF entities are found</returns>
-        public bool TryFindSFByHOMEKEY(int UMKEY, out IReadOnlyList<SF> Value)
-        {
-            return SF_HOMEKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SF (Staff) entities by [SF.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SF entities</param>
-        /// <returns>A list of related SF entities</returns>
-        public IReadOnlyList<SF> FindSFByMAILKEY(int UMKEY)
-        {
-            IReadOnlyList<SF> result;
-            if (SF_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SF entities by [SF.MAILKEY]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find SF entities</param>
-        /// <param name="Value">A list of related SF entities</param>
-        /// <returns>True if any SF entities are found</returns>
-        public bool TryFindSFByMAILKEY(int UMKEY, out IReadOnlyList<SF> Value)
-        {
-            return SF_MAILKEYForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.AM_PICKUP_ADDRESS_ID]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find STTRIPS entities</param>
-        /// <returns>A list of related STTRIPS entities</returns>
-        public IReadOnlyList<STTRIPS> FindSTTRIPSByAM_PICKUP_ADDRESS_ID(int UMKEY)
-        {
-            IReadOnlyList<STTRIPS> result;
-            if (STTRIPS_AM_PICKUP_ADDRESS_IDForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STTRIPS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STTRIPS entities by [STTRIPS.AM_PICKUP_ADDRESS_ID]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find STTRIPS entities</param>
-        /// <param name="Value">A list of related STTRIPS entities</param>
-        /// <returns>True if any STTRIPS entities are found</returns>
-        public bool TryFindSTTRIPSByAM_PICKUP_ADDRESS_ID(int UMKEY, out IReadOnlyList<STTRIPS> Value)
-        {
-            return STTRIPS_AM_PICKUP_ADDRESS_IDForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.PM_SETDOWN_ADDRESS_ID]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find STTRIPS entities</param>
-        /// <returns>A list of related STTRIPS entities</returns>
-        public IReadOnlyList<STTRIPS> FindSTTRIPSByPM_SETDOWN_ADDRESS_ID(int UMKEY)
-        {
-            IReadOnlyList<STTRIPS> result;
-            if (STTRIPS_PM_SETDOWN_ADDRESS_IDForeignIndex.Value.TryGetValue(UMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STTRIPS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STTRIPS entities by [STTRIPS.PM_SETDOWN_ADDRESS_ID]-&gt;[UM.UMKEY]
-        /// </summary>
-        /// <param name="UMKEY">UMKEY value used to find STTRIPS entities</param>
-        /// <param name="Value">A list of related STTRIPS entities</param>
-        /// <returns>True if any STTRIPS entities are found</returns>
-        public bool TryFindSTTRIPSByPM_SETDOWN_ADDRESS_ID(int UMKEY, out IReadOnlyList<STTRIPS> Value)
-        {
-            return STTRIPS_PM_SETDOWN_ADDRESS_IDForeignIndex.Value.TryGetValue(UMKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="UM" />
@@ -600,5 +94,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, UM>> Index_UMKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<UM>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<UM>>> Index_COUNTRY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find UM by UMKEY field
+        /// </summary>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM FindByUMKEY(int UMKEY)
+        {
+            return Index_UMKEY.Value[UMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find UM by UMKEY field
+        /// </summary>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <param name="Value">Related UM entity</param>
+        /// <returns>True if the related UM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByUMKEY(int UMKEY, out UM Value)
+        {
+            return Index_UMKEY.Value.TryGetValue(UMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM by UMKEY field
+        /// </summary>
+        /// <param name="UMKEY">UMKEY value used to find UM</param>
+        /// <returns>Related UM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM TryFindByUMKEY(int UMKEY)
+        {
+            UM value;
+            if (Index_UMKEY.Value.TryGetValue(UMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find UM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find UM</param>
+        /// <returns>List of related UM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find UM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find UM</param>
+        /// <param name="Value">List of related UM entities</param>
+        /// <returns>True if the list of related UM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<UM> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find UM</param>
+        /// <returns>List of related UM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<UM> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find UM by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <returns>List of related UM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM> FindByCOUNTRY(string COUNTRY)
+        {
+            return Index_COUNTRY.Value[COUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find UM by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <param name="Value">List of related UM entities</param>
+        /// <returns>True if the list of related UM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOUNTRY(string COUNTRY, out IReadOnlyList<UM> Value)
+        {
+            return Index_COUNTRY.Value.TryGetValue(COUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find UM</param>
+        /// <returns>List of related UM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM> TryFindByCOUNTRY(string COUNTRY)
+        {
+            IReadOnlyList<UM> value;
+            if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

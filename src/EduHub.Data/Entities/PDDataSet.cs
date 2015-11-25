@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,24 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Departments Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PDDataSet : SetBase<PD>
     {
-        private Lazy<Dictionary<string, PD>> PDKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<PE>>> PE_DEPARTMENTForeignIndex;
-
-        internal PDDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PDKEYIndex = new Lazy<Dictionary<string, PD>>(() => this.ToDictionary(e => e.PDKEY));
-
-            PE_DEPARTMENTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PE>>>(() =>
-                    Context.PE
-                          .Where(e => e.DEPARTMENT != null)
-                          .GroupBy(e => e.DEPARTMENT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PE>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PD"; } }
 
-        /// <summary>
-        /// Find PD by PDKEY key field
-        /// </summary>
-        /// <param name="Key">PDKEY value used to find PD</param>
-        /// <returns>Related PD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PDKEY value didn't match any PD entities</exception>
-        public PD FindByPDKEY(string Key)
+        internal PDDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PD result;
-            if (PDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PDKEY = new Lazy<Dictionary<string, PD>>(() => this.ToDictionary(i => i.PDKEY));
+            Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<PD>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
+            Index_GLBANK = new Lazy<NullDictionary<string, IReadOnlyList<PD>>>(() => this.ToGroupedNullDictionary(i => i.GLBANK));
+            Index_GLTAX = new Lazy<NullDictionary<string, IReadOnlyList<PD>>>(() => this.ToGroupedNullDictionary(i => i.GLTAX));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PD>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PD>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find PD by PDKEY key field
-        /// </summary>
-        /// <param name="Key">PDKEY value used to find PD</param>
-        /// <param name="Value">Related PD entity</param>
-        /// <returns>True if the PD entity is found</returns>
-        public bool TryFindByPDKEY(string Key, out PD Value)
-        {
-            return PDKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PD by PDKEY key field
-        /// </summary>
-        /// <param name="Key">PDKEY value used to find PD</param>
-        /// <returns>Related PD entity, or null if not found</returns>
-        public PD TryFindByPDKEY(string Key)
-        {
-            PD result;
-            if (PDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all PE (Employees) entities by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
-        /// </summary>
-        /// <param name="PDKEY">PDKEY value used to find PE entities</param>
-        /// <returns>A list of related PE entities</returns>
-        public IReadOnlyList<PE> FindPEByDEPARTMENT(string PDKEY)
-        {
-            IReadOnlyList<PE> result;
-            if (PE_DEPARTMENTForeignIndex.Value.TryGetValue(PDKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PE entities by [PE.DEPARTMENT]-&gt;[PD.PDKEY]
-        /// </summary>
-        /// <param name="PDKEY">PDKEY value used to find PE entities</param>
-        /// <param name="Value">A list of related PE entities</param>
-        /// <returns>True if any PE entities are found</returns>
-        public bool TryFindPEByDEPARTMENT(string PDKEY, out IReadOnlyList<PE> Value)
-        {
-            return PE_DEPARTMENTForeignIndex.Value.TryGetValue(PDKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PD" />
@@ -164,5 +79,273 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, PD>> Index_PDKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PD>>> Index_GLCODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<PD>>> Index_GLBANK;
+        private Lazy<NullDictionary<string, IReadOnlyList<PD>>> Index_GLTAX;
+        private Lazy<NullDictionary<string, IReadOnlyList<PD>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PD>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PD by PDKEY field
+        /// </summary>
+        /// <param name="PDKEY">PDKEY value used to find PD</param>
+        /// <returns>Related PD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PD FindByPDKEY(string PDKEY)
+        {
+            return Index_PDKEY.Value[PDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by PDKEY field
+        /// </summary>
+        /// <param name="PDKEY">PDKEY value used to find PD</param>
+        /// <param name="Value">Related PD entity</param>
+        /// <returns>True if the related PD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPDKEY(string PDKEY, out PD Value)
+        {
+            return Index_PDKEY.Value.TryGetValue(PDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by PDKEY field
+        /// </summary>
+        /// <param name="PDKEY">PDKEY value used to find PD</param>
+        /// <returns>Related PD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PD TryFindByPDKEY(string PDKEY)
+        {
+            PD value;
+            if (Index_PDKEY.Value.TryGetValue(PDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PD by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PD</param>
+        /// <returns>List of related PD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> FindByGLCODE(string GLCODE)
+        {
+            return Index_GLCODE.Value[GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PD</param>
+        /// <param name="Value">List of related PD entities</param>
+        /// <returns>True if the list of related PD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLCODE(string GLCODE, out IReadOnlyList<PD> Value)
+        {
+            return Index_GLCODE.Value.TryGetValue(GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PD</param>
+        /// <returns>List of related PD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> TryFindByGLCODE(string GLCODE)
+        {
+            IReadOnlyList<PD> value;
+            if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PD by GLBANK field
+        /// </summary>
+        /// <param name="GLBANK">GLBANK value used to find PD</param>
+        /// <returns>List of related PD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> FindByGLBANK(string GLBANK)
+        {
+            return Index_GLBANK.Value[GLBANK];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLBANK field
+        /// </summary>
+        /// <param name="GLBANK">GLBANK value used to find PD</param>
+        /// <param name="Value">List of related PD entities</param>
+        /// <returns>True if the list of related PD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLBANK(string GLBANK, out IReadOnlyList<PD> Value)
+        {
+            return Index_GLBANK.Value.TryGetValue(GLBANK, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLBANK field
+        /// </summary>
+        /// <param name="GLBANK">GLBANK value used to find PD</param>
+        /// <returns>List of related PD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> TryFindByGLBANK(string GLBANK)
+        {
+            IReadOnlyList<PD> value;
+            if (Index_GLBANK.Value.TryGetValue(GLBANK, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PD by GLTAX field
+        /// </summary>
+        /// <param name="GLTAX">GLTAX value used to find PD</param>
+        /// <returns>List of related PD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> FindByGLTAX(string GLTAX)
+        {
+            return Index_GLTAX.Value[GLTAX];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLTAX field
+        /// </summary>
+        /// <param name="GLTAX">GLTAX value used to find PD</param>
+        /// <param name="Value">List of related PD entities</param>
+        /// <returns>True if the list of related PD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLTAX(string GLTAX, out IReadOnlyList<PD> Value)
+        {
+            return Index_GLTAX.Value.TryGetValue(GLTAX, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by GLTAX field
+        /// </summary>
+        /// <param name="GLTAX">GLTAX value used to find PD</param>
+        /// <returns>List of related PD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> TryFindByGLTAX(string GLTAX)
+        {
+            IReadOnlyList<PD> value;
+            if (Index_GLTAX.Value.TryGetValue(GLTAX, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PD by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PD</param>
+        /// <returns>List of related PD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PD</param>
+        /// <param name="Value">List of related PD entities</param>
+        /// <returns>True if the list of related PD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PD> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PD</param>
+        /// <returns>List of related PD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<PD> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PD by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PD</param>
+        /// <returns>List of related PD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find PD by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PD</param>
+        /// <param name="Value">List of related PD entities</param>
+        /// <returns>True if the list of related PD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PD> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PD by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PD</param>
+        /// <returns>List of related PD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PD> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<PD> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group History Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGCHIDataSet : SetBase<KGCHI>
     {
-        private Lazy<Dictionary<int, KGCHI>> KGCHIKEYIndex;
-
-
-        internal KGCHIDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KGCHIKEYIndex = new Lazy<Dictionary<int, KGCHI>>(() => this.ToDictionary(e => e.KGCHIKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KGCHI"; } }
 
-        /// <summary>
-        /// Find KGCHI by KGCHIKEY key field
-        /// </summary>
-        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
-        /// <returns>Related KGCHI entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KGCHIKEY value didn't match any KGCHI entities</exception>
-        public KGCHI FindByKGCHIKEY(int Key)
+        internal KGCHIDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KGCHI result;
-            if (KGCHIKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KGCHIKEY = new Lazy<Dictionary<int, KGCHI>>(() => this.ToDictionary(i => i.KGCHIKEY));
+            Index_KGCKEY = new Lazy<NullDictionary<string, IReadOnlyList<KGCHI>>>(() => this.ToGroupedNullDictionary(i => i.KGCKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KGCHI by KGCHIKEY key field
-        /// </summary>
-        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
-        /// <param name="Value">Related KGCHI entity</param>
-        /// <returns>True if the KGCHI entity is found</returns>
-        public bool TryFindByKGCHIKEY(int Key, out KGCHI Value)
-        {
-            return KGCHIKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGCHI by KGCHIKEY key field
-        /// </summary>
-        /// <param name="Key">KGCHIKEY value used to find KGCHI</param>
-        /// <returns>Related KGCHI entity, or null if not found</returns>
-        public KGCHI TryFindByKGCHIKEY(int Key)
-        {
-            KGCHI result;
-            if (KGCHIKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KGCHI" />
@@ -132,5 +81,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KGCHI>> Index_KGCHIKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KGCHI>>> Index_KGCKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KGCHI by KGCHIKEY field
+        /// </summary>
+        /// <param name="KGCHIKEY">KGCHIKEY value used to find KGCHI</param>
+        /// <returns>Related KGCHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGCHI FindByKGCHIKEY(int KGCHIKEY)
+        {
+            return Index_KGCHIKEY.Value[KGCHIKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCHIKEY field
+        /// </summary>
+        /// <param name="KGCHIKEY">KGCHIKEY value used to find KGCHI</param>
+        /// <param name="Value">Related KGCHI entity</param>
+        /// <returns>True if the related KGCHI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGCHIKEY(int KGCHIKEY, out KGCHI Value)
+        {
+            return Index_KGCHIKEY.Value.TryGetValue(KGCHIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCHIKEY field
+        /// </summary>
+        /// <param name="KGCHIKEY">KGCHIKEY value used to find KGCHI</param>
+        /// <returns>Related KGCHI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGCHI TryFindByKGCHIKEY(int KGCHIKEY)
+        {
+            KGCHI value;
+            if (Index_KGCHIKEY.Value.TryGetValue(KGCHIKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGCHI by KGCKEY field
+        /// </summary>
+        /// <param name="KGCKEY">KGCKEY value used to find KGCHI</param>
+        /// <returns>List of related KGCHI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGCHI> FindByKGCKEY(string KGCKEY)
+        {
+            return Index_KGCKEY.Value[KGCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCKEY field
+        /// </summary>
+        /// <param name="KGCKEY">KGCKEY value used to find KGCHI</param>
+        /// <param name="Value">List of related KGCHI entities</param>
+        /// <returns>True if the list of related KGCHI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGCKEY(string KGCKEY, out IReadOnlyList<KGCHI> Value)
+        {
+            return Index_KGCKEY.Value.TryGetValue(KGCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGCHI by KGCKEY field
+        /// </summary>
+        /// <param name="KGCKEY">KGCKEY value used to find KGCHI</param>
+        /// <returns>List of related KGCHI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGCHI> TryFindByKGCKEY(string KGCKEY)
+        {
+            IReadOnlyList<KGCHI> value;
+            if (Index_KGCKEY.Value.TryGetValue(KGCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

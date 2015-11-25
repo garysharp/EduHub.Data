@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FDT Financial Raw Import Table Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class FDT_IMPDataSet : SetBase<FDT_IMP>
     {
-        private Lazy<Dictionary<int, FDT_IMP>> FDTKEYIndex;
-
-
-        internal FDT_IMPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            FDTKEYIndex = new Lazy<Dictionary<int, FDT_IMP>>(() => this.ToDictionary(e => e.FDTKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "FDT_IMP"; } }
 
-        /// <summary>
-        /// Find FDT_IMP by FDTKEY key field
-        /// </summary>
-        /// <param name="Key">FDTKEY value used to find FDT_IMP</param>
-        /// <returns>Related FDT_IMP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">FDTKEY value didn't match any FDT_IMP entities</exception>
-        public FDT_IMP FindByFDTKEY(int Key)
+        internal FDT_IMPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            FDT_IMP result;
-            if (FDTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_FDTKEY = new Lazy<Dictionary<int, FDT_IMP>>(() => this.ToDictionary(i => i.FDTKEY));
         }
-
-        /// <summary>
-        /// Attempt to find FDT_IMP by FDTKEY key field
-        /// </summary>
-        /// <param name="Key">FDTKEY value used to find FDT_IMP</param>
-        /// <param name="Value">Related FDT_IMP entity</param>
-        /// <returns>True if the FDT_IMP entity is found</returns>
-        public bool TryFindByFDTKEY(int Key, out FDT_IMP Value)
-        {
-            return FDTKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find FDT_IMP by FDTKEY key field
-        /// </summary>
-        /// <param name="Key">FDTKEY value used to find FDT_IMP</param>
-        /// <returns>Related FDT_IMP entity, or null if not found</returns>
-        public FDT_IMP TryFindByFDTKEY(int Key)
-        {
-            FDT_IMP result;
-            if (FDTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="FDT_IMP" />
@@ -294,5 +242,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, FDT_IMP>> Index_FDTKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find FDT_IMP by FDTKEY field
+        /// </summary>
+        /// <param name="FDTKEY">FDTKEY value used to find FDT_IMP</param>
+        /// <returns>Related FDT_IMP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FDT_IMP FindByFDTKEY(int FDTKEY)
+        {
+            return Index_FDTKEY.Value[FDTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_IMP by FDTKEY field
+        /// </summary>
+        /// <param name="FDTKEY">FDTKEY value used to find FDT_IMP</param>
+        /// <param name="Value">Related FDT_IMP entity</param>
+        /// <returns>True if the related FDT_IMP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFDTKEY(int FDTKEY, out FDT_IMP Value)
+        {
+            return Index_FDTKEY.Value.TryGetValue(FDTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find FDT_IMP by FDTKEY field
+        /// </summary>
+        /// <param name="FDTKEY">FDTKEY value used to find FDT_IMP</param>
+        /// <returns>Related FDT_IMP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FDT_IMP TryFindByFDTKEY(int FDTKEY)
+        {
+            FDT_IMP value;
+            if (Index_FDTKEY.Value.TryGetValue(FDTKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

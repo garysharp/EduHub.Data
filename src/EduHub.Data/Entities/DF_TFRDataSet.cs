@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// DF Transfer Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DF_TFRDataSet : SetBase<DF_TFR>
     {
-
-
-        internal DF_TFRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "DF_TFR"; } }
 
+        internal DF_TFRDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<DF_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
+            Index_TID = new Lazy<Dictionary<int, DF_TFR>>(() => this.ToDictionary(i => i.TID));
+            Index_DF_TRANS_ID = new Lazy<NullDictionary<string, DF_TFR>>(() => this.ToNullDictionary(i => i.DF_TRANS_ID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="DF_TFR" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "ORIG_SCHOOL":
                         mapper[i] = (e, v) => e.ORIG_SCHOOL = v;
@@ -364,5 +364,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<DF_TFR>>> Index_ORIG_SCHOOL;
+        private Lazy<Dictionary<int, DF_TFR>> Index_TID;
+        private Lazy<NullDictionary<string, DF_TFR>> Index_DF_TRANS_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find DF_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find DF_TFR</param>
+        /// <returns>List of related DF_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF_TFR> FindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            return Index_ORIG_SCHOOL.Value[ORIG_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find DF_TFR</param>
+        /// <param name="Value">List of related DF_TFR entities</param>
+        /// <returns>True if the list of related DF_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIG_SCHOOL(string ORIG_SCHOOL, out IReadOnlyList<DF_TFR> Value)
+        {
+            return Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find DF_TFR</param>
+        /// <returns>List of related DF_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DF_TFR> TryFindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            IReadOnlyList<DF_TFR> value;
+            if (Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DF_TFR</param>
+        /// <param name="Value">Related DF_TFR entity</param>
+        /// <returns>True if the related DF_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DF_TFR Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR TryFindByTID(int TID)
+        {
+            DF_TFR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR FindByDF_TRANS_ID(string DF_TRANS_ID)
+        {
+            return Index_DF_TRANS_ID.Value[DF_TRANS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <param name="Value">Related DF_TFR entity</param>
+        /// <returns>True if the related DF_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDF_TRANS_ID(string DF_TRANS_ID, out DF_TFR Value)
+        {
+            return Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DF_TFR by DF_TRANS_ID field
+        /// </summary>
+        /// <param name="DF_TRANS_ID">DF_TRANS_ID value used to find DF_TFR</param>
+        /// <returns>Related DF_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DF_TFR TryFindByDF_TRANS_ID(string DF_TRANS_ID)
+        {
+            DF_TFR value;
+            if (Index_DF_TRANS_ID.Value.TryGetValue(DF_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

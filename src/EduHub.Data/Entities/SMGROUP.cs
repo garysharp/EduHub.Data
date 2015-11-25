@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,44 +7,55 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Rooms group
     /// </summary>
-    public partial class SMGROUP : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SMGROUP : EntityBase
     {
-#region Navigation Property Cache
-        private SM _GROUPKEY_SM;
-        private SM _ROOM_SM;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SM Cache_GROUPKEY_SM;
+        private SM Cache_ROOM_SM;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Group key in SM
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string GROUPKEY { get; internal set; }
+
         /// <summary>
         /// Room in the group
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string ROOM { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SM (Rooms) related entity by [SMGROUP.GROUPKEY]-&gt;[SM.ROOM]
@@ -53,18 +65,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (GROUPKEY != null)
+                if (Cache_GROUPKEY_SM == null)
                 {
-                    if (_GROUPKEY_SM == null)
-                    {
-                        _GROUPKEY_SM = Context.SM.FindByROOM(GROUPKEY);
-                    }
-                    return _GROUPKEY_SM;
+                    Cache_GROUPKEY_SM = Context.SM.FindByROOM(GROUPKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_GROUPKEY_SM;
             }
         }
 
@@ -76,20 +82,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROOM != null)
-                {
-                    if (_ROOM_SM == null)
-                    {
-                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
-                    }
-                    return _ROOM_SM;
-                }
-                else
+                if (ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_ROOM_SM == null)
+                {
+                    Cache_ROOM_SM = Context.SM.FindByROOM(ROOM);
+                }
+
+                return Cache_ROOM_SM;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

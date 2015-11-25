@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,62 +7,77 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Book List
     /// </summary>
-    public partial class SUBL : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SUBL : EntityBase
     {
-#region Navigation Property Cache
-        private SU _BLKEY_SU;
-        private BKH _BOOK_BKH;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SU Cache_BLKEY_SU;
+        private BKH Cache_BOOK_BKH;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string BLKEY { get; internal set; }
+
         /// <summary>
         /// Book ISBN identifier
         /// [Uppercase Alphanumeric (13)]
         /// </summary>
         public string BOOK { get; internal set; }
+
         /// <summary>
         /// Timetabling year/semester (eg 1998S1, 1998)
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string TTPERIOD { get; internal set; }
+
         /// <summary>
         /// Tag required
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TAG { get; internal set; }
+
         /// <summary>
         /// Semester required
         /// </summary>
         public short? SEMESTER { get; internal set; }
+
         /// <summary>
         /// Number of items required
         /// </summary>
         public short? NUMBER_REQUIRED { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SU (Subjects) related entity by [SUBL.BLKEY]-&gt;[SU.SUKEY]
@@ -71,18 +87,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (BLKEY != null)
+                if (Cache_BLKEY_SU == null)
                 {
-                    if (_BLKEY_SU == null)
-                    {
-                        _BLKEY_SU = Context.SU.FindBySUKEY(BLKEY);
-                    }
-                    return _BLKEY_SU;
+                    Cache_BLKEY_SU = Context.SU.FindBySUKEY(BLKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_BLKEY_SU;
             }
         }
 
@@ -94,20 +104,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (BOOK != null)
-                {
-                    if (_BOOK_BKH == null)
-                    {
-                        _BOOK_BKH = Context.BKH.FindByBKHKEY(BOOK);
-                    }
-                    return _BOOK_BKH;
-                }
-                else
+                if (BOOK == null)
                 {
                     return null;
                 }
+                if (Cache_BOOK_BKH == null)
+                {
+                    Cache_BOOK_BKH = Context.BKH.FindByBKHKEY(BOOK);
+                }
+
+                return Cache_BOOK_BKH;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

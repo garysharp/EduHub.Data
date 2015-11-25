@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS messages Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPSMSDataSet : SetBase<SPSMS>
     {
-        private Lazy<Dictionary<int, SPSMS>> SPSMSKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>> SPRECIP_CODEForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>> SPREPLY_CODEForeignIndex;
-
-        internal SPSMSDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SPSMSKEYIndex = new Lazy<Dictionary<int, SPSMS>>(() => this.ToDictionary(e => e.SPSMSKEY));
-
-            SPRECIP_CODEForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>>(() =>
-                    Context.SPRECIP
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPRECIP>)g.ToList()
-                          .AsReadOnly()));
-
-            SPREPLY_CODEForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>>(() =>
-                    Context.SPREPLY
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPREPLY>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPSMS"; } }
 
-        /// <summary>
-        /// Find SPSMS by SPSMSKEY key field
-        /// </summary>
-        /// <param name="Key">SPSMSKEY value used to find SPSMS</param>
-        /// <returns>Related SPSMS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SPSMSKEY value didn't match any SPSMS entities</exception>
-        public SPSMS FindBySPSMSKEY(int Key)
+        internal SPSMSDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPSMS result;
-            if (SPSMSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SPSMSKEY = new Lazy<Dictionary<int, SPSMS>>(() => this.ToDictionary(i => i.SPSMSKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SPSMS by SPSMSKEY key field
-        /// </summary>
-        /// <param name="Key">SPSMSKEY value used to find SPSMS</param>
-        /// <param name="Value">Related SPSMS entity</param>
-        /// <returns>True if the SPSMS entity is found</returns>
-        public bool TryFindBySPSMSKEY(int Key, out SPSMS Value)
-        {
-            return SPSMSKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPSMS by SPSMSKEY key field
-        /// </summary>
-        /// <param name="Key">SPSMSKEY value used to find SPSMS</param>
-        /// <returns>Related SPSMS entity, or null if not found</returns>
-        public SPSMS TryFindBySPSMSKEY(int Key)
-        {
-            SPSMS result;
-            if (SPSMSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SPRECIP (SMS Recipients) entities by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
-        /// </summary>
-        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPRECIP entities</param>
-        /// <returns>A list of related SPRECIP entities</returns>
-        public IReadOnlyList<SPRECIP> FindSPRECIPByCODE(int SPSMSKEY)
-        {
-            IReadOnlyList<SPRECIP> result;
-            if (SPRECIP_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SPRECIP>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SPRECIP entities by [SPRECIP.CODE]-&gt;[SPSMS.SPSMSKEY]
-        /// </summary>
-        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPRECIP entities</param>
-        /// <param name="Value">A list of related SPRECIP entities</param>
-        /// <returns>True if any SPRECIP entities are found</returns>
-        public bool TryFindSPRECIPByCODE(int SPSMSKEY, out IReadOnlyList<SPRECIP> Value)
-        {
-            return SPRECIP_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SPREPLY (SMS Recipients) entities by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
-        /// </summary>
-        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPREPLY entities</param>
-        /// <returns>A list of related SPREPLY entities</returns>
-        public IReadOnlyList<SPREPLY> FindSPREPLYByCODE(int SPSMSKEY)
-        {
-            IReadOnlyList<SPREPLY> result;
-            if (SPREPLY_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SPREPLY>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SPREPLY entities by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
-        /// </summary>
-        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPREPLY entities</param>
-        /// <param name="Value">A list of related SPREPLY entities</param>
-        /// <returns>True if any SPREPLY entities are found</returns>
-        public bool TryFindSPREPLYByCODE(int SPSMSKEY, out IReadOnlyList<SPREPLY> Value)
-        {
-            return SPREPLY_CODEForeignIndex.Value.TryGetValue(SPSMSKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPSMS" />
@@ -196,5 +68,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SPSMS>> Index_SPSMSKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPSMS by SPSMSKEY field
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPSMS</param>
+        /// <returns>Related SPSMS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPSMS FindBySPSMSKEY(int SPSMSKEY)
+        {
+            return Index_SPSMSKEY.Value[SPSMSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SPSMS by SPSMSKEY field
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPSMS</param>
+        /// <param name="Value">Related SPSMS entity</param>
+        /// <returns>True if the related SPSMS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySPSMSKEY(int SPSMSKEY, out SPSMS Value)
+        {
+            return Index_SPSMSKEY.Value.TryGetValue(SPSMSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPSMS by SPSMSKEY field
+        /// </summary>
+        /// <param name="SPSMSKEY">SPSMSKEY value used to find SPSMS</param>
+        /// <returns>Related SPSMS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPSMS TryFindBySPSMSKEY(int SPSMSKEY)
+        {
+            SPSMS value;
+            if (Index_SPSMSKEY.Value.TryGetValue(SPSMSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

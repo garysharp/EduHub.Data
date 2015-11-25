@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,24 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Last Years GL Combined Financial Trans Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLCFPREVDataSet : SetBase<GLCFPREV>
     {
-        private Lazy<Dictionary<string, GLCFPREV>> TRREFIndex;
-
-
-        internal GLCFPREVDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TRREFIndex = new Lazy<Dictionary<string, GLCFPREV>>(() => this.ToDictionary(e => e.TRREF));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "GLCFPREV"; } }
 
-        /// <summary>
-        /// Find GLCFPREV by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLCFPREV</param>
-        /// <returns>Related GLCFPREV entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any GLCFPREV entities</exception>
-        public GLCFPREV FindByTRREF(string Key)
+        internal GLCFPREVDataSet(EduHubContext Context)
+            : base(Context)
         {
-            GLCFPREV result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLCFPREV>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, GLCFPREV>>(() => this.ToDictionary(i => i.TID));
+            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find GLCFPREV by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLCFPREV</param>
-        /// <param name="Value">Related GLCFPREV entity</param>
-        /// <returns>True if the GLCFPREV entity is found</returns>
-        public bool TryFindByTRREF(string Key, out GLCFPREV Value)
-        {
-            return TRREFIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLCFPREV by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLCFPREV</param>
-        /// <returns>Related GLCFPREV entity, or null if not found</returns>
-        public GLCFPREV TryFindByTRREF(string Key)
-        {
-            GLCFPREV result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="GLCFPREV" />
@@ -86,7 +39,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -291,5 +244,273 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLCFPREV>>> Index_CODE;
+        private Lazy<Dictionary<int, GLCFPREV>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>> Index_TRREF;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLCFPREV>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find GLCFPREV by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLCFPREV</param>
+        /// <param name="Value">List of related GLCFPREV entities</param>
+        /// <returns>True if the list of related GLCFPREV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<GLCFPREV> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCFPREV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLCFPREV</param>
+        /// <returns>Related GLCFPREV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLCFPREV FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLCFPREV</param>
+        /// <param name="Value">Related GLCFPREV entity</param>
+        /// <returns>True if the related GLCFPREV entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out GLCFPREV Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLCFPREV</param>
+        /// <returns>Related GLCFPREV entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLCFPREV TryFindByTID(int TID)
+        {
+            GLCFPREV value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCFPREV by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> FindByTRREF(string TRREF)
+        {
+            return Index_TRREF.Value[TRREF];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLCFPREV</param>
+        /// <param name="Value">List of related GLCFPREV entities</param>
+        /// <returns>True if the list of related GLCFPREV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> TryFindByTRREF(string TRREF)
+        {
+            IReadOnlyList<GLCFPREV> value;
+            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCFPREV by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCFPREV</param>
+        /// <param name="Value">List of related GLCFPREV entities</param>
+        /// <returns>True if the list of related GLCFPREV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<GLCFPREV> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCFPREV by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCFPREV</param>
+        /// <param name="Value">List of related GLCFPREV entities</param>
+        /// <returns>True if the list of related GLCFPREV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<GLCFPREV> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLCFPREV by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCFPREV</param>
+        /// <param name="Value">List of related GLCFPREV entities</param>
+        /// <returns>True if the list of related GLCFPREV entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<GLCFPREV> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLCFPREV by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLCFPREV</param>
+        /// <returns>List of related GLCFPREV entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLCFPREV> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<GLCFPREV> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

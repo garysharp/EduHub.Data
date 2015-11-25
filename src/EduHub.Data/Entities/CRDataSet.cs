@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,223 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Payable Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class CRDataSet : SetBase<CR>
     {
-        private Lazy<Dictionary<string, CR>> CRKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_ORIG_SUPPLIERForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_CURR_SUPPLIERForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> CRF_CODEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<CRFTC>>> CRFTC_CODEForeignIndex;
-
-        internal CRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            CRKEYIndex = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(e => e.CRKEY));
-
-            AR_ORIG_SUPPLIERForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
-                    Context.AR
-                          .Where(e => e.ORIG_SUPPLIER != null)
-                          .GroupBy(e => e.ORIG_SUPPLIER)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
-                          .AsReadOnly()));
-
-            AR_CURR_SUPPLIERForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
-                    Context.AR
-                          .Where(e => e.CURR_SUPPLIER != null)
-                          .GroupBy(e => e.CURR_SUPPLIER)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
-                          .AsReadOnly()));
-
-            CRF_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() =>
-                    Context.CRF
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRF>)g.ToList()
-                          .AsReadOnly()));
-
-            CRFTC_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<CRFTC>>>(() =>
-                    Context.CRFTC
-                          .Where(e => e.CODE != null)
-                          .GroupBy(e => e.CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRFTC>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "CR"; } }
 
-        /// <summary>
-        /// Find CR by CRKEY key field
-        /// </summary>
-        /// <param name="Key">CRKEY value used to find CR</param>
-        /// <returns>Related CR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">CRKEY value didn't match any CR entities</exception>
-        public CR FindByCRKEY(string Key)
+        internal CRDataSet(EduHubContext Context)
+            : base(Context)
         {
-            CR result;
-            if (CRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CRKEY = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(i => i.CRKEY));
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_PPDKEY = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.PPDKEY));
         }
-
-        /// <summary>
-        /// Attempt to find CR by CRKEY key field
-        /// </summary>
-        /// <param name="Key">CRKEY value used to find CR</param>
-        /// <param name="Value">Related CR entity</param>
-        /// <returns>True if the CR entity is found</returns>
-        public bool TryFindByCRKEY(string Key, out CR Value)
-        {
-            return CRKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find CR by CRKEY key field
-        /// </summary>
-        /// <param name="Key">CRKEY value used to find CR</param>
-        /// <returns>Related CR entity, or null if not found</returns>
-        public CR TryFindByCRKEY(string Key)
-        {
-            CR result;
-            if (CRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all AR (Assets) entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
-        /// <returns>A list of related AR entities</returns>
-        public IReadOnlyList<AR> FindARByORIG_SUPPLIER(string CRKEY)
-        {
-            IReadOnlyList<AR> result;
-            if (AR_ORIG_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<AR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all AR entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
-        /// <param name="Value">A list of related AR entities</param>
-        /// <returns>True if any AR entities are found</returns>
-        public bool TryFindARByORIG_SUPPLIER(string CRKEY, out IReadOnlyList<AR> Value)
-        {
-            return AR_ORIG_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all AR (Assets) entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
-        /// <returns>A list of related AR entities</returns>
-        public IReadOnlyList<AR> FindARByCURR_SUPPLIER(string CRKEY)
-        {
-            IReadOnlyList<AR> result;
-            if (AR_CURR_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<AR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all AR entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find AR entities</param>
-        /// <param name="Value">A list of related AR entities</param>
-        /// <returns>True if any AR entities are found</returns>
-        public bool TryFindARByCURR_SUPPLIER(string CRKEY, out IReadOnlyList<AR> Value)
-        {
-            return AR_CURR_SUPPLIERForeignIndex.Value.TryGetValue(CRKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all CRF (Creditor Financial Transaction) entities by [CRF.CODE]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CRF entities</param>
-        /// <returns>A list of related CRF entities</returns>
-        public IReadOnlyList<CRF> FindCRFByCODE(string CRKEY)
-        {
-            IReadOnlyList<CRF> result;
-            if (CRF_CODEForeignIndex.Value.TryGetValue(CRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<CRF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all CRF entities by [CRF.CODE]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CRF entities</param>
-        /// <param name="Value">A list of related CRF entities</param>
-        /// <returns>True if any CRF entities are found</returns>
-        public bool TryFindCRFByCODE(string CRKEY, out IReadOnlyList<CRF> Value)
-        {
-            return CRF_CODEForeignIndex.Value.TryGetValue(CRKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all CRFTC (Creditor Fuel Tax Credits) entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CRFTC entities</param>
-        /// <returns>A list of related CRFTC entities</returns>
-        public IReadOnlyList<CRFTC> FindCRFTCByCODE(string CRKEY)
-        {
-            IReadOnlyList<CRFTC> result;
-            if (CRFTC_CODEForeignIndex.Value.TryGetValue(CRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<CRFTC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all CRFTC entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
-        /// </summary>
-        /// <param name="CRKEY">CRKEY value used to find CRFTC entities</param>
-        /// <param name="Value">A list of related CRFTC entities</param>
-        /// <returns>True if any CRFTC entities are found</returns>
-        public bool TryFindCRFTCByCODE(string CRKEY, out IReadOnlyList<CRFTC> Value)
-        {
-            return CRFTC_CODEForeignIndex.Value.TryGetValue(CRKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="CR" />
@@ -413,5 +211,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, CR>> Index_CRKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_BSB;
+        private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_PPDKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CR FindByCRKEY(string CRKEY)
+        {
+            return Index_CRKEY.Value[CRKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <param name="Value">Related CR entity</param>
+        /// <returns>True if the related CR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCRKEY(string CRKEY, out CR Value)
+        {
+            return Index_CRKEY.Value.TryGetValue(CRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CR by CRKEY field
+        /// </summary>
+        /// <param name="CRKEY">CRKEY value used to find CR</param>
+        /// <returns>Related CR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public CR TryFindByCRKEY(string CRKEY)
+        {
+            CR value;
+            if (Index_CRKEY.Value.TryGetValue(CRKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CR by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find CR</param>
+        /// <returns>List of related CR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find CR by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find CR</param>
+        /// <param name="Value">List of related CR entities</param>
+        /// <returns>True if the list of related CR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<CR> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CR by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find CR</param>
+        /// <returns>List of related CR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<CR> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CR by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find CR</param>
+        /// <returns>List of related CR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> FindByPPDKEY(string PPDKEY)
+        {
+            return Index_PPDKEY.Value[PPDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find CR by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find CR</param>
+        /// <param name="Value">List of related CR entities</param>
+        /// <returns>True if the list of related CR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPPDKEY(string PPDKEY, out IReadOnlyList<CR> Value)
+        {
+            return Index_PPDKEY.Value.TryGetValue(PPDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CR by PPDKEY field
+        /// </summary>
+        /// <param name="PPDKEY">PPDKEY value used to find CR</param>
+        /// <returns>List of related CR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> TryFindByPPDKEY(string PPDKEY)
+        {
+            IReadOnlyList<CR> value;
+            if (Index_PPDKEY.Value.TryGetValue(PPDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,451 +8,27 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Groupings Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SGDataSet : SetBase<SG>
     {
-        private Lazy<Dictionary<string, SG>> SGKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SGAM>>> SGAM_SGAMKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGHG>>> SGHG_SGHGKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGM>>> SGM_SGMKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGMA>>> SGMA_SGMAKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGSC>>> SGSC_SGSCKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGSG>>> SGSG_SGSGKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGSG>>> SGSG_SGLINKForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SGTRX>>> SGTRX_SGTRXKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SPU>>> SPU_MAILING_LISTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STPO>>> STPO_SGLINKForeignIndex;
-
-        internal SGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SGKEYIndex = new Lazy<Dictionary<string, SG>>(() => this.ToDictionary(e => e.SGKEY));
-
-            SGAM_SGAMKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGAM>>>(() =>
-                    Context.SGAM
-                          .Where(e => e.SGAMKEY != null)
-                          .GroupBy(e => e.SGAMKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGAM>)g.ToList()
-                          .AsReadOnly()));
-
-            SGHG_SGHGKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGHG>>>(() =>
-                    Context.SGHG
-                          .Where(e => e.SGHGKEY != null)
-                          .GroupBy(e => e.SGHGKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGHG>)g.ToList()
-                          .AsReadOnly()));
-
-            SGM_SGMKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGM>>>(() =>
-                    Context.SGM
-                          .Where(e => e.SGMKEY != null)
-                          .GroupBy(e => e.SGMKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGM>)g.ToList()
-                          .AsReadOnly()));
-
-            SGMA_SGMAKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGMA>>>(() =>
-                    Context.SGMA
-                          .Where(e => e.SGMAKEY != null)
-                          .GroupBy(e => e.SGMAKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGMA>)g.ToList()
-                          .AsReadOnly()));
-
-            SGSC_SGSCKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGSC>>>(() =>
-                    Context.SGSC
-                          .Where(e => e.SGSCKEY != null)
-                          .GroupBy(e => e.SGSCKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSC>)g.ToList()
-                          .AsReadOnly()));
-
-            SGSG_SGSGKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGSG>>>(() =>
-                    Context.SGSG
-                          .Where(e => e.SGSGKEY != null)
-                          .GroupBy(e => e.SGSGKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSG>)g.ToList()
-                          .AsReadOnly()));
-
-            SGSG_SGLINKForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGSG>>>(() =>
-                    Context.SGSG
-                          .Where(e => e.SGLINK != null)
-                          .GroupBy(e => e.SGLINK)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGSG>)g.ToList()
-                          .AsReadOnly()));
-
-            SGTRX_SGTRXKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SGTRX>>>(() =>
-                    Context.SGTRX
-                          .Where(e => e.SGTRXKEY != null)
-                          .GroupBy(e => e.SGTRXKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SGTRX>)g.ToList()
-                          .AsReadOnly()));
-
-            SPU_MAILING_LISTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SPU>>>(() =>
-                    Context.SPU
-                          .Where(e => e.MAILING_LIST != null)
-                          .GroupBy(e => e.MAILING_LIST)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPU>)g.ToList()
-                          .AsReadOnly()));
-
-            STPO_SGLINKForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STPO>>>(() =>
-                    Context.STPO
-                          .Where(e => e.SGLINK != null)
-                          .GroupBy(e => e.SGLINK)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STPO>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SG"; } }
 
-        /// <summary>
-        /// Find SG by SGKEY key field
-        /// </summary>
-        /// <param name="Key">SGKEY value used to find SG</param>
-        /// <returns>Related SG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SGKEY value didn't match any SG entities</exception>
-        public SG FindBySGKEY(string Key)
+        internal SGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SG result;
-            if (SGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SGKEY = new Lazy<Dictionary<string, SG>>(() => this.ToDictionary(i => i.SGKEY));
+            Index_FROM_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.FROM_CAMPUS));
+            Index_TO_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.TO_CAMPUS));
+            Index_CAND_FIRST_YR = new Lazy<NullDictionary<string, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.CAND_FIRST_YR));
+            Index_CAND_LAST_YR = new Lazy<NullDictionary<string, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.CAND_LAST_YR));
+            Index_FUT_FIRST_YR = new Lazy<NullDictionary<string, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.FUT_FIRST_YR));
+            Index_FUT_LAST_YR = new Lazy<NullDictionary<string, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.FUT_LAST_YR));
+            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
+            Index_ABS_TYPE = new Lazy<NullDictionary<short?, IReadOnlyList<SG>>>(() => this.ToGroupedNullDictionary(i => i.ABS_TYPE));
         }
-
-        /// <summary>
-        /// Attempt to find SG by SGKEY key field
-        /// </summary>
-        /// <param name="Key">SGKEY value used to find SG</param>
-        /// <param name="Value">Related SG entity</param>
-        /// <returns>True if the SG entity is found</returns>
-        public bool TryFindBySGKEY(string Key, out SG Value)
-        {
-            return SGKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SG by SGKEY key field
-        /// </summary>
-        /// <param name="Key">SGKEY value used to find SG</param>
-        /// <returns>Related SG entity, or null if not found</returns>
-        public SG TryFindBySGKEY(string Key)
-        {
-            SG result;
-            if (SGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SGAM (Adult Group Members) entities by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGAM entities</param>
-        /// <returns>A list of related SGAM entities</returns>
-        public IReadOnlyList<SGAM> FindSGAMBySGAMKEY(string SGKEY)
-        {
-            IReadOnlyList<SGAM> result;
-            if (SGAM_SGAMKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGAM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGAM entities by [SGAM.SGAMKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGAM entities</param>
-        /// <param name="Value">A list of related SGAM entities</param>
-        /// <returns>True if any SGAM entities are found</returns>
-        public bool TryFindSGAMBySGAMKEY(string SGKEY, out IReadOnlyList<SGAM> Value)
-        {
-            return SGAM_SGAMKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGHG (Home Group Eligibility Criteria) entities by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGHG entities</param>
-        /// <returns>A list of related SGHG entities</returns>
-        public IReadOnlyList<SGHG> FindSGHGBySGHGKEY(string SGKEY)
-        {
-            IReadOnlyList<SGHG> result;
-            if (SGHG_SGHGKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGHG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGHG entities by [SGHG.SGHGKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGHG entities</param>
-        /// <param name="Value">A list of related SGHG entities</param>
-        /// <returns>True if any SGHG entities are found</returns>
-        public bool TryFindSGHGBySGHGKEY(string SGKEY, out IReadOnlyList<SGHG> Value)
-        {
-            return SGHG_SGHGKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGM (Special Group Meetings) entities by [SGM.SGMKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGM entities</param>
-        /// <returns>A list of related SGM entities</returns>
-        public IReadOnlyList<SGM> FindSGMBySGMKEY(string SGKEY)
-        {
-            IReadOnlyList<SGM> result;
-            if (SGM_SGMKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGM entities by [SGM.SGMKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGM entities</param>
-        /// <param name="Value">A list of related SGM entities</param>
-        /// <returns>True if any SGM entities are found</returns>
-        public bool TryFindSGMBySGMKEY(string SGKEY, out IReadOnlyList<SGM> Value)
-        {
-            return SGM_SGMKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGMA (Group Meeting Attendance) entities by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGMA entities</param>
-        /// <returns>A list of related SGMA entities</returns>
-        public IReadOnlyList<SGMA> FindSGMABySGMAKEY(string SGKEY)
-        {
-            IReadOnlyList<SGMA> result;
-            if (SGMA_SGMAKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGMA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGMA entities by [SGMA.SGMAKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGMA entities</param>
-        /// <param name="Value">A list of related SGMA entities</param>
-        /// <returns>True if any SGMA entities are found</returns>
-        public bool TryFindSGMABySGMAKEY(string SGKEY, out IReadOnlyList<SGMA> Value)
-        {
-            return SGMA_SGMAKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGSC (Subject/Class Eligibility Criteria) entities by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSC entities</param>
-        /// <returns>A list of related SGSC entities</returns>
-        public IReadOnlyList<SGSC> FindSGSCBySGSCKEY(string SGKEY)
-        {
-            IReadOnlyList<SGSC> result;
-            if (SGSC_SGSCKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGSC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGSC entities by [SGSC.SGSCKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSC entities</param>
-        /// <param name="Value">A list of related SGSC entities</param>
-        /// <returns>True if any SGSC entities are found</returns>
-        public bool TryFindSGSCBySGSCKEY(string SGKEY, out IReadOnlyList<SGSC> Value)
-        {
-            return SGSC_SGSCKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGSG (Group Membership Eligibility Criteria) entities by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
-        /// <returns>A list of related SGSG entities</returns>
-        public IReadOnlyList<SGSG> FindSGSGBySGSGKEY(string SGKEY)
-        {
-            IReadOnlyList<SGSG> result;
-            if (SGSG_SGSGKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGSG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGSG entities by [SGSG.SGSGKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
-        /// <param name="Value">A list of related SGSG entities</param>
-        /// <returns>True if any SGSG entities are found</returns>
-        public bool TryFindSGSGBySGSGKEY(string SGKEY, out IReadOnlyList<SGSG> Value)
-        {
-            return SGSG_SGSGKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGSG (Group Membership Eligibility Criteria) entities by [SGSG.SGLINK]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
-        /// <returns>A list of related SGSG entities</returns>
-        public IReadOnlyList<SGSG> FindSGSGBySGLINK(string SGKEY)
-        {
-            IReadOnlyList<SGSG> result;
-            if (SGSG_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGSG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGSG entities by [SGSG.SGLINK]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGSG entities</param>
-        /// <param name="Value">A list of related SGSG entities</param>
-        /// <returns>True if any SGSG entities are found</returns>
-        public bool TryFindSGSGBySGLINK(string SGKEY, out IReadOnlyList<SGSG> Value)
-        {
-            return SGSG_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SGTRX (Temporary Group Transactions) entities by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGTRX entities</param>
-        /// <returns>A list of related SGTRX entities</returns>
-        public IReadOnlyList<SGTRX> FindSGTRXBySGTRXKEY(string SGKEY)
-        {
-            IReadOnlyList<SGTRX> result;
-            if (SGTRX_SGTRXKEYForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SGTRX>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SGTRX entities by [SGTRX.SGTRXKEY]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SGTRX entities</param>
-        /// <param name="Value">A list of related SGTRX entities</param>
-        /// <returns>True if any SGTRX entities are found</returns>
-        public bool TryFindSGTRXBySGTRXKEY(string SGKEY, out IReadOnlyList<SGTRX> Value)
-        {
-            return SGTRX_SGTRXKEYForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SPU (Publications) entities by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SPU entities</param>
-        /// <returns>A list of related SPU entities</returns>
-        public IReadOnlyList<SPU> FindSPUByMAILING_LIST(string SGKEY)
-        {
-            IReadOnlyList<SPU> result;
-            if (SPU_MAILING_LISTForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SPU>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SPU entities by [SPU.MAILING_LIST]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find SPU entities</param>
-        /// <param name="Value">A list of related SPU entities</param>
-        /// <returns>True if any SPU entities are found</returns>
-        public bool TryFindSPUByMAILING_LIST(string SGKEY, out IReadOnlyList<SPU> Value)
-        {
-            return SPU_MAILING_LISTForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STPO (Position or Group Memberships) entities by [STPO.SGLINK]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find STPO entities</param>
-        /// <returns>A list of related STPO entities</returns>
-        public IReadOnlyList<STPO> FindSTPOBySGLINK(string SGKEY)
-        {
-            IReadOnlyList<STPO> result;
-            if (STPO_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STPO>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STPO entities by [STPO.SGLINK]-&gt;[SG.SGKEY]
-        /// </summary>
-        /// <param name="SGKEY">SGKEY value used to find STPO entities</param>
-        /// <param name="Value">A list of related STPO entities</param>
-        /// <returns>True if any STPO entities are found</returns>
-        public bool TryFindSTPOBySGLINK(string SGKEY, out IReadOnlyList<STPO> Value)
-        {
-            return STPO_SGLINKForeignIndex.Value.TryGetValue(SGKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SG" />
@@ -650,5 +226,402 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SG>> Index_SGKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SG>>> Index_FROM_CAMPUS;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SG>>> Index_TO_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<SG>>> Index_CAND_FIRST_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<SG>>> Index_CAND_LAST_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<SG>>> Index_FUT_FIRST_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<SG>>> Index_FUT_LAST_YR;
+        private Lazy<NullDictionary<string, IReadOnlyList<SG>>> Index_HOUSE;
+        private Lazy<NullDictionary<short?, IReadOnlyList<SG>>> Index_ABS_TYPE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SG by SGKEY field
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SG</param>
+        /// <returns>Related SG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SG FindBySGKEY(string SGKEY)
+        {
+            return Index_SGKEY.Value[SGKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by SGKEY field
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SG</param>
+        /// <param name="Value">Related SG entity</param>
+        /// <returns>True if the related SG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySGKEY(string SGKEY, out SG Value)
+        {
+            return Index_SGKEY.Value.TryGetValue(SGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by SGKEY field
+        /// </summary>
+        /// <param name="SGKEY">SGKEY value used to find SG</param>
+        /// <returns>Related SG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SG TryFindBySGKEY(string SGKEY)
+        {
+            SG value;
+            if (Index_SGKEY.Value.TryGetValue(SGKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by FROM_CAMPUS field
+        /// </summary>
+        /// <param name="FROM_CAMPUS">FROM_CAMPUS value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByFROM_CAMPUS(int? FROM_CAMPUS)
+        {
+            return Index_FROM_CAMPUS.Value[FROM_CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FROM_CAMPUS field
+        /// </summary>
+        /// <param name="FROM_CAMPUS">FROM_CAMPUS value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFROM_CAMPUS(int? FROM_CAMPUS, out IReadOnlyList<SG> Value)
+        {
+            return Index_FROM_CAMPUS.Value.TryGetValue(FROM_CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FROM_CAMPUS field
+        /// </summary>
+        /// <param name="FROM_CAMPUS">FROM_CAMPUS value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByFROM_CAMPUS(int? FROM_CAMPUS)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_FROM_CAMPUS.Value.TryGetValue(FROM_CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by TO_CAMPUS field
+        /// </summary>
+        /// <param name="TO_CAMPUS">TO_CAMPUS value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByTO_CAMPUS(int? TO_CAMPUS)
+        {
+            return Index_TO_CAMPUS.Value[TO_CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by TO_CAMPUS field
+        /// </summary>
+        /// <param name="TO_CAMPUS">TO_CAMPUS value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTO_CAMPUS(int? TO_CAMPUS, out IReadOnlyList<SG> Value)
+        {
+            return Index_TO_CAMPUS.Value.TryGetValue(TO_CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by TO_CAMPUS field
+        /// </summary>
+        /// <param name="TO_CAMPUS">TO_CAMPUS value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByTO_CAMPUS(int? TO_CAMPUS)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_TO_CAMPUS.Value.TryGetValue(TO_CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by CAND_FIRST_YR field
+        /// </summary>
+        /// <param name="CAND_FIRST_YR">CAND_FIRST_YR value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByCAND_FIRST_YR(string CAND_FIRST_YR)
+        {
+            return Index_CAND_FIRST_YR.Value[CAND_FIRST_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by CAND_FIRST_YR field
+        /// </summary>
+        /// <param name="CAND_FIRST_YR">CAND_FIRST_YR value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAND_FIRST_YR(string CAND_FIRST_YR, out IReadOnlyList<SG> Value)
+        {
+            return Index_CAND_FIRST_YR.Value.TryGetValue(CAND_FIRST_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by CAND_FIRST_YR field
+        /// </summary>
+        /// <param name="CAND_FIRST_YR">CAND_FIRST_YR value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByCAND_FIRST_YR(string CAND_FIRST_YR)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_CAND_FIRST_YR.Value.TryGetValue(CAND_FIRST_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by CAND_LAST_YR field
+        /// </summary>
+        /// <param name="CAND_LAST_YR">CAND_LAST_YR value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByCAND_LAST_YR(string CAND_LAST_YR)
+        {
+            return Index_CAND_LAST_YR.Value[CAND_LAST_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by CAND_LAST_YR field
+        /// </summary>
+        /// <param name="CAND_LAST_YR">CAND_LAST_YR value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAND_LAST_YR(string CAND_LAST_YR, out IReadOnlyList<SG> Value)
+        {
+            return Index_CAND_LAST_YR.Value.TryGetValue(CAND_LAST_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by CAND_LAST_YR field
+        /// </summary>
+        /// <param name="CAND_LAST_YR">CAND_LAST_YR value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByCAND_LAST_YR(string CAND_LAST_YR)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_CAND_LAST_YR.Value.TryGetValue(CAND_LAST_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by FUT_FIRST_YR field
+        /// </summary>
+        /// <param name="FUT_FIRST_YR">FUT_FIRST_YR value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByFUT_FIRST_YR(string FUT_FIRST_YR)
+        {
+            return Index_FUT_FIRST_YR.Value[FUT_FIRST_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FUT_FIRST_YR field
+        /// </summary>
+        /// <param name="FUT_FIRST_YR">FUT_FIRST_YR value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFUT_FIRST_YR(string FUT_FIRST_YR, out IReadOnlyList<SG> Value)
+        {
+            return Index_FUT_FIRST_YR.Value.TryGetValue(FUT_FIRST_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FUT_FIRST_YR field
+        /// </summary>
+        /// <param name="FUT_FIRST_YR">FUT_FIRST_YR value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByFUT_FIRST_YR(string FUT_FIRST_YR)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_FUT_FIRST_YR.Value.TryGetValue(FUT_FIRST_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by FUT_LAST_YR field
+        /// </summary>
+        /// <param name="FUT_LAST_YR">FUT_LAST_YR value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByFUT_LAST_YR(string FUT_LAST_YR)
+        {
+            return Index_FUT_LAST_YR.Value[FUT_LAST_YR];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FUT_LAST_YR field
+        /// </summary>
+        /// <param name="FUT_LAST_YR">FUT_LAST_YR value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFUT_LAST_YR(string FUT_LAST_YR, out IReadOnlyList<SG> Value)
+        {
+            return Index_FUT_LAST_YR.Value.TryGetValue(FUT_LAST_YR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by FUT_LAST_YR field
+        /// </summary>
+        /// <param name="FUT_LAST_YR">FUT_LAST_YR value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByFUT_LAST_YR(string FUT_LAST_YR)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_FUT_LAST_YR.Value.TryGetValue(FUT_LAST_YR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByHOUSE(string HOUSE)
+        {
+            return Index_HOUSE.Value[HOUSE];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<SG> Value)
+        {
+            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByHOUSE(string HOUSE)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SG by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find SG</param>
+        /// <returns>List of related SG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> FindByABS_TYPE(short? ABS_TYPE)
+        {
+            return Index_ABS_TYPE.Value[ABS_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SG by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find SG</param>
+        /// <param name="Value">List of related SG entities</param>
+        /// <returns>True if the list of related SG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByABS_TYPE(short? ABS_TYPE, out IReadOnlyList<SG> Value)
+        {
+            return Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SG by ABS_TYPE field
+        /// </summary>
+        /// <param name="ABS_TYPE">ABS_TYPE value used to find SG</param>
+        /// <returns>List of related SG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SG> TryFindByABS_TYPE(short? ABS_TYPE)
+        {
+            IReadOnlyList<SG> value;
+            if (Index_ABS_TYPE.Value.TryGetValue(ABS_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,276 +7,346 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accounts Payable
     /// </summary>
-    public partial class CR : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class CR : EntityBase
     {
-#region Navigation Property Cache
-        private KAB _BSB_KAB;
-        private PPD _PPDKEY_PPD;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private KAB Cache_BSB_KAB;
+        private PPD Cache_PPDKEY_PPD;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<AR> Cache_CRKEY_AR_ORIG_SUPPLIER;
+        private IReadOnlyList<AR> Cache_CRKEY_AR_CURR_SUPPLIER;
+        private IReadOnlyList<CRF> Cache_CRKEY_CRF_CODE;
+        private IReadOnlyList<CRFTC> Cache_CRKEY_CRFTC_CODE;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Prime Key
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string CRKEY { get; internal set; }
+
         /// <summary>
         /// Creditor title
         /// [Alphanumeric (40)]
         /// </summary>
         public string TITLE { get; internal set; }
+
         /// <summary>
         /// Outstanding allocation amount
         /// </summary>
         public decimal? ALLOCAMT { get; internal set; }
+
         /// <summary>
         /// MTD purchases
         /// </summary>
         public decimal? MTDPURCH { get; internal set; }
+
         /// <summary>
         /// YTD purchases
         /// </summary>
         public decimal? YTDPURCH { get; internal set; }
+
         /// <summary>
         /// Aged balances
         /// </summary>
         public decimal? AGED01 { get; internal set; }
+
         /// <summary>
         /// Aged balances
         /// </summary>
         public decimal? AGED02 { get; internal set; }
+
         /// <summary>
         /// Aged balances
         /// </summary>
         public decimal? AGED03 { get; internal set; }
+
         /// <summary>
         /// Aged balances
         /// </summary>
         public decimal? AGED04 { get; internal set; }
+
         /// <summary>
         /// Aged balances
         /// </summary>
         public decimal? AGED05 { get; internal set; }
+
         /// <summary>
         /// Opening balance
         /// </summary>
         public decimal? OPBAL { get; internal set; }
+
         /// <summary>
         /// Credit limit
         /// </summary>
         public decimal? CRLIMIT { get; internal set; }
+
         /// <summary>
         /// Last payment date
         /// </summary>
         public DateTime? LASTPAYDATE { get; internal set; }
+
         /// <summary>
         /// Last payment amount
         /// </summary>
         public decimal? LASTPAY { get; internal set; }
+
         /// <summary>
         /// Account type
-        /// 0 - Balance forward
-        /// 1 - Open item
+        ///   0 - Balance forward
+        ///   1 - Open item
         /// </summary>
         public short? ACCTYPE { get; internal set; }
+
         /// <summary>
         /// Trading terms in days
         /// </summary>
         public short? TERMS { get; internal set; }
+
         /// <summary>
         /// Discount percentage
         /// </summary>
         public double? DISCOUNT { get; internal set; }
+
         /// <summary>
         /// Contact name
         /// [Alphanumeric (30)]
         /// </summary>
         public string CONTACT { get; internal set; }
+
         /// <summary>
         /// Three address lines
         /// [Alphanumeric (40)]
         /// </summary>
         public string ADDRESS01 { get; internal set; }
+
         /// <summary>
         /// Three address lines
         /// [Alphanumeric (40)]
         /// </summary>
         public string ADDRESS02 { get; internal set; }
+
         /// <summary>
         /// Three address lines
         /// [Alphanumeric (40)]
         /// </summary>
         public string ADDRESS03 { get; internal set; }
+
         /// <summary>
         /// State
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string STATE { get; internal set; }
+
         /// <summary>
         /// Post code
         /// [Alphanumeric (4)]
         /// </summary>
         public string POSTCODE { get; internal set; }
+
         /// <summary>
         /// Phone number
         /// [Alphanumeric (15)]
         /// </summary>
         public string TELEPHONE { get; internal set; }
+
         /// <summary>
         /// Facsimile number
         /// [Alphanumeric (15)]
         /// </summary>
         public string FAX { get; internal set; }
+
         /// <summary>
         /// Email Address for orders
         /// [Alphanumeric (60)]
         /// </summary>
         public string CR_EMAIL { get; internal set; }
+
         /// <summary>
         /// Email address for payments
         /// [Alphanumeric (60)]
         /// </summary>
         public string EMAIL_FOR_PAYMENTS { get; internal set; }
+
         /// <summary>
         /// Mobile number
         /// [Alphanumeric (15)]
         /// </summary>
         public string MOBILE { get; internal set; }
+
         /// <summary>
         /// Committed future purchases
         /// </summary>
         public decimal? COMMITMENT { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string STOP_FLAG { get; internal set; }
+
         /// <summary>
         /// Australian Business number
         /// [Uppercase Alphanumeric (15)]
         /// </summary>
         public string ABN { get; internal set; }
+
         /// <summary>
         /// Pay As You Go rate
         /// </summary>
         public double? PAYG_RATE { get; internal set; }
+
         /// <summary>
         /// Bank/State/Branch number
         /// [Alphanumeric (6)]
         /// </summary>
         public string BSB { get; internal set; }
+
         /// <summary>
         /// Bank Account Number
         /// [Alphanumeric (15)]
         /// </summary>
         public string ACCOUNT_NO { get; internal set; }
+
         /// <summary>
         /// Bank Account Name
         /// [Alphanumeric (60)]
         /// </summary>
         public string ACCOUNT_NAME { get; internal set; }
+
         /// <summary>
         /// Lodgement Reference
         /// [Alphanumeric (18)]
         /// </summary>
         public string LODGE_REF { get; internal set; }
+
         /// <summary>
         /// BPAY biller code
         /// [Alphanumeric (10)]
         /// </summary>
         public string BILLER_CODE { get; internal set; }
+
         /// <summary>
         /// BPAY reference
         /// [Alphanumeric (20)]
         /// </summary>
         public string BPAY_REFERENCE { get; internal set; }
+
         /// <summary>
         /// Surname
         /// [Uppercase Alphanumeric (30)]
         /// </summary>
         public string SURNAME { get; internal set; }
+
         /// <summary>
         /// First name
         /// [Uppercase Alphanumeric (15)]
         /// </summary>
         public string FIRST_NAME { get; internal set; }
+
         /// <summary>
         /// Second name
         /// [Uppercase Alphanumeric (15)]
         /// </summary>
         public string SECOND_NAME { get; internal set; }
+
         /// <summary>
         /// Birthdate
         /// </summary>
         public DateTime? PAYG_BIRTHDATE { get; internal set; }
+
         /// <summary>
         /// Startdate
         /// </summary>
         public DateTime? PAYG_STARTDATE { get; internal set; }
+
         /// <summary>
         /// Contract enddate
         /// </summary>
         public DateTime? PAYG_TERMDATE { get; internal set; }
+
         /// <summary>
         /// Two address lines
         /// [Uppercase Alphanumeric (38)]
         /// </summary>
         public string PAYG_ADDRESS01 { get; internal set; }
+
         /// <summary>
         /// Two address lines
         /// [Uppercase Alphanumeric (38)]
         /// </summary>
         public string PAYG_ADDRESS02 { get; internal set; }
+
         /// <summary>
         /// Suburb
         /// [Uppercase Alphanumeric (20)]
         /// </summary>
         public string PAYG_SUBURB { get; internal set; }
+
         /// <summary>
         /// State
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string PAYG_STATE { get; internal set; }
+
         /// <summary>
         /// Postcode
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string PAYG_POST { get; internal set; }
+
         /// <summary>
         /// Country
         /// [Uppercase Alphanumeric (20)]
         /// </summary>
         public string PAYG_COUNTRY { get; internal set; }
+
         /// <summary>
         /// Payer code in PPD
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string PPDKEY { get; internal set; }
+
         /// <summary>
         /// Is this a PRMS creditor
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string PRMS_FLAG { get; internal set; }
+
         /// <summary>
         /// Last write date for PRMS fields
         /// </summary>
         public DateTime? LW_PRMSINFO_DATE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// KAB (BSB Numbers) related entity by [CR.BSB]-&gt;[KAB.BSB]
@@ -285,18 +356,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (BSB != null)
-                {
-                    if (_BSB_KAB == null)
-                    {
-                        _BSB_KAB = Context.KAB.FindByBSB(BSB);
-                    }
-                    return _BSB_KAB;
-                }
-                else
+                if (BSB == null)
                 {
                     return null;
                 }
+                if (Cache_BSB_KAB == null)
+                {
+                    Cache_BSB_KAB = Context.KAB.FindByBSB(BSB);
+                }
+
+                return Cache_BSB_KAB;
             }
         }
 
@@ -308,64 +377,96 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PPDKEY != null)
-                {
-                    if (_PPDKEY_PPD == null)
-                    {
-                        _PPDKEY_PPD = Context.PPD.FindByPPDKEY(PPDKEY);
-                    }
-                    return _PPDKEY_PPD;
-                }
-                else
+                if (PPDKEY == null)
                 {
                     return null;
                 }
+                if (Cache_PPDKEY_PPD == null)
+                {
+                    Cache_PPDKEY_PPD = Context.PPD.FindByPPDKEY(PPDKEY);
+                }
+
+                return Cache_PPDKEY_PPD;
+            }
+        }
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        /// <summary>
+        /// AR (Assets) related entities by [CR.CRKEY]-&gt;[AR.ORIG_SUPPLIER]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<AR> CRKEY_AR_ORIG_SUPPLIER
+        {
+            get
+            {
+                if (Cache_CRKEY_AR_ORIG_SUPPLIER == null &&
+                    !Context.AR.TryFindByORIG_SUPPLIER(CRKEY, out Cache_CRKEY_AR_ORIG_SUPPLIER))
+                {
+                    Cache_CRKEY_AR_ORIG_SUPPLIER = new List<AR>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_AR_ORIG_SUPPLIER;
             }
         }
 
         /// <summary>
-        /// AR (Assets) related entities by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
+        /// AR (Assets) related entities by [CR.CRKEY]-&gt;[AR.CURR_SUPPLIER]
+        /// Prime Key
         /// </summary>
-        public IReadOnlyList<AR> AR_ORIG_SUPPLIER
+        public IReadOnlyList<AR> CRKEY_AR_CURR_SUPPLIER
         {
             get
             {
-                return Context.CR.FindARByORIG_SUPPLIER(CRKEY);
+                if (Cache_CRKEY_AR_CURR_SUPPLIER == null &&
+                    !Context.AR.TryFindByCURR_SUPPLIER(CRKEY, out Cache_CRKEY_AR_CURR_SUPPLIER))
+                {
+                    Cache_CRKEY_AR_CURR_SUPPLIER = new List<AR>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_AR_CURR_SUPPLIER;
             }
         }
 
         /// <summary>
-        /// AR (Assets) related entities by [AR.CURR_SUPPLIER]-&gt;[CR.CRKEY]
+        /// CRF (Creditor Financial Transaction) related entities by [CR.CRKEY]-&gt;[CRF.CODE]
+        /// Prime Key
         /// </summary>
-        public IReadOnlyList<AR> AR_CURR_SUPPLIER
+        public IReadOnlyList<CRF> CRKEY_CRF_CODE
         {
             get
             {
-                return Context.CR.FindARByCURR_SUPPLIER(CRKEY);
+                if (Cache_CRKEY_CRF_CODE == null &&
+                    !Context.CRF.TryFindByCODE(CRKEY, out Cache_CRKEY_CRF_CODE))
+                {
+                    Cache_CRKEY_CRF_CODE = new List<CRF>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_CRF_CODE;
             }
         }
 
         /// <summary>
-        /// CRF (Creditor Financial Transaction) related entities by [CRF.CODE]-&gt;[CR.CRKEY]
+        /// CRFTC (Creditor Fuel Tax Credits) related entities by [CR.CRKEY]-&gt;[CRFTC.CODE]
+        /// Prime Key
         /// </summary>
-        public IReadOnlyList<CRF> CRF_CODE
+        public IReadOnlyList<CRFTC> CRKEY_CRFTC_CODE
         {
             get
             {
-                return Context.CR.FindCRFByCODE(CRKEY);
+                if (Cache_CRKEY_CRFTC_CODE == null &&
+                    !Context.CRFTC.TryFindByCODE(CRKEY, out Cache_CRKEY_CRFTC_CODE))
+                {
+                    Cache_CRKEY_CRFTC_CODE = new List<CRFTC>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_CRFTC_CODE;
             }
         }
 
-        /// <summary>
-        /// CRFTC (Creditor Fuel Tax Credits) related entities by [CRFTC.CODE]-&gt;[CR.CRKEY]
-        /// </summary>
-        public IReadOnlyList<CRFTC> CRFTC_CODE
-        {
-            get
-            {
-                return Context.CR.FindCRFTCByCODE(CRKEY);
-            }
-        }
-#endregion
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// FTE Student Retentions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SRAGDataSet : SetBase<SRAG>
     {
-        private Lazy<Dictionary<int, SRAG>> SRAG_IDIndex;
-
-
-        internal SRAGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SRAG_IDIndex = new Lazy<Dictionary<int, SRAG>>(() => this.ToDictionary(e => e.SRAG_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SRAG"; } }
 
-        /// <summary>
-        /// Find SRAG by SRAG_ID key field
-        /// </summary>
-        /// <param name="Key">SRAG_ID value used to find SRAG</param>
-        /// <returns>Related SRAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SRAG_ID value didn't match any SRAG entities</exception>
-        public SRAG FindBySRAG_ID(int Key)
+        internal SRAGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SRAG result;
-            if (SRAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SRAG_ID = new Lazy<Dictionary<int, SRAG>>(() => this.ToDictionary(i => i.SRAG_ID));
         }
-
-        /// <summary>
-        /// Attempt to find SRAG by SRAG_ID key field
-        /// </summary>
-        /// <param name="Key">SRAG_ID value used to find SRAG</param>
-        /// <param name="Value">Related SRAG entity</param>
-        /// <returns>True if the SRAG entity is found</returns>
-        public bool TryFindBySRAG_ID(int Key, out SRAG Value)
-        {
-            return SRAG_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SRAG by SRAG_ID key field
-        /// </summary>
-        /// <param name="Key">SRAG_ID value used to find SRAG</param>
-        /// <returns>Related SRAG entity, or null if not found</returns>
-        public SRAG TryFindBySRAG_ID(int Key)
-        {
-            SRAG result;
-            if (SRAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SRAG" />
@@ -114,5 +62,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SRAG>> Index_SRAG_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SRAG by SRAG_ID field
+        /// </summary>
+        /// <param name="SRAG_ID">SRAG_ID value used to find SRAG</param>
+        /// <returns>Related SRAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SRAG FindBySRAG_ID(int SRAG_ID)
+        {
+            return Index_SRAG_ID.Value[SRAG_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SRAG by SRAG_ID field
+        /// </summary>
+        /// <param name="SRAG_ID">SRAG_ID value used to find SRAG</param>
+        /// <param name="Value">Related SRAG entity</param>
+        /// <returns>True if the related SRAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySRAG_ID(int SRAG_ID, out SRAG Value)
+        {
+            return Index_SRAG_ID.Value.TryGetValue(SRAG_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SRAG by SRAG_ID field
+        /// </summary>
+        /// <param name="SRAG_ID">SRAG_ID value used to find SRAG</param>
+        /// <returns>Related SRAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SRAG TryFindBySRAG_ID(int SRAG_ID)
+        {
+            SRAG value;
+            if (Index_SRAG_ID.Value.TryGetValue(SRAG_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

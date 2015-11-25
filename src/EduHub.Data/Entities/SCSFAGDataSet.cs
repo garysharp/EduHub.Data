@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Data Aggregates Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCSFAGDataSet : SetBase<SCSFAG>
     {
-
-
-        internal SCSFAGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCSFAG"; } }
 
+        internal SCSFAGDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SCSFKEY = new Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>>(() => this.ToGroupedDictionary(i => i.SCSFKEY));
+            Index_TID = new Lazy<Dictionary<int, SCSFAG>>(() => this.ToDictionary(i => i.TID));
+            Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = new Lazy<Dictionary<Tuple<string, string, int?, string, string>, SCSFAG>>(() => this.ToDictionary(i => Tuple.Create(i.SCSFKEY, i.YEAR_SEMESTER, i.ST_CAMPUS, i.ST_YEAR_LEVEL, i.ST_CATEGORY)));
+            Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SCSFAG>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCSFAG" />
@@ -36,7 +37,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SCSFKEY":
                         mapper[i] = (e, v) => e.SCSFKEY = v;
@@ -175,5 +176,199 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>> Index_SCSFKEY;
+        private Lazy<Dictionary<int, SCSFAG>> Index_TID;
+        private Lazy<Dictionary<Tuple<string, string, int?, string, string>, SCSFAG>> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCSFAG>>> Index_ST_YEAR_LEVEL;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCSFAG by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <returns>List of related SCSFAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCSFAG> FindBySCSFKEY(string SCSFKEY)
+        {
+            return Index_SCSFKEY.Value[SCSFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <param name="Value">List of related SCSFAG entities</param>
+        /// <returns>True if the list of related SCSFAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCSFKEY(string SCSFKEY, out IReadOnlyList<SCSFAG> Value)
+        {
+            return Index_SCSFKEY.Value.TryGetValue(SCSFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <returns>List of related SCSFAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCSFAG> TryFindBySCSFKEY(string SCSFKEY)
+        {
+            IReadOnlyList<SCSFAG> value;
+            if (Index_SCSFKEY.Value.TryGetValue(SCSFKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <param name="Value">Related SCSFAG entity</param>
+        /// <returns>True if the related SCSFAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SCSFAG Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG TryFindByTID(int TID)
+        {
+            SCSFAG value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCSFAG by SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL and ST_CATEGORY fields
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find SCSFAG</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find SCSFAG</param>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <param name="ST_CATEGORY">ST_CATEGORY value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG FindBySCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY(string SCSFKEY, string YEAR_SEMESTER, int? ST_CAMPUS, string ST_YEAR_LEVEL, string ST_CATEGORY)
+        {
+            return Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Value[Tuple.Create(SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL, ST_CATEGORY)];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL and ST_CATEGORY fields
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find SCSFAG</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find SCSFAG</param>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <param name="ST_CATEGORY">ST_CATEGORY value used to find SCSFAG</param>
+        /// <param name="Value">Related SCSFAG entity</param>
+        /// <returns>True if the related SCSFAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY(string SCSFKEY, string YEAR_SEMESTER, int? ST_CAMPUS, string ST_YEAR_LEVEL, string ST_CATEGORY, out SCSFAG Value)
+        {
+            return Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Value.TryGetValue(Tuple.Create(SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL, ST_CATEGORY), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL and ST_CATEGORY fields
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find SCSFAG</param>
+        /// <param name="ST_CAMPUS">ST_CAMPUS value used to find SCSFAG</param>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <param name="ST_CATEGORY">ST_CATEGORY value used to find SCSFAG</param>
+        /// <returns>Related SCSFAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSFAG TryFindBySCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY(string SCSFKEY, string YEAR_SEMESTER, int? ST_CAMPUS, string ST_YEAR_LEVEL, string ST_CATEGORY)
+        {
+            SCSFAG value;
+            if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Value.TryGetValue(Tuple.Create(SCSFKEY, YEAR_SEMESTER, ST_CAMPUS, ST_YEAR_LEVEL, ST_CATEGORY), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCSFAG by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <returns>List of related SCSFAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCSFAG> FindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            return Index_ST_YEAR_LEVEL.Value[ST_YEAR_LEVEL];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <param name="Value">List of related SCSFAG entities</param>
+        /// <returns>True if the list of related SCSFAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL, out IReadOnlyList<SCSFAG> Value)
+        {
+            return Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSFAG by ST_YEAR_LEVEL field
+        /// </summary>
+        /// <param name="ST_YEAR_LEVEL">ST_YEAR_LEVEL value used to find SCSFAG</param>
+        /// <returns>List of related SCSFAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCSFAG> TryFindByST_YEAR_LEVEL(string ST_YEAR_LEVEL)
+        {
+            IReadOnlyList<SCSFAG> value;
+            if (Index_ST_YEAR_LEVEL.Value.TryGetValue(ST_YEAR_LEVEL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

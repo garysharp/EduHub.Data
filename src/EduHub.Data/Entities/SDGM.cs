@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,57 +7,71 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Adult Group Members
     /// </summary>
-    public partial class SDGM : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SDGM : EntityBase
     {
-#region Navigation Property Cache
-        private SDG _SDGMKEY_SDG;
-        private DR _PERSON_LINK_DR;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SDG Cache_SDGMKEY_SDG;
+        private DR Cache_PERSON_LINK_DR;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Group Code
         /// [Uppercase Alphanumeric (12)]
         /// </summary>
         public string SDGMKEY { get; internal set; }
+
         /// <summary>
         /// Code of this person in table SF or DF
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string PERSON_LINK { get; internal set; }
+
         /// <summary>
         /// Date on which this person joined this group
         /// </summary>
         public DateTime? START_DATE { get; internal set; }
+
         /// <summary>
         /// Date on which this person left or will leave this group
         /// </summary>
         public DateTime? END_DATE { get; internal set; }
+
         /// <summary>
         /// Any general comments
         /// [Memo]
         /// </summary>
         public string OTHER_COMMENTS { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SDG (Sundry Debtor Fee Groups) related entity by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
@@ -66,18 +81,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SDGMKEY != null)
+                if (Cache_SDGMKEY_SDG == null)
                 {
-                    if (_SDGMKEY_SDG == null)
-                    {
-                        _SDGMKEY_SDG = Context.SDG.FindBySDGKEY(SDGMKEY);
-                    }
-                    return _SDGMKEY_SDG;
+                    Cache_SDGMKEY_SDG = Context.SDG.FindBySDGKEY(SDGMKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SDGMKEY_SDG;
             }
         }
 
@@ -89,20 +98,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (PERSON_LINK != null)
-                {
-                    if (_PERSON_LINK_DR == null)
-                    {
-                        _PERSON_LINK_DR = Context.DR.FindByDRKEY(PERSON_LINK);
-                    }
-                    return _PERSON_LINK_DR;
-                }
-                else
+                if (PERSON_LINK == null)
                 {
                     return null;
                 }
+                if (Cache_PERSON_LINK_DR == null)
+                {
+                    Cache_PERSON_LINK_DR = Context.DR.FindByDRKEY(PERSON_LINK);
+                }
+
+                return Cache_PERSON_LINK_DR;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

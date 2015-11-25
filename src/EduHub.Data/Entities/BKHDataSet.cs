@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Books for Hire Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class BKHDataSet : SetBase<BKH>
     {
-        private Lazy<Dictionary<string, BKH>> BKHKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<BKHR>>> BKHR_BKHRKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SUBL>>> SUBL_BOOKForeignIndex;
-
-        internal BKHDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            BKHKEYIndex = new Lazy<Dictionary<string, BKH>>(() => this.ToDictionary(e => e.BKHKEY));
-
-            BKHR_BKHRKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<BKHR>>>(() =>
-                    Context.BKHR
-                          .Where(e => e.BKHRKEY != null)
-                          .GroupBy(e => e.BKHRKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<BKHR>)g.ToList()
-                          .AsReadOnly()));
-
-            SUBL_BOOKForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SUBL>>>(() =>
-                    Context.SUBL
-                          .Where(e => e.BOOK != null)
-                          .GroupBy(e => e.BOOK)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SUBL>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "BKH"; } }
 
-        /// <summary>
-        /// Find BKH by BKHKEY key field
-        /// </summary>
-        /// <param name="Key">BKHKEY value used to find BKH</param>
-        /// <returns>Related BKH entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">BKHKEY value didn't match any BKH entities</exception>
-        public BKH FindByBKHKEY(string Key)
+        internal BKHDataSet(EduHubContext Context)
+            : base(Context)
         {
-            BKH result;
-            if (BKHKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_BKHKEY = new Lazy<Dictionary<string, BKH>>(() => this.ToDictionary(i => i.BKHKEY));
         }
-
-        /// <summary>
-        /// Attempt to find BKH by BKHKEY key field
-        /// </summary>
-        /// <param name="Key">BKHKEY value used to find BKH</param>
-        /// <param name="Value">Related BKH entity</param>
-        /// <returns>True if the BKH entity is found</returns>
-        public bool TryFindByBKHKEY(string Key, out BKH Value)
-        {
-            return BKHKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find BKH by BKHKEY key field
-        /// </summary>
-        /// <param name="Key">BKHKEY value used to find BKH</param>
-        /// <returns>Related BKH entity, or null if not found</returns>
-        public BKH TryFindByBKHKEY(string Key)
-        {
-            BKH result;
-            if (BKHKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all BKHR (Book Hire Records) entities by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
-        /// </summary>
-        /// <param name="BKHKEY">BKHKEY value used to find BKHR entities</param>
-        /// <returns>A list of related BKHR entities</returns>
-        public IReadOnlyList<BKHR> FindBKHRByBKHRKEY(string BKHKEY)
-        {
-            IReadOnlyList<BKHR> result;
-            if (BKHR_BKHRKEYForeignIndex.Value.TryGetValue(BKHKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<BKHR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all BKHR entities by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
-        /// </summary>
-        /// <param name="BKHKEY">BKHKEY value used to find BKHR entities</param>
-        /// <param name="Value">A list of related BKHR entities</param>
-        /// <returns>True if any BKHR entities are found</returns>
-        public bool TryFindBKHRByBKHRKEY(string BKHKEY, out IReadOnlyList<BKHR> Value)
-        {
-            return BKHR_BKHRKEYForeignIndex.Value.TryGetValue(BKHKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SUBL (Subject Book List) entities by [SUBL.BOOK]-&gt;[BKH.BKHKEY]
-        /// </summary>
-        /// <param name="BKHKEY">BKHKEY value used to find SUBL entities</param>
-        /// <returns>A list of related SUBL entities</returns>
-        public IReadOnlyList<SUBL> FindSUBLByBOOK(string BKHKEY)
-        {
-            IReadOnlyList<SUBL> result;
-            if (SUBL_BOOKForeignIndex.Value.TryGetValue(BKHKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SUBL>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SUBL entities by [SUBL.BOOK]-&gt;[BKH.BKHKEY]
-        /// </summary>
-        /// <param name="BKHKEY">BKHKEY value used to find SUBL entities</param>
-        /// <param name="Value">A list of related SUBL entities</param>
-        /// <returns>True if any SUBL entities are found</returns>
-        public bool TryFindSUBLByBOOK(string BKHKEY, out IReadOnlyList<SUBL> Value)
-        {
-            return SUBL_BOOKForeignIndex.Value.TryGetValue(BKHKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="BKH" />
@@ -232,5 +104,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, BKH>> Index_BKHKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find BKH by BKHKEY field
+        /// </summary>
+        /// <param name="BKHKEY">BKHKEY value used to find BKH</param>
+        /// <returns>Related BKH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public BKH FindByBKHKEY(string BKHKEY)
+        {
+            return Index_BKHKEY.Value[BKHKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find BKH by BKHKEY field
+        /// </summary>
+        /// <param name="BKHKEY">BKHKEY value used to find BKH</param>
+        /// <param name="Value">Related BKH entity</param>
+        /// <returns>True if the related BKH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBKHKEY(string BKHKEY, out BKH Value)
+        {
+            return Index_BKHKEY.Value.TryGetValue(BKHKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find BKH by BKHKEY field
+        /// </summary>
+        /// <param name="BKHKEY">BKHKEY value used to find BKH</param>
+        /// <returns>Related BKH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public BKH TryFindByBKHKEY(string BKHKEY)
+        {
+            BKH value;
+            if (Index_BKHKEY.Value.TryGetValue(BKHKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

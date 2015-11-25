@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMC Transfer Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SMC_TFRDataSet : SetBase<SMC_TFR>
     {
-
-
-        internal SMC_TFRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SMC_TFR"; } }
 
+        internal SMC_TFRDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<SMC_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
+            Index_TID = new Lazy<Dictionary<int, SMC_TFR>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SMC_TFR" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "ORIG_SCHOOL":
                         mapper[i] = (e, v) => e.ORIG_SCHOOL = v;
@@ -178,5 +177,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SMC_TFR>>> Index_ORIG_SCHOOL;
+        private Lazy<Dictionary<int, SMC_TFR>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SMC_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find SMC_TFR</param>
+        /// <returns>List of related SMC_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMC_TFR> FindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            return Index_ORIG_SCHOOL.Value[ORIG_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find SMC_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find SMC_TFR</param>
+        /// <param name="Value">List of related SMC_TFR entities</param>
+        /// <returns>True if the list of related SMC_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIG_SCHOOL(string ORIG_SCHOOL, out IReadOnlyList<SMC_TFR> Value)
+        {
+            return Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMC_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find SMC_TFR</param>
+        /// <returns>List of related SMC_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMC_TFR> TryFindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            IReadOnlyList<SMC_TFR> value;
+            if (Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMC_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMC_TFR</param>
+        /// <returns>Related SMC_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMC_TFR FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SMC_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMC_TFR</param>
+        /// <param name="Value">Related SMC_TFR entity</param>
+        /// <returns>True if the related SMC_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SMC_TFR Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMC_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMC_TFR</param>
+        /// <returns>Related SMC_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMC_TFR TryFindByTID(int TID)
+        {
+            SMC_TFR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

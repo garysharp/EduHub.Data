@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Exam Subjects Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TTESDataSet : SetBase<TTES>
     {
-
-
-        internal TTESDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TTES"; } }
 
+        internal TTESDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_GKEY = new Lazy<Dictionary<string, IReadOnlyList<TTES>>>(() => this.ToGroupedDictionary(i => i.GKEY));
+            Index_TID = new Lazy<Dictionary<int, TTES>>(() => this.ToDictionary(i => i.TID));
+            Index_SUBJ = new Lazy<NullDictionary<string, IReadOnlyList<TTES>>>(() => this.ToGroupedNullDictionary(i => i.SUBJ));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TTES" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "GKEY":
                         mapper[i] = (e, v) => e.GKEY = v;
@@ -112,5 +112,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<TTES>>> Index_GKEY;
+        private Lazy<Dictionary<int, TTES>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<TTES>>> Index_SUBJ;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TTES by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TTES</param>
+        /// <returns>List of related TTES entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTES> FindByGKEY(string GKEY)
+        {
+            return Index_GKEY.Value[GKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TTES</param>
+        /// <param name="Value">List of related TTES entities</param>
+        /// <returns>True if the list of related TTES entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGKEY(string GKEY, out IReadOnlyList<TTES> Value)
+        {
+            return Index_GKEY.Value.TryGetValue(GKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by GKEY field
+        /// </summary>
+        /// <param name="GKEY">GKEY value used to find TTES</param>
+        /// <returns>List of related TTES entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTES> TryFindByGKEY(string GKEY)
+        {
+            IReadOnlyList<TTES> value;
+            if (Index_GKEY.Value.TryGetValue(GKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <returns>Related TTES entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TTES FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <param name="Value">Related TTES entity</param>
+        /// <returns>True if the related TTES entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out TTES Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TTES</param>
+        /// <returns>Related TTES entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TTES TryFindByTID(int TID)
+        {
+            TTES value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TTES by SUBJ field
+        /// </summary>
+        /// <param name="SUBJ">SUBJ value used to find TTES</param>
+        /// <returns>List of related TTES entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTES> FindBySUBJ(string SUBJ)
+        {
+            return Index_SUBJ.Value[SUBJ];
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by SUBJ field
+        /// </summary>
+        /// <param name="SUBJ">SUBJ value used to find TTES</param>
+        /// <param name="Value">List of related TTES entities</param>
+        /// <returns>True if the list of related TTES entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBJ(string SUBJ, out IReadOnlyList<TTES> Value)
+        {
+            return Index_SUBJ.Value.TryGetValue(SUBJ, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TTES by SUBJ field
+        /// </summary>
+        /// <param name="SUBJ">SUBJ value used to find TTES</param>
+        /// <returns>List of related TTES entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TTES> TryFindBySUBJ(string SUBJ)
+        {
+            IReadOnlyList<TTES> value;
+            if (Index_SUBJ.Value.TryGetValue(SUBJ, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

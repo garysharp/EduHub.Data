@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Reports for emailing Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KREPORTDataSet : SetBase<KREPORT>
     {
-        private Lazy<Dictionary<string, KREPORT>> KREPORTKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SPEMAIL>>> SPEMAIL_REPORTForeignIndex;
-
-        internal KREPORTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KREPORTKEYIndex = new Lazy<Dictionary<string, KREPORT>>(() => this.ToDictionary(e => e.KREPORTKEY));
-
-            SPEMAIL_REPORTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SPEMAIL>>>(() =>
-                    Context.SPEMAIL
-                          .Where(e => e.REPORT != null)
-                          .GroupBy(e => e.REPORT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SPEMAIL>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KREPORT"; } }
 
-        /// <summary>
-        /// Find KREPORT by KREPORTKEY key field
-        /// </summary>
-        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
-        /// <returns>Related KREPORT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KREPORTKEY value didn't match any KREPORT entities</exception>
-        public KREPORT FindByKREPORTKEY(string Key)
+        internal KREPORTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KREPORT result;
-            if (KREPORTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KREPORTKEY = new Lazy<Dictionary<string, KREPORT>>(() => this.ToDictionary(i => i.KREPORTKEY));
+            Index_ROLE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<KREPORT>>>(() => this.ToGroupedNullDictionary(i => i.ROLE_CODE));
         }
-
-        /// <summary>
-        /// Attempt to find KREPORT by KREPORTKEY key field
-        /// </summary>
-        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
-        /// <param name="Value">Related KREPORT entity</param>
-        /// <returns>True if the KREPORT entity is found</returns>
-        public bool TryFindByKREPORTKEY(string Key, out KREPORT Value)
-        {
-            return KREPORTKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KREPORT by KREPORTKEY key field
-        /// </summary>
-        /// <param name="Key">KREPORTKEY value used to find KREPORT</param>
-        /// <returns>Related KREPORT entity, or null if not found</returns>
-        public KREPORT TryFindByKREPORTKEY(string Key)
-        {
-            KREPORT result;
-            if (KREPORTKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SPEMAIL (Report email templates) entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
-        /// </summary>
-        /// <param name="KREPORTKEY">KREPORTKEY value used to find SPEMAIL entities</param>
-        /// <returns>A list of related SPEMAIL entities</returns>
-        public IReadOnlyList<SPEMAIL> FindSPEMAILByREPORT(string KREPORTKEY)
-        {
-            IReadOnlyList<SPEMAIL> result;
-            if (SPEMAIL_REPORTForeignIndex.Value.TryGetValue(KREPORTKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SPEMAIL>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SPEMAIL entities by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
-        /// </summary>
-        /// <param name="KREPORTKEY">KREPORTKEY value used to find SPEMAIL entities</param>
-        /// <param name="Value">A list of related SPEMAIL entities</param>
-        /// <returns>True if any SPEMAIL entities are found</returns>
-        public bool TryFindSPEMAILByREPORT(string KREPORTKEY, out IReadOnlyList<SPEMAIL> Value)
-        {
-            return SPEMAIL_REPORTForeignIndex.Value.TryGetValue(KREPORTKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KREPORT" />
@@ -152,5 +63,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KREPORT>> Index_KREPORTKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KREPORT>>> Index_ROLE_CODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KREPORT by KREPORTKEY field
+        /// </summary>
+        /// <param name="KREPORTKEY">KREPORTKEY value used to find KREPORT</param>
+        /// <returns>Related KREPORT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KREPORT FindByKREPORTKEY(string KREPORTKEY)
+        {
+            return Index_KREPORTKEY.Value[KREPORTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KREPORT by KREPORTKEY field
+        /// </summary>
+        /// <param name="KREPORTKEY">KREPORTKEY value used to find KREPORT</param>
+        /// <param name="Value">Related KREPORT entity</param>
+        /// <returns>True if the related KREPORT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKREPORTKEY(string KREPORTKEY, out KREPORT Value)
+        {
+            return Index_KREPORTKEY.Value.TryGetValue(KREPORTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KREPORT by KREPORTKEY field
+        /// </summary>
+        /// <param name="KREPORTKEY">KREPORTKEY value used to find KREPORT</param>
+        /// <returns>Related KREPORT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KREPORT TryFindByKREPORTKEY(string KREPORTKEY)
+        {
+            KREPORT value;
+            if (Index_KREPORTKEY.Value.TryGetValue(KREPORTKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KREPORT by ROLE_CODE field
+        /// </summary>
+        /// <param name="ROLE_CODE">ROLE_CODE value used to find KREPORT</param>
+        /// <returns>List of related KREPORT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KREPORT> FindByROLE_CODE(string ROLE_CODE)
+        {
+            return Index_ROLE_CODE.Value[ROLE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find KREPORT by ROLE_CODE field
+        /// </summary>
+        /// <param name="ROLE_CODE">ROLE_CODE value used to find KREPORT</param>
+        /// <param name="Value">List of related KREPORT entities</param>
+        /// <returns>True if the list of related KREPORT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROLE_CODE(string ROLE_CODE, out IReadOnlyList<KREPORT> Value)
+        {
+            return Index_ROLE_CODE.Value.TryGetValue(ROLE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KREPORT by ROLE_CODE field
+        /// </summary>
+        /// <param name="ROLE_CODE">ROLE_CODE value used to find KREPORT</param>
+        /// <returns>List of related KREPORT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KREPORT> TryFindByROLE_CODE(string ROLE_CODE)
+        {
+            IReadOnlyList<KREPORT> value;
+            if (Index_ROLE_CODE.Value.TryGetValue(ROLE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

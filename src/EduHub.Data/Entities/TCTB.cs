@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,88 +7,108 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Teacher Absences
     /// </summary>
-    public partial class TCTB : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class TCTB : EntityBase
     {
-#region Navigation Property Cache
-        private TC _TCTBKEY_TC;
-        private SU _SUBJ_SU;
-        private SF _TEACHER_SF;
-        private SM _ROOM_SM;
-        private TCAT _ABSENCE_TYPE_TCAT;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private TC Cache_TCTBKEY_TC;
+        private SU Cache_SUBJ_SU;
+        private SF Cache_TEACHER_SF;
+        private SM Cache_ROOM_SM;
+        private TCAT Cache_ABSENCE_TYPE_TCAT;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Absent date
         /// </summary>
-        public DateTime? TCTBKEY { get; internal set; }
+        public DateTime TCTBKEY { get; internal set; }
+
         /// <summary>
         /// Subject key
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ { get; internal set; }
+
         /// <summary>
         /// Class of subject that is away
         /// </summary>
         public short? CLASS { get; internal set; }
+
         /// <summary>
         /// Teacher that is absent
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER { get; internal set; }
+
         /// <summary>
         /// Room that is not available
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string ROOM { get; internal set; }
+
         /// <summary>
         /// If subject absence, is teacher available
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string TEACHER_AVAILABLE { get; internal set; }
+
         /// <summary>
         /// If subject absence, is room available
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ROOM_AVAILABLE { get; internal set; }
+
         /// <summary>
         /// Start time of absence
         /// </summary>
         public DateTime? TIME_FROM { get; internal set; }
+
         /// <summary>
         /// End time of absence
         /// </summary>
         public DateTime? TIME_TO { get; internal set; }
+
         /// <summary>
         /// Comments
         /// [Memo]
         /// </summary>
         public string COMMENT_A { get; internal set; }
+
         /// <summary>
         /// Absence type code. Defaults to "CURRICULUM" if absence created by an Event
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string ABSENCE_TYPE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// TC (Calendar) related entity by [TCTB.TCTBKEY]-&gt;[TC.TCKEY]
@@ -97,18 +118,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TCTBKEY.HasValue)
+                if (Cache_TCTBKEY_TC == null)
                 {
-                    if (_TCTBKEY_TC == null)
-                    {
-                        _TCTBKEY_TC = Context.TC.FindByTCKEY(TCTBKEY.Value);
-                    }
-                    return _TCTBKEY_TC;
+                    Cache_TCTBKEY_TC = Context.TC.FindByTCKEY(TCTBKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_TCTBKEY_TC;
             }
         }
 
@@ -120,18 +135,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ != null)
-                {
-                    if (_SUBJ_SU == null)
-                    {
-                        _SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
-                    }
-                    return _SUBJ_SU;
-                }
-                else
+                if (SUBJ == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ_SU == null)
+                {
+                    Cache_SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
+                }
+
+                return Cache_SUBJ_SU;
             }
         }
 
@@ -143,18 +156,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER != null)
-                {
-                    if (_TEACHER_SF == null)
-                    {
-                        _TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
-                    }
-                    return _TEACHER_SF;
-                }
-                else
+                if (TEACHER == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_SF == null)
+                {
+                    Cache_TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
+                }
+
+                return Cache_TEACHER_SF;
             }
         }
 
@@ -166,18 +177,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROOM != null)
-                {
-                    if (_ROOM_SM == null)
-                    {
-                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
-                    }
-                    return _ROOM_SM;
-                }
-                else
+                if (ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_ROOM_SM == null)
+                {
+                    Cache_ROOM_SM = Context.SM.FindByROOM(ROOM);
+                }
+
+                return Cache_ROOM_SM;
             }
         }
 
@@ -189,20 +198,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ABSENCE_TYPE != null)
-                {
-                    if (_ABSENCE_TYPE_TCAT == null)
-                    {
-                        _ABSENCE_TYPE_TCAT = Context.TCAT.FindByTCATKEY(ABSENCE_TYPE);
-                    }
-                    return _ABSENCE_TYPE_TCAT;
-                }
-                else
+                if (ABSENCE_TYPE == null)
                 {
                     return null;
                 }
+                if (Cache_ABSENCE_TYPE_TCAT == null)
+                {
+                    Cache_ABSENCE_TYPE_TCAT = Context.TCAT.FindByTCATKEY(ABSENCE_TYPE);
+                }
+
+                return Cache_ABSENCE_TYPE_TCAT;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

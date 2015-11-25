@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Delivery Addresses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KADDataSet : SetBase<KAD>
     {
-        private Lazy<Dictionary<string, KAD>> KADKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<CRF>>> CRF_DEL_CODEForeignIndex;
-
-        internal KADDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KADKEYIndex = new Lazy<Dictionary<string, KAD>>(() => this.ToDictionary(e => e.KADKEY));
-
-            CRF_DEL_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() =>
-                    Context.CRF
-                          .Where(e => e.DEL_CODE != null)
-                          .GroupBy(e => e.DEL_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<CRF>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KAD"; } }
 
-        /// <summary>
-        /// Find KAD by KADKEY key field
-        /// </summary>
-        /// <param name="Key">KADKEY value used to find KAD</param>
-        /// <returns>Related KAD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KADKEY value didn't match any KAD entities</exception>
-        public KAD FindByKADKEY(string Key)
+        internal KADDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KAD result;
-            if (KADKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KADKEY = new Lazy<Dictionary<string, KAD>>(() => this.ToDictionary(i => i.KADKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KAD by KADKEY key field
-        /// </summary>
-        /// <param name="Key">KADKEY value used to find KAD</param>
-        /// <param name="Value">Related KAD entity</param>
-        /// <returns>True if the KAD entity is found</returns>
-        public bool TryFindByKADKEY(string Key, out KAD Value)
-        {
-            return KADKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KAD by KADKEY key field
-        /// </summary>
-        /// <param name="Key">KADKEY value used to find KAD</param>
-        /// <returns>Related KAD entity, or null if not found</returns>
-        public KAD TryFindByKADKEY(string Key)
-        {
-            KAD result;
-            if (KADKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all CRF (Creditor Financial Transaction) entities by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
-        /// </summary>
-        /// <param name="KADKEY">KADKEY value used to find CRF entities</param>
-        /// <returns>A list of related CRF entities</returns>
-        public IReadOnlyList<CRF> FindCRFByDEL_CODE(string KADKEY)
-        {
-            IReadOnlyList<CRF> result;
-            if (CRF_DEL_CODEForeignIndex.Value.TryGetValue(KADKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<CRF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all CRF entities by [CRF.DEL_CODE]-&gt;[KAD.KADKEY]
-        /// </summary>
-        /// <param name="KADKEY">KADKEY value used to find CRF entities</param>
-        /// <param name="Value">A list of related CRF entities</param>
-        /// <returns>True if any CRF entities are found</returns>
-        public bool TryFindCRFByDEL_CODE(string KADKEY, out IReadOnlyList<CRF> Value)
-        {
-            return CRF_DEL_CODEForeignIndex.Value.TryGetValue(KADKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KAD" />
@@ -152,5 +62,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KAD>> Index_KADKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KAD by KADKEY field
+        /// </summary>
+        /// <param name="KADKEY">KADKEY value used to find KAD</param>
+        /// <returns>Related KAD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAD FindByKADKEY(string KADKEY)
+        {
+            return Index_KADKEY.Value[KADKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KAD by KADKEY field
+        /// </summary>
+        /// <param name="KADKEY">KADKEY value used to find KAD</param>
+        /// <param name="Value">Related KAD entity</param>
+        /// <returns>True if the related KAD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKADKEY(string KADKEY, out KAD Value)
+        {
+            return Index_KADKEY.Value.TryGetValue(KADKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KAD by KADKEY field
+        /// </summary>
+        /// <param name="KADKEY">KADKEY value used to find KAD</param>
+        /// <returns>Related KAD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAD TryFindByKADKEY(string KADKEY)
+        {
+            KAD value;
+            if (Index_KADKEY.Value.TryGetValue(KADKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

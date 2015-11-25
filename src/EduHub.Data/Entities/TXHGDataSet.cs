@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Group Daily Attendance Records Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TXHGDataSet : SetBase<TXHG>
     {
-        private Lazy<Dictionary<int, TXHG>> TXHG_IDIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SXAB>>> SXAB_TXHG_TIDForeignIndex;
-
-        internal TXHGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TXHG_IDIndex = new Lazy<Dictionary<int, TXHG>>(() => this.ToDictionary(e => e.TXHG_ID));
-
-            SXAB_TXHG_TIDForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SXAB>>>(() =>
-                    Context.SXAB
-                          .Where(e => e.TXHG_TID != null)
-                          .GroupBy(e => e.TXHG_TID.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAB>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TXHG"; } }
 
-        /// <summary>
-        /// Find TXHG by TXHG_ID key field
-        /// </summary>
-        /// <param name="Key">TXHG_ID value used to find TXHG</param>
-        /// <returns>Related TXHG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TXHG_ID value didn't match any TXHG entities</exception>
-        public TXHG FindByTXHG_ID(int Key)
+        internal TXHGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            TXHG result;
-            if (TXHG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TXHG_ID = new Lazy<Dictionary<int, TXHG>>(() => this.ToDictionary(i => i.TXHG_ID));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<TXHG>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP));
         }
-
-        /// <summary>
-        /// Attempt to find TXHG by TXHG_ID key field
-        /// </summary>
-        /// <param name="Key">TXHG_ID value used to find TXHG</param>
-        /// <param name="Value">Related TXHG entity</param>
-        /// <returns>True if the TXHG entity is found</returns>
-        public bool TryFindByTXHG_ID(int Key, out TXHG Value)
-        {
-            return TXHG_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TXHG by TXHG_ID key field
-        /// </summary>
-        /// <param name="Key">TXHG_ID value used to find TXHG</param>
-        /// <returns>Related TXHG entity, or null if not found</returns>
-        public TXHG TryFindByTXHG_ID(int Key)
-        {
-            TXHG result;
-            if (TXHG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SXAB (Student Half-Day Absences) entities by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
-        /// </summary>
-        /// <param name="TXHG_ID">TXHG_ID value used to find SXAB entities</param>
-        /// <returns>A list of related SXAB entities</returns>
-        public IReadOnlyList<SXAB> FindSXABByTXHG_TID(int TXHG_ID)
-        {
-            IReadOnlyList<SXAB> result;
-            if (SXAB_TXHG_TIDForeignIndex.Value.TryGetValue(TXHG_ID, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXAB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXAB entities by [SXAB.TXHG_TID]-&gt;[TXHG.TXHG_ID]
-        /// </summary>
-        /// <param name="TXHG_ID">TXHG_ID value used to find SXAB entities</param>
-        /// <param name="Value">A list of related SXAB entities</param>
-        /// <returns>True if any SXAB entities are found</returns>
-        public bool TryFindSXABByTXHG_TID(int TXHG_ID, out IReadOnlyList<SXAB> Value)
-        {
-            return SXAB_TXHG_TIDForeignIndex.Value.TryGetValue(TXHG_ID, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TXHG" />
@@ -155,5 +67,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, TXHG>> Index_TXHG_ID;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<TXHG>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<TXHG>>> Index_HOME_GROUP;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TXHG by TXHG_ID field
+        /// </summary>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TXHG FindByTXHG_ID(int TXHG_ID)
+        {
+            return Index_TXHG_ID.Value[TXHG_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by TXHG_ID field
+        /// </summary>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <param name="Value">Related TXHG entity</param>
+        /// <returns>True if the related TXHG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTXHG_ID(int TXHG_ID, out TXHG Value)
+        {
+            return Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by TXHG_ID field
+        /// </summary>
+        /// <param name="TXHG_ID">TXHG_ID value used to find TXHG</param>
+        /// <returns>Related TXHG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TXHG TryFindByTXHG_ID(int TXHG_ID)
+        {
+            TXHG value;
+            if (Index_TXHG_ID.Value.TryGetValue(TXHG_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXHG by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXHG</param>
+        /// <returns>List of related TXHG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXHG> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXHG</param>
+        /// <param name="Value">List of related TXHG entities</param>
+        /// <returns>True if the list of related TXHG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<TXHG> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TXHG</param>
+        /// <returns>List of related TXHG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXHG> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<TXHG> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TXHG by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <returns>List of related TXHG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXHG> FindByHOME_GROUP(string HOME_GROUP)
+        {
+            return Index_HOME_GROUP.Value[HOME_GROUP];
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <param name="Value">List of related TXHG entities</param>
+        /// <returns>True if the list of related TXHG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<TXHG> Value)
+        {
+            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TXHG by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find TXHG</param>
+        /// <returns>List of related TXHG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TXHG> TryFindByHOME_GROUP(string HOME_GROUP)
+        {
+            IReadOnlyList<TXHG> value;
+            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

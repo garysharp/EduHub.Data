@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Financial History Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class FINHISTDataSet : SetBase<FINHIST>
     {
-        private Lazy<Dictionary<int, FINHIST>> IDIndex;
-
-
-        internal FINHISTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            IDIndex = new Lazy<Dictionary<int, FINHIST>>(() => this.ToDictionary(e => e.ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "FINHIST"; } }
 
-        /// <summary>
-        /// Find FINHIST by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find FINHIST</param>
-        /// <returns>Related FINHIST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">ID value didn't match any FINHIST entities</exception>
-        public FINHIST FindByID(int Key)
+        internal FINHISTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            FINHIST result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_ID = new Lazy<Dictionary<int, FINHIST>>(() => this.ToDictionary(i => i.ID));
         }
-
-        /// <summary>
-        /// Attempt to find FINHIST by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find FINHIST</param>
-        /// <param name="Value">Related FINHIST entity</param>
-        /// <returns>True if the FINHIST entity is found</returns>
-        public bool TryFindByID(int Key, out FINHIST Value)
-        {
-            return IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find FINHIST by ID key field
-        /// </summary>
-        /// <param name="Key">ID value used to find FINHIST</param>
-        /// <returns>Related FINHIST entity, or null if not found</returns>
-        public FINHIST TryFindByID(int Key)
-        {
-            FINHIST result;
-            if (IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="FINHIST" />
@@ -132,5 +80,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, FINHIST>> Index_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find FINHIST by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find FINHIST</param>
+        /// <returns>Related FINHIST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FINHIST FindByID(int ID)
+        {
+            return Index_ID.Value[ID];
+        }
+
+        /// <summary>
+        /// Attempt to find FINHIST by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find FINHIST</param>
+        /// <param name="Value">Related FINHIST entity</param>
+        /// <returns>True if the related FINHIST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByID(int ID, out FINHIST Value)
+        {
+            return Index_ID.Value.TryGetValue(ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find FINHIST by ID field
+        /// </summary>
+        /// <param name="ID">ID value used to find FINHIST</param>
+        /// <returns>Related FINHIST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public FINHIST TryFindByID(int ID)
+        {
+            FINHIST value;
+            if (Index_ID.Value.TryGetValue(ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

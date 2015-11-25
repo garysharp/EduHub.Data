@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Visa Subclasses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCVDataSet : SetBase<KCV>
     {
-        private Lazy<Dictionary<string, KCV>> VISA_SUBCLASSIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_VISA_SUBCLASSForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STRE>>> STRE_ST_VISA_SUBCLASSForeignIndex;
-
-        internal KCVDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            VISA_SUBCLASSIndex = new Lazy<Dictionary<string, KCV>>(() => this.ToDictionary(e => e.VISA_SUBCLASS));
-
-            ST_VISA_SUBCLASSForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.VISA_SUBCLASS != null)
-                          .GroupBy(e => e.VISA_SUBCLASS)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-            STRE_ST_VISA_SUBCLASSForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STRE>>>(() =>
-                    Context.STRE
-                          .Where(e => e.ST_VISA_SUBCLASS != null)
-                          .GroupBy(e => e.ST_VISA_SUBCLASS)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STRE>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCV"; } }
 
-        /// <summary>
-        /// Find KCV by VISA_SUBCLASS key field
-        /// </summary>
-        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
-        /// <returns>Related KCV entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">VISA_SUBCLASS value didn't match any KCV entities</exception>
-        public KCV FindByVISA_SUBCLASS(string Key)
+        internal KCVDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCV result;
-            if (VISA_SUBCLASSIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_VISA_SUBCLASS = new Lazy<Dictionary<string, KCV>>(() => this.ToDictionary(i => i.VISA_SUBCLASS));
         }
-
-        /// <summary>
-        /// Attempt to find KCV by VISA_SUBCLASS key field
-        /// </summary>
-        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
-        /// <param name="Value">Related KCV entity</param>
-        /// <returns>True if the KCV entity is found</returns>
-        public bool TryFindByVISA_SUBCLASS(string Key, out KCV Value)
-        {
-            return VISA_SUBCLASSIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCV by VISA_SUBCLASS key field
-        /// </summary>
-        /// <param name="Key">VISA_SUBCLASS value used to find KCV</param>
-        /// <returns>Related KCV entity, or null if not found</returns>
-        public KCV TryFindByVISA_SUBCLASS(string Key)
-        {
-            KCV result;
-            if (VISA_SUBCLASSIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByVISA_SUBCLASS(string VISA_SUBCLASS)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByVISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<ST> Value)
-        {
-            return ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out Value);
-        }
-
-        /// <summary>
-        /// Find all STRE (Student Re-Enrolment) entities by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find STRE entities</param>
-        /// <returns>A list of related STRE entities</returns>
-        public IReadOnlyList<STRE> FindSTREByST_VISA_SUBCLASS(string VISA_SUBCLASS)
-        {
-            IReadOnlyList<STRE> result;
-            if (STRE_ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STRE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STRE entities by [STRE.ST_VISA_SUBCLASS]-&gt;[KCV.VISA_SUBCLASS]
-        /// </summary>
-        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find STRE entities</param>
-        /// <param name="Value">A list of related STRE entities</param>
-        /// <returns>True if any STRE entities are found</returns>
-        public bool TryFindSTREByST_VISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<STRE> Value)
-        {
-            return STRE_ST_VISA_SUBCLASSForeignIndex.Value.TryGetValue(VISA_SUBCLASS, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCV" />
@@ -202,5 +74,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KCV>> Index_VISA_SUBCLASS;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCV by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find KCV</param>
+        /// <returns>Related KCV entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCV FindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            return Index_VISA_SUBCLASS.Value[VISA_SUBCLASS];
+        }
+
+        /// <summary>
+        /// Attempt to find KCV by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find KCV</param>
+        /// <param name="Value">Related KCV entity</param>
+        /// <returns>True if the related KCV entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVISA_SUBCLASS(string VISA_SUBCLASS, out KCV Value)
+        {
+            return Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCV by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find KCV</param>
+        /// <returns>Related KCV entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCV TryFindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            KCV value;
+            if (Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

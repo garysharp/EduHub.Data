@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,23 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Pay Item Leave Items Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PILIDataSet : SetBase<PILI>
     {
-
-
-        internal PILIDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PILI"; } }
 
+        internal PILIDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_PIKEY = new Lazy<Dictionary<short, IReadOnlyList<PILI>>>(() => this.ToGroupedDictionary(i => i.PIKEY));
+            Index_TID = new Lazy<Dictionary<int, PILI>>(() => this.ToDictionary(i => i.TID));
+            Index_PLTKEY = new Lazy<NullDictionary<string, IReadOnlyList<PILI>>>(() => this.ToGroupedNullDictionary(i => i.PLTKEY));
+            Index_LEAVE_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<PILI>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_GROUP));
+            Index_LEAVE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<PILI>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_CODE));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PILI" />
@@ -36,10 +38,10 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "PIKEY":
-                        mapper[i] = (e, v) => e.PIKEY = v == null ? (short?)null : short.Parse(v);
+                        mapper[i] = (e, v) => e.PIKEY = short.Parse(v);
                         break;
                     case "PLTKEY":
                         mapper[i] = (e, v) => e.PLTKEY = v;
@@ -67,5 +69,230 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<short, IReadOnlyList<PILI>>> Index_PIKEY;
+        private Lazy<Dictionary<int, PILI>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<PILI>>> Index_PLTKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PILI>>> Index_LEAVE_GROUP;
+        private Lazy<NullDictionary<string, IReadOnlyList<PILI>>> Index_LEAVE_CODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PILI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PILI</param>
+        /// <returns>List of related PILI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> FindByPIKEY(short PIKEY)
+        {
+            return Index_PIKEY.Value[PIKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PILI</param>
+        /// <param name="Value">List of related PILI entities</param>
+        /// <returns>True if the list of related PILI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPIKEY(short PIKEY, out IReadOnlyList<PILI> Value)
+        {
+            return Index_PIKEY.Value.TryGetValue(PIKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by PIKEY field
+        /// </summary>
+        /// <param name="PIKEY">PIKEY value used to find PILI</param>
+        /// <returns>List of related PILI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> TryFindByPIKEY(short PIKEY)
+        {
+            IReadOnlyList<PILI> value;
+            if (Index_PIKEY.Value.TryGetValue(PIKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PILI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PILI</param>
+        /// <returns>Related PILI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PILI FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PILI</param>
+        /// <param name="Value">Related PILI entity</param>
+        /// <returns>True if the related PILI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PILI Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PILI</param>
+        /// <returns>Related PILI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PILI TryFindByTID(int TID)
+        {
+            PILI value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PILI by PLTKEY field
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PILI</param>
+        /// <returns>List of related PILI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> FindByPLTKEY(string PLTKEY)
+        {
+            return Index_PLTKEY.Value[PLTKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by PLTKEY field
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PILI</param>
+        /// <param name="Value">List of related PILI entities</param>
+        /// <returns>True if the list of related PILI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPLTKEY(string PLTKEY, out IReadOnlyList<PILI> Value)
+        {
+            return Index_PLTKEY.Value.TryGetValue(PLTKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by PLTKEY field
+        /// </summary>
+        /// <param name="PLTKEY">PLTKEY value used to find PILI</param>
+        /// <returns>List of related PILI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> TryFindByPLTKEY(string PLTKEY)
+        {
+            IReadOnlyList<PILI> value;
+            if (Index_PLTKEY.Value.TryGetValue(PLTKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PILI by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PILI</param>
+        /// <returns>List of related PILI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> FindByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            return Index_LEAVE_GROUP.Value[LEAVE_GROUP];
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PILI</param>
+        /// <param name="Value">List of related PILI entities</param>
+        /// <returns>True if the list of related PILI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVE_GROUP(string LEAVE_GROUP, out IReadOnlyList<PILI> Value)
+        {
+            return Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by LEAVE_GROUP field
+        /// </summary>
+        /// <param name="LEAVE_GROUP">LEAVE_GROUP value used to find PILI</param>
+        /// <returns>List of related PILI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> TryFindByLEAVE_GROUP(string LEAVE_GROUP)
+        {
+            IReadOnlyList<PILI> value;
+            if (Index_LEAVE_GROUP.Value.TryGetValue(LEAVE_GROUP, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PILI by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PILI</param>
+        /// <returns>List of related PILI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> FindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            return Index_LEAVE_CODE.Value[LEAVE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PILI</param>
+        /// <param name="Value">List of related PILI entities</param>
+        /// <returns>True if the list of related PILI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PILI> Value)
+        {
+            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PILI by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PILI</param>
+        /// <returns>List of related PILI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PILI> TryFindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            IReadOnlyList<PILI> value;
+            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,44 +7,55 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Key Holders
     /// </summary>
-    public partial class AKK : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class AKK : EntityBase
     {
-#region Navigation Property Cache
-        private AR _CODE_AR;
-        private SF _STAFF_SF;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private AR Cache_CODE_AR;
+        private SF Cache_STAFF_SF;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Asset code
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string CODE { get; internal set; }
+
         /// <summary>
         /// Staff
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string STAFF { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// AR (Assets) related entity by [AKK.CODE]-&gt;[AR.ARKEY]
@@ -53,18 +65,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (CODE != null)
+                if (Cache_CODE_AR == null)
                 {
-                    if (_CODE_AR == null)
-                    {
-                        _CODE_AR = Context.AR.FindByARKEY(CODE);
-                    }
-                    return _CODE_AR;
+                    Cache_CODE_AR = Context.AR.FindByARKEY(CODE);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_CODE_AR;
             }
         }
 
@@ -76,20 +82,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (STAFF != null)
-                {
-                    if (_STAFF_SF == null)
-                    {
-                        _STAFF_SF = Context.SF.FindBySFKEY(STAFF);
-                    }
-                    return _STAFF_SF;
-                }
-                else
+                if (STAFF == null)
                 {
                     return null;
                 }
+                if (Cache_STAFF_SF == null)
+                {
+                    Cache_STAFF_SF = Context.SF.FindBySFKEY(STAFF);
+                }
+
+                return Cache_STAFF_SF;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Calendar Period Information Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TCTDDataSet : SetBase<TCTD>
     {
-
-
-        internal TCTDDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TCTD"; } }
 
+        internal TCTDDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_TCTDKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>>(() => this.ToGroupedDictionary(i => i.TCTDKEY));
+            Index_TID = new Lazy<Dictionary<int, TCTD>>(() => this.ToDictionary(i => i.TID));
+            Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTD>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TCTD" />
@@ -36,10 +36,10 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "TCTDKEY":
-                        mapper[i] = (e, v) => e.TCTDKEY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TCTDKEY = DateTime.Parse(v);
                         break;
                     case "QKEY":
                         mapper[i] = (e, v) => e.QKEY = v;
@@ -76,5 +76,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>> Index_TCTDKEY;
+        private Lazy<Dictionary<int, TCTD>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<TCTD>>> Index_QKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TCTD by TCTDKEY field
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> FindByTCTDKEY(DateTime TCTDKEY)
+        {
+            return Index_TCTDKEY.Value[TCTDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TCTDKEY field
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <param name="Value">List of related TCTD entities</param>
+        /// <returns>True if the list of related TCTD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTCTDKEY(DateTime TCTDKEY, out IReadOnlyList<TCTD> Value)
+        {
+            return Index_TCTDKEY.Value.TryGetValue(TCTDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TCTDKEY field
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> TryFindByTCTDKEY(DateTime TCTDKEY)
+        {
+            IReadOnlyList<TCTD> value;
+            if (Index_TCTDKEY.Value.TryGetValue(TCTDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTD</param>
+        /// <returns>Related TCTD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TCTD FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTD</param>
+        /// <param name="Value">Related TCTD entity</param>
+        /// <returns>True if the related TCTD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out TCTD Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find TCTD</param>
+        /// <returns>Related TCTD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TCTD TryFindByTID(int TID)
+        {
+            TCTD value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> FindByQKEY(string QKEY)
+        {
+            return Index_QKEY.Value[QKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <param name="Value">List of related TCTD entities</param>
+        /// <returns>True if the list of related TCTD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQKEY(string QKEY, out IReadOnlyList<TCTD> Value)
+        {
+            return Index_QKEY.Value.TryGetValue(QKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by QKEY field
+        /// </summary>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> TryFindByQKEY(string QKEY)
+        {
+            IReadOnlyList<TCTD> value;
+            if (Index_QKEY.Value.TryGetValue(QKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

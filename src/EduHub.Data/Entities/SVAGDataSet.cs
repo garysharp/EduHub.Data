@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// VELS Aggregated Dimensions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SVAGDataSet : SetBase<SVAG>
     {
-        private Lazy<Dictionary<int, SVAG>> SVAGKEYIndex;
-
-
-        internal SVAGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SVAGKEYIndex = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(e => e.SVAGKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SVAG"; } }
 
-        /// <summary>
-        /// Find SVAG by SVAGKEY key field
-        /// </summary>
-        /// <param name="Key">SVAGKEY value used to find SVAG</param>
-        /// <returns>Related SVAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SVAGKEY value didn't match any SVAG entities</exception>
-        public SVAG FindBySVAGKEY(int Key)
+        internal SVAGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SVAG result;
-            if (SVAGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SVAGKEY = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(i => i.SVAGKEY));
+            Index_COHORT = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.COHORT));
+            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
         }
-
-        /// <summary>
-        /// Attempt to find SVAG by SVAGKEY key field
-        /// </summary>
-        /// <param name="Key">SVAGKEY value used to find SVAG</param>
-        /// <param name="Value">Related SVAG entity</param>
-        /// <returns>True if the SVAG entity is found</returns>
-        public bool TryFindBySVAGKEY(int Key, out SVAG Value)
-        {
-            return SVAGKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SVAG by SVAGKEY key field
-        /// </summary>
-        /// <param name="Key">SVAGKEY value used to find SVAG</param>
-        /// <returns>Related SVAG entity, or null if not found</returns>
-        public SVAG TryFindBySVAGKEY(int Key)
-        {
-            SVAG result;
-            if (SVAGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SVAG" />
@@ -219,5 +170,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SVAG>> Index_SVAGKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_COHORT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_SCHOOL_YEAR;
+        private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_VDIMENSION;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SVAG FindBySVAGKEY(int SVAGKEY)
+        {
+            return Index_SVAGKEY.Value[SVAGKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <param name="Value">Related SVAG entity</param>
+        /// <returns>True if the related SVAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySVAGKEY(int SVAGKEY, out SVAG Value)
+        {
+            return Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SVAGKEY field
+        /// </summary>
+        /// <param name="SVAGKEY">SVAGKEY value used to find SVAG</param>
+        /// <returns>Related SVAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SVAG TryFindBySVAGKEY(int SVAGKEY)
+        {
+            SVAG value;
+            if (Index_SVAGKEY.Value.TryGetValue(SVAGKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SVAG by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find SVAG</param>
+        /// <returns>List of related SVAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> FindByCOHORT(string COHORT)
+        {
+            return Index_COHORT.Value[COHORT];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find SVAG</param>
+        /// <param name="Value">List of related SVAG entities</param>
+        /// <returns>True if the list of related SVAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOHORT(string COHORT, out IReadOnlyList<SVAG> Value)
+        {
+            return Index_COHORT.Value.TryGetValue(COHORT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by COHORT field
+        /// </summary>
+        /// <param name="COHORT">COHORT value used to find SVAG</param>
+        /// <returns>List of related SVAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> TryFindByCOHORT(string COHORT)
+        {
+            IReadOnlyList<SVAG> value;
+            if (Index_COHORT.Value.TryGetValue(COHORT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SVAG by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
+        /// <returns>List of related SVAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
+        /// <param name="Value">List of related SVAG entities</param>
+        /// <returns>True if the list of related SVAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<SVAG> Value)
+        {
+            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
+        /// <returns>List of related SVAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            IReadOnlyList<SVAG> value;
+            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SVAG by VDIMENSION field
+        /// </summary>
+        /// <param name="VDIMENSION">VDIMENSION value used to find SVAG</param>
+        /// <returns>List of related SVAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> FindByVDIMENSION(string VDIMENSION)
+        {
+            return Index_VDIMENSION.Value[VDIMENSION];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by VDIMENSION field
+        /// </summary>
+        /// <param name="VDIMENSION">VDIMENSION value used to find SVAG</param>
+        /// <param name="Value">List of related SVAG entities</param>
+        /// <returns>True if the list of related SVAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVDIMENSION(string VDIMENSION, out IReadOnlyList<SVAG> Value)
+        {
+            return Index_VDIMENSION.Value.TryGetValue(VDIMENSION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by VDIMENSION field
+        /// </summary>
+        /// <param name="VDIMENSION">VDIMENSION value used to find SVAG</param>
+        /// <returns>List of related SVAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> TryFindByVDIMENSION(string VDIMENSION)
+        {
+            IReadOnlyList<SVAG> value;
+            if (Index_VDIMENSION.Value.TryGetValue(VDIMENSION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

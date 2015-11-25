@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,185 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Houses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGHDataSet : SetBase<KGH>
     {
-        private Lazy<Dictionary<string, KGH>> KGHKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SF>>> SF_HOUSEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SG>>> SG_HOUSEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_HOUSEForeignIndex;
-
-        internal KGHDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KGHKEYIndex = new Lazy<Dictionary<string, KGH>>(() => this.ToDictionary(e => e.KGHKEY));
-
-            SF_HOUSEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SF>>>(() =>
-                    Context.SF
-                          .Where(e => e.HOUSE != null)
-                          .GroupBy(e => e.HOUSE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SF>)g.ToList()
-                          .AsReadOnly()));
-
-            SG_HOUSEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SG>>>(() =>
-                    Context.SG
-                          .Where(e => e.HOUSE != null)
-                          .GroupBy(e => e.HOUSE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SG>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_HOUSEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.HOUSE != null)
-                          .GroupBy(e => e.HOUSE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KGH"; } }
 
-        /// <summary>
-        /// Find KGH by KGHKEY key field
-        /// </summary>
-        /// <param name="Key">KGHKEY value used to find KGH</param>
-        /// <returns>Related KGH entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KGHKEY value didn't match any KGH entities</exception>
-        public KGH FindByKGHKEY(string Key)
+        internal KGHDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KGH result;
-            if (KGHKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KGHKEY = new Lazy<Dictionary<string, KGH>>(() => this.ToDictionary(i => i.KGHKEY));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<KGH>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
         }
-
-        /// <summary>
-        /// Attempt to find KGH by KGHKEY key field
-        /// </summary>
-        /// <param name="Key">KGHKEY value used to find KGH</param>
-        /// <param name="Value">Related KGH entity</param>
-        /// <returns>True if the KGH entity is found</returns>
-        public bool TryFindByKGHKEY(string Key, out KGH Value)
-        {
-            return KGHKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGH by KGHKEY key field
-        /// </summary>
-        /// <param name="Key">KGHKEY value used to find KGH</param>
-        /// <returns>Related KGH entity, or null if not found</returns>
-        public KGH TryFindByKGHKEY(string Key)
-        {
-            KGH result;
-            if (KGHKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SF (Staff) entities by [SF.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find SF entities</param>
-        /// <returns>A list of related SF entities</returns>
-        public IReadOnlyList<SF> FindSFByHOUSE(string KGHKEY)
-        {
-            IReadOnlyList<SF> result;
-            if (SF_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SF entities by [SF.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find SF entities</param>
-        /// <param name="Value">A list of related SF entities</param>
-        /// <returns>True if any SF entities are found</returns>
-        public bool TryFindSFByHOUSE(string KGHKEY, out IReadOnlyList<SF> Value)
-        {
-            return SF_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SG (Student Groupings) entities by [SG.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find SG entities</param>
-        /// <returns>A list of related SG entities</returns>
-        public IReadOnlyList<SG> FindSGByHOUSE(string KGHKEY)
-        {
-            IReadOnlyList<SG> result;
-            if (SG_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SG entities by [SG.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find SG entities</param>
-        /// <param name="Value">A list of related SG entities</param>
-        /// <returns>True if any SG entities are found</returns>
-        public bool TryFindSGByHOUSE(string KGHKEY, out IReadOnlyList<SG> Value)
-        {
-            return SG_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByHOUSE(string KGHKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.HOUSE]-&gt;[KGH.KGHKEY]
-        /// </summary>
-        /// <param name="KGHKEY">KGHKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByHOUSE(string KGHKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_HOUSEForeignIndex.Value.TryGetValue(KGHKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KGH" />
@@ -357,5 +192,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KGH>> Index_KGHKEY;
+        private Lazy<NullDictionary<int?, IReadOnlyList<KGH>>> Index_CAMPUS;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <returns>Related KGH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGH FindByKGHKEY(string KGHKEY)
+        {
+            return Index_KGHKEY.Value[KGHKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <param name="Value">Related KGH entity</param>
+        /// <returns>True if the related KGH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGHKEY(string KGHKEY, out KGH Value)
+        {
+            return Index_KGHKEY.Value.TryGetValue(KGHKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by KGHKEY field
+        /// </summary>
+        /// <param name="KGHKEY">KGHKEY value used to find KGH</param>
+        /// <returns>Related KGH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGH TryFindByKGHKEY(string KGHKEY)
+        {
+            KGH value;
+            if (Index_KGHKEY.Value.TryGetValue(KGHKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KGH by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGH</param>
+        /// <returns>List of related KGH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGH> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGH</param>
+        /// <param name="Value">List of related KGH entities</param>
+        /// <returns>True if the list of related KGH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<KGH> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGH by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find KGH</param>
+        /// <returns>List of related KGH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KGH> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<KGH> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,121 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Australian Postcodes Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KAPDataSet : SetBase<KAP>
     {
-        private Lazy<Dictionary<string, KAP>> KAPKEYIndex;
-        private Lazy<Dictionary<string, KAP>> PLACE_NAMEIndex;
-
-
-        internal KAPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KAPKEYIndex = new Lazy<Dictionary<string, KAP>>(() => this.ToDictionary(e => e.KAPKEY));
-            PLACE_NAMEIndex = new Lazy<Dictionary<string, KAP>>(() => this.ToDictionary(e => e.PLACE_NAME));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KAP"; } }
 
-        /// <summary>
-        /// Find KAP by KAPKEY key field
-        /// </summary>
-        /// <param name="Key">KAPKEY value used to find KAP</param>
-        /// <returns>Related KAP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KAPKEY value didn't match any KAP entities</exception>
-        public KAP FindByKAPKEY(string Key)
+        internal KAPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KAP result;
-            if (KAPKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KAPKEY = new Lazy<Dictionary<string, KAP>>(() => this.ToDictionary(i => i.KAPKEY));
+            Index_PLACE_NAME = new Lazy<NullDictionary<string, IReadOnlyList<KAP>>>(() => this.ToGroupedNullDictionary(i => i.PLACE_NAME));
         }
-
-        /// <summary>
-        /// Attempt to find KAP by KAPKEY key field
-        /// </summary>
-        /// <param name="Key">KAPKEY value used to find KAP</param>
-        /// <param name="Value">Related KAP entity</param>
-        /// <returns>True if the KAP entity is found</returns>
-        public bool TryFindByKAPKEY(string Key, out KAP Value)
-        {
-            return KAPKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KAP by KAPKEY key field
-        /// </summary>
-        /// <param name="Key">KAPKEY value used to find KAP</param>
-        /// <returns>Related KAP entity, or null if not found</returns>
-        public KAP TryFindByKAPKEY(string Key)
-        {
-            KAP result;
-            if (KAPKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KAP by PLACE_NAME key field
-        /// </summary>
-        /// <param name="Key">PLACE_NAME value used to find KAP</param>
-        /// <returns>Related KAP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PLACE_NAME value didn't match any KAP entities</exception>
-        public KAP FindByPLACE_NAME(string Key)
-        {
-            KAP result;
-            if (PLACE_NAMEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find KAP by PLACE_NAME key field
-        /// </summary>
-        /// <param name="Key">PLACE_NAME value used to find KAP</param>
-        /// <param name="Value">Related KAP entity</param>
-        /// <returns>True if the KAP entity is found</returns>
-        public bool TryFindByPLACE_NAME(string Key, out KAP Value)
-        {
-            return PLACE_NAMEIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KAP by PLACE_NAME key field
-        /// </summary>
-        /// <param name="Key">PLACE_NAME value used to find KAP</param>
-        /// <returns>Related KAP entity, or null if not found</returns>
-        public KAP TryFindByPLACE_NAME(string Key)
-        {
-            KAP result;
-            if (PLACE_NAMEIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KAP" />
@@ -170,5 +69,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KAP>> Index_KAPKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<KAP>>> Index_PLACE_NAME;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KAP by KAPKEY field
+        /// </summary>
+        /// <param name="KAPKEY">KAPKEY value used to find KAP</param>
+        /// <returns>Related KAP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAP FindByKAPKEY(string KAPKEY)
+        {
+            return Index_KAPKEY.Value[KAPKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KAP by KAPKEY field
+        /// </summary>
+        /// <param name="KAPKEY">KAPKEY value used to find KAP</param>
+        /// <param name="Value">Related KAP entity</param>
+        /// <returns>True if the related KAP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKAPKEY(string KAPKEY, out KAP Value)
+        {
+            return Index_KAPKEY.Value.TryGetValue(KAPKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KAP by KAPKEY field
+        /// </summary>
+        /// <param name="KAPKEY">KAPKEY value used to find KAP</param>
+        /// <returns>Related KAP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KAP TryFindByKAPKEY(string KAPKEY)
+        {
+            KAP value;
+            if (Index_KAPKEY.Value.TryGetValue(KAPKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KAP by PLACE_NAME field
+        /// </summary>
+        /// <param name="PLACE_NAME">PLACE_NAME value used to find KAP</param>
+        /// <returns>List of related KAP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KAP> FindByPLACE_NAME(string PLACE_NAME)
+        {
+            return Index_PLACE_NAME.Value[PLACE_NAME];
+        }
+
+        /// <summary>
+        /// Attempt to find KAP by PLACE_NAME field
+        /// </summary>
+        /// <param name="PLACE_NAME">PLACE_NAME value used to find KAP</param>
+        /// <param name="Value">List of related KAP entities</param>
+        /// <returns>True if the list of related KAP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPLACE_NAME(string PLACE_NAME, out IReadOnlyList<KAP> Value)
+        {
+            return Index_PLACE_NAME.Value.TryGetValue(PLACE_NAME, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KAP by PLACE_NAME field
+        /// </summary>
+        /// <param name="PLACE_NAME">PLACE_NAME value used to find KAP</param>
+        /// <returns>List of related KAP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KAP> TryFindByPLACE_NAME(string PLACE_NAME)
+        {
+            IReadOnlyList<KAP> value;
+            if (Index_PLACE_NAME.Value.TryGetValue(PLACE_NAME, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

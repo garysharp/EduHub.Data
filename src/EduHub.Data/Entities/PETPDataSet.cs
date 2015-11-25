@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Termination Payment Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PETPDataSet : SetBase<PETP>
     {
-
-
-        internal PETPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PETP"; } }
 
+        internal PETPDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<PETP>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, PETP>>(() => this.ToDictionary(i => i.TID));
+            Index_PAYITEM = new Lazy<NullDictionary<short?, IReadOnlyList<PETP>>>(() => this.ToGroupedNullDictionary(i => i.PAYITEM));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PETP" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -85,5 +85,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<PETP>>> Index_CODE;
+        private Lazy<Dictionary<int, PETP>> Index_TID;
+        private Lazy<NullDictionary<short?, IReadOnlyList<PETP>>> Index_PAYITEM;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PETP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PETP</param>
+        /// <returns>List of related PETP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PETP> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PETP</param>
+        /// <param name="Value">List of related PETP entities</param>
+        /// <returns>True if the list of related PETP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<PETP> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find PETP</param>
+        /// <returns>List of related PETP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PETP> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<PETP> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <returns>Related PETP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PETP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <param name="Value">Related PETP entity</param>
+        /// <returns>True if the related PETP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PETP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PETP</param>
+        /// <returns>Related PETP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PETP TryFindByTID(int TID)
+        {
+            PETP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PETP by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PETP</param>
+        /// <returns>List of related PETP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PETP> FindByPAYITEM(short? PAYITEM)
+        {
+            return Index_PAYITEM.Value[PAYITEM];
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PETP</param>
+        /// <param name="Value">List of related PETP entities</param>
+        /// <returns>True if the list of related PETP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPAYITEM(short? PAYITEM, out IReadOnlyList<PETP> Value)
+        {
+            return Index_PAYITEM.Value.TryGetValue(PAYITEM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PETP by PAYITEM field
+        /// </summary>
+        /// <param name="PAYITEM">PAYITEM value used to find PETP</param>
+        /// <returns>List of related PETP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PETP> TryFindByPAYITEM(short? PAYITEM)
+        {
+            IReadOnlyList<PETP> value;
+            if (Index_PAYITEM.Value.TryGetValue(PAYITEM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

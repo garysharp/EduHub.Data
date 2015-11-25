@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// PAYG Supplier Details Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PPSDataSet : SetBase<PPS>
     {
-        private Lazy<Dictionary<string, PPS>> PPSKEYIndex;
-
-
-        internal PPSDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PPSKEYIndex = new Lazy<Dictionary<string, PPS>>(() => this.ToDictionary(e => e.PPSKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PPS"; } }
 
-        /// <summary>
-        /// Find PPS by PPSKEY key field
-        /// </summary>
-        /// <param name="Key">PPSKEY value used to find PPS</param>
-        /// <returns>Related PPS entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PPSKEY value didn't match any PPS entities</exception>
-        public PPS FindByPPSKEY(string Key)
+        internal PPSDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PPS result;
-            if (PPSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PPSKEY = new Lazy<Dictionary<string, PPS>>(() => this.ToDictionary(i => i.PPSKEY));
+            Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PPS>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
+            Index_POSTAL_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<PPS>>>(() => this.ToGroupedNullDictionary(i => i.POSTAL_COUNTRY));
         }
-
-        /// <summary>
-        /// Attempt to find PPS by PPSKEY key field
-        /// </summary>
-        /// <param name="Key">PPSKEY value used to find PPS</param>
-        /// <param name="Value">Related PPS entity</param>
-        /// <returns>True if the PPS entity is found</returns>
-        public bool TryFindByPPSKEY(string Key, out PPS Value)
-        {
-            return PPSKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PPS by PPSKEY key field
-        /// </summary>
-        /// <param name="Key">PPSKEY value used to find PPS</param>
-        /// <returns>Related PPS entity, or null if not found</returns>
-        public PPS TryFindByPPSKEY(string Key)
-        {
-            PPS result;
-            if (PPSKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PPS" />
@@ -162,5 +112,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, PPS>> Index_PPSKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PPS>>> Index_COUNTRY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PPS>>> Index_POSTAL_COUNTRY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPS FindByPPSKEY(string PPSKEY)
+        {
+            return Index_PPSKEY.Value[PPSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <param name="Value">Related PPS entity</param>
+        /// <returns>True if the related PPS entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPPSKEY(string PPSKEY, out PPS Value)
+        {
+            return Index_PPSKEY.Value.TryGetValue(PPSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by PPSKEY field
+        /// </summary>
+        /// <param name="PPSKEY">PPSKEY value used to find PPS</param>
+        /// <returns>Related PPS entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PPS TryFindByPPSKEY(string PPSKEY)
+        {
+            PPS value;
+            if (Index_PPSKEY.Value.TryGetValue(PPSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PPS by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find PPS</param>
+        /// <returns>List of related PPS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PPS> FindByCOUNTRY(string COUNTRY)
+        {
+            return Index_COUNTRY.Value[COUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find PPS</param>
+        /// <param name="Value">List of related PPS entities</param>
+        /// <returns>True if the list of related PPS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOUNTRY(string COUNTRY, out IReadOnlyList<PPS> Value)
+        {
+            return Index_COUNTRY.Value.TryGetValue(COUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find PPS</param>
+        /// <returns>List of related PPS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PPS> TryFindByCOUNTRY(string COUNTRY)
+        {
+            IReadOnlyList<PPS> value;
+            if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PPS by POSTAL_COUNTRY field
+        /// </summary>
+        /// <param name="POSTAL_COUNTRY">POSTAL_COUNTRY value used to find PPS</param>
+        /// <returns>List of related PPS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PPS> FindByPOSTAL_COUNTRY(string POSTAL_COUNTRY)
+        {
+            return Index_POSTAL_COUNTRY.Value[POSTAL_COUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by POSTAL_COUNTRY field
+        /// </summary>
+        /// <param name="POSTAL_COUNTRY">POSTAL_COUNTRY value used to find PPS</param>
+        /// <param name="Value">List of related PPS entities</param>
+        /// <returns>True if the list of related PPS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPOSTAL_COUNTRY(string POSTAL_COUNTRY, out IReadOnlyList<PPS> Value)
+        {
+            return Index_POSTAL_COUNTRY.Value.TryGetValue(POSTAL_COUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PPS by POSTAL_COUNTRY field
+        /// </summary>
+        /// <param name="POSTAL_COUNTRY">POSTAL_COUNTRY value used to find PPS</param>
+        /// <returns>List of related PPS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PPS> TryFindByPOSTAL_COUNTRY(string POSTAL_COUNTRY)
+        {
+            IReadOnlyList<PPS> value;
+            if (Index_POSTAL_COUNTRY.Value.TryGetValue(POSTAL_COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,1007 +8,47 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Students Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STDataSet : SetBase<ST>
     {
-        private Lazy<Dictionary<string, ST>> STKEYIndex;
-        private Lazy<Dictionary<int, ST>> REGISTRATIONIndex;
-        private Lazy<Dictionary<string, ST>> TAGIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<BKHR>>> BKHR_STUDENTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> DFF_TRSTUDForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<DFF>>> DFF_STUDENTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SDP>>> SDP_STUDENT_KEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SMC>>> SMC_STUDENTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SSHG>>> SSHG_STUDENTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STBT>>> STBT_STBTKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STMA>>> STMA_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STMB>>> STMB_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STPO>>> STPO_STPOKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STPT>>> STPT_STPTKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STRA>>> STRA_STKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STRE>>> STRE_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STSB>>> STSB_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STSP>>> STSP_SPKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STTRIPS>>> STTRIPS_STUDENT_IDForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> STVDI_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<STVDO>>> STVDO_SKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SXAB>>> SXAB_STKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SXABCONV>>> SXABCONV_STKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SXAS>>> SXAS_STKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SXHI>>> SXHI_SKEYForeignIndex;
-
-        internal STDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            STKEYIndex = new Lazy<Dictionary<string, ST>>(() => this.ToDictionary(e => e.STKEY));
-            REGISTRATIONIndex = new Lazy<Dictionary<int, ST>>(() => this.ToDictionary(e => e.REGISTRATION));
-            TAGIndex = new Lazy<Dictionary<string, ST>>(() => this.ToDictionary(e => e.TAG));
-
-            BKHR_STUDENTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<BKHR>>>(() =>
-                    Context.BKHR
-                          .Where(e => e.STUDENT != null)
-                          .GroupBy(e => e.STUDENT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<BKHR>)g.ToList()
-                          .AsReadOnly()));
-
-            DFF_TRSTUDForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() =>
-                    Context.DFF
-                          .Where(e => e.TRSTUD != null)
-                          .GroupBy(e => e.TRSTUD)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFF>)g.ToList()
-                          .AsReadOnly()));
-
-            DFF_STUDENTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DFF>>>(() =>
-                    Context.DFF
-                          .Where(e => e.STUDENT != null)
-                          .GroupBy(e => e.STUDENT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DFF>)g.ToList()
-                          .AsReadOnly()));
-
-            SDP_STUDENT_KEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SDP>>>(() =>
-                    Context.SDP
-                          .Where(e => e.STUDENT_KEY != null)
-                          .GroupBy(e => e.STUDENT_KEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDP>)g.ToList()
-                          .AsReadOnly()));
-
-            SMC_STUDENTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SMC>>>(() =>
-                    Context.SMC
-                          .Where(e => e.STUDENT != null)
-                          .GroupBy(e => e.STUDENT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMC>)g.ToList()
-                          .AsReadOnly()));
-
-            SSHG_STUDENTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SSHG>>>(() =>
-                    Context.SSHG
-                          .Where(e => e.STUDENT != null)
-                          .GroupBy(e => e.STUDENT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SSHG>)g.ToList()
-                          .AsReadOnly()));
-
-            STBT_STBTKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STBT>>>(() =>
-                    Context.STBT
-                          .Where(e => e.STBTKEY != null)
-                          .GroupBy(e => e.STBTKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STBT>)g.ToList()
-                          .AsReadOnly()));
-
-            STMA_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STMA>>>(() =>
-                    Context.STMA
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMA>)g.ToList()
-                          .AsReadOnly()));
-
-            STMB_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STMB>>>(() =>
-                    Context.STMB
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STMB>)g.ToList()
-                          .AsReadOnly()));
-
-            STPO_STPOKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STPO>>>(() =>
-                    Context.STPO
-                          .Where(e => e.STPOKEY != null)
-                          .GroupBy(e => e.STPOKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STPO>)g.ToList()
-                          .AsReadOnly()));
-
-            STPT_STPTKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STPT>>>(() =>
-                    Context.STPT
-                          .Where(e => e.STPTKEY != null)
-                          .GroupBy(e => e.STPTKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STPT>)g.ToList()
-                          .AsReadOnly()));
-
-            STRA_STKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STRA>>>(() =>
-                    Context.STRA
-                          .Where(e => e.STKEY != null)
-                          .GroupBy(e => e.STKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STRA>)g.ToList()
-                          .AsReadOnly()));
-
-            STRE_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STRE>>>(() =>
-                    Context.STRE
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STRE>)g.ToList()
-                          .AsReadOnly()));
-
-            STSB_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STSB>>>(() =>
-                    Context.STSB
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STSB>)g.ToList()
-                          .AsReadOnly()));
-
-            STSP_SPKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STSP>>>(() =>
-                    Context.STSP
-                          .Where(e => e.SPKEY != null)
-                          .GroupBy(e => e.SPKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STSP>)g.ToList()
-                          .AsReadOnly()));
-
-            STTRIPS_STUDENT_IDForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STTRIPS>>>(() =>
-                    Context.STTRIPS
-                          .Where(e => e.STUDENT_ID != null)
-                          .GroupBy(e => e.STUDENT_ID)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STTRIPS>)g.ToList()
-                          .AsReadOnly()));
-
-            STVDI_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() =>
-                    Context.STVDI
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDI>)g.ToList()
-                          .AsReadOnly()));
-
-            STVDO_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<STVDO>>>(() =>
-                    Context.STVDO
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<STVDO>)g.ToList()
-                          .AsReadOnly()));
-
-            SXAB_STKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SXAB>>>(() =>
-                    Context.SXAB
-                          .Where(e => e.STKEY != null)
-                          .GroupBy(e => e.STKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAB>)g.ToList()
-                          .AsReadOnly()));
-
-            SXABCONV_STKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SXABCONV>>>(() =>
-                    Context.SXABCONV
-                          .Where(e => e.STKEY != null)
-                          .GroupBy(e => e.STKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXABCONV>)g.ToList()
-                          .AsReadOnly()));
-
-            SXAS_STKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SXAS>>>(() =>
-                    Context.SXAS
-                          .Where(e => e.STKEY != null)
-                          .GroupBy(e => e.STKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXAS>)g.ToList()
-                          .AsReadOnly()));
-
-            SXHI_SKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SXHI>>>(() =>
-                    Context.SXHI
-                          .Where(e => e.SKEY != null)
-                          .GroupBy(e => e.SKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SXHI>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "ST"; } }
 
-        /// <summary>
-        /// Find ST by STKEY key field
-        /// </summary>
-        /// <param name="Key">STKEY value used to find ST</param>
-        /// <returns>Related ST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">STKEY value didn't match any ST entities</exception>
-        public ST FindBySTKEY(string Key)
+        internal STDataSet(EduHubContext Context)
+            : base(Context)
         {
-            ST result;
-            if (STKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_STKEY = new Lazy<Dictionary<string, ST>>(() => this.ToDictionary(i => i.STKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_FAMILY = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMILY));
+            Index_FAMB = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMB));
+            Index_FAMC = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.FAMC));
+            Index_REGISTRATION = new Lazy<Dictionary<int, IReadOnlyList<ST>>>(() => this.ToGroupedDictionary(i => i.REGISTRATION));
+            Index_PREVIOUS_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.PREVIOUS_SCHOOL));
+            Index_TAG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.TAG));
+            Index_HOME_GROUP = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP));
+            Index_NEXT_HG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_HG));
+            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
+            Index_HOUSE = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOUSE));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
+            Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
+            Index_REL_INSTR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.REL_INSTR));
+            Index_VISA_SUBCLASS = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.VISA_SUBCLASS));
+            Index_BIRTH_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.BIRTH_COUNTRY));
+            Index_HOME_LANG = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.HOME_LANG));
+            Index_DOCTOR = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.DOCTOR));
+            Index_EMERG_LANG01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG01));
+            Index_EMERG_LANG02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EMERG_LANG02));
+            Index_LANGUAGE_PREVIOUS_SCHOOLING = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LANGUAGE_PREVIOUS_SCHOOLING));
+            Index_NEXT_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.NEXT_SCHOOL));
+            Index_EXIT_CAT01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_CAT01));
+            Index_EXIT_CAT02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_CAT02));
+            Index_EXIT_DEST01 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_DEST01));
+            Index_EXIT_DEST02 = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.EXIT_DEST02));
+            Index_INAC_ABS_CODE = new Lazy<NullDictionary<short?, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.INAC_ABS_CODE));
+            Index_LOTE_HOME_CODE = new Lazy<NullDictionary<string, IReadOnlyList<ST>>>(() => this.ToGroupedNullDictionary(i => i.LOTE_HOME_CODE));
         }
-
-        /// <summary>
-        /// Attempt to find ST by STKEY key field
-        /// </summary>
-        /// <param name="Key">STKEY value used to find ST</param>
-        /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST entity is found</returns>
-        public bool TryFindBySTKEY(string Key, out ST Value)
-        {
-            return STKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by STKEY key field
-        /// </summary>
-        /// <param name="Key">STKEY value used to find ST</param>
-        /// <returns>Related ST entity, or null if not found</returns>
-        public ST TryFindBySTKEY(string Key)
-        {
-            ST result;
-            if (STKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by REGISTRATION key field
-        /// </summary>
-        /// <param name="Key">REGISTRATION value used to find ST</param>
-        /// <returns>Related ST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">REGISTRATION value didn't match any ST entities</exception>
-        public ST FindByREGISTRATION(int Key)
-        {
-            ST result;
-            if (REGISTRATIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REGISTRATION key field
-        /// </summary>
-        /// <param name="Key">REGISTRATION value used to find ST</param>
-        /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST entity is found</returns>
-        public bool TryFindByREGISTRATION(int Key, out ST Value)
-        {
-            return REGISTRATIONIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by REGISTRATION key field
-        /// </summary>
-        /// <param name="Key">REGISTRATION value used to find ST</param>
-        /// <returns>Related ST entity, or null if not found</returns>
-        public ST TryFindByREGISTRATION(int Key)
-        {
-            ST result;
-            if (REGISTRATIONIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find ST by TAG key field
-        /// </summary>
-        /// <param name="Key">TAG value used to find ST</param>
-        /// <returns>Related ST entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TAG value didn't match any ST entities</exception>
-        public ST FindByTAG(string Key)
-        {
-            ST result;
-            if (TAGIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find ST by TAG key field
-        /// </summary>
-        /// <param name="Key">TAG value used to find ST</param>
-        /// <param name="Value">Related ST entity</param>
-        /// <returns>True if the ST entity is found</returns>
-        public bool TryFindByTAG(string Key, out ST Value)
-        {
-            return TAGIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find ST by TAG key field
-        /// </summary>
-        /// <param name="Key">TAG value used to find ST</param>
-        /// <returns>Related ST entity, or null if not found</returns>
-        public ST TryFindByTAG(string Key)
-        {
-            ST result;
-            if (TAGIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all BKHR (Book Hire Records) entities by [BKHR.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find BKHR entities</param>
-        /// <returns>A list of related BKHR entities</returns>
-        public IReadOnlyList<BKHR> FindBKHRBySTUDENT(string STKEY)
-        {
-            IReadOnlyList<BKHR> result;
-            if (BKHR_STUDENTForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<BKHR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all BKHR entities by [BKHR.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find BKHR entities</param>
-        /// <param name="Value">A list of related BKHR entities</param>
-        /// <returns>True if any BKHR entities are found</returns>
-        public bool TryFindBKHRBySTUDENT(string STKEY, out IReadOnlyList<BKHR> Value)
-        {
-            return BKHR_STUDENTForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DFF (Family Financial Transactions) entities by [DFF.TRSTUD]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find DFF entities</param>
-        /// <returns>A list of related DFF entities</returns>
-        public IReadOnlyList<DFF> FindDFFByTRSTUD(string STKEY)
-        {
-            IReadOnlyList<DFF> result;
-            if (DFF_TRSTUDForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFF entities by [DFF.TRSTUD]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find DFF entities</param>
-        /// <param name="Value">A list of related DFF entities</param>
-        /// <returns>True if any DFF entities are found</returns>
-        public bool TryFindDFFByTRSTUD(string STKEY, out IReadOnlyList<DFF> Value)
-        {
-            return DFF_TRSTUDForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all DFF (Family Financial Transactions) entities by [DFF.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find DFF entities</param>
-        /// <returns>A list of related DFF entities</returns>
-        public IReadOnlyList<DFF> FindDFFBySTUDENT(string STKEY)
-        {
-            IReadOnlyList<DFF> result;
-            if (DFF_STUDENTForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DFF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DFF entities by [DFF.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find DFF entities</param>
-        /// <param name="Value">A list of related DFF entities</param>
-        /// <returns>True if any DFF entities are found</returns>
-        public bool TryFindDFFBySTUDENT(string STKEY, out IReadOnlyList<DFF> Value)
-        {
-            return DFF_STUDENTForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SDP (Incident Instigators) entities by [SDP.STUDENT_KEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SDP entities</param>
-        /// <returns>A list of related SDP entities</returns>
-        public IReadOnlyList<SDP> FindSDPBySTUDENT_KEY(string STKEY)
-        {
-            IReadOnlyList<SDP> result;
-            if (SDP_STUDENT_KEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SDP>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SDP entities by [SDP.STUDENT_KEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SDP entities</param>
-        /// <param name="Value">A list of related SDP entities</param>
-        /// <returns>True if any SDP entities are found</returns>
-        public bool TryFindSDPBySTUDENT_KEY(string STKEY, out IReadOnlyList<SDP> Value)
-        {
-            return SDP_STUDENT_KEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SMC (Student Medical Conditions) entities by [SMC.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SMC entities</param>
-        /// <returns>A list of related SMC entities</returns>
-        public IReadOnlyList<SMC> FindSMCBySTUDENT(string STKEY)
-        {
-            IReadOnlyList<SMC> result;
-            if (SMC_STUDENTForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SMC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SMC entities by [SMC.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SMC entities</param>
-        /// <param name="Value">A list of related SMC entities</param>
-        /// <returns>True if any SMC entities are found</returns>
-        public bool TryFindSMCBySTUDENT(string STKEY, out IReadOnlyList<SMC> Value)
-        {
-            return SMC_STUDENTForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SSHG (Specialist Subjects per Home Group) entities by [SSHG.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SSHG entities</param>
-        /// <returns>A list of related SSHG entities</returns>
-        public IReadOnlyList<SSHG> FindSSHGBySTUDENT(string STKEY)
-        {
-            IReadOnlyList<SSHG> result;
-            if (SSHG_STUDENTForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SSHG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SSHG entities by [SSHG.STUDENT]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SSHG entities</param>
-        /// <param name="Value">A list of related SSHG entities</param>
-        /// <returns>True if any SSHG entities are found</returns>
-        public bool TryFindSSHGBySTUDENT(string STKEY, out IReadOnlyList<SSHG> Value)
-        {
-            return SSHG_STUDENTForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STBT (Student Transport Usage) entities by [STBT.STBTKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STBT entities</param>
-        /// <returns>A list of related STBT entities</returns>
-        public IReadOnlyList<STBT> FindSTBTBySTBTKEY(string STKEY)
-        {
-            IReadOnlyList<STBT> result;
-            if (STBT_STBTKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STBT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STBT entities by [STBT.STBTKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STBT entities</param>
-        /// <param name="Value">A list of related STBT entities</param>
-        /// <returns>True if any STBT entities are found</returns>
-        public bool TryFindSTBTBySTBTKEY(string STKEY, out IReadOnlyList<STBT> Value)
-        {
-            return STBT_STBTKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STMA (Subject Selections &amp; Marks) entities by [STMA.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STMA entities</param>
-        /// <returns>A list of related STMA entities</returns>
-        public IReadOnlyList<STMA> FindSTMABySKEY(string STKEY)
-        {
-            IReadOnlyList<STMA> result;
-            if (STMA_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STMA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STMA entities by [STMA.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STMA entities</param>
-        /// <param name="Value">A list of related STMA entities</param>
-        /// <returns>True if any STMA entities are found</returns>
-        public bool TryFindSTMABySKEY(string STKEY, out IReadOnlyList<STMA> Value)
-        {
-            return STMA_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STMB (Student Merit Behaviour Details) entities by [STMB.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STMB entities</param>
-        /// <returns>A list of related STMB entities</returns>
-        public IReadOnlyList<STMB> FindSTMBBySKEY(string STKEY)
-        {
-            IReadOnlyList<STMB> result;
-            if (STMB_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STMB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STMB entities by [STMB.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STMB entities</param>
-        /// <param name="Value">A list of related STMB entities</param>
-        /// <returns>True if any STMB entities are found</returns>
-        public bool TryFindSTMBBySKEY(string STKEY, out IReadOnlyList<STMB> Value)
-        {
-            return STMB_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STPO (Position or Group Memberships) entities by [STPO.STPOKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STPO entities</param>
-        /// <returns>A list of related STPO entities</returns>
-        public IReadOnlyList<STPO> FindSTPOBySTPOKEY(string STKEY)
-        {
-            IReadOnlyList<STPO> result;
-            if (STPO_STPOKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STPO>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STPO entities by [STPO.STPOKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STPO entities</param>
-        /// <param name="Value">A list of related STPO entities</param>
-        /// <returns>True if any STPO entities are found</returns>
-        public bool TryFindSTPOBySTPOKEY(string STKEY, out IReadOnlyList<STPO> Value)
-        {
-            return STPO_STPOKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STPT (Student Part-Time Enrolments) entities by [STPT.STPTKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STPT entities</param>
-        /// <returns>A list of related STPT entities</returns>
-        public IReadOnlyList<STPT> FindSTPTBySTPTKEY(string STKEY)
-        {
-            IReadOnlyList<STPT> result;
-            if (STPT_STPTKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STPT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STPT entities by [STPT.STPTKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STPT entities</param>
-        /// <param name="Value">A list of related STPT entities</param>
-        /// <returns>True if any STPT entities are found</returns>
-        public bool TryFindSTPTBySTPTKEY(string STKEY, out IReadOnlyList<STPT> Value)
-        {
-            return STPT_STPTKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STRA (Multiple Day Absences) entities by [STRA.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STRA entities</param>
-        /// <returns>A list of related STRA entities</returns>
-        public IReadOnlyList<STRA> FindSTRABySTKEY(string STKEY)
-        {
-            IReadOnlyList<STRA> result;
-            if (STRA_STKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STRA>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STRA entities by [STRA.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STRA entities</param>
-        /// <param name="Value">A list of related STRA entities</param>
-        /// <returns>True if any STRA entities are found</returns>
-        public bool TryFindSTRABySTKEY(string STKEY, out IReadOnlyList<STRA> Value)
-        {
-            return STRA_STKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STRE (Student Re-Enrolment) entities by [STRE.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STRE entities</param>
-        /// <returns>A list of related STRE entities</returns>
-        public IReadOnlyList<STRE> FindSTREBySKEY(string STKEY)
-        {
-            IReadOnlyList<STRE> result;
-            if (STRE_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STRE>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STRE entities by [STRE.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STRE entities</param>
-        /// <param name="Value">A list of related STRE entities</param>
-        /// <returns>True if any STRE entities are found</returns>
-        public bool TryFindSTREBySKEY(string STKEY, out IReadOnlyList<STRE> Value)
-        {
-            return STRE_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STSB (Family Invoice Allocations) entities by [STSB.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STSB entities</param>
-        /// <returns>A list of related STSB entities</returns>
-        public IReadOnlyList<STSB> FindSTSBBySKEY(string STKEY)
-        {
-            IReadOnlyList<STSB> result;
-            if (STSB_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STSB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STSB entities by [STSB.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STSB entities</param>
-        /// <param name="Value">A list of related STSB entities</param>
-        /// <returns>True if any STSB entities are found</returns>
-        public bool TryFindSTSBBySKEY(string STKEY, out IReadOnlyList<STSB> Value)
-        {
-            return STSB_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STSP (Suspension Details) entities by [STSP.SPKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STSP entities</param>
-        /// <returns>A list of related STSP entities</returns>
-        public IReadOnlyList<STSP> FindSTSPBySPKEY(string STKEY)
-        {
-            IReadOnlyList<STSP> result;
-            if (STSP_SPKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STSP>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STSP entities by [STSP.SPKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STSP entities</param>
-        /// <param name="Value">A list of related STSP entities</param>
-        /// <returns>True if any STSP entities are found</returns>
-        public bool TryFindSTSPBySPKEY(string STKEY, out IReadOnlyList<STSP> Value)
-        {
-            return STSP_SPKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STTRIPS (Student Trips) entities by [STTRIPS.STUDENT_ID]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STTRIPS entities</param>
-        /// <returns>A list of related STTRIPS entities</returns>
-        public IReadOnlyList<STTRIPS> FindSTTRIPSBySTUDENT_ID(string STKEY)
-        {
-            IReadOnlyList<STTRIPS> result;
-            if (STTRIPS_STUDENT_IDForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STTRIPS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STTRIPS entities by [STTRIPS.STUDENT_ID]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STTRIPS entities</param>
-        /// <param name="Value">A list of related STTRIPS entities</param>
-        /// <returns>True if any STTRIPS entities are found</returns>
-        public bool TryFindSTTRIPSBySTUDENT_ID(string STKEY, out IReadOnlyList<STTRIPS> Value)
-        {
-            return STTRIPS_STUDENT_IDForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STVDI (VELS Dimension Results) entities by [STVDI.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STVDI entities</param>
-        /// <returns>A list of related STVDI entities</returns>
-        public IReadOnlyList<STVDI> FindSTVDIBySKEY(string STKEY)
-        {
-            IReadOnlyList<STVDI> result;
-            if (STVDI_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STVDI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STVDI entities by [STVDI.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STVDI entities</param>
-        /// <param name="Value">A list of related STVDI entities</param>
-        /// <returns>True if any STVDI entities are found</returns>
-        public bool TryFindSTVDIBySKEY(string STKEY, out IReadOnlyList<STVDI> Value)
-        {
-            return STVDI_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all STVDO (VELS Domain Results) entities by [STVDO.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STVDO entities</param>
-        /// <returns>A list of related STVDO entities</returns>
-        public IReadOnlyList<STVDO> FindSTVDOBySKEY(string STKEY)
-        {
-            IReadOnlyList<STVDO> result;
-            if (STVDO_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<STVDO>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all STVDO entities by [STVDO.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find STVDO entities</param>
-        /// <param name="Value">A list of related STVDO entities</param>
-        /// <returns>True if any STVDO entities are found</returns>
-        public bool TryFindSTVDOBySKEY(string STKEY, out IReadOnlyList<STVDO> Value)
-        {
-            return STVDO_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SXAB (Student Half-Day Absences) entities by [SXAB.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXAB entities</param>
-        /// <returns>A list of related SXAB entities</returns>
-        public IReadOnlyList<SXAB> FindSXABBySTKEY(string STKEY)
-        {
-            IReadOnlyList<SXAB> result;
-            if (SXAB_STKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXAB>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXAB entities by [SXAB.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXAB entities</param>
-        /// <param name="Value">A list of related SXAB entities</param>
-        /// <returns>True if any SXAB entities are found</returns>
-        public bool TryFindSXABBySTKEY(string STKEY, out IReadOnlyList<SXAB> Value)
-        {
-            return SXAB_STKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SXABCONV (Converted Student Half-Day Absences) entities by [SXABCONV.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXABCONV entities</param>
-        /// <returns>A list of related SXABCONV entities</returns>
-        public IReadOnlyList<SXABCONV> FindSXABCONVBySTKEY(string STKEY)
-        {
-            IReadOnlyList<SXABCONV> result;
-            if (SXABCONV_STKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXABCONV>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXABCONV entities by [SXABCONV.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXABCONV entities</param>
-        /// <param name="Value">A list of related SXABCONV entities</param>
-        /// <returns>True if any SXABCONV entities are found</returns>
-        public bool TryFindSXABCONVBySTKEY(string STKEY, out IReadOnlyList<SXABCONV> Value)
-        {
-            return SXABCONV_STKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SXAS (Student Scheduled Sessions) entities by [SXAS.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXAS entities</param>
-        /// <returns>A list of related SXAS entities</returns>
-        public IReadOnlyList<SXAS> FindSXASBySTKEY(string STKEY)
-        {
-            IReadOnlyList<SXAS> result;
-            if (SXAS_STKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXAS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXAS entities by [SXAS.STKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXAS entities</param>
-        /// <param name="Value">A list of related SXAS entities</param>
-        /// <returns>True if any SXAS entities are found</returns>
-        public bool TryFindSXASBySTKEY(string STKEY, out IReadOnlyList<SXAS> Value)
-        {
-            return SXAS_STKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SXHI (Student History) entities by [SXHI.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXHI entities</param>
-        /// <returns>A list of related SXHI entities</returns>
-        public IReadOnlyList<SXHI> FindSXHIBySKEY(string STKEY)
-        {
-            IReadOnlyList<SXHI> result;
-            if (SXHI_SKEYForeignIndex.Value.TryGetValue(STKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SXHI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SXHI entities by [SXHI.SKEY]-&gt;[ST.STKEY]
-        /// </summary>
-        /// <param name="STKEY">STKEY value used to find SXHI entities</param>
-        /// <param name="Value">A list of related SXHI entities</param>
-        /// <returns>True if any SXHI entities are found</returns>
-        public bool TryFindSXHIBySKEY(string STKEY, out IReadOnlyList<SXHI> Value)
-        {
-            return SXHI_SKEYForeignIndex.Value.TryGetValue(STKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="ST" />
@@ -1539,5 +579,1262 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, ST>> Index_STKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<ST>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMILY;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMB;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_FAMC;
+        private Lazy<Dictionary<int, IReadOnlyList<ST>>> Index_REGISTRATION;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_PREVIOUS_SCHOOL;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_TAG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_GROUP;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_HG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_SCHOOL_YEAR;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOUSE;
+        private Lazy<NullDictionary<int?, IReadOnlyList<ST>>> Index_CAMPUS;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_RELIGION;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_REL_INSTR;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_VISA_SUBCLASS;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_BIRTH_COUNTRY;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_HOME_LANG;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_DOCTOR;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EMERG_LANG01;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EMERG_LANG02;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_LANGUAGE_PREVIOUS_SCHOOLING;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_NEXT_SCHOOL;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_CAT01;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_CAT02;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_DEST01;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_EXIT_DEST02;
+        private Lazy<NullDictionary<short?, IReadOnlyList<ST>>> Index_INAC_ABS_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST>>> Index_LOTE_HOME_CODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <returns>Related ST entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST FindBySTKEY(string STKEY)
+        {
+            return Index_STKEY.Value[STKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <param name="Value">Related ST entity</param>
+        /// <returns>True if the related ST entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTKEY(string STKEY, out ST Value)
+        {
+            return Index_STKEY.Value.TryGetValue(STKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by STKEY field
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find ST</param>
+        /// <returns>Related ST entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST TryFindBySTKEY(string STKEY)
+        {
+            ST value;
+            if (Index_STKEY.Value.TryGetValue(STKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<ST> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMILY(string FAMILY)
+        {
+            return Index_FAMILY.Value[FAMILY];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMILY(string FAMILY, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMILY.Value.TryGetValue(FAMILY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMILY field
+        /// </summary>
+        /// <param name="FAMILY">FAMILY value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMILY(string FAMILY)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMILY.Value.TryGetValue(FAMILY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMB(string FAMB)
+        {
+            return Index_FAMB.Value[FAMB];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMB(string FAMB, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMB.Value.TryGetValue(FAMB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMB field
+        /// </summary>
+        /// <param name="FAMB">FAMB value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMB(string FAMB)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMB.Value.TryGetValue(FAMB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByFAMC(string FAMC)
+        {
+            return Index_FAMC.Value[FAMC];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAMC(string FAMC, out IReadOnlyList<ST> Value)
+        {
+            return Index_FAMC.Value.TryGetValue(FAMC, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by FAMC field
+        /// </summary>
+        /// <param name="FAMC">FAMC value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByFAMC(string FAMC)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_FAMC.Value.TryGetValue(FAMC, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByREGISTRATION(int REGISTRATION)
+        {
+            return Index_REGISTRATION.Value[REGISTRATION];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREGISTRATION(int REGISTRATION, out IReadOnlyList<ST> Value)
+        {
+            return Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REGISTRATION field
+        /// </summary>
+        /// <param name="REGISTRATION">REGISTRATION value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByREGISTRATION(int REGISTRATION)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_REGISTRATION.Value.TryGetValue(REGISTRATION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
+        {
+            return Index_PREVIOUS_SCHOOL.Value[PREVIOUS_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL, out IReadOnlyList<ST> Value)
+        {
+            return Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by PREVIOUS_SCHOOL field
+        /// </summary>
+        /// <param name="PREVIOUS_SCHOOL">PREVIOUS_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByPREVIOUS_SCHOOL(string PREVIOUS_SCHOOL)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_PREVIOUS_SCHOOL.Value.TryGetValue(PREVIOUS_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByTAG(string TAG)
+        {
+            return Index_TAG.Value[TAG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTAG(string TAG, out IReadOnlyList<ST> Value)
+        {
+            return Index_TAG.Value.TryGetValue(TAG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by TAG field
+        /// </summary>
+        /// <param name="TAG">TAG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByTAG(string TAG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_TAG.Value.TryGetValue(TAG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOME_GROUP(string HOME_GROUP)
+        {
+            return Index_HOME_GROUP.Value[HOME_GROUP];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_GROUP(string HOME_GROUP, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_GROUP field
+        /// </summary>
+        /// <param name="HOME_GROUP">HOME_GROUP value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOME_GROUP(string HOME_GROUP)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOME_GROUP.Value.TryGetValue(HOME_GROUP, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByNEXT_HG(string NEXT_HG)
+        {
+            return Index_NEXT_HG.Value[NEXT_HG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_HG(string NEXT_HG, out IReadOnlyList<ST> Value)
+        {
+            return Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_HG field
+        /// </summary>
+        /// <param name="NEXT_HG">NEXT_HG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByNEXT_HG(string NEXT_HG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_NEXT_HG.Value.TryGetValue(NEXT_HG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<ST> Value)
+        {
+            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by SCHOOL_YEAR field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOUSE(string HOUSE)
+        {
+            return Index_HOUSE.Value[HOUSE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOUSE(string HOUSE, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOUSE.Value.TryGetValue(HOUSE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOUSE field
+        /// </summary>
+        /// <param name="HOUSE">HOUSE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOUSE(string HOUSE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOUSE.Value.TryGetValue(HOUSE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<ST> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByRELIGION(string RELIGION)
+        {
+            return Index_RELIGION.Value[RELIGION];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByRELIGION(string RELIGION, out IReadOnlyList<ST> Value)
+        {
+            return Index_RELIGION.Value.TryGetValue(RELIGION, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by RELIGION field
+        /// </summary>
+        /// <param name="RELIGION">RELIGION value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByRELIGION(string RELIGION)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_RELIGION.Value.TryGetValue(RELIGION, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByREL_INSTR(string REL_INSTR)
+        {
+            return Index_REL_INSTR.Value[REL_INSTR];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREL_INSTR(string REL_INSTR, out IReadOnlyList<ST> Value)
+        {
+            return Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by REL_INSTR field
+        /// </summary>
+        /// <param name="REL_INSTR">REL_INSTR value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByREL_INSTR(string REL_INSTR)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_REL_INSTR.Value.TryGetValue(REL_INSTR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            return Index_VISA_SUBCLASS.Value[VISA_SUBCLASS];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVISA_SUBCLASS(string VISA_SUBCLASS, out IReadOnlyList<ST> Value)
+        {
+            return Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by VISA_SUBCLASS field
+        /// </summary>
+        /// <param name="VISA_SUBCLASS">VISA_SUBCLASS value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByVISA_SUBCLASS(string VISA_SUBCLASS)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_VISA_SUBCLASS.Value.TryGetValue(VISA_SUBCLASS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by BIRTH_COUNTRY field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
+        {
+            return Index_BIRTH_COUNTRY.Value[BIRTH_COUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by BIRTH_COUNTRY field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY, out IReadOnlyList<ST> Value)
+        {
+            return Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by BIRTH_COUNTRY field
+        /// </summary>
+        /// <param name="BIRTH_COUNTRY">BIRTH_COUNTRY value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByBIRTH_COUNTRY(string BIRTH_COUNTRY)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_BIRTH_COUNTRY.Value.TryGetValue(BIRTH_COUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByHOME_LANG(string HOME_LANG)
+        {
+            return Index_HOME_LANG.Value[HOME_LANG];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_LANG(string HOME_LANG, out IReadOnlyList<ST> Value)
+        {
+            return Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by HOME_LANG field
+        /// </summary>
+        /// <param name="HOME_LANG">HOME_LANG value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByHOME_LANG(string HOME_LANG)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_HOME_LANG.Value.TryGetValue(HOME_LANG, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByDOCTOR(string DOCTOR)
+        {
+            return Index_DOCTOR.Value[DOCTOR];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByDOCTOR(string DOCTOR, out IReadOnlyList<ST> Value)
+        {
+            return Index_DOCTOR.Value.TryGetValue(DOCTOR, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by DOCTOR field
+        /// </summary>
+        /// <param name="DOCTOR">DOCTOR value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByDOCTOR(string DOCTOR)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_DOCTOR.Value.TryGetValue(DOCTOR, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEMERG_LANG01(string EMERG_LANG01)
+        {
+            return Index_EMERG_LANG01.Value[EMERG_LANG01];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG01(string EMERG_LANG01, out IReadOnlyList<ST> Value)
+        {
+            return Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EMERG_LANG01 field
+        /// </summary>
+        /// <param name="EMERG_LANG01">EMERG_LANG01 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEMERG_LANG01(string EMERG_LANG01)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EMERG_LANG01.Value.TryGetValue(EMERG_LANG01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            return Index_EMERG_LANG02.Value[EMERG_LANG02];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEMERG_LANG02(string EMERG_LANG02, out IReadOnlyList<ST> Value)
+        {
+            return Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EMERG_LANG02 field
+        /// </summary>
+        /// <param name="EMERG_LANG02">EMERG_LANG02 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEMERG_LANG02(string EMERG_LANG02)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EMERG_LANG02.Value.TryGetValue(EMERG_LANG02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
+        {
+            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value[LANGUAGE_PREVIOUS_SCHOOLING];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING, out IReadOnlyList<ST> Value)
+        {
+            return Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LANGUAGE_PREVIOUS_SCHOOLING field
+        /// </summary>
+        /// <param name="LANGUAGE_PREVIOUS_SCHOOLING">LANGUAGE_PREVIOUS_SCHOOLING value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByLANGUAGE_PREVIOUS_SCHOOLING(string LANGUAGE_PREVIOUS_SCHOOLING)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_LANGUAGE_PREVIOUS_SCHOOLING.Value.TryGetValue(LANGUAGE_PREVIOUS_SCHOOLING, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByNEXT_SCHOOL(string NEXT_SCHOOL)
+        {
+            return Index_NEXT_SCHOOL.Value[NEXT_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByNEXT_SCHOOL(string NEXT_SCHOOL, out IReadOnlyList<ST> Value)
+        {
+            return Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by NEXT_SCHOOL field
+        /// </summary>
+        /// <param name="NEXT_SCHOOL">NEXT_SCHOOL value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByNEXT_SCHOOL(string NEXT_SCHOOL)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_NEXT_SCHOOL.Value.TryGetValue(NEXT_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EXIT_CAT01 field
+        /// </summary>
+        /// <param name="EXIT_CAT01">EXIT_CAT01 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEXIT_CAT01(string EXIT_CAT01)
+        {
+            return Index_EXIT_CAT01.Value[EXIT_CAT01];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_CAT01 field
+        /// </summary>
+        /// <param name="EXIT_CAT01">EXIT_CAT01 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXIT_CAT01(string EXIT_CAT01, out IReadOnlyList<ST> Value)
+        {
+            return Index_EXIT_CAT01.Value.TryGetValue(EXIT_CAT01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_CAT01 field
+        /// </summary>
+        /// <param name="EXIT_CAT01">EXIT_CAT01 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEXIT_CAT01(string EXIT_CAT01)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EXIT_CAT01.Value.TryGetValue(EXIT_CAT01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EXIT_CAT02 field
+        /// </summary>
+        /// <param name="EXIT_CAT02">EXIT_CAT02 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEXIT_CAT02(string EXIT_CAT02)
+        {
+            return Index_EXIT_CAT02.Value[EXIT_CAT02];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_CAT02 field
+        /// </summary>
+        /// <param name="EXIT_CAT02">EXIT_CAT02 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXIT_CAT02(string EXIT_CAT02, out IReadOnlyList<ST> Value)
+        {
+            return Index_EXIT_CAT02.Value.TryGetValue(EXIT_CAT02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_CAT02 field
+        /// </summary>
+        /// <param name="EXIT_CAT02">EXIT_CAT02 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEXIT_CAT02(string EXIT_CAT02)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EXIT_CAT02.Value.TryGetValue(EXIT_CAT02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EXIT_DEST01 field
+        /// </summary>
+        /// <param name="EXIT_DEST01">EXIT_DEST01 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEXIT_DEST01(string EXIT_DEST01)
+        {
+            return Index_EXIT_DEST01.Value[EXIT_DEST01];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_DEST01 field
+        /// </summary>
+        /// <param name="EXIT_DEST01">EXIT_DEST01 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXIT_DEST01(string EXIT_DEST01, out IReadOnlyList<ST> Value)
+        {
+            return Index_EXIT_DEST01.Value.TryGetValue(EXIT_DEST01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_DEST01 field
+        /// </summary>
+        /// <param name="EXIT_DEST01">EXIT_DEST01 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEXIT_DEST01(string EXIT_DEST01)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EXIT_DEST01.Value.TryGetValue(EXIT_DEST01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by EXIT_DEST02 field
+        /// </summary>
+        /// <param name="EXIT_DEST02">EXIT_DEST02 value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByEXIT_DEST02(string EXIT_DEST02)
+        {
+            return Index_EXIT_DEST02.Value[EXIT_DEST02];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_DEST02 field
+        /// </summary>
+        /// <param name="EXIT_DEST02">EXIT_DEST02 value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByEXIT_DEST02(string EXIT_DEST02, out IReadOnlyList<ST> Value)
+        {
+            return Index_EXIT_DEST02.Value.TryGetValue(EXIT_DEST02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by EXIT_DEST02 field
+        /// </summary>
+        /// <param name="EXIT_DEST02">EXIT_DEST02 value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByEXIT_DEST02(string EXIT_DEST02)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_EXIT_DEST02.Value.TryGetValue(EXIT_DEST02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by INAC_ABS_CODE field
+        /// </summary>
+        /// <param name="INAC_ABS_CODE">INAC_ABS_CODE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByINAC_ABS_CODE(short? INAC_ABS_CODE)
+        {
+            return Index_INAC_ABS_CODE.Value[INAC_ABS_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by INAC_ABS_CODE field
+        /// </summary>
+        /// <param name="INAC_ABS_CODE">INAC_ABS_CODE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINAC_ABS_CODE(short? INAC_ABS_CODE, out IReadOnlyList<ST> Value)
+        {
+            return Index_INAC_ABS_CODE.Value.TryGetValue(INAC_ABS_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by INAC_ABS_CODE field
+        /// </summary>
+        /// <param name="INAC_ABS_CODE">INAC_ABS_CODE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByINAC_ABS_CODE(short? INAC_ABS_CODE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_INAC_ABS_CODE.Value.TryGetValue(INAC_ABS_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST by LOTE_HOME_CODE field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE">LOTE_HOME_CODE value used to find ST</param>
+        /// <returns>List of related ST entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> FindByLOTE_HOME_CODE(string LOTE_HOME_CODE)
+        {
+            return Index_LOTE_HOME_CODE.Value[LOTE_HOME_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LOTE_HOME_CODE field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE">LOTE_HOME_CODE value used to find ST</param>
+        /// <param name="Value">List of related ST entities</param>
+        /// <returns>True if the list of related ST entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLOTE_HOME_CODE(string LOTE_HOME_CODE, out IReadOnlyList<ST> Value)
+        {
+            return Index_LOTE_HOME_CODE.Value.TryGetValue(LOTE_HOME_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST by LOTE_HOME_CODE field
+        /// </summary>
+        /// <param name="LOTE_HOME_CODE">LOTE_HOME_CODE value used to find ST</param>
+        /// <returns>List of related ST entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST> TryFindByLOTE_HOME_CODE(string LOTE_HOME_CODE)
+        {
+            IReadOnlyList<ST> value;
+            if (Index_LOTE_HOME_CODE.Value.TryGetValue(LOTE_HOME_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,171 +8,28 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// General Ledger Transactions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLFDataSet : SetBase<GLF>
     {
-        private Lazy<Dictionary<string, GLF>> TRREFIndex;
-        private Lazy<Dictionary<string, GLF>> GST_BOXIndex;
-        private Lazy<Dictionary<string, GLF>> GST_SALE_PURCHIndex;
-
-
-        internal GLFDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TRREFIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.TRREF));
-            GST_BOXIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.GST_BOX));
-            GST_SALE_PURCHIndex = new Lazy<Dictionary<string, GLF>>(() => this.ToDictionary(e => e.GST_SALE_PURCH));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "GLF"; } }
 
-        /// <summary>
-        /// Find GLF by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLF</param>
-        /// <returns>Related GLF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TRREF value didn't match any GLF entities</exception>
-        public GLF FindByTRREF(string Key)
+        internal GLFDataSet(EduHubContext Context)
+            : base(Context)
         {
-            GLF result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, GLF>>(() => this.ToDictionary(i => i.TID));
+            Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
+            Index_GST_BOX = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GST_BOX));
+            Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
+            Index_GST_SALE_PURCH = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GST_SALE_PURCH));
+            Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_GLPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GLPROGRAM));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find GLF by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLF</param>
-        /// <param name="Value">Related GLF entity</param>
-        /// <returns>True if the GLF entity is found</returns>
-        public bool TryFindByTRREF(string Key, out GLF Value)
-        {
-            return TRREFIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLF by TRREF key field
-        /// </summary>
-        /// <param name="Key">TRREF value used to find GLF</param>
-        /// <returns>Related GLF entity, or null if not found</returns>
-        public GLF TryFindByTRREF(string Key)
-        {
-            GLF result;
-            if (TRREFIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLF by GST_BOX key field
-        /// </summary>
-        /// <param name="Key">GST_BOX value used to find GLF</param>
-        /// <returns>Related GLF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">GST_BOX value didn't match any GLF entities</exception>
-        public GLF FindByGST_BOX(string Key)
-        {
-            GLF result;
-            if (GST_BOXIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find GLF by GST_BOX key field
-        /// </summary>
-        /// <param name="Key">GST_BOX value used to find GLF</param>
-        /// <param name="Value">Related GLF entity</param>
-        /// <returns>True if the GLF entity is found</returns>
-        public bool TryFindByGST_BOX(string Key, out GLF Value)
-        {
-            return GST_BOXIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLF by GST_BOX key field
-        /// </summary>
-        /// <param name="Key">GST_BOX value used to find GLF</param>
-        /// <returns>Related GLF entity, or null if not found</returns>
-        public GLF TryFindByGST_BOX(string Key)
-        {
-            GLF result;
-            if (GST_BOXIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find GLF by GST_SALE_PURCH key field
-        /// </summary>
-        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
-        /// <returns>Related GLF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">GST_SALE_PURCH value didn't match any GLF entities</exception>
-        public GLF FindByGST_SALE_PURCH(string Key)
-        {
-            GLF result;
-            if (GST_SALE_PURCHIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find GLF by GST_SALE_PURCH key field
-        /// </summary>
-        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
-        /// <param name="Value">Related GLF entity</param>
-        /// <returns>True if the GLF entity is found</returns>
-        public bool TryFindByGST_SALE_PURCH(string Key, out GLF Value)
-        {
-            return GST_SALE_PURCHIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find GLF by GST_SALE_PURCH key field
-        /// </summary>
-        /// <param name="Key">GST_SALE_PURCH value used to find GLF</param>
-        /// <returns>Related GLF entity, or null if not found</returns>
-        public GLF TryFindByGST_SALE_PURCH(string Key)
-        {
-            GLF result;
-            if (GST_SALE_PURCHIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="GLF" />
@@ -186,7 +43,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
                         mapper[i] = (e, v) => e.CODE = v;
@@ -370,5 +227,445 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<GLF>>> Index_CODE;
+        private Lazy<Dictionary<int, GLF>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_TRREF;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GST_BOX;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GST_TYPE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GST_SALE_PURCH;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_BSB;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GLPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find GLF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<GLF> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLF</param>
+        /// <returns>Related GLF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLF FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLF</param>
+        /// <param name="Value">Related GLF entity</param>
+        /// <returns>True if the related GLF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out GLF Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find GLF</param>
+        /// <returns>Related GLF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLF TryFindByTID(int TID)
+        {
+            GLF value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByTRREF(string TRREF)
+        {
+            return Index_TRREF.Value[TRREF];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTRREF(string TRREF, out IReadOnlyList<GLF> Value)
+        {
+            return Index_TRREF.Value.TryGetValue(TRREF, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by TRREF field
+        /// </summary>
+        /// <param name="TRREF">TRREF value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByTRREF(string TRREF)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_TRREF.Value.TryGetValue(TRREF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByGST_BOX(string GST_BOX)
+        {
+            return Index_GST_BOX.Value[GST_BOX];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_BOX(string GST_BOX, out IReadOnlyList<GLF> Value)
+        {
+            return Index_GST_BOX.Value.TryGetValue(GST_BOX, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_BOX field
+        /// </summary>
+        /// <param name="GST_BOX">GST_BOX value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByGST_BOX(string GST_BOX)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_GST_BOX.Value.TryGetValue(GST_BOX, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByGST_TYPE(string GST_TYPE)
+        {
+            return Index_GST_TYPE.Value[GST_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_TYPE(string GST_TYPE, out IReadOnlyList<GLF> Value)
+        {
+            return Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_TYPE field
+        /// </summary>
+        /// <param name="GST_TYPE">GST_TYPE value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByGST_TYPE(string GST_TYPE)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_GST_TYPE.Value.TryGetValue(GST_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByGST_SALE_PURCH(string GST_SALE_PURCH)
+        {
+            return Index_GST_SALE_PURCH.Value[GST_SALE_PURCH];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGST_SALE_PURCH(string GST_SALE_PURCH, out IReadOnlyList<GLF> Value)
+        {
+            return Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GST_SALE_PURCH field
+        /// </summary>
+        /// <param name="GST_SALE_PURCH">GST_SALE_PURCH value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByGST_SALE_PURCH(string GST_SALE_PURCH)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_GST_SALE_PURCH.Value.TryGetValue(GST_SALE_PURCH, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByBSB(string BSB)
+        {
+            return Index_BSB.Value[BSB];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBSB(string BSB, out IReadOnlyList<GLF> Value)
+        {
+            return Index_BSB.Value.TryGetValue(BSB, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by BSB field
+        /// </summary>
+        /// <param name="BSB">BSB value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByBSB(string BSB)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<GLF> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by GLPROGRAM field
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByGLPROGRAM(string GLPROGRAM)
+        {
+            return Index_GLPROGRAM.Value[GLPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GLPROGRAM field
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLPROGRAM(string GLPROGRAM, out IReadOnlyList<GLF> Value)
+        {
+            return Index_GLPROGRAM.Value.TryGetValue(GLPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by GLPROGRAM field
+        /// </summary>
+        /// <param name="GLPROGRAM">GLPROGRAM value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByGLPROGRAM(string GLPROGRAM)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_GLPROGRAM.Value.TryGetValue(GLPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<GLF> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

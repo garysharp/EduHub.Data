@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// School Association Positions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAPDataSet : SetBase<SAP>
     {
-        private Lazy<Dictionary<string, SAP>> SAPKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SAM>>> SAM_ASSOC_POSNForeignIndex;
-
-        internal SAPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SAPKEYIndex = new Lazy<Dictionary<string, SAP>>(() => this.ToDictionary(e => e.SAPKEY));
-
-            SAM_ASSOC_POSNForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SAM>>>(() =>
-                    Context.SAM
-                          .Where(e => e.ASSOC_POSN != null)
-                          .GroupBy(e => e.ASSOC_POSN)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SAM>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SAP"; } }
 
-        /// <summary>
-        /// Find SAP by SAPKEY key field
-        /// </summary>
-        /// <param name="Key">SAPKEY value used to find SAP</param>
-        /// <returns>Related SAP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SAPKEY value didn't match any SAP entities</exception>
-        public SAP FindBySAPKEY(string Key)
+        internal SAPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SAP result;
-            if (SAPKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SAPKEY = new Lazy<Dictionary<string, SAP>>(() => this.ToDictionary(i => i.SAPKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SAP by SAPKEY key field
-        /// </summary>
-        /// <param name="Key">SAPKEY value used to find SAP</param>
-        /// <param name="Value">Related SAP entity</param>
-        /// <returns>True if the SAP entity is found</returns>
-        public bool TryFindBySAPKEY(string Key, out SAP Value)
-        {
-            return SAPKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SAP by SAPKEY key field
-        /// </summary>
-        /// <param name="Key">SAPKEY value used to find SAP</param>
-        /// <returns>Related SAP entity, or null if not found</returns>
-        public SAP TryFindBySAPKEY(string Key)
-        {
-            SAP result;
-            if (SAPKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SAM (School Association Members) entities by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
-        /// </summary>
-        /// <param name="SAPKEY">SAPKEY value used to find SAM entities</param>
-        /// <returns>A list of related SAM entities</returns>
-        public IReadOnlyList<SAM> FindSAMByASSOC_POSN(string SAPKEY)
-        {
-            IReadOnlyList<SAM> result;
-            if (SAM_ASSOC_POSNForeignIndex.Value.TryGetValue(SAPKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SAM>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SAM entities by [SAM.ASSOC_POSN]-&gt;[SAP.SAPKEY]
-        /// </summary>
-        /// <param name="SAPKEY">SAPKEY value used to find SAM entities</param>
-        /// <param name="Value">A list of related SAM entities</param>
-        /// <returns>True if any SAM entities are found</returns>
-        public bool TryFindSAMByASSOC_POSN(string SAPKEY, out IReadOnlyList<SAM> Value)
-        {
-            return SAM_ASSOC_POSNForeignIndex.Value.TryGetValue(SAPKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SAP" />
@@ -149,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SAP>> Index_SAPKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SAP by SAPKEY field
+        /// </summary>
+        /// <param name="SAPKEY">SAPKEY value used to find SAP</param>
+        /// <returns>Related SAP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAP FindBySAPKEY(string SAPKEY)
+        {
+            return Index_SAPKEY.Value[SAPKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SAP by SAPKEY field
+        /// </summary>
+        /// <param name="SAPKEY">SAPKEY value used to find SAP</param>
+        /// <param name="Value">Related SAP entity</param>
+        /// <returns>True if the related SAP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySAPKEY(string SAPKEY, out SAP Value)
+        {
+            return Index_SAPKEY.Value.TryGetValue(SAPKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SAP by SAPKEY field
+        /// </summary>
+        /// <param name="SAPKEY">SAPKEY value used to find SAP</param>
+        /// <returns>Related SAP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SAP TryFindBySAPKEY(string SAPKEY)
+        {
+            SAP value;
+            if (Index_SAPKEY.Value.TryGetValue(SAPKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

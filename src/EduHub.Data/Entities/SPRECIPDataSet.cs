@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// SMS Recipients Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPRECIPDataSet : SetBase<SPRECIP>
     {
-        private Lazy<Dictionary<int, SPRECIP>> TIDIndex;
-
-
-        internal SPRECIPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SPRECIP>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPRECIP"; } }
 
-        /// <summary>
-        /// Find SPRECIP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPRECIP</param>
-        /// <returns>Related SPRECIP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SPRECIP entities</exception>
-        public SPRECIP FindByTID(int Key)
+        internal SPRECIPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPRECIP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, SPRECIP>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find SPRECIP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPRECIP</param>
-        /// <param name="Value">Related SPRECIP entity</param>
-        /// <returns>True if the SPRECIP entity is found</returns>
-        public bool TryFindByTID(int Key, out SPRECIP Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPRECIP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPRECIP</param>
-        /// <returns>Related SPRECIP entity, or null if not found</returns>
-        public SPRECIP TryFindByTID(int Key)
-        {
-            SPRECIP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPRECIP" />
@@ -89,7 +38,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
-                        mapper[i] = (e, v) => e.CODE = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.CODE = int.Parse(v);
                         break;
                     case "RECIPIENT_TABLE":
                         mapper[i] = (e, v) => e.RECIPIENT_TABLE = v;
@@ -141,5 +90,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, IReadOnlyList<SPRECIP>>> Index_CODE;
+        private Lazy<Dictionary<int, SPRECIP>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPRECIP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPRECIP</param>
+        /// <returns>List of related SPRECIP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPRECIP> FindByCODE(int CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SPRECIP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPRECIP</param>
+        /// <param name="Value">List of related SPRECIP entities</param>
+        /// <returns>True if the list of related SPRECIP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(int CODE, out IReadOnlyList<SPRECIP> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPRECIP by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPRECIP</param>
+        /// <returns>List of related SPRECIP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPRECIP> TryFindByCODE(int CODE)
+        {
+            IReadOnlyList<SPRECIP> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SPRECIP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPRECIP</param>
+        /// <returns>Related SPRECIP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPRECIP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SPRECIP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPRECIP</param>
+        /// <param name="Value">Related SPRECIP entity</param>
+        /// <returns>True if the related SPRECIP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SPRECIP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPRECIP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPRECIP</param>
+        /// <returns>Related SPRECIP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPRECIP TryFindByTID(int TID)
+        {
+            SPRECIP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

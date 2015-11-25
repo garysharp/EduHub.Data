@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Employee Leave Audit Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PELADataSet : SetBase<PELA>
     {
-
-
-        internal PELADataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PELA"; } }
 
+        internal PELADataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_PEKEY = new Lazy<Dictionary<string, IReadOnlyList<PELA>>>(() => this.ToGroupedDictionary(i => i.PEKEY));
+            Index_TID = new Lazy<Dictionary<int, PELA>>(() => this.ToDictionary(i => i.TID));
+            Index_LEAVE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<PELA>>>(() => this.ToGroupedNullDictionary(i => i.LEAVE_CODE));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PELA" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "PEKEY":
                         mapper[i] = (e, v) => e.PEKEY = v;
@@ -100,5 +100,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<PELA>>> Index_PEKEY;
+        private Lazy<Dictionary<int, PELA>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<PELA>>> Index_LEAVE_CODE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PELA by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELA</param>
+        /// <returns>List of related PELA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELA> FindByPEKEY(string PEKEY)
+        {
+            return Index_PEKEY.Value[PEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELA</param>
+        /// <param name="Value">List of related PELA entities</param>
+        /// <returns>True if the list of related PELA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPEKEY(string PEKEY, out IReadOnlyList<PELA> Value)
+        {
+            return Index_PEKEY.Value.TryGetValue(PEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by PEKEY field
+        /// </summary>
+        /// <param name="PEKEY">PEKEY value used to find PELA</param>
+        /// <returns>List of related PELA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELA> TryFindByPEKEY(string PEKEY)
+        {
+            IReadOnlyList<PELA> value;
+            if (Index_PEKEY.Value.TryGetValue(PEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PELA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PELA</param>
+        /// <returns>Related PELA entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PELA FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PELA</param>
+        /// <param name="Value">Related PELA entity</param>
+        /// <returns>True if the related PELA entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out PELA Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find PELA</param>
+        /// <returns>Related PELA entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PELA TryFindByTID(int TID)
+        {
+            PELA value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PELA by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELA</param>
+        /// <returns>List of related PELA entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELA> FindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            return Index_LEAVE_CODE.Value[LEAVE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELA</param>
+        /// <param name="Value">List of related PELA entities</param>
+        /// <returns>True if the list of related PELA entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLEAVE_CODE(string LEAVE_CODE, out IReadOnlyList<PELA> Value)
+        {
+            return Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PELA by LEAVE_CODE field
+        /// </summary>
+        /// <param name="LEAVE_CODE">LEAVE_CODE value used to find PELA</param>
+        /// <returns>List of related PELA entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PELA> TryFindByLEAVE_CODE(string LEAVE_CODE)
+        {
+            IReadOnlyList<PELA> value;
+            if (Index_LEAVE_CODE.Value.TryGetValue(LEAVE_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,61 +7,81 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Specialist Subjects
     /// </summary>
-    public partial class SS : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SS : EntityBase
     {
-#region Navigation Property Cache
-        private KGC _FROM_HOMEGROUP_KGC;
-        private KGC _TO_HOMEGROUP_KGC;
-        private SF _DEFAULT_TEACHER_SF;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private KGC Cache_FROM_HOMEGROUP_KGC;
+        private KGC Cache_TO_HOMEGROUP_KGC;
+        private SF Cache_DEFAULT_TEACHER_SF;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<SSHG> Cache_SSKEY_SSHG_SUBJECT;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string SSKEY { get; internal set; }
+
         /// <summary>
         /// Subject name
         /// [Titlecase (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Minimum home group taking the subject
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string FROM_HOMEGROUP { get; internal set; }
+
         /// <summary>
         /// Maximum home group taking the subject
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string TO_HOMEGROUP { get; internal set; }
+
         /// <summary>
         /// Specialist subject active Y/N
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ACTIVE { get; internal set; }
+
         /// <summary>
         /// Optional default teacher
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string DEFAULT_TEACHER { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// KGC (Home Groups) related entity by [SS.FROM_HOMEGROUP]-&gt;[KGC.KGCKEY]
@@ -70,18 +91,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (FROM_HOMEGROUP != null)
-                {
-                    if (_FROM_HOMEGROUP_KGC == null)
-                    {
-                        _FROM_HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(FROM_HOMEGROUP);
-                    }
-                    return _FROM_HOMEGROUP_KGC;
-                }
-                else
+                if (FROM_HOMEGROUP == null)
                 {
                     return null;
                 }
+                if (Cache_FROM_HOMEGROUP_KGC == null)
+                {
+                    Cache_FROM_HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(FROM_HOMEGROUP);
+                }
+
+                return Cache_FROM_HOMEGROUP_KGC;
             }
         }
 
@@ -93,18 +112,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TO_HOMEGROUP != null)
-                {
-                    if (_TO_HOMEGROUP_KGC == null)
-                    {
-                        _TO_HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(TO_HOMEGROUP);
-                    }
-                    return _TO_HOMEGROUP_KGC;
-                }
-                else
+                if (TO_HOMEGROUP == null)
                 {
                     return null;
                 }
+                if (Cache_TO_HOMEGROUP_KGC == null)
+                {
+                    Cache_TO_HOMEGROUP_KGC = Context.KGC.FindByKGCKEY(TO_HOMEGROUP);
+                }
+
+                return Cache_TO_HOMEGROUP_KGC;
             }
         }
 
@@ -116,31 +133,42 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (DEFAULT_TEACHER != null)
-                {
-                    if (_DEFAULT_TEACHER_SF == null)
-                    {
-                        _DEFAULT_TEACHER_SF = Context.SF.FindBySFKEY(DEFAULT_TEACHER);
-                    }
-                    return _DEFAULT_TEACHER_SF;
-                }
-                else
+                if (DEFAULT_TEACHER == null)
                 {
                     return null;
                 }
+                if (Cache_DEFAULT_TEACHER_SF == null)
+                {
+                    Cache_DEFAULT_TEACHER_SF = Context.SF.FindBySFKEY(DEFAULT_TEACHER);
+                }
+
+                return Cache_DEFAULT_TEACHER_SF;
             }
         }
 
+        #endregion
+
+        #region Foreign Navigation Properties
+
         /// <summary>
-        /// SSHG (Specialist Subjects per Home Group) related entities by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
+        /// SSHG (Specialist Subjects per Home Group) related entities by [SS.SSKEY]-&gt;[SSHG.SUBJECT]
+        /// Subject code
         /// </summary>
-        public IReadOnlyList<SSHG> SSHG_SUBJECT
+        public IReadOnlyList<SSHG> SSKEY_SSHG_SUBJECT
         {
             get
             {
-                return Context.SS.FindSSHGBySUBJECT(SSKEY);
+                if (Cache_SSKEY_SSHG_SUBJECT == null &&
+                    !Context.SSHG.TryFindBySUBJECT(SSKEY, out Cache_SSKEY_SSHG_SUBJECT))
+                {
+                    Cache_SSKEY_SSHG_SUBJECT = new List<SSHG>().AsReadOnly();
+                }
+
+                return Cache_SSKEY_SSHG_SUBJECT;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

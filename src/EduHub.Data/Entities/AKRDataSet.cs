@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Asset Release Types Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class AKRDataSet : SetBase<AKR>
     {
-        private Lazy<Dictionary<string, AKR>> AKRKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<AR>>> AR_RELEASE_TYPEForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ARF>>> ARF_RELEASE_TYPEForeignIndex;
-
-        internal AKRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            AKRKEYIndex = new Lazy<Dictionary<string, AKR>>(() => this.ToDictionary(e => e.AKRKEY));
-
-            AR_RELEASE_TYPEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<AR>>>(() =>
-                    Context.AR
-                          .Where(e => e.RELEASE_TYPE != null)
-                          .GroupBy(e => e.RELEASE_TYPE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<AR>)g.ToList()
-                          .AsReadOnly()));
-
-            ARF_RELEASE_TYPEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ARF>>>(() =>
-                    Context.ARF
-                          .Where(e => e.RELEASE_TYPE != null)
-                          .GroupBy(e => e.RELEASE_TYPE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ARF>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "AKR"; } }
 
-        /// <summary>
-        /// Find AKR by AKRKEY key field
-        /// </summary>
-        /// <param name="Key">AKRKEY value used to find AKR</param>
-        /// <returns>Related AKR entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">AKRKEY value didn't match any AKR entities</exception>
-        public AKR FindByAKRKEY(string Key)
+        internal AKRDataSet(EduHubContext Context)
+            : base(Context)
         {
-            AKR result;
-            if (AKRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_AKRKEY = new Lazy<Dictionary<string, AKR>>(() => this.ToDictionary(i => i.AKRKEY));
         }
-
-        /// <summary>
-        /// Attempt to find AKR by AKRKEY key field
-        /// </summary>
-        /// <param name="Key">AKRKEY value used to find AKR</param>
-        /// <param name="Value">Related AKR entity</param>
-        /// <returns>True if the AKR entity is found</returns>
-        public bool TryFindByAKRKEY(string Key, out AKR Value)
-        {
-            return AKRKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find AKR by AKRKEY key field
-        /// </summary>
-        /// <param name="Key">AKRKEY value used to find AKR</param>
-        /// <returns>Related AKR entity, or null if not found</returns>
-        public AKR TryFindByAKRKEY(string Key)
-        {
-            AKR result;
-            if (AKRKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all AR (Assets) entities by [AR.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
-        /// </summary>
-        /// <param name="AKRKEY">AKRKEY value used to find AR entities</param>
-        /// <returns>A list of related AR entities</returns>
-        public IReadOnlyList<AR> FindARByRELEASE_TYPE(string AKRKEY)
-        {
-            IReadOnlyList<AR> result;
-            if (AR_RELEASE_TYPEForeignIndex.Value.TryGetValue(AKRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<AR>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all AR entities by [AR.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
-        /// </summary>
-        /// <param name="AKRKEY">AKRKEY value used to find AR entities</param>
-        /// <param name="Value">A list of related AR entities</param>
-        /// <returns>True if any AR entities are found</returns>
-        public bool TryFindARByRELEASE_TYPE(string AKRKEY, out IReadOnlyList<AR> Value)
-        {
-            return AR_RELEASE_TYPEForeignIndex.Value.TryGetValue(AKRKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ARF (Asset Financial Transactions) entities by [ARF.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
-        /// </summary>
-        /// <param name="AKRKEY">AKRKEY value used to find ARF entities</param>
-        /// <returns>A list of related ARF entities</returns>
-        public IReadOnlyList<ARF> FindARFByRELEASE_TYPE(string AKRKEY)
-        {
-            IReadOnlyList<ARF> result;
-            if (ARF_RELEASE_TYPEForeignIndex.Value.TryGetValue(AKRKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ARF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ARF entities by [ARF.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
-        /// </summary>
-        /// <param name="AKRKEY">AKRKEY value used to find ARF entities</param>
-        /// <param name="Value">A list of related ARF entities</param>
-        /// <returns>True if any ARF entities are found</returns>
-        public bool TryFindARFByRELEASE_TYPE(string AKRKEY, out IReadOnlyList<ARF> Value)
-        {
-            return ARF_RELEASE_TYPEForeignIndex.Value.TryGetValue(AKRKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="AKR" />
@@ -184,5 +56,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, AKR>> Index_AKRKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find AKR by AKRKEY field
+        /// </summary>
+        /// <param name="AKRKEY">AKRKEY value used to find AKR</param>
+        /// <returns>Related AKR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKR FindByAKRKEY(string AKRKEY)
+        {
+            return Index_AKRKEY.Value[AKRKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find AKR by AKRKEY field
+        /// </summary>
+        /// <param name="AKRKEY">AKRKEY value used to find AKR</param>
+        /// <param name="Value">Related AKR entity</param>
+        /// <returns>True if the related AKR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAKRKEY(string AKRKEY, out AKR Value)
+        {
+            return Index_AKRKEY.Value.TryGetValue(AKRKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AKR by AKRKEY field
+        /// </summary>
+        /// <param name="AKRKEY">AKRKEY value used to find AKR</param>
+        /// <returns>Related AKR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public AKR TryFindByAKRKEY(string AKRKEY)
+        {
+            AKR value;
+            if (Index_AKRKEY.Value.TryGetValue(AKRKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

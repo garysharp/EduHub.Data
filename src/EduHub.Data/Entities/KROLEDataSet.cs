@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Role Codes Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KROLEDataSet : SetBase<KROLE>
     {
-        private Lazy<Dictionary<string, KROLE>> KROLEKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<KREPORT>>> KREPORT_ROLE_CODEForeignIndex;
-
-        internal KROLEDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KROLEKEYIndex = new Lazy<Dictionary<string, KROLE>>(() => this.ToDictionary(e => e.KROLEKEY));
-
-            KREPORT_ROLE_CODEForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<KREPORT>>>(() =>
-                    Context.KREPORT
-                          .Where(e => e.ROLE_CODE != null)
-                          .GroupBy(e => e.ROLE_CODE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KREPORT>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KROLE"; } }
 
-        /// <summary>
-        /// Find KROLE by KROLEKEY key field
-        /// </summary>
-        /// <param name="Key">KROLEKEY value used to find KROLE</param>
-        /// <returns>Related KROLE entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KROLEKEY value didn't match any KROLE entities</exception>
-        public KROLE FindByKROLEKEY(string Key)
+        internal KROLEDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KROLE result;
-            if (KROLEKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KROLEKEY = new Lazy<Dictionary<string, KROLE>>(() => this.ToDictionary(i => i.KROLEKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KROLE by KROLEKEY key field
-        /// </summary>
-        /// <param name="Key">KROLEKEY value used to find KROLE</param>
-        /// <param name="Value">Related KROLE entity</param>
-        /// <returns>True if the KROLE entity is found</returns>
-        public bool TryFindByKROLEKEY(string Key, out KROLE Value)
-        {
-            return KROLEKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KROLE by KROLEKEY key field
-        /// </summary>
-        /// <param name="Key">KROLEKEY value used to find KROLE</param>
-        /// <returns>Related KROLE entity, or null if not found</returns>
-        public KROLE TryFindByKROLEKEY(string Key)
-        {
-            KROLE result;
-            if (KROLEKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all KREPORT (Reports for emailing) entities by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
-        /// </summary>
-        /// <param name="KROLEKEY">KROLEKEY value used to find KREPORT entities</param>
-        /// <returns>A list of related KREPORT entities</returns>
-        public IReadOnlyList<KREPORT> FindKREPORTByROLE_CODE(string KROLEKEY)
-        {
-            IReadOnlyList<KREPORT> result;
-            if (KREPORT_ROLE_CODEForeignIndex.Value.TryGetValue(KROLEKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<KREPORT>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all KREPORT entities by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
-        /// </summary>
-        /// <param name="KROLEKEY">KROLEKEY value used to find KREPORT entities</param>
-        /// <param name="Value">A list of related KREPORT entities</param>
-        /// <returns>True if any KREPORT entities are found</returns>
-        public bool TryFindKREPORTByROLE_CODE(string KROLEKEY, out IReadOnlyList<KREPORT> Value)
-        {
-            return KREPORT_ROLE_CODEForeignIndex.Value.TryGetValue(KROLEKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KROLE" />
@@ -149,5 +59,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KROLE>> Index_KROLEKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KROLE by KROLEKEY field
+        /// </summary>
+        /// <param name="KROLEKEY">KROLEKEY value used to find KROLE</param>
+        /// <returns>Related KROLE entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KROLE FindByKROLEKEY(string KROLEKEY)
+        {
+            return Index_KROLEKEY.Value[KROLEKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KROLE by KROLEKEY field
+        /// </summary>
+        /// <param name="KROLEKEY">KROLEKEY value used to find KROLE</param>
+        /// <param name="Value">Related KROLE entity</param>
+        /// <returns>True if the related KROLE entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKROLEKEY(string KROLEKEY, out KROLE Value)
+        {
+            return Index_KROLEKEY.Value.TryGetValue(KROLEKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KROLE by KROLEKEY field
+        /// </summary>
+        /// <param name="KROLEKEY">KROLEKEY value used to find KROLE</param>
+        /// <returns>Related KROLE entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KROLE TryFindByKROLEKEY(string KROLEKEY)
+        {
+            KROLE value;
+            if (Index_KROLEKEY.Value.TryGetValue(KROLEKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

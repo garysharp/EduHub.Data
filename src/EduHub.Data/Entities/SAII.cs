@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,58 +7,73 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Accident Involvement Injuries
     /// </summary>
-    public partial class SAII : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SAII : EntityBase
     {
-#region Navigation Property Cache
-        private SAI _INVOLVEMENTID_SAI;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SAI Cache_INVOLVEMENTID_SAI;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Sequence no of accident involvement
         /// </summary>
-        public int? INVOLVEMENTID { get; internal set; }
+        public int INVOLVEMENTID { get; internal set; }
+
         /// <summary>
         /// Code identifying Injury Severity
         /// </summary>
         public short? SEVERITY { get; internal set; }
+
         /// <summary>
         /// Code identifying Serious Reportable Injury
         /// </summary>
         public short? SRI_TYPE { get; internal set; }
+
         /// <summary>
         /// Code identifying Nature of Injury
         /// </summary>
         public short? NATURE { get; internal set; }
+
         /// <summary>
         /// Notes if NATURE = Other
         /// [Memo]
         /// </summary>
         public string OTHER_INFO { get; internal set; }
+
         /// <summary>
         /// Code identifying Body Location of injury
         /// </summary>
         public short? LOCATION { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SAI (Accident Involvements/Sickbay Visits) related entity by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
@@ -67,20 +83,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (INVOLVEMENTID.HasValue)
+                if (Cache_INVOLVEMENTID_SAI == null)
                 {
-                    if (_INVOLVEMENTID_SAI == null)
-                    {
-                        _INVOLVEMENTID_SAI = Context.SAI.FindBySAIKEY(INVOLVEMENTID.Value);
-                    }
-                    return _INVOLVEMENTID_SAI;
+                    Cache_INVOLVEMENTID_SAI = Context.SAI.FindBySAIKEY(INVOLVEMENTID);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_INVOLVEMENTID_SAI;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

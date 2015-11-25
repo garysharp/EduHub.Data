@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Absence by Cohort Aggregations Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SADAGDataSet : SetBase<SADAG>
     {
-        private Lazy<Dictionary<int, SADAG>> SADAG_IDIndex;
-
-
-        internal SADAGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SADAG_IDIndex = new Lazy<Dictionary<int, SADAG>>(() => this.ToDictionary(e => e.SADAG_ID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SADAG"; } }
 
-        /// <summary>
-        /// Find SADAG by SADAG_ID key field
-        /// </summary>
-        /// <param name="Key">SADAG_ID value used to find SADAG</param>
-        /// <returns>Related SADAG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SADAG_ID value didn't match any SADAG entities</exception>
-        public SADAG FindBySADAG_ID(int Key)
+        internal SADAGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SADAG result;
-            if (SADAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SADAG_ID = new Lazy<Dictionary<int, SADAG>>(() => this.ToDictionary(i => i.SADAG_ID));
         }
-
-        /// <summary>
-        /// Attempt to find SADAG by SADAG_ID key field
-        /// </summary>
-        /// <param name="Key">SADAG_ID value used to find SADAG</param>
-        /// <param name="Value">Related SADAG entity</param>
-        /// <returns>True if the SADAG entity is found</returns>
-        public bool TryFindBySADAG_ID(int Key, out SADAG Value)
-        {
-            return SADAG_IDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SADAG by SADAG_ID key field
-        /// </summary>
-        /// <param name="Key">SADAG_ID value used to find SADAG</param>
-        /// <returns>Related SADAG entity, or null if not found</returns>
-        public SADAG TryFindBySADAG_ID(int Key)
-        {
-            SADAG result;
-            if (SADAG_IDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SADAG" />
@@ -120,5 +68,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SADAG>> Index_SADAG_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SADAG by SADAG_ID field
+        /// </summary>
+        /// <param name="SADAG_ID">SADAG_ID value used to find SADAG</param>
+        /// <returns>Related SADAG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADAG FindBySADAG_ID(int SADAG_ID)
+        {
+            return Index_SADAG_ID.Value[SADAG_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find SADAG by SADAG_ID field
+        /// </summary>
+        /// <param name="SADAG_ID">SADAG_ID value used to find SADAG</param>
+        /// <param name="Value">Related SADAG entity</param>
+        /// <returns>True if the related SADAG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySADAG_ID(int SADAG_ID, out SADAG Value)
+        {
+            return Index_SADAG_ID.Value.TryGetValue(SADAG_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SADAG by SADAG_ID field
+        /// </summary>
+        /// <param name="SADAG_ID">SADAG_ID value used to find SADAG</param>
+        /// <returns>Related SADAG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SADAG TryFindBySADAG_ID(int SADAG_ID)
+        {
+            SADAG value;
+            if (Index_SADAG_ID.Value.TryGetValue(SADAG_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

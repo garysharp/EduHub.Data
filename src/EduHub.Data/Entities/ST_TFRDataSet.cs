@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,23 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// ST Transfer Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class ST_TFRDataSet : SetBase<ST_TFR>
     {
-
-
-        internal ST_TFRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "ST_TFR"; } }
 
+        internal ST_TFRDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<ST_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
+            Index_TID = new Lazy<Dictionary<int, ST_TFR>>(() => this.ToDictionary(i => i.TID));
+            Index_ST_TRANS_ID = new Lazy<NullDictionary<string, ST_TFR>>(() => this.ToNullDictionary(i => i.ST_TRANS_ID));
+            Index_SCHOOL_YEAR_NEW = new Lazy<NullDictionary<string, IReadOnlyList<ST_TFR>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR_NEW));
+            Index_HOME_GROUP_NEW = new Lazy<NullDictionary<string, IReadOnlyList<ST_TFR>>>(() => this.ToGroupedNullDictionary(i => i.HOME_GROUP_NEW));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="ST_TFR" />
@@ -36,7 +38,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "ST_TRANS_ID":
                         mapper[i] = (e, v) => e.ST_TRANS_ID = v;
@@ -361,5 +363,230 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<ST_TFR>>> Index_ORIG_SCHOOL;
+        private Lazy<Dictionary<int, ST_TFR>> Index_TID;
+        private Lazy<NullDictionary<string, ST_TFR>> Index_ST_TRANS_ID;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST_TFR>>> Index_SCHOOL_YEAR_NEW;
+        private Lazy<NullDictionary<string, IReadOnlyList<ST_TFR>>> Index_HOME_GROUP_NEW;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find ST_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> FindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            return Index_ORIG_SCHOOL.Value[ORIG_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find ST_TFR</param>
+        /// <param name="Value">List of related ST_TFR entities</param>
+        /// <returns>True if the list of related ST_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIG_SCHOOL(string ORIG_SCHOOL, out IReadOnlyList<ST_TFR> Value)
+        {
+            return Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> TryFindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            IReadOnlyList<ST_TFR> value;
+            if (Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFR</param>
+        /// <returns>Related ST_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFR FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFR</param>
+        /// <param name="Value">Related ST_TFR entity</param>
+        /// <returns>True if the related ST_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out ST_TFR Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find ST_TFR</param>
+        /// <returns>Related ST_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFR TryFindByTID(int TID)
+        {
+            ST_TFR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST_TFR by ST_TRANS_ID field
+        /// </summary>
+        /// <param name="ST_TRANS_ID">ST_TRANS_ID value used to find ST_TFR</param>
+        /// <returns>Related ST_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFR FindByST_TRANS_ID(string ST_TRANS_ID)
+        {
+            return Index_ST_TRANS_ID.Value[ST_TRANS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by ST_TRANS_ID field
+        /// </summary>
+        /// <param name="ST_TRANS_ID">ST_TRANS_ID value used to find ST_TFR</param>
+        /// <param name="Value">Related ST_TFR entity</param>
+        /// <returns>True if the related ST_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByST_TRANS_ID(string ST_TRANS_ID, out ST_TFR Value)
+        {
+            return Index_ST_TRANS_ID.Value.TryGetValue(ST_TRANS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by ST_TRANS_ID field
+        /// </summary>
+        /// <param name="ST_TRANS_ID">ST_TRANS_ID value used to find ST_TFR</param>
+        /// <returns>Related ST_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public ST_TFR TryFindByST_TRANS_ID(string ST_TRANS_ID)
+        {
+            ST_TFR value;
+            if (Index_ST_TRANS_ID.Value.TryGetValue(ST_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST_TFR by SCHOOL_YEAR_NEW field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR_NEW">SCHOOL_YEAR_NEW value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> FindBySCHOOL_YEAR_NEW(string SCHOOL_YEAR_NEW)
+        {
+            return Index_SCHOOL_YEAR_NEW.Value[SCHOOL_YEAR_NEW];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by SCHOOL_YEAR_NEW field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR_NEW">SCHOOL_YEAR_NEW value used to find ST_TFR</param>
+        /// <param name="Value">List of related ST_TFR entities</param>
+        /// <returns>True if the list of related ST_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCHOOL_YEAR_NEW(string SCHOOL_YEAR_NEW, out IReadOnlyList<ST_TFR> Value)
+        {
+            return Index_SCHOOL_YEAR_NEW.Value.TryGetValue(SCHOOL_YEAR_NEW, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by SCHOOL_YEAR_NEW field
+        /// </summary>
+        /// <param name="SCHOOL_YEAR_NEW">SCHOOL_YEAR_NEW value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> TryFindBySCHOOL_YEAR_NEW(string SCHOOL_YEAR_NEW)
+        {
+            IReadOnlyList<ST_TFR> value;
+            if (Index_SCHOOL_YEAR_NEW.Value.TryGetValue(SCHOOL_YEAR_NEW, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find ST_TFR by HOME_GROUP_NEW field
+        /// </summary>
+        /// <param name="HOME_GROUP_NEW">HOME_GROUP_NEW value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> FindByHOME_GROUP_NEW(string HOME_GROUP_NEW)
+        {
+            return Index_HOME_GROUP_NEW.Value[HOME_GROUP_NEW];
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by HOME_GROUP_NEW field
+        /// </summary>
+        /// <param name="HOME_GROUP_NEW">HOME_GROUP_NEW value used to find ST_TFR</param>
+        /// <param name="Value">List of related ST_TFR entities</param>
+        /// <returns>True if the list of related ST_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByHOME_GROUP_NEW(string HOME_GROUP_NEW, out IReadOnlyList<ST_TFR> Value)
+        {
+            return Index_HOME_GROUP_NEW.Value.TryGetValue(HOME_GROUP_NEW, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find ST_TFR by HOME_GROUP_NEW field
+        /// </summary>
+        /// <param name="HOME_GROUP_NEW">HOME_GROUP_NEW value used to find ST_TFR</param>
+        /// <returns>List of related ST_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<ST_TFR> TryFindByHOME_GROUP_NEW(string HOME_GROUP_NEW)
+        {
+            IReadOnlyList<ST_TFR> value;
+            if (Index_HOME_GROUP_NEW.Value.TryGetValue(HOME_GROUP_NEW, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

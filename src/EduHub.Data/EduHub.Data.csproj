@@ -141,20 +141,20 @@
     <Compile Include="Entities\CRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRHelpers.cs" />
     <Compile Include="Entities\CRF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\CRFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\CRFHelpers.cs" />
     <Compile Include="Entities\CRFTC.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\CRFTCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CRHelpers.cs" />
+    <Compile Include="Entities\CRFHelpers.cs" />
     <Compile Include="Entities\DF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -167,13 +167,13 @@
     <Compile Include="Entities\DFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DFHelpers.cs" />
     <Compile Include="Entities\DFF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\DFFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\DFHelpers.cs" />
     <Compile Include="Entities\DFHI.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -271,8 +271,6 @@
     <Compile Include="Entities\GLDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\GLFHelpers.cs" />
-    <Compile Include="Entities\GLHelpers.cs" />
     <Compile Include="Entities\GLF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -291,12 +289,14 @@
     <Compile Include="Entities\GLFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\GLFHelpers.cs" />
     <Compile Include="Entities\GLFPREV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\GLFPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\GLHelpers.cs" />
     <Compile Include="Entities\GLPREV.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -634,12 +634,6 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KSFDataSet.cs">
-      <DependentUpon>EntityGenerator.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\KSI.cs">
-      <DependentUpon>EntityGenerator.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entities\KSIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KSQ.cs">
@@ -1092,6 +1086,7 @@
     <Compile Include="Entities\SCIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SCIDataSetHelpers.cs" />
     <Compile Include="Entities\SCIHelpers.cs" />
     <Compile Include="Entities\SCL.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
@@ -1601,6 +1596,7 @@
     <Compile Include="Entities\THTQDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\THTQHelpers.cs" />
     <Compile Include="Entities\TRPMODE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1686,6 +1682,8 @@
     <Compile Include="Entities\UM_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="FrameworkExtensions.cs" />
+    <Compile Include="NullDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1708,6 +1706,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CASES21v56 Schema.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CASES21v56 Schema v2.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

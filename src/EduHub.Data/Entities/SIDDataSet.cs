@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Disciplinary Incidents Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SIDDataSet : SetBase<SID>
     {
-        private Lazy<Dictionary<int, SID>> SIDKEYIndex;
-
-        private Lazy<Dictionary<int, IReadOnlyList<SDP>>> SDP_INCIDENT_KEYForeignIndex;
-        private Lazy<Dictionary<int, IReadOnlyList<SIDV>>> SIDV_INCIDENT_KEYForeignIndex;
-
-        internal SIDDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SIDKEYIndex = new Lazy<Dictionary<int, SID>>(() => this.ToDictionary(e => e.SIDKEY));
-
-            SDP_INCIDENT_KEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SDP>>>(() =>
-                    Context.SDP
-                          .Where(e => e.INCIDENT_KEY != null)
-                          .GroupBy(e => e.INCIDENT_KEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SDP>)g.ToList()
-                          .AsReadOnly()));
-
-            SIDV_INCIDENT_KEYForeignIndex =
-                new Lazy<Dictionary<int, IReadOnlyList<SIDV>>>(() =>
-                    Context.SIDV
-                          .Where(e => e.INCIDENT_KEY != null)
-                          .GroupBy(e => e.INCIDENT_KEY.Value)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SIDV>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SID"; } }
 
-        /// <summary>
-        /// Find SID by SIDKEY key field
-        /// </summary>
-        /// <param name="Key">SIDKEY value used to find SID</param>
-        /// <returns>Related SID entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SIDKEY value didn't match any SID entities</exception>
-        public SID FindBySIDKEY(int Key)
+        internal SIDDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SID result;
-            if (SIDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SIDKEY = new Lazy<Dictionary<int, SID>>(() => this.ToDictionary(i => i.SIDKEY));
+            Index_INCIDENT_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<SID>>>(() => this.ToGroupedNullDictionary(i => i.INCIDENT_TYPE));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SID>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
         }
-
-        /// <summary>
-        /// Attempt to find SID by SIDKEY key field
-        /// </summary>
-        /// <param name="Key">SIDKEY value used to find SID</param>
-        /// <param name="Value">Related SID entity</param>
-        /// <returns>True if the SID entity is found</returns>
-        public bool TryFindBySIDKEY(int Key, out SID Value)
-        {
-            return SIDKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SID by SIDKEY key field
-        /// </summary>
-        /// <param name="Key">SIDKEY value used to find SID</param>
-        /// <returns>Related SID entity, or null if not found</returns>
-        public SID TryFindBySIDKEY(int Key)
-        {
-            SID result;
-            if (SIDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SDP (Incident Instigators) entities by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
-        /// </summary>
-        /// <param name="SIDKEY">SIDKEY value used to find SDP entities</param>
-        /// <returns>A list of related SDP entities</returns>
-        public IReadOnlyList<SDP> FindSDPByINCIDENT_KEY(int SIDKEY)
-        {
-            IReadOnlyList<SDP> result;
-            if (SDP_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SDP>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SDP entities by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
-        /// </summary>
-        /// <param name="SIDKEY">SIDKEY value used to find SDP entities</param>
-        /// <param name="Value">A list of related SDP entities</param>
-        /// <returns>True if any SDP entities are found</returns>
-        public bool TryFindSDPByINCIDENT_KEY(int SIDKEY, out IReadOnlyList<SDP> Value)
-        {
-            return SDP_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SIDV (Incident Victims/Recipients) entities by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
-        /// </summary>
-        /// <param name="SIDKEY">SIDKEY value used to find SIDV entities</param>
-        /// <returns>A list of related SIDV entities</returns>
-        public IReadOnlyList<SIDV> FindSIDVByINCIDENT_KEY(int SIDKEY)
-        {
-            IReadOnlyList<SIDV> result;
-            if (SIDV_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SIDV>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SIDV entities by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
-        /// </summary>
-        /// <param name="SIDKEY">SIDKEY value used to find SIDV entities</param>
-        /// <param name="Value">A list of related SIDV entities</param>
-        /// <returns>True if any SIDV entities are found</returns>
-        public bool TryFindSIDVByINCIDENT_KEY(int SIDKEY, out IReadOnlyList<SIDV> Value)
-        {
-            return SIDV_INCIDENT_KEYForeignIndex.Value.TryGetValue(SIDKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SID" />
@@ -211,5 +85,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, SID>> Index_SIDKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SID>>> Index_INCIDENT_TYPE;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SID>>> Index_CAMPUS;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SID by SIDKEY field
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SID</param>
+        /// <returns>Related SID entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SID FindBySIDKEY(int SIDKEY)
+        {
+            return Index_SIDKEY.Value[SIDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SID by SIDKEY field
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SID</param>
+        /// <param name="Value">Related SID entity</param>
+        /// <returns>True if the related SID entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySIDKEY(int SIDKEY, out SID Value)
+        {
+            return Index_SIDKEY.Value.TryGetValue(SIDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SID by SIDKEY field
+        /// </summary>
+        /// <param name="SIDKEY">SIDKEY value used to find SID</param>
+        /// <returns>Related SID entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SID TryFindBySIDKEY(int SIDKEY)
+        {
+            SID value;
+            if (Index_SIDKEY.Value.TryGetValue(SIDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SID by INCIDENT_TYPE field
+        /// </summary>
+        /// <param name="INCIDENT_TYPE">INCIDENT_TYPE value used to find SID</param>
+        /// <returns>List of related SID entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SID> FindByINCIDENT_TYPE(string INCIDENT_TYPE)
+        {
+            return Index_INCIDENT_TYPE.Value[INCIDENT_TYPE];
+        }
+
+        /// <summary>
+        /// Attempt to find SID by INCIDENT_TYPE field
+        /// </summary>
+        /// <param name="INCIDENT_TYPE">INCIDENT_TYPE value used to find SID</param>
+        /// <param name="Value">List of related SID entities</param>
+        /// <returns>True if the list of related SID entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINCIDENT_TYPE(string INCIDENT_TYPE, out IReadOnlyList<SID> Value)
+        {
+            return Index_INCIDENT_TYPE.Value.TryGetValue(INCIDENT_TYPE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SID by INCIDENT_TYPE field
+        /// </summary>
+        /// <param name="INCIDENT_TYPE">INCIDENT_TYPE value used to find SID</param>
+        /// <returns>List of related SID entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SID> TryFindByINCIDENT_TYPE(string INCIDENT_TYPE)
+        {
+            IReadOnlyList<SID> value;
+            if (Index_INCIDENT_TYPE.Value.TryGetValue(INCIDENT_TYPE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SID by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SID</param>
+        /// <returns>List of related SID entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SID> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find SID by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SID</param>
+        /// <param name="Value">List of related SID entities</param>
+        /// <returns>True if the list of related SID entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SID> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SID by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SID</param>
+        /// <returns>List of related SID entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SID> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<SID> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

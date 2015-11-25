@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Temp Receipts Import Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KBPTDataSet : SetBase<KBPT>
     {
-        private Lazy<Dictionary<int, KBPT>> TIDIndex;
-
-
-        internal KBPTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, KBPT>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KBPT"; } }
 
-        /// <summary>
-        /// Find KBPT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <returns>Related KBPT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KBPT entities</exception>
-        public KBPT FindByTID(int Key)
+        internal KBPTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KBPT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, KBPT>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find KBPT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <param name="Value">Related KBPT entity</param>
-        /// <returns>True if the KBPT entity is found</returns>
-        public bool TryFindByTID(int Key, out KBPT Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KBPT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBPT</param>
-        /// <returns>Related KBPT entity, or null if not found</returns>
-        public KBPT TryFindByTID(int Key)
-        {
-            KBPT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KBPT" />
@@ -135,5 +83,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KBPT>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KBPT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBPT</param>
+        /// <returns>Related KBPT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBPT FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KBPT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBPT</param>
+        /// <param name="Value">Related KBPT entity</param>
+        /// <returns>True if the related KBPT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KBPT Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KBPT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBPT</param>
+        /// <returns>Related KBPT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBPT TryFindByTID(int TID)
+        {
+            KBPT value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

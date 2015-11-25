@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,348 +7,426 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Courses
     /// </summary>
-    public partial class SC : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SC : EntityBase
     {
-#region Navigation Property Cache
-        private SU _SUBJ01_SU;
-        private SU _SUBJ02_SU;
-        private SU _SUBJ03_SU;
-        private SU _SUBJ04_SU;
-        private SU _SUBJ05_SU;
-        private SU _SUBJ06_SU;
-        private SU _SUBJ07_SU;
-        private SU _SUBJ08_SU;
-        private SU _SUBJ09_SU;
-        private SU _SUBJ10_SU;
-        private SU _SUBJ11_SU;
-        private SU _SUBJ12_SU;
-        private SU _SUBJ13_SU;
-        private SU _SUBJ14_SU;
-        private SU _SUBJ15_SU;
-        private SU _SUBJ16_SU;
-        private SU _SUBJ17_SU;
-        private SU _SUBJ18_SU;
-        private SU _SUBJ19_SU;
-        private SU _SUBJ20_SU;
-        private KCY _SUBJECT_ACADEMIC_YEAR_KCY;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SU Cache_SUBJ01_SU;
+        private SU Cache_SUBJ02_SU;
+        private SU Cache_SUBJ03_SU;
+        private SU Cache_SUBJ04_SU;
+        private SU Cache_SUBJ05_SU;
+        private SU Cache_SUBJ06_SU;
+        private SU Cache_SUBJ07_SU;
+        private SU Cache_SUBJ08_SU;
+        private SU Cache_SUBJ09_SU;
+        private SU Cache_SUBJ10_SU;
+        private SU Cache_SUBJ11_SU;
+        private SU Cache_SUBJ12_SU;
+        private SU Cache_SUBJ13_SU;
+        private SU Cache_SUBJ14_SU;
+        private SU Cache_SUBJ15_SU;
+        private SU Cache_SUBJ16_SU;
+        private SU Cache_SUBJ17_SU;
+        private SU Cache_SUBJ18_SU;
+        private SU Cache_SUBJ19_SU;
+        private SU Cache_SUBJ20_SU;
+        private KCY Cache_SUBJECT_ACADEMIC_YEAR_KCY;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<STMA> Cache_COURSE_STMA_CKEY;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Course code (same type as SU)
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string COURSE { get; internal set; }
+
         /// <summary>
         /// Course name
         /// [Alphanumeric (30)]
         /// </summary>
         public string NAME { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ01 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ02 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ03 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ04 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ05 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ06 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ07 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ08 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ09 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ10 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ11 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ12 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ13 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ14 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ15 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ16 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ17 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ18 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ19 { get; internal set; }
+
         /// <summary>
         /// Subject code
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ20 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS01 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS02 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS03 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS04 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS05 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS06 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS07 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS08 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS09 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS10 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS11 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS12 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS13 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS14 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS15 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS16 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS17 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS18 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS19 { get; internal set; }
+
         /// <summary>
         /// Class set
         /// </summary>
         public short? CLASS20 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK01 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK02 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK03 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK04 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK05 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK06 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK07 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK08 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK09 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK10 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK11 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK12 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK13 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK14 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK15 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK16 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK17 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK18 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK19 { get; internal set; }
+
         /// <summary>
         /// Whether a student is locked into the class
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string LOCK20 { get; internal set; }
+
         /// <summary>
         /// Default academic year of subjects
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SUBJECT_ACADEMIC_YEAR { get; internal set; }
+
         /// <summary>
         /// Default semester of subjsects
         /// </summary>
         public short? SEMESTER { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SU (Subjects) related entity by [SC.SUBJ01]-&gt;[SU.SUKEY]
@@ -357,18 +436,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ01 != null)
-                {
-                    if (_SUBJ01_SU == null)
-                    {
-                        _SUBJ01_SU = Context.SU.FindBySUKEY(SUBJ01);
-                    }
-                    return _SUBJ01_SU;
-                }
-                else
+                if (SUBJ01 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ01_SU == null)
+                {
+                    Cache_SUBJ01_SU = Context.SU.FindBySUKEY(SUBJ01);
+                }
+
+                return Cache_SUBJ01_SU;
             }
         }
 
@@ -380,18 +457,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ02 != null)
-                {
-                    if (_SUBJ02_SU == null)
-                    {
-                        _SUBJ02_SU = Context.SU.FindBySUKEY(SUBJ02);
-                    }
-                    return _SUBJ02_SU;
-                }
-                else
+                if (SUBJ02 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ02_SU == null)
+                {
+                    Cache_SUBJ02_SU = Context.SU.FindBySUKEY(SUBJ02);
+                }
+
+                return Cache_SUBJ02_SU;
             }
         }
 
@@ -403,18 +478,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ03 != null)
-                {
-                    if (_SUBJ03_SU == null)
-                    {
-                        _SUBJ03_SU = Context.SU.FindBySUKEY(SUBJ03);
-                    }
-                    return _SUBJ03_SU;
-                }
-                else
+                if (SUBJ03 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ03_SU == null)
+                {
+                    Cache_SUBJ03_SU = Context.SU.FindBySUKEY(SUBJ03);
+                }
+
+                return Cache_SUBJ03_SU;
             }
         }
 
@@ -426,18 +499,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ04 != null)
-                {
-                    if (_SUBJ04_SU == null)
-                    {
-                        _SUBJ04_SU = Context.SU.FindBySUKEY(SUBJ04);
-                    }
-                    return _SUBJ04_SU;
-                }
-                else
+                if (SUBJ04 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ04_SU == null)
+                {
+                    Cache_SUBJ04_SU = Context.SU.FindBySUKEY(SUBJ04);
+                }
+
+                return Cache_SUBJ04_SU;
             }
         }
 
@@ -449,18 +520,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ05 != null)
-                {
-                    if (_SUBJ05_SU == null)
-                    {
-                        _SUBJ05_SU = Context.SU.FindBySUKEY(SUBJ05);
-                    }
-                    return _SUBJ05_SU;
-                }
-                else
+                if (SUBJ05 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ05_SU == null)
+                {
+                    Cache_SUBJ05_SU = Context.SU.FindBySUKEY(SUBJ05);
+                }
+
+                return Cache_SUBJ05_SU;
             }
         }
 
@@ -472,18 +541,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ06 != null)
-                {
-                    if (_SUBJ06_SU == null)
-                    {
-                        _SUBJ06_SU = Context.SU.FindBySUKEY(SUBJ06);
-                    }
-                    return _SUBJ06_SU;
-                }
-                else
+                if (SUBJ06 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ06_SU == null)
+                {
+                    Cache_SUBJ06_SU = Context.SU.FindBySUKEY(SUBJ06);
+                }
+
+                return Cache_SUBJ06_SU;
             }
         }
 
@@ -495,18 +562,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ07 != null)
-                {
-                    if (_SUBJ07_SU == null)
-                    {
-                        _SUBJ07_SU = Context.SU.FindBySUKEY(SUBJ07);
-                    }
-                    return _SUBJ07_SU;
-                }
-                else
+                if (SUBJ07 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ07_SU == null)
+                {
+                    Cache_SUBJ07_SU = Context.SU.FindBySUKEY(SUBJ07);
+                }
+
+                return Cache_SUBJ07_SU;
             }
         }
 
@@ -518,18 +583,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ08 != null)
-                {
-                    if (_SUBJ08_SU == null)
-                    {
-                        _SUBJ08_SU = Context.SU.FindBySUKEY(SUBJ08);
-                    }
-                    return _SUBJ08_SU;
-                }
-                else
+                if (SUBJ08 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ08_SU == null)
+                {
+                    Cache_SUBJ08_SU = Context.SU.FindBySUKEY(SUBJ08);
+                }
+
+                return Cache_SUBJ08_SU;
             }
         }
 
@@ -541,18 +604,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ09 != null)
-                {
-                    if (_SUBJ09_SU == null)
-                    {
-                        _SUBJ09_SU = Context.SU.FindBySUKEY(SUBJ09);
-                    }
-                    return _SUBJ09_SU;
-                }
-                else
+                if (SUBJ09 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ09_SU == null)
+                {
+                    Cache_SUBJ09_SU = Context.SU.FindBySUKEY(SUBJ09);
+                }
+
+                return Cache_SUBJ09_SU;
             }
         }
 
@@ -564,18 +625,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ10 != null)
-                {
-                    if (_SUBJ10_SU == null)
-                    {
-                        _SUBJ10_SU = Context.SU.FindBySUKEY(SUBJ10);
-                    }
-                    return _SUBJ10_SU;
-                }
-                else
+                if (SUBJ10 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ10_SU == null)
+                {
+                    Cache_SUBJ10_SU = Context.SU.FindBySUKEY(SUBJ10);
+                }
+
+                return Cache_SUBJ10_SU;
             }
         }
 
@@ -587,18 +646,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ11 != null)
-                {
-                    if (_SUBJ11_SU == null)
-                    {
-                        _SUBJ11_SU = Context.SU.FindBySUKEY(SUBJ11);
-                    }
-                    return _SUBJ11_SU;
-                }
-                else
+                if (SUBJ11 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ11_SU == null)
+                {
+                    Cache_SUBJ11_SU = Context.SU.FindBySUKEY(SUBJ11);
+                }
+
+                return Cache_SUBJ11_SU;
             }
         }
 
@@ -610,18 +667,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ12 != null)
-                {
-                    if (_SUBJ12_SU == null)
-                    {
-                        _SUBJ12_SU = Context.SU.FindBySUKEY(SUBJ12);
-                    }
-                    return _SUBJ12_SU;
-                }
-                else
+                if (SUBJ12 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ12_SU == null)
+                {
+                    Cache_SUBJ12_SU = Context.SU.FindBySUKEY(SUBJ12);
+                }
+
+                return Cache_SUBJ12_SU;
             }
         }
 
@@ -633,18 +688,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ13 != null)
-                {
-                    if (_SUBJ13_SU == null)
-                    {
-                        _SUBJ13_SU = Context.SU.FindBySUKEY(SUBJ13);
-                    }
-                    return _SUBJ13_SU;
-                }
-                else
+                if (SUBJ13 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ13_SU == null)
+                {
+                    Cache_SUBJ13_SU = Context.SU.FindBySUKEY(SUBJ13);
+                }
+
+                return Cache_SUBJ13_SU;
             }
         }
 
@@ -656,18 +709,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ14 != null)
-                {
-                    if (_SUBJ14_SU == null)
-                    {
-                        _SUBJ14_SU = Context.SU.FindBySUKEY(SUBJ14);
-                    }
-                    return _SUBJ14_SU;
-                }
-                else
+                if (SUBJ14 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ14_SU == null)
+                {
+                    Cache_SUBJ14_SU = Context.SU.FindBySUKEY(SUBJ14);
+                }
+
+                return Cache_SUBJ14_SU;
             }
         }
 
@@ -679,18 +730,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ15 != null)
-                {
-                    if (_SUBJ15_SU == null)
-                    {
-                        _SUBJ15_SU = Context.SU.FindBySUKEY(SUBJ15);
-                    }
-                    return _SUBJ15_SU;
-                }
-                else
+                if (SUBJ15 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ15_SU == null)
+                {
+                    Cache_SUBJ15_SU = Context.SU.FindBySUKEY(SUBJ15);
+                }
+
+                return Cache_SUBJ15_SU;
             }
         }
 
@@ -702,18 +751,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ16 != null)
-                {
-                    if (_SUBJ16_SU == null)
-                    {
-                        _SUBJ16_SU = Context.SU.FindBySUKEY(SUBJ16);
-                    }
-                    return _SUBJ16_SU;
-                }
-                else
+                if (SUBJ16 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ16_SU == null)
+                {
+                    Cache_SUBJ16_SU = Context.SU.FindBySUKEY(SUBJ16);
+                }
+
+                return Cache_SUBJ16_SU;
             }
         }
 
@@ -725,18 +772,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ17 != null)
-                {
-                    if (_SUBJ17_SU == null)
-                    {
-                        _SUBJ17_SU = Context.SU.FindBySUKEY(SUBJ17);
-                    }
-                    return _SUBJ17_SU;
-                }
-                else
+                if (SUBJ17 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ17_SU == null)
+                {
+                    Cache_SUBJ17_SU = Context.SU.FindBySUKEY(SUBJ17);
+                }
+
+                return Cache_SUBJ17_SU;
             }
         }
 
@@ -748,18 +793,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ18 != null)
-                {
-                    if (_SUBJ18_SU == null)
-                    {
-                        _SUBJ18_SU = Context.SU.FindBySUKEY(SUBJ18);
-                    }
-                    return _SUBJ18_SU;
-                }
-                else
+                if (SUBJ18 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ18_SU == null)
+                {
+                    Cache_SUBJ18_SU = Context.SU.FindBySUKEY(SUBJ18);
+                }
+
+                return Cache_SUBJ18_SU;
             }
         }
 
@@ -771,18 +814,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ19 != null)
-                {
-                    if (_SUBJ19_SU == null)
-                    {
-                        _SUBJ19_SU = Context.SU.FindBySUKEY(SUBJ19);
-                    }
-                    return _SUBJ19_SU;
-                }
-                else
+                if (SUBJ19 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ19_SU == null)
+                {
+                    Cache_SUBJ19_SU = Context.SU.FindBySUKEY(SUBJ19);
+                }
+
+                return Cache_SUBJ19_SU;
             }
         }
 
@@ -794,18 +835,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ20 != null)
-                {
-                    if (_SUBJ20_SU == null)
-                    {
-                        _SUBJ20_SU = Context.SU.FindBySUKEY(SUBJ20);
-                    }
-                    return _SUBJ20_SU;
-                }
-                else
+                if (SUBJ20 == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ20_SU == null)
+                {
+                    Cache_SUBJ20_SU = Context.SU.FindBySUKEY(SUBJ20);
+                }
+
+                return Cache_SUBJ20_SU;
             }
         }
 
@@ -817,31 +856,42 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJECT_ACADEMIC_YEAR != null)
-                {
-                    if (_SUBJECT_ACADEMIC_YEAR_KCY == null)
-                    {
-                        _SUBJECT_ACADEMIC_YEAR_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR);
-                    }
-                    return _SUBJECT_ACADEMIC_YEAR_KCY;
-                }
-                else
+                if (SUBJECT_ACADEMIC_YEAR == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJECT_ACADEMIC_YEAR_KCY == null)
+                {
+                    Cache_SUBJECT_ACADEMIC_YEAR_KCY = Context.KCY.FindByKCYKEY(SUBJECT_ACADEMIC_YEAR);
+                }
+
+                return Cache_SUBJECT_ACADEMIC_YEAR_KCY;
             }
         }
 
+        #endregion
+
+        #region Foreign Navigation Properties
+
         /// <summary>
-        /// STMA (Subject Selections &amp; Marks) related entities by [STMA.CKEY]-&gt;[SC.COURSE]
+        /// STMA (Subject Selections &amp; Marks) related entities by [SC.COURSE]-&gt;[STMA.CKEY]
+        /// Course code (same type as SU)
         /// </summary>
-        public IReadOnlyList<STMA> STMA_CKEY
+        public IReadOnlyList<STMA> COURSE_STMA_CKEY
         {
             get
             {
-                return Context.SC.FindSTMAByCKEY(COURSE);
+                if (Cache_COURSE_STMA_CKEY == null &&
+                    !Context.STMA.TryFindByCKEY(COURSE, out Cache_COURSE_STMA_CKEY))
+                {
+                    Cache_COURSE_STMA_CKEY = new List<STMA>().AsReadOnly();
+                }
+
+                return Cache_COURSE_STMA_CKEY;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

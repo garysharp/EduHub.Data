@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,147 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Doctors Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCDDataSet : SetBase<KCD>
     {
-        private Lazy<Dictionary<string, KCD>> KCDKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<DF>>> DF_DOCTORForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_DOCTORForeignIndex;
-
-        internal KCDDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KCDKEYIndex = new Lazy<Dictionary<string, KCD>>(() => this.ToDictionary(e => e.KCDKEY));
-
-            DF_DOCTORForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<DF>>>(() =>
-                    Context.DF
-                          .Where(e => e.DOCTOR != null)
-                          .GroupBy(e => e.DOCTOR)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<DF>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_DOCTORForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.DOCTOR != null)
-                          .GroupBy(e => e.DOCTOR)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCD"; } }
 
-        /// <summary>
-        /// Find KCD by KCDKEY key field
-        /// </summary>
-        /// <param name="Key">KCDKEY value used to find KCD</param>
-        /// <returns>Related KCD entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KCDKEY value didn't match any KCD entities</exception>
-        public KCD FindByKCDKEY(string Key)
+        internal KCDDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCD result;
-            if (KCDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KCDKEY = new Lazy<Dictionary<string, KCD>>(() => this.ToDictionary(i => i.KCDKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<KCD>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
         }
-
-        /// <summary>
-        /// Attempt to find KCD by KCDKEY key field
-        /// </summary>
-        /// <param name="Key">KCDKEY value used to find KCD</param>
-        /// <param name="Value">Related KCD entity</param>
-        /// <returns>True if the KCD entity is found</returns>
-        public bool TryFindByKCDKEY(string Key, out KCD Value)
-        {
-            return KCDKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCD by KCDKEY key field
-        /// </summary>
-        /// <param name="Key">KCDKEY value used to find KCD</param>
-        /// <returns>Related KCD entity, or null if not found</returns>
-        public KCD TryFindByKCDKEY(string Key)
-        {
-            KCD result;
-            if (KCDKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all DF (Families) entities by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
-        /// </summary>
-        /// <param name="KCDKEY">KCDKEY value used to find DF entities</param>
-        /// <returns>A list of related DF entities</returns>
-        public IReadOnlyList<DF> FindDFByDOCTOR(string KCDKEY)
-        {
-            IReadOnlyList<DF> result;
-            if (DF_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<DF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all DF entities by [DF.DOCTOR]-&gt;[KCD.KCDKEY]
-        /// </summary>
-        /// <param name="KCDKEY">KCDKEY value used to find DF entities</param>
-        /// <param name="Value">A list of related DF entities</param>
-        /// <returns>True if any DF entities are found</returns>
-        public bool TryFindDFByDOCTOR(string KCDKEY, out IReadOnlyList<DF> Value)
-        {
-            return DF_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
-        /// </summary>
-        /// <param name="KCDKEY">KCDKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByDOCTOR(string KCDKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.DOCTOR]-&gt;[KCD.KCDKEY]
-        /// </summary>
-        /// <param name="KCDKEY">KCDKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByDOCTOR(string KCDKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_DOCTORForeignIndex.Value.TryGetValue(KCDKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCD" />
@@ -211,5 +84,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KCD>> Index_KCDKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<KCD>>> Index_LW_DATE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCD by KCDKEY field
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find KCD</param>
+        /// <returns>Related KCD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCD FindByKCDKEY(string KCDKEY)
+        {
+            return Index_KCDKEY.Value[KCDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KCD by KCDKEY field
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find KCD</param>
+        /// <param name="Value">Related KCD entity</param>
+        /// <returns>True if the related KCD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCDKEY(string KCDKEY, out KCD Value)
+        {
+            return Index_KCDKEY.Value.TryGetValue(KCDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCD by KCDKEY field
+        /// </summary>
+        /// <param name="KCDKEY">KCDKEY value used to find KCD</param>
+        /// <returns>Related KCD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCD TryFindByKCDKEY(string KCDKEY)
+        {
+            KCD value;
+            if (Index_KCDKEY.Value.TryGetValue(KCDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCD by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCD</param>
+        /// <returns>List of related KCD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCD> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find KCD by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCD</param>
+        /// <param name="Value">List of related KCD entities</param>
+        /// <returns>True if the list of related KCD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<KCD> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCD by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCD</param>
+        /// <returns>List of related KCD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCD> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<KCD> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

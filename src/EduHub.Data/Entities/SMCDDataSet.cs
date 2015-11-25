@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Student Medication Doses Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SMCDDataSet : SetBase<SMCD>
     {
-
-
-        internal SMCDDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SMCD"; } }
 
+        internal SMCDDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_SMCDKEY = new Lazy<Dictionary<int, IReadOnlyList<SMCD>>>(() => this.ToGroupedDictionary(i => i.SMCDKEY));
+            Index_TID = new Lazy<Dictionary<int, SMCD>>(() => this.ToDictionary(i => i.TID));
+            Index_STAFF = new Lazy<NullDictionary<string, IReadOnlyList<SMCD>>>(() => this.ToGroupedNullDictionary(i => i.STAFF));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SMCD" />
@@ -36,10 +36,10 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "SMCDKEY":
-                        mapper[i] = (e, v) => e.SMCDKEY = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.SMCDKEY = int.Parse(v);
                         break;
                     case "STAFF":
                         mapper[i] = (e, v) => e.STAFF = v;
@@ -76,5 +76,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, IReadOnlyList<SMCD>>> Index_SMCDKEY;
+        private Lazy<Dictionary<int, SMCD>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<SMCD>>> Index_STAFF;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SMCD by SMCDKEY field
+        /// </summary>
+        /// <param name="SMCDKEY">SMCDKEY value used to find SMCD</param>
+        /// <returns>List of related SMCD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMCD> FindBySMCDKEY(int SMCDKEY)
+        {
+            return Index_SMCDKEY.Value[SMCDKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by SMCDKEY field
+        /// </summary>
+        /// <param name="SMCDKEY">SMCDKEY value used to find SMCD</param>
+        /// <param name="Value">List of related SMCD entities</param>
+        /// <returns>True if the list of related SMCD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySMCDKEY(int SMCDKEY, out IReadOnlyList<SMCD> Value)
+        {
+            return Index_SMCDKEY.Value.TryGetValue(SMCDKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by SMCDKEY field
+        /// </summary>
+        /// <param name="SMCDKEY">SMCDKEY value used to find SMCD</param>
+        /// <returns>List of related SMCD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMCD> TryFindBySMCDKEY(int SMCDKEY)
+        {
+            IReadOnlyList<SMCD> value;
+            if (Index_SMCDKEY.Value.TryGetValue(SMCDKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <returns>Related SMCD entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMCD FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <param name="Value">Related SMCD entity</param>
+        /// <returns>True if the related SMCD entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SMCD Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SMCD</param>
+        /// <returns>Related SMCD entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SMCD TryFindByTID(int TID)
+        {
+            SMCD value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SMCD by STAFF field
+        /// </summary>
+        /// <param name="STAFF">STAFF value used to find SMCD</param>
+        /// <returns>List of related SMCD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMCD> FindBySTAFF(string STAFF)
+        {
+            return Index_STAFF.Value[STAFF];
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by STAFF field
+        /// </summary>
+        /// <param name="STAFF">STAFF value used to find SMCD</param>
+        /// <param name="Value">List of related SMCD entities</param>
+        /// <returns>True if the list of related SMCD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTAFF(string STAFF, out IReadOnlyList<SMCD> Value)
+        {
+            return Index_STAFF.Value.TryGetValue(STAFF, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SMCD by STAFF field
+        /// </summary>
+        /// <param name="STAFF">STAFF value used to find SMCD</param>
+        /// <returns>List of related SMCD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SMCD> TryFindBySTAFF(string STAFF)
+        {
+            IReadOnlyList<SMCD> value;
+            if (Index_STAFF.Value.TryGetValue(STAFF, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

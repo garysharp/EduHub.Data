@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,96 +7,136 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Home Groups
     /// </summary>
-    public partial class KGC : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class KGC : EntityBase
     {
-#region Navigation Property Cache
-        private SCI _CAMPUS_SCI;
-        private SF _TEACHER_SF;
-        private SF _TEACHER_B_SF;
-        private SM _ROOM_SM;
-        private KCY _MIN_AC_YR_KCY;
-        private KCY _MAX_AC_YR_KCY;
-        private KGC _NEXT_HG_KGC;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SCI Cache_CAMPUS_SCI;
+        private SF Cache_TEACHER_SF;
+        private SF Cache_TEACHER_B_SF;
+        private SM Cache_ROOM_SM;
+        private KCY Cache_MIN_AC_YR_KCY;
+        private KCY Cache_MAX_AC_YR_KCY;
+        private KGC Cache_NEXT_HG_KGC;
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        private IReadOnlyList<KGC> Cache_KGCKEY_KGC_NEXT_HG;
+        private IReadOnlyList<KGCHI> Cache_KGCKEY_KGCHI_KGCKEY;
+        private IReadOnlyList<SGHG> Cache_KGCKEY_SGHG_KGCLINK;
+        private IReadOnlyList<SS> Cache_KGCKEY_SS_FROM_HOMEGROUP;
+        private IReadOnlyList<SS> Cache_KGCKEY_SS_TO_HOMEGROUP;
+        private IReadOnlyList<SSHG> Cache_KGCKEY_SSHG_HOMEGROUP;
+        private IReadOnlyList<SSHG> Cache_KGCKEY_SSHG_TEACHING_HG;
+        private IReadOnlyList<ST> Cache_KGCKEY_ST_HOME_GROUP;
+        private IReadOnlyList<ST> Cache_KGCKEY_ST_NEXT_HG;
+        private IReadOnlyList<ST_TFR> Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW;
+        private IReadOnlyList<STRE> Cache_KGCKEY_STRE_ST_HOME_GROUP;
+        private IReadOnlyList<TE> Cache_KGCKEY_TE_START_FORM;
+        private IReadOnlyList<TE> Cache_KGCKEY_TE_END_FORM;
+        private IReadOnlyList<TXHG> Cache_KGCKEY_TXHG_HOME_GROUP;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// (Was FORM) Home Group code
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string KGCKEY { get; internal set; }
+
         /// <summary>
         /// Description
         /// [Alphanumeric (30)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
+
         /// <summary>
         /// Campus
         /// </summary>
         public int? CAMPUS { get; internal set; }
+
         /// <summary>
         /// Staff code of first or only home group teacher
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER { get; internal set; }
+
         /// <summary>
         /// Staff code of second home group teacher (if any)
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string TEACHER_B { get; internal set; }
+
         /// <summary>
         /// Active Home Group? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string ACTIVE { get; internal set; }
+
         /// <summary>
         /// Home group room
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string ROOM { get; internal set; }
+
         /// <summary>
         /// (Was FORM_SIZE) Home group population
         /// </summary>
         public short? HG_SIZE { get; internal set; }
+
         /// <summary>
         /// Number of male students in home group
         /// </summary>
         public short? MALES { get; internal set; }
+
         /// <summary>
         /// Number of female students in home group
         /// </summary>
         public short? FEMALES { get; internal set; }
+
         /// <summary>
         /// (Was AC_YR) Minimum year level covered by home group
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string MIN_AC_YR { get; internal set; }
+
         /// <summary>
         /// Maximum year level covered by home group
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string MAX_AC_YR { get; internal set; }
+
         /// <summary>
         /// Assumed next home group (eg 8.1 is the group to which 7.1 is promoted)
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
         public string NEXT_HG { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SCI (School Information) related entity by [KGC.CAMPUS]-&gt;[SCI.SCIKEY]
@@ -105,18 +146,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (CAMPUS.HasValue)
-                {
-                    if (_CAMPUS_SCI == null)
-                    {
-                        _CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
-                    }
-                    return _CAMPUS_SCI;
-                }
-                else
+                if (CAMPUS == null)
                 {
                     return null;
                 }
+                if (Cache_CAMPUS_SCI == null)
+                {
+                    Cache_CAMPUS_SCI = Context.SCI.FindBySCIKEY(CAMPUS.Value);
+                }
+
+                return Cache_CAMPUS_SCI;
             }
         }
 
@@ -128,18 +167,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER != null)
-                {
-                    if (_TEACHER_SF == null)
-                    {
-                        _TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
-                    }
-                    return _TEACHER_SF;
-                }
-                else
+                if (TEACHER == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_SF == null)
+                {
+                    Cache_TEACHER_SF = Context.SF.FindBySFKEY(TEACHER);
+                }
+
+                return Cache_TEACHER_SF;
             }
         }
 
@@ -151,18 +188,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (TEACHER_B != null)
-                {
-                    if (_TEACHER_B_SF == null)
-                    {
-                        _TEACHER_B_SF = Context.SF.FindBySFKEY(TEACHER_B);
-                    }
-                    return _TEACHER_B_SF;
-                }
-                else
+                if (TEACHER_B == null)
                 {
                     return null;
                 }
+                if (Cache_TEACHER_B_SF == null)
+                {
+                    Cache_TEACHER_B_SF = Context.SF.FindBySFKEY(TEACHER_B);
+                }
+
+                return Cache_TEACHER_B_SF;
             }
         }
 
@@ -174,18 +209,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (ROOM != null)
-                {
-                    if (_ROOM_SM == null)
-                    {
-                        _ROOM_SM = Context.SM.FindByROOM(ROOM);
-                    }
-                    return _ROOM_SM;
-                }
-                else
+                if (ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_ROOM_SM == null)
+                {
+                    Cache_ROOM_SM = Context.SM.FindByROOM(ROOM);
+                }
+
+                return Cache_ROOM_SM;
             }
         }
 
@@ -197,18 +230,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (MIN_AC_YR != null)
-                {
-                    if (_MIN_AC_YR_KCY == null)
-                    {
-                        _MIN_AC_YR_KCY = Context.KCY.FindByKCYKEY(MIN_AC_YR);
-                    }
-                    return _MIN_AC_YR_KCY;
-                }
-                else
+                if (MIN_AC_YR == null)
                 {
                     return null;
                 }
+                if (Cache_MIN_AC_YR_KCY == null)
+                {
+                    Cache_MIN_AC_YR_KCY = Context.KCY.FindByKCYKEY(MIN_AC_YR);
+                }
+
+                return Cache_MIN_AC_YR_KCY;
             }
         }
 
@@ -220,18 +251,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (MAX_AC_YR != null)
-                {
-                    if (_MAX_AC_YR_KCY == null)
-                    {
-                        _MAX_AC_YR_KCY = Context.KCY.FindByKCYKEY(MAX_AC_YR);
-                    }
-                    return _MAX_AC_YR_KCY;
-                }
-                else
+                if (MAX_AC_YR == null)
                 {
                     return null;
                 }
+                if (Cache_MAX_AC_YR_KCY == null)
+                {
+                    Cache_MAX_AC_YR_KCY = Context.KCY.FindByKCYKEY(MAX_AC_YR);
+                }
+
+                return Cache_MAX_AC_YR_KCY;
             }
         }
 
@@ -243,174 +272,276 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (NEXT_HG != null)
-                {
-                    if (_NEXT_HG_KGC == null)
-                    {
-                        _NEXT_HG_KGC = Context.KGC.FindByKGCKEY(NEXT_HG);
-                    }
-                    return _NEXT_HG_KGC;
-                }
-                else
+                if (NEXT_HG == null)
                 {
                     return null;
                 }
+                if (Cache_NEXT_HG_KGC == null)
+                {
+                    Cache_NEXT_HG_KGC = Context.KGC.FindByKGCKEY(NEXT_HG);
+                }
+
+                return Cache_NEXT_HG_KGC;
+            }
+        }
+
+        #endregion
+
+        #region Foreign Navigation Properties
+
+        /// <summary>
+        /// KGC (Home Groups) related entities by [KGC.KGCKEY]-&gt;[KGC.NEXT_HG]
+        /// (Was FORM) Home Group code
+        /// </summary>
+        public IReadOnlyList<KGC> KGCKEY_KGC_NEXT_HG
+        {
+            get
+            {
+                if (Cache_KGCKEY_KGC_NEXT_HG == null &&
+                    !Context.KGC.TryFindByNEXT_HG(KGCKEY, out Cache_KGCKEY_KGC_NEXT_HG))
+                {
+                    Cache_KGCKEY_KGC_NEXT_HG = new List<KGC>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_KGC_NEXT_HG;
             }
         }
 
         /// <summary>
-        /// KGC (Home Groups) related entities by [KGC.NEXT_HG]-&gt;[KGC.KGCKEY]
+        /// KGCHI (Home Group History) related entities by [KGC.KGCKEY]-&gt;[KGCHI.KGCKEY]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<KGC> KGC_NEXT_HG
+        public IReadOnlyList<KGCHI> KGCKEY_KGCHI_KGCKEY
         {
             get
             {
-                return Context.KGC.FindKGCByNEXT_HG(KGCKEY);
+                if (Cache_KGCKEY_KGCHI_KGCKEY == null &&
+                    !Context.KGCHI.TryFindByKGCKEY(KGCKEY, out Cache_KGCKEY_KGCHI_KGCKEY))
+                {
+                    Cache_KGCKEY_KGCHI_KGCKEY = new List<KGCHI>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_KGCHI_KGCKEY;
             }
         }
 
         /// <summary>
-        /// KGCHI (Home Group History) related entities by [KGCHI.KGCKEY]-&gt;[KGC.KGCKEY]
+        /// SGHG (Home Group Eligibility Criteria) related entities by [KGC.KGCKEY]-&gt;[SGHG.KGCLINK]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<KGCHI> KGCHI_KGCKEY
+        public IReadOnlyList<SGHG> KGCKEY_SGHG_KGCLINK
         {
             get
             {
-                return Context.KGC.FindKGCHIByKGCKEY(KGCKEY);
+                if (Cache_KGCKEY_SGHG_KGCLINK == null &&
+                    !Context.SGHG.TryFindByKGCLINK(KGCKEY, out Cache_KGCKEY_SGHG_KGCLINK))
+                {
+                    Cache_KGCKEY_SGHG_KGCLINK = new List<SGHG>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_SGHG_KGCLINK;
             }
         }
 
         /// <summary>
-        /// SGHG (Home Group Eligibility Criteria) related entities by [SGHG.KGCLINK]-&gt;[KGC.KGCKEY]
+        /// SS (Specialist Subjects) related entities by [KGC.KGCKEY]-&gt;[SS.FROM_HOMEGROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<SGHG> SGHG_KGCLINK
+        public IReadOnlyList<SS> KGCKEY_SS_FROM_HOMEGROUP
         {
             get
             {
-                return Context.KGC.FindSGHGByKGCLINK(KGCKEY);
+                if (Cache_KGCKEY_SS_FROM_HOMEGROUP == null &&
+                    !Context.SS.TryFindByFROM_HOMEGROUP(KGCKEY, out Cache_KGCKEY_SS_FROM_HOMEGROUP))
+                {
+                    Cache_KGCKEY_SS_FROM_HOMEGROUP = new List<SS>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_SS_FROM_HOMEGROUP;
             }
         }
 
         /// <summary>
-        /// SS (Specialist Subjects) related entities by [SS.FROM_HOMEGROUP]-&gt;[KGC.KGCKEY]
+        /// SS (Specialist Subjects) related entities by [KGC.KGCKEY]-&gt;[SS.TO_HOMEGROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<SS> SS_FROM_HOMEGROUP
+        public IReadOnlyList<SS> KGCKEY_SS_TO_HOMEGROUP
         {
             get
             {
-                return Context.KGC.FindSSByFROM_HOMEGROUP(KGCKEY);
+                if (Cache_KGCKEY_SS_TO_HOMEGROUP == null &&
+                    !Context.SS.TryFindByTO_HOMEGROUP(KGCKEY, out Cache_KGCKEY_SS_TO_HOMEGROUP))
+                {
+                    Cache_KGCKEY_SS_TO_HOMEGROUP = new List<SS>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_SS_TO_HOMEGROUP;
             }
         }
 
         /// <summary>
-        /// SS (Specialist Subjects) related entities by [SS.TO_HOMEGROUP]-&gt;[KGC.KGCKEY]
+        /// SSHG (Specialist Subjects per Home Group) related entities by [KGC.KGCKEY]-&gt;[SSHG.HOMEGROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<SS> SS_TO_HOMEGROUP
+        public IReadOnlyList<SSHG> KGCKEY_SSHG_HOMEGROUP
         {
             get
             {
-                return Context.KGC.FindSSByTO_HOMEGROUP(KGCKEY);
+                if (Cache_KGCKEY_SSHG_HOMEGROUP == null &&
+                    !Context.SSHG.TryFindByHOMEGROUP(KGCKEY, out Cache_KGCKEY_SSHG_HOMEGROUP))
+                {
+                    Cache_KGCKEY_SSHG_HOMEGROUP = new List<SSHG>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_SSHG_HOMEGROUP;
             }
         }
 
         /// <summary>
-        /// SSHG (Specialist Subjects per Home Group) related entities by [SSHG.HOMEGROUP]-&gt;[KGC.KGCKEY]
+        /// SSHG (Specialist Subjects per Home Group) related entities by [KGC.KGCKEY]-&gt;[SSHG.TEACHING_HG]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<SSHG> SSHG_HOMEGROUP
+        public IReadOnlyList<SSHG> KGCKEY_SSHG_TEACHING_HG
         {
             get
             {
-                return Context.KGC.FindSSHGByHOMEGROUP(KGCKEY);
+                if (Cache_KGCKEY_SSHG_TEACHING_HG == null &&
+                    !Context.SSHG.TryFindByTEACHING_HG(KGCKEY, out Cache_KGCKEY_SSHG_TEACHING_HG))
+                {
+                    Cache_KGCKEY_SSHG_TEACHING_HG = new List<SSHG>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_SSHG_TEACHING_HG;
             }
         }
 
         /// <summary>
-        /// SSHG (Specialist Subjects per Home Group) related entities by [SSHG.TEACHING_HG]-&gt;[KGC.KGCKEY]
+        /// ST (Students) related entities by [KGC.KGCKEY]-&gt;[ST.HOME_GROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<SSHG> SSHG_TEACHING_HG
+        public IReadOnlyList<ST> KGCKEY_ST_HOME_GROUP
         {
             get
             {
-                return Context.KGC.FindSSHGByTEACHING_HG(KGCKEY);
+                if (Cache_KGCKEY_ST_HOME_GROUP == null &&
+                    !Context.ST.TryFindByHOME_GROUP(KGCKEY, out Cache_KGCKEY_ST_HOME_GROUP))
+                {
+                    Cache_KGCKEY_ST_HOME_GROUP = new List<ST>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_ST_HOME_GROUP;
             }
         }
 
         /// <summary>
-        /// ST (Students) related entities by [ST.HOME_GROUP]-&gt;[KGC.KGCKEY]
+        /// ST (Students) related entities by [KGC.KGCKEY]-&gt;[ST.NEXT_HG]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<ST> ST_HOME_GROUP
+        public IReadOnlyList<ST> KGCKEY_ST_NEXT_HG
         {
             get
             {
-                return Context.KGC.FindSTByHOME_GROUP(KGCKEY);
+                if (Cache_KGCKEY_ST_NEXT_HG == null &&
+                    !Context.ST.TryFindByNEXT_HG(KGCKEY, out Cache_KGCKEY_ST_NEXT_HG))
+                {
+                    Cache_KGCKEY_ST_NEXT_HG = new List<ST>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_ST_NEXT_HG;
             }
         }
 
         /// <summary>
-        /// ST (Students) related entities by [ST.NEXT_HG]-&gt;[KGC.KGCKEY]
+        /// ST_TFR (ST Transfer) related entities by [KGC.KGCKEY]-&gt;[ST_TFR.HOME_GROUP_NEW]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<ST> ST_NEXT_HG
+        public IReadOnlyList<ST_TFR> KGCKEY_ST_TFR_HOME_GROUP_NEW
         {
             get
             {
-                return Context.KGC.FindSTByNEXT_HG(KGCKEY);
+                if (Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW == null &&
+                    !Context.ST_TFR.TryFindByHOME_GROUP_NEW(KGCKEY, out Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW))
+                {
+                    Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW = new List<ST_TFR>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW;
             }
         }
 
         /// <summary>
-        /// ST_TFR (ST Transfer) related entities by [ST_TFR.HOME_GROUP_NEW]-&gt;[KGC.KGCKEY]
+        /// STRE (Student Re-Enrolment) related entities by [KGC.KGCKEY]-&gt;[STRE.ST_HOME_GROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<ST_TFR> ST_TFR_HOME_GROUP_NEW
+        public IReadOnlyList<STRE> KGCKEY_STRE_ST_HOME_GROUP
         {
             get
             {
-                return Context.KGC.FindST_TFRByHOME_GROUP_NEW(KGCKEY);
+                if (Cache_KGCKEY_STRE_ST_HOME_GROUP == null &&
+                    !Context.STRE.TryFindByST_HOME_GROUP(KGCKEY, out Cache_KGCKEY_STRE_ST_HOME_GROUP))
+                {
+                    Cache_KGCKEY_STRE_ST_HOME_GROUP = new List<STRE>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_STRE_ST_HOME_GROUP;
             }
         }
 
         /// <summary>
-        /// STRE (Student Re-Enrolment) related entities by [STRE.ST_HOME_GROUP]-&gt;[KGC.KGCKEY]
+        /// TE (Calendar Events) related entities by [KGC.KGCKEY]-&gt;[TE.START_FORM]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<STRE> STRE_ST_HOME_GROUP
+        public IReadOnlyList<TE> KGCKEY_TE_START_FORM
         {
             get
             {
-                return Context.KGC.FindSTREByST_HOME_GROUP(KGCKEY);
+                if (Cache_KGCKEY_TE_START_FORM == null &&
+                    !Context.TE.TryFindBySTART_FORM(KGCKEY, out Cache_KGCKEY_TE_START_FORM))
+                {
+                    Cache_KGCKEY_TE_START_FORM = new List<TE>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_TE_START_FORM;
             }
         }
 
         /// <summary>
-        /// TE (Calendar Events) related entities by [TE.START_FORM]-&gt;[KGC.KGCKEY]
+        /// TE (Calendar Events) related entities by [KGC.KGCKEY]-&gt;[TE.END_FORM]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<TE> TE_START_FORM
+        public IReadOnlyList<TE> KGCKEY_TE_END_FORM
         {
             get
             {
-                return Context.KGC.FindTEBySTART_FORM(KGCKEY);
+                if (Cache_KGCKEY_TE_END_FORM == null &&
+                    !Context.TE.TryFindByEND_FORM(KGCKEY, out Cache_KGCKEY_TE_END_FORM))
+                {
+                    Cache_KGCKEY_TE_END_FORM = new List<TE>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_TE_END_FORM;
             }
         }
 
         /// <summary>
-        /// TE (Calendar Events) related entities by [TE.END_FORM]-&gt;[KGC.KGCKEY]
+        /// TXHG (Home Group Daily Attendance Records) related entities by [KGC.KGCKEY]-&gt;[TXHG.HOME_GROUP]
+        /// (Was FORM) Home Group code
         /// </summary>
-        public IReadOnlyList<TE> TE_END_FORM
+        public IReadOnlyList<TXHG> KGCKEY_TXHG_HOME_GROUP
         {
             get
             {
-                return Context.KGC.FindTEByEND_FORM(KGCKEY);
+                if (Cache_KGCKEY_TXHG_HOME_GROUP == null &&
+                    !Context.TXHG.TryFindByHOME_GROUP(KGCKEY, out Cache_KGCKEY_TXHG_HOME_GROUP))
+                {
+                    Cache_KGCKEY_TXHG_HOME_GROUP = new List<TXHG>().AsReadOnly();
+                }
+
+                return Cache_KGCKEY_TXHG_HOME_GROUP;
             }
         }
 
-        /// <summary>
-        /// TXHG (Home Group Daily Attendance Records) related entities by [TXHG.HOME_GROUP]-&gt;[KGC.KGCKEY]
-        /// </summary>
-        public IReadOnlyList<TXHG> TXHG_HOME_GROUP
-        {
-            get
-            {
-                return Context.KGC.FindTXHGByHOME_GROUP(KGCKEY);
-            }
-        }
-#endregion
+        #endregion
+
     }
 }

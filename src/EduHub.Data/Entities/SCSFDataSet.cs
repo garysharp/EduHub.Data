@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// CSF Strands Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCSFDataSet : SetBase<SCSF>
     {
-        private Lazy<Dictionary<string, SCSF>> SCSFKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>> SCSFAG_SCSFKEYForeignIndex;
-
-        internal SCSFDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SCSFKEYIndex = new Lazy<Dictionary<string, SCSF>>(() => this.ToDictionary(e => e.SCSFKEY));
-
-            SCSFAG_SCSFKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SCSFAG>>>(() =>
-                    Context.SCSFAG
-                          .Where(e => e.SCSFKEY != null)
-                          .GroupBy(e => e.SCSFKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCSFAG>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCSF"; } }
 
-        /// <summary>
-        /// Find SCSF by SCSFKEY key field
-        /// </summary>
-        /// <param name="Key">SCSFKEY value used to find SCSF</param>
-        /// <returns>Related SCSF entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SCSFKEY value didn't match any SCSF entities</exception>
-        public SCSF FindBySCSFKEY(string Key)
+        internal SCSFDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SCSF result;
-            if (SCSFKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SCSFKEY = new Lazy<Dictionary<string, SCSF>>(() => this.ToDictionary(i => i.SCSFKEY));
         }
-
-        /// <summary>
-        /// Attempt to find SCSF by SCSFKEY key field
-        /// </summary>
-        /// <param name="Key">SCSFKEY value used to find SCSF</param>
-        /// <param name="Value">Related SCSF entity</param>
-        /// <returns>True if the SCSF entity is found</returns>
-        public bool TryFindBySCSFKEY(string Key, out SCSF Value)
-        {
-            return SCSFKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCSF by SCSFKEY key field
-        /// </summary>
-        /// <param name="Key">SCSFKEY value used to find SCSF</param>
-        /// <returns>Related SCSF entity, or null if not found</returns>
-        public SCSF TryFindBySCSFKEY(string Key)
-        {
-            SCSF result;
-            if (SCSFKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SCSFAG (CSF Data Aggregates) entities by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
-        /// </summary>
-        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG entities</param>
-        /// <returns>A list of related SCSFAG entities</returns>
-        public IReadOnlyList<SCSFAG> FindSCSFAGBySCSFKEY(string SCSFKEY)
-        {
-            IReadOnlyList<SCSFAG> result;
-            if (SCSFAG_SCSFKEYForeignIndex.Value.TryGetValue(SCSFKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SCSFAG>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SCSFAG entities by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
-        /// </summary>
-        /// <param name="SCSFKEY">SCSFKEY value used to find SCSFAG entities</param>
-        /// <param name="Value">A list of related SCSFAG entities</param>
-        /// <returns>True if any SCSFAG entities are found</returns>
-        public bool TryFindSCSFAGBySCSFKEY(string SCSFKEY, out IReadOnlyList<SCSFAG> Value)
-        {
-            return SCSFAG_SCSFKEYForeignIndex.Value.TryGetValue(SCSFKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCSF" />
@@ -164,5 +74,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SCSF>> Index_SCSFKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCSF by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSF</param>
+        /// <returns>Related SCSF entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSF FindBySCSFKEY(string SCSFKEY)
+        {
+            return Index_SCSFKEY.Value[SCSFKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SCSF by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSF</param>
+        /// <param name="Value">Related SCSF entity</param>
+        /// <returns>True if the related SCSF entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCSFKEY(string SCSFKEY, out SCSF Value)
+        {
+            return Index_SCSFKEY.Value.TryGetValue(SCSFKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCSF by SCSFKEY field
+        /// </summary>
+        /// <param name="SCSFKEY">SCSFKEY value used to find SCSF</param>
+        /// <returns>Related SCSF entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCSF TryFindBySCSFKEY(string SCSFKEY)
+        {
+            SCSF value;
+            if (Index_SCSFKEY.Value.TryGetValue(SCSFKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

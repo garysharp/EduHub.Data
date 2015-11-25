@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Contacts Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPCDataSet : SetBase<KPC>
     {
-        private Lazy<Dictionary<string, KPC>> KPCKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<KPCL>>> KPCL_CONTACTForeignIndex;
-
-        internal KPCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KPCKEYIndex = new Lazy<Dictionary<string, KPC>>(() => this.ToDictionary(e => e.KPCKEY));
-
-            KPCL_CONTACTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<KPCL>>>(() =>
-                    Context.KPCL
-                          .Where(e => e.CONTACT != null)
-                          .GroupBy(e => e.CONTACT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KPCL>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KPC"; } }
 
-        /// <summary>
-        /// Find KPC by KPCKEY key field
-        /// </summary>
-        /// <param name="Key">KPCKEY value used to find KPC</param>
-        /// <returns>Related KPC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KPCKEY value didn't match any KPC entities</exception>
-        public KPC FindByKPCKEY(string Key)
+        internal KPCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KPC result;
-            if (KPCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KPCKEY = new Lazy<Dictionary<string, KPC>>(() => this.ToDictionary(i => i.KPCKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KPC by KPCKEY key field
-        /// </summary>
-        /// <param name="Key">KPCKEY value used to find KPC</param>
-        /// <param name="Value">Related KPC entity</param>
-        /// <returns>True if the KPC entity is found</returns>
-        public bool TryFindByKPCKEY(string Key, out KPC Value)
-        {
-            return KPCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KPC by KPCKEY key field
-        /// </summary>
-        /// <param name="Key">KPCKEY value used to find KPC</param>
-        /// <returns>Related KPC entity, or null if not found</returns>
-        public KPC TryFindByKPCKEY(string Key)
-        {
-            KPC result;
-            if (KPCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all KPCL (Contact Links) entities by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
-        /// </summary>
-        /// <param name="KPCKEY">KPCKEY value used to find KPCL entities</param>
-        /// <returns>A list of related KPCL entities</returns>
-        public IReadOnlyList<KPCL> FindKPCLByCONTACT(string KPCKEY)
-        {
-            IReadOnlyList<KPCL> result;
-            if (KPCL_CONTACTForeignIndex.Value.TryGetValue(KPCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<KPCL>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all KPCL entities by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
-        /// </summary>
-        /// <param name="KPCKEY">KPCKEY value used to find KPCL entities</param>
-        /// <param name="Value">A list of related KPCL entities</param>
-        /// <returns>True if any KPCL entities are found</returns>
-        public bool TryFindKPCLByCONTACT(string KPCKEY, out IReadOnlyList<KPCL> Value)
-        {
-            return KPCL_CONTACTForeignIndex.Value.TryGetValue(KPCKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KPC" />
@@ -182,5 +92,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KPC>> Index_KPCKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KPC by KPCKEY field
+        /// </summary>
+        /// <param name="KPCKEY">KPCKEY value used to find KPC</param>
+        /// <returns>Related KPC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPC FindByKPCKEY(string KPCKEY)
+        {
+            return Index_KPCKEY.Value[KPCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KPC by KPCKEY field
+        /// </summary>
+        /// <param name="KPCKEY">KPCKEY value used to find KPC</param>
+        /// <param name="Value">Related KPC entity</param>
+        /// <returns>True if the related KPC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKPCKEY(string KPCKEY, out KPC Value)
+        {
+            return Index_KPCKEY.Value.TryGetValue(KPCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KPC by KPCKEY field
+        /// </summary>
+        /// <param name="KPCKEY">KPCKEY value used to find KPC</param>
+        /// <returns>Related KPC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KPC TryFindByKPCKEY(string KPCKEY)
+        {
+            KPC value;
+            if (Index_KPCKEY.Value.TryGetValue(KPCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

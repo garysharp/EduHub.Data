@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Report file audit Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPEPRINTDataSet : SetBase<SPEPRINT>
     {
-        private Lazy<Dictionary<int, SPEPRINT>> TIDIndex;
-
-
-        internal SPEPRINTDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, SPEPRINT>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SPEPRINT"; } }
 
-        /// <summary>
-        /// Find SPEPRINT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPEPRINT</param>
-        /// <returns>Related SPEPRINT entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any SPEPRINT entities</exception>
-        public SPEPRINT FindByTID(int Key)
+        internal SPEPRINTDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SPEPRINT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, SPEPRINT>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find SPEPRINT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPEPRINT</param>
-        /// <param name="Value">Related SPEPRINT entity</param>
-        /// <returns>True if the SPEPRINT entity is found</returns>
-        public bool TryFindByTID(int Key, out SPEPRINT Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SPEPRINT by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find SPEPRINT</param>
-        /// <returns>Related SPEPRINT entity, or null if not found</returns>
-        public SPEPRINT TryFindByTID(int Key)
-        {
-            SPEPRINT result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SPEPRINT" />
@@ -150,5 +99,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<SPEPRINT>>> Index_CODE;
+        private Lazy<Dictionary<int, SPEPRINT>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SPEPRINT by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPEPRINT</param>
+        /// <returns>List of related SPEPRINT entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPEPRINT> FindByCODE(string CODE)
+        {
+            return Index_CODE.Value[CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPEPRINT</param>
+        /// <param name="Value">List of related SPEPRINT entities</param>
+        /// <returns>True if the list of related SPEPRINT entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<SPEPRINT> Value)
+        {
+            return Index_CODE.Value.TryGetValue(CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by CODE field
+        /// </summary>
+        /// <param name="CODE">CODE value used to find SPEPRINT</param>
+        /// <returns>List of related SPEPRINT entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPEPRINT> TryFindByCODE(string CODE)
+        {
+            IReadOnlyList<SPEPRINT> value;
+            if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SPEPRINT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPEPRINT</param>
+        /// <returns>Related SPEPRINT entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEPRINT FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPEPRINT</param>
+        /// <param name="Value">Related SPEPRINT entity</param>
+        /// <returns>True if the related SPEPRINT entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out SPEPRINT Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPEPRINT by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find SPEPRINT</param>
+        /// <returns>Related SPEPRINT entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SPEPRINT TryFindByTID(int TID)
+        {
+            SPEPRINT value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

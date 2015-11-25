@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// STACC Holding Table Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TRSTACCDataSet : SetBase<TRSTACC>
     {
-        private Lazy<Dictionary<int, TRSTACC>> STACCKEYIndex;
-
-
-        internal TRSTACCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            STACCKEYIndex = new Lazy<Dictionary<int, TRSTACC>>(() => this.ToDictionary(e => e.STACCKEY));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TRSTACC"; } }
 
-        /// <summary>
-        /// Find TRSTACC by STACCKEY key field
-        /// </summary>
-        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
-        /// <returns>Related TRSTACC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">STACCKEY value didn't match any TRSTACC entities</exception>
-        public TRSTACC FindBySTACCKEY(int Key)
+        internal TRSTACCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            TRSTACC result;
-            if (STACCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_STACCKEY = new Lazy<Dictionary<int, TRSTACC>>(() => this.ToDictionary(i => i.STACCKEY));
         }
-
-        /// <summary>
-        /// Attempt to find TRSTACC by STACCKEY key field
-        /// </summary>
-        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
-        /// <param name="Value">Related TRSTACC entity</param>
-        /// <returns>True if the TRSTACC entity is found</returns>
-        public bool TryFindBySTACCKEY(int Key, out TRSTACC Value)
-        {
-            return STACCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TRSTACC by STACCKEY key field
-        /// </summary>
-        /// <param name="Key">STACCKEY value used to find TRSTACC</param>
-        /// <returns>Related TRSTACC entity, or null if not found</returns>
-        public TRSTACC TryFindBySTACCKEY(int Key)
-        {
-            TRSTACC result;
-            if (STACCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TRSTACC" />
@@ -213,5 +161,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, TRSTACC>> Index_STACCKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TRSTACC by STACCKEY field
+        /// </summary>
+        /// <param name="STACCKEY">STACCKEY value used to find TRSTACC</param>
+        /// <returns>Related TRSTACC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TRSTACC FindBySTACCKEY(int STACCKEY)
+        {
+            return Index_STACCKEY.Value[STACCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TRSTACC by STACCKEY field
+        /// </summary>
+        /// <param name="STACCKEY">STACCKEY value used to find TRSTACC</param>
+        /// <param name="Value">Related TRSTACC entity</param>
+        /// <returns>True if the related TRSTACC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTACCKEY(int STACCKEY, out TRSTACC Value)
+        {
+            return Index_STACCKEY.Value.TryGetValue(STACCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TRSTACC by STACCKEY field
+        /// </summary>
+        /// <param name="STACCKEY">STACCKEY value used to find TRSTACC</param>
+        /// <returns>Related TRSTACC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TRSTACC TryFindBySTACCKEY(int STACCKEY)
+        {
+            TRSTACC value;
+            if (Index_STACCKEY.Value.TryGetValue(STACCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

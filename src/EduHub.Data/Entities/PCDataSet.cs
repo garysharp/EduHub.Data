@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,185 +8,22 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Cost Centres Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PCDataSet : SetBase<PC>
     {
-        private Lazy<Dictionary<string, PC>> PCKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<PEF>>> PEF_TRCENTREForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<PEFH>>> PEFH_TRCENTREForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<PEPS>>> PEPS_TRCENTREForeignIndex;
-
-        internal PCDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            PCKEYIndex = new Lazy<Dictionary<string, PC>>(() => this.ToDictionary(e => e.PCKEY));
-
-            PEF_TRCENTREForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PEF>>>(() =>
-                    Context.PEF
-                          .Where(e => e.TRCENTRE != null)
-                          .GroupBy(e => e.TRCENTRE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEF>)g.ToList()
-                          .AsReadOnly()));
-
-            PEFH_TRCENTREForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PEFH>>>(() =>
-                    Context.PEFH
-                          .Where(e => e.TRCENTRE != null)
-                          .GroupBy(e => e.TRCENTRE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEFH>)g.ToList()
-                          .AsReadOnly()));
-
-            PEPS_TRCENTREForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<PEPS>>>(() =>
-                    Context.PEPS
-                          .Where(e => e.TRCENTRE != null)
-                          .GroupBy(e => e.TRCENTRE)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<PEPS>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "PC"; } }
 
-        /// <summary>
-        /// Find PC by PCKEY key field
-        /// </summary>
-        /// <param name="Key">PCKEY value used to find PC</param>
-        /// <returns>Related PC entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">PCKEY value didn't match any PC entities</exception>
-        public PC FindByPCKEY(string Key)
+        internal PCDataSet(EduHubContext Context)
+            : base(Context)
         {
-            PC result;
-            if (PCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_PCKEY = new Lazy<Dictionary<string, PC>>(() => this.ToDictionary(i => i.PCKEY));
+            Index_GLCODE = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.GLCODE));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
+            Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<PC>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
         }
-
-        /// <summary>
-        /// Attempt to find PC by PCKEY key field
-        /// </summary>
-        /// <param name="Key">PCKEY value used to find PC</param>
-        /// <param name="Value">Related PC entity</param>
-        /// <returns>True if the PC entity is found</returns>
-        public bool TryFindByPCKEY(string Key, out PC Value)
-        {
-            return PCKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find PC by PCKEY key field
-        /// </summary>
-        /// <param name="Key">PCKEY value used to find PC</param>
-        /// <returns>Related PC entity, or null if not found</returns>
-        public PC TryFindByPCKEY(string Key)
-        {
-            PC result;
-            if (PCKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all PEF (Payroll Transactions) entities by [PEF.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEF entities</param>
-        /// <returns>A list of related PEF entities</returns>
-        public IReadOnlyList<PEF> FindPEFByTRCENTRE(string PCKEY)
-        {
-            IReadOnlyList<PEF> result;
-            if (PEF_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PEF>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PEF entities by [PEF.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEF entities</param>
-        /// <param name="Value">A list of related PEF entities</param>
-        /// <returns>True if any PEF entities are found</returns>
-        public bool TryFindPEFByTRCENTRE(string PCKEY, out IReadOnlyList<PEF> Value)
-        {
-            return PEF_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all PEFH (Payroll Transaction History) entities by [PEFH.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEFH entities</param>
-        /// <returns>A list of related PEFH entities</returns>
-        public IReadOnlyList<PEFH> FindPEFHByTRCENTRE(string PCKEY)
-        {
-            IReadOnlyList<PEFH> result;
-            if (PEFH_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PEFH>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PEFH entities by [PEFH.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEFH entities</param>
-        /// <param name="Value">A list of related PEFH entities</param>
-        /// <returns>True if any PEFH entities are found</returns>
-        public bool TryFindPEFHByTRCENTRE(string PCKEY, out IReadOnlyList<PEFH> Value)
-        {
-            return PEFH_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all PEPS (Standard and Last Pays) entities by [PEPS.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEPS entities</param>
-        /// <returns>A list of related PEPS entities</returns>
-        public IReadOnlyList<PEPS> FindPEPSByTRCENTRE(string PCKEY)
-        {
-            IReadOnlyList<PEPS> result;
-            if (PEPS_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<PEPS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all PEPS entities by [PEPS.TRCENTRE]-&gt;[PC.PCKEY]
-        /// </summary>
-        /// <param name="PCKEY">PCKEY value used to find PEPS entities</param>
-        /// <param name="Value">A list of related PEPS entities</param>
-        /// <returns>True if any PEPS entities are found</returns>
-        public bool TryFindPEPSByTRCENTRE(string PCKEY, out IReadOnlyList<PEPS> Value)
-        {
-            return PEPS_TRCENTREForeignIndex.Value.TryGetValue(PCKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="PC" />
@@ -234,5 +71,187 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, PC>> Index_PCKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_GLCODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<PC>>> Index_INITIATIVE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PC FindByPCKEY(string PCKEY)
+        {
+            return Index_PCKEY.Value[PCKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <param name="Value">Related PC entity</param>
+        /// <returns>True if the related PC entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByPCKEY(string PCKEY, out PC Value)
+        {
+            return Index_PCKEY.Value.TryGetValue(PCKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by PCKEY field
+        /// </summary>
+        /// <param name="PCKEY">PCKEY value used to find PC</param>
+        /// <returns>Related PC entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public PC TryFindByPCKEY(string PCKEY)
+        {
+            PC value;
+            if (Index_PCKEY.Value.TryGetValue(PCKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PC</param>
+        /// <returns>List of related PC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> FindByGLCODE(string GLCODE)
+        {
+            return Index_GLCODE.Value[GLCODE];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PC</param>
+        /// <param name="Value">List of related PC entities</param>
+        /// <returns>True if the list of related PC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByGLCODE(string GLCODE, out IReadOnlyList<PC> Value)
+        {
+            return Index_GLCODE.Value.TryGetValue(GLCODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by GLCODE field
+        /// </summary>
+        /// <param name="GLCODE">GLCODE value used to find PC</param>
+        /// <returns>List of related PC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> TryFindByGLCODE(string GLCODE)
+        {
+            IReadOnlyList<PC> value;
+            if (Index_GLCODE.Value.TryGetValue(GLCODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <returns>List of related PC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <param name="Value">List of related PC entities</param>
+        /// <returns>True if the list of related PC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<PC> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find PC</param>
+        /// <returns>List of related PC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<PC> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find PC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PC</param>
+        /// <returns>List of related PC entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> FindByINITIATIVE(string INITIATIVE)
+        {
+            return Index_INITIATIVE.Value[INITIATIVE];
+        }
+
+        /// <summary>
+        /// Attempt to find PC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PC</param>
+        /// <param name="Value">List of related PC entities</param>
+        /// <returns>True if the list of related PC entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByINITIATIVE(string INITIATIVE, out IReadOnlyList<PC> Value)
+        {
+            return Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find PC by INITIATIVE field
+        /// </summary>
+        /// <param name="INITIATIVE">INITIATIVE value used to find PC</param>
+        /// <returns>List of related PC entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<PC> TryFindByINITIATIVE(string INITIATIVE)
+        {
+            IReadOnlyList<PC> value;
+            if (Index_INITIATIVE.Value.TryGetValue(INITIATIVE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

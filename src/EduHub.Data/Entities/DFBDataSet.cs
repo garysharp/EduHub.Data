@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DFBDataSet : SetBase<DFB>
     {
-        private Lazy<Dictionary<string, DFB>> REFERENCE_NOIndex;
-
-
-        internal DFBDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            REFERENCE_NOIndex = new Lazy<Dictionary<string, DFB>>(() => this.ToDictionary(e => e.REFERENCE_NO));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "DFB"; } }
 
-        /// <summary>
-        /// Find DFB by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
-        /// <returns>Related DFB entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">REFERENCE_NO value didn't match any DFB entities</exception>
-        public DFB FindByREFERENCE_NO(string Key)
+        internal DFBDataSet(EduHubContext Context)
+            : base(Context)
         {
-            DFB result;
-            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_FAM_CODE = new Lazy<Dictionary<string, IReadOnlyList<DFB>>>(() => this.ToGroupedDictionary(i => i.FAM_CODE));
+            Index_TID = new Lazy<Dictionary<int, DFB>>(() => this.ToDictionary(i => i.TID));
+            Index_REFERENCE_NO = new Lazy<NullDictionary<string, IReadOnlyList<DFB>>>(() => this.ToGroupedNullDictionary(i => i.REFERENCE_NO));
         }
-
-        /// <summary>
-        /// Attempt to find DFB by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
-        /// <param name="Value">Related DFB entity</param>
-        /// <returns>True if the DFB entity is found</returns>
-        public bool TryFindByREFERENCE_NO(string Key, out DFB Value)
-        {
-            return REFERENCE_NOIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find DFB by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find DFB</param>
-        /// <returns>Related DFB entity, or null if not found</returns>
-        public DFB TryFindByREFERENCE_NO(string Key)
-        {
-            DFB result;
-            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="DFB" />
@@ -86,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "FAM_CODE":
                         mapper[i] = (e, v) => e.FAM_CODE = v;
@@ -135,5 +85,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<DFB>>> Index_FAM_CODE;
+        private Lazy<Dictionary<int, DFB>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<DFB>>> Index_REFERENCE_NO;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find DFB by FAM_CODE field
+        /// </summary>
+        /// <param name="FAM_CODE">FAM_CODE value used to find DFB</param>
+        /// <returns>List of related DFB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFB> FindByFAM_CODE(string FAM_CODE)
+        {
+            return Index_FAM_CODE.Value[FAM_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by FAM_CODE field
+        /// </summary>
+        /// <param name="FAM_CODE">FAM_CODE value used to find DFB</param>
+        /// <param name="Value">List of related DFB entities</param>
+        /// <returns>True if the list of related DFB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFAM_CODE(string FAM_CODE, out IReadOnlyList<DFB> Value)
+        {
+            return Index_FAM_CODE.Value.TryGetValue(FAM_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by FAM_CODE field
+        /// </summary>
+        /// <param name="FAM_CODE">FAM_CODE value used to find DFB</param>
+        /// <returns>List of related DFB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFB> TryFindByFAM_CODE(string FAM_CODE)
+        {
+            IReadOnlyList<DFB> value;
+            if (Index_FAM_CODE.Value.TryGetValue(FAM_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <returns>Related DFB entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFB FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <param name="Value">Related DFB entity</param>
+        /// <returns>True if the related DFB entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFB Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFB</param>
+        /// <returns>Related DFB entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFB TryFindByTID(int TID)
+        {
+            DFB value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFB by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find DFB</param>
+        /// <returns>List of related DFB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFB> FindByREFERENCE_NO(string REFERENCE_NO)
+        {
+            return Index_REFERENCE_NO.Value[REFERENCE_NO];
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find DFB</param>
+        /// <param name="Value">List of related DFB entities</param>
+        /// <returns>True if the list of related DFB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREFERENCE_NO(string REFERENCE_NO, out IReadOnlyList<DFB> Value)
+        {
+            return Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFB by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find DFB</param>
+        /// <returns>List of related DFB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFB> TryFindByREFERENCE_NO(string REFERENCE_NO)
+        {
+            IReadOnlyList<DFB> value;
+            if (Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

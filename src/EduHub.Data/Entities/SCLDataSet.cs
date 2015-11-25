@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,28 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Subject Classes Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCLDataSet : SetBase<SCL>
     {
-        private Lazy<Dictionary<string, SCL>> SCLKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<TXAS>>> TXAS_SCL_LINKForeignIndex;
-
-        internal SCLDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            SCLKEYIndex = new Lazy<Dictionary<string, SCL>>(() => this.ToDictionary(e => e.SCLKEY));
-
-            TXAS_SCL_LINKForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<TXAS>>>(() =>
-                    Context.TXAS
-                          .Where(e => e.SCL_LINK != null)
-                          .GroupBy(e => e.SCL_LINK)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TXAS>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "SCL"; } }
 
-        /// <summary>
-        /// Find SCL by SCLKEY key field
-        /// </summary>
-        /// <param name="Key">SCLKEY value used to find SCL</param>
-        /// <returns>Related SCL entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">SCLKEY value didn't match any SCL entities</exception>
-        public SCL FindBySCLKEY(string Key)
+        internal SCLDataSet(EduHubContext Context)
+            : base(Context)
         {
-            SCL result;
-            if (SCLKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_SCLKEY = new Lazy<Dictionary<string, SCL>>(() => this.ToDictionary(i => i.SCLKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_QUILT_SUBJECT_CLASS = new Lazy<Dictionary<Tuple<string, string, short?>, SCL>>(() => this.ToDictionary(i => Tuple.Create(i.QUILT, i.SUBJECT, i.CLASS)));
+            Index_QUILT = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.QUILT));
+            Index_SUBJECT = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT));
+            Index_TEACHER01 = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER01));
+            Index_TEACHER02 = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.TEACHER02));
+            Index_ROOM01 = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.ROOM01));
+            Index_ROOM02 = new Lazy<NullDictionary<string, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.ROOM02));
+            Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<SCL>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
         }
-
-        /// <summary>
-        /// Attempt to find SCL by SCLKEY key field
-        /// </summary>
-        /// <param name="Key">SCLKEY value used to find SCL</param>
-        /// <param name="Value">Related SCL entity</param>
-        /// <returns>True if the SCL entity is found</returns>
-        public bool TryFindBySCLKEY(string Key, out SCL Value)
-        {
-            return SCLKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SCL by SCLKEY key field
-        /// </summary>
-        /// <param name="Key">SCLKEY value used to find SCL</param>
-        /// <returns>Related SCL entity, or null if not found</returns>
-        public SCL TryFindBySCLKEY(string Key)
-        {
-            SCL result;
-            if (SCLKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all TXAS (Actual Sessions) entities by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
-        /// </summary>
-        /// <param name="SCLKEY">SCLKEY value used to find TXAS entities</param>
-        /// <returns>A list of related TXAS entities</returns>
-        public IReadOnlyList<TXAS> FindTXASBySCL_LINK(string SCLKEY)
-        {
-            IReadOnlyList<TXAS> result;
-            if (TXAS_SCL_LINKForeignIndex.Value.TryGetValue(SCLKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<TXAS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all TXAS entities by [TXAS.SCL_LINK]-&gt;[SCL.SCLKEY]
-        /// </summary>
-        /// <param name="SCLKEY">SCLKEY value used to find TXAS entities</param>
-        /// <param name="Value">A list of related TXAS entities</param>
-        /// <returns>True if any TXAS entities are found</returns>
-        public bool TryFindTXASBySCL_LINK(string SCLKEY, out IReadOnlyList<TXAS> Value)
-        {
-            return TXAS_SCL_LINKForeignIndex.Value.TryGetValue(SCLKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="SCL" />
@@ -185,5 +104,451 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, SCL>> Index_SCLKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<SCL>>> Index_LW_DATE;
+        private Lazy<Dictionary<Tuple<string, string, short?>, SCL>> Index_QUILT_SUBJECT_CLASS;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_QUILT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_SUBJECT;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_TEACHER01;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_TEACHER02;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_ROOM01;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCL>>> Index_ROOM02;
+        private Lazy<NullDictionary<int?, IReadOnlyList<SCL>>> Index_CAMPUS;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find SCL by SCLKEY field
+        /// </summary>
+        /// <param name="SCLKEY">SCLKEY value used to find SCL</param>
+        /// <returns>Related SCL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCL FindBySCLKEY(string SCLKEY)
+        {
+            return Index_SCLKEY.Value[SCLKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by SCLKEY field
+        /// </summary>
+        /// <param name="SCLKEY">SCLKEY value used to find SCL</param>
+        /// <param name="Value">Related SCL entity</param>
+        /// <returns>True if the related SCL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySCLKEY(string SCLKEY, out SCL Value)
+        {
+            return Index_SCLKEY.Value.TryGetValue(SCLKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by SCLKEY field
+        /// </summary>
+        /// <param name="SCLKEY">SCLKEY value used to find SCL</param>
+        /// <returns>Related SCL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCL TryFindBySCLKEY(string SCLKEY)
+        {
+            SCL value;
+            if (Index_SCLKEY.Value.TryGetValue(SCLKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<SCL> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by QUILT, SUBJECT and CLASS fields
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <param name="CLASS">CLASS value used to find SCL</param>
+        /// <returns>Related SCL entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCL FindByQUILT_SUBJECT_CLASS(string QUILT, string SUBJECT, short? CLASS)
+        {
+            return Index_QUILT_SUBJECT_CLASS.Value[Tuple.Create(QUILT, SUBJECT, CLASS)];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by QUILT, SUBJECT and CLASS fields
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <param name="CLASS">CLASS value used to find SCL</param>
+        /// <param name="Value">Related SCL entity</param>
+        /// <returns>True if the related SCL entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQUILT_SUBJECT_CLASS(string QUILT, string SUBJECT, short? CLASS, out SCL Value)
+        {
+            return Index_QUILT_SUBJECT_CLASS.Value.TryGetValue(Tuple.Create(QUILT, SUBJECT, CLASS), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by QUILT, SUBJECT and CLASS fields
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <param name="CLASS">CLASS value used to find SCL</param>
+        /// <returns>Related SCL entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public SCL TryFindByQUILT_SUBJECT_CLASS(string QUILT, string SUBJECT, short? CLASS)
+        {
+            SCL value;
+            if (Index_QUILT_SUBJECT_CLASS.Value.TryGetValue(Tuple.Create(QUILT, SUBJECT, CLASS), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by QUILT field
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByQUILT(string QUILT)
+        {
+            return Index_QUILT.Value[QUILT];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by QUILT field
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByQUILT(string QUILT, out IReadOnlyList<SCL> Value)
+        {
+            return Index_QUILT.Value.TryGetValue(QUILT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by QUILT field
+        /// </summary>
+        /// <param name="QUILT">QUILT value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByQUILT(string QUILT)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_QUILT.Value.TryGetValue(QUILT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindBySUBJECT(string SUBJECT)
+        {
+            return Index_SUBJECT.Value[SUBJECT];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBJECT(string SUBJECT, out IReadOnlyList<SCL> Value)
+        {
+            return Index_SUBJECT.Value.TryGetValue(SUBJECT, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by SUBJECT field
+        /// </summary>
+        /// <param name="SUBJECT">SUBJECT value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindBySUBJECT(string SUBJECT)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_SUBJECT.Value.TryGetValue(SUBJECT, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by TEACHER01 field
+        /// </summary>
+        /// <param name="TEACHER01">TEACHER01 value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByTEACHER01(string TEACHER01)
+        {
+            return Index_TEACHER01.Value[TEACHER01];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by TEACHER01 field
+        /// </summary>
+        /// <param name="TEACHER01">TEACHER01 value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTEACHER01(string TEACHER01, out IReadOnlyList<SCL> Value)
+        {
+            return Index_TEACHER01.Value.TryGetValue(TEACHER01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by TEACHER01 field
+        /// </summary>
+        /// <param name="TEACHER01">TEACHER01 value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByTEACHER01(string TEACHER01)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_TEACHER01.Value.TryGetValue(TEACHER01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by TEACHER02 field
+        /// </summary>
+        /// <param name="TEACHER02">TEACHER02 value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByTEACHER02(string TEACHER02)
+        {
+            return Index_TEACHER02.Value[TEACHER02];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by TEACHER02 field
+        /// </summary>
+        /// <param name="TEACHER02">TEACHER02 value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTEACHER02(string TEACHER02, out IReadOnlyList<SCL> Value)
+        {
+            return Index_TEACHER02.Value.TryGetValue(TEACHER02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by TEACHER02 field
+        /// </summary>
+        /// <param name="TEACHER02">TEACHER02 value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByTEACHER02(string TEACHER02)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_TEACHER02.Value.TryGetValue(TEACHER02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by ROOM01 field
+        /// </summary>
+        /// <param name="ROOM01">ROOM01 value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByROOM01(string ROOM01)
+        {
+            return Index_ROOM01.Value[ROOM01];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by ROOM01 field
+        /// </summary>
+        /// <param name="ROOM01">ROOM01 value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM01(string ROOM01, out IReadOnlyList<SCL> Value)
+        {
+            return Index_ROOM01.Value.TryGetValue(ROOM01, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by ROOM01 field
+        /// </summary>
+        /// <param name="ROOM01">ROOM01 value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByROOM01(string ROOM01)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_ROOM01.Value.TryGetValue(ROOM01, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by ROOM02 field
+        /// </summary>
+        /// <param name="ROOM02">ROOM02 value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByROOM02(string ROOM02)
+        {
+            return Index_ROOM02.Value[ROOM02];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by ROOM02 field
+        /// </summary>
+        /// <param name="ROOM02">ROOM02 value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByROOM02(string ROOM02, out IReadOnlyList<SCL> Value)
+        {
+            return Index_ROOM02.Value.TryGetValue(ROOM02, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by ROOM02 field
+        /// </summary>
+        /// <param name="ROOM02">ROOM02 value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByROOM02(string ROOM02)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_ROOM02.Value.TryGetValue(ROOM02, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find SCL by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SCL</param>
+        /// <returns>List of related SCL entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> FindByCAMPUS(int? CAMPUS)
+        {
+            return Index_CAMPUS.Value[CAMPUS];
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SCL</param>
+        /// <param name="Value">List of related SCL entities</param>
+        /// <returns>True if the list of related SCL entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCAMPUS(int? CAMPUS, out IReadOnlyList<SCL> Value)
+        {
+            return Index_CAMPUS.Value.TryGetValue(CAMPUS, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCL by CAMPUS field
+        /// </summary>
+        /// <param name="CAMPUS">CAMPUS value used to find SCL</param>
+        /// <returns>List of related SCL entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCL> TryFindByCAMPUS(int? CAMPUS)
+        {
+            IReadOnlyList<SCL> value;
+            if (Index_CAMPUS.Value.TryGetValue(CAMPUS, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

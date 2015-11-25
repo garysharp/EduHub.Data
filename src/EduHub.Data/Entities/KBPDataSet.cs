@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,121 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// BPAY Receipts Import Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KBPDataSet : SetBase<KBP>
     {
-        private Lazy<Dictionary<int, KBP>> TIDIndex;
-        private Lazy<Dictionary<string, KBP>> REFERENCE_NOIndex;
-
-
-        internal KBPDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, KBP>>(() => this.ToDictionary(e => e.TID));
-            REFERENCE_NOIndex = new Lazy<Dictionary<string, KBP>>(() => this.ToDictionary(e => e.REFERENCE_NO));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KBP"; } }
 
-        /// <summary>
-        /// Find KBP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBP</param>
-        /// <returns>Related KBP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KBP entities</exception>
-        public KBP FindByTID(int Key)
+        internal KBPDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KBP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, KBP>>(() => this.ToDictionary(i => i.TID));
+            Index_REFERENCE_NO = new Lazy<NullDictionary<string, IReadOnlyList<KBP>>>(() => this.ToGroupedNullDictionary(i => i.REFERENCE_NO));
         }
-
-        /// <summary>
-        /// Attempt to find KBP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBP</param>
-        /// <param name="Value">Related KBP entity</param>
-        /// <returns>True if the KBP entity is found</returns>
-        public bool TryFindByTID(int Key, out KBP Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KBP by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KBP</param>
-        /// <returns>Related KBP entity, or null if not found</returns>
-        public KBP TryFindByTID(int Key)
-        {
-            KBP result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find KBP by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
-        /// <returns>Related KBP entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">REFERENCE_NO value didn't match any KBP entities</exception>
-        public KBP FindByREFERENCE_NO(string Key)
-        {
-            KBP result;
-            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find KBP by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
-        /// <param name="Value">Related KBP entity</param>
-        /// <returns>True if the KBP entity is found</returns>
-        public bool TryFindByREFERENCE_NO(string Key, out KBP Value)
-        {
-            return REFERENCE_NOIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KBP by REFERENCE_NO key field
-        /// </summary>
-        /// <param name="Key">REFERENCE_NO value used to find KBP</param>
-        /// <returns>Related KBP entity, or null if not found</returns>
-        public KBP TryFindByREFERENCE_NO(string Key)
-        {
-            KBP result;
-            if (REFERENCE_NOIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KBP" />
@@ -185,5 +84,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KBP>> Index_TID;
+        private Lazy<NullDictionary<string, IReadOnlyList<KBP>>> Index_REFERENCE_NO;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <returns>Related KBP entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBP FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <param name="Value">Related KBP entity</param>
+        /// <returns>True if the related KBP entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KBP Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KBP</param>
+        /// <returns>Related KBP entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KBP TryFindByTID(int TID)
+        {
+            KBP value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KBP by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find KBP</param>
+        /// <returns>List of related KBP entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KBP> FindByREFERENCE_NO(string REFERENCE_NO)
+        {
+            return Index_REFERENCE_NO.Value[REFERENCE_NO];
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find KBP</param>
+        /// <param name="Value">List of related KBP entities</param>
+        /// <returns>True if the list of related KBP entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREFERENCE_NO(string REFERENCE_NO, out IReadOnlyList<KBP> Value)
+        {
+            return Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KBP by REFERENCE_NO field
+        /// </summary>
+        /// <param name="REFERENCE_NO">REFERENCE_NO value used to find KBP</param>
+        /// <returns>List of related KBP entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KBP> TryFindByREFERENCE_NO(string REFERENCE_NO)
+        {
+            IReadOnlyList<KBP> value;
+            if (Index_REFERENCE_NO.Value.TryGetValue(REFERENCE_NO, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

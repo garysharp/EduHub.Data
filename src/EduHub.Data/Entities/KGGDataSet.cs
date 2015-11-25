@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,223 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Year 9-12 Exit Categories Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGGDataSet : SetBase<KGG>
     {
-        private Lazy<Dictionary<string, KGG>> KGGKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<OSCS>>> OSCS_ZEROMTH_CATForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<OSCS>>> OSCS_SIXMTH_CATForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_EXIT_CAT01ForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<ST>>> ST_EXIT_CAT02ForeignIndex;
-
-        internal KGGDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KGGKEYIndex = new Lazy<Dictionary<string, KGG>>(() => this.ToDictionary(e => e.KGGKEY));
-
-            OSCS_ZEROMTH_CATForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<OSCS>>>(() =>
-                    Context.OSCS
-                          .Where(e => e.ZEROMTH_CAT != null)
-                          .GroupBy(e => e.ZEROMTH_CAT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<OSCS>)g.ToList()
-                          .AsReadOnly()));
-
-            OSCS_SIXMTH_CATForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<OSCS>>>(() =>
-                    Context.OSCS
-                          .Where(e => e.SIXMTH_CAT != null)
-                          .GroupBy(e => e.SIXMTH_CAT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<OSCS>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_EXIT_CAT01ForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.EXIT_CAT01 != null)
-                          .GroupBy(e => e.EXIT_CAT01)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-            ST_EXIT_CAT02ForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<ST>>>(() =>
-                    Context.ST
-                          .Where(e => e.EXIT_CAT02 != null)
-                          .GroupBy(e => e.EXIT_CAT02)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<ST>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KGG"; } }
 
-        /// <summary>
-        /// Find KGG by KGGKEY key field
-        /// </summary>
-        /// <param name="Key">KGGKEY value used to find KGG</param>
-        /// <returns>Related KGG entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KGGKEY value didn't match any KGG entities</exception>
-        public KGG FindByKGGKEY(string Key)
+        internal KGGDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KGG result;
-            if (KGGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KGGKEY = new Lazy<Dictionary<string, KGG>>(() => this.ToDictionary(i => i.KGGKEY));
         }
-
-        /// <summary>
-        /// Attempt to find KGG by KGGKEY key field
-        /// </summary>
-        /// <param name="Key">KGGKEY value used to find KGG</param>
-        /// <param name="Value">Related KGG entity</param>
-        /// <returns>True if the KGG entity is found</returns>
-        public bool TryFindByKGGKEY(string Key, out KGG Value)
-        {
-            return KGGKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KGG by KGGKEY key field
-        /// </summary>
-        /// <param name="Key">KGGKEY value used to find KGG</param>
-        /// <returns>Related KGG entity, or null if not found</returns>
-        public KGG TryFindByKGGKEY(string Key)
-        {
-            KGG result;
-            if (KGGKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all OSCS (CASES Past Students) entities by [OSCS.ZEROMTH_CAT]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find OSCS entities</param>
-        /// <returns>A list of related OSCS entities</returns>
-        public IReadOnlyList<OSCS> FindOSCSByZEROMTH_CAT(string KGGKEY)
-        {
-            IReadOnlyList<OSCS> result;
-            if (OSCS_ZEROMTH_CATForeignIndex.Value.TryGetValue(KGGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<OSCS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all OSCS entities by [OSCS.ZEROMTH_CAT]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find OSCS entities</param>
-        /// <param name="Value">A list of related OSCS entities</param>
-        /// <returns>True if any OSCS entities are found</returns>
-        public bool TryFindOSCSByZEROMTH_CAT(string KGGKEY, out IReadOnlyList<OSCS> Value)
-        {
-            return OSCS_ZEROMTH_CATForeignIndex.Value.TryGetValue(KGGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all OSCS (CASES Past Students) entities by [OSCS.SIXMTH_CAT]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find OSCS entities</param>
-        /// <returns>A list of related OSCS entities</returns>
-        public IReadOnlyList<OSCS> FindOSCSBySIXMTH_CAT(string KGGKEY)
-        {
-            IReadOnlyList<OSCS> result;
-            if (OSCS_SIXMTH_CATForeignIndex.Value.TryGetValue(KGGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<OSCS>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all OSCS entities by [OSCS.SIXMTH_CAT]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find OSCS entities</param>
-        /// <param name="Value">A list of related OSCS entities</param>
-        /// <returns>True if any OSCS entities are found</returns>
-        public bool TryFindOSCSBySIXMTH_CAT(string KGGKEY, out IReadOnlyList<OSCS> Value)
-        {
-            return OSCS_SIXMTH_CATForeignIndex.Value.TryGetValue(KGGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.EXIT_CAT01]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByEXIT_CAT01(string KGGKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_EXIT_CAT01ForeignIndex.Value.TryGetValue(KGGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.EXIT_CAT01]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByEXIT_CAT01(string KGGKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_EXIT_CAT01ForeignIndex.Value.TryGetValue(KGGKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all ST (Students) entities by [ST.EXIT_CAT02]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find ST entities</param>
-        /// <returns>A list of related ST entities</returns>
-        public IReadOnlyList<ST> FindSTByEXIT_CAT02(string KGGKEY)
-        {
-            IReadOnlyList<ST> result;
-            if (ST_EXIT_CAT02ForeignIndex.Value.TryGetValue(KGGKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<ST>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all ST entities by [ST.EXIT_CAT02]-&gt;[KGG.KGGKEY]
-        /// </summary>
-        /// <param name="KGGKEY">KGGKEY value used to find ST entities</param>
-        /// <param name="Value">A list of related ST entities</param>
-        /// <returns>True if any ST entities are found</returns>
-        public bool TryFindSTByEXIT_CAT02(string KGGKEY, out IReadOnlyList<ST> Value)
-        {
-            return ST_EXIT_CAT02ForeignIndex.Value.TryGetValue(KGGKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KGG" />
@@ -257,5 +53,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KGG>> Index_KGGKEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KGG by KGGKEY field
+        /// </summary>
+        /// <param name="KGGKEY">KGGKEY value used to find KGG</param>
+        /// <returns>Related KGG entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGG FindByKGGKEY(string KGGKEY)
+        {
+            return Index_KGGKEY.Value[KGGKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KGG by KGGKEY field
+        /// </summary>
+        /// <param name="KGGKEY">KGGKEY value used to find KGG</param>
+        /// <param name="Value">Related KGG entity</param>
+        /// <returns>True if the related KGG entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKGGKEY(string KGGKEY, out KGG Value)
+        {
+            return Index_KGGKEY.Value.TryGetValue(KGGKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KGG by KGGKEY field
+        /// </summary>
+        /// <param name="KGGKEY">KGGKEY value used to find KGG</param>
+        /// <returns>Related KGG entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KGG TryFindByKGGKEY(string KGGKEY)
+        {
+            KGG value;
+            if (Index_KGGKEY.Value.TryGetValue(KGGKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

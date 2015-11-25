@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,109 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Medical Conditions Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCMDataSet : SetBase<KCM>
     {
-        private Lazy<Dictionary<string, KCM>> KCMKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<SMC>>> SMC_MED_CONDITIONForeignIndex;
-
-        internal KCMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            KCMKEYIndex = new Lazy<Dictionary<string, KCM>>(() => this.ToDictionary(e => e.KCMKEY));
-
-            SMC_MED_CONDITIONForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SMC>>>(() =>
-                    Context.SMC
-                          .Where(e => e.MED_CONDITION != null)
-                          .GroupBy(e => e.MED_CONDITION)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMC>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KCM"; } }
 
-        /// <summary>
-        /// Find KCM by KCMKEY key field
-        /// </summary>
-        /// <param name="Key">KCMKEY value used to find KCM</param>
-        /// <returns>Related KCM entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">KCMKEY value didn't match any KCM entities</exception>
-        public KCM FindByKCMKEY(string Key)
+        internal KCMDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KCM result;
-            if (KCMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_KCMKEY = new Lazy<Dictionary<string, KCM>>(() => this.ToDictionary(i => i.KCMKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<KCM>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
         }
-
-        /// <summary>
-        /// Attempt to find KCM by KCMKEY key field
-        /// </summary>
-        /// <param name="Key">KCMKEY value used to find KCM</param>
-        /// <param name="Value">Related KCM entity</param>
-        /// <returns>True if the KCM entity is found</returns>
-        public bool TryFindByKCMKEY(string Key, out KCM Value)
-        {
-            return KCMKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KCM by KCMKEY key field
-        /// </summary>
-        /// <param name="Key">KCMKEY value used to find KCM</param>
-        /// <returns>Related KCM entity, or null if not found</returns>
-        public KCM TryFindByKCMKEY(string Key)
-        {
-            KCM result;
-            if (KCMKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all SMC (Student Medical Conditions) entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
-        /// </summary>
-        /// <param name="KCMKEY">KCMKEY value used to find SMC entities</param>
-        /// <returns>A list of related SMC entities</returns>
-        public IReadOnlyList<SMC> FindSMCByMED_CONDITION(string KCMKEY)
-        {
-            IReadOnlyList<SMC> result;
-            if (SMC_MED_CONDITIONForeignIndex.Value.TryGetValue(KCMKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SMC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SMC entities by [SMC.MED_CONDITION]-&gt;[KCM.KCMKEY]
-        /// </summary>
-        /// <param name="KCMKEY">KCMKEY value used to find SMC entities</param>
-        /// <param name="Value">A list of related SMC entities</param>
-        /// <returns>True if any SMC entities are found</returns>
-        public bool TryFindSMCByMED_CONDITION(string KCMKEY, out IReadOnlyList<SMC> Value)
-        {
-            return SMC_MED_CONDITIONForeignIndex.Value.TryGetValue(KCMKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KCM" />
@@ -146,5 +57,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, KCM>> Index_KCMKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<KCM>>> Index_LW_DATE;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KCM by KCMKEY field
+        /// </summary>
+        /// <param name="KCMKEY">KCMKEY value used to find KCM</param>
+        /// <returns>Related KCM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCM FindByKCMKEY(string KCMKEY)
+        {
+            return Index_KCMKEY.Value[KCMKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find KCM by KCMKEY field
+        /// </summary>
+        /// <param name="KCMKEY">KCMKEY value used to find KCM</param>
+        /// <param name="Value">Related KCM entity</param>
+        /// <returns>True if the related KCM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByKCMKEY(string KCMKEY, out KCM Value)
+        {
+            return Index_KCMKEY.Value.TryGetValue(KCMKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCM by KCMKEY field
+        /// </summary>
+        /// <param name="KCMKEY">KCMKEY value used to find KCM</param>
+        /// <returns>Related KCM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KCM TryFindByKCMKEY(string KCMKEY)
+        {
+            KCM value;
+            if (Index_KCMKEY.Value.TryGetValue(KCMKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find KCM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCM</param>
+        /// <returns>List of related KCM entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCM> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find KCM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCM</param>
+        /// <param name="Value">List of related KCM entities</param>
+        /// <returns>True if the list of related KCM entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<KCM> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KCM by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find KCM</param>
+        /// <returns>List of related KCM entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<KCM> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<KCM> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,71 +8,19 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Task Message Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KTMDataSet : SetBase<KTM>
     {
-        private Lazy<Dictionary<int, KTM>> TIDIndex;
-
-
-        internal KTMDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            TIDIndex = new Lazy<Dictionary<int, KTM>>(() => this.ToDictionary(e => e.TID));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "KTM"; } }
 
-        /// <summary>
-        /// Find KTM by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KTM</param>
-        /// <returns>Related KTM entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">TID value didn't match any KTM entities</exception>
-        public KTM FindByTID(int Key)
+        internal KTMDataSet(EduHubContext Context)
+            : base(Context)
         {
-            KTM result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_TID = new Lazy<Dictionary<int, KTM>>(() => this.ToDictionary(i => i.TID));
         }
-
-        /// <summary>
-        /// Attempt to find KTM by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KTM</param>
-        /// <param name="Value">Related KTM entity</param>
-        /// <returns>True if the KTM entity is found</returns>
-        public bool TryFindByTID(int Key, out KTM Value)
-        {
-            return TIDIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find KTM by TID key field
-        /// </summary>
-        /// <param name="Key">TID value used to find KTM</param>
-        /// <returns>Related KTM entity, or null if not found</returns>
-        public KTM TryFindByTID(int Key)
-        {
-            KTM result;
-            if (TIDIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="KTM" />
@@ -102,5 +50,58 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<int, KTM>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find KTM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KTM</param>
+        /// <returns>Related KTM entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTM FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find KTM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KTM</param>
+        /// <param name="Value">Related KTM entity</param>
+        /// <returns>True if the related KTM entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out KTM Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find KTM by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find KTM</param>
+        /// <returns>Related KTM entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public KTM TryFindByTID(int TID)
+        {
+            KTM value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

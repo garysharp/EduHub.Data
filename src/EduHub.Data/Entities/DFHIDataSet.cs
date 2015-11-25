@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,20 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Family History Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DFHIDataSet : SetBase<DFHI>
     {
-
-
-        internal DFHIDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "DFHI"; } }
 
+        internal DFHIDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_FKEY = new Lazy<Dictionary<string, IReadOnlyList<DFHI>>>(() => this.ToGroupedDictionary(i => i.FKEY));
+            Index_TID = new Lazy<Dictionary<int, DFHI>>(() => this.ToDictionary(i => i.TID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="DFHI" />
@@ -36,7 +35,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "FKEY":
                         mapper[i] = (e, v) => e.FKEY = v;
@@ -118,5 +117,101 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<DFHI>>> Index_FKEY;
+        private Lazy<Dictionary<int, DFHI>> Index_TID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find DFHI by FKEY field
+        /// </summary>
+        /// <param name="FKEY">FKEY value used to find DFHI</param>
+        /// <returns>List of related DFHI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFHI> FindByFKEY(string FKEY)
+        {
+            return Index_FKEY.Value[FKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find DFHI by FKEY field
+        /// </summary>
+        /// <param name="FKEY">FKEY value used to find DFHI</param>
+        /// <param name="Value">List of related DFHI entities</param>
+        /// <returns>True if the list of related DFHI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFKEY(string FKEY, out IReadOnlyList<DFHI> Value)
+        {
+            return Index_FKEY.Value.TryGetValue(FKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFHI by FKEY field
+        /// </summary>
+        /// <param name="FKEY">FKEY value used to find DFHI</param>
+        /// <returns>List of related DFHI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DFHI> TryFindByFKEY(string FKEY)
+        {
+            IReadOnlyList<DFHI> value;
+            if (Index_FKEY.Value.TryGetValue(FKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find DFHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFHI</param>
+        /// <returns>Related DFHI entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFHI FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find DFHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFHI</param>
+        /// <param name="Value">Related DFHI entity</param>
+        /// <returns>True if the related DFHI entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out DFHI Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DFHI by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find DFHI</param>
+        /// <returns>Related DFHI entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public DFHI TryFindByTID(int TID)
+        {
+            DFHI value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

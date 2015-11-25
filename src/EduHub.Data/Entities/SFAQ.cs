@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,56 +7,70 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Staff Availability in Quilt
     /// </summary>
-    public partial class SFAQ : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class SFAQ : EntityBase
     {
-#region Navigation Property Cache
-        private SF _SFAQKEY_SF;
-        private TH _QKEY_TH;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private SF Cache_SFAQKEY_SF;
+        private TH Cache_QKEY_TH;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Staff key
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SFAQKEY { get; internal set; }
+
         /// <summary>
         /// Quilt
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string QKEY { get; internal set; }
+
         /// <summary>
         /// Day of the timetable cycle
         /// </summary>
         public short? DAY_NUMBER { get; internal set; }
+
         /// <summary>
         /// Start available period
         /// </summary>
         public short? START_PERIOD { get; internal set; }
+
         /// <summary>
         /// End available period
         /// </summary>
         public short? END_PERIOD { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// SF (Staff) related entity by [SFAQ.SFAQKEY]-&gt;[SF.SFKEY]
@@ -65,18 +80,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SFAQKEY != null)
+                if (Cache_SFAQKEY_SF == null)
                 {
-                    if (_SFAQKEY_SF == null)
-                    {
-                        _SFAQKEY_SF = Context.SF.FindBySFKEY(SFAQKEY);
-                    }
-                    return _SFAQKEY_SF;
+                    Cache_SFAQKEY_SF = Context.SF.FindBySFKEY(SFAQKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_SFAQKEY_SF;
             }
         }
 
@@ -88,20 +97,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (QKEY != null)
-                {
-                    if (_QKEY_TH == null)
-                    {
-                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
-                    }
-                    return _QKEY_TH;
-                }
-                else
+                if (QKEY == null)
                 {
                     return null;
                 }
+                if (Cache_QKEY_TH == null)
+                {
+                    Cache_QKEY_TH = Context.TH.FindByTHKEY(QKEY);
+                }
+
+                return Cache_QKEY_TH;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

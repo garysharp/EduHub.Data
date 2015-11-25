@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,71 +7,88 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Book Hire Records
     /// </summary>
-    public partial class BKHR : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class BKHR : EntityBase
     {
-#region Navigation Property Cache
-        private BKH _BKHRKEY_BKH;
-        private ST _STUDENT_ST;
-        private SF _STAFF_SF;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private BKH Cache_BKHRKEY_BKH;
+        private ST Cache_STUDENT_ST;
+        private SF Cache_STAFF_SF;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Book code of book
         /// [Uppercase Alphanumeric (13)]
         /// </summary>
         public string BKHRKEY { get; internal set; }
+
         /// <summary>
         /// Copy number
         /// </summary>
         public short? REF_NUMBER { get; internal set; }
+
         /// <summary>
         /// Student ID of student making loan
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string STUDENT { get; internal set; }
+
         /// <summary>
         /// Staff code of staff member making loan
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string STAFF { get; internal set; }
+
         /// <summary>
         /// Date of loan
         /// </summary>
         public DateTime? ISSUE_DATE { get; internal set; }
+
         /// <summary>
         /// Date due to be returned
         /// </summary>
         public DateTime? DUE_DATE { get; internal set; }
+
         /// <summary>
         /// Date of return
         /// </summary>
         public DateTime? RETURNED_DATE { get; internal set; }
+
         /// <summary>
-        /// 
+        /// &lt;No documentation available&gt;
         /// [Memo]
         /// </summary>
         public string CONDITION { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// BKH (Books for Hire) related entity by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
@@ -80,18 +98,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (BKHRKEY != null)
+                if (Cache_BKHRKEY_BKH == null)
                 {
-                    if (_BKHRKEY_BKH == null)
-                    {
-                        _BKHRKEY_BKH = Context.BKH.FindByBKHKEY(BKHRKEY);
-                    }
-                    return _BKHRKEY_BKH;
+                    Cache_BKHRKEY_BKH = Context.BKH.FindByBKHKEY(BKHRKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_BKHRKEY_BKH;
             }
         }
 
@@ -103,18 +115,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (STUDENT != null)
-                {
-                    if (_STUDENT_ST == null)
-                    {
-                        _STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
-                    }
-                    return _STUDENT_ST;
-                }
-                else
+                if (STUDENT == null)
                 {
                     return null;
                 }
+                if (Cache_STUDENT_ST == null)
+                {
+                    Cache_STUDENT_ST = Context.ST.FindBySTKEY(STUDENT);
+                }
+
+                return Cache_STUDENT_ST;
             }
         }
 
@@ -126,20 +136,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (STAFF != null)
-                {
-                    if (_STAFF_SF == null)
-                    {
-                        _STAFF_SF = Context.SF.FindBySFKEY(STAFF);
-                    }
-                    return _STAFF_SF;
-                }
-                else
+                if (STAFF == null)
                 {
                     return null;
                 }
+                if (Cache_STAFF_SF == null)
+                {
+                    Cache_STAFF_SF = Context.SF.FindBySFKEY(STAFF);
+                }
+
+                return Cache_STAFF_SF;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

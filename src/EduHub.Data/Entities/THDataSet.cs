@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,413 +8,33 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Quilt Headers Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class THDataSet : SetBase<TH>
     {
-        private Lazy<Dictionary<string, TH>> THKEYIndex;
-
-        private Lazy<Dictionary<string, IReadOnlyList<KCC>>> KCC_CURRENT_QUILTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SCI>>> SCI_CURRENT_QUILTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SCL>>> SCL_QUILTForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SFAQ>>> SFAQ_QKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<SMAQ>>> SMAQ_QKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<TCTD>>> TCTD_QKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<TCTQ>>> TCTQ_QKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<THTN>>> THTN_QKEYForeignIndex;
-        private Lazy<Dictionary<string, IReadOnlyList<THTQ>>> THTQ_QKEYForeignIndex;
-
-        internal THDataSet(EduHubContext Context)
-            : base(Context)
-        {
-            THKEYIndex = new Lazy<Dictionary<string, TH>>(() => this.ToDictionary(e => e.THKEY));
-
-            KCC_CURRENT_QUILTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<KCC>>>(() =>
-                    Context.KCC
-                          .Where(e => e.CURRENT_QUILT != null)
-                          .GroupBy(e => e.CURRENT_QUILT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<KCC>)g.ToList()
-                          .AsReadOnly()));
-
-            SCI_CURRENT_QUILTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SCI>>>(() =>
-                    Context.SCI
-                          .Where(e => e.CURRENT_QUILT != null)
-                          .GroupBy(e => e.CURRENT_QUILT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCI>)g.ToList()
-                          .AsReadOnly()));
-
-            SCL_QUILTForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SCL>>>(() =>
-                    Context.SCL
-                          .Where(e => e.QUILT != null)
-                          .GroupBy(e => e.QUILT)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SCL>)g.ToList()
-                          .AsReadOnly()));
-
-            SFAQ_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SFAQ>>>(() =>
-                    Context.SFAQ
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SFAQ>)g.ToList()
-                          .AsReadOnly()));
-
-            SMAQ_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<SMAQ>>>(() =>
-                    Context.SMAQ
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<SMAQ>)g.ToList()
-                          .AsReadOnly()));
-
-            TCTD_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<TCTD>>>(() =>
-                    Context.TCTD
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TCTD>)g.ToList()
-                          .AsReadOnly()));
-
-            TCTQ_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<TCTQ>>>(() =>
-                    Context.TCTQ
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<TCTQ>)g.ToList()
-                          .AsReadOnly()));
-
-            THTN_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<THTN>>>(() =>
-                    Context.THTN
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<THTN>)g.ToList()
-                          .AsReadOnly()));
-
-            THTQ_QKEYForeignIndex =
-                new Lazy<Dictionary<string, IReadOnlyList<THTQ>>>(() =>
-                    Context.THTQ
-                          .Where(e => e.QKEY != null)
-                          .GroupBy(e => e.QKEY)
-                          .ToDictionary(g => g.Key, g => (IReadOnlyList<THTQ>)g.ToList()
-                          .AsReadOnly()));
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "TH"; } }
 
-        /// <summary>
-        /// Find TH by THKEY key field
-        /// </summary>
-        /// <param name="Key">THKEY value used to find TH</param>
-        /// <returns>Related TH entity</returns>
-        /// <exception cref="ArgumentOutOfRangeException">THKEY value didn't match any TH entities</exception>
-        public TH FindByTHKEY(string Key)
+        internal THDataSet(EduHubContext Context)
+            : base(Context)
         {
-            TH result;
-            if (THKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Key");
-            }
+            Index_THKEY = new Lazy<Dictionary<string, TH>>(() => this.ToDictionary(i => i.THKEY));
+            Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_TT01KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT01KEY));
+            Index_TT02KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT02KEY));
+            Index_TT03KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT03KEY));
+            Index_TT04KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT04KEY));
+            Index_TT05KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT05KEY));
+            Index_TT06KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT06KEY));
+            Index_TT07KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT07KEY));
+            Index_TT08KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT08KEY));
+            Index_TT09KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT09KEY));
+            Index_TT10KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT10KEY));
+            Index_TT11KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT11KEY));
+            Index_TT12KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT12KEY));
+            Index_TT13KEY = new Lazy<NullDictionary<string, IReadOnlyList<TH>>>(() => this.ToGroupedNullDictionary(i => i.TT13KEY));
         }
-
-        /// <summary>
-        /// Attempt to find TH by THKEY key field
-        /// </summary>
-        /// <param name="Key">THKEY value used to find TH</param>
-        /// <param name="Value">Related TH entity</param>
-        /// <returns>True if the TH entity is found</returns>
-        public bool TryFindByTHKEY(string Key, out TH Value)
-        {
-            return THKEYIndex.Value.TryGetValue(Key, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find TH by THKEY key field
-        /// </summary>
-        /// <param name="Key">THKEY value used to find TH</param>
-        /// <returns>Related TH entity, or null if not found</returns>
-        public TH TryFindByTHKEY(string Key)
-        {
-            TH result;
-            if (THKEYIndex.Value.TryGetValue(Key, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find all KCC (Calendar Dates for Absences) entities by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find KCC entities</param>
-        /// <returns>A list of related KCC entities</returns>
-        public IReadOnlyList<KCC> FindKCCByCURRENT_QUILT(string THKEY)
-        {
-            IReadOnlyList<KCC> result;
-            if (KCC_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<KCC>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all KCC entities by [KCC.CURRENT_QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find KCC entities</param>
-        /// <param name="Value">A list of related KCC entities</param>
-        /// <returns>True if any KCC entities are found</returns>
-        public bool TryFindKCCByCURRENT_QUILT(string THKEY, out IReadOnlyList<KCC> Value)
-        {
-            return KCC_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SCI (School Information) entities by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SCI entities</param>
-        /// <returns>A list of related SCI entities</returns>
-        public IReadOnlyList<SCI> FindSCIByCURRENT_QUILT(string THKEY)
-        {
-            IReadOnlyList<SCI> result;
-            if (SCI_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SCI>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SCI entities by [SCI.CURRENT_QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SCI entities</param>
-        /// <param name="Value">A list of related SCI entities</param>
-        /// <returns>True if any SCI entities are found</returns>
-        public bool TryFindSCIByCURRENT_QUILT(string THKEY, out IReadOnlyList<SCI> Value)
-        {
-            return SCI_CURRENT_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SCL (Subject Classes) entities by [SCL.QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SCL entities</param>
-        /// <returns>A list of related SCL entities</returns>
-        public IReadOnlyList<SCL> FindSCLByQUILT(string THKEY)
-        {
-            IReadOnlyList<SCL> result;
-            if (SCL_QUILTForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SCL>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SCL entities by [SCL.QUILT]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SCL entities</param>
-        /// <param name="Value">A list of related SCL entities</param>
-        /// <returns>True if any SCL entities are found</returns>
-        public bool TryFindSCLByQUILT(string THKEY, out IReadOnlyList<SCL> Value)
-        {
-            return SCL_QUILTForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SFAQ (Staff Availability in Quilt) entities by [SFAQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SFAQ entities</param>
-        /// <returns>A list of related SFAQ entities</returns>
-        public IReadOnlyList<SFAQ> FindSFAQByQKEY(string THKEY)
-        {
-            IReadOnlyList<SFAQ> result;
-            if (SFAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SFAQ>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SFAQ entities by [SFAQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SFAQ entities</param>
-        /// <param name="Value">A list of related SFAQ entities</param>
-        /// <returns>True if any SFAQ entities are found</returns>
-        public bool TryFindSFAQByQKEY(string THKEY, out IReadOnlyList<SFAQ> Value)
-        {
-            return SFAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all SMAQ (Room Availability in Quilt) entities by [SMAQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SMAQ entities</param>
-        /// <returns>A list of related SMAQ entities</returns>
-        public IReadOnlyList<SMAQ> FindSMAQByQKEY(string THKEY)
-        {
-            IReadOnlyList<SMAQ> result;
-            if (SMAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<SMAQ>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all SMAQ entities by [SMAQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find SMAQ entities</param>
-        /// <param name="Value">A list of related SMAQ entities</param>
-        /// <returns>True if any SMAQ entities are found</returns>
-        public bool TryFindSMAQByQKEY(string THKEY, out IReadOnlyList<SMAQ> Value)
-        {
-            return SMAQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all TCTD (Calendar Period Information) entities by [TCTD.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TCTD entities</param>
-        /// <returns>A list of related TCTD entities</returns>
-        public IReadOnlyList<TCTD> FindTCTDByQKEY(string THKEY)
-        {
-            IReadOnlyList<TCTD> result;
-            if (TCTD_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<TCTD>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all TCTD entities by [TCTD.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TCTD entities</param>
-        /// <param name="Value">A list of related TCTD entities</param>
-        /// <returns>True if any TCTD entities are found</returns>
-        public bool TryFindTCTDByQKEY(string THKEY, out IReadOnlyList<TCTD> Value)
-        {
-            return TCTD_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all TCTQ (Calendar Class Information) entities by [TCTQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TCTQ entities</param>
-        /// <returns>A list of related TCTQ entities</returns>
-        public IReadOnlyList<TCTQ> FindTCTQByQKEY(string THKEY)
-        {
-            IReadOnlyList<TCTQ> result;
-            if (TCTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<TCTQ>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all TCTQ entities by [TCTQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find TCTQ entities</param>
-        /// <param name="Value">A list of related TCTQ entities</param>
-        /// <returns>True if any TCTQ entities are found</returns>
-        public bool TryFindTCTQByQKEY(string THKEY, out IReadOnlyList<TCTQ> Value)
-        {
-            return TCTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all THTN (Timetable Labels) entities by [THTN.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find THTN entities</param>
-        /// <returns>A list of related THTN entities</returns>
-        public IReadOnlyList<THTN> FindTHTNByQKEY(string THKEY)
-        {
-            IReadOnlyList<THTN> result;
-            if (THTN_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<THTN>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all THTN entities by [THTN.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find THTN entities</param>
-        /// <param name="Value">A list of related THTN entities</param>
-        /// <returns>True if any THTN entities are found</returns>
-        public bool TryFindTHTNByQKEY(string THKEY, out IReadOnlyList<THTN> Value)
-        {
-            return THTN_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
-        /// <summary>
-        /// Find all THTQ (Timetable Quilt Entries) entities by [THTQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find THTQ entities</param>
-        /// <returns>A list of related THTQ entities</returns>
-        public IReadOnlyList<THTQ> FindTHTQByQKEY(string THKEY)
-        {
-            IReadOnlyList<THTQ> result;
-            if (THTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return new List<THTQ>().AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Attempt to find all THTQ entities by [THTQ.QKEY]-&gt;[TH.THKEY]
-        /// </summary>
-        /// <param name="THKEY">THKEY value used to find THTQ entities</param>
-        /// <param name="Value">A list of related THTQ entities</param>
-        /// <returns>True if any THTQ entities are found</returns>
-        public bool TryFindTHTQByQKEY(string THKEY, out IReadOnlyList<THTQ> Value)
-        {
-            return THTQ_QKEYForeignIndex.Value.TryGetValue(THKEY, out Value);
-        }
-
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="TH" />
@@ -789,5 +409,660 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, TH>> Index_THKEY;
+        private Lazy<NullDictionary<DateTime?, IReadOnlyList<TH>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT01KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT02KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT03KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT04KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT05KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT06KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT07KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT08KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT09KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT10KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT11KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT12KEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<TH>>> Index_TT13KEY;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <returns>Related TH entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TH FindByTHKEY(string THKEY)
+        {
+            return Index_THKEY.Value[THKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <param name="Value">Related TH entity</param>
+        /// <returns>True if the related TH entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTHKEY(string THKEY, out TH Value)
+        {
+            return Index_THKEY.Value.TryGetValue(THKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by THKEY field
+        /// </summary>
+        /// <param name="THKEY">THKEY value used to find TH</param>
+        /// <returns>Related TH entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public TH TryFindByTHKEY(string THKEY)
+        {
+            TH value;
+            if (Index_THKEY.Value.TryGetValue(THKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByLW_DATE(DateTime? LW_DATE)
+        {
+            return Index_LW_DATE.Value[LW_DATE];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByLW_DATE(DateTime? LW_DATE, out IReadOnlyList<TH> Value)
+        {
+            return Index_LW_DATE.Value.TryGetValue(LW_DATE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by LW_DATE field
+        /// </summary>
+        /// <param name="LW_DATE">LW_DATE value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByLW_DATE(DateTime? LW_DATE)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT01KEY field
+        /// </summary>
+        /// <param name="TT01KEY">TT01KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT01KEY(string TT01KEY)
+        {
+            return Index_TT01KEY.Value[TT01KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT01KEY field
+        /// </summary>
+        /// <param name="TT01KEY">TT01KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT01KEY(string TT01KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT01KEY.Value.TryGetValue(TT01KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT01KEY field
+        /// </summary>
+        /// <param name="TT01KEY">TT01KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT01KEY(string TT01KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT01KEY.Value.TryGetValue(TT01KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT02KEY field
+        /// </summary>
+        /// <param name="TT02KEY">TT02KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT02KEY(string TT02KEY)
+        {
+            return Index_TT02KEY.Value[TT02KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT02KEY field
+        /// </summary>
+        /// <param name="TT02KEY">TT02KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT02KEY(string TT02KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT02KEY.Value.TryGetValue(TT02KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT02KEY field
+        /// </summary>
+        /// <param name="TT02KEY">TT02KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT02KEY(string TT02KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT02KEY.Value.TryGetValue(TT02KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT03KEY field
+        /// </summary>
+        /// <param name="TT03KEY">TT03KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT03KEY(string TT03KEY)
+        {
+            return Index_TT03KEY.Value[TT03KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT03KEY field
+        /// </summary>
+        /// <param name="TT03KEY">TT03KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT03KEY(string TT03KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT03KEY.Value.TryGetValue(TT03KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT03KEY field
+        /// </summary>
+        /// <param name="TT03KEY">TT03KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT03KEY(string TT03KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT03KEY.Value.TryGetValue(TT03KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT04KEY field
+        /// </summary>
+        /// <param name="TT04KEY">TT04KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT04KEY(string TT04KEY)
+        {
+            return Index_TT04KEY.Value[TT04KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT04KEY field
+        /// </summary>
+        /// <param name="TT04KEY">TT04KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT04KEY(string TT04KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT04KEY.Value.TryGetValue(TT04KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT04KEY field
+        /// </summary>
+        /// <param name="TT04KEY">TT04KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT04KEY(string TT04KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT04KEY.Value.TryGetValue(TT04KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT05KEY field
+        /// </summary>
+        /// <param name="TT05KEY">TT05KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT05KEY(string TT05KEY)
+        {
+            return Index_TT05KEY.Value[TT05KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT05KEY field
+        /// </summary>
+        /// <param name="TT05KEY">TT05KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT05KEY(string TT05KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT05KEY.Value.TryGetValue(TT05KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT05KEY field
+        /// </summary>
+        /// <param name="TT05KEY">TT05KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT05KEY(string TT05KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT05KEY.Value.TryGetValue(TT05KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT06KEY field
+        /// </summary>
+        /// <param name="TT06KEY">TT06KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT06KEY(string TT06KEY)
+        {
+            return Index_TT06KEY.Value[TT06KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT06KEY field
+        /// </summary>
+        /// <param name="TT06KEY">TT06KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT06KEY(string TT06KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT06KEY.Value.TryGetValue(TT06KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT06KEY field
+        /// </summary>
+        /// <param name="TT06KEY">TT06KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT06KEY(string TT06KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT06KEY.Value.TryGetValue(TT06KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT07KEY field
+        /// </summary>
+        /// <param name="TT07KEY">TT07KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT07KEY(string TT07KEY)
+        {
+            return Index_TT07KEY.Value[TT07KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT07KEY field
+        /// </summary>
+        /// <param name="TT07KEY">TT07KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT07KEY(string TT07KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT07KEY.Value.TryGetValue(TT07KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT07KEY field
+        /// </summary>
+        /// <param name="TT07KEY">TT07KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT07KEY(string TT07KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT07KEY.Value.TryGetValue(TT07KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT08KEY field
+        /// </summary>
+        /// <param name="TT08KEY">TT08KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT08KEY(string TT08KEY)
+        {
+            return Index_TT08KEY.Value[TT08KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT08KEY field
+        /// </summary>
+        /// <param name="TT08KEY">TT08KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT08KEY(string TT08KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT08KEY.Value.TryGetValue(TT08KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT08KEY field
+        /// </summary>
+        /// <param name="TT08KEY">TT08KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT08KEY(string TT08KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT08KEY.Value.TryGetValue(TT08KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT09KEY field
+        /// </summary>
+        /// <param name="TT09KEY">TT09KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT09KEY(string TT09KEY)
+        {
+            return Index_TT09KEY.Value[TT09KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT09KEY field
+        /// </summary>
+        /// <param name="TT09KEY">TT09KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT09KEY(string TT09KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT09KEY.Value.TryGetValue(TT09KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT09KEY field
+        /// </summary>
+        /// <param name="TT09KEY">TT09KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT09KEY(string TT09KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT09KEY.Value.TryGetValue(TT09KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT10KEY field
+        /// </summary>
+        /// <param name="TT10KEY">TT10KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT10KEY(string TT10KEY)
+        {
+            return Index_TT10KEY.Value[TT10KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT10KEY field
+        /// </summary>
+        /// <param name="TT10KEY">TT10KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT10KEY(string TT10KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT10KEY.Value.TryGetValue(TT10KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT10KEY field
+        /// </summary>
+        /// <param name="TT10KEY">TT10KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT10KEY(string TT10KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT10KEY.Value.TryGetValue(TT10KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT11KEY field
+        /// </summary>
+        /// <param name="TT11KEY">TT11KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT11KEY(string TT11KEY)
+        {
+            return Index_TT11KEY.Value[TT11KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT11KEY field
+        /// </summary>
+        /// <param name="TT11KEY">TT11KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT11KEY(string TT11KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT11KEY.Value.TryGetValue(TT11KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT11KEY field
+        /// </summary>
+        /// <param name="TT11KEY">TT11KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT11KEY(string TT11KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT11KEY.Value.TryGetValue(TT11KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT12KEY field
+        /// </summary>
+        /// <param name="TT12KEY">TT12KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT12KEY(string TT12KEY)
+        {
+            return Index_TT12KEY.Value[TT12KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT12KEY field
+        /// </summary>
+        /// <param name="TT12KEY">TT12KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT12KEY(string TT12KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT12KEY.Value.TryGetValue(TT12KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT12KEY field
+        /// </summary>
+        /// <param name="TT12KEY">TT12KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT12KEY(string TT12KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT12KEY.Value.TryGetValue(TT12KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find TH by TT13KEY field
+        /// </summary>
+        /// <param name="TT13KEY">TT13KEY value used to find TH</param>
+        /// <returns>List of related TH entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> FindByTT13KEY(string TT13KEY)
+        {
+            return Index_TT13KEY.Value[TT13KEY];
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT13KEY field
+        /// </summary>
+        /// <param name="TT13KEY">TT13KEY value used to find TH</param>
+        /// <param name="Value">List of related TH entities</param>
+        /// <returns>True if the list of related TH entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTT13KEY(string TT13KEY, out IReadOnlyList<TH> Value)
+        {
+            return Index_TT13KEY.Value.TryGetValue(TT13KEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TH by TT13KEY field
+        /// </summary>
+        /// <param name="TT13KEY">TT13KEY value used to find TH</param>
+        /// <returns>List of related TH entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TH> TryFindByTT13KEY(string TT13KEY)
+        {
+            IReadOnlyList<TH> value;
+            if (Index_TT13KEY.Value.TryGetValue(TT13KEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace EduHub.Data.Entities
@@ -6,184 +7,224 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Timetable Quilt Entries
     /// </summary>
-    public partial class THTQ : EntityBase
+    [GeneratedCode("EduHub Data", "0.9")]
+    public sealed partial class THTQ : EntityBase
     {
-#region Navigation Property Cache
-        private TH _QKEY_TH;
-        private TT _GKEY_TT;
-        private SU _SUBJ_SU;
-        private SF _T1TEACH_SF;
-        private SF _T2TEACH_SF;
-        private SM _R1ROOM_SM;
-        private SM _R2ROOM_SM;
-        private SF _EXTRA_TEACH_SF;
-        private SM _EXTRA_ROOM_SM;
-#endregion
 
-#region Field Properties
+        #region Navigation Property Cache
+
+        private TH Cache_QKEY_TH;
+        private TT Cache_GKEY_TT;
+        private SU Cache_SUBJ_SU;
+        private SF Cache_T1TEACH_SF;
+        private SF Cache_T2TEACH_SF;
+        private SM Cache_R1ROOM_SM;
+        private SM Cache_R2ROOM_SM;
+        private SF Cache_EXTRA_TEACH_SF;
+        private SM Cache_EXTRA_ROOM_SM;
+
+        #endregion
+
+        #region Field Properties
+
         /// <summary>
         /// Transaction ID (internal)
         /// </summary>
-        public int? TID { get; internal set; }
+        public int TID { get; internal set; }
+
         /// <summary>
         /// Link to Timetable Quilt Header
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string QKEY { get; internal set; }
+
         /// <summary>
         /// Link to Timetable Grid Template
         /// [Uppercase Alphanumeric (8)]
         /// </summary>
         public string GKEY { get; internal set; }
+
         /// <summary>
         /// Link to Subject
         /// [Uppercase Alphanumeric (5)]
         /// </summary>
         public string SUBJ { get; internal set; }
+
         /// <summary>
         /// Set
         /// </summary>
         public short? CLASS { get; internal set; }
+
         /// <summary>
         /// Occurrence of the subject
         /// </summary>
         public short? OCCUR { get; internal set; }
+
         /// <summary>
         /// Max occurrences in the quilt
         /// </summary>
         public short? FREQ { get; internal set; }
+
         /// <summary>
         /// Grid line label
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string ROW_LABEL { get; internal set; }
+
         /// <summary>
         /// Allows quilt labels to be "tied"
         /// </summary>
         public short? TIED { get; internal set; }
+
         /// <summary>
         /// Unique subject identifier (TTTG.IDENT)
         /// </summary>
-        public int IDENT { get; internal set; }
+        public int? IDENT { get; internal set; }
+
         /// <summary>
         /// Actual set size (TBI)
         /// </summary>
         public short? CLASS_SIZE { get; internal set; }
+
         /// <summary>
         /// Staff code of first or only teacher for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string T1TEACH { get; internal set; }
+
         /// <summary>
         /// Staff code of second teacher for this period (if any)
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string T2TEACH { get; internal set; }
+
         /// <summary>
         /// Room code of first or only room for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string R1ROOM { get; internal set; }
+
         /// <summary>
         /// Room code of second room for this period (if any)
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string R2ROOM { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES01 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES02 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES03 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES04 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES05 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES06 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES07 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES08 { get; internal set; }
+
         /// <summary>
         /// Resources for this period
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string RESOURCES09 { get; internal set; }
+
         /// <summary>
         /// Staff code of last replacement teacher
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string EXTRA_TEACH { get; internal set; }
+
         /// <summary>
         /// Room code of last replacement room
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string EXTRA_ROOM { get; internal set; }
+
         /// <summary>
         /// Quilt cell row
         /// </summary>
         public short? QROW { get; internal set; }
+
         /// <summary>
         /// Quilt cell col
         /// </summary>
         public short? QCOL { get; internal set; }
+
         /// <summary>
         /// Grid row (TTTG.HROW)
         /// </summary>
         public short? GROW { get; internal set; }
+
         /// <summary>
         /// Grid col (TTTG.HCOL)
         /// </summary>
         public short? GCOL { get; internal set; }
+
         /// <summary>
         /// Subject link chain no (TTTG.LCHAIN)
         /// </summary>
         public short? LINK { get; internal set; }
+
         /// <summary>
         /// Inserted by Schema Verify
         /// </summary>
         public short? COMPOSITE { get; internal set; }
+
         /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
+
         /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }
+
         /// <summary>
         /// Last write operator
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
-#endregion
 
-#region Navigation Properties
+        #endregion
+
+        #region Navigation Properties
 
         /// <summary>
         /// TH (Timetable Quilt Headers) related entity by [THTQ.QKEY]-&gt;[TH.THKEY]
@@ -193,18 +234,12 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (QKEY != null)
+                if (Cache_QKEY_TH == null)
                 {
-                    if (_QKEY_TH == null)
-                    {
-                        _QKEY_TH = Context.TH.FindByTHKEY(QKEY);
-                    }
-                    return _QKEY_TH;
+                    Cache_QKEY_TH = Context.TH.FindByTHKEY(QKEY);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return Cache_QKEY_TH;
             }
         }
 
@@ -216,18 +251,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (GKEY != null)
-                {
-                    if (_GKEY_TT == null)
-                    {
-                        _GKEY_TT = Context.TT.FindByTTKEY(GKEY);
-                    }
-                    return _GKEY_TT;
-                }
-                else
+                if (GKEY == null)
                 {
                     return null;
                 }
+                if (Cache_GKEY_TT == null)
+                {
+                    Cache_GKEY_TT = Context.TT.FindByTTKEY(GKEY);
+                }
+
+                return Cache_GKEY_TT;
             }
         }
 
@@ -239,18 +272,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (SUBJ != null)
-                {
-                    if (_SUBJ_SU == null)
-                    {
-                        _SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
-                    }
-                    return _SUBJ_SU;
-                }
-                else
+                if (SUBJ == null)
                 {
                     return null;
                 }
+                if (Cache_SUBJ_SU == null)
+                {
+                    Cache_SUBJ_SU = Context.SU.FindBySUKEY(SUBJ);
+                }
+
+                return Cache_SUBJ_SU;
             }
         }
 
@@ -262,18 +293,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (T1TEACH != null)
-                {
-                    if (_T1TEACH_SF == null)
-                    {
-                        _T1TEACH_SF = Context.SF.FindBySFKEY(T1TEACH);
-                    }
-                    return _T1TEACH_SF;
-                }
-                else
+                if (T1TEACH == null)
                 {
                     return null;
                 }
+                if (Cache_T1TEACH_SF == null)
+                {
+                    Cache_T1TEACH_SF = Context.SF.FindBySFKEY(T1TEACH);
+                }
+
+                return Cache_T1TEACH_SF;
             }
         }
 
@@ -285,18 +314,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (T2TEACH != null)
-                {
-                    if (_T2TEACH_SF == null)
-                    {
-                        _T2TEACH_SF = Context.SF.FindBySFKEY(T2TEACH);
-                    }
-                    return _T2TEACH_SF;
-                }
-                else
+                if (T2TEACH == null)
                 {
                     return null;
                 }
+                if (Cache_T2TEACH_SF == null)
+                {
+                    Cache_T2TEACH_SF = Context.SF.FindBySFKEY(T2TEACH);
+                }
+
+                return Cache_T2TEACH_SF;
             }
         }
 
@@ -308,18 +335,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (R1ROOM != null)
-                {
-                    if (_R1ROOM_SM == null)
-                    {
-                        _R1ROOM_SM = Context.SM.FindByROOM(R1ROOM);
-                    }
-                    return _R1ROOM_SM;
-                }
-                else
+                if (R1ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_R1ROOM_SM == null)
+                {
+                    Cache_R1ROOM_SM = Context.SM.FindByROOM(R1ROOM);
+                }
+
+                return Cache_R1ROOM_SM;
             }
         }
 
@@ -331,18 +356,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (R2ROOM != null)
-                {
-                    if (_R2ROOM_SM == null)
-                    {
-                        _R2ROOM_SM = Context.SM.FindByROOM(R2ROOM);
-                    }
-                    return _R2ROOM_SM;
-                }
-                else
+                if (R2ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_R2ROOM_SM == null)
+                {
+                    Cache_R2ROOM_SM = Context.SM.FindByROOM(R2ROOM);
+                }
+
+                return Cache_R2ROOM_SM;
             }
         }
 
@@ -354,18 +377,16 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (EXTRA_TEACH != null)
-                {
-                    if (_EXTRA_TEACH_SF == null)
-                    {
-                        _EXTRA_TEACH_SF = Context.SF.FindBySFKEY(EXTRA_TEACH);
-                    }
-                    return _EXTRA_TEACH_SF;
-                }
-                else
+                if (EXTRA_TEACH == null)
                 {
                     return null;
                 }
+                if (Cache_EXTRA_TEACH_SF == null)
+                {
+                    Cache_EXTRA_TEACH_SF = Context.SF.FindBySFKEY(EXTRA_TEACH);
+                }
+
+                return Cache_EXTRA_TEACH_SF;
             }
         }
 
@@ -377,20 +398,20 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                if (EXTRA_ROOM != null)
-                {
-                    if (_EXTRA_ROOM_SM == null)
-                    {
-                        _EXTRA_ROOM_SM = Context.SM.FindByROOM(EXTRA_ROOM);
-                    }
-                    return _EXTRA_ROOM_SM;
-                }
-                else
+                if (EXTRA_ROOM == null)
                 {
                     return null;
                 }
+                if (Cache_EXTRA_ROOM_SM == null)
+                {
+                    Cache_EXTRA_ROOM_SM = Context.SM.FindByROOM(EXTRA_ROOM);
+                }
+
+                return Cache_EXTRA_ROOM_SM;
             }
         }
-#endregion
+
+        #endregion
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace EduHub.Data.Entities
@@ -8,21 +8,21 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// UM Transfer Data Set
     /// </summary>
+    [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class UM_TFRDataSet : SetBase<UM_TFR>
     {
-
-
-        internal UM_TFRDataSet(EduHubContext Context)
-            : base(Context)
-        {
-
-        }
-
         /// <summary>
         /// Data Set Name
         /// </summary>
         public override string Name { get { return "UM_TFR"; } }
 
+        internal UM_TFRDataSet(EduHubContext Context)
+            : base(Context)
+        {
+            Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<UM_TFR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
+            Index_TID = new Lazy<Dictionary<int, UM_TFR>>(() => this.ToDictionary(i => i.TID));
+            Index_UM_TRANS_ID = new Lazy<NullDictionary<string, UM_TFR>>(() => this.ToNullDictionary(i => i.UM_TRANS_ID));
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize <see cref="UM_TFR" />
@@ -36,7 +36,7 @@ namespace EduHub.Data.Entities
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
                     case "TID":
-                        mapper[i] = (e, v) => e.TID = v == null ? (int?)null : int.Parse(v);
+                        mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "ORIG_SCHOOL":
                         mapper[i] = (e, v) => e.ORIG_SCHOOL = v;
@@ -112,5 +112,144 @@ namespace EduHub.Data.Entities
 
             return mapper;
         }
+
+        #region Index Fields
+
+        private Lazy<Dictionary<string, IReadOnlyList<UM_TFR>>> Index_ORIG_SCHOOL;
+        private Lazy<Dictionary<int, UM_TFR>> Index_TID;
+        private Lazy<NullDictionary<string, UM_TFR>> Index_UM_TRANS_ID;
+
+        #endregion
+
+        #region Index Methods
+
+        /// <summary>
+        /// Find UM_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find UM_TFR</param>
+        /// <returns>List of related UM_TFR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM_TFR> FindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            return Index_ORIG_SCHOOL.Value[ORIG_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find UM_TFR</param>
+        /// <param name="Value">List of related UM_TFR entities</param>
+        /// <returns>True if the list of related UM_TFR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIG_SCHOOL(string ORIG_SCHOOL, out IReadOnlyList<UM_TFR> Value)
+        {
+            return Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by ORIG_SCHOOL field
+        /// </summary>
+        /// <param name="ORIG_SCHOOL">ORIG_SCHOOL value used to find UM_TFR</param>
+        /// <returns>List of related UM_TFR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<UM_TFR> TryFindByORIG_SCHOOL(string ORIG_SCHOOL)
+        {
+            IReadOnlyList<UM_TFR> value;
+            if (Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find UM_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find UM_TFR</param>
+        /// <returns>Related UM_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM_TFR FindByTID(int TID)
+        {
+            return Index_TID.Value[TID];
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find UM_TFR</param>
+        /// <param name="Value">Related UM_TFR entity</param>
+        /// <returns>True if the related UM_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTID(int TID, out UM_TFR Value)
+        {
+            return Index_TID.Value.TryGetValue(TID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by TID field
+        /// </summary>
+        /// <param name="TID">TID value used to find UM_TFR</param>
+        /// <returns>Related UM_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM_TFR TryFindByTID(int TID)
+        {
+            UM_TFR value;
+            if (Index_TID.Value.TryGetValue(TID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find UM_TFR by UM_TRANS_ID field
+        /// </summary>
+        /// <param name="UM_TRANS_ID">UM_TRANS_ID value used to find UM_TFR</param>
+        /// <returns>Related UM_TFR entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM_TFR FindByUM_TRANS_ID(string UM_TRANS_ID)
+        {
+            return Index_UM_TRANS_ID.Value[UM_TRANS_ID];
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by UM_TRANS_ID field
+        /// </summary>
+        /// <param name="UM_TRANS_ID">UM_TRANS_ID value used to find UM_TFR</param>
+        /// <param name="Value">Related UM_TFR entity</param>
+        /// <returns>True if the related UM_TFR entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByUM_TRANS_ID(string UM_TRANS_ID, out UM_TFR Value)
+        {
+            return Index_UM_TRANS_ID.Value.TryGetValue(UM_TRANS_ID, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find UM_TFR by UM_TRANS_ID field
+        /// </summary>
+        /// <param name="UM_TRANS_ID">UM_TRANS_ID value used to find UM_TFR</param>
+        /// <returns>Related UM_TFR entity, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public UM_TFR TryFindByUM_TRANS_ID(string UM_TRANS_ID)
+        {
+            UM_TFR value;
+            if (Index_UM_TRANS_ID.Value.TryGetValue(UM_TRANS_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
     }
 }
