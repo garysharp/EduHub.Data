@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Actual Sessions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TXASDataSet : SetBase<TXAS>
+    public sealed partial class TXASDataSet : DataSetBase<TXAS>
     {
         /// <summary>
         /// Data Set Name
@@ -391,6 +392,329 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a TXAS table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[TXAS](
+        [TID] int IDENTITY NOT NULL,
+        [THTQ_TID] int NULL,
+        [CLASS_SESSION] varchar(9) NULL,
+        [SUBJECT] varchar(5) NULL,
+        [CLASS] smallint NULL,
+        [TEACHER] varchar(4) NULL,
+        [LOCATION] varchar(4) NULL,
+        [PERIOD_NO] smallint NULL,
+        [DAY_NO] smallint NULL,
+        [SESSION_DATE] datetime NULL,
+        [PERIOD_DESC] varchar(10) NULL,
+        [START_TIME] smallint NULL,
+        [FINISH_TIME] smallint NULL,
+        [ROLL_MARKED] varchar(1) NULL,
+        [SCL_LINK] varchar(17) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [TXAS_Index_TID] PRIMARY KEY CLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [TXAS_Index_LOCATION] ON [dbo].[TXAS]
+    (
+            [LOCATION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TXAS_Index_LW_DATE] ON [dbo].[TXAS]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TXAS_Index_SCL_LINK] ON [dbo].[TXAS]
+    (
+            [SCL_LINK] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TXAS_Index_SUBJECT] ON [dbo].[TXAS]
+    (
+            [SUBJECT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TXAS_Index_TEACHER] ON [dbo].[TXAS]
+    (
+            [TEACHER] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TXAS data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TXAS data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new TXASDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class TXASDataReader : IDataReader, IDataRecord
+        {
+            private List<TXAS> Items;
+            private int CurrentIndex;
+            private TXAS CurrentItem;
+
+            public TXASDataReader(List<TXAS> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 18; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // THTQ_TID
+                        return CurrentItem.THTQ_TID;
+                    case 2: // CLASS_SESSION
+                        return CurrentItem.CLASS_SESSION;
+                    case 3: // SUBJECT
+                        return CurrentItem.SUBJECT;
+                    case 4: // CLASS
+                        return CurrentItem.CLASS;
+                    case 5: // TEACHER
+                        return CurrentItem.TEACHER;
+                    case 6: // LOCATION
+                        return CurrentItem.LOCATION;
+                    case 7: // PERIOD_NO
+                        return CurrentItem.PERIOD_NO;
+                    case 8: // DAY_NO
+                        return CurrentItem.DAY_NO;
+                    case 9: // SESSION_DATE
+                        return CurrentItem.SESSION_DATE;
+                    case 10: // PERIOD_DESC
+                        return CurrentItem.PERIOD_DESC;
+                    case 11: // START_TIME
+                        return CurrentItem.START_TIME;
+                    case 12: // FINISH_TIME
+                        return CurrentItem.FINISH_TIME;
+                    case 13: // ROLL_MARKED
+                        return CurrentItem.ROLL_MARKED;
+                    case 14: // SCL_LINK
+                        return CurrentItem.SCL_LINK;
+                    case 15: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 16: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 17: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // THTQ_TID
+                        return CurrentItem.THTQ_TID == null;
+                    case 2: // CLASS_SESSION
+                        return CurrentItem.CLASS_SESSION == null;
+                    case 3: // SUBJECT
+                        return CurrentItem.SUBJECT == null;
+                    case 4: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 5: // TEACHER
+                        return CurrentItem.TEACHER == null;
+                    case 6: // LOCATION
+                        return CurrentItem.LOCATION == null;
+                    case 7: // PERIOD_NO
+                        return CurrentItem.PERIOD_NO == null;
+                    case 8: // DAY_NO
+                        return CurrentItem.DAY_NO == null;
+                    case 9: // SESSION_DATE
+                        return CurrentItem.SESSION_DATE == null;
+                    case 10: // PERIOD_DESC
+                        return CurrentItem.PERIOD_DESC == null;
+                    case 11: // START_TIME
+                        return CurrentItem.START_TIME == null;
+                    case 12: // FINISH_TIME
+                        return CurrentItem.FINISH_TIME == null;
+                    case 13: // ROLL_MARKED
+                        return CurrentItem.ROLL_MARKED == null;
+                    case 14: // SCL_LINK
+                        return CurrentItem.SCL_LINK == null;
+                    case 15: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 16: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 17: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // THTQ_TID
+                        return "THTQ_TID";
+                    case 2: // CLASS_SESSION
+                        return "CLASS_SESSION";
+                    case 3: // SUBJECT
+                        return "SUBJECT";
+                    case 4: // CLASS
+                        return "CLASS";
+                    case 5: // TEACHER
+                        return "TEACHER";
+                    case 6: // LOCATION
+                        return "LOCATION";
+                    case 7: // PERIOD_NO
+                        return "PERIOD_NO";
+                    case 8: // DAY_NO
+                        return "DAY_NO";
+                    case 9: // SESSION_DATE
+                        return "SESSION_DATE";
+                    case 10: // PERIOD_DESC
+                        return "PERIOD_DESC";
+                    case 11: // START_TIME
+                        return "START_TIME";
+                    case 12: // FINISH_TIME
+                        return "FINISH_TIME";
+                    case 13: // ROLL_MARKED
+                        return "ROLL_MARKED";
+                    case 14: // SCL_LINK
+                        return "SCL_LINK";
+                    case 15: // LW_DATE
+                        return "LW_DATE";
+                    case 16: // LW_TIME
+                        return "LW_TIME";
+                    case 17: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "THTQ_TID":
+                        return 1;
+                    case "CLASS_SESSION":
+                        return 2;
+                    case "SUBJECT":
+                        return 3;
+                    case "CLASS":
+                        return 4;
+                    case "TEACHER":
+                        return 5;
+                    case "LOCATION":
+                        return 6;
+                    case "PERIOD_NO":
+                        return 7;
+                    case "DAY_NO":
+                        return 8;
+                    case "SESSION_DATE":
+                        return 9;
+                    case "PERIOD_DESC":
+                        return 10;
+                    case "START_TIME":
+                        return 11;
+                    case "FINISH_TIME":
+                        return 12;
+                    case "ROLL_MARKED":
+                        return 13;
+                    case "SCL_LINK":
+                        return 14;
+                    case "LW_DATE":
+                        return 15;
+                    case "LW_TIME":
+                        return 16;
+                    case "LW_USER":
+                        return 17;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

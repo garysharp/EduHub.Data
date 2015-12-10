@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Calendar Class Information Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTQDataSet : SetBase<TCTQ>
+    public sealed partial class TCTQDataSet : DataSetBase<TCTQ>
     {
         /// <summary>
         /// Data Set Name
@@ -700,6 +701,486 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a TCTQ table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[TCTQ](
+        [TID] int IDENTITY NOT NULL,
+        [TCTQKEY] datetime NOT NULL,
+        [QKEY] varchar(8) NULL,
+        [SUBJ] varchar(5) NULL,
+        [CLASS] smallint NULL,
+        [IDENT] int NULL,
+        [CLASS_SIZE] smallint NULL,
+        [T1TEACH] varchar(4) NULL,
+        [T2TEACH] varchar(4) NULL,
+        [R1ROOM] varchar(4) NULL,
+        [R2ROOM] varchar(4) NULL,
+        [RESOURCES01] varchar(4) NULL,
+        [RESOURCES02] varchar(4) NULL,
+        [RESOURCES03] varchar(4) NULL,
+        [RESOURCES04] varchar(4) NULL,
+        [RESOURCES05] varchar(4) NULL,
+        [RESOURCES06] varchar(4) NULL,
+        [RESOURCES07] varchar(4) NULL,
+        [RESOURCES08] varchar(4) NULL,
+        [RESOURCES09] varchar(4) NULL,
+        [EXTRA_TEACH] varchar(4) NULL,
+        [EXTRA_ROOM] varchar(4) NULL,
+        [QROW] smallint NULL,
+        [QCOL] smallint NULL,
+        [COMPOSITE] smallint NULL,
+        [GKEY] varchar(8) NULL,
+        [GROW] smallint NULL,
+        [GCOL] smallint NULL,
+        [GCOLOUR] int NULL,
+        [OCCUR] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [TCTQ_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_COMPOSITE] ON [dbo].[TCTQ]
+    (
+            [COMPOSITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_EXTRA_ROOM] ON [dbo].[TCTQ]
+    (
+            [EXTRA_ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_EXTRA_TEACH] ON [dbo].[TCTQ]
+    (
+            [EXTRA_TEACH] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_GKEY] ON [dbo].[TCTQ]
+    (
+            [GKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_QKEY] ON [dbo].[TCTQ]
+    (
+            [QKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_R1ROOM] ON [dbo].[TCTQ]
+    (
+            [R1ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_R2ROOM] ON [dbo].[TCTQ]
+    (
+            [R2ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_SUBJ] ON [dbo].[TCTQ]
+    (
+            [SUBJ] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_T1TEACH] ON [dbo].[TCTQ]
+    (
+            [T1TEACH] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_T2TEACH] ON [dbo].[TCTQ]
+    (
+            [T2TEACH] ASC
+    );
+    CREATE CLUSTERED INDEX [TCTQ_Index_TCTQKEY] ON [dbo].[TCTQ]
+    (
+            [TCTQKEY] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TCTQ data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TCTQ data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new TCTQDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class TCTQDataReader : IDataReader, IDataRecord
+        {
+            private List<TCTQ> Items;
+            private int CurrentIndex;
+            private TCTQ CurrentItem;
+
+            public TCTQDataReader(List<TCTQ> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 33; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // TCTQKEY
+                        return CurrentItem.TCTQKEY;
+                    case 2: // QKEY
+                        return CurrentItem.QKEY;
+                    case 3: // SUBJ
+                        return CurrentItem.SUBJ;
+                    case 4: // CLASS
+                        return CurrentItem.CLASS;
+                    case 5: // IDENT
+                        return CurrentItem.IDENT;
+                    case 6: // CLASS_SIZE
+                        return CurrentItem.CLASS_SIZE;
+                    case 7: // T1TEACH
+                        return CurrentItem.T1TEACH;
+                    case 8: // T2TEACH
+                        return CurrentItem.T2TEACH;
+                    case 9: // R1ROOM
+                        return CurrentItem.R1ROOM;
+                    case 10: // R2ROOM
+                        return CurrentItem.R2ROOM;
+                    case 11: // RESOURCES01
+                        return CurrentItem.RESOURCES01;
+                    case 12: // RESOURCES02
+                        return CurrentItem.RESOURCES02;
+                    case 13: // RESOURCES03
+                        return CurrentItem.RESOURCES03;
+                    case 14: // RESOURCES04
+                        return CurrentItem.RESOURCES04;
+                    case 15: // RESOURCES05
+                        return CurrentItem.RESOURCES05;
+                    case 16: // RESOURCES06
+                        return CurrentItem.RESOURCES06;
+                    case 17: // RESOURCES07
+                        return CurrentItem.RESOURCES07;
+                    case 18: // RESOURCES08
+                        return CurrentItem.RESOURCES08;
+                    case 19: // RESOURCES09
+                        return CurrentItem.RESOURCES09;
+                    case 20: // EXTRA_TEACH
+                        return CurrentItem.EXTRA_TEACH;
+                    case 21: // EXTRA_ROOM
+                        return CurrentItem.EXTRA_ROOM;
+                    case 22: // QROW
+                        return CurrentItem.QROW;
+                    case 23: // QCOL
+                        return CurrentItem.QCOL;
+                    case 24: // COMPOSITE
+                        return CurrentItem.COMPOSITE;
+                    case 25: // GKEY
+                        return CurrentItem.GKEY;
+                    case 26: // GROW
+                        return CurrentItem.GROW;
+                    case 27: // GCOL
+                        return CurrentItem.GCOL;
+                    case 28: // GCOLOUR
+                        return CurrentItem.GCOLOUR;
+                    case 29: // OCCUR
+                        return CurrentItem.OCCUR;
+                    case 30: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 31: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 32: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // QKEY
+                        return CurrentItem.QKEY == null;
+                    case 3: // SUBJ
+                        return CurrentItem.SUBJ == null;
+                    case 4: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 5: // IDENT
+                        return CurrentItem.IDENT == null;
+                    case 6: // CLASS_SIZE
+                        return CurrentItem.CLASS_SIZE == null;
+                    case 7: // T1TEACH
+                        return CurrentItem.T1TEACH == null;
+                    case 8: // T2TEACH
+                        return CurrentItem.T2TEACH == null;
+                    case 9: // R1ROOM
+                        return CurrentItem.R1ROOM == null;
+                    case 10: // R2ROOM
+                        return CurrentItem.R2ROOM == null;
+                    case 11: // RESOURCES01
+                        return CurrentItem.RESOURCES01 == null;
+                    case 12: // RESOURCES02
+                        return CurrentItem.RESOURCES02 == null;
+                    case 13: // RESOURCES03
+                        return CurrentItem.RESOURCES03 == null;
+                    case 14: // RESOURCES04
+                        return CurrentItem.RESOURCES04 == null;
+                    case 15: // RESOURCES05
+                        return CurrentItem.RESOURCES05 == null;
+                    case 16: // RESOURCES06
+                        return CurrentItem.RESOURCES06 == null;
+                    case 17: // RESOURCES07
+                        return CurrentItem.RESOURCES07 == null;
+                    case 18: // RESOURCES08
+                        return CurrentItem.RESOURCES08 == null;
+                    case 19: // RESOURCES09
+                        return CurrentItem.RESOURCES09 == null;
+                    case 20: // EXTRA_TEACH
+                        return CurrentItem.EXTRA_TEACH == null;
+                    case 21: // EXTRA_ROOM
+                        return CurrentItem.EXTRA_ROOM == null;
+                    case 22: // QROW
+                        return CurrentItem.QROW == null;
+                    case 23: // QCOL
+                        return CurrentItem.QCOL == null;
+                    case 24: // COMPOSITE
+                        return CurrentItem.COMPOSITE == null;
+                    case 25: // GKEY
+                        return CurrentItem.GKEY == null;
+                    case 26: // GROW
+                        return CurrentItem.GROW == null;
+                    case 27: // GCOL
+                        return CurrentItem.GCOL == null;
+                    case 28: // GCOLOUR
+                        return CurrentItem.GCOLOUR == null;
+                    case 29: // OCCUR
+                        return CurrentItem.OCCUR == null;
+                    case 30: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 31: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 32: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // TCTQKEY
+                        return "TCTQKEY";
+                    case 2: // QKEY
+                        return "QKEY";
+                    case 3: // SUBJ
+                        return "SUBJ";
+                    case 4: // CLASS
+                        return "CLASS";
+                    case 5: // IDENT
+                        return "IDENT";
+                    case 6: // CLASS_SIZE
+                        return "CLASS_SIZE";
+                    case 7: // T1TEACH
+                        return "T1TEACH";
+                    case 8: // T2TEACH
+                        return "T2TEACH";
+                    case 9: // R1ROOM
+                        return "R1ROOM";
+                    case 10: // R2ROOM
+                        return "R2ROOM";
+                    case 11: // RESOURCES01
+                        return "RESOURCES01";
+                    case 12: // RESOURCES02
+                        return "RESOURCES02";
+                    case 13: // RESOURCES03
+                        return "RESOURCES03";
+                    case 14: // RESOURCES04
+                        return "RESOURCES04";
+                    case 15: // RESOURCES05
+                        return "RESOURCES05";
+                    case 16: // RESOURCES06
+                        return "RESOURCES06";
+                    case 17: // RESOURCES07
+                        return "RESOURCES07";
+                    case 18: // RESOURCES08
+                        return "RESOURCES08";
+                    case 19: // RESOURCES09
+                        return "RESOURCES09";
+                    case 20: // EXTRA_TEACH
+                        return "EXTRA_TEACH";
+                    case 21: // EXTRA_ROOM
+                        return "EXTRA_ROOM";
+                    case 22: // QROW
+                        return "QROW";
+                    case 23: // QCOL
+                        return "QCOL";
+                    case 24: // COMPOSITE
+                        return "COMPOSITE";
+                    case 25: // GKEY
+                        return "GKEY";
+                    case 26: // GROW
+                        return "GROW";
+                    case 27: // GCOL
+                        return "GCOL";
+                    case 28: // GCOLOUR
+                        return "GCOLOUR";
+                    case 29: // OCCUR
+                        return "OCCUR";
+                    case 30: // LW_DATE
+                        return "LW_DATE";
+                    case 31: // LW_TIME
+                        return "LW_TIME";
+                    case 32: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "TCTQKEY":
+                        return 1;
+                    case "QKEY":
+                        return 2;
+                    case "SUBJ":
+                        return 3;
+                    case "CLASS":
+                        return 4;
+                    case "IDENT":
+                        return 5;
+                    case "CLASS_SIZE":
+                        return 6;
+                    case "T1TEACH":
+                        return 7;
+                    case "T2TEACH":
+                        return 8;
+                    case "R1ROOM":
+                        return 9;
+                    case "R2ROOM":
+                        return 10;
+                    case "RESOURCES01":
+                        return 11;
+                    case "RESOURCES02":
+                        return 12;
+                    case "RESOURCES03":
+                        return 13;
+                    case "RESOURCES04":
+                        return 14;
+                    case "RESOURCES05":
+                        return 15;
+                    case "RESOURCES06":
+                        return 16;
+                    case "RESOURCES07":
+                        return 17;
+                    case "RESOURCES08":
+                        return 18;
+                    case "RESOURCES09":
+                        return 19;
+                    case "EXTRA_TEACH":
+                        return 20;
+                    case "EXTRA_ROOM":
+                        return 21;
+                    case "QROW":
+                        return 22;
+                    case "QCOL":
+                        return 23;
+                    case "COMPOSITE":
+                        return 24;
+                    case "GKEY":
+                        return 25;
+                    case "GROW":
+                        return 26;
+                    case "GCOL":
+                        return 27;
+                    case "GCOLOUR":
+                        return 28;
+                    case "OCCUR":
+                        return 29;
+                    case "LW_DATE":
+                        return 30;
+                    case "LW_TIME":
+                        return 31;
+                    case "LW_USER":
+                        return 32;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

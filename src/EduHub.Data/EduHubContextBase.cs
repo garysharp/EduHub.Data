@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -206,6 +207,67 @@ namespace EduHub.Data
                 throw new ArgumentNullException(nameof(DefaultEduHubDirectory));
 
             return GetSiteIdentifier(DefaultEduHubDirectory);
+        }
+
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table, connecting to the SQL Server using Integrated Authentication.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the SQL database</param>
+        public void WriteToSqlServer(string Server, string Database)
+        {
+            var builder = new SqlConnectionStringBuilder()
+            {
+                ApplicationName = "EduHub.Data",
+                DataSource = Server,
+                InitialCatalog = Database,
+                MultipleActiveResultSets = true,
+                IntegratedSecurity = true
+            };
+
+            using (var connection = new SqlConnection(builder.ConnectionString))
+            {
+                WriteToSqlServer(connection);
+            }
+        }
+
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table, connecting to the SQL Server using the provided username and password.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to</param>
+        /// <param name="Database">The name of the SQL database</param>
+        /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
+        /// <param name="SqlPassword">The password for the SQL Server account</param>
+        public void WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            var builder = new SqlConnectionStringBuilder()
+            {
+                ApplicationName = "EduHub.Data",
+                DataSource = Server,
+                InitialCatalog = Database,
+                MultipleActiveResultSets = true,
+                UserID = SqlUsername,
+                Password = SqlPassword
+            };
+
+            using (var connection = new SqlConnection(builder.ConnectionString))
+            {
+                WriteToSqlServer(connection);
+            }
+        }
+
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table using the provided SQL Server connection.
+        /// </summary>
+        /// <param name="Connection">An existing connection to the SQL Server</param>
+        public void WriteToSqlServer(SqlConnection Connection)
+        {
+            foreach (var dataSetName in GetAvailableSets())
+            {
+                var dataSet = GetDataSet(dataSetName);
+
+                dataSet.WriteToSqlServer(Connection);
+            }
         }
 
         /// <summary>

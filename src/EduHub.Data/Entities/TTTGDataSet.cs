@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Grid Subjects Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTTGDataSet : SetBase<TTTG>
+    public sealed partial class TTTGDataSet : DataSetBase<TTTG>
     {
         /// <summary>
         /// Data Set Name
@@ -560,6 +561,578 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a TTTG table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[TTTG](
+        [TID] int IDENTITY NOT NULL,
+        [GKEY] varchar(8) NOT NULL,
+        [SUBJ] varchar(5) NULL,
+        [CLASS] smallint NULL,
+        [FIRST_CLASS] smallint NULL,
+        [NSET] smallint NULL,
+        [IDENT] int NULL,
+        [CLASS_SIZE] smallint NULL,
+        [MAXIMUM] smallint NULL,
+        [MINIMUM] smallint NULL,
+        [MINLINE] smallint NULL,
+        [MAXLINE] smallint NULL,
+        [MCOLOUR] smallint NULL,
+        [GCOLOUR] int NULL,
+        [UNITS] smallint NULL,
+        [T1TEACH] varchar(4) NULL,
+        [T2TEACH] varchar(4) NULL,
+        [R1ROOM] varchar(4) NULL,
+        [R2ROOM] varchar(4) NULL,
+        [RESOURCES01] varchar(4) NULL,
+        [RESOURCES02] varchar(4) NULL,
+        [RESOURCES03] varchar(4) NULL,
+        [RESOURCES04] varchar(4) NULL,
+        [RESOURCES05] varchar(4) NULL,
+        [RESOURCES06] varchar(4) NULL,
+        [RESOURCES07] varchar(4) NULL,
+        [RESOURCES08] varchar(4) NULL,
+        [RESOURCES09] varchar(4) NULL,
+        [LAB] varchar(5) NULL,
+        [FROW] smallint NULL,
+        [FCOL] smallint NULL,
+        [HROW] smallint NULL,
+        [HCOL] smallint NULL,
+        [BLOCK] varchar(1) NULL,
+        [LOCK] smallint NULL,
+        [TCHAIN] smallint NULL,
+        [LCHAIN] smallint NULL,
+        [TIED_COL] smallint NULL,
+        [LINK_COL] smallint NULL,
+        [MAX_ROW_CLASSES] smallint NULL,
+        [ROW_GROUP] varchar(2) NULL,
+        [DOUBLE_PERIODS] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [TTTG_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE CLUSTERED INDEX [TTTG_Index_GKEY] ON [dbo].[TTTG]
+    (
+            [GKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_IDENT] ON [dbo].[TTTG]
+    (
+            [IDENT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_R1ROOM] ON [dbo].[TTTG]
+    (
+            [R1ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_R2ROOM] ON [dbo].[TTTG]
+    (
+            [R2ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_SUBJ] ON [dbo].[TTTG]
+    (
+            [SUBJ] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_T1TEACH] ON [dbo].[TTTG]
+    (
+            [T1TEACH] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TTTG_Index_T2TEACH] ON [dbo].[TTTG]
+    (
+            [T2TEACH] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TTTG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TTTG data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new TTTGDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class TTTGDataReader : IDataReader, IDataRecord
+        {
+            private List<TTTG> Items;
+            private int CurrentIndex;
+            private TTTG CurrentItem;
+
+            public TTTGDataReader(List<TTTG> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 45; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // GKEY
+                        return CurrentItem.GKEY;
+                    case 2: // SUBJ
+                        return CurrentItem.SUBJ;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS;
+                    case 4: // FIRST_CLASS
+                        return CurrentItem.FIRST_CLASS;
+                    case 5: // NSET
+                        return CurrentItem.NSET;
+                    case 6: // IDENT
+                        return CurrentItem.IDENT;
+                    case 7: // CLASS_SIZE
+                        return CurrentItem.CLASS_SIZE;
+                    case 8: // MAXIMUM
+                        return CurrentItem.MAXIMUM;
+                    case 9: // MINIMUM
+                        return CurrentItem.MINIMUM;
+                    case 10: // MINLINE
+                        return CurrentItem.MINLINE;
+                    case 11: // MAXLINE
+                        return CurrentItem.MAXLINE;
+                    case 12: // MCOLOUR
+                        return CurrentItem.MCOLOUR;
+                    case 13: // GCOLOUR
+                        return CurrentItem.GCOLOUR;
+                    case 14: // UNITS
+                        return CurrentItem.UNITS;
+                    case 15: // T1TEACH
+                        return CurrentItem.T1TEACH;
+                    case 16: // T2TEACH
+                        return CurrentItem.T2TEACH;
+                    case 17: // R1ROOM
+                        return CurrentItem.R1ROOM;
+                    case 18: // R2ROOM
+                        return CurrentItem.R2ROOM;
+                    case 19: // RESOURCES01
+                        return CurrentItem.RESOURCES01;
+                    case 20: // RESOURCES02
+                        return CurrentItem.RESOURCES02;
+                    case 21: // RESOURCES03
+                        return CurrentItem.RESOURCES03;
+                    case 22: // RESOURCES04
+                        return CurrentItem.RESOURCES04;
+                    case 23: // RESOURCES05
+                        return CurrentItem.RESOURCES05;
+                    case 24: // RESOURCES06
+                        return CurrentItem.RESOURCES06;
+                    case 25: // RESOURCES07
+                        return CurrentItem.RESOURCES07;
+                    case 26: // RESOURCES08
+                        return CurrentItem.RESOURCES08;
+                    case 27: // RESOURCES09
+                        return CurrentItem.RESOURCES09;
+                    case 28: // LAB
+                        return CurrentItem.LAB;
+                    case 29: // FROW
+                        return CurrentItem.FROW;
+                    case 30: // FCOL
+                        return CurrentItem.FCOL;
+                    case 31: // HROW
+                        return CurrentItem.HROW;
+                    case 32: // HCOL
+                        return CurrentItem.HCOL;
+                    case 33: // BLOCK
+                        return CurrentItem.BLOCK;
+                    case 34: // LOCK
+                        return CurrentItem.LOCK;
+                    case 35: // TCHAIN
+                        return CurrentItem.TCHAIN;
+                    case 36: // LCHAIN
+                        return CurrentItem.LCHAIN;
+                    case 37: // TIED_COL
+                        return CurrentItem.TIED_COL;
+                    case 38: // LINK_COL
+                        return CurrentItem.LINK_COL;
+                    case 39: // MAX_ROW_CLASSES
+                        return CurrentItem.MAX_ROW_CLASSES;
+                    case 40: // ROW_GROUP
+                        return CurrentItem.ROW_GROUP;
+                    case 41: // DOUBLE_PERIODS
+                        return CurrentItem.DOUBLE_PERIODS;
+                    case 42: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 43: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 44: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // SUBJ
+                        return CurrentItem.SUBJ == null;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 4: // FIRST_CLASS
+                        return CurrentItem.FIRST_CLASS == null;
+                    case 5: // NSET
+                        return CurrentItem.NSET == null;
+                    case 6: // IDENT
+                        return CurrentItem.IDENT == null;
+                    case 7: // CLASS_SIZE
+                        return CurrentItem.CLASS_SIZE == null;
+                    case 8: // MAXIMUM
+                        return CurrentItem.MAXIMUM == null;
+                    case 9: // MINIMUM
+                        return CurrentItem.MINIMUM == null;
+                    case 10: // MINLINE
+                        return CurrentItem.MINLINE == null;
+                    case 11: // MAXLINE
+                        return CurrentItem.MAXLINE == null;
+                    case 12: // MCOLOUR
+                        return CurrentItem.MCOLOUR == null;
+                    case 13: // GCOLOUR
+                        return CurrentItem.GCOLOUR == null;
+                    case 14: // UNITS
+                        return CurrentItem.UNITS == null;
+                    case 15: // T1TEACH
+                        return CurrentItem.T1TEACH == null;
+                    case 16: // T2TEACH
+                        return CurrentItem.T2TEACH == null;
+                    case 17: // R1ROOM
+                        return CurrentItem.R1ROOM == null;
+                    case 18: // R2ROOM
+                        return CurrentItem.R2ROOM == null;
+                    case 19: // RESOURCES01
+                        return CurrentItem.RESOURCES01 == null;
+                    case 20: // RESOURCES02
+                        return CurrentItem.RESOURCES02 == null;
+                    case 21: // RESOURCES03
+                        return CurrentItem.RESOURCES03 == null;
+                    case 22: // RESOURCES04
+                        return CurrentItem.RESOURCES04 == null;
+                    case 23: // RESOURCES05
+                        return CurrentItem.RESOURCES05 == null;
+                    case 24: // RESOURCES06
+                        return CurrentItem.RESOURCES06 == null;
+                    case 25: // RESOURCES07
+                        return CurrentItem.RESOURCES07 == null;
+                    case 26: // RESOURCES08
+                        return CurrentItem.RESOURCES08 == null;
+                    case 27: // RESOURCES09
+                        return CurrentItem.RESOURCES09 == null;
+                    case 28: // LAB
+                        return CurrentItem.LAB == null;
+                    case 29: // FROW
+                        return CurrentItem.FROW == null;
+                    case 30: // FCOL
+                        return CurrentItem.FCOL == null;
+                    case 31: // HROW
+                        return CurrentItem.HROW == null;
+                    case 32: // HCOL
+                        return CurrentItem.HCOL == null;
+                    case 33: // BLOCK
+                        return CurrentItem.BLOCK == null;
+                    case 34: // LOCK
+                        return CurrentItem.LOCK == null;
+                    case 35: // TCHAIN
+                        return CurrentItem.TCHAIN == null;
+                    case 36: // LCHAIN
+                        return CurrentItem.LCHAIN == null;
+                    case 37: // TIED_COL
+                        return CurrentItem.TIED_COL == null;
+                    case 38: // LINK_COL
+                        return CurrentItem.LINK_COL == null;
+                    case 39: // MAX_ROW_CLASSES
+                        return CurrentItem.MAX_ROW_CLASSES == null;
+                    case 40: // ROW_GROUP
+                        return CurrentItem.ROW_GROUP == null;
+                    case 41: // DOUBLE_PERIODS
+                        return CurrentItem.DOUBLE_PERIODS == null;
+                    case 42: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 43: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 44: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // GKEY
+                        return "GKEY";
+                    case 2: // SUBJ
+                        return "SUBJ";
+                    case 3: // CLASS
+                        return "CLASS";
+                    case 4: // FIRST_CLASS
+                        return "FIRST_CLASS";
+                    case 5: // NSET
+                        return "NSET";
+                    case 6: // IDENT
+                        return "IDENT";
+                    case 7: // CLASS_SIZE
+                        return "CLASS_SIZE";
+                    case 8: // MAXIMUM
+                        return "MAXIMUM";
+                    case 9: // MINIMUM
+                        return "MINIMUM";
+                    case 10: // MINLINE
+                        return "MINLINE";
+                    case 11: // MAXLINE
+                        return "MAXLINE";
+                    case 12: // MCOLOUR
+                        return "MCOLOUR";
+                    case 13: // GCOLOUR
+                        return "GCOLOUR";
+                    case 14: // UNITS
+                        return "UNITS";
+                    case 15: // T1TEACH
+                        return "T1TEACH";
+                    case 16: // T2TEACH
+                        return "T2TEACH";
+                    case 17: // R1ROOM
+                        return "R1ROOM";
+                    case 18: // R2ROOM
+                        return "R2ROOM";
+                    case 19: // RESOURCES01
+                        return "RESOURCES01";
+                    case 20: // RESOURCES02
+                        return "RESOURCES02";
+                    case 21: // RESOURCES03
+                        return "RESOURCES03";
+                    case 22: // RESOURCES04
+                        return "RESOURCES04";
+                    case 23: // RESOURCES05
+                        return "RESOURCES05";
+                    case 24: // RESOURCES06
+                        return "RESOURCES06";
+                    case 25: // RESOURCES07
+                        return "RESOURCES07";
+                    case 26: // RESOURCES08
+                        return "RESOURCES08";
+                    case 27: // RESOURCES09
+                        return "RESOURCES09";
+                    case 28: // LAB
+                        return "LAB";
+                    case 29: // FROW
+                        return "FROW";
+                    case 30: // FCOL
+                        return "FCOL";
+                    case 31: // HROW
+                        return "HROW";
+                    case 32: // HCOL
+                        return "HCOL";
+                    case 33: // BLOCK
+                        return "BLOCK";
+                    case 34: // LOCK
+                        return "LOCK";
+                    case 35: // TCHAIN
+                        return "TCHAIN";
+                    case 36: // LCHAIN
+                        return "LCHAIN";
+                    case 37: // TIED_COL
+                        return "TIED_COL";
+                    case 38: // LINK_COL
+                        return "LINK_COL";
+                    case 39: // MAX_ROW_CLASSES
+                        return "MAX_ROW_CLASSES";
+                    case 40: // ROW_GROUP
+                        return "ROW_GROUP";
+                    case 41: // DOUBLE_PERIODS
+                        return "DOUBLE_PERIODS";
+                    case 42: // LW_DATE
+                        return "LW_DATE";
+                    case 43: // LW_TIME
+                        return "LW_TIME";
+                    case 44: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "GKEY":
+                        return 1;
+                    case "SUBJ":
+                        return 2;
+                    case "CLASS":
+                        return 3;
+                    case "FIRST_CLASS":
+                        return 4;
+                    case "NSET":
+                        return 5;
+                    case "IDENT":
+                        return 6;
+                    case "CLASS_SIZE":
+                        return 7;
+                    case "MAXIMUM":
+                        return 8;
+                    case "MINIMUM":
+                        return 9;
+                    case "MINLINE":
+                        return 10;
+                    case "MAXLINE":
+                        return 11;
+                    case "MCOLOUR":
+                        return 12;
+                    case "GCOLOUR":
+                        return 13;
+                    case "UNITS":
+                        return 14;
+                    case "T1TEACH":
+                        return 15;
+                    case "T2TEACH":
+                        return 16;
+                    case "R1ROOM":
+                        return 17;
+                    case "R2ROOM":
+                        return 18;
+                    case "RESOURCES01":
+                        return 19;
+                    case "RESOURCES02":
+                        return 20;
+                    case "RESOURCES03":
+                        return 21;
+                    case "RESOURCES04":
+                        return 22;
+                    case "RESOURCES05":
+                        return 23;
+                    case "RESOURCES06":
+                        return 24;
+                    case "RESOURCES07":
+                        return 25;
+                    case "RESOURCES08":
+                        return 26;
+                    case "RESOURCES09":
+                        return 27;
+                    case "LAB":
+                        return 28;
+                    case "FROW":
+                        return 29;
+                    case "FCOL":
+                        return 30;
+                    case "HROW":
+                        return 31;
+                    case "HCOL":
+                        return 32;
+                    case "BLOCK":
+                        return 33;
+                    case "LOCK":
+                        return 34;
+                    case "TCHAIN":
+                        return 35;
+                    case "LCHAIN":
+                        return 36;
+                    case "TIED_COL":
+                        return 37;
+                    case "LINK_COL":
+                        return 38;
+                    case "MAX_ROW_CLASSES":
+                        return 39;
+                    case "ROW_GROUP":
+                        return 40;
+                    case "DOUBLE_PERIODS":
+                        return 41;
+                    case "LW_DATE":
+                        return 42;
+                    case "LW_TIME":
+                        return 43;
+                    case "LW_USER":
+                        return 44;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

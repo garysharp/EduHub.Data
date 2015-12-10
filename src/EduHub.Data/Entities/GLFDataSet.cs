@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFDataSet : SetBase<GLF>
+    public sealed partial class GLFDataSet : DataSetBase<GLF>
     {
         /// <summary>
         /// Data Set Name
@@ -690,6 +691,712 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a GLF table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[GLF](
+        [TID] int NOT NULL,
+        [CODE] varchar(10) NOT NULL,
+        [TRBATCH] int NULL,
+        [TRPERD] int NULL,
+        [TRTYPE] varchar(1) NULL,
+        [TRQTY] int NULL,
+        [TRDATE] datetime NULL,
+        [TRREF] varchar(10) NULL,
+        [TRAMT] money NULL,
+        [TRDET] varchar(30) NULL,
+        [TRXLEDGER] varchar(2) NULL,
+        [TRXCODE] varchar(10) NULL,
+        [TRXTRTYPE] varchar(1) NULL,
+        [TRSHORT] varchar(10) NULL,
+        [TRBANK] varchar(10) NULL,
+        [RECONCILE] varchar(1) NULL,
+        [RECONCILE_FLAGGED] varchar(1) NULL,
+        [RECONCILE_DATE] datetime NULL,
+        [RECONCILE_USER] varchar(128) NULL,
+        [RECONCILE_STATEMENT] datetime NULL,
+        [PRINT_CHEQUE] varchar(1) NULL,
+        [CHEQUE_NO] varchar(10) NULL,
+        [PAYEE] varchar(30) NULL,
+        [ADDRESS01] varchar(30) NULL,
+        [ADDRESS02] varchar(30) NULL,
+        [CHQ_TID] int NULL,
+        [GST_BOX] varchar(3) NULL,
+        [GST_PERD] int NULL,
+        [GST_AMOUNT] money NULL,
+        [TRNETT] money NULL,
+        [TRGROSS] money NULL,
+        [GST_RATE] float NULL,
+        [GST_TYPE] varchar(4) NULL,
+        [GST_RECLAIM] varchar(1) NULL,
+        [GST_SALE_PURCH] varchar(2) NULL,
+        [SOURCE_TID] int NULL,
+        [WITHHOLD_AMOUNT] money NULL,
+        [WITHHOLD_TYPE] varchar(4) NULL,
+        [WITHHOLD_RATE] float NULL,
+        [EOY_KEPT] varchar(1) NULL,
+        [DRAWER] varchar(20) NULL,
+        [BSB] varchar(6) NULL,
+        [BANK] varchar(20) NULL,
+        [BRANCH] varchar(20) NULL,
+        [ACCOUNT_NUMBER] int NULL,
+        [RTYPE] varchar(2) NULL,
+        [LINE_NO] int NULL,
+        [FLAG] int NULL,
+        [DEBIT_TOTAL] money NULL,
+        [CREDIT_TOTAL] money NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [GLPROGRAM] varchar(3) NULL,
+        [INITIATIVE] varchar(3) NULL,
+        [DEBIT] money NULL,
+        [CREDIT] money NULL,
+        [CANCELLED] varchar(3) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [GLF_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_BSB] ON [dbo].[GLF]
+    (
+            [BSB] ASC
+    );
+    CREATE CLUSTERED INDEX [GLF_Index_CODE] ON [dbo].[GLF]
+    (
+            [CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_GLPROGRAM] ON [dbo].[GLF]
+    (
+            [GLPROGRAM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_GST_BOX] ON [dbo].[GLF]
+    (
+            [GST_BOX] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_GST_SALE_PURCH] ON [dbo].[GLF]
+    (
+            [GST_SALE_PURCH] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_GST_TYPE] ON [dbo].[GLF]
+    (
+            [GST_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_INITIATIVE] ON [dbo].[GLF]
+    (
+            [INITIATIVE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_SUBPROGRAM] ON [dbo].[GLF]
+    (
+            [SUBPROGRAM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_TRREF] ON [dbo].[GLF]
+    (
+            [TRREF] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the GLF data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the GLF data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new GLFDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class GLFDataReader : IDataReader, IDataRecord
+        {
+            private List<GLF> Items;
+            private int CurrentIndex;
+            private GLF CurrentItem;
+
+            public GLFDataReader(List<GLF> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 59; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // CODE
+                        return CurrentItem.CODE;
+                    case 2: // TRBATCH
+                        return CurrentItem.TRBATCH;
+                    case 3: // TRPERD
+                        return CurrentItem.TRPERD;
+                    case 4: // TRTYPE
+                        return CurrentItem.TRTYPE;
+                    case 5: // TRQTY
+                        return CurrentItem.TRQTY;
+                    case 6: // TRDATE
+                        return CurrentItem.TRDATE;
+                    case 7: // TRREF
+                        return CurrentItem.TRREF;
+                    case 8: // TRAMT
+                        return CurrentItem.TRAMT;
+                    case 9: // TRDET
+                        return CurrentItem.TRDET;
+                    case 10: // TRXLEDGER
+                        return CurrentItem.TRXLEDGER;
+                    case 11: // TRXCODE
+                        return CurrentItem.TRXCODE;
+                    case 12: // TRXTRTYPE
+                        return CurrentItem.TRXTRTYPE;
+                    case 13: // TRSHORT
+                        return CurrentItem.TRSHORT;
+                    case 14: // TRBANK
+                        return CurrentItem.TRBANK;
+                    case 15: // RECONCILE
+                        return CurrentItem.RECONCILE;
+                    case 16: // RECONCILE_FLAGGED
+                        return CurrentItem.RECONCILE_FLAGGED;
+                    case 17: // RECONCILE_DATE
+                        return CurrentItem.RECONCILE_DATE;
+                    case 18: // RECONCILE_USER
+                        return CurrentItem.RECONCILE_USER;
+                    case 19: // RECONCILE_STATEMENT
+                        return CurrentItem.RECONCILE_STATEMENT;
+                    case 20: // PRINT_CHEQUE
+                        return CurrentItem.PRINT_CHEQUE;
+                    case 21: // CHEQUE_NO
+                        return CurrentItem.CHEQUE_NO;
+                    case 22: // PAYEE
+                        return CurrentItem.PAYEE;
+                    case 23: // ADDRESS01
+                        return CurrentItem.ADDRESS01;
+                    case 24: // ADDRESS02
+                        return CurrentItem.ADDRESS02;
+                    case 25: // CHQ_TID
+                        return CurrentItem.CHQ_TID;
+                    case 26: // GST_BOX
+                        return CurrentItem.GST_BOX;
+                    case 27: // GST_PERD
+                        return CurrentItem.GST_PERD;
+                    case 28: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT;
+                    case 29: // TRNETT
+                        return CurrentItem.TRNETT;
+                    case 30: // TRGROSS
+                        return CurrentItem.TRGROSS;
+                    case 31: // GST_RATE
+                        return CurrentItem.GST_RATE;
+                    case 32: // GST_TYPE
+                        return CurrentItem.GST_TYPE;
+                    case 33: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM;
+                    case 34: // GST_SALE_PURCH
+                        return CurrentItem.GST_SALE_PURCH;
+                    case 35: // SOURCE_TID
+                        return CurrentItem.SOURCE_TID;
+                    case 36: // WITHHOLD_AMOUNT
+                        return CurrentItem.WITHHOLD_AMOUNT;
+                    case 37: // WITHHOLD_TYPE
+                        return CurrentItem.WITHHOLD_TYPE;
+                    case 38: // WITHHOLD_RATE
+                        return CurrentItem.WITHHOLD_RATE;
+                    case 39: // EOY_KEPT
+                        return CurrentItem.EOY_KEPT;
+                    case 40: // DRAWER
+                        return CurrentItem.DRAWER;
+                    case 41: // BSB
+                        return CurrentItem.BSB;
+                    case 42: // BANK
+                        return CurrentItem.BANK;
+                    case 43: // BRANCH
+                        return CurrentItem.BRANCH;
+                    case 44: // ACCOUNT_NUMBER
+                        return CurrentItem.ACCOUNT_NUMBER;
+                    case 45: // RTYPE
+                        return CurrentItem.RTYPE;
+                    case 46: // LINE_NO
+                        return CurrentItem.LINE_NO;
+                    case 47: // FLAG
+                        return CurrentItem.FLAG;
+                    case 48: // DEBIT_TOTAL
+                        return CurrentItem.DEBIT_TOTAL;
+                    case 49: // CREDIT_TOTAL
+                        return CurrentItem.CREDIT_TOTAL;
+                    case 50: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 51: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM;
+                    case 52: // INITIATIVE
+                        return CurrentItem.INITIATIVE;
+                    case 53: // DEBIT
+                        return CurrentItem.DEBIT;
+                    case 54: // CREDIT
+                        return CurrentItem.CREDIT;
+                    case 55: // CANCELLED
+                        return CurrentItem.CANCELLED;
+                    case 56: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 57: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 58: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // TRBATCH
+                        return CurrentItem.TRBATCH == null;
+                    case 3: // TRPERD
+                        return CurrentItem.TRPERD == null;
+                    case 4: // TRTYPE
+                        return CurrentItem.TRTYPE == null;
+                    case 5: // TRQTY
+                        return CurrentItem.TRQTY == null;
+                    case 6: // TRDATE
+                        return CurrentItem.TRDATE == null;
+                    case 7: // TRREF
+                        return CurrentItem.TRREF == null;
+                    case 8: // TRAMT
+                        return CurrentItem.TRAMT == null;
+                    case 9: // TRDET
+                        return CurrentItem.TRDET == null;
+                    case 10: // TRXLEDGER
+                        return CurrentItem.TRXLEDGER == null;
+                    case 11: // TRXCODE
+                        return CurrentItem.TRXCODE == null;
+                    case 12: // TRXTRTYPE
+                        return CurrentItem.TRXTRTYPE == null;
+                    case 13: // TRSHORT
+                        return CurrentItem.TRSHORT == null;
+                    case 14: // TRBANK
+                        return CurrentItem.TRBANK == null;
+                    case 15: // RECONCILE
+                        return CurrentItem.RECONCILE == null;
+                    case 16: // RECONCILE_FLAGGED
+                        return CurrentItem.RECONCILE_FLAGGED == null;
+                    case 17: // RECONCILE_DATE
+                        return CurrentItem.RECONCILE_DATE == null;
+                    case 18: // RECONCILE_USER
+                        return CurrentItem.RECONCILE_USER == null;
+                    case 19: // RECONCILE_STATEMENT
+                        return CurrentItem.RECONCILE_STATEMENT == null;
+                    case 20: // PRINT_CHEQUE
+                        return CurrentItem.PRINT_CHEQUE == null;
+                    case 21: // CHEQUE_NO
+                        return CurrentItem.CHEQUE_NO == null;
+                    case 22: // PAYEE
+                        return CurrentItem.PAYEE == null;
+                    case 23: // ADDRESS01
+                        return CurrentItem.ADDRESS01 == null;
+                    case 24: // ADDRESS02
+                        return CurrentItem.ADDRESS02 == null;
+                    case 25: // CHQ_TID
+                        return CurrentItem.CHQ_TID == null;
+                    case 26: // GST_BOX
+                        return CurrentItem.GST_BOX == null;
+                    case 27: // GST_PERD
+                        return CurrentItem.GST_PERD == null;
+                    case 28: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT == null;
+                    case 29: // TRNETT
+                        return CurrentItem.TRNETT == null;
+                    case 30: // TRGROSS
+                        return CurrentItem.TRGROSS == null;
+                    case 31: // GST_RATE
+                        return CurrentItem.GST_RATE == null;
+                    case 32: // GST_TYPE
+                        return CurrentItem.GST_TYPE == null;
+                    case 33: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM == null;
+                    case 34: // GST_SALE_PURCH
+                        return CurrentItem.GST_SALE_PURCH == null;
+                    case 35: // SOURCE_TID
+                        return CurrentItem.SOURCE_TID == null;
+                    case 36: // WITHHOLD_AMOUNT
+                        return CurrentItem.WITHHOLD_AMOUNT == null;
+                    case 37: // WITHHOLD_TYPE
+                        return CurrentItem.WITHHOLD_TYPE == null;
+                    case 38: // WITHHOLD_RATE
+                        return CurrentItem.WITHHOLD_RATE == null;
+                    case 39: // EOY_KEPT
+                        return CurrentItem.EOY_KEPT == null;
+                    case 40: // DRAWER
+                        return CurrentItem.DRAWER == null;
+                    case 41: // BSB
+                        return CurrentItem.BSB == null;
+                    case 42: // BANK
+                        return CurrentItem.BANK == null;
+                    case 43: // BRANCH
+                        return CurrentItem.BRANCH == null;
+                    case 44: // ACCOUNT_NUMBER
+                        return CurrentItem.ACCOUNT_NUMBER == null;
+                    case 45: // RTYPE
+                        return CurrentItem.RTYPE == null;
+                    case 46: // LINE_NO
+                        return CurrentItem.LINE_NO == null;
+                    case 47: // FLAG
+                        return CurrentItem.FLAG == null;
+                    case 48: // DEBIT_TOTAL
+                        return CurrentItem.DEBIT_TOTAL == null;
+                    case 49: // CREDIT_TOTAL
+                        return CurrentItem.CREDIT_TOTAL == null;
+                    case 50: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM == null;
+                    case 51: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM == null;
+                    case 52: // INITIATIVE
+                        return CurrentItem.INITIATIVE == null;
+                    case 53: // DEBIT
+                        return CurrentItem.DEBIT == null;
+                    case 54: // CREDIT
+                        return CurrentItem.CREDIT == null;
+                    case 55: // CANCELLED
+                        return CurrentItem.CANCELLED == null;
+                    case 56: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 57: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 58: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // CODE
+                        return "CODE";
+                    case 2: // TRBATCH
+                        return "TRBATCH";
+                    case 3: // TRPERD
+                        return "TRPERD";
+                    case 4: // TRTYPE
+                        return "TRTYPE";
+                    case 5: // TRQTY
+                        return "TRQTY";
+                    case 6: // TRDATE
+                        return "TRDATE";
+                    case 7: // TRREF
+                        return "TRREF";
+                    case 8: // TRAMT
+                        return "TRAMT";
+                    case 9: // TRDET
+                        return "TRDET";
+                    case 10: // TRXLEDGER
+                        return "TRXLEDGER";
+                    case 11: // TRXCODE
+                        return "TRXCODE";
+                    case 12: // TRXTRTYPE
+                        return "TRXTRTYPE";
+                    case 13: // TRSHORT
+                        return "TRSHORT";
+                    case 14: // TRBANK
+                        return "TRBANK";
+                    case 15: // RECONCILE
+                        return "RECONCILE";
+                    case 16: // RECONCILE_FLAGGED
+                        return "RECONCILE_FLAGGED";
+                    case 17: // RECONCILE_DATE
+                        return "RECONCILE_DATE";
+                    case 18: // RECONCILE_USER
+                        return "RECONCILE_USER";
+                    case 19: // RECONCILE_STATEMENT
+                        return "RECONCILE_STATEMENT";
+                    case 20: // PRINT_CHEQUE
+                        return "PRINT_CHEQUE";
+                    case 21: // CHEQUE_NO
+                        return "CHEQUE_NO";
+                    case 22: // PAYEE
+                        return "PAYEE";
+                    case 23: // ADDRESS01
+                        return "ADDRESS01";
+                    case 24: // ADDRESS02
+                        return "ADDRESS02";
+                    case 25: // CHQ_TID
+                        return "CHQ_TID";
+                    case 26: // GST_BOX
+                        return "GST_BOX";
+                    case 27: // GST_PERD
+                        return "GST_PERD";
+                    case 28: // GST_AMOUNT
+                        return "GST_AMOUNT";
+                    case 29: // TRNETT
+                        return "TRNETT";
+                    case 30: // TRGROSS
+                        return "TRGROSS";
+                    case 31: // GST_RATE
+                        return "GST_RATE";
+                    case 32: // GST_TYPE
+                        return "GST_TYPE";
+                    case 33: // GST_RECLAIM
+                        return "GST_RECLAIM";
+                    case 34: // GST_SALE_PURCH
+                        return "GST_SALE_PURCH";
+                    case 35: // SOURCE_TID
+                        return "SOURCE_TID";
+                    case 36: // WITHHOLD_AMOUNT
+                        return "WITHHOLD_AMOUNT";
+                    case 37: // WITHHOLD_TYPE
+                        return "WITHHOLD_TYPE";
+                    case 38: // WITHHOLD_RATE
+                        return "WITHHOLD_RATE";
+                    case 39: // EOY_KEPT
+                        return "EOY_KEPT";
+                    case 40: // DRAWER
+                        return "DRAWER";
+                    case 41: // BSB
+                        return "BSB";
+                    case 42: // BANK
+                        return "BANK";
+                    case 43: // BRANCH
+                        return "BRANCH";
+                    case 44: // ACCOUNT_NUMBER
+                        return "ACCOUNT_NUMBER";
+                    case 45: // RTYPE
+                        return "RTYPE";
+                    case 46: // LINE_NO
+                        return "LINE_NO";
+                    case 47: // FLAG
+                        return "FLAG";
+                    case 48: // DEBIT_TOTAL
+                        return "DEBIT_TOTAL";
+                    case 49: // CREDIT_TOTAL
+                        return "CREDIT_TOTAL";
+                    case 50: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 51: // GLPROGRAM
+                        return "GLPROGRAM";
+                    case 52: // INITIATIVE
+                        return "INITIATIVE";
+                    case 53: // DEBIT
+                        return "DEBIT";
+                    case 54: // CREDIT
+                        return "CREDIT";
+                    case 55: // CANCELLED
+                        return "CANCELLED";
+                    case 56: // LW_DATE
+                        return "LW_DATE";
+                    case 57: // LW_TIME
+                        return "LW_TIME";
+                    case 58: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "CODE":
+                        return 1;
+                    case "TRBATCH":
+                        return 2;
+                    case "TRPERD":
+                        return 3;
+                    case "TRTYPE":
+                        return 4;
+                    case "TRQTY":
+                        return 5;
+                    case "TRDATE":
+                        return 6;
+                    case "TRREF":
+                        return 7;
+                    case "TRAMT":
+                        return 8;
+                    case "TRDET":
+                        return 9;
+                    case "TRXLEDGER":
+                        return 10;
+                    case "TRXCODE":
+                        return 11;
+                    case "TRXTRTYPE":
+                        return 12;
+                    case "TRSHORT":
+                        return 13;
+                    case "TRBANK":
+                        return 14;
+                    case "RECONCILE":
+                        return 15;
+                    case "RECONCILE_FLAGGED":
+                        return 16;
+                    case "RECONCILE_DATE":
+                        return 17;
+                    case "RECONCILE_USER":
+                        return 18;
+                    case "RECONCILE_STATEMENT":
+                        return 19;
+                    case "PRINT_CHEQUE":
+                        return 20;
+                    case "CHEQUE_NO":
+                        return 21;
+                    case "PAYEE":
+                        return 22;
+                    case "ADDRESS01":
+                        return 23;
+                    case "ADDRESS02":
+                        return 24;
+                    case "CHQ_TID":
+                        return 25;
+                    case "GST_BOX":
+                        return 26;
+                    case "GST_PERD":
+                        return 27;
+                    case "GST_AMOUNT":
+                        return 28;
+                    case "TRNETT":
+                        return 29;
+                    case "TRGROSS":
+                        return 30;
+                    case "GST_RATE":
+                        return 31;
+                    case "GST_TYPE":
+                        return 32;
+                    case "GST_RECLAIM":
+                        return 33;
+                    case "GST_SALE_PURCH":
+                        return 34;
+                    case "SOURCE_TID":
+                        return 35;
+                    case "WITHHOLD_AMOUNT":
+                        return 36;
+                    case "WITHHOLD_TYPE":
+                        return 37;
+                    case "WITHHOLD_RATE":
+                        return 38;
+                    case "EOY_KEPT":
+                        return 39;
+                    case "DRAWER":
+                        return 40;
+                    case "BSB":
+                        return 41;
+                    case "BANK":
+                        return 42;
+                    case "BRANCH":
+                        return 43;
+                    case "ACCOUNT_NUMBER":
+                        return 44;
+                    case "RTYPE":
+                        return 45;
+                    case "LINE_NO":
+                        return 46;
+                    case "FLAG":
+                        return 47;
+                    case "DEBIT_TOTAL":
+                        return 48;
+                    case "CREDIT_TOTAL":
+                        return 49;
+                    case "SUBPROGRAM":
+                        return 50;
+                    case "GLPROGRAM":
+                        return 51;
+                    case "INITIATIVE":
+                        return 52;
+                    case "DEBIT":
+                        return 53;
+                    case "CREDIT":
+                        return 54;
+                    case "CANCELLED":
+                        return 55;
+                    case "LW_DATE":
+                        return 56;
+                    case "LW_TIME":
+                        return 57;
+                    case "LW_USER":
+                        return 58;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Payroll Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEFDataSet : SetBase<PEF>
+    public sealed partial class PEFDataSet : DataSetBase<PEF>
     {
         /// <summary>
         /// Data Set Name
@@ -510,6 +511,556 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a PEF table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PEF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[PEF](
+        [TID] int NOT NULL,
+        [CODE] varchar(10) NOT NULL,
+        [PAYITEM] smallint NULL,
+        [TRCENTRE] varchar(10) NULL,
+        [TRTYPE] varchar(1) NULL,
+        [TRBATCH] int NULL,
+        [TRPAYCODE] smallint NULL,
+        [TRPAYPERD] int NULL,
+        [TRPERD] int NULL,
+        [TRDATE] datetime NULL,
+        [TRREF] varchar(10) NULL,
+        [TRCOST] float NULL,
+        [TRQTY] float NULL,
+        [TRAMT] money NULL,
+        [TRPITYPE] varchar(1) NULL,
+        [TRUNIT] varchar(3) NULL,
+        [TRDET] varchar(30) NULL,
+        [TRNEXTPAYDATE] datetime NULL,
+        [TRNEXTPAYPERD] int NULL,
+        [TRPAYSPAN] smallint NULL,
+        [TRTAXSPAN] float NULL,
+        [PNNEXTPAYDATE] datetime NULL,
+        [SUPER_FUND] varchar(10) NULL,
+        [SUPER_MEMBER] varchar(20) NULL,
+        [WORKED_HOURS] float NULL,
+        [PAY_STEP] smallint NULL,
+        [TRNETT] money NULL,
+        [GST_AMOUNT] money NULL,
+        [TRGROSS] money NULL,
+        [PAYSIGNTYPE] varchar(1) NULL,
+        [SYSTEM_TAX] varchar(1) NULL,
+        [LINE_NO] int NULL,
+        [FLAG] int NULL,
+        [TERMINATION_TYPE] varchar(1) NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [GLPROGRAM] varchar(3) NULL,
+        [INITIATIVE] varchar(3) NULL,
+        [SPLIT_PERCENT] float NULL,
+        [ALTER_TRQTY] float NULL,
+        [ANNUALISED_LOADING] float NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [PEF_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE CLUSTERED INDEX [PEF_Index_CODE] ON [dbo].[PEF]
+    (
+            [CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PEF_Index_INITIATIVE] ON [dbo].[PEF]
+    (
+            [INITIATIVE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PEF_Index_PAY_STEP] ON [dbo].[PEF]
+    (
+            [PAY_STEP] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PEF_Index_PAYITEM] ON [dbo].[PEF]
+    (
+            [PAYITEM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PEF_Index_SUBPROGRAM] ON [dbo].[PEF]
+    (
+            [SUBPROGRAM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PEF_Index_TRCENTRE] ON [dbo].[PEF]
+    (
+            [TRCENTRE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PEF data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PEF data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new PEFDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class PEFDataReader : IDataReader, IDataRecord
+        {
+            private List<PEF> Items;
+            private int CurrentIndex;
+            private PEF CurrentItem;
+
+            public PEFDataReader(List<PEF> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 43; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // CODE
+                        return CurrentItem.CODE;
+                    case 2: // PAYITEM
+                        return CurrentItem.PAYITEM;
+                    case 3: // TRCENTRE
+                        return CurrentItem.TRCENTRE;
+                    case 4: // TRTYPE
+                        return CurrentItem.TRTYPE;
+                    case 5: // TRBATCH
+                        return CurrentItem.TRBATCH;
+                    case 6: // TRPAYCODE
+                        return CurrentItem.TRPAYCODE;
+                    case 7: // TRPAYPERD
+                        return CurrentItem.TRPAYPERD;
+                    case 8: // TRPERD
+                        return CurrentItem.TRPERD;
+                    case 9: // TRDATE
+                        return CurrentItem.TRDATE;
+                    case 10: // TRREF
+                        return CurrentItem.TRREF;
+                    case 11: // TRCOST
+                        return CurrentItem.TRCOST;
+                    case 12: // TRQTY
+                        return CurrentItem.TRQTY;
+                    case 13: // TRAMT
+                        return CurrentItem.TRAMT;
+                    case 14: // TRPITYPE
+                        return CurrentItem.TRPITYPE;
+                    case 15: // TRUNIT
+                        return CurrentItem.TRUNIT;
+                    case 16: // TRDET
+                        return CurrentItem.TRDET;
+                    case 17: // TRNEXTPAYDATE
+                        return CurrentItem.TRNEXTPAYDATE;
+                    case 18: // TRNEXTPAYPERD
+                        return CurrentItem.TRNEXTPAYPERD;
+                    case 19: // TRPAYSPAN
+                        return CurrentItem.TRPAYSPAN;
+                    case 20: // TRTAXSPAN
+                        return CurrentItem.TRTAXSPAN;
+                    case 21: // PNNEXTPAYDATE
+                        return CurrentItem.PNNEXTPAYDATE;
+                    case 22: // SUPER_FUND
+                        return CurrentItem.SUPER_FUND;
+                    case 23: // SUPER_MEMBER
+                        return CurrentItem.SUPER_MEMBER;
+                    case 24: // WORKED_HOURS
+                        return CurrentItem.WORKED_HOURS;
+                    case 25: // PAY_STEP
+                        return CurrentItem.PAY_STEP;
+                    case 26: // TRNETT
+                        return CurrentItem.TRNETT;
+                    case 27: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT;
+                    case 28: // TRGROSS
+                        return CurrentItem.TRGROSS;
+                    case 29: // PAYSIGNTYPE
+                        return CurrentItem.PAYSIGNTYPE;
+                    case 30: // SYSTEM_TAX
+                        return CurrentItem.SYSTEM_TAX;
+                    case 31: // LINE_NO
+                        return CurrentItem.LINE_NO;
+                    case 32: // FLAG
+                        return CurrentItem.FLAG;
+                    case 33: // TERMINATION_TYPE
+                        return CurrentItem.TERMINATION_TYPE;
+                    case 34: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 35: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM;
+                    case 36: // INITIATIVE
+                        return CurrentItem.INITIATIVE;
+                    case 37: // SPLIT_PERCENT
+                        return CurrentItem.SPLIT_PERCENT;
+                    case 38: // ALTER_TRQTY
+                        return CurrentItem.ALTER_TRQTY;
+                    case 39: // ANNUALISED_LOADING
+                        return CurrentItem.ANNUALISED_LOADING;
+                    case 40: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 41: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 42: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // PAYITEM
+                        return CurrentItem.PAYITEM == null;
+                    case 3: // TRCENTRE
+                        return CurrentItem.TRCENTRE == null;
+                    case 4: // TRTYPE
+                        return CurrentItem.TRTYPE == null;
+                    case 5: // TRBATCH
+                        return CurrentItem.TRBATCH == null;
+                    case 6: // TRPAYCODE
+                        return CurrentItem.TRPAYCODE == null;
+                    case 7: // TRPAYPERD
+                        return CurrentItem.TRPAYPERD == null;
+                    case 8: // TRPERD
+                        return CurrentItem.TRPERD == null;
+                    case 9: // TRDATE
+                        return CurrentItem.TRDATE == null;
+                    case 10: // TRREF
+                        return CurrentItem.TRREF == null;
+                    case 11: // TRCOST
+                        return CurrentItem.TRCOST == null;
+                    case 12: // TRQTY
+                        return CurrentItem.TRQTY == null;
+                    case 13: // TRAMT
+                        return CurrentItem.TRAMT == null;
+                    case 14: // TRPITYPE
+                        return CurrentItem.TRPITYPE == null;
+                    case 15: // TRUNIT
+                        return CurrentItem.TRUNIT == null;
+                    case 16: // TRDET
+                        return CurrentItem.TRDET == null;
+                    case 17: // TRNEXTPAYDATE
+                        return CurrentItem.TRNEXTPAYDATE == null;
+                    case 18: // TRNEXTPAYPERD
+                        return CurrentItem.TRNEXTPAYPERD == null;
+                    case 19: // TRPAYSPAN
+                        return CurrentItem.TRPAYSPAN == null;
+                    case 20: // TRTAXSPAN
+                        return CurrentItem.TRTAXSPAN == null;
+                    case 21: // PNNEXTPAYDATE
+                        return CurrentItem.PNNEXTPAYDATE == null;
+                    case 22: // SUPER_FUND
+                        return CurrentItem.SUPER_FUND == null;
+                    case 23: // SUPER_MEMBER
+                        return CurrentItem.SUPER_MEMBER == null;
+                    case 24: // WORKED_HOURS
+                        return CurrentItem.WORKED_HOURS == null;
+                    case 25: // PAY_STEP
+                        return CurrentItem.PAY_STEP == null;
+                    case 26: // TRNETT
+                        return CurrentItem.TRNETT == null;
+                    case 27: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT == null;
+                    case 28: // TRGROSS
+                        return CurrentItem.TRGROSS == null;
+                    case 29: // PAYSIGNTYPE
+                        return CurrentItem.PAYSIGNTYPE == null;
+                    case 30: // SYSTEM_TAX
+                        return CurrentItem.SYSTEM_TAX == null;
+                    case 31: // LINE_NO
+                        return CurrentItem.LINE_NO == null;
+                    case 32: // FLAG
+                        return CurrentItem.FLAG == null;
+                    case 33: // TERMINATION_TYPE
+                        return CurrentItem.TERMINATION_TYPE == null;
+                    case 34: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM == null;
+                    case 35: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM == null;
+                    case 36: // INITIATIVE
+                        return CurrentItem.INITIATIVE == null;
+                    case 37: // SPLIT_PERCENT
+                        return CurrentItem.SPLIT_PERCENT == null;
+                    case 38: // ALTER_TRQTY
+                        return CurrentItem.ALTER_TRQTY == null;
+                    case 39: // ANNUALISED_LOADING
+                        return CurrentItem.ANNUALISED_LOADING == null;
+                    case 40: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 41: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 42: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // CODE
+                        return "CODE";
+                    case 2: // PAYITEM
+                        return "PAYITEM";
+                    case 3: // TRCENTRE
+                        return "TRCENTRE";
+                    case 4: // TRTYPE
+                        return "TRTYPE";
+                    case 5: // TRBATCH
+                        return "TRBATCH";
+                    case 6: // TRPAYCODE
+                        return "TRPAYCODE";
+                    case 7: // TRPAYPERD
+                        return "TRPAYPERD";
+                    case 8: // TRPERD
+                        return "TRPERD";
+                    case 9: // TRDATE
+                        return "TRDATE";
+                    case 10: // TRREF
+                        return "TRREF";
+                    case 11: // TRCOST
+                        return "TRCOST";
+                    case 12: // TRQTY
+                        return "TRQTY";
+                    case 13: // TRAMT
+                        return "TRAMT";
+                    case 14: // TRPITYPE
+                        return "TRPITYPE";
+                    case 15: // TRUNIT
+                        return "TRUNIT";
+                    case 16: // TRDET
+                        return "TRDET";
+                    case 17: // TRNEXTPAYDATE
+                        return "TRNEXTPAYDATE";
+                    case 18: // TRNEXTPAYPERD
+                        return "TRNEXTPAYPERD";
+                    case 19: // TRPAYSPAN
+                        return "TRPAYSPAN";
+                    case 20: // TRTAXSPAN
+                        return "TRTAXSPAN";
+                    case 21: // PNNEXTPAYDATE
+                        return "PNNEXTPAYDATE";
+                    case 22: // SUPER_FUND
+                        return "SUPER_FUND";
+                    case 23: // SUPER_MEMBER
+                        return "SUPER_MEMBER";
+                    case 24: // WORKED_HOURS
+                        return "WORKED_HOURS";
+                    case 25: // PAY_STEP
+                        return "PAY_STEP";
+                    case 26: // TRNETT
+                        return "TRNETT";
+                    case 27: // GST_AMOUNT
+                        return "GST_AMOUNT";
+                    case 28: // TRGROSS
+                        return "TRGROSS";
+                    case 29: // PAYSIGNTYPE
+                        return "PAYSIGNTYPE";
+                    case 30: // SYSTEM_TAX
+                        return "SYSTEM_TAX";
+                    case 31: // LINE_NO
+                        return "LINE_NO";
+                    case 32: // FLAG
+                        return "FLAG";
+                    case 33: // TERMINATION_TYPE
+                        return "TERMINATION_TYPE";
+                    case 34: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 35: // GLPROGRAM
+                        return "GLPROGRAM";
+                    case 36: // INITIATIVE
+                        return "INITIATIVE";
+                    case 37: // SPLIT_PERCENT
+                        return "SPLIT_PERCENT";
+                    case 38: // ALTER_TRQTY
+                        return "ALTER_TRQTY";
+                    case 39: // ANNUALISED_LOADING
+                        return "ANNUALISED_LOADING";
+                    case 40: // LW_DATE
+                        return "LW_DATE";
+                    case 41: // LW_TIME
+                        return "LW_TIME";
+                    case 42: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "CODE":
+                        return 1;
+                    case "PAYITEM":
+                        return 2;
+                    case "TRCENTRE":
+                        return 3;
+                    case "TRTYPE":
+                        return 4;
+                    case "TRBATCH":
+                        return 5;
+                    case "TRPAYCODE":
+                        return 6;
+                    case "TRPAYPERD":
+                        return 7;
+                    case "TRPERD":
+                        return 8;
+                    case "TRDATE":
+                        return 9;
+                    case "TRREF":
+                        return 10;
+                    case "TRCOST":
+                        return 11;
+                    case "TRQTY":
+                        return 12;
+                    case "TRAMT":
+                        return 13;
+                    case "TRPITYPE":
+                        return 14;
+                    case "TRUNIT":
+                        return 15;
+                    case "TRDET":
+                        return 16;
+                    case "TRNEXTPAYDATE":
+                        return 17;
+                    case "TRNEXTPAYPERD":
+                        return 18;
+                    case "TRPAYSPAN":
+                        return 19;
+                    case "TRTAXSPAN":
+                        return 20;
+                    case "PNNEXTPAYDATE":
+                        return 21;
+                    case "SUPER_FUND":
+                        return 22;
+                    case "SUPER_MEMBER":
+                        return 23;
+                    case "WORKED_HOURS":
+                        return 24;
+                    case "PAY_STEP":
+                        return 25;
+                    case "TRNETT":
+                        return 26;
+                    case "GST_AMOUNT":
+                        return 27;
+                    case "TRGROSS":
+                        return 28;
+                    case "PAYSIGNTYPE":
+                        return 29;
+                    case "SYSTEM_TAX":
+                        return 30;
+                    case "LINE_NO":
+                        return 31;
+                    case "FLAG":
+                        return 32;
+                    case "TERMINATION_TYPE":
+                        return 33;
+                    case "SUBPROGRAM":
+                        return 34;
+                    case "GLPROGRAM":
+                        return 35;
+                    case "INITIATIVE":
+                        return 36;
+                    case "SPLIT_PERCENT":
+                        return 37;
+                    case "ALTER_TRQTY":
+                        return 38;
+                    case "ANNUALISED_LOADING":
+                        return 39;
+                    case "LW_DATE":
+                        return 40;
+                    case "LW_TIME":
+                        return 41;
+                    case "LW_USER":
+                        return 42;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

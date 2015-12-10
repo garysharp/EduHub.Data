@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Staff Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SFDataSet : SetBase<SF>
+    public sealed partial class SFDataSet : DataSetBase<SF>
     {
         /// <summary>
         /// Data Set Name
@@ -1836,6 +1837,1080 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SF table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SF](
+        [SFKEY] varchar(4) NOT NULL,
+        [SURNAME] varchar(30) NULL,
+        [TITLE] varchar(4) NULL,
+        [FIRST_NAME] varchar(20) NULL,
+        [SECOND_NAME] varchar(20) NULL,
+        [PREF_NAME] varchar(15) NULL,
+        [PREVIOUS_NAME] varchar(30) NULL,
+        [GENDER] varchar(1) NULL,
+        [BIRTHDATE] datetime NULL,
+        [HOMEKEY] int NULL,
+        [MAILKEY] int NULL,
+        [MOBILE] varchar(20) NULL,
+        [WORK_PHONE] varchar(20) NULL,
+        [E_MAIL] varchar(60) NULL,
+        [VIT_NO] varchar(10) NULL,
+        [START] datetime NULL,
+        [FINISH] datetime NULL,
+        [FACULTY01] varchar(10) NULL,
+        [FACULTY02] varchar(10) NULL,
+        [FACULTY03] varchar(10) NULL,
+        [FACULTY04] varchar(10) NULL,
+        [SUBJECT01] varchar(5) NULL,
+        [SUBJECT02] varchar(5) NULL,
+        [SUBJECT03] varchar(5) NULL,
+        [SUBJECT04] varchar(5) NULL,
+        [SUBJECT05] varchar(5) NULL,
+        [SUBJECT06] varchar(5) NULL,
+        [SUBJECT07] varchar(5) NULL,
+        [SUBJECT08] varchar(5) NULL,
+        [SUBJECT09] varchar(5) NULL,
+        [SUBJECT10] varchar(5) NULL,
+        [FTE] float NULL,
+        [AVAILABILITY01] varchar(1) NULL,
+        [AVAILABILITY02] varchar(1) NULL,
+        [AVAILABILITY03] varchar(1) NULL,
+        [AVAILABILITY04] varchar(1) NULL,
+        [AVAILABILITY05] varchar(1) NULL,
+        [RANK] smallint NULL,
+        [CAMPUS] int NULL,
+        [HOUSE] varchar(10) NULL,
+        [ROOM] varchar(4) NULL,
+        [OTHER_LOCATION] varchar(4) NULL,
+        [CAR_REGO] varchar(10) NULL,
+        [STAFF_TYPE] varchar(1) NULL,
+        [POS_CODE_A] varchar(6) NULL,
+        [POS_CODE_B] varchar(6) NULL,
+        [STATUS] varchar(1) NULL,
+        [STAFF_STATUS] varchar(4) NULL,
+        [MAJORA] varchar(4) NULL,
+        [MAJORB] varchar(4) NULL,
+        [MAJORC] varchar(4) NULL,
+        [SKILL_QUALIFICATION] text NULL,
+        [PAYROLL_REC_NO] varchar(9) NULL,
+        [PAYROLL_CLASS] varchar(20) NULL,
+        [RELIGION] varchar(12) NULL,
+        [REPORT_NAME] varchar(30) NULL,
+        [POLICE_CLEARANCE] varchar(1) NULL,
+        [CLEARANCE_DATE] datetime NULL,
+        [STAFF_PIC] image NULL,
+        [OK_TO_PUBLISH] varchar(1) NULL,
+        [PIC_LW_DATE] datetime NULL,
+        [PIC_STATUS] varchar(1) NULL,
+        [AVAILABLE] image NULL,
+        [MAX_EXTRAS] smallint NULL,
+        [ACC_EXTRAS] smallint NULL,
+        [WEEK_EXTRAS] smallint NULL,
+        [LAST_EXTRAS] datetime NULL,
+        [BIRTH_COUNTRY] varchar(6) NULL,
+        [LANG01] varchar(7) NULL,
+        [LANG02] varchar(7) NULL,
+        [INTERPRETER01] varchar(1) NULL,
+        [INTERPRETER02] varchar(1) NULL,
+        [EMERG_NAME01] varchar(30) NULL,
+        [EMERG_NAME02] varchar(30) NULL,
+        [EMERG_LANG01] varchar(7) NULL,
+        [EMERG_LANG02] varchar(7) NULL,
+        [EMERG_RELATION01] varchar(12) NULL,
+        [EMERG_RELATION02] varchar(12) NULL,
+        [EMERG_CONTACT01] text NULL,
+        [EMERG_CONTACT02] text NULL,
+        [GROUP_AVAILABILITY] varchar(1) NULL,
+        [NORMAL_ALLOTMENT] smallint NULL,
+        [HRMS_UPDATE] varchar(1) NULL,
+        [HRMS_DATETIME] datetime NULL,
+        [DEBTOR_ID] varchar(10) NULL,
+        [NOTES] text NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SF_Index_SFKEY] PRIMARY KEY CLUSTERED (
+            [SFKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_BIRTH_COUNTRY] ON [dbo].[SF]
+    (
+            [BIRTH_COUNTRY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_CAMPUS] ON [dbo].[SF]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_DEBTOR_ID] ON [dbo].[SF]
+    (
+            [DEBTOR_ID] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_EMERG_LANG01] ON [dbo].[SF]
+    (
+            [EMERG_LANG01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_EMERG_LANG02] ON [dbo].[SF]
+    (
+            [EMERG_LANG02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_FACULTY01] ON [dbo].[SF]
+    (
+            [FACULTY01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_FACULTY02] ON [dbo].[SF]
+    (
+            [FACULTY02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_FACULTY03] ON [dbo].[SF]
+    (
+            [FACULTY03] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_FACULTY04] ON [dbo].[SF]
+    (
+            [FACULTY04] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_HOMEKEY] ON [dbo].[SF]
+    (
+            [HOMEKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_HOUSE] ON [dbo].[SF]
+    (
+            [HOUSE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_LANG01] ON [dbo].[SF]
+    (
+            [LANG01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_LANG02] ON [dbo].[SF]
+    (
+            [LANG02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_LW_DATE] ON [dbo].[SF]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_MAILKEY] ON [dbo].[SF]
+    (
+            [MAILKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_MAJORA] ON [dbo].[SF]
+    (
+            [MAJORA] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_MAJORB] ON [dbo].[SF]
+    (
+            [MAJORB] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_MAJORC] ON [dbo].[SF]
+    (
+            [MAJORC] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_OTHER_LOCATION] ON [dbo].[SF]
+    (
+            [OTHER_LOCATION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_POS_CODE_A] ON [dbo].[SF]
+    (
+            [POS_CODE_A] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_POS_CODE_B] ON [dbo].[SF]
+    (
+            [POS_CODE_B] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_RELIGION] ON [dbo].[SF]
+    (
+            [RELIGION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_ROOM] ON [dbo].[SF]
+    (
+            [ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT01] ON [dbo].[SF]
+    (
+            [SUBJECT01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT02] ON [dbo].[SF]
+    (
+            [SUBJECT02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT03] ON [dbo].[SF]
+    (
+            [SUBJECT03] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT04] ON [dbo].[SF]
+    (
+            [SUBJECT04] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT05] ON [dbo].[SF]
+    (
+            [SUBJECT05] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT06] ON [dbo].[SF]
+    (
+            [SUBJECT06] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT07] ON [dbo].[SF]
+    (
+            [SUBJECT07] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT08] ON [dbo].[SF]
+    (
+            [SUBJECT08] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT09] ON [dbo].[SF]
+    (
+            [SUBJECT09] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT10] ON [dbo].[SF]
+    (
+            [SUBJECT10] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SF data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SF data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SFDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SFDataReader : IDataReader, IDataRecord
+        {
+            private List<SF> Items;
+            private int CurrentIndex;
+            private SF CurrentItem;
+
+            public SFDataReader(List<SF> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 89; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SFKEY
+                        return CurrentItem.SFKEY;
+                    case 1: // SURNAME
+                        return CurrentItem.SURNAME;
+                    case 2: // TITLE
+                        return CurrentItem.TITLE;
+                    case 3: // FIRST_NAME
+                        return CurrentItem.FIRST_NAME;
+                    case 4: // SECOND_NAME
+                        return CurrentItem.SECOND_NAME;
+                    case 5: // PREF_NAME
+                        return CurrentItem.PREF_NAME;
+                    case 6: // PREVIOUS_NAME
+                        return CurrentItem.PREVIOUS_NAME;
+                    case 7: // GENDER
+                        return CurrentItem.GENDER;
+                    case 8: // BIRTHDATE
+                        return CurrentItem.BIRTHDATE;
+                    case 9: // HOMEKEY
+                        return CurrentItem.HOMEKEY;
+                    case 10: // MAILKEY
+                        return CurrentItem.MAILKEY;
+                    case 11: // MOBILE
+                        return CurrentItem.MOBILE;
+                    case 12: // WORK_PHONE
+                        return CurrentItem.WORK_PHONE;
+                    case 13: // E_MAIL
+                        return CurrentItem.E_MAIL;
+                    case 14: // VIT_NO
+                        return CurrentItem.VIT_NO;
+                    case 15: // START
+                        return CurrentItem.START;
+                    case 16: // FINISH
+                        return CurrentItem.FINISH;
+                    case 17: // FACULTY01
+                        return CurrentItem.FACULTY01;
+                    case 18: // FACULTY02
+                        return CurrentItem.FACULTY02;
+                    case 19: // FACULTY03
+                        return CurrentItem.FACULTY03;
+                    case 20: // FACULTY04
+                        return CurrentItem.FACULTY04;
+                    case 21: // SUBJECT01
+                        return CurrentItem.SUBJECT01;
+                    case 22: // SUBJECT02
+                        return CurrentItem.SUBJECT02;
+                    case 23: // SUBJECT03
+                        return CurrentItem.SUBJECT03;
+                    case 24: // SUBJECT04
+                        return CurrentItem.SUBJECT04;
+                    case 25: // SUBJECT05
+                        return CurrentItem.SUBJECT05;
+                    case 26: // SUBJECT06
+                        return CurrentItem.SUBJECT06;
+                    case 27: // SUBJECT07
+                        return CurrentItem.SUBJECT07;
+                    case 28: // SUBJECT08
+                        return CurrentItem.SUBJECT08;
+                    case 29: // SUBJECT09
+                        return CurrentItem.SUBJECT09;
+                    case 30: // SUBJECT10
+                        return CurrentItem.SUBJECT10;
+                    case 31: // FTE
+                        return CurrentItem.FTE;
+                    case 32: // AVAILABILITY01
+                        return CurrentItem.AVAILABILITY01;
+                    case 33: // AVAILABILITY02
+                        return CurrentItem.AVAILABILITY02;
+                    case 34: // AVAILABILITY03
+                        return CurrentItem.AVAILABILITY03;
+                    case 35: // AVAILABILITY04
+                        return CurrentItem.AVAILABILITY04;
+                    case 36: // AVAILABILITY05
+                        return CurrentItem.AVAILABILITY05;
+                    case 37: // RANK
+                        return CurrentItem.RANK;
+                    case 38: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 39: // HOUSE
+                        return CurrentItem.HOUSE;
+                    case 40: // ROOM
+                        return CurrentItem.ROOM;
+                    case 41: // OTHER_LOCATION
+                        return CurrentItem.OTHER_LOCATION;
+                    case 42: // CAR_REGO
+                        return CurrentItem.CAR_REGO;
+                    case 43: // STAFF_TYPE
+                        return CurrentItem.STAFF_TYPE;
+                    case 44: // POS_CODE_A
+                        return CurrentItem.POS_CODE_A;
+                    case 45: // POS_CODE_B
+                        return CurrentItem.POS_CODE_B;
+                    case 46: // STATUS
+                        return CurrentItem.STATUS;
+                    case 47: // STAFF_STATUS
+                        return CurrentItem.STAFF_STATUS;
+                    case 48: // MAJORA
+                        return CurrentItem.MAJORA;
+                    case 49: // MAJORB
+                        return CurrentItem.MAJORB;
+                    case 50: // MAJORC
+                        return CurrentItem.MAJORC;
+                    case 51: // SKILL_QUALIFICATION
+                        return CurrentItem.SKILL_QUALIFICATION;
+                    case 52: // PAYROLL_REC_NO
+                        return CurrentItem.PAYROLL_REC_NO;
+                    case 53: // PAYROLL_CLASS
+                        return CurrentItem.PAYROLL_CLASS;
+                    case 54: // RELIGION
+                        return CurrentItem.RELIGION;
+                    case 55: // REPORT_NAME
+                        return CurrentItem.REPORT_NAME;
+                    case 56: // POLICE_CLEARANCE
+                        return CurrentItem.POLICE_CLEARANCE;
+                    case 57: // CLEARANCE_DATE
+                        return CurrentItem.CLEARANCE_DATE;
+                    case 58: // STAFF_PIC
+                        return CurrentItem.STAFF_PIC;
+                    case 59: // OK_TO_PUBLISH
+                        return CurrentItem.OK_TO_PUBLISH;
+                    case 60: // PIC_LW_DATE
+                        return CurrentItem.PIC_LW_DATE;
+                    case 61: // PIC_STATUS
+                        return CurrentItem.PIC_STATUS;
+                    case 62: // AVAILABLE
+                        return CurrentItem.AVAILABLE;
+                    case 63: // MAX_EXTRAS
+                        return CurrentItem.MAX_EXTRAS;
+                    case 64: // ACC_EXTRAS
+                        return CurrentItem.ACC_EXTRAS;
+                    case 65: // WEEK_EXTRAS
+                        return CurrentItem.WEEK_EXTRAS;
+                    case 66: // LAST_EXTRAS
+                        return CurrentItem.LAST_EXTRAS;
+                    case 67: // BIRTH_COUNTRY
+                        return CurrentItem.BIRTH_COUNTRY;
+                    case 68: // LANG01
+                        return CurrentItem.LANG01;
+                    case 69: // LANG02
+                        return CurrentItem.LANG02;
+                    case 70: // INTERPRETER01
+                        return CurrentItem.INTERPRETER01;
+                    case 71: // INTERPRETER02
+                        return CurrentItem.INTERPRETER02;
+                    case 72: // EMERG_NAME01
+                        return CurrentItem.EMERG_NAME01;
+                    case 73: // EMERG_NAME02
+                        return CurrentItem.EMERG_NAME02;
+                    case 74: // EMERG_LANG01
+                        return CurrentItem.EMERG_LANG01;
+                    case 75: // EMERG_LANG02
+                        return CurrentItem.EMERG_LANG02;
+                    case 76: // EMERG_RELATION01
+                        return CurrentItem.EMERG_RELATION01;
+                    case 77: // EMERG_RELATION02
+                        return CurrentItem.EMERG_RELATION02;
+                    case 78: // EMERG_CONTACT01
+                        return CurrentItem.EMERG_CONTACT01;
+                    case 79: // EMERG_CONTACT02
+                        return CurrentItem.EMERG_CONTACT02;
+                    case 80: // GROUP_AVAILABILITY
+                        return CurrentItem.GROUP_AVAILABILITY;
+                    case 81: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT;
+                    case 82: // HRMS_UPDATE
+                        return CurrentItem.HRMS_UPDATE;
+                    case 83: // HRMS_DATETIME
+                        return CurrentItem.HRMS_DATETIME;
+                    case 84: // DEBTOR_ID
+                        return CurrentItem.DEBTOR_ID;
+                    case 85: // NOTES
+                        return CurrentItem.NOTES;
+                    case 86: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 87: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 88: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // SURNAME
+                        return CurrentItem.SURNAME == null;
+                    case 2: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 3: // FIRST_NAME
+                        return CurrentItem.FIRST_NAME == null;
+                    case 4: // SECOND_NAME
+                        return CurrentItem.SECOND_NAME == null;
+                    case 5: // PREF_NAME
+                        return CurrentItem.PREF_NAME == null;
+                    case 6: // PREVIOUS_NAME
+                        return CurrentItem.PREVIOUS_NAME == null;
+                    case 7: // GENDER
+                        return CurrentItem.GENDER == null;
+                    case 8: // BIRTHDATE
+                        return CurrentItem.BIRTHDATE == null;
+                    case 9: // HOMEKEY
+                        return CurrentItem.HOMEKEY == null;
+                    case 10: // MAILKEY
+                        return CurrentItem.MAILKEY == null;
+                    case 11: // MOBILE
+                        return CurrentItem.MOBILE == null;
+                    case 12: // WORK_PHONE
+                        return CurrentItem.WORK_PHONE == null;
+                    case 13: // E_MAIL
+                        return CurrentItem.E_MAIL == null;
+                    case 14: // VIT_NO
+                        return CurrentItem.VIT_NO == null;
+                    case 15: // START
+                        return CurrentItem.START == null;
+                    case 16: // FINISH
+                        return CurrentItem.FINISH == null;
+                    case 17: // FACULTY01
+                        return CurrentItem.FACULTY01 == null;
+                    case 18: // FACULTY02
+                        return CurrentItem.FACULTY02 == null;
+                    case 19: // FACULTY03
+                        return CurrentItem.FACULTY03 == null;
+                    case 20: // FACULTY04
+                        return CurrentItem.FACULTY04 == null;
+                    case 21: // SUBJECT01
+                        return CurrentItem.SUBJECT01 == null;
+                    case 22: // SUBJECT02
+                        return CurrentItem.SUBJECT02 == null;
+                    case 23: // SUBJECT03
+                        return CurrentItem.SUBJECT03 == null;
+                    case 24: // SUBJECT04
+                        return CurrentItem.SUBJECT04 == null;
+                    case 25: // SUBJECT05
+                        return CurrentItem.SUBJECT05 == null;
+                    case 26: // SUBJECT06
+                        return CurrentItem.SUBJECT06 == null;
+                    case 27: // SUBJECT07
+                        return CurrentItem.SUBJECT07 == null;
+                    case 28: // SUBJECT08
+                        return CurrentItem.SUBJECT08 == null;
+                    case 29: // SUBJECT09
+                        return CurrentItem.SUBJECT09 == null;
+                    case 30: // SUBJECT10
+                        return CurrentItem.SUBJECT10 == null;
+                    case 31: // FTE
+                        return CurrentItem.FTE == null;
+                    case 32: // AVAILABILITY01
+                        return CurrentItem.AVAILABILITY01 == null;
+                    case 33: // AVAILABILITY02
+                        return CurrentItem.AVAILABILITY02 == null;
+                    case 34: // AVAILABILITY03
+                        return CurrentItem.AVAILABILITY03 == null;
+                    case 35: // AVAILABILITY04
+                        return CurrentItem.AVAILABILITY04 == null;
+                    case 36: // AVAILABILITY05
+                        return CurrentItem.AVAILABILITY05 == null;
+                    case 37: // RANK
+                        return CurrentItem.RANK == null;
+                    case 38: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 39: // HOUSE
+                        return CurrentItem.HOUSE == null;
+                    case 40: // ROOM
+                        return CurrentItem.ROOM == null;
+                    case 41: // OTHER_LOCATION
+                        return CurrentItem.OTHER_LOCATION == null;
+                    case 42: // CAR_REGO
+                        return CurrentItem.CAR_REGO == null;
+                    case 43: // STAFF_TYPE
+                        return CurrentItem.STAFF_TYPE == null;
+                    case 44: // POS_CODE_A
+                        return CurrentItem.POS_CODE_A == null;
+                    case 45: // POS_CODE_B
+                        return CurrentItem.POS_CODE_B == null;
+                    case 46: // STATUS
+                        return CurrentItem.STATUS == null;
+                    case 47: // STAFF_STATUS
+                        return CurrentItem.STAFF_STATUS == null;
+                    case 48: // MAJORA
+                        return CurrentItem.MAJORA == null;
+                    case 49: // MAJORB
+                        return CurrentItem.MAJORB == null;
+                    case 50: // MAJORC
+                        return CurrentItem.MAJORC == null;
+                    case 51: // SKILL_QUALIFICATION
+                        return CurrentItem.SKILL_QUALIFICATION == null;
+                    case 52: // PAYROLL_REC_NO
+                        return CurrentItem.PAYROLL_REC_NO == null;
+                    case 53: // PAYROLL_CLASS
+                        return CurrentItem.PAYROLL_CLASS == null;
+                    case 54: // RELIGION
+                        return CurrentItem.RELIGION == null;
+                    case 55: // REPORT_NAME
+                        return CurrentItem.REPORT_NAME == null;
+                    case 56: // POLICE_CLEARANCE
+                        return CurrentItem.POLICE_CLEARANCE == null;
+                    case 57: // CLEARANCE_DATE
+                        return CurrentItem.CLEARANCE_DATE == null;
+                    case 58: // STAFF_PIC
+                        return CurrentItem.STAFF_PIC == null;
+                    case 59: // OK_TO_PUBLISH
+                        return CurrentItem.OK_TO_PUBLISH == null;
+                    case 60: // PIC_LW_DATE
+                        return CurrentItem.PIC_LW_DATE == null;
+                    case 61: // PIC_STATUS
+                        return CurrentItem.PIC_STATUS == null;
+                    case 62: // AVAILABLE
+                        return CurrentItem.AVAILABLE == null;
+                    case 63: // MAX_EXTRAS
+                        return CurrentItem.MAX_EXTRAS == null;
+                    case 64: // ACC_EXTRAS
+                        return CurrentItem.ACC_EXTRAS == null;
+                    case 65: // WEEK_EXTRAS
+                        return CurrentItem.WEEK_EXTRAS == null;
+                    case 66: // LAST_EXTRAS
+                        return CurrentItem.LAST_EXTRAS == null;
+                    case 67: // BIRTH_COUNTRY
+                        return CurrentItem.BIRTH_COUNTRY == null;
+                    case 68: // LANG01
+                        return CurrentItem.LANG01 == null;
+                    case 69: // LANG02
+                        return CurrentItem.LANG02 == null;
+                    case 70: // INTERPRETER01
+                        return CurrentItem.INTERPRETER01 == null;
+                    case 71: // INTERPRETER02
+                        return CurrentItem.INTERPRETER02 == null;
+                    case 72: // EMERG_NAME01
+                        return CurrentItem.EMERG_NAME01 == null;
+                    case 73: // EMERG_NAME02
+                        return CurrentItem.EMERG_NAME02 == null;
+                    case 74: // EMERG_LANG01
+                        return CurrentItem.EMERG_LANG01 == null;
+                    case 75: // EMERG_LANG02
+                        return CurrentItem.EMERG_LANG02 == null;
+                    case 76: // EMERG_RELATION01
+                        return CurrentItem.EMERG_RELATION01 == null;
+                    case 77: // EMERG_RELATION02
+                        return CurrentItem.EMERG_RELATION02 == null;
+                    case 78: // EMERG_CONTACT01
+                        return CurrentItem.EMERG_CONTACT01 == null;
+                    case 79: // EMERG_CONTACT02
+                        return CurrentItem.EMERG_CONTACT02 == null;
+                    case 80: // GROUP_AVAILABILITY
+                        return CurrentItem.GROUP_AVAILABILITY == null;
+                    case 81: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT == null;
+                    case 82: // HRMS_UPDATE
+                        return CurrentItem.HRMS_UPDATE == null;
+                    case 83: // HRMS_DATETIME
+                        return CurrentItem.HRMS_DATETIME == null;
+                    case 84: // DEBTOR_ID
+                        return CurrentItem.DEBTOR_ID == null;
+                    case 85: // NOTES
+                        return CurrentItem.NOTES == null;
+                    case 86: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 87: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 88: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SFKEY
+                        return "SFKEY";
+                    case 1: // SURNAME
+                        return "SURNAME";
+                    case 2: // TITLE
+                        return "TITLE";
+                    case 3: // FIRST_NAME
+                        return "FIRST_NAME";
+                    case 4: // SECOND_NAME
+                        return "SECOND_NAME";
+                    case 5: // PREF_NAME
+                        return "PREF_NAME";
+                    case 6: // PREVIOUS_NAME
+                        return "PREVIOUS_NAME";
+                    case 7: // GENDER
+                        return "GENDER";
+                    case 8: // BIRTHDATE
+                        return "BIRTHDATE";
+                    case 9: // HOMEKEY
+                        return "HOMEKEY";
+                    case 10: // MAILKEY
+                        return "MAILKEY";
+                    case 11: // MOBILE
+                        return "MOBILE";
+                    case 12: // WORK_PHONE
+                        return "WORK_PHONE";
+                    case 13: // E_MAIL
+                        return "E_MAIL";
+                    case 14: // VIT_NO
+                        return "VIT_NO";
+                    case 15: // START
+                        return "START";
+                    case 16: // FINISH
+                        return "FINISH";
+                    case 17: // FACULTY01
+                        return "FACULTY01";
+                    case 18: // FACULTY02
+                        return "FACULTY02";
+                    case 19: // FACULTY03
+                        return "FACULTY03";
+                    case 20: // FACULTY04
+                        return "FACULTY04";
+                    case 21: // SUBJECT01
+                        return "SUBJECT01";
+                    case 22: // SUBJECT02
+                        return "SUBJECT02";
+                    case 23: // SUBJECT03
+                        return "SUBJECT03";
+                    case 24: // SUBJECT04
+                        return "SUBJECT04";
+                    case 25: // SUBJECT05
+                        return "SUBJECT05";
+                    case 26: // SUBJECT06
+                        return "SUBJECT06";
+                    case 27: // SUBJECT07
+                        return "SUBJECT07";
+                    case 28: // SUBJECT08
+                        return "SUBJECT08";
+                    case 29: // SUBJECT09
+                        return "SUBJECT09";
+                    case 30: // SUBJECT10
+                        return "SUBJECT10";
+                    case 31: // FTE
+                        return "FTE";
+                    case 32: // AVAILABILITY01
+                        return "AVAILABILITY01";
+                    case 33: // AVAILABILITY02
+                        return "AVAILABILITY02";
+                    case 34: // AVAILABILITY03
+                        return "AVAILABILITY03";
+                    case 35: // AVAILABILITY04
+                        return "AVAILABILITY04";
+                    case 36: // AVAILABILITY05
+                        return "AVAILABILITY05";
+                    case 37: // RANK
+                        return "RANK";
+                    case 38: // CAMPUS
+                        return "CAMPUS";
+                    case 39: // HOUSE
+                        return "HOUSE";
+                    case 40: // ROOM
+                        return "ROOM";
+                    case 41: // OTHER_LOCATION
+                        return "OTHER_LOCATION";
+                    case 42: // CAR_REGO
+                        return "CAR_REGO";
+                    case 43: // STAFF_TYPE
+                        return "STAFF_TYPE";
+                    case 44: // POS_CODE_A
+                        return "POS_CODE_A";
+                    case 45: // POS_CODE_B
+                        return "POS_CODE_B";
+                    case 46: // STATUS
+                        return "STATUS";
+                    case 47: // STAFF_STATUS
+                        return "STAFF_STATUS";
+                    case 48: // MAJORA
+                        return "MAJORA";
+                    case 49: // MAJORB
+                        return "MAJORB";
+                    case 50: // MAJORC
+                        return "MAJORC";
+                    case 51: // SKILL_QUALIFICATION
+                        return "SKILL_QUALIFICATION";
+                    case 52: // PAYROLL_REC_NO
+                        return "PAYROLL_REC_NO";
+                    case 53: // PAYROLL_CLASS
+                        return "PAYROLL_CLASS";
+                    case 54: // RELIGION
+                        return "RELIGION";
+                    case 55: // REPORT_NAME
+                        return "REPORT_NAME";
+                    case 56: // POLICE_CLEARANCE
+                        return "POLICE_CLEARANCE";
+                    case 57: // CLEARANCE_DATE
+                        return "CLEARANCE_DATE";
+                    case 58: // STAFF_PIC
+                        return "STAFF_PIC";
+                    case 59: // OK_TO_PUBLISH
+                        return "OK_TO_PUBLISH";
+                    case 60: // PIC_LW_DATE
+                        return "PIC_LW_DATE";
+                    case 61: // PIC_STATUS
+                        return "PIC_STATUS";
+                    case 62: // AVAILABLE
+                        return "AVAILABLE";
+                    case 63: // MAX_EXTRAS
+                        return "MAX_EXTRAS";
+                    case 64: // ACC_EXTRAS
+                        return "ACC_EXTRAS";
+                    case 65: // WEEK_EXTRAS
+                        return "WEEK_EXTRAS";
+                    case 66: // LAST_EXTRAS
+                        return "LAST_EXTRAS";
+                    case 67: // BIRTH_COUNTRY
+                        return "BIRTH_COUNTRY";
+                    case 68: // LANG01
+                        return "LANG01";
+                    case 69: // LANG02
+                        return "LANG02";
+                    case 70: // INTERPRETER01
+                        return "INTERPRETER01";
+                    case 71: // INTERPRETER02
+                        return "INTERPRETER02";
+                    case 72: // EMERG_NAME01
+                        return "EMERG_NAME01";
+                    case 73: // EMERG_NAME02
+                        return "EMERG_NAME02";
+                    case 74: // EMERG_LANG01
+                        return "EMERG_LANG01";
+                    case 75: // EMERG_LANG02
+                        return "EMERG_LANG02";
+                    case 76: // EMERG_RELATION01
+                        return "EMERG_RELATION01";
+                    case 77: // EMERG_RELATION02
+                        return "EMERG_RELATION02";
+                    case 78: // EMERG_CONTACT01
+                        return "EMERG_CONTACT01";
+                    case 79: // EMERG_CONTACT02
+                        return "EMERG_CONTACT02";
+                    case 80: // GROUP_AVAILABILITY
+                        return "GROUP_AVAILABILITY";
+                    case 81: // NORMAL_ALLOTMENT
+                        return "NORMAL_ALLOTMENT";
+                    case 82: // HRMS_UPDATE
+                        return "HRMS_UPDATE";
+                    case 83: // HRMS_DATETIME
+                        return "HRMS_DATETIME";
+                    case 84: // DEBTOR_ID
+                        return "DEBTOR_ID";
+                    case 85: // NOTES
+                        return "NOTES";
+                    case 86: // LW_DATE
+                        return "LW_DATE";
+                    case 87: // LW_TIME
+                        return "LW_TIME";
+                    case 88: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SFKEY":
+                        return 0;
+                    case "SURNAME":
+                        return 1;
+                    case "TITLE":
+                        return 2;
+                    case "FIRST_NAME":
+                        return 3;
+                    case "SECOND_NAME":
+                        return 4;
+                    case "PREF_NAME":
+                        return 5;
+                    case "PREVIOUS_NAME":
+                        return 6;
+                    case "GENDER":
+                        return 7;
+                    case "BIRTHDATE":
+                        return 8;
+                    case "HOMEKEY":
+                        return 9;
+                    case "MAILKEY":
+                        return 10;
+                    case "MOBILE":
+                        return 11;
+                    case "WORK_PHONE":
+                        return 12;
+                    case "E_MAIL":
+                        return 13;
+                    case "VIT_NO":
+                        return 14;
+                    case "START":
+                        return 15;
+                    case "FINISH":
+                        return 16;
+                    case "FACULTY01":
+                        return 17;
+                    case "FACULTY02":
+                        return 18;
+                    case "FACULTY03":
+                        return 19;
+                    case "FACULTY04":
+                        return 20;
+                    case "SUBJECT01":
+                        return 21;
+                    case "SUBJECT02":
+                        return 22;
+                    case "SUBJECT03":
+                        return 23;
+                    case "SUBJECT04":
+                        return 24;
+                    case "SUBJECT05":
+                        return 25;
+                    case "SUBJECT06":
+                        return 26;
+                    case "SUBJECT07":
+                        return 27;
+                    case "SUBJECT08":
+                        return 28;
+                    case "SUBJECT09":
+                        return 29;
+                    case "SUBJECT10":
+                        return 30;
+                    case "FTE":
+                        return 31;
+                    case "AVAILABILITY01":
+                        return 32;
+                    case "AVAILABILITY02":
+                        return 33;
+                    case "AVAILABILITY03":
+                        return 34;
+                    case "AVAILABILITY04":
+                        return 35;
+                    case "AVAILABILITY05":
+                        return 36;
+                    case "RANK":
+                        return 37;
+                    case "CAMPUS":
+                        return 38;
+                    case "HOUSE":
+                        return 39;
+                    case "ROOM":
+                        return 40;
+                    case "OTHER_LOCATION":
+                        return 41;
+                    case "CAR_REGO":
+                        return 42;
+                    case "STAFF_TYPE":
+                        return 43;
+                    case "POS_CODE_A":
+                        return 44;
+                    case "POS_CODE_B":
+                        return 45;
+                    case "STATUS":
+                        return 46;
+                    case "STAFF_STATUS":
+                        return 47;
+                    case "MAJORA":
+                        return 48;
+                    case "MAJORB":
+                        return 49;
+                    case "MAJORC":
+                        return 50;
+                    case "SKILL_QUALIFICATION":
+                        return 51;
+                    case "PAYROLL_REC_NO":
+                        return 52;
+                    case "PAYROLL_CLASS":
+                        return 53;
+                    case "RELIGION":
+                        return 54;
+                    case "REPORT_NAME":
+                        return 55;
+                    case "POLICE_CLEARANCE":
+                        return 56;
+                    case "CLEARANCE_DATE":
+                        return 57;
+                    case "STAFF_PIC":
+                        return 58;
+                    case "OK_TO_PUBLISH":
+                        return 59;
+                    case "PIC_LW_DATE":
+                        return 60;
+                    case "PIC_STATUS":
+                        return 61;
+                    case "AVAILABLE":
+                        return 62;
+                    case "MAX_EXTRAS":
+                        return 63;
+                    case "ACC_EXTRAS":
+                        return 64;
+                    case "WEEK_EXTRAS":
+                        return 65;
+                    case "LAST_EXTRAS":
+                        return 66;
+                    case "BIRTH_COUNTRY":
+                        return 67;
+                    case "LANG01":
+                        return 68;
+                    case "LANG02":
+                        return 69;
+                    case "INTERPRETER01":
+                        return 70;
+                    case "INTERPRETER02":
+                        return 71;
+                    case "EMERG_NAME01":
+                        return 72;
+                    case "EMERG_NAME02":
+                        return 73;
+                    case "EMERG_LANG01":
+                        return 74;
+                    case "EMERG_LANG02":
+                        return 75;
+                    case "EMERG_RELATION01":
+                        return 76;
+                    case "EMERG_RELATION02":
+                        return 77;
+                    case "EMERG_CONTACT01":
+                        return 78;
+                    case "EMERG_CONTACT02":
+                        return 79;
+                    case "GROUP_AVAILABILITY":
+                        return 80;
+                    case "NORMAL_ALLOTMENT":
+                        return 81;
+                    case "HRMS_UPDATE":
+                        return 82;
+                    case "HRMS_DATETIME":
+                        return 83;
+                    case "DEBTOR_ID":
+                        return 84;
+                    case "NOTES":
+                        return 85;
+                    case "LW_DATE":
+                        return 86;
+                    case "LW_TIME":
+                        return 87;
+                    case "LW_USER":
+                        return 88;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

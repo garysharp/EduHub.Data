@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Houses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGHDataSet : SetBase<KGH>
+    public sealed partial class KGHDataSet : DataSetBase<KGH>
     {
         /// <summary>
         /// Data Set Name
@@ -311,6 +312,601 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KGH table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KGH](
+        [KGHKEY] varchar(10) NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [CAMPUS] int NULL,
+        [ACTIVE] varchar(1) NULL,
+        [HOUSE_SIZE] smallint NULL,
+        [MALES] smallint NULL,
+        [FEMALES] smallint NULL,
+        [AGE_F01] smallint NULL,
+        [AGE_F02] smallint NULL,
+        [AGE_F03] smallint NULL,
+        [AGE_F04] smallint NULL,
+        [AGE_F05] smallint NULL,
+        [AGE_F06] smallint NULL,
+        [AGE_F07] smallint NULL,
+        [AGE_F08] smallint NULL,
+        [AGE_F09] smallint NULL,
+        [AGE_F10] smallint NULL,
+        [AGE_F11] smallint NULL,
+        [AGE_F12] smallint NULL,
+        [AGE_F13] smallint NULL,
+        [AGE_F14] smallint NULL,
+        [AGE_F15] smallint NULL,
+        [AGE_F16] smallint NULL,
+        [AGE_F17] smallint NULL,
+        [AGE_F18] smallint NULL,
+        [AGE_F19] smallint NULL,
+        [AGE_F20] smallint NULL,
+        [AGE_M01] smallint NULL,
+        [AGE_M02] smallint NULL,
+        [AGE_M03] smallint NULL,
+        [AGE_M04] smallint NULL,
+        [AGE_M05] smallint NULL,
+        [AGE_M06] smallint NULL,
+        [AGE_M07] smallint NULL,
+        [AGE_M08] smallint NULL,
+        [AGE_M09] smallint NULL,
+        [AGE_M10] smallint NULL,
+        [AGE_M11] smallint NULL,
+        [AGE_M12] smallint NULL,
+        [AGE_M13] smallint NULL,
+        [AGE_M14] smallint NULL,
+        [AGE_M15] smallint NULL,
+        [AGE_M16] smallint NULL,
+        [AGE_M17] smallint NULL,
+        [AGE_M18] smallint NULL,
+        [AGE_M19] smallint NULL,
+        [AGE_M20] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KGH_Index_KGHKEY] PRIMARY KEY CLUSTERED (
+            [KGHKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KGH_Index_CAMPUS] ON [dbo].[KGH]
+    (
+            [CAMPUS] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGH data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KGHDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KGHDataReader : IDataReader, IDataRecord
+        {
+            private List<KGH> Items;
+            private int CurrentIndex;
+            private KGH CurrentItem;
+
+            public KGHDataReader(List<KGH> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 50; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KGHKEY
+                        return CurrentItem.KGHKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 3: // ACTIVE
+                        return CurrentItem.ACTIVE;
+                    case 4: // HOUSE_SIZE
+                        return CurrentItem.HOUSE_SIZE;
+                    case 5: // MALES
+                        return CurrentItem.MALES;
+                    case 6: // FEMALES
+                        return CurrentItem.FEMALES;
+                    case 7: // AGE_F01
+                        return CurrentItem.AGE_F01;
+                    case 8: // AGE_F02
+                        return CurrentItem.AGE_F02;
+                    case 9: // AGE_F03
+                        return CurrentItem.AGE_F03;
+                    case 10: // AGE_F04
+                        return CurrentItem.AGE_F04;
+                    case 11: // AGE_F05
+                        return CurrentItem.AGE_F05;
+                    case 12: // AGE_F06
+                        return CurrentItem.AGE_F06;
+                    case 13: // AGE_F07
+                        return CurrentItem.AGE_F07;
+                    case 14: // AGE_F08
+                        return CurrentItem.AGE_F08;
+                    case 15: // AGE_F09
+                        return CurrentItem.AGE_F09;
+                    case 16: // AGE_F10
+                        return CurrentItem.AGE_F10;
+                    case 17: // AGE_F11
+                        return CurrentItem.AGE_F11;
+                    case 18: // AGE_F12
+                        return CurrentItem.AGE_F12;
+                    case 19: // AGE_F13
+                        return CurrentItem.AGE_F13;
+                    case 20: // AGE_F14
+                        return CurrentItem.AGE_F14;
+                    case 21: // AGE_F15
+                        return CurrentItem.AGE_F15;
+                    case 22: // AGE_F16
+                        return CurrentItem.AGE_F16;
+                    case 23: // AGE_F17
+                        return CurrentItem.AGE_F17;
+                    case 24: // AGE_F18
+                        return CurrentItem.AGE_F18;
+                    case 25: // AGE_F19
+                        return CurrentItem.AGE_F19;
+                    case 26: // AGE_F20
+                        return CurrentItem.AGE_F20;
+                    case 27: // AGE_M01
+                        return CurrentItem.AGE_M01;
+                    case 28: // AGE_M02
+                        return CurrentItem.AGE_M02;
+                    case 29: // AGE_M03
+                        return CurrentItem.AGE_M03;
+                    case 30: // AGE_M04
+                        return CurrentItem.AGE_M04;
+                    case 31: // AGE_M05
+                        return CurrentItem.AGE_M05;
+                    case 32: // AGE_M06
+                        return CurrentItem.AGE_M06;
+                    case 33: // AGE_M07
+                        return CurrentItem.AGE_M07;
+                    case 34: // AGE_M08
+                        return CurrentItem.AGE_M08;
+                    case 35: // AGE_M09
+                        return CurrentItem.AGE_M09;
+                    case 36: // AGE_M10
+                        return CurrentItem.AGE_M10;
+                    case 37: // AGE_M11
+                        return CurrentItem.AGE_M11;
+                    case 38: // AGE_M12
+                        return CurrentItem.AGE_M12;
+                    case 39: // AGE_M13
+                        return CurrentItem.AGE_M13;
+                    case 40: // AGE_M14
+                        return CurrentItem.AGE_M14;
+                    case 41: // AGE_M15
+                        return CurrentItem.AGE_M15;
+                    case 42: // AGE_M16
+                        return CurrentItem.AGE_M16;
+                    case 43: // AGE_M17
+                        return CurrentItem.AGE_M17;
+                    case 44: // AGE_M18
+                        return CurrentItem.AGE_M18;
+                    case 45: // AGE_M19
+                        return CurrentItem.AGE_M19;
+                    case 46: // AGE_M20
+                        return CurrentItem.AGE_M20;
+                    case 47: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 48: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 49: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 3: // ACTIVE
+                        return CurrentItem.ACTIVE == null;
+                    case 4: // HOUSE_SIZE
+                        return CurrentItem.HOUSE_SIZE == null;
+                    case 5: // MALES
+                        return CurrentItem.MALES == null;
+                    case 6: // FEMALES
+                        return CurrentItem.FEMALES == null;
+                    case 7: // AGE_F01
+                        return CurrentItem.AGE_F01 == null;
+                    case 8: // AGE_F02
+                        return CurrentItem.AGE_F02 == null;
+                    case 9: // AGE_F03
+                        return CurrentItem.AGE_F03 == null;
+                    case 10: // AGE_F04
+                        return CurrentItem.AGE_F04 == null;
+                    case 11: // AGE_F05
+                        return CurrentItem.AGE_F05 == null;
+                    case 12: // AGE_F06
+                        return CurrentItem.AGE_F06 == null;
+                    case 13: // AGE_F07
+                        return CurrentItem.AGE_F07 == null;
+                    case 14: // AGE_F08
+                        return CurrentItem.AGE_F08 == null;
+                    case 15: // AGE_F09
+                        return CurrentItem.AGE_F09 == null;
+                    case 16: // AGE_F10
+                        return CurrentItem.AGE_F10 == null;
+                    case 17: // AGE_F11
+                        return CurrentItem.AGE_F11 == null;
+                    case 18: // AGE_F12
+                        return CurrentItem.AGE_F12 == null;
+                    case 19: // AGE_F13
+                        return CurrentItem.AGE_F13 == null;
+                    case 20: // AGE_F14
+                        return CurrentItem.AGE_F14 == null;
+                    case 21: // AGE_F15
+                        return CurrentItem.AGE_F15 == null;
+                    case 22: // AGE_F16
+                        return CurrentItem.AGE_F16 == null;
+                    case 23: // AGE_F17
+                        return CurrentItem.AGE_F17 == null;
+                    case 24: // AGE_F18
+                        return CurrentItem.AGE_F18 == null;
+                    case 25: // AGE_F19
+                        return CurrentItem.AGE_F19 == null;
+                    case 26: // AGE_F20
+                        return CurrentItem.AGE_F20 == null;
+                    case 27: // AGE_M01
+                        return CurrentItem.AGE_M01 == null;
+                    case 28: // AGE_M02
+                        return CurrentItem.AGE_M02 == null;
+                    case 29: // AGE_M03
+                        return CurrentItem.AGE_M03 == null;
+                    case 30: // AGE_M04
+                        return CurrentItem.AGE_M04 == null;
+                    case 31: // AGE_M05
+                        return CurrentItem.AGE_M05 == null;
+                    case 32: // AGE_M06
+                        return CurrentItem.AGE_M06 == null;
+                    case 33: // AGE_M07
+                        return CurrentItem.AGE_M07 == null;
+                    case 34: // AGE_M08
+                        return CurrentItem.AGE_M08 == null;
+                    case 35: // AGE_M09
+                        return CurrentItem.AGE_M09 == null;
+                    case 36: // AGE_M10
+                        return CurrentItem.AGE_M10 == null;
+                    case 37: // AGE_M11
+                        return CurrentItem.AGE_M11 == null;
+                    case 38: // AGE_M12
+                        return CurrentItem.AGE_M12 == null;
+                    case 39: // AGE_M13
+                        return CurrentItem.AGE_M13 == null;
+                    case 40: // AGE_M14
+                        return CurrentItem.AGE_M14 == null;
+                    case 41: // AGE_M15
+                        return CurrentItem.AGE_M15 == null;
+                    case 42: // AGE_M16
+                        return CurrentItem.AGE_M16 == null;
+                    case 43: // AGE_M17
+                        return CurrentItem.AGE_M17 == null;
+                    case 44: // AGE_M18
+                        return CurrentItem.AGE_M18 == null;
+                    case 45: // AGE_M19
+                        return CurrentItem.AGE_M19 == null;
+                    case 46: // AGE_M20
+                        return CurrentItem.AGE_M20 == null;
+                    case 47: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 48: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 49: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KGHKEY
+                        return "KGHKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // CAMPUS
+                        return "CAMPUS";
+                    case 3: // ACTIVE
+                        return "ACTIVE";
+                    case 4: // HOUSE_SIZE
+                        return "HOUSE_SIZE";
+                    case 5: // MALES
+                        return "MALES";
+                    case 6: // FEMALES
+                        return "FEMALES";
+                    case 7: // AGE_F01
+                        return "AGE_F01";
+                    case 8: // AGE_F02
+                        return "AGE_F02";
+                    case 9: // AGE_F03
+                        return "AGE_F03";
+                    case 10: // AGE_F04
+                        return "AGE_F04";
+                    case 11: // AGE_F05
+                        return "AGE_F05";
+                    case 12: // AGE_F06
+                        return "AGE_F06";
+                    case 13: // AGE_F07
+                        return "AGE_F07";
+                    case 14: // AGE_F08
+                        return "AGE_F08";
+                    case 15: // AGE_F09
+                        return "AGE_F09";
+                    case 16: // AGE_F10
+                        return "AGE_F10";
+                    case 17: // AGE_F11
+                        return "AGE_F11";
+                    case 18: // AGE_F12
+                        return "AGE_F12";
+                    case 19: // AGE_F13
+                        return "AGE_F13";
+                    case 20: // AGE_F14
+                        return "AGE_F14";
+                    case 21: // AGE_F15
+                        return "AGE_F15";
+                    case 22: // AGE_F16
+                        return "AGE_F16";
+                    case 23: // AGE_F17
+                        return "AGE_F17";
+                    case 24: // AGE_F18
+                        return "AGE_F18";
+                    case 25: // AGE_F19
+                        return "AGE_F19";
+                    case 26: // AGE_F20
+                        return "AGE_F20";
+                    case 27: // AGE_M01
+                        return "AGE_M01";
+                    case 28: // AGE_M02
+                        return "AGE_M02";
+                    case 29: // AGE_M03
+                        return "AGE_M03";
+                    case 30: // AGE_M04
+                        return "AGE_M04";
+                    case 31: // AGE_M05
+                        return "AGE_M05";
+                    case 32: // AGE_M06
+                        return "AGE_M06";
+                    case 33: // AGE_M07
+                        return "AGE_M07";
+                    case 34: // AGE_M08
+                        return "AGE_M08";
+                    case 35: // AGE_M09
+                        return "AGE_M09";
+                    case 36: // AGE_M10
+                        return "AGE_M10";
+                    case 37: // AGE_M11
+                        return "AGE_M11";
+                    case 38: // AGE_M12
+                        return "AGE_M12";
+                    case 39: // AGE_M13
+                        return "AGE_M13";
+                    case 40: // AGE_M14
+                        return "AGE_M14";
+                    case 41: // AGE_M15
+                        return "AGE_M15";
+                    case 42: // AGE_M16
+                        return "AGE_M16";
+                    case 43: // AGE_M17
+                        return "AGE_M17";
+                    case 44: // AGE_M18
+                        return "AGE_M18";
+                    case 45: // AGE_M19
+                        return "AGE_M19";
+                    case 46: // AGE_M20
+                        return "AGE_M20";
+                    case 47: // LW_DATE
+                        return "LW_DATE";
+                    case 48: // LW_TIME
+                        return "LW_TIME";
+                    case 49: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KGHKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "CAMPUS":
+                        return 2;
+                    case "ACTIVE":
+                        return 3;
+                    case "HOUSE_SIZE":
+                        return 4;
+                    case "MALES":
+                        return 5;
+                    case "FEMALES":
+                        return 6;
+                    case "AGE_F01":
+                        return 7;
+                    case "AGE_F02":
+                        return 8;
+                    case "AGE_F03":
+                        return 9;
+                    case "AGE_F04":
+                        return 10;
+                    case "AGE_F05":
+                        return 11;
+                    case "AGE_F06":
+                        return 12;
+                    case "AGE_F07":
+                        return 13;
+                    case "AGE_F08":
+                        return 14;
+                    case "AGE_F09":
+                        return 15;
+                    case "AGE_F10":
+                        return 16;
+                    case "AGE_F11":
+                        return 17;
+                    case "AGE_F12":
+                        return 18;
+                    case "AGE_F13":
+                        return 19;
+                    case "AGE_F14":
+                        return 20;
+                    case "AGE_F15":
+                        return 21;
+                    case "AGE_F16":
+                        return 22;
+                    case "AGE_F17":
+                        return 23;
+                    case "AGE_F18":
+                        return 24;
+                    case "AGE_F19":
+                        return 25;
+                    case "AGE_F20":
+                        return 26;
+                    case "AGE_M01":
+                        return 27;
+                    case "AGE_M02":
+                        return 28;
+                    case "AGE_M03":
+                        return 29;
+                    case "AGE_M04":
+                        return 30;
+                    case "AGE_M05":
+                        return 31;
+                    case "AGE_M06":
+                        return 32;
+                    case "AGE_M07":
+                        return 33;
+                    case "AGE_M08":
+                        return 34;
+                    case "AGE_M09":
+                        return 35;
+                    case "AGE_M10":
+                        return 36;
+                    case "AGE_M11":
+                        return 37;
+                    case "AGE_M12":
+                        return 38;
+                    case "AGE_M13":
+                        return 39;
+                    case "AGE_M14":
+                        return 40;
+                    case "AGE_M15":
+                        return 41;
+                    case "AGE_M16":
+                        return 42;
+                    case "AGE_M17":
+                        return 43;
+                    case "AGE_M18":
+                        return 44;
+                    case "AGE_M19":
+                        return 45;
+                    case "AGE_M20":
+                        return 46;
+                    case "LW_DATE":
+                        return 47;
+                    case "LW_TIME":
+                        return 48;
+                    case "LW_USER":
+                        return 49;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

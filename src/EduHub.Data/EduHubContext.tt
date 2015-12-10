@@ -64,6 +64,28 @@ namespace EduHub.Data
     }
 #>
         }
+
+        /// <summary>
+        /// Retrieves a Data Set by name
+        /// </summary>
+        /// <param name="Name">The name of a Data Set</param>
+        public IDataSet GetDataSet(string Name)
+        {
+            switch (Name)
+            {
+<#
+    foreach (EduHubEntity entity in schema.Entities)
+    {
+#>
+                case "<#= entity.Name #>":
+                    return <#= entity.Name #>;
+<#
+    }
+#>
+                default:
+                    throw new ArgumentException("Unknown data set", nameof(Name));
+            }
+        }
 <#
     foreach (EduHubEntity entity in schema.Entities)
     {

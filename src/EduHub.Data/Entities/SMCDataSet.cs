@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Medical Conditions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMCDataSet : SetBase<SMC>
+    public sealed partial class SMCDataSet : DataSetBase<SMC>
     {
         /// <summary>
         /// Data Set Name
@@ -410,6 +411,514 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SMC table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SMC](
+        [SMCKEY] int IDENTITY NOT NULL,
+        [STUDENT] varchar(10) NULL,
+        [MED_CONDITION] varchar(10) NULL,
+        [SYMPTOMS] text NULL,
+        [SMC_COMMENT] text NULL,
+        [REGULAR_MEDICATION] varchar(60) NULL,
+        [REGULAR_POISON_RATING] varchar(2) NULL,
+        [REGULAR_DOSAGE] varchar(30) NULL,
+        [REGULAR_FREQUENCY] varchar(15) NULL,
+        [REGULAR_DOSAGE_TIME] varchar(15) NULL,
+        [REGULAR_MEDICATION_LOCAT] varchar(30) NULL,
+        [REGULAR_ADMIN_BY] varchar(7) NULL,
+        [REMINDER] varchar(1) NULL,
+        [INFORM_DOCTOR] varchar(1) NULL,
+        [INFORM_EMERG_CONTACT] varchar(1) NULL,
+        [ADMINISTER_MEDICATION] varchar(1) NULL,
+        [OTHER_MEDICAL_ACTION] varchar(1) NULL,
+        [SMC_ACTION] text NULL,
+        [AD_HOC_MEDICATION] varchar(60) NULL,
+        [AD_HOC_POISON_RATING] varchar(2) NULL,
+        [AD_HOC_DOSAGE] varchar(30) NULL,
+        [AD_HOC_FREQUENCY] varchar(15) NULL,
+        [AD_HOC_MEDICATION_LOCAT] varchar(30) NULL,
+        [AD_HOC_ADMIN_BY] varchar(7) NULL,
+        [HOME_MEDICATION] varchar(60) NULL,
+        [ASTHMA_WHEEZE] varchar(1) NULL,
+        [ASTHMA_COUGH] varchar(1) NULL,
+        [ASTHMA_DIFFBRE] varchar(1) NULL,
+        [ASTHMA_TGTCHES] varchar(1) NULL,
+        [ASTHMA_SYMTEXE] varchar(1) NULL,
+        [ASTHMA_MGT_PLAN] text NULL,
+        [CAMPUS] int NULL,
+        [FACULTY] varchar(10) NULL,
+        [ROOM_TYPE] varchar(1) NULL,
+        [NORMAL_ALLOTMENT] smallint NULL,
+        [GROUP_INDICATOR] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SMC_Index_SMCKEY] PRIMARY KEY CLUSTERED (
+            [SMCKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SMC_Index_CAMPUS] ON [dbo].[SMC]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SMC_Index_LW_DATE] ON [dbo].[SMC]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SMC_Index_MED_CONDITION] ON [dbo].[SMC]
+    (
+            [MED_CONDITION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SMC_Index_STUDENT] ON [dbo].[SMC]
+    (
+            [STUDENT] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SMC data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SMC data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SMCDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SMCDataReader : IDataReader, IDataRecord
+        {
+            private List<SMC> Items;
+            private int CurrentIndex;
+            private SMC CurrentItem;
+
+            public SMCDataReader(List<SMC> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 39; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SMCKEY
+                        return CurrentItem.SMCKEY;
+                    case 1: // STUDENT
+                        return CurrentItem.STUDENT;
+                    case 2: // MED_CONDITION
+                        return CurrentItem.MED_CONDITION;
+                    case 3: // SYMPTOMS
+                        return CurrentItem.SYMPTOMS;
+                    case 4: // SMC_COMMENT
+                        return CurrentItem.SMC_COMMENT;
+                    case 5: // REGULAR_MEDICATION
+                        return CurrentItem.REGULAR_MEDICATION;
+                    case 6: // REGULAR_POISON_RATING
+                        return CurrentItem.REGULAR_POISON_RATING;
+                    case 7: // REGULAR_DOSAGE
+                        return CurrentItem.REGULAR_DOSAGE;
+                    case 8: // REGULAR_FREQUENCY
+                        return CurrentItem.REGULAR_FREQUENCY;
+                    case 9: // REGULAR_DOSAGE_TIME
+                        return CurrentItem.REGULAR_DOSAGE_TIME;
+                    case 10: // REGULAR_MEDICATION_LOCAT
+                        return CurrentItem.REGULAR_MEDICATION_LOCAT;
+                    case 11: // REGULAR_ADMIN_BY
+                        return CurrentItem.REGULAR_ADMIN_BY;
+                    case 12: // REMINDER
+                        return CurrentItem.REMINDER;
+                    case 13: // INFORM_DOCTOR
+                        return CurrentItem.INFORM_DOCTOR;
+                    case 14: // INFORM_EMERG_CONTACT
+                        return CurrentItem.INFORM_EMERG_CONTACT;
+                    case 15: // ADMINISTER_MEDICATION
+                        return CurrentItem.ADMINISTER_MEDICATION;
+                    case 16: // OTHER_MEDICAL_ACTION
+                        return CurrentItem.OTHER_MEDICAL_ACTION;
+                    case 17: // SMC_ACTION
+                        return CurrentItem.SMC_ACTION;
+                    case 18: // AD_HOC_MEDICATION
+                        return CurrentItem.AD_HOC_MEDICATION;
+                    case 19: // AD_HOC_POISON_RATING
+                        return CurrentItem.AD_HOC_POISON_RATING;
+                    case 20: // AD_HOC_DOSAGE
+                        return CurrentItem.AD_HOC_DOSAGE;
+                    case 21: // AD_HOC_FREQUENCY
+                        return CurrentItem.AD_HOC_FREQUENCY;
+                    case 22: // AD_HOC_MEDICATION_LOCAT
+                        return CurrentItem.AD_HOC_MEDICATION_LOCAT;
+                    case 23: // AD_HOC_ADMIN_BY
+                        return CurrentItem.AD_HOC_ADMIN_BY;
+                    case 24: // HOME_MEDICATION
+                        return CurrentItem.HOME_MEDICATION;
+                    case 25: // ASTHMA_WHEEZE
+                        return CurrentItem.ASTHMA_WHEEZE;
+                    case 26: // ASTHMA_COUGH
+                        return CurrentItem.ASTHMA_COUGH;
+                    case 27: // ASTHMA_DIFFBRE
+                        return CurrentItem.ASTHMA_DIFFBRE;
+                    case 28: // ASTHMA_TGTCHES
+                        return CurrentItem.ASTHMA_TGTCHES;
+                    case 29: // ASTHMA_SYMTEXE
+                        return CurrentItem.ASTHMA_SYMTEXE;
+                    case 30: // ASTHMA_MGT_PLAN
+                        return CurrentItem.ASTHMA_MGT_PLAN;
+                    case 31: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 32: // FACULTY
+                        return CurrentItem.FACULTY;
+                    case 33: // ROOM_TYPE
+                        return CurrentItem.ROOM_TYPE;
+                    case 34: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT;
+                    case 35: // GROUP_INDICATOR
+                        return CurrentItem.GROUP_INDICATOR;
+                    case 36: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 37: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 38: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // STUDENT
+                        return CurrentItem.STUDENT == null;
+                    case 2: // MED_CONDITION
+                        return CurrentItem.MED_CONDITION == null;
+                    case 3: // SYMPTOMS
+                        return CurrentItem.SYMPTOMS == null;
+                    case 4: // SMC_COMMENT
+                        return CurrentItem.SMC_COMMENT == null;
+                    case 5: // REGULAR_MEDICATION
+                        return CurrentItem.REGULAR_MEDICATION == null;
+                    case 6: // REGULAR_POISON_RATING
+                        return CurrentItem.REGULAR_POISON_RATING == null;
+                    case 7: // REGULAR_DOSAGE
+                        return CurrentItem.REGULAR_DOSAGE == null;
+                    case 8: // REGULAR_FREQUENCY
+                        return CurrentItem.REGULAR_FREQUENCY == null;
+                    case 9: // REGULAR_DOSAGE_TIME
+                        return CurrentItem.REGULAR_DOSAGE_TIME == null;
+                    case 10: // REGULAR_MEDICATION_LOCAT
+                        return CurrentItem.REGULAR_MEDICATION_LOCAT == null;
+                    case 11: // REGULAR_ADMIN_BY
+                        return CurrentItem.REGULAR_ADMIN_BY == null;
+                    case 12: // REMINDER
+                        return CurrentItem.REMINDER == null;
+                    case 13: // INFORM_DOCTOR
+                        return CurrentItem.INFORM_DOCTOR == null;
+                    case 14: // INFORM_EMERG_CONTACT
+                        return CurrentItem.INFORM_EMERG_CONTACT == null;
+                    case 15: // ADMINISTER_MEDICATION
+                        return CurrentItem.ADMINISTER_MEDICATION == null;
+                    case 16: // OTHER_MEDICAL_ACTION
+                        return CurrentItem.OTHER_MEDICAL_ACTION == null;
+                    case 17: // SMC_ACTION
+                        return CurrentItem.SMC_ACTION == null;
+                    case 18: // AD_HOC_MEDICATION
+                        return CurrentItem.AD_HOC_MEDICATION == null;
+                    case 19: // AD_HOC_POISON_RATING
+                        return CurrentItem.AD_HOC_POISON_RATING == null;
+                    case 20: // AD_HOC_DOSAGE
+                        return CurrentItem.AD_HOC_DOSAGE == null;
+                    case 21: // AD_HOC_FREQUENCY
+                        return CurrentItem.AD_HOC_FREQUENCY == null;
+                    case 22: // AD_HOC_MEDICATION_LOCAT
+                        return CurrentItem.AD_HOC_MEDICATION_LOCAT == null;
+                    case 23: // AD_HOC_ADMIN_BY
+                        return CurrentItem.AD_HOC_ADMIN_BY == null;
+                    case 24: // HOME_MEDICATION
+                        return CurrentItem.HOME_MEDICATION == null;
+                    case 25: // ASTHMA_WHEEZE
+                        return CurrentItem.ASTHMA_WHEEZE == null;
+                    case 26: // ASTHMA_COUGH
+                        return CurrentItem.ASTHMA_COUGH == null;
+                    case 27: // ASTHMA_DIFFBRE
+                        return CurrentItem.ASTHMA_DIFFBRE == null;
+                    case 28: // ASTHMA_TGTCHES
+                        return CurrentItem.ASTHMA_TGTCHES == null;
+                    case 29: // ASTHMA_SYMTEXE
+                        return CurrentItem.ASTHMA_SYMTEXE == null;
+                    case 30: // ASTHMA_MGT_PLAN
+                        return CurrentItem.ASTHMA_MGT_PLAN == null;
+                    case 31: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 32: // FACULTY
+                        return CurrentItem.FACULTY == null;
+                    case 33: // ROOM_TYPE
+                        return CurrentItem.ROOM_TYPE == null;
+                    case 34: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT == null;
+                    case 35: // GROUP_INDICATOR
+                        return CurrentItem.GROUP_INDICATOR == null;
+                    case 36: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 37: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 38: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SMCKEY
+                        return "SMCKEY";
+                    case 1: // STUDENT
+                        return "STUDENT";
+                    case 2: // MED_CONDITION
+                        return "MED_CONDITION";
+                    case 3: // SYMPTOMS
+                        return "SYMPTOMS";
+                    case 4: // SMC_COMMENT
+                        return "SMC_COMMENT";
+                    case 5: // REGULAR_MEDICATION
+                        return "REGULAR_MEDICATION";
+                    case 6: // REGULAR_POISON_RATING
+                        return "REGULAR_POISON_RATING";
+                    case 7: // REGULAR_DOSAGE
+                        return "REGULAR_DOSAGE";
+                    case 8: // REGULAR_FREQUENCY
+                        return "REGULAR_FREQUENCY";
+                    case 9: // REGULAR_DOSAGE_TIME
+                        return "REGULAR_DOSAGE_TIME";
+                    case 10: // REGULAR_MEDICATION_LOCAT
+                        return "REGULAR_MEDICATION_LOCAT";
+                    case 11: // REGULAR_ADMIN_BY
+                        return "REGULAR_ADMIN_BY";
+                    case 12: // REMINDER
+                        return "REMINDER";
+                    case 13: // INFORM_DOCTOR
+                        return "INFORM_DOCTOR";
+                    case 14: // INFORM_EMERG_CONTACT
+                        return "INFORM_EMERG_CONTACT";
+                    case 15: // ADMINISTER_MEDICATION
+                        return "ADMINISTER_MEDICATION";
+                    case 16: // OTHER_MEDICAL_ACTION
+                        return "OTHER_MEDICAL_ACTION";
+                    case 17: // SMC_ACTION
+                        return "SMC_ACTION";
+                    case 18: // AD_HOC_MEDICATION
+                        return "AD_HOC_MEDICATION";
+                    case 19: // AD_HOC_POISON_RATING
+                        return "AD_HOC_POISON_RATING";
+                    case 20: // AD_HOC_DOSAGE
+                        return "AD_HOC_DOSAGE";
+                    case 21: // AD_HOC_FREQUENCY
+                        return "AD_HOC_FREQUENCY";
+                    case 22: // AD_HOC_MEDICATION_LOCAT
+                        return "AD_HOC_MEDICATION_LOCAT";
+                    case 23: // AD_HOC_ADMIN_BY
+                        return "AD_HOC_ADMIN_BY";
+                    case 24: // HOME_MEDICATION
+                        return "HOME_MEDICATION";
+                    case 25: // ASTHMA_WHEEZE
+                        return "ASTHMA_WHEEZE";
+                    case 26: // ASTHMA_COUGH
+                        return "ASTHMA_COUGH";
+                    case 27: // ASTHMA_DIFFBRE
+                        return "ASTHMA_DIFFBRE";
+                    case 28: // ASTHMA_TGTCHES
+                        return "ASTHMA_TGTCHES";
+                    case 29: // ASTHMA_SYMTEXE
+                        return "ASTHMA_SYMTEXE";
+                    case 30: // ASTHMA_MGT_PLAN
+                        return "ASTHMA_MGT_PLAN";
+                    case 31: // CAMPUS
+                        return "CAMPUS";
+                    case 32: // FACULTY
+                        return "FACULTY";
+                    case 33: // ROOM_TYPE
+                        return "ROOM_TYPE";
+                    case 34: // NORMAL_ALLOTMENT
+                        return "NORMAL_ALLOTMENT";
+                    case 35: // GROUP_INDICATOR
+                        return "GROUP_INDICATOR";
+                    case 36: // LW_DATE
+                        return "LW_DATE";
+                    case 37: // LW_TIME
+                        return "LW_TIME";
+                    case 38: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SMCKEY":
+                        return 0;
+                    case "STUDENT":
+                        return 1;
+                    case "MED_CONDITION":
+                        return 2;
+                    case "SYMPTOMS":
+                        return 3;
+                    case "SMC_COMMENT":
+                        return 4;
+                    case "REGULAR_MEDICATION":
+                        return 5;
+                    case "REGULAR_POISON_RATING":
+                        return 6;
+                    case "REGULAR_DOSAGE":
+                        return 7;
+                    case "REGULAR_FREQUENCY":
+                        return 8;
+                    case "REGULAR_DOSAGE_TIME":
+                        return 9;
+                    case "REGULAR_MEDICATION_LOCAT":
+                        return 10;
+                    case "REGULAR_ADMIN_BY":
+                        return 11;
+                    case "REMINDER":
+                        return 12;
+                    case "INFORM_DOCTOR":
+                        return 13;
+                    case "INFORM_EMERG_CONTACT":
+                        return 14;
+                    case "ADMINISTER_MEDICATION":
+                        return 15;
+                    case "OTHER_MEDICAL_ACTION":
+                        return 16;
+                    case "SMC_ACTION":
+                        return 17;
+                    case "AD_HOC_MEDICATION":
+                        return 18;
+                    case "AD_HOC_POISON_RATING":
+                        return 19;
+                    case "AD_HOC_DOSAGE":
+                        return 20;
+                    case "AD_HOC_FREQUENCY":
+                        return 21;
+                    case "AD_HOC_MEDICATION_LOCAT":
+                        return 22;
+                    case "AD_HOC_ADMIN_BY":
+                        return 23;
+                    case "HOME_MEDICATION":
+                        return 24;
+                    case "ASTHMA_WHEEZE":
+                        return 25;
+                    case "ASTHMA_COUGH":
+                        return 26;
+                    case "ASTHMA_DIFFBRE":
+                        return 27;
+                    case "ASTHMA_TGTCHES":
+                        return 28;
+                    case "ASTHMA_SYMTEXE":
+                        return 29;
+                    case "ASTHMA_MGT_PLAN":
+                        return 30;
+                    case "CAMPUS":
+                        return 31;
+                    case "FACULTY":
+                        return 32;
+                    case "ROOM_TYPE":
+                        return 33;
+                    case "NORMAL_ALLOTMENT":
+                        return 34;
+                    case "GROUP_INDICATOR":
+                        return 35;
+                    case "LW_DATE":
+                        return 36;
+                    case "LW_TIME":
+                        return 37;
+                    case "LW_USER":
+                        return 38;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// FDT Financal Holding Table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FER_FDTDataSet : SetBase<FER_FDT>
+    public sealed partial class FER_FDTDataSet : DataSetBase<FER_FDT>
     {
         /// <summary>
         /// Data Set Name
@@ -881,6 +882,2309 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a FER_FDT table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[FER_FDT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[FER_FDT](
+        [TID] int IDENTITY NOT NULL,
+        [SOURCE] varchar(8) NOT NULL,
+        [DR_DRKEY] varchar(10) NULL,
+        [DR_DRKEY_IMP] varchar(10) NULL,
+        [DR_TITLE] varchar(30) NULL,
+        [DR_CONTACT] varchar(30) NULL,
+        [DR_BUSNAME] varchar(30) NULL,
+        [DR_BUSADD01] varchar(30) NULL,
+        [DR_BUSADD02] varchar(30) NULL,
+        [DR_BUSSTATE] varchar(3) NULL,
+        [DR_POSTCODE] varchar(4) NULL,
+        [DR_TELEPHONE] varchar(20) NULL,
+        [DR_FAX] varchar(15) NULL,
+        [DR_MAILNAME] varchar(30) NULL,
+        [DR_MAILADD01] varchar(30) NULL,
+        [DR_MAILADD02] varchar(30) NULL,
+        [DR_MAILSTATE] varchar(3) NULL,
+        [DR_MAILPOST] varchar(4) NULL,
+        [DR_DRTYPE] varchar(1) NULL,
+        [DR_CHARGES_YTD] money NULL,
+        [DR_NOTES] text NULL,
+        [DR_MEMO_FLAG] varchar(1) NULL,
+        [DR_REMARK] text NULL,
+        [DR_BILLING_EMAIL] varchar(60) NULL,
+        [DR_BALANCE] money NULL,
+        [CR_CRKEY] varchar(10) NULL,
+        [CR_CRKEY_IMP] varchar(10) NULL,
+        [CR_TITLE] varchar(40) NULL,
+        [CR_CUR_BAL] money NULL,
+        [CR_CONTACT] varchar(30) NULL,
+        [CR_ADDRESS01] varchar(40) NULL,
+        [CR_ADDRESS02] varchar(40) NULL,
+        [CR_ADDRESS03] varchar(40) NULL,
+        [CR_STATE] varchar(4) NULL,
+        [CR_POSTCODE] varchar(4) NULL,
+        [CR_TELEPHONE] varchar(15) NULL,
+        [CR_FAX] varchar(15) NULL,
+        [CR_EMAIL] varchar(60) NULL,
+        [CR_EMAIL_FOR_PAYMENTS] varchar(60) NULL,
+        [CR_MOBILE] varchar(15) NULL,
+        [CR_PRMS_FLAG] varchar(1) NULL,
+        [CR_ABN] varchar(15) NULL,
+        [CR_PAYG_RATE] float NULL,
+        [CR_CRLIMIT] money NULL,
+        [CR_TERMS] smallint NULL,
+        [CR_BSB] varchar(6) NULL,
+        [CR_ACCOUNT_NO] varchar(15) NULL,
+        [CR_ACCOUNT_NAME] varchar(60) NULL,
+        [CR_LODGE_REF] varchar(18) NULL,
+        [CR_SURNAME] varchar(30) NULL,
+        [CR_FIRST_NAME] varchar(15) NULL,
+        [CR_SECOND_NAME] varchar(15) NULL,
+        [CR_PAYG_BIRTHDATE] datetime NULL,
+        [CR_PAYG_STARTDATE] datetime NULL,
+        [CR_PAYG_TERMDATE] datetime NULL,
+        [CR_PAYG_ADDRESS01] varchar(38) NULL,
+        [CR_PAYG_ADDRESS02] varchar(38) NULL,
+        [CR_PAYG_SUBURB] varchar(20) NULL,
+        [CR_PAYG_STATE] varchar(3) NULL,
+        [CR_PAYG_POST] varchar(4) NULL,
+        [CR_PAYG_COUNTRY] varchar(20) NULL,
+        [CR_PPDKEY] varchar(10) NULL,
+        [CR_BILLER_CODE] varchar(10) NULL,
+        [CR_BPAY_REFERENCE] varchar(20) NULL,
+        [CR_LASTPAYDATE] datetime NULL,
+        [PE_PEKEY] varchar(10) NULL,
+        [PE_PEKEY_IMP] varchar(10) NULL,
+        [PE_SURNAME] varchar(20) NULL,
+        [PE_FIRST_NAME] varchar(20) NULL,
+        [PE_SECOND_NAME] varchar(20) NULL,
+        [PE_PREF_NAME] varchar(15) NULL,
+        [PE_PREVIOUS_NAME] varchar(30) NULL,
+        [PE_BIRTHDATE] datetime NULL,
+        [PE_GENDER] varchar(1) NULL,
+        [PE_HOMEADD01] varchar(38) NULL,
+        [PE_HOMEADD02] varchar(38) NULL,
+        [PE_HOMESUBURB] varchar(20) NULL,
+        [PE_HOMESTATE] varchar(3) NULL,
+        [PE_HOMEPOST] varchar(4) NULL,
+        [PE_COUNTRY] varchar(6) NULL,
+        [PE_HOMEPHONE] varchar(15) NULL,
+        [PE_BUS_PHONE] varchar(15) NULL,
+        [PE_PHONE_EXT] varchar(5) NULL,
+        [PE_FAX] varchar(15) NULL,
+        [PE_MOBILE] varchar(15) NULL,
+        [PE_EMAIL] varchar(60) NULL,
+        [PE_DRIVERS_LIC_NO] varchar(15) NULL,
+        [PE_SALREVDATE] datetime NULL,
+        [PE_SUSPEND_DATE] datetime NULL,
+        [PE_PENUMBER] int NULL,
+        [PE_TAXFILENUM] int NULL,
+        [PE_TAXCODE] smallint NULL,
+        [PE_NO_DEPEND] smallint NULL,
+        [PE_DEP_REBATE] money NULL,
+        [PE_ZONE_CODE] varchar(1) NULL,
+        [PE_ZONE_ALLOW] money NULL,
+        [PE_ALLOWANCES] money NULL,
+        [PE_PAYCODE] smallint NULL,
+        [PE_DEPARTMENT] varchar(10) NULL,
+        [PE_EMPLOY_TYPE] varchar(1) NULL,
+        [PE_NORMAL_HOURS] float NULL,
+        [PE_FTE_VALUE] float NULL,
+        [PE_ANNUAL_SALARY] money NULL,
+        [PE_STD_HOURS] float NULL,
+        [PE_UNION_NAME] varchar(20) NULL,
+        [PE_MEDICARE_Q09A] varchar(1) NULL,
+        [PE_MEDICARE_Q10A] varchar(1) NULL,
+        [PE_MEDICARE_Q11A] varchar(1) NULL,
+        [PE_MEDICARE_Q12A] varchar(1) NULL,
+        [PE_LEAVE_GROUP] varchar(8) NULL,
+        [PE_ESUPER_IGNORE_THRESHOLD] varchar(1) NULL,
+        [PE_ESUPER_FUND] varchar(10) NULL,
+        [PE_ESUPER_MEMBER] varchar(20) NULL,
+        [PE_ESUPER_PERCENT] float NULL,
+        [PE_LASTPAYDATE] datetime NULL,
+        [PE_PEPS_TRCENTRE] varchar(10) NULL,
+        [PE_START_DATE_IMP] datetime NULL,
+        [PEPS_CODE] varchar(10) NULL,
+        [PEPS_PAYITEM] smallint NULL,
+        [PEPS_TRCOST] float NULL,
+        [PEPS_TRQTY] float NULL,
+        [PEPS_TRAMT] money NULL,
+        [PEPS_TRDET] varchar(30) NULL,
+        [PEPS_FLAG] varchar(1) NULL,
+        [PEPS_PAY_STEP] smallint NULL,
+        [PEPS_SUPER_FUND] varchar(10) NULL,
+        [PEPS_SUPER_MEMBER] varchar(20) NULL,
+        [PEPS_SUPER_PERCENT] float NULL,
+        [PEPS_TRCENTRE] varchar(10) NULL,
+        [PEPM_CODE] varchar(10) NULL,
+        [PEPM_NAME] varchar(30) NULL,
+        [PEPM_CHQ_NO] varchar(10) NULL,
+        [PEPM_DAMOUNT] money NULL,
+        [PEPM_BANK] varchar(12) NULL,
+        [PEPM_BSB] varchar(6) NULL,
+        [PEPM_ACCOUNT_NO] varchar(15) NULL,
+        [PEPM_AMOUNT] money NULL,
+        [PEPM_FLAG] varchar(1) NULL,
+        [PEPM_PAYMODE] varchar(2) NULL,
+        [PEPY_CODE] varchar(10) NULL,
+        [PEPY_TRANSDATE] datetime NULL,
+        [PEPY_STAFF] varchar(10) NULL,
+        [PEPY_PURPOSE] varchar(6) NULL,
+        [PEPY_NOTES] text NULL,
+        [KPN_KPNKEY] varchar(6) NULL,
+        [KPN_KPNKEY_IMP] varchar(6) NULL,
+        [KPN_DESCRIPTION] varchar(40) NULL,
+        [KPC_KPCKEY] varchar(10) NULL,
+        [KPC_SURNAME] varchar(20) NULL,
+        [KPC_FIRST_NAME] varchar(15) NULL,
+        [KPC_SECOND_NAME] varchar(15) NULL,
+        [KPC_GENDER] varchar(1) NULL,
+        [KPC_ADDRESS01] varchar(30) NULL,
+        [KPC_ADDRESS02] varchar(30) NULL,
+        [KPC_ADDRESS03] varchar(30) NULL,
+        [KPC_STATE] varchar(3) NULL,
+        [KPC_POST] varchar(4) NULL,
+        [KPC_BUS_PHONE] varchar(15) NULL,
+        [KPC_HOME_PHONE] varchar(15) NULL,
+        [KPC_MOBILE] varchar(15) NULL,
+        [KPC_EMAIL] text NULL,
+        [KPCL_KPCLKEY] int NULL,
+        [KPCL_LINK] varchar(10) NULL,
+        [KPCL_SOURCE] varchar(3) NULL,
+        [KPCL_CONTACT] varchar(10) NULL,
+        [KPCL_CONTACT_TYPE] varchar(10) NULL,
+        [KPCL_CONTACT_PREFERENCE] smallint NULL,
+        [KPCR_KPCRKEY] varchar(10) NULL,
+        [KPCR_KPCRKEY_IMP] varchar(10) NULL,
+        [KPCR_DESCRIPTION] varchar(30) NULL,
+        [PF_PFKEY] varchar(10) NULL,
+        [PF_PFKEY_IMP] varchar(10) NULL,
+        [PF_DESCRIPTION] varchar(30) NULL,
+        [PI_PIKEY] smallint NULL,
+        [PI_PIKEY_IMP] smallint NULL,
+        [PI_PAYCODE] smallint NULL,
+        [PI_DESCRIPTION] varchar(30) NULL,
+        [PI_TRANSTYPE] varchar(1) NULL,
+        [PI_TAXABLE] varchar(1) NULL,
+        [PI_UNIT] varchar(3) NULL,
+        [PI_CATEGORY] varchar(5) NULL,
+        [PI_PAYG_BOX] smallint NULL,
+        [PI_TAXRATE] float NULL,
+        [PI_AUTOCALC] varchar(1) NULL,
+        [PI_SUPER_LEVY] varchar(1) NULL,
+        [PI_PERS_SUPER] varchar(1) NULL,
+        [PI_PERS_SUPER_RATE] float NULL,
+        [PI_INITIATIVE] varchar(3) NULL,
+        [AR_ARKEY] varchar(10) NULL,
+        [AR_ARKEY_IMP] varchar(10) NULL,
+        [AR_TITLE] varchar(40) NULL,
+        [AR_DESCRIPTION01] varchar(30) NULL,
+        [AR_DESCRIPTION02] varchar(30) NULL,
+        [AR_ASSET_TYPE] varchar(2) NULL,
+        [AR_CATEGORY] varchar(10) NULL,
+        [AR_CATEGORY_IMP] varchar(10) NULL,
+        [AR_SUBCATEGORY_IMP] varchar(10) NULL,
+        [AR_TAX_CATEGORY] varchar(10) NULL,
+        [AR_RELEASE_TYPE] varchar(2) NULL,
+        [AR_AOB_COST] money NULL,
+        [AR_OB_QTY] smallint NULL,
+        [AR_ORIG_INVOICE_NO] varchar(10) NULL,
+        [AR_LAST_INVOICE_NO] varchar(10) NULL,
+        [AR_WARRANTY] smallint NULL,
+        [AR_WARRANTYEXP] datetime NULL,
+        [AR_SERIAL] varchar(20) NULL,
+        [AR_LOCATION] varchar(10) NULL,
+        [AR_LOCATION_IMP] varchar(10) NULL,
+        [AR_DEPARTMENT] varchar(10) NULL,
+        [AR_DEPARTMENT_IMP] varchar(10) NULL,
+        [AR_CAMPUS] int NULL,
+        [AR_CAMPUS_IMP] int NULL,
+        [AR_BRANCH] varchar(10) NULL,
+        [AR_LEASE_START_DATE] datetime NULL,
+        [AR_LEASE_END_DATE] datetime NULL,
+        [AR_LAST_ST_DATE] datetime NULL,
+        [AR_LAST_ADDN_DATE] datetime NULL,
+        [AR_EXPECTED_LIFE] smallint NULL,
+        [AR_LAST_SVC_DATE] datetime NULL,
+        [AR_NEXT_SVC_DATE] datetime NULL,
+        [AR_LAST_SVC_DETAILS] text NULL,
+        [AR_OWNER] varchar(30) NULL,
+        [AR_CLEANING] text NULL,
+        [AR_HAZARD] text NULL,
+        [AR_SITE_REFERENCE] varchar(20) NULL,
+        [AR_EXTRA_DETAILS] text NULL,
+        [AR_PURDATE] datetime NULL,
+        [AR_PURDATE_IMP] datetime NULL,
+        [AR_ORIG_SUPPLIER] varchar(10) NULL,
+        [AR_ORIG_COST] money NULL,
+        [AR_ASSET_PIC] image NULL,
+        [FDT_COMMENT] text NULL,
+        [FDT_PROCESS_FLAG] varchar(1) NULL,
+        [FDT_DATE_EXP] datetime NULL,
+        [FDT_TIME_EXP] smallint NULL,
+        [FDT_DATE_IMP] datetime NULL,
+        [FDT_TIME_IMP] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [FER_FDT_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE CLUSTERED INDEX [FER_FDT_Index_SOURCE] ON [dbo].[FER_FDT]
+    (
+            [SOURCE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the FER_FDT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the FER_FDT data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new FER_FDTDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class FER_FDTDataReader : IDataReader, IDataRecord
+        {
+            private List<FER_FDT> Items;
+            private int CurrentIndex;
+            private FER_FDT CurrentItem;
+
+            public FER_FDTDataReader(List<FER_FDT> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 240; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // SOURCE
+                        return CurrentItem.SOURCE;
+                    case 2: // DR_DRKEY
+                        return CurrentItem.DR_DRKEY;
+                    case 3: // DR_DRKEY_IMP
+                        return CurrentItem.DR_DRKEY_IMP;
+                    case 4: // DR_TITLE
+                        return CurrentItem.DR_TITLE;
+                    case 5: // DR_CONTACT
+                        return CurrentItem.DR_CONTACT;
+                    case 6: // DR_BUSNAME
+                        return CurrentItem.DR_BUSNAME;
+                    case 7: // DR_BUSADD01
+                        return CurrentItem.DR_BUSADD01;
+                    case 8: // DR_BUSADD02
+                        return CurrentItem.DR_BUSADD02;
+                    case 9: // DR_BUSSTATE
+                        return CurrentItem.DR_BUSSTATE;
+                    case 10: // DR_POSTCODE
+                        return CurrentItem.DR_POSTCODE;
+                    case 11: // DR_TELEPHONE
+                        return CurrentItem.DR_TELEPHONE;
+                    case 12: // DR_FAX
+                        return CurrentItem.DR_FAX;
+                    case 13: // DR_MAILNAME
+                        return CurrentItem.DR_MAILNAME;
+                    case 14: // DR_MAILADD01
+                        return CurrentItem.DR_MAILADD01;
+                    case 15: // DR_MAILADD02
+                        return CurrentItem.DR_MAILADD02;
+                    case 16: // DR_MAILSTATE
+                        return CurrentItem.DR_MAILSTATE;
+                    case 17: // DR_MAILPOST
+                        return CurrentItem.DR_MAILPOST;
+                    case 18: // DR_DRTYPE
+                        return CurrentItem.DR_DRTYPE;
+                    case 19: // DR_CHARGES_YTD
+                        return CurrentItem.DR_CHARGES_YTD;
+                    case 20: // DR_NOTES
+                        return CurrentItem.DR_NOTES;
+                    case 21: // DR_MEMO_FLAG
+                        return CurrentItem.DR_MEMO_FLAG;
+                    case 22: // DR_REMARK
+                        return CurrentItem.DR_REMARK;
+                    case 23: // DR_BILLING_EMAIL
+                        return CurrentItem.DR_BILLING_EMAIL;
+                    case 24: // DR_BALANCE
+                        return CurrentItem.DR_BALANCE;
+                    case 25: // CR_CRKEY
+                        return CurrentItem.CR_CRKEY;
+                    case 26: // CR_CRKEY_IMP
+                        return CurrentItem.CR_CRKEY_IMP;
+                    case 27: // CR_TITLE
+                        return CurrentItem.CR_TITLE;
+                    case 28: // CR_CUR_BAL
+                        return CurrentItem.CR_CUR_BAL;
+                    case 29: // CR_CONTACT
+                        return CurrentItem.CR_CONTACT;
+                    case 30: // CR_ADDRESS01
+                        return CurrentItem.CR_ADDRESS01;
+                    case 31: // CR_ADDRESS02
+                        return CurrentItem.CR_ADDRESS02;
+                    case 32: // CR_ADDRESS03
+                        return CurrentItem.CR_ADDRESS03;
+                    case 33: // CR_STATE
+                        return CurrentItem.CR_STATE;
+                    case 34: // CR_POSTCODE
+                        return CurrentItem.CR_POSTCODE;
+                    case 35: // CR_TELEPHONE
+                        return CurrentItem.CR_TELEPHONE;
+                    case 36: // CR_FAX
+                        return CurrentItem.CR_FAX;
+                    case 37: // CR_EMAIL
+                        return CurrentItem.CR_EMAIL;
+                    case 38: // CR_EMAIL_FOR_PAYMENTS
+                        return CurrentItem.CR_EMAIL_FOR_PAYMENTS;
+                    case 39: // CR_MOBILE
+                        return CurrentItem.CR_MOBILE;
+                    case 40: // CR_PRMS_FLAG
+                        return CurrentItem.CR_PRMS_FLAG;
+                    case 41: // CR_ABN
+                        return CurrentItem.CR_ABN;
+                    case 42: // CR_PAYG_RATE
+                        return CurrentItem.CR_PAYG_RATE;
+                    case 43: // CR_CRLIMIT
+                        return CurrentItem.CR_CRLIMIT;
+                    case 44: // CR_TERMS
+                        return CurrentItem.CR_TERMS;
+                    case 45: // CR_BSB
+                        return CurrentItem.CR_BSB;
+                    case 46: // CR_ACCOUNT_NO
+                        return CurrentItem.CR_ACCOUNT_NO;
+                    case 47: // CR_ACCOUNT_NAME
+                        return CurrentItem.CR_ACCOUNT_NAME;
+                    case 48: // CR_LODGE_REF
+                        return CurrentItem.CR_LODGE_REF;
+                    case 49: // CR_SURNAME
+                        return CurrentItem.CR_SURNAME;
+                    case 50: // CR_FIRST_NAME
+                        return CurrentItem.CR_FIRST_NAME;
+                    case 51: // CR_SECOND_NAME
+                        return CurrentItem.CR_SECOND_NAME;
+                    case 52: // CR_PAYG_BIRTHDATE
+                        return CurrentItem.CR_PAYG_BIRTHDATE;
+                    case 53: // CR_PAYG_STARTDATE
+                        return CurrentItem.CR_PAYG_STARTDATE;
+                    case 54: // CR_PAYG_TERMDATE
+                        return CurrentItem.CR_PAYG_TERMDATE;
+                    case 55: // CR_PAYG_ADDRESS01
+                        return CurrentItem.CR_PAYG_ADDRESS01;
+                    case 56: // CR_PAYG_ADDRESS02
+                        return CurrentItem.CR_PAYG_ADDRESS02;
+                    case 57: // CR_PAYG_SUBURB
+                        return CurrentItem.CR_PAYG_SUBURB;
+                    case 58: // CR_PAYG_STATE
+                        return CurrentItem.CR_PAYG_STATE;
+                    case 59: // CR_PAYG_POST
+                        return CurrentItem.CR_PAYG_POST;
+                    case 60: // CR_PAYG_COUNTRY
+                        return CurrentItem.CR_PAYG_COUNTRY;
+                    case 61: // CR_PPDKEY
+                        return CurrentItem.CR_PPDKEY;
+                    case 62: // CR_BILLER_CODE
+                        return CurrentItem.CR_BILLER_CODE;
+                    case 63: // CR_BPAY_REFERENCE
+                        return CurrentItem.CR_BPAY_REFERENCE;
+                    case 64: // CR_LASTPAYDATE
+                        return CurrentItem.CR_LASTPAYDATE;
+                    case 65: // PE_PEKEY
+                        return CurrentItem.PE_PEKEY;
+                    case 66: // PE_PEKEY_IMP
+                        return CurrentItem.PE_PEKEY_IMP;
+                    case 67: // PE_SURNAME
+                        return CurrentItem.PE_SURNAME;
+                    case 68: // PE_FIRST_NAME
+                        return CurrentItem.PE_FIRST_NAME;
+                    case 69: // PE_SECOND_NAME
+                        return CurrentItem.PE_SECOND_NAME;
+                    case 70: // PE_PREF_NAME
+                        return CurrentItem.PE_PREF_NAME;
+                    case 71: // PE_PREVIOUS_NAME
+                        return CurrentItem.PE_PREVIOUS_NAME;
+                    case 72: // PE_BIRTHDATE
+                        return CurrentItem.PE_BIRTHDATE;
+                    case 73: // PE_GENDER
+                        return CurrentItem.PE_GENDER;
+                    case 74: // PE_HOMEADD01
+                        return CurrentItem.PE_HOMEADD01;
+                    case 75: // PE_HOMEADD02
+                        return CurrentItem.PE_HOMEADD02;
+                    case 76: // PE_HOMESUBURB
+                        return CurrentItem.PE_HOMESUBURB;
+                    case 77: // PE_HOMESTATE
+                        return CurrentItem.PE_HOMESTATE;
+                    case 78: // PE_HOMEPOST
+                        return CurrentItem.PE_HOMEPOST;
+                    case 79: // PE_COUNTRY
+                        return CurrentItem.PE_COUNTRY;
+                    case 80: // PE_HOMEPHONE
+                        return CurrentItem.PE_HOMEPHONE;
+                    case 81: // PE_BUS_PHONE
+                        return CurrentItem.PE_BUS_PHONE;
+                    case 82: // PE_PHONE_EXT
+                        return CurrentItem.PE_PHONE_EXT;
+                    case 83: // PE_FAX
+                        return CurrentItem.PE_FAX;
+                    case 84: // PE_MOBILE
+                        return CurrentItem.PE_MOBILE;
+                    case 85: // PE_EMAIL
+                        return CurrentItem.PE_EMAIL;
+                    case 86: // PE_DRIVERS_LIC_NO
+                        return CurrentItem.PE_DRIVERS_LIC_NO;
+                    case 87: // PE_SALREVDATE
+                        return CurrentItem.PE_SALREVDATE;
+                    case 88: // PE_SUSPEND_DATE
+                        return CurrentItem.PE_SUSPEND_DATE;
+                    case 89: // PE_PENUMBER
+                        return CurrentItem.PE_PENUMBER;
+                    case 90: // PE_TAXFILENUM
+                        return CurrentItem.PE_TAXFILENUM;
+                    case 91: // PE_TAXCODE
+                        return CurrentItem.PE_TAXCODE;
+                    case 92: // PE_NO_DEPEND
+                        return CurrentItem.PE_NO_DEPEND;
+                    case 93: // PE_DEP_REBATE
+                        return CurrentItem.PE_DEP_REBATE;
+                    case 94: // PE_ZONE_CODE
+                        return CurrentItem.PE_ZONE_CODE;
+                    case 95: // PE_ZONE_ALLOW
+                        return CurrentItem.PE_ZONE_ALLOW;
+                    case 96: // PE_ALLOWANCES
+                        return CurrentItem.PE_ALLOWANCES;
+                    case 97: // PE_PAYCODE
+                        return CurrentItem.PE_PAYCODE;
+                    case 98: // PE_DEPARTMENT
+                        return CurrentItem.PE_DEPARTMENT;
+                    case 99: // PE_EMPLOY_TYPE
+                        return CurrentItem.PE_EMPLOY_TYPE;
+                    case 100: // PE_NORMAL_HOURS
+                        return CurrentItem.PE_NORMAL_HOURS;
+                    case 101: // PE_FTE_VALUE
+                        return CurrentItem.PE_FTE_VALUE;
+                    case 102: // PE_ANNUAL_SALARY
+                        return CurrentItem.PE_ANNUAL_SALARY;
+                    case 103: // PE_STD_HOURS
+                        return CurrentItem.PE_STD_HOURS;
+                    case 104: // PE_UNION_NAME
+                        return CurrentItem.PE_UNION_NAME;
+                    case 105: // PE_MEDICARE_Q09A
+                        return CurrentItem.PE_MEDICARE_Q09A;
+                    case 106: // PE_MEDICARE_Q10A
+                        return CurrentItem.PE_MEDICARE_Q10A;
+                    case 107: // PE_MEDICARE_Q11A
+                        return CurrentItem.PE_MEDICARE_Q11A;
+                    case 108: // PE_MEDICARE_Q12A
+                        return CurrentItem.PE_MEDICARE_Q12A;
+                    case 109: // PE_LEAVE_GROUP
+                        return CurrentItem.PE_LEAVE_GROUP;
+                    case 110: // PE_ESUPER_IGNORE_THRESHOLD
+                        return CurrentItem.PE_ESUPER_IGNORE_THRESHOLD;
+                    case 111: // PE_ESUPER_FUND
+                        return CurrentItem.PE_ESUPER_FUND;
+                    case 112: // PE_ESUPER_MEMBER
+                        return CurrentItem.PE_ESUPER_MEMBER;
+                    case 113: // PE_ESUPER_PERCENT
+                        return CurrentItem.PE_ESUPER_PERCENT;
+                    case 114: // PE_LASTPAYDATE
+                        return CurrentItem.PE_LASTPAYDATE;
+                    case 115: // PE_PEPS_TRCENTRE
+                        return CurrentItem.PE_PEPS_TRCENTRE;
+                    case 116: // PE_START_DATE_IMP
+                        return CurrentItem.PE_START_DATE_IMP;
+                    case 117: // PEPS_CODE
+                        return CurrentItem.PEPS_CODE;
+                    case 118: // PEPS_PAYITEM
+                        return CurrentItem.PEPS_PAYITEM;
+                    case 119: // PEPS_TRCOST
+                        return CurrentItem.PEPS_TRCOST;
+                    case 120: // PEPS_TRQTY
+                        return CurrentItem.PEPS_TRQTY;
+                    case 121: // PEPS_TRAMT
+                        return CurrentItem.PEPS_TRAMT;
+                    case 122: // PEPS_TRDET
+                        return CurrentItem.PEPS_TRDET;
+                    case 123: // PEPS_FLAG
+                        return CurrentItem.PEPS_FLAG;
+                    case 124: // PEPS_PAY_STEP
+                        return CurrentItem.PEPS_PAY_STEP;
+                    case 125: // PEPS_SUPER_FUND
+                        return CurrentItem.PEPS_SUPER_FUND;
+                    case 126: // PEPS_SUPER_MEMBER
+                        return CurrentItem.PEPS_SUPER_MEMBER;
+                    case 127: // PEPS_SUPER_PERCENT
+                        return CurrentItem.PEPS_SUPER_PERCENT;
+                    case 128: // PEPS_TRCENTRE
+                        return CurrentItem.PEPS_TRCENTRE;
+                    case 129: // PEPM_CODE
+                        return CurrentItem.PEPM_CODE;
+                    case 130: // PEPM_NAME
+                        return CurrentItem.PEPM_NAME;
+                    case 131: // PEPM_CHQ_NO
+                        return CurrentItem.PEPM_CHQ_NO;
+                    case 132: // PEPM_DAMOUNT
+                        return CurrentItem.PEPM_DAMOUNT;
+                    case 133: // PEPM_BANK
+                        return CurrentItem.PEPM_BANK;
+                    case 134: // PEPM_BSB
+                        return CurrentItem.PEPM_BSB;
+                    case 135: // PEPM_ACCOUNT_NO
+                        return CurrentItem.PEPM_ACCOUNT_NO;
+                    case 136: // PEPM_AMOUNT
+                        return CurrentItem.PEPM_AMOUNT;
+                    case 137: // PEPM_FLAG
+                        return CurrentItem.PEPM_FLAG;
+                    case 138: // PEPM_PAYMODE
+                        return CurrentItem.PEPM_PAYMODE;
+                    case 139: // PEPY_CODE
+                        return CurrentItem.PEPY_CODE;
+                    case 140: // PEPY_TRANSDATE
+                        return CurrentItem.PEPY_TRANSDATE;
+                    case 141: // PEPY_STAFF
+                        return CurrentItem.PEPY_STAFF;
+                    case 142: // PEPY_PURPOSE
+                        return CurrentItem.PEPY_PURPOSE;
+                    case 143: // PEPY_NOTES
+                        return CurrentItem.PEPY_NOTES;
+                    case 144: // KPN_KPNKEY
+                        return CurrentItem.KPN_KPNKEY;
+                    case 145: // KPN_KPNKEY_IMP
+                        return CurrentItem.KPN_KPNKEY_IMP;
+                    case 146: // KPN_DESCRIPTION
+                        return CurrentItem.KPN_DESCRIPTION;
+                    case 147: // KPC_KPCKEY
+                        return CurrentItem.KPC_KPCKEY;
+                    case 148: // KPC_SURNAME
+                        return CurrentItem.KPC_SURNAME;
+                    case 149: // KPC_FIRST_NAME
+                        return CurrentItem.KPC_FIRST_NAME;
+                    case 150: // KPC_SECOND_NAME
+                        return CurrentItem.KPC_SECOND_NAME;
+                    case 151: // KPC_GENDER
+                        return CurrentItem.KPC_GENDER;
+                    case 152: // KPC_ADDRESS01
+                        return CurrentItem.KPC_ADDRESS01;
+                    case 153: // KPC_ADDRESS02
+                        return CurrentItem.KPC_ADDRESS02;
+                    case 154: // KPC_ADDRESS03
+                        return CurrentItem.KPC_ADDRESS03;
+                    case 155: // KPC_STATE
+                        return CurrentItem.KPC_STATE;
+                    case 156: // KPC_POST
+                        return CurrentItem.KPC_POST;
+                    case 157: // KPC_BUS_PHONE
+                        return CurrentItem.KPC_BUS_PHONE;
+                    case 158: // KPC_HOME_PHONE
+                        return CurrentItem.KPC_HOME_PHONE;
+                    case 159: // KPC_MOBILE
+                        return CurrentItem.KPC_MOBILE;
+                    case 160: // KPC_EMAIL
+                        return CurrentItem.KPC_EMAIL;
+                    case 161: // KPCL_KPCLKEY
+                        return CurrentItem.KPCL_KPCLKEY;
+                    case 162: // KPCL_LINK
+                        return CurrentItem.KPCL_LINK;
+                    case 163: // KPCL_SOURCE
+                        return CurrentItem.KPCL_SOURCE;
+                    case 164: // KPCL_CONTACT
+                        return CurrentItem.KPCL_CONTACT;
+                    case 165: // KPCL_CONTACT_TYPE
+                        return CurrentItem.KPCL_CONTACT_TYPE;
+                    case 166: // KPCL_CONTACT_PREFERENCE
+                        return CurrentItem.KPCL_CONTACT_PREFERENCE;
+                    case 167: // KPCR_KPCRKEY
+                        return CurrentItem.KPCR_KPCRKEY;
+                    case 168: // KPCR_KPCRKEY_IMP
+                        return CurrentItem.KPCR_KPCRKEY_IMP;
+                    case 169: // KPCR_DESCRIPTION
+                        return CurrentItem.KPCR_DESCRIPTION;
+                    case 170: // PF_PFKEY
+                        return CurrentItem.PF_PFKEY;
+                    case 171: // PF_PFKEY_IMP
+                        return CurrentItem.PF_PFKEY_IMP;
+                    case 172: // PF_DESCRIPTION
+                        return CurrentItem.PF_DESCRIPTION;
+                    case 173: // PI_PIKEY
+                        return CurrentItem.PI_PIKEY;
+                    case 174: // PI_PIKEY_IMP
+                        return CurrentItem.PI_PIKEY_IMP;
+                    case 175: // PI_PAYCODE
+                        return CurrentItem.PI_PAYCODE;
+                    case 176: // PI_DESCRIPTION
+                        return CurrentItem.PI_DESCRIPTION;
+                    case 177: // PI_TRANSTYPE
+                        return CurrentItem.PI_TRANSTYPE;
+                    case 178: // PI_TAXABLE
+                        return CurrentItem.PI_TAXABLE;
+                    case 179: // PI_UNIT
+                        return CurrentItem.PI_UNIT;
+                    case 180: // PI_CATEGORY
+                        return CurrentItem.PI_CATEGORY;
+                    case 181: // PI_PAYG_BOX
+                        return CurrentItem.PI_PAYG_BOX;
+                    case 182: // PI_TAXRATE
+                        return CurrentItem.PI_TAXRATE;
+                    case 183: // PI_AUTOCALC
+                        return CurrentItem.PI_AUTOCALC;
+                    case 184: // PI_SUPER_LEVY
+                        return CurrentItem.PI_SUPER_LEVY;
+                    case 185: // PI_PERS_SUPER
+                        return CurrentItem.PI_PERS_SUPER;
+                    case 186: // PI_PERS_SUPER_RATE
+                        return CurrentItem.PI_PERS_SUPER_RATE;
+                    case 187: // PI_INITIATIVE
+                        return CurrentItem.PI_INITIATIVE;
+                    case 188: // AR_ARKEY
+                        return CurrentItem.AR_ARKEY;
+                    case 189: // AR_ARKEY_IMP
+                        return CurrentItem.AR_ARKEY_IMP;
+                    case 190: // AR_TITLE
+                        return CurrentItem.AR_TITLE;
+                    case 191: // AR_DESCRIPTION01
+                        return CurrentItem.AR_DESCRIPTION01;
+                    case 192: // AR_DESCRIPTION02
+                        return CurrentItem.AR_DESCRIPTION02;
+                    case 193: // AR_ASSET_TYPE
+                        return CurrentItem.AR_ASSET_TYPE;
+                    case 194: // AR_CATEGORY
+                        return CurrentItem.AR_CATEGORY;
+                    case 195: // AR_CATEGORY_IMP
+                        return CurrentItem.AR_CATEGORY_IMP;
+                    case 196: // AR_SUBCATEGORY_IMP
+                        return CurrentItem.AR_SUBCATEGORY_IMP;
+                    case 197: // AR_TAX_CATEGORY
+                        return CurrentItem.AR_TAX_CATEGORY;
+                    case 198: // AR_RELEASE_TYPE
+                        return CurrentItem.AR_RELEASE_TYPE;
+                    case 199: // AR_AOB_COST
+                        return CurrentItem.AR_AOB_COST;
+                    case 200: // AR_OB_QTY
+                        return CurrentItem.AR_OB_QTY;
+                    case 201: // AR_ORIG_INVOICE_NO
+                        return CurrentItem.AR_ORIG_INVOICE_NO;
+                    case 202: // AR_LAST_INVOICE_NO
+                        return CurrentItem.AR_LAST_INVOICE_NO;
+                    case 203: // AR_WARRANTY
+                        return CurrentItem.AR_WARRANTY;
+                    case 204: // AR_WARRANTYEXP
+                        return CurrentItem.AR_WARRANTYEXP;
+                    case 205: // AR_SERIAL
+                        return CurrentItem.AR_SERIAL;
+                    case 206: // AR_LOCATION
+                        return CurrentItem.AR_LOCATION;
+                    case 207: // AR_LOCATION_IMP
+                        return CurrentItem.AR_LOCATION_IMP;
+                    case 208: // AR_DEPARTMENT
+                        return CurrentItem.AR_DEPARTMENT;
+                    case 209: // AR_DEPARTMENT_IMP
+                        return CurrentItem.AR_DEPARTMENT_IMP;
+                    case 210: // AR_CAMPUS
+                        return CurrentItem.AR_CAMPUS;
+                    case 211: // AR_CAMPUS_IMP
+                        return CurrentItem.AR_CAMPUS_IMP;
+                    case 212: // AR_BRANCH
+                        return CurrentItem.AR_BRANCH;
+                    case 213: // AR_LEASE_START_DATE
+                        return CurrentItem.AR_LEASE_START_DATE;
+                    case 214: // AR_LEASE_END_DATE
+                        return CurrentItem.AR_LEASE_END_DATE;
+                    case 215: // AR_LAST_ST_DATE
+                        return CurrentItem.AR_LAST_ST_DATE;
+                    case 216: // AR_LAST_ADDN_DATE
+                        return CurrentItem.AR_LAST_ADDN_DATE;
+                    case 217: // AR_EXPECTED_LIFE
+                        return CurrentItem.AR_EXPECTED_LIFE;
+                    case 218: // AR_LAST_SVC_DATE
+                        return CurrentItem.AR_LAST_SVC_DATE;
+                    case 219: // AR_NEXT_SVC_DATE
+                        return CurrentItem.AR_NEXT_SVC_DATE;
+                    case 220: // AR_LAST_SVC_DETAILS
+                        return CurrentItem.AR_LAST_SVC_DETAILS;
+                    case 221: // AR_OWNER
+                        return CurrentItem.AR_OWNER;
+                    case 222: // AR_CLEANING
+                        return CurrentItem.AR_CLEANING;
+                    case 223: // AR_HAZARD
+                        return CurrentItem.AR_HAZARD;
+                    case 224: // AR_SITE_REFERENCE
+                        return CurrentItem.AR_SITE_REFERENCE;
+                    case 225: // AR_EXTRA_DETAILS
+                        return CurrentItem.AR_EXTRA_DETAILS;
+                    case 226: // AR_PURDATE
+                        return CurrentItem.AR_PURDATE;
+                    case 227: // AR_PURDATE_IMP
+                        return CurrentItem.AR_PURDATE_IMP;
+                    case 228: // AR_ORIG_SUPPLIER
+                        return CurrentItem.AR_ORIG_SUPPLIER;
+                    case 229: // AR_ORIG_COST
+                        return CurrentItem.AR_ORIG_COST;
+                    case 230: // AR_ASSET_PIC
+                        return CurrentItem.AR_ASSET_PIC;
+                    case 231: // FDT_COMMENT
+                        return CurrentItem.FDT_COMMENT;
+                    case 232: // FDT_PROCESS_FLAG
+                        return CurrentItem.FDT_PROCESS_FLAG;
+                    case 233: // FDT_DATE_EXP
+                        return CurrentItem.FDT_DATE_EXP;
+                    case 234: // FDT_TIME_EXP
+                        return CurrentItem.FDT_TIME_EXP;
+                    case 235: // FDT_DATE_IMP
+                        return CurrentItem.FDT_DATE_IMP;
+                    case 236: // FDT_TIME_IMP
+                        return CurrentItem.FDT_TIME_IMP;
+                    case 237: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 238: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 239: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // DR_DRKEY
+                        return CurrentItem.DR_DRKEY == null;
+                    case 3: // DR_DRKEY_IMP
+                        return CurrentItem.DR_DRKEY_IMP == null;
+                    case 4: // DR_TITLE
+                        return CurrentItem.DR_TITLE == null;
+                    case 5: // DR_CONTACT
+                        return CurrentItem.DR_CONTACT == null;
+                    case 6: // DR_BUSNAME
+                        return CurrentItem.DR_BUSNAME == null;
+                    case 7: // DR_BUSADD01
+                        return CurrentItem.DR_BUSADD01 == null;
+                    case 8: // DR_BUSADD02
+                        return CurrentItem.DR_BUSADD02 == null;
+                    case 9: // DR_BUSSTATE
+                        return CurrentItem.DR_BUSSTATE == null;
+                    case 10: // DR_POSTCODE
+                        return CurrentItem.DR_POSTCODE == null;
+                    case 11: // DR_TELEPHONE
+                        return CurrentItem.DR_TELEPHONE == null;
+                    case 12: // DR_FAX
+                        return CurrentItem.DR_FAX == null;
+                    case 13: // DR_MAILNAME
+                        return CurrentItem.DR_MAILNAME == null;
+                    case 14: // DR_MAILADD01
+                        return CurrentItem.DR_MAILADD01 == null;
+                    case 15: // DR_MAILADD02
+                        return CurrentItem.DR_MAILADD02 == null;
+                    case 16: // DR_MAILSTATE
+                        return CurrentItem.DR_MAILSTATE == null;
+                    case 17: // DR_MAILPOST
+                        return CurrentItem.DR_MAILPOST == null;
+                    case 18: // DR_DRTYPE
+                        return CurrentItem.DR_DRTYPE == null;
+                    case 19: // DR_CHARGES_YTD
+                        return CurrentItem.DR_CHARGES_YTD == null;
+                    case 20: // DR_NOTES
+                        return CurrentItem.DR_NOTES == null;
+                    case 21: // DR_MEMO_FLAG
+                        return CurrentItem.DR_MEMO_FLAG == null;
+                    case 22: // DR_REMARK
+                        return CurrentItem.DR_REMARK == null;
+                    case 23: // DR_BILLING_EMAIL
+                        return CurrentItem.DR_BILLING_EMAIL == null;
+                    case 24: // DR_BALANCE
+                        return CurrentItem.DR_BALANCE == null;
+                    case 25: // CR_CRKEY
+                        return CurrentItem.CR_CRKEY == null;
+                    case 26: // CR_CRKEY_IMP
+                        return CurrentItem.CR_CRKEY_IMP == null;
+                    case 27: // CR_TITLE
+                        return CurrentItem.CR_TITLE == null;
+                    case 28: // CR_CUR_BAL
+                        return CurrentItem.CR_CUR_BAL == null;
+                    case 29: // CR_CONTACT
+                        return CurrentItem.CR_CONTACT == null;
+                    case 30: // CR_ADDRESS01
+                        return CurrentItem.CR_ADDRESS01 == null;
+                    case 31: // CR_ADDRESS02
+                        return CurrentItem.CR_ADDRESS02 == null;
+                    case 32: // CR_ADDRESS03
+                        return CurrentItem.CR_ADDRESS03 == null;
+                    case 33: // CR_STATE
+                        return CurrentItem.CR_STATE == null;
+                    case 34: // CR_POSTCODE
+                        return CurrentItem.CR_POSTCODE == null;
+                    case 35: // CR_TELEPHONE
+                        return CurrentItem.CR_TELEPHONE == null;
+                    case 36: // CR_FAX
+                        return CurrentItem.CR_FAX == null;
+                    case 37: // CR_EMAIL
+                        return CurrentItem.CR_EMAIL == null;
+                    case 38: // CR_EMAIL_FOR_PAYMENTS
+                        return CurrentItem.CR_EMAIL_FOR_PAYMENTS == null;
+                    case 39: // CR_MOBILE
+                        return CurrentItem.CR_MOBILE == null;
+                    case 40: // CR_PRMS_FLAG
+                        return CurrentItem.CR_PRMS_FLAG == null;
+                    case 41: // CR_ABN
+                        return CurrentItem.CR_ABN == null;
+                    case 42: // CR_PAYG_RATE
+                        return CurrentItem.CR_PAYG_RATE == null;
+                    case 43: // CR_CRLIMIT
+                        return CurrentItem.CR_CRLIMIT == null;
+                    case 44: // CR_TERMS
+                        return CurrentItem.CR_TERMS == null;
+                    case 45: // CR_BSB
+                        return CurrentItem.CR_BSB == null;
+                    case 46: // CR_ACCOUNT_NO
+                        return CurrentItem.CR_ACCOUNT_NO == null;
+                    case 47: // CR_ACCOUNT_NAME
+                        return CurrentItem.CR_ACCOUNT_NAME == null;
+                    case 48: // CR_LODGE_REF
+                        return CurrentItem.CR_LODGE_REF == null;
+                    case 49: // CR_SURNAME
+                        return CurrentItem.CR_SURNAME == null;
+                    case 50: // CR_FIRST_NAME
+                        return CurrentItem.CR_FIRST_NAME == null;
+                    case 51: // CR_SECOND_NAME
+                        return CurrentItem.CR_SECOND_NAME == null;
+                    case 52: // CR_PAYG_BIRTHDATE
+                        return CurrentItem.CR_PAYG_BIRTHDATE == null;
+                    case 53: // CR_PAYG_STARTDATE
+                        return CurrentItem.CR_PAYG_STARTDATE == null;
+                    case 54: // CR_PAYG_TERMDATE
+                        return CurrentItem.CR_PAYG_TERMDATE == null;
+                    case 55: // CR_PAYG_ADDRESS01
+                        return CurrentItem.CR_PAYG_ADDRESS01 == null;
+                    case 56: // CR_PAYG_ADDRESS02
+                        return CurrentItem.CR_PAYG_ADDRESS02 == null;
+                    case 57: // CR_PAYG_SUBURB
+                        return CurrentItem.CR_PAYG_SUBURB == null;
+                    case 58: // CR_PAYG_STATE
+                        return CurrentItem.CR_PAYG_STATE == null;
+                    case 59: // CR_PAYG_POST
+                        return CurrentItem.CR_PAYG_POST == null;
+                    case 60: // CR_PAYG_COUNTRY
+                        return CurrentItem.CR_PAYG_COUNTRY == null;
+                    case 61: // CR_PPDKEY
+                        return CurrentItem.CR_PPDKEY == null;
+                    case 62: // CR_BILLER_CODE
+                        return CurrentItem.CR_BILLER_CODE == null;
+                    case 63: // CR_BPAY_REFERENCE
+                        return CurrentItem.CR_BPAY_REFERENCE == null;
+                    case 64: // CR_LASTPAYDATE
+                        return CurrentItem.CR_LASTPAYDATE == null;
+                    case 65: // PE_PEKEY
+                        return CurrentItem.PE_PEKEY == null;
+                    case 66: // PE_PEKEY_IMP
+                        return CurrentItem.PE_PEKEY_IMP == null;
+                    case 67: // PE_SURNAME
+                        return CurrentItem.PE_SURNAME == null;
+                    case 68: // PE_FIRST_NAME
+                        return CurrentItem.PE_FIRST_NAME == null;
+                    case 69: // PE_SECOND_NAME
+                        return CurrentItem.PE_SECOND_NAME == null;
+                    case 70: // PE_PREF_NAME
+                        return CurrentItem.PE_PREF_NAME == null;
+                    case 71: // PE_PREVIOUS_NAME
+                        return CurrentItem.PE_PREVIOUS_NAME == null;
+                    case 72: // PE_BIRTHDATE
+                        return CurrentItem.PE_BIRTHDATE == null;
+                    case 73: // PE_GENDER
+                        return CurrentItem.PE_GENDER == null;
+                    case 74: // PE_HOMEADD01
+                        return CurrentItem.PE_HOMEADD01 == null;
+                    case 75: // PE_HOMEADD02
+                        return CurrentItem.PE_HOMEADD02 == null;
+                    case 76: // PE_HOMESUBURB
+                        return CurrentItem.PE_HOMESUBURB == null;
+                    case 77: // PE_HOMESTATE
+                        return CurrentItem.PE_HOMESTATE == null;
+                    case 78: // PE_HOMEPOST
+                        return CurrentItem.PE_HOMEPOST == null;
+                    case 79: // PE_COUNTRY
+                        return CurrentItem.PE_COUNTRY == null;
+                    case 80: // PE_HOMEPHONE
+                        return CurrentItem.PE_HOMEPHONE == null;
+                    case 81: // PE_BUS_PHONE
+                        return CurrentItem.PE_BUS_PHONE == null;
+                    case 82: // PE_PHONE_EXT
+                        return CurrentItem.PE_PHONE_EXT == null;
+                    case 83: // PE_FAX
+                        return CurrentItem.PE_FAX == null;
+                    case 84: // PE_MOBILE
+                        return CurrentItem.PE_MOBILE == null;
+                    case 85: // PE_EMAIL
+                        return CurrentItem.PE_EMAIL == null;
+                    case 86: // PE_DRIVERS_LIC_NO
+                        return CurrentItem.PE_DRIVERS_LIC_NO == null;
+                    case 87: // PE_SALREVDATE
+                        return CurrentItem.PE_SALREVDATE == null;
+                    case 88: // PE_SUSPEND_DATE
+                        return CurrentItem.PE_SUSPEND_DATE == null;
+                    case 89: // PE_PENUMBER
+                        return CurrentItem.PE_PENUMBER == null;
+                    case 90: // PE_TAXFILENUM
+                        return CurrentItem.PE_TAXFILENUM == null;
+                    case 91: // PE_TAXCODE
+                        return CurrentItem.PE_TAXCODE == null;
+                    case 92: // PE_NO_DEPEND
+                        return CurrentItem.PE_NO_DEPEND == null;
+                    case 93: // PE_DEP_REBATE
+                        return CurrentItem.PE_DEP_REBATE == null;
+                    case 94: // PE_ZONE_CODE
+                        return CurrentItem.PE_ZONE_CODE == null;
+                    case 95: // PE_ZONE_ALLOW
+                        return CurrentItem.PE_ZONE_ALLOW == null;
+                    case 96: // PE_ALLOWANCES
+                        return CurrentItem.PE_ALLOWANCES == null;
+                    case 97: // PE_PAYCODE
+                        return CurrentItem.PE_PAYCODE == null;
+                    case 98: // PE_DEPARTMENT
+                        return CurrentItem.PE_DEPARTMENT == null;
+                    case 99: // PE_EMPLOY_TYPE
+                        return CurrentItem.PE_EMPLOY_TYPE == null;
+                    case 100: // PE_NORMAL_HOURS
+                        return CurrentItem.PE_NORMAL_HOURS == null;
+                    case 101: // PE_FTE_VALUE
+                        return CurrentItem.PE_FTE_VALUE == null;
+                    case 102: // PE_ANNUAL_SALARY
+                        return CurrentItem.PE_ANNUAL_SALARY == null;
+                    case 103: // PE_STD_HOURS
+                        return CurrentItem.PE_STD_HOURS == null;
+                    case 104: // PE_UNION_NAME
+                        return CurrentItem.PE_UNION_NAME == null;
+                    case 105: // PE_MEDICARE_Q09A
+                        return CurrentItem.PE_MEDICARE_Q09A == null;
+                    case 106: // PE_MEDICARE_Q10A
+                        return CurrentItem.PE_MEDICARE_Q10A == null;
+                    case 107: // PE_MEDICARE_Q11A
+                        return CurrentItem.PE_MEDICARE_Q11A == null;
+                    case 108: // PE_MEDICARE_Q12A
+                        return CurrentItem.PE_MEDICARE_Q12A == null;
+                    case 109: // PE_LEAVE_GROUP
+                        return CurrentItem.PE_LEAVE_GROUP == null;
+                    case 110: // PE_ESUPER_IGNORE_THRESHOLD
+                        return CurrentItem.PE_ESUPER_IGNORE_THRESHOLD == null;
+                    case 111: // PE_ESUPER_FUND
+                        return CurrentItem.PE_ESUPER_FUND == null;
+                    case 112: // PE_ESUPER_MEMBER
+                        return CurrentItem.PE_ESUPER_MEMBER == null;
+                    case 113: // PE_ESUPER_PERCENT
+                        return CurrentItem.PE_ESUPER_PERCENT == null;
+                    case 114: // PE_LASTPAYDATE
+                        return CurrentItem.PE_LASTPAYDATE == null;
+                    case 115: // PE_PEPS_TRCENTRE
+                        return CurrentItem.PE_PEPS_TRCENTRE == null;
+                    case 116: // PE_START_DATE_IMP
+                        return CurrentItem.PE_START_DATE_IMP == null;
+                    case 117: // PEPS_CODE
+                        return CurrentItem.PEPS_CODE == null;
+                    case 118: // PEPS_PAYITEM
+                        return CurrentItem.PEPS_PAYITEM == null;
+                    case 119: // PEPS_TRCOST
+                        return CurrentItem.PEPS_TRCOST == null;
+                    case 120: // PEPS_TRQTY
+                        return CurrentItem.PEPS_TRQTY == null;
+                    case 121: // PEPS_TRAMT
+                        return CurrentItem.PEPS_TRAMT == null;
+                    case 122: // PEPS_TRDET
+                        return CurrentItem.PEPS_TRDET == null;
+                    case 123: // PEPS_FLAG
+                        return CurrentItem.PEPS_FLAG == null;
+                    case 124: // PEPS_PAY_STEP
+                        return CurrentItem.PEPS_PAY_STEP == null;
+                    case 125: // PEPS_SUPER_FUND
+                        return CurrentItem.PEPS_SUPER_FUND == null;
+                    case 126: // PEPS_SUPER_MEMBER
+                        return CurrentItem.PEPS_SUPER_MEMBER == null;
+                    case 127: // PEPS_SUPER_PERCENT
+                        return CurrentItem.PEPS_SUPER_PERCENT == null;
+                    case 128: // PEPS_TRCENTRE
+                        return CurrentItem.PEPS_TRCENTRE == null;
+                    case 129: // PEPM_CODE
+                        return CurrentItem.PEPM_CODE == null;
+                    case 130: // PEPM_NAME
+                        return CurrentItem.PEPM_NAME == null;
+                    case 131: // PEPM_CHQ_NO
+                        return CurrentItem.PEPM_CHQ_NO == null;
+                    case 132: // PEPM_DAMOUNT
+                        return CurrentItem.PEPM_DAMOUNT == null;
+                    case 133: // PEPM_BANK
+                        return CurrentItem.PEPM_BANK == null;
+                    case 134: // PEPM_BSB
+                        return CurrentItem.PEPM_BSB == null;
+                    case 135: // PEPM_ACCOUNT_NO
+                        return CurrentItem.PEPM_ACCOUNT_NO == null;
+                    case 136: // PEPM_AMOUNT
+                        return CurrentItem.PEPM_AMOUNT == null;
+                    case 137: // PEPM_FLAG
+                        return CurrentItem.PEPM_FLAG == null;
+                    case 138: // PEPM_PAYMODE
+                        return CurrentItem.PEPM_PAYMODE == null;
+                    case 139: // PEPY_CODE
+                        return CurrentItem.PEPY_CODE == null;
+                    case 140: // PEPY_TRANSDATE
+                        return CurrentItem.PEPY_TRANSDATE == null;
+                    case 141: // PEPY_STAFF
+                        return CurrentItem.PEPY_STAFF == null;
+                    case 142: // PEPY_PURPOSE
+                        return CurrentItem.PEPY_PURPOSE == null;
+                    case 143: // PEPY_NOTES
+                        return CurrentItem.PEPY_NOTES == null;
+                    case 144: // KPN_KPNKEY
+                        return CurrentItem.KPN_KPNKEY == null;
+                    case 145: // KPN_KPNKEY_IMP
+                        return CurrentItem.KPN_KPNKEY_IMP == null;
+                    case 146: // KPN_DESCRIPTION
+                        return CurrentItem.KPN_DESCRIPTION == null;
+                    case 147: // KPC_KPCKEY
+                        return CurrentItem.KPC_KPCKEY == null;
+                    case 148: // KPC_SURNAME
+                        return CurrentItem.KPC_SURNAME == null;
+                    case 149: // KPC_FIRST_NAME
+                        return CurrentItem.KPC_FIRST_NAME == null;
+                    case 150: // KPC_SECOND_NAME
+                        return CurrentItem.KPC_SECOND_NAME == null;
+                    case 151: // KPC_GENDER
+                        return CurrentItem.KPC_GENDER == null;
+                    case 152: // KPC_ADDRESS01
+                        return CurrentItem.KPC_ADDRESS01 == null;
+                    case 153: // KPC_ADDRESS02
+                        return CurrentItem.KPC_ADDRESS02 == null;
+                    case 154: // KPC_ADDRESS03
+                        return CurrentItem.KPC_ADDRESS03 == null;
+                    case 155: // KPC_STATE
+                        return CurrentItem.KPC_STATE == null;
+                    case 156: // KPC_POST
+                        return CurrentItem.KPC_POST == null;
+                    case 157: // KPC_BUS_PHONE
+                        return CurrentItem.KPC_BUS_PHONE == null;
+                    case 158: // KPC_HOME_PHONE
+                        return CurrentItem.KPC_HOME_PHONE == null;
+                    case 159: // KPC_MOBILE
+                        return CurrentItem.KPC_MOBILE == null;
+                    case 160: // KPC_EMAIL
+                        return CurrentItem.KPC_EMAIL == null;
+                    case 161: // KPCL_KPCLKEY
+                        return CurrentItem.KPCL_KPCLKEY == null;
+                    case 162: // KPCL_LINK
+                        return CurrentItem.KPCL_LINK == null;
+                    case 163: // KPCL_SOURCE
+                        return CurrentItem.KPCL_SOURCE == null;
+                    case 164: // KPCL_CONTACT
+                        return CurrentItem.KPCL_CONTACT == null;
+                    case 165: // KPCL_CONTACT_TYPE
+                        return CurrentItem.KPCL_CONTACT_TYPE == null;
+                    case 166: // KPCL_CONTACT_PREFERENCE
+                        return CurrentItem.KPCL_CONTACT_PREFERENCE == null;
+                    case 167: // KPCR_KPCRKEY
+                        return CurrentItem.KPCR_KPCRKEY == null;
+                    case 168: // KPCR_KPCRKEY_IMP
+                        return CurrentItem.KPCR_KPCRKEY_IMP == null;
+                    case 169: // KPCR_DESCRIPTION
+                        return CurrentItem.KPCR_DESCRIPTION == null;
+                    case 170: // PF_PFKEY
+                        return CurrentItem.PF_PFKEY == null;
+                    case 171: // PF_PFKEY_IMP
+                        return CurrentItem.PF_PFKEY_IMP == null;
+                    case 172: // PF_DESCRIPTION
+                        return CurrentItem.PF_DESCRIPTION == null;
+                    case 173: // PI_PIKEY
+                        return CurrentItem.PI_PIKEY == null;
+                    case 174: // PI_PIKEY_IMP
+                        return CurrentItem.PI_PIKEY_IMP == null;
+                    case 175: // PI_PAYCODE
+                        return CurrentItem.PI_PAYCODE == null;
+                    case 176: // PI_DESCRIPTION
+                        return CurrentItem.PI_DESCRIPTION == null;
+                    case 177: // PI_TRANSTYPE
+                        return CurrentItem.PI_TRANSTYPE == null;
+                    case 178: // PI_TAXABLE
+                        return CurrentItem.PI_TAXABLE == null;
+                    case 179: // PI_UNIT
+                        return CurrentItem.PI_UNIT == null;
+                    case 180: // PI_CATEGORY
+                        return CurrentItem.PI_CATEGORY == null;
+                    case 181: // PI_PAYG_BOX
+                        return CurrentItem.PI_PAYG_BOX == null;
+                    case 182: // PI_TAXRATE
+                        return CurrentItem.PI_TAXRATE == null;
+                    case 183: // PI_AUTOCALC
+                        return CurrentItem.PI_AUTOCALC == null;
+                    case 184: // PI_SUPER_LEVY
+                        return CurrentItem.PI_SUPER_LEVY == null;
+                    case 185: // PI_PERS_SUPER
+                        return CurrentItem.PI_PERS_SUPER == null;
+                    case 186: // PI_PERS_SUPER_RATE
+                        return CurrentItem.PI_PERS_SUPER_RATE == null;
+                    case 187: // PI_INITIATIVE
+                        return CurrentItem.PI_INITIATIVE == null;
+                    case 188: // AR_ARKEY
+                        return CurrentItem.AR_ARKEY == null;
+                    case 189: // AR_ARKEY_IMP
+                        return CurrentItem.AR_ARKEY_IMP == null;
+                    case 190: // AR_TITLE
+                        return CurrentItem.AR_TITLE == null;
+                    case 191: // AR_DESCRIPTION01
+                        return CurrentItem.AR_DESCRIPTION01 == null;
+                    case 192: // AR_DESCRIPTION02
+                        return CurrentItem.AR_DESCRIPTION02 == null;
+                    case 193: // AR_ASSET_TYPE
+                        return CurrentItem.AR_ASSET_TYPE == null;
+                    case 194: // AR_CATEGORY
+                        return CurrentItem.AR_CATEGORY == null;
+                    case 195: // AR_CATEGORY_IMP
+                        return CurrentItem.AR_CATEGORY_IMP == null;
+                    case 196: // AR_SUBCATEGORY_IMP
+                        return CurrentItem.AR_SUBCATEGORY_IMP == null;
+                    case 197: // AR_TAX_CATEGORY
+                        return CurrentItem.AR_TAX_CATEGORY == null;
+                    case 198: // AR_RELEASE_TYPE
+                        return CurrentItem.AR_RELEASE_TYPE == null;
+                    case 199: // AR_AOB_COST
+                        return CurrentItem.AR_AOB_COST == null;
+                    case 200: // AR_OB_QTY
+                        return CurrentItem.AR_OB_QTY == null;
+                    case 201: // AR_ORIG_INVOICE_NO
+                        return CurrentItem.AR_ORIG_INVOICE_NO == null;
+                    case 202: // AR_LAST_INVOICE_NO
+                        return CurrentItem.AR_LAST_INVOICE_NO == null;
+                    case 203: // AR_WARRANTY
+                        return CurrentItem.AR_WARRANTY == null;
+                    case 204: // AR_WARRANTYEXP
+                        return CurrentItem.AR_WARRANTYEXP == null;
+                    case 205: // AR_SERIAL
+                        return CurrentItem.AR_SERIAL == null;
+                    case 206: // AR_LOCATION
+                        return CurrentItem.AR_LOCATION == null;
+                    case 207: // AR_LOCATION_IMP
+                        return CurrentItem.AR_LOCATION_IMP == null;
+                    case 208: // AR_DEPARTMENT
+                        return CurrentItem.AR_DEPARTMENT == null;
+                    case 209: // AR_DEPARTMENT_IMP
+                        return CurrentItem.AR_DEPARTMENT_IMP == null;
+                    case 210: // AR_CAMPUS
+                        return CurrentItem.AR_CAMPUS == null;
+                    case 211: // AR_CAMPUS_IMP
+                        return CurrentItem.AR_CAMPUS_IMP == null;
+                    case 212: // AR_BRANCH
+                        return CurrentItem.AR_BRANCH == null;
+                    case 213: // AR_LEASE_START_DATE
+                        return CurrentItem.AR_LEASE_START_DATE == null;
+                    case 214: // AR_LEASE_END_DATE
+                        return CurrentItem.AR_LEASE_END_DATE == null;
+                    case 215: // AR_LAST_ST_DATE
+                        return CurrentItem.AR_LAST_ST_DATE == null;
+                    case 216: // AR_LAST_ADDN_DATE
+                        return CurrentItem.AR_LAST_ADDN_DATE == null;
+                    case 217: // AR_EXPECTED_LIFE
+                        return CurrentItem.AR_EXPECTED_LIFE == null;
+                    case 218: // AR_LAST_SVC_DATE
+                        return CurrentItem.AR_LAST_SVC_DATE == null;
+                    case 219: // AR_NEXT_SVC_DATE
+                        return CurrentItem.AR_NEXT_SVC_DATE == null;
+                    case 220: // AR_LAST_SVC_DETAILS
+                        return CurrentItem.AR_LAST_SVC_DETAILS == null;
+                    case 221: // AR_OWNER
+                        return CurrentItem.AR_OWNER == null;
+                    case 222: // AR_CLEANING
+                        return CurrentItem.AR_CLEANING == null;
+                    case 223: // AR_HAZARD
+                        return CurrentItem.AR_HAZARD == null;
+                    case 224: // AR_SITE_REFERENCE
+                        return CurrentItem.AR_SITE_REFERENCE == null;
+                    case 225: // AR_EXTRA_DETAILS
+                        return CurrentItem.AR_EXTRA_DETAILS == null;
+                    case 226: // AR_PURDATE
+                        return CurrentItem.AR_PURDATE == null;
+                    case 227: // AR_PURDATE_IMP
+                        return CurrentItem.AR_PURDATE_IMP == null;
+                    case 228: // AR_ORIG_SUPPLIER
+                        return CurrentItem.AR_ORIG_SUPPLIER == null;
+                    case 229: // AR_ORIG_COST
+                        return CurrentItem.AR_ORIG_COST == null;
+                    case 230: // AR_ASSET_PIC
+                        return CurrentItem.AR_ASSET_PIC == null;
+                    case 231: // FDT_COMMENT
+                        return CurrentItem.FDT_COMMENT == null;
+                    case 232: // FDT_PROCESS_FLAG
+                        return CurrentItem.FDT_PROCESS_FLAG == null;
+                    case 233: // FDT_DATE_EXP
+                        return CurrentItem.FDT_DATE_EXP == null;
+                    case 234: // FDT_TIME_EXP
+                        return CurrentItem.FDT_TIME_EXP == null;
+                    case 235: // FDT_DATE_IMP
+                        return CurrentItem.FDT_DATE_IMP == null;
+                    case 236: // FDT_TIME_IMP
+                        return CurrentItem.FDT_TIME_IMP == null;
+                    case 237: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 238: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 239: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // SOURCE
+                        return "SOURCE";
+                    case 2: // DR_DRKEY
+                        return "DR_DRKEY";
+                    case 3: // DR_DRKEY_IMP
+                        return "DR_DRKEY_IMP";
+                    case 4: // DR_TITLE
+                        return "DR_TITLE";
+                    case 5: // DR_CONTACT
+                        return "DR_CONTACT";
+                    case 6: // DR_BUSNAME
+                        return "DR_BUSNAME";
+                    case 7: // DR_BUSADD01
+                        return "DR_BUSADD01";
+                    case 8: // DR_BUSADD02
+                        return "DR_BUSADD02";
+                    case 9: // DR_BUSSTATE
+                        return "DR_BUSSTATE";
+                    case 10: // DR_POSTCODE
+                        return "DR_POSTCODE";
+                    case 11: // DR_TELEPHONE
+                        return "DR_TELEPHONE";
+                    case 12: // DR_FAX
+                        return "DR_FAX";
+                    case 13: // DR_MAILNAME
+                        return "DR_MAILNAME";
+                    case 14: // DR_MAILADD01
+                        return "DR_MAILADD01";
+                    case 15: // DR_MAILADD02
+                        return "DR_MAILADD02";
+                    case 16: // DR_MAILSTATE
+                        return "DR_MAILSTATE";
+                    case 17: // DR_MAILPOST
+                        return "DR_MAILPOST";
+                    case 18: // DR_DRTYPE
+                        return "DR_DRTYPE";
+                    case 19: // DR_CHARGES_YTD
+                        return "DR_CHARGES_YTD";
+                    case 20: // DR_NOTES
+                        return "DR_NOTES";
+                    case 21: // DR_MEMO_FLAG
+                        return "DR_MEMO_FLAG";
+                    case 22: // DR_REMARK
+                        return "DR_REMARK";
+                    case 23: // DR_BILLING_EMAIL
+                        return "DR_BILLING_EMAIL";
+                    case 24: // DR_BALANCE
+                        return "DR_BALANCE";
+                    case 25: // CR_CRKEY
+                        return "CR_CRKEY";
+                    case 26: // CR_CRKEY_IMP
+                        return "CR_CRKEY_IMP";
+                    case 27: // CR_TITLE
+                        return "CR_TITLE";
+                    case 28: // CR_CUR_BAL
+                        return "CR_CUR_BAL";
+                    case 29: // CR_CONTACT
+                        return "CR_CONTACT";
+                    case 30: // CR_ADDRESS01
+                        return "CR_ADDRESS01";
+                    case 31: // CR_ADDRESS02
+                        return "CR_ADDRESS02";
+                    case 32: // CR_ADDRESS03
+                        return "CR_ADDRESS03";
+                    case 33: // CR_STATE
+                        return "CR_STATE";
+                    case 34: // CR_POSTCODE
+                        return "CR_POSTCODE";
+                    case 35: // CR_TELEPHONE
+                        return "CR_TELEPHONE";
+                    case 36: // CR_FAX
+                        return "CR_FAX";
+                    case 37: // CR_EMAIL
+                        return "CR_EMAIL";
+                    case 38: // CR_EMAIL_FOR_PAYMENTS
+                        return "CR_EMAIL_FOR_PAYMENTS";
+                    case 39: // CR_MOBILE
+                        return "CR_MOBILE";
+                    case 40: // CR_PRMS_FLAG
+                        return "CR_PRMS_FLAG";
+                    case 41: // CR_ABN
+                        return "CR_ABN";
+                    case 42: // CR_PAYG_RATE
+                        return "CR_PAYG_RATE";
+                    case 43: // CR_CRLIMIT
+                        return "CR_CRLIMIT";
+                    case 44: // CR_TERMS
+                        return "CR_TERMS";
+                    case 45: // CR_BSB
+                        return "CR_BSB";
+                    case 46: // CR_ACCOUNT_NO
+                        return "CR_ACCOUNT_NO";
+                    case 47: // CR_ACCOUNT_NAME
+                        return "CR_ACCOUNT_NAME";
+                    case 48: // CR_LODGE_REF
+                        return "CR_LODGE_REF";
+                    case 49: // CR_SURNAME
+                        return "CR_SURNAME";
+                    case 50: // CR_FIRST_NAME
+                        return "CR_FIRST_NAME";
+                    case 51: // CR_SECOND_NAME
+                        return "CR_SECOND_NAME";
+                    case 52: // CR_PAYG_BIRTHDATE
+                        return "CR_PAYG_BIRTHDATE";
+                    case 53: // CR_PAYG_STARTDATE
+                        return "CR_PAYG_STARTDATE";
+                    case 54: // CR_PAYG_TERMDATE
+                        return "CR_PAYG_TERMDATE";
+                    case 55: // CR_PAYG_ADDRESS01
+                        return "CR_PAYG_ADDRESS01";
+                    case 56: // CR_PAYG_ADDRESS02
+                        return "CR_PAYG_ADDRESS02";
+                    case 57: // CR_PAYG_SUBURB
+                        return "CR_PAYG_SUBURB";
+                    case 58: // CR_PAYG_STATE
+                        return "CR_PAYG_STATE";
+                    case 59: // CR_PAYG_POST
+                        return "CR_PAYG_POST";
+                    case 60: // CR_PAYG_COUNTRY
+                        return "CR_PAYG_COUNTRY";
+                    case 61: // CR_PPDKEY
+                        return "CR_PPDKEY";
+                    case 62: // CR_BILLER_CODE
+                        return "CR_BILLER_CODE";
+                    case 63: // CR_BPAY_REFERENCE
+                        return "CR_BPAY_REFERENCE";
+                    case 64: // CR_LASTPAYDATE
+                        return "CR_LASTPAYDATE";
+                    case 65: // PE_PEKEY
+                        return "PE_PEKEY";
+                    case 66: // PE_PEKEY_IMP
+                        return "PE_PEKEY_IMP";
+                    case 67: // PE_SURNAME
+                        return "PE_SURNAME";
+                    case 68: // PE_FIRST_NAME
+                        return "PE_FIRST_NAME";
+                    case 69: // PE_SECOND_NAME
+                        return "PE_SECOND_NAME";
+                    case 70: // PE_PREF_NAME
+                        return "PE_PREF_NAME";
+                    case 71: // PE_PREVIOUS_NAME
+                        return "PE_PREVIOUS_NAME";
+                    case 72: // PE_BIRTHDATE
+                        return "PE_BIRTHDATE";
+                    case 73: // PE_GENDER
+                        return "PE_GENDER";
+                    case 74: // PE_HOMEADD01
+                        return "PE_HOMEADD01";
+                    case 75: // PE_HOMEADD02
+                        return "PE_HOMEADD02";
+                    case 76: // PE_HOMESUBURB
+                        return "PE_HOMESUBURB";
+                    case 77: // PE_HOMESTATE
+                        return "PE_HOMESTATE";
+                    case 78: // PE_HOMEPOST
+                        return "PE_HOMEPOST";
+                    case 79: // PE_COUNTRY
+                        return "PE_COUNTRY";
+                    case 80: // PE_HOMEPHONE
+                        return "PE_HOMEPHONE";
+                    case 81: // PE_BUS_PHONE
+                        return "PE_BUS_PHONE";
+                    case 82: // PE_PHONE_EXT
+                        return "PE_PHONE_EXT";
+                    case 83: // PE_FAX
+                        return "PE_FAX";
+                    case 84: // PE_MOBILE
+                        return "PE_MOBILE";
+                    case 85: // PE_EMAIL
+                        return "PE_EMAIL";
+                    case 86: // PE_DRIVERS_LIC_NO
+                        return "PE_DRIVERS_LIC_NO";
+                    case 87: // PE_SALREVDATE
+                        return "PE_SALREVDATE";
+                    case 88: // PE_SUSPEND_DATE
+                        return "PE_SUSPEND_DATE";
+                    case 89: // PE_PENUMBER
+                        return "PE_PENUMBER";
+                    case 90: // PE_TAXFILENUM
+                        return "PE_TAXFILENUM";
+                    case 91: // PE_TAXCODE
+                        return "PE_TAXCODE";
+                    case 92: // PE_NO_DEPEND
+                        return "PE_NO_DEPEND";
+                    case 93: // PE_DEP_REBATE
+                        return "PE_DEP_REBATE";
+                    case 94: // PE_ZONE_CODE
+                        return "PE_ZONE_CODE";
+                    case 95: // PE_ZONE_ALLOW
+                        return "PE_ZONE_ALLOW";
+                    case 96: // PE_ALLOWANCES
+                        return "PE_ALLOWANCES";
+                    case 97: // PE_PAYCODE
+                        return "PE_PAYCODE";
+                    case 98: // PE_DEPARTMENT
+                        return "PE_DEPARTMENT";
+                    case 99: // PE_EMPLOY_TYPE
+                        return "PE_EMPLOY_TYPE";
+                    case 100: // PE_NORMAL_HOURS
+                        return "PE_NORMAL_HOURS";
+                    case 101: // PE_FTE_VALUE
+                        return "PE_FTE_VALUE";
+                    case 102: // PE_ANNUAL_SALARY
+                        return "PE_ANNUAL_SALARY";
+                    case 103: // PE_STD_HOURS
+                        return "PE_STD_HOURS";
+                    case 104: // PE_UNION_NAME
+                        return "PE_UNION_NAME";
+                    case 105: // PE_MEDICARE_Q09A
+                        return "PE_MEDICARE_Q09A";
+                    case 106: // PE_MEDICARE_Q10A
+                        return "PE_MEDICARE_Q10A";
+                    case 107: // PE_MEDICARE_Q11A
+                        return "PE_MEDICARE_Q11A";
+                    case 108: // PE_MEDICARE_Q12A
+                        return "PE_MEDICARE_Q12A";
+                    case 109: // PE_LEAVE_GROUP
+                        return "PE_LEAVE_GROUP";
+                    case 110: // PE_ESUPER_IGNORE_THRESHOLD
+                        return "PE_ESUPER_IGNORE_THRESHOLD";
+                    case 111: // PE_ESUPER_FUND
+                        return "PE_ESUPER_FUND";
+                    case 112: // PE_ESUPER_MEMBER
+                        return "PE_ESUPER_MEMBER";
+                    case 113: // PE_ESUPER_PERCENT
+                        return "PE_ESUPER_PERCENT";
+                    case 114: // PE_LASTPAYDATE
+                        return "PE_LASTPAYDATE";
+                    case 115: // PE_PEPS_TRCENTRE
+                        return "PE_PEPS_TRCENTRE";
+                    case 116: // PE_START_DATE_IMP
+                        return "PE_START_DATE_IMP";
+                    case 117: // PEPS_CODE
+                        return "PEPS_CODE";
+                    case 118: // PEPS_PAYITEM
+                        return "PEPS_PAYITEM";
+                    case 119: // PEPS_TRCOST
+                        return "PEPS_TRCOST";
+                    case 120: // PEPS_TRQTY
+                        return "PEPS_TRQTY";
+                    case 121: // PEPS_TRAMT
+                        return "PEPS_TRAMT";
+                    case 122: // PEPS_TRDET
+                        return "PEPS_TRDET";
+                    case 123: // PEPS_FLAG
+                        return "PEPS_FLAG";
+                    case 124: // PEPS_PAY_STEP
+                        return "PEPS_PAY_STEP";
+                    case 125: // PEPS_SUPER_FUND
+                        return "PEPS_SUPER_FUND";
+                    case 126: // PEPS_SUPER_MEMBER
+                        return "PEPS_SUPER_MEMBER";
+                    case 127: // PEPS_SUPER_PERCENT
+                        return "PEPS_SUPER_PERCENT";
+                    case 128: // PEPS_TRCENTRE
+                        return "PEPS_TRCENTRE";
+                    case 129: // PEPM_CODE
+                        return "PEPM_CODE";
+                    case 130: // PEPM_NAME
+                        return "PEPM_NAME";
+                    case 131: // PEPM_CHQ_NO
+                        return "PEPM_CHQ_NO";
+                    case 132: // PEPM_DAMOUNT
+                        return "PEPM_DAMOUNT";
+                    case 133: // PEPM_BANK
+                        return "PEPM_BANK";
+                    case 134: // PEPM_BSB
+                        return "PEPM_BSB";
+                    case 135: // PEPM_ACCOUNT_NO
+                        return "PEPM_ACCOUNT_NO";
+                    case 136: // PEPM_AMOUNT
+                        return "PEPM_AMOUNT";
+                    case 137: // PEPM_FLAG
+                        return "PEPM_FLAG";
+                    case 138: // PEPM_PAYMODE
+                        return "PEPM_PAYMODE";
+                    case 139: // PEPY_CODE
+                        return "PEPY_CODE";
+                    case 140: // PEPY_TRANSDATE
+                        return "PEPY_TRANSDATE";
+                    case 141: // PEPY_STAFF
+                        return "PEPY_STAFF";
+                    case 142: // PEPY_PURPOSE
+                        return "PEPY_PURPOSE";
+                    case 143: // PEPY_NOTES
+                        return "PEPY_NOTES";
+                    case 144: // KPN_KPNKEY
+                        return "KPN_KPNKEY";
+                    case 145: // KPN_KPNKEY_IMP
+                        return "KPN_KPNKEY_IMP";
+                    case 146: // KPN_DESCRIPTION
+                        return "KPN_DESCRIPTION";
+                    case 147: // KPC_KPCKEY
+                        return "KPC_KPCKEY";
+                    case 148: // KPC_SURNAME
+                        return "KPC_SURNAME";
+                    case 149: // KPC_FIRST_NAME
+                        return "KPC_FIRST_NAME";
+                    case 150: // KPC_SECOND_NAME
+                        return "KPC_SECOND_NAME";
+                    case 151: // KPC_GENDER
+                        return "KPC_GENDER";
+                    case 152: // KPC_ADDRESS01
+                        return "KPC_ADDRESS01";
+                    case 153: // KPC_ADDRESS02
+                        return "KPC_ADDRESS02";
+                    case 154: // KPC_ADDRESS03
+                        return "KPC_ADDRESS03";
+                    case 155: // KPC_STATE
+                        return "KPC_STATE";
+                    case 156: // KPC_POST
+                        return "KPC_POST";
+                    case 157: // KPC_BUS_PHONE
+                        return "KPC_BUS_PHONE";
+                    case 158: // KPC_HOME_PHONE
+                        return "KPC_HOME_PHONE";
+                    case 159: // KPC_MOBILE
+                        return "KPC_MOBILE";
+                    case 160: // KPC_EMAIL
+                        return "KPC_EMAIL";
+                    case 161: // KPCL_KPCLKEY
+                        return "KPCL_KPCLKEY";
+                    case 162: // KPCL_LINK
+                        return "KPCL_LINK";
+                    case 163: // KPCL_SOURCE
+                        return "KPCL_SOURCE";
+                    case 164: // KPCL_CONTACT
+                        return "KPCL_CONTACT";
+                    case 165: // KPCL_CONTACT_TYPE
+                        return "KPCL_CONTACT_TYPE";
+                    case 166: // KPCL_CONTACT_PREFERENCE
+                        return "KPCL_CONTACT_PREFERENCE";
+                    case 167: // KPCR_KPCRKEY
+                        return "KPCR_KPCRKEY";
+                    case 168: // KPCR_KPCRKEY_IMP
+                        return "KPCR_KPCRKEY_IMP";
+                    case 169: // KPCR_DESCRIPTION
+                        return "KPCR_DESCRIPTION";
+                    case 170: // PF_PFKEY
+                        return "PF_PFKEY";
+                    case 171: // PF_PFKEY_IMP
+                        return "PF_PFKEY_IMP";
+                    case 172: // PF_DESCRIPTION
+                        return "PF_DESCRIPTION";
+                    case 173: // PI_PIKEY
+                        return "PI_PIKEY";
+                    case 174: // PI_PIKEY_IMP
+                        return "PI_PIKEY_IMP";
+                    case 175: // PI_PAYCODE
+                        return "PI_PAYCODE";
+                    case 176: // PI_DESCRIPTION
+                        return "PI_DESCRIPTION";
+                    case 177: // PI_TRANSTYPE
+                        return "PI_TRANSTYPE";
+                    case 178: // PI_TAXABLE
+                        return "PI_TAXABLE";
+                    case 179: // PI_UNIT
+                        return "PI_UNIT";
+                    case 180: // PI_CATEGORY
+                        return "PI_CATEGORY";
+                    case 181: // PI_PAYG_BOX
+                        return "PI_PAYG_BOX";
+                    case 182: // PI_TAXRATE
+                        return "PI_TAXRATE";
+                    case 183: // PI_AUTOCALC
+                        return "PI_AUTOCALC";
+                    case 184: // PI_SUPER_LEVY
+                        return "PI_SUPER_LEVY";
+                    case 185: // PI_PERS_SUPER
+                        return "PI_PERS_SUPER";
+                    case 186: // PI_PERS_SUPER_RATE
+                        return "PI_PERS_SUPER_RATE";
+                    case 187: // PI_INITIATIVE
+                        return "PI_INITIATIVE";
+                    case 188: // AR_ARKEY
+                        return "AR_ARKEY";
+                    case 189: // AR_ARKEY_IMP
+                        return "AR_ARKEY_IMP";
+                    case 190: // AR_TITLE
+                        return "AR_TITLE";
+                    case 191: // AR_DESCRIPTION01
+                        return "AR_DESCRIPTION01";
+                    case 192: // AR_DESCRIPTION02
+                        return "AR_DESCRIPTION02";
+                    case 193: // AR_ASSET_TYPE
+                        return "AR_ASSET_TYPE";
+                    case 194: // AR_CATEGORY
+                        return "AR_CATEGORY";
+                    case 195: // AR_CATEGORY_IMP
+                        return "AR_CATEGORY_IMP";
+                    case 196: // AR_SUBCATEGORY_IMP
+                        return "AR_SUBCATEGORY_IMP";
+                    case 197: // AR_TAX_CATEGORY
+                        return "AR_TAX_CATEGORY";
+                    case 198: // AR_RELEASE_TYPE
+                        return "AR_RELEASE_TYPE";
+                    case 199: // AR_AOB_COST
+                        return "AR_AOB_COST";
+                    case 200: // AR_OB_QTY
+                        return "AR_OB_QTY";
+                    case 201: // AR_ORIG_INVOICE_NO
+                        return "AR_ORIG_INVOICE_NO";
+                    case 202: // AR_LAST_INVOICE_NO
+                        return "AR_LAST_INVOICE_NO";
+                    case 203: // AR_WARRANTY
+                        return "AR_WARRANTY";
+                    case 204: // AR_WARRANTYEXP
+                        return "AR_WARRANTYEXP";
+                    case 205: // AR_SERIAL
+                        return "AR_SERIAL";
+                    case 206: // AR_LOCATION
+                        return "AR_LOCATION";
+                    case 207: // AR_LOCATION_IMP
+                        return "AR_LOCATION_IMP";
+                    case 208: // AR_DEPARTMENT
+                        return "AR_DEPARTMENT";
+                    case 209: // AR_DEPARTMENT_IMP
+                        return "AR_DEPARTMENT_IMP";
+                    case 210: // AR_CAMPUS
+                        return "AR_CAMPUS";
+                    case 211: // AR_CAMPUS_IMP
+                        return "AR_CAMPUS_IMP";
+                    case 212: // AR_BRANCH
+                        return "AR_BRANCH";
+                    case 213: // AR_LEASE_START_DATE
+                        return "AR_LEASE_START_DATE";
+                    case 214: // AR_LEASE_END_DATE
+                        return "AR_LEASE_END_DATE";
+                    case 215: // AR_LAST_ST_DATE
+                        return "AR_LAST_ST_DATE";
+                    case 216: // AR_LAST_ADDN_DATE
+                        return "AR_LAST_ADDN_DATE";
+                    case 217: // AR_EXPECTED_LIFE
+                        return "AR_EXPECTED_LIFE";
+                    case 218: // AR_LAST_SVC_DATE
+                        return "AR_LAST_SVC_DATE";
+                    case 219: // AR_NEXT_SVC_DATE
+                        return "AR_NEXT_SVC_DATE";
+                    case 220: // AR_LAST_SVC_DETAILS
+                        return "AR_LAST_SVC_DETAILS";
+                    case 221: // AR_OWNER
+                        return "AR_OWNER";
+                    case 222: // AR_CLEANING
+                        return "AR_CLEANING";
+                    case 223: // AR_HAZARD
+                        return "AR_HAZARD";
+                    case 224: // AR_SITE_REFERENCE
+                        return "AR_SITE_REFERENCE";
+                    case 225: // AR_EXTRA_DETAILS
+                        return "AR_EXTRA_DETAILS";
+                    case 226: // AR_PURDATE
+                        return "AR_PURDATE";
+                    case 227: // AR_PURDATE_IMP
+                        return "AR_PURDATE_IMP";
+                    case 228: // AR_ORIG_SUPPLIER
+                        return "AR_ORIG_SUPPLIER";
+                    case 229: // AR_ORIG_COST
+                        return "AR_ORIG_COST";
+                    case 230: // AR_ASSET_PIC
+                        return "AR_ASSET_PIC";
+                    case 231: // FDT_COMMENT
+                        return "FDT_COMMENT";
+                    case 232: // FDT_PROCESS_FLAG
+                        return "FDT_PROCESS_FLAG";
+                    case 233: // FDT_DATE_EXP
+                        return "FDT_DATE_EXP";
+                    case 234: // FDT_TIME_EXP
+                        return "FDT_TIME_EXP";
+                    case 235: // FDT_DATE_IMP
+                        return "FDT_DATE_IMP";
+                    case 236: // FDT_TIME_IMP
+                        return "FDT_TIME_IMP";
+                    case 237: // LW_DATE
+                        return "LW_DATE";
+                    case 238: // LW_TIME
+                        return "LW_TIME";
+                    case 239: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "SOURCE":
+                        return 1;
+                    case "DR_DRKEY":
+                        return 2;
+                    case "DR_DRKEY_IMP":
+                        return 3;
+                    case "DR_TITLE":
+                        return 4;
+                    case "DR_CONTACT":
+                        return 5;
+                    case "DR_BUSNAME":
+                        return 6;
+                    case "DR_BUSADD01":
+                        return 7;
+                    case "DR_BUSADD02":
+                        return 8;
+                    case "DR_BUSSTATE":
+                        return 9;
+                    case "DR_POSTCODE":
+                        return 10;
+                    case "DR_TELEPHONE":
+                        return 11;
+                    case "DR_FAX":
+                        return 12;
+                    case "DR_MAILNAME":
+                        return 13;
+                    case "DR_MAILADD01":
+                        return 14;
+                    case "DR_MAILADD02":
+                        return 15;
+                    case "DR_MAILSTATE":
+                        return 16;
+                    case "DR_MAILPOST":
+                        return 17;
+                    case "DR_DRTYPE":
+                        return 18;
+                    case "DR_CHARGES_YTD":
+                        return 19;
+                    case "DR_NOTES":
+                        return 20;
+                    case "DR_MEMO_FLAG":
+                        return 21;
+                    case "DR_REMARK":
+                        return 22;
+                    case "DR_BILLING_EMAIL":
+                        return 23;
+                    case "DR_BALANCE":
+                        return 24;
+                    case "CR_CRKEY":
+                        return 25;
+                    case "CR_CRKEY_IMP":
+                        return 26;
+                    case "CR_TITLE":
+                        return 27;
+                    case "CR_CUR_BAL":
+                        return 28;
+                    case "CR_CONTACT":
+                        return 29;
+                    case "CR_ADDRESS01":
+                        return 30;
+                    case "CR_ADDRESS02":
+                        return 31;
+                    case "CR_ADDRESS03":
+                        return 32;
+                    case "CR_STATE":
+                        return 33;
+                    case "CR_POSTCODE":
+                        return 34;
+                    case "CR_TELEPHONE":
+                        return 35;
+                    case "CR_FAX":
+                        return 36;
+                    case "CR_EMAIL":
+                        return 37;
+                    case "CR_EMAIL_FOR_PAYMENTS":
+                        return 38;
+                    case "CR_MOBILE":
+                        return 39;
+                    case "CR_PRMS_FLAG":
+                        return 40;
+                    case "CR_ABN":
+                        return 41;
+                    case "CR_PAYG_RATE":
+                        return 42;
+                    case "CR_CRLIMIT":
+                        return 43;
+                    case "CR_TERMS":
+                        return 44;
+                    case "CR_BSB":
+                        return 45;
+                    case "CR_ACCOUNT_NO":
+                        return 46;
+                    case "CR_ACCOUNT_NAME":
+                        return 47;
+                    case "CR_LODGE_REF":
+                        return 48;
+                    case "CR_SURNAME":
+                        return 49;
+                    case "CR_FIRST_NAME":
+                        return 50;
+                    case "CR_SECOND_NAME":
+                        return 51;
+                    case "CR_PAYG_BIRTHDATE":
+                        return 52;
+                    case "CR_PAYG_STARTDATE":
+                        return 53;
+                    case "CR_PAYG_TERMDATE":
+                        return 54;
+                    case "CR_PAYG_ADDRESS01":
+                        return 55;
+                    case "CR_PAYG_ADDRESS02":
+                        return 56;
+                    case "CR_PAYG_SUBURB":
+                        return 57;
+                    case "CR_PAYG_STATE":
+                        return 58;
+                    case "CR_PAYG_POST":
+                        return 59;
+                    case "CR_PAYG_COUNTRY":
+                        return 60;
+                    case "CR_PPDKEY":
+                        return 61;
+                    case "CR_BILLER_CODE":
+                        return 62;
+                    case "CR_BPAY_REFERENCE":
+                        return 63;
+                    case "CR_LASTPAYDATE":
+                        return 64;
+                    case "PE_PEKEY":
+                        return 65;
+                    case "PE_PEKEY_IMP":
+                        return 66;
+                    case "PE_SURNAME":
+                        return 67;
+                    case "PE_FIRST_NAME":
+                        return 68;
+                    case "PE_SECOND_NAME":
+                        return 69;
+                    case "PE_PREF_NAME":
+                        return 70;
+                    case "PE_PREVIOUS_NAME":
+                        return 71;
+                    case "PE_BIRTHDATE":
+                        return 72;
+                    case "PE_GENDER":
+                        return 73;
+                    case "PE_HOMEADD01":
+                        return 74;
+                    case "PE_HOMEADD02":
+                        return 75;
+                    case "PE_HOMESUBURB":
+                        return 76;
+                    case "PE_HOMESTATE":
+                        return 77;
+                    case "PE_HOMEPOST":
+                        return 78;
+                    case "PE_COUNTRY":
+                        return 79;
+                    case "PE_HOMEPHONE":
+                        return 80;
+                    case "PE_BUS_PHONE":
+                        return 81;
+                    case "PE_PHONE_EXT":
+                        return 82;
+                    case "PE_FAX":
+                        return 83;
+                    case "PE_MOBILE":
+                        return 84;
+                    case "PE_EMAIL":
+                        return 85;
+                    case "PE_DRIVERS_LIC_NO":
+                        return 86;
+                    case "PE_SALREVDATE":
+                        return 87;
+                    case "PE_SUSPEND_DATE":
+                        return 88;
+                    case "PE_PENUMBER":
+                        return 89;
+                    case "PE_TAXFILENUM":
+                        return 90;
+                    case "PE_TAXCODE":
+                        return 91;
+                    case "PE_NO_DEPEND":
+                        return 92;
+                    case "PE_DEP_REBATE":
+                        return 93;
+                    case "PE_ZONE_CODE":
+                        return 94;
+                    case "PE_ZONE_ALLOW":
+                        return 95;
+                    case "PE_ALLOWANCES":
+                        return 96;
+                    case "PE_PAYCODE":
+                        return 97;
+                    case "PE_DEPARTMENT":
+                        return 98;
+                    case "PE_EMPLOY_TYPE":
+                        return 99;
+                    case "PE_NORMAL_HOURS":
+                        return 100;
+                    case "PE_FTE_VALUE":
+                        return 101;
+                    case "PE_ANNUAL_SALARY":
+                        return 102;
+                    case "PE_STD_HOURS":
+                        return 103;
+                    case "PE_UNION_NAME":
+                        return 104;
+                    case "PE_MEDICARE_Q09A":
+                        return 105;
+                    case "PE_MEDICARE_Q10A":
+                        return 106;
+                    case "PE_MEDICARE_Q11A":
+                        return 107;
+                    case "PE_MEDICARE_Q12A":
+                        return 108;
+                    case "PE_LEAVE_GROUP":
+                        return 109;
+                    case "PE_ESUPER_IGNORE_THRESHOLD":
+                        return 110;
+                    case "PE_ESUPER_FUND":
+                        return 111;
+                    case "PE_ESUPER_MEMBER":
+                        return 112;
+                    case "PE_ESUPER_PERCENT":
+                        return 113;
+                    case "PE_LASTPAYDATE":
+                        return 114;
+                    case "PE_PEPS_TRCENTRE":
+                        return 115;
+                    case "PE_START_DATE_IMP":
+                        return 116;
+                    case "PEPS_CODE":
+                        return 117;
+                    case "PEPS_PAYITEM":
+                        return 118;
+                    case "PEPS_TRCOST":
+                        return 119;
+                    case "PEPS_TRQTY":
+                        return 120;
+                    case "PEPS_TRAMT":
+                        return 121;
+                    case "PEPS_TRDET":
+                        return 122;
+                    case "PEPS_FLAG":
+                        return 123;
+                    case "PEPS_PAY_STEP":
+                        return 124;
+                    case "PEPS_SUPER_FUND":
+                        return 125;
+                    case "PEPS_SUPER_MEMBER":
+                        return 126;
+                    case "PEPS_SUPER_PERCENT":
+                        return 127;
+                    case "PEPS_TRCENTRE":
+                        return 128;
+                    case "PEPM_CODE":
+                        return 129;
+                    case "PEPM_NAME":
+                        return 130;
+                    case "PEPM_CHQ_NO":
+                        return 131;
+                    case "PEPM_DAMOUNT":
+                        return 132;
+                    case "PEPM_BANK":
+                        return 133;
+                    case "PEPM_BSB":
+                        return 134;
+                    case "PEPM_ACCOUNT_NO":
+                        return 135;
+                    case "PEPM_AMOUNT":
+                        return 136;
+                    case "PEPM_FLAG":
+                        return 137;
+                    case "PEPM_PAYMODE":
+                        return 138;
+                    case "PEPY_CODE":
+                        return 139;
+                    case "PEPY_TRANSDATE":
+                        return 140;
+                    case "PEPY_STAFF":
+                        return 141;
+                    case "PEPY_PURPOSE":
+                        return 142;
+                    case "PEPY_NOTES":
+                        return 143;
+                    case "KPN_KPNKEY":
+                        return 144;
+                    case "KPN_KPNKEY_IMP":
+                        return 145;
+                    case "KPN_DESCRIPTION":
+                        return 146;
+                    case "KPC_KPCKEY":
+                        return 147;
+                    case "KPC_SURNAME":
+                        return 148;
+                    case "KPC_FIRST_NAME":
+                        return 149;
+                    case "KPC_SECOND_NAME":
+                        return 150;
+                    case "KPC_GENDER":
+                        return 151;
+                    case "KPC_ADDRESS01":
+                        return 152;
+                    case "KPC_ADDRESS02":
+                        return 153;
+                    case "KPC_ADDRESS03":
+                        return 154;
+                    case "KPC_STATE":
+                        return 155;
+                    case "KPC_POST":
+                        return 156;
+                    case "KPC_BUS_PHONE":
+                        return 157;
+                    case "KPC_HOME_PHONE":
+                        return 158;
+                    case "KPC_MOBILE":
+                        return 159;
+                    case "KPC_EMAIL":
+                        return 160;
+                    case "KPCL_KPCLKEY":
+                        return 161;
+                    case "KPCL_LINK":
+                        return 162;
+                    case "KPCL_SOURCE":
+                        return 163;
+                    case "KPCL_CONTACT":
+                        return 164;
+                    case "KPCL_CONTACT_TYPE":
+                        return 165;
+                    case "KPCL_CONTACT_PREFERENCE":
+                        return 166;
+                    case "KPCR_KPCRKEY":
+                        return 167;
+                    case "KPCR_KPCRKEY_IMP":
+                        return 168;
+                    case "KPCR_DESCRIPTION":
+                        return 169;
+                    case "PF_PFKEY":
+                        return 170;
+                    case "PF_PFKEY_IMP":
+                        return 171;
+                    case "PF_DESCRIPTION":
+                        return 172;
+                    case "PI_PIKEY":
+                        return 173;
+                    case "PI_PIKEY_IMP":
+                        return 174;
+                    case "PI_PAYCODE":
+                        return 175;
+                    case "PI_DESCRIPTION":
+                        return 176;
+                    case "PI_TRANSTYPE":
+                        return 177;
+                    case "PI_TAXABLE":
+                        return 178;
+                    case "PI_UNIT":
+                        return 179;
+                    case "PI_CATEGORY":
+                        return 180;
+                    case "PI_PAYG_BOX":
+                        return 181;
+                    case "PI_TAXRATE":
+                        return 182;
+                    case "PI_AUTOCALC":
+                        return 183;
+                    case "PI_SUPER_LEVY":
+                        return 184;
+                    case "PI_PERS_SUPER":
+                        return 185;
+                    case "PI_PERS_SUPER_RATE":
+                        return 186;
+                    case "PI_INITIATIVE":
+                        return 187;
+                    case "AR_ARKEY":
+                        return 188;
+                    case "AR_ARKEY_IMP":
+                        return 189;
+                    case "AR_TITLE":
+                        return 190;
+                    case "AR_DESCRIPTION01":
+                        return 191;
+                    case "AR_DESCRIPTION02":
+                        return 192;
+                    case "AR_ASSET_TYPE":
+                        return 193;
+                    case "AR_CATEGORY":
+                        return 194;
+                    case "AR_CATEGORY_IMP":
+                        return 195;
+                    case "AR_SUBCATEGORY_IMP":
+                        return 196;
+                    case "AR_TAX_CATEGORY":
+                        return 197;
+                    case "AR_RELEASE_TYPE":
+                        return 198;
+                    case "AR_AOB_COST":
+                        return 199;
+                    case "AR_OB_QTY":
+                        return 200;
+                    case "AR_ORIG_INVOICE_NO":
+                        return 201;
+                    case "AR_LAST_INVOICE_NO":
+                        return 202;
+                    case "AR_WARRANTY":
+                        return 203;
+                    case "AR_WARRANTYEXP":
+                        return 204;
+                    case "AR_SERIAL":
+                        return 205;
+                    case "AR_LOCATION":
+                        return 206;
+                    case "AR_LOCATION_IMP":
+                        return 207;
+                    case "AR_DEPARTMENT":
+                        return 208;
+                    case "AR_DEPARTMENT_IMP":
+                        return 209;
+                    case "AR_CAMPUS":
+                        return 210;
+                    case "AR_CAMPUS_IMP":
+                        return 211;
+                    case "AR_BRANCH":
+                        return 212;
+                    case "AR_LEASE_START_DATE":
+                        return 213;
+                    case "AR_LEASE_END_DATE":
+                        return 214;
+                    case "AR_LAST_ST_DATE":
+                        return 215;
+                    case "AR_LAST_ADDN_DATE":
+                        return 216;
+                    case "AR_EXPECTED_LIFE":
+                        return 217;
+                    case "AR_LAST_SVC_DATE":
+                        return 218;
+                    case "AR_NEXT_SVC_DATE":
+                        return 219;
+                    case "AR_LAST_SVC_DETAILS":
+                        return 220;
+                    case "AR_OWNER":
+                        return 221;
+                    case "AR_CLEANING":
+                        return 222;
+                    case "AR_HAZARD":
+                        return 223;
+                    case "AR_SITE_REFERENCE":
+                        return 224;
+                    case "AR_EXTRA_DETAILS":
+                        return 225;
+                    case "AR_PURDATE":
+                        return 226;
+                    case "AR_PURDATE_IMP":
+                        return 227;
+                    case "AR_ORIG_SUPPLIER":
+                        return 228;
+                    case "AR_ORIG_COST":
+                        return 229;
+                    case "AR_ASSET_PIC":
+                        return 230;
+                    case "FDT_COMMENT":
+                        return 231;
+                    case "FDT_PROCESS_FLAG":
+                        return 232;
+                    case "FDT_DATE_EXP":
+                        return 233;
+                    case "FDT_TIME_EXP":
+                        return 234;
+                    case "FDT_DATE_IMP":
+                        return 235;
+                    case "FDT_TIME_IMP":
+                        return 236;
+                    case "LW_DATE":
+                        return 237;
+                    case "LW_TIME":
+                        return 238;
+                    case "LW_USER":
+                        return 239;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

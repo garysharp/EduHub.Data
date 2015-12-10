@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 Login Log Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_LLOGDataSet : SetBase<SEC_LLOG>
+    public sealed partial class SEC_LLOGDataSet : DataSetBase<SEC_LLOG>
     {
         /// <summary>
         /// Data Set Name
@@ -159,6 +160,273 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SEC_LLOG table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SEC_LLOG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SEC_LLOG](
+        [LOGINLOGID] int IDENTITY NOT NULL,
+        [SERVER] varchar(50) NULL,
+        [VERSION] varchar(10) NULL,
+        [USERID] varchar(50) NULL,
+        [USERNAME] varchar(150) NULL,
+        [BROWSER] varchar(100) NULL,
+        [SCREENSIZE] varchar(10) NULL,
+        [RESULT] varchar(20) NULL,
+        [IPADDRESS] varchar(16) NULL,
+        [SESSIONID] varchar(50) NULL,
+        [LOGGEDOUT] smallint NULL,
+        [LOGINTIME] datetime NULL,
+        [LOGOUTTIME] datetime NULL,
+        [LOGGEDPERIOD] smallint NULL,
+        CONSTRAINT [SEC_LLOG_Index_LOGINLOGID] PRIMARY KEY CLUSTERED (
+            [LOGINLOGID] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SEC_LLOG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SEC_LLOG data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SEC_LLOGDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SEC_LLOGDataReader : IDataReader, IDataRecord
+        {
+            private List<SEC_LLOG> Items;
+            private int CurrentIndex;
+            private SEC_LLOG CurrentItem;
+
+            public SEC_LLOGDataReader(List<SEC_LLOG> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 14; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // LOGINLOGID
+                        return CurrentItem.LOGINLOGID;
+                    case 1: // SERVER
+                        return CurrentItem.SERVER;
+                    case 2: // VERSION
+                        return CurrentItem.VERSION;
+                    case 3: // USERID
+                        return CurrentItem.USERID;
+                    case 4: // USERNAME
+                        return CurrentItem.USERNAME;
+                    case 5: // BROWSER
+                        return CurrentItem.BROWSER;
+                    case 6: // SCREENSIZE
+                        return CurrentItem.SCREENSIZE;
+                    case 7: // RESULT
+                        return CurrentItem.RESULT;
+                    case 8: // IPADDRESS
+                        return CurrentItem.IPADDRESS;
+                    case 9: // SESSIONID
+                        return CurrentItem.SESSIONID;
+                    case 10: // LOGGEDOUT
+                        return CurrentItem.LOGGEDOUT;
+                    case 11: // LOGINTIME
+                        return CurrentItem.LOGINTIME;
+                    case 12: // LOGOUTTIME
+                        return CurrentItem.LOGOUTTIME;
+                    case 13: // LOGGEDPERIOD
+                        return CurrentItem.LOGGEDPERIOD;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // SERVER
+                        return CurrentItem.SERVER == null;
+                    case 2: // VERSION
+                        return CurrentItem.VERSION == null;
+                    case 3: // USERID
+                        return CurrentItem.USERID == null;
+                    case 4: // USERNAME
+                        return CurrentItem.USERNAME == null;
+                    case 5: // BROWSER
+                        return CurrentItem.BROWSER == null;
+                    case 6: // SCREENSIZE
+                        return CurrentItem.SCREENSIZE == null;
+                    case 7: // RESULT
+                        return CurrentItem.RESULT == null;
+                    case 8: // IPADDRESS
+                        return CurrentItem.IPADDRESS == null;
+                    case 9: // SESSIONID
+                        return CurrentItem.SESSIONID == null;
+                    case 10: // LOGGEDOUT
+                        return CurrentItem.LOGGEDOUT == null;
+                    case 11: // LOGINTIME
+                        return CurrentItem.LOGINTIME == null;
+                    case 12: // LOGOUTTIME
+                        return CurrentItem.LOGOUTTIME == null;
+                    case 13: // LOGGEDPERIOD
+                        return CurrentItem.LOGGEDPERIOD == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // LOGINLOGID
+                        return "LOGINLOGID";
+                    case 1: // SERVER
+                        return "SERVER";
+                    case 2: // VERSION
+                        return "VERSION";
+                    case 3: // USERID
+                        return "USERID";
+                    case 4: // USERNAME
+                        return "USERNAME";
+                    case 5: // BROWSER
+                        return "BROWSER";
+                    case 6: // SCREENSIZE
+                        return "SCREENSIZE";
+                    case 7: // RESULT
+                        return "RESULT";
+                    case 8: // IPADDRESS
+                        return "IPADDRESS";
+                    case 9: // SESSIONID
+                        return "SESSIONID";
+                    case 10: // LOGGEDOUT
+                        return "LOGGEDOUT";
+                    case 11: // LOGINTIME
+                        return "LOGINTIME";
+                    case 12: // LOGOUTTIME
+                        return "LOGOUTTIME";
+                    case 13: // LOGGEDPERIOD
+                        return "LOGGEDPERIOD";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "LOGINLOGID":
+                        return 0;
+                    case "SERVER":
+                        return 1;
+                    case "VERSION":
+                        return 2;
+                    case "USERID":
+                        return 3;
+                    case "USERNAME":
+                        return 4;
+                    case "BROWSER":
+                        return 5;
+                    case "SCREENSIZE":
+                        return 6;
+                    case "RESULT":
+                        return 7;
+                    case "IPADDRESS":
+                        return 8;
+                    case "SESSIONID":
+                        return 9;
+                    case "LOGGEDOUT":
+                        return 10;
+                    case "LOGINTIME":
+                        return 11;
+                    case "LOGOUTTIME":
+                        return 12;
+                    case "LOGGEDPERIOD":
+                        return 13;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Information Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCIDataSet : SetBase<SCI>
+    public sealed partial class SCIDataSet : DataSetBase<SCI>
     {
         /// <summary>
         /// Data Set Name
@@ -1277,6 +1278,924 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SCI table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SCI](
+        [SCIKEY] int NOT NULL,
+        [CAMPUS_NAME] varchar(40) NULL,
+        [CAMPUS_TYPE] varchar(10) NULL,
+        [SCHOOL_LINK] varchar(8) NULL,
+        [SCHOOL_TYPE] varchar(10) NULL,
+        [SCHOOL_NAME] varchar(40) NULL,
+        [MASTER_KEY] varchar(6) NULL,
+        [ADMIN_SITE] varchar(1) NULL,
+        [SCH_PRINCIPAL] varchar(4) NULL,
+        [SF_OIC] varchar(4) NULL,
+        [SF_VPRIN] varchar(4) NULL,
+        [SF_2VPRIN] varchar(4) NULL,
+        [SF_3VPRIN] varchar(4) NULL,
+        [SF_APRIN] varchar(4) NULL,
+        [SF_BMANAGER] varchar(4) NULL,
+        [SF_VAC_CONTACT] varchar(4) NULL,
+        [SF_EMERG_CONTACT] varchar(4) NULL,
+        [SAM_SCH_COUNCIL] int NULL,
+        [PLATFORM] varchar(5) NULL,
+        [CURRENT_RELEASE] varchar(20) NULL,
+        [RELEASE_ACTION] varchar(7) NULL,
+        [RELEASE_DATE] datetime NULL,
+        [SCHEMA_VERIFIED] datetime NULL,
+        [UPGRADE_VERSION] varchar(30) NULL,
+        [ECASES21_VERSION] varchar(10) NULL,
+        [DMIRROR_VERSION] varchar(30) NULL,
+        [CURRENT_QUILT] varchar(8) NULL,
+        [CURRENT_SEMESTER] varchar(6) NULL,
+        [LAST_PROMOTION_DATE] datetime NULL,
+        [AGE_CALCULATION_DATE] datetime NULL,
+        [NEXT_ENROLMENT_DATE] datetime NULL,
+        [GENDER_DEFAULT] varchar(1) NULL,
+        [TELEPHONE_PREFIX] varchar(20) NULL,
+        [REL_INSTR] varchar(10) NULL,
+        [CONSECUTIVE_DAYS] smallint NULL,
+        [CUMULATIVE_DAYS] smallint NULL,
+        [OVERALL_DAYS] smallint NULL,
+        [ADDRESS01] varchar(30) NULL,
+        [ADDRESS02] varchar(30) NULL,
+        [SUBURB] varchar(30) NULL,
+        [STATE] varchar(3) NULL,
+        [POSTCODE] varchar(4) NULL,
+        [TELEPHONE] varchar(20) NULL,
+        [FAX] varchar(20) NULL,
+        [MAILING_ADDRESS01] varchar(30) NULL,
+        [MAILING_ADDRESS02] varchar(30) NULL,
+        [MAILING_SUBURB] varchar(30) NULL,
+        [MAILING_STATE] varchar(3) NULL,
+        [MAILING_POSTCODE] varchar(4) NULL,
+        [DELIVERY_ADDRESS01] varchar(30) NULL,
+        [DELIVERY_ADDRESS02] varchar(30) NULL,
+        [DELIVERY_SUBURB] varchar(30) NULL,
+        [DELIVERY_STATE] varchar(3) NULL,
+        [DELIVERY_POSTCODE] varchar(4) NULL,
+        [DELIVERY_TELEPHONE] varchar(20) NULL,
+        [DELIVERY_FAX] varchar(20) NULL,
+        [MAP_TYPE] varchar(1) NULL,
+        [MAP_NUM] varchar(4) NULL,
+        [X_AXIS] varchar(2) NULL,
+        [Y_AXIS] varchar(2) NULL,
+        [DESTINATION_SCHOOL] varchar(8) NULL,
+        [CAMPUS_EMAIL_CONTACT] varchar(60) NULL,
+        [SCH_AOIC] varchar(4) NULL,
+        [SCH_VPRIN] varchar(4) NULL,
+        [SCH_BMANAGER] varchar(4) NULL,
+        [SCH_VAC_CONTACT] varchar(4) NULL,
+        [SCH_EMERG_CONTACT] varchar(4) NULL,
+        [SCH_COUNCIL_PRES] int NULL,
+        [SCH_MASTER_KEY] varchar(6) NULL,
+        [PROFILE_UPDATED] varchar(1) NULL,
+        [CAMPUS_OPEN_IND] varchar(1) NULL,
+        [PROFILE_SENT] datetime NULL,
+        [SPEC_CURR_IND] varchar(1) NULL,
+        [GLOBAL_ID] int NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SCI_Index_SCIKEY] PRIMARY KEY CLUSTERED (
+            [SCIKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_CURRENT_QUILT] ON [dbo].[SCI]
+    (
+            [CURRENT_QUILT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_DESTINATION_SCHOOL] ON [dbo].[SCI]
+    (
+            [DESTINATION_SCHOOL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_LW_DATE] ON [dbo].[SCI]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_REL_INSTR] ON [dbo].[SCI]
+    (
+            [REL_INSTR] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SAM_SCH_COUNCIL] ON [dbo].[SCI]
+    (
+            [SAM_SCH_COUNCIL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_AOIC] ON [dbo].[SCI]
+    (
+            [SCH_AOIC] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_BMANAGER] ON [dbo].[SCI]
+    (
+            [SCH_BMANAGER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_COUNCIL_PRES] ON [dbo].[SCI]
+    (
+            [SCH_COUNCIL_PRES] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_EMERG_CONTACT] ON [dbo].[SCI]
+    (
+            [SCH_EMERG_CONTACT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_PRINCIPAL] ON [dbo].[SCI]
+    (
+            [SCH_PRINCIPAL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_VAC_CONTACT] ON [dbo].[SCI]
+    (
+            [SCH_VAC_CONTACT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCH_VPRIN] ON [dbo].[SCI]
+    (
+            [SCH_VPRIN] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SCHOOL_LINK] ON [dbo].[SCI]
+    (
+            [SCHOOL_LINK] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_2VPRIN] ON [dbo].[SCI]
+    (
+            [SF_2VPRIN] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_3VPRIN] ON [dbo].[SCI]
+    (
+            [SF_3VPRIN] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_APRIN] ON [dbo].[SCI]
+    (
+            [SF_APRIN] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_BMANAGER] ON [dbo].[SCI]
+    (
+            [SF_BMANAGER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_EMERG_CONTACT] ON [dbo].[SCI]
+    (
+            [SF_EMERG_CONTACT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_OIC] ON [dbo].[SCI]
+    (
+            [SF_OIC] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_VAC_CONTACT] ON [dbo].[SCI]
+    (
+            [SF_VAC_CONTACT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_VPRIN] ON [dbo].[SCI]
+    (
+            [SF_VPRIN] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCI data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SCIDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SCIDataReader : IDataReader, IDataRecord
+        {
+            private List<SCI> Items;
+            private int CurrentIndex;
+            private SCI CurrentItem;
+
+            public SCIDataReader(List<SCI> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 77; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SCIKEY
+                        return CurrentItem.SCIKEY;
+                    case 1: // CAMPUS_NAME
+                        return CurrentItem.CAMPUS_NAME;
+                    case 2: // CAMPUS_TYPE
+                        return CurrentItem.CAMPUS_TYPE;
+                    case 3: // SCHOOL_LINK
+                        return CurrentItem.SCHOOL_LINK;
+                    case 4: // SCHOOL_TYPE
+                        return CurrentItem.SCHOOL_TYPE;
+                    case 5: // SCHOOL_NAME
+                        return CurrentItem.SCHOOL_NAME;
+                    case 6: // MASTER_KEY
+                        return CurrentItem.MASTER_KEY;
+                    case 7: // ADMIN_SITE
+                        return CurrentItem.ADMIN_SITE;
+                    case 8: // SCH_PRINCIPAL
+                        return CurrentItem.SCH_PRINCIPAL;
+                    case 9: // SF_OIC
+                        return CurrentItem.SF_OIC;
+                    case 10: // SF_VPRIN
+                        return CurrentItem.SF_VPRIN;
+                    case 11: // SF_2VPRIN
+                        return CurrentItem.SF_2VPRIN;
+                    case 12: // SF_3VPRIN
+                        return CurrentItem.SF_3VPRIN;
+                    case 13: // SF_APRIN
+                        return CurrentItem.SF_APRIN;
+                    case 14: // SF_BMANAGER
+                        return CurrentItem.SF_BMANAGER;
+                    case 15: // SF_VAC_CONTACT
+                        return CurrentItem.SF_VAC_CONTACT;
+                    case 16: // SF_EMERG_CONTACT
+                        return CurrentItem.SF_EMERG_CONTACT;
+                    case 17: // SAM_SCH_COUNCIL
+                        return CurrentItem.SAM_SCH_COUNCIL;
+                    case 18: // PLATFORM
+                        return CurrentItem.PLATFORM;
+                    case 19: // CURRENT_RELEASE
+                        return CurrentItem.CURRENT_RELEASE;
+                    case 20: // RELEASE_ACTION
+                        return CurrentItem.RELEASE_ACTION;
+                    case 21: // RELEASE_DATE
+                        return CurrentItem.RELEASE_DATE;
+                    case 22: // SCHEMA_VERIFIED
+                        return CurrentItem.SCHEMA_VERIFIED;
+                    case 23: // UPGRADE_VERSION
+                        return CurrentItem.UPGRADE_VERSION;
+                    case 24: // ECASES21_VERSION
+                        return CurrentItem.ECASES21_VERSION;
+                    case 25: // DMIRROR_VERSION
+                        return CurrentItem.DMIRROR_VERSION;
+                    case 26: // CURRENT_QUILT
+                        return CurrentItem.CURRENT_QUILT;
+                    case 27: // CURRENT_SEMESTER
+                        return CurrentItem.CURRENT_SEMESTER;
+                    case 28: // LAST_PROMOTION_DATE
+                        return CurrentItem.LAST_PROMOTION_DATE;
+                    case 29: // AGE_CALCULATION_DATE
+                        return CurrentItem.AGE_CALCULATION_DATE;
+                    case 30: // NEXT_ENROLMENT_DATE
+                        return CurrentItem.NEXT_ENROLMENT_DATE;
+                    case 31: // GENDER_DEFAULT
+                        return CurrentItem.GENDER_DEFAULT;
+                    case 32: // TELEPHONE_PREFIX
+                        return CurrentItem.TELEPHONE_PREFIX;
+                    case 33: // REL_INSTR
+                        return CurrentItem.REL_INSTR;
+                    case 34: // CONSECUTIVE_DAYS
+                        return CurrentItem.CONSECUTIVE_DAYS;
+                    case 35: // CUMULATIVE_DAYS
+                        return CurrentItem.CUMULATIVE_DAYS;
+                    case 36: // OVERALL_DAYS
+                        return CurrentItem.OVERALL_DAYS;
+                    case 37: // ADDRESS01
+                        return CurrentItem.ADDRESS01;
+                    case 38: // ADDRESS02
+                        return CurrentItem.ADDRESS02;
+                    case 39: // SUBURB
+                        return CurrentItem.SUBURB;
+                    case 40: // STATE
+                        return CurrentItem.STATE;
+                    case 41: // POSTCODE
+                        return CurrentItem.POSTCODE;
+                    case 42: // TELEPHONE
+                        return CurrentItem.TELEPHONE;
+                    case 43: // FAX
+                        return CurrentItem.FAX;
+                    case 44: // MAILING_ADDRESS01
+                        return CurrentItem.MAILING_ADDRESS01;
+                    case 45: // MAILING_ADDRESS02
+                        return CurrentItem.MAILING_ADDRESS02;
+                    case 46: // MAILING_SUBURB
+                        return CurrentItem.MAILING_SUBURB;
+                    case 47: // MAILING_STATE
+                        return CurrentItem.MAILING_STATE;
+                    case 48: // MAILING_POSTCODE
+                        return CurrentItem.MAILING_POSTCODE;
+                    case 49: // DELIVERY_ADDRESS01
+                        return CurrentItem.DELIVERY_ADDRESS01;
+                    case 50: // DELIVERY_ADDRESS02
+                        return CurrentItem.DELIVERY_ADDRESS02;
+                    case 51: // DELIVERY_SUBURB
+                        return CurrentItem.DELIVERY_SUBURB;
+                    case 52: // DELIVERY_STATE
+                        return CurrentItem.DELIVERY_STATE;
+                    case 53: // DELIVERY_POSTCODE
+                        return CurrentItem.DELIVERY_POSTCODE;
+                    case 54: // DELIVERY_TELEPHONE
+                        return CurrentItem.DELIVERY_TELEPHONE;
+                    case 55: // DELIVERY_FAX
+                        return CurrentItem.DELIVERY_FAX;
+                    case 56: // MAP_TYPE
+                        return CurrentItem.MAP_TYPE;
+                    case 57: // MAP_NUM
+                        return CurrentItem.MAP_NUM;
+                    case 58: // X_AXIS
+                        return CurrentItem.X_AXIS;
+                    case 59: // Y_AXIS
+                        return CurrentItem.Y_AXIS;
+                    case 60: // DESTINATION_SCHOOL
+                        return CurrentItem.DESTINATION_SCHOOL;
+                    case 61: // CAMPUS_EMAIL_CONTACT
+                        return CurrentItem.CAMPUS_EMAIL_CONTACT;
+                    case 62: // SCH_AOIC
+                        return CurrentItem.SCH_AOIC;
+                    case 63: // SCH_VPRIN
+                        return CurrentItem.SCH_VPRIN;
+                    case 64: // SCH_BMANAGER
+                        return CurrentItem.SCH_BMANAGER;
+                    case 65: // SCH_VAC_CONTACT
+                        return CurrentItem.SCH_VAC_CONTACT;
+                    case 66: // SCH_EMERG_CONTACT
+                        return CurrentItem.SCH_EMERG_CONTACT;
+                    case 67: // SCH_COUNCIL_PRES
+                        return CurrentItem.SCH_COUNCIL_PRES;
+                    case 68: // SCH_MASTER_KEY
+                        return CurrentItem.SCH_MASTER_KEY;
+                    case 69: // PROFILE_UPDATED
+                        return CurrentItem.PROFILE_UPDATED;
+                    case 70: // CAMPUS_OPEN_IND
+                        return CurrentItem.CAMPUS_OPEN_IND;
+                    case 71: // PROFILE_SENT
+                        return CurrentItem.PROFILE_SENT;
+                    case 72: // SPEC_CURR_IND
+                        return CurrentItem.SPEC_CURR_IND;
+                    case 73: // GLOBAL_ID
+                        return CurrentItem.GLOBAL_ID;
+                    case 74: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 75: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 76: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // CAMPUS_NAME
+                        return CurrentItem.CAMPUS_NAME == null;
+                    case 2: // CAMPUS_TYPE
+                        return CurrentItem.CAMPUS_TYPE == null;
+                    case 3: // SCHOOL_LINK
+                        return CurrentItem.SCHOOL_LINK == null;
+                    case 4: // SCHOOL_TYPE
+                        return CurrentItem.SCHOOL_TYPE == null;
+                    case 5: // SCHOOL_NAME
+                        return CurrentItem.SCHOOL_NAME == null;
+                    case 6: // MASTER_KEY
+                        return CurrentItem.MASTER_KEY == null;
+                    case 7: // ADMIN_SITE
+                        return CurrentItem.ADMIN_SITE == null;
+                    case 8: // SCH_PRINCIPAL
+                        return CurrentItem.SCH_PRINCIPAL == null;
+                    case 9: // SF_OIC
+                        return CurrentItem.SF_OIC == null;
+                    case 10: // SF_VPRIN
+                        return CurrentItem.SF_VPRIN == null;
+                    case 11: // SF_2VPRIN
+                        return CurrentItem.SF_2VPRIN == null;
+                    case 12: // SF_3VPRIN
+                        return CurrentItem.SF_3VPRIN == null;
+                    case 13: // SF_APRIN
+                        return CurrentItem.SF_APRIN == null;
+                    case 14: // SF_BMANAGER
+                        return CurrentItem.SF_BMANAGER == null;
+                    case 15: // SF_VAC_CONTACT
+                        return CurrentItem.SF_VAC_CONTACT == null;
+                    case 16: // SF_EMERG_CONTACT
+                        return CurrentItem.SF_EMERG_CONTACT == null;
+                    case 17: // SAM_SCH_COUNCIL
+                        return CurrentItem.SAM_SCH_COUNCIL == null;
+                    case 18: // PLATFORM
+                        return CurrentItem.PLATFORM == null;
+                    case 19: // CURRENT_RELEASE
+                        return CurrentItem.CURRENT_RELEASE == null;
+                    case 20: // RELEASE_ACTION
+                        return CurrentItem.RELEASE_ACTION == null;
+                    case 21: // RELEASE_DATE
+                        return CurrentItem.RELEASE_DATE == null;
+                    case 22: // SCHEMA_VERIFIED
+                        return CurrentItem.SCHEMA_VERIFIED == null;
+                    case 23: // UPGRADE_VERSION
+                        return CurrentItem.UPGRADE_VERSION == null;
+                    case 24: // ECASES21_VERSION
+                        return CurrentItem.ECASES21_VERSION == null;
+                    case 25: // DMIRROR_VERSION
+                        return CurrentItem.DMIRROR_VERSION == null;
+                    case 26: // CURRENT_QUILT
+                        return CurrentItem.CURRENT_QUILT == null;
+                    case 27: // CURRENT_SEMESTER
+                        return CurrentItem.CURRENT_SEMESTER == null;
+                    case 28: // LAST_PROMOTION_DATE
+                        return CurrentItem.LAST_PROMOTION_DATE == null;
+                    case 29: // AGE_CALCULATION_DATE
+                        return CurrentItem.AGE_CALCULATION_DATE == null;
+                    case 30: // NEXT_ENROLMENT_DATE
+                        return CurrentItem.NEXT_ENROLMENT_DATE == null;
+                    case 31: // GENDER_DEFAULT
+                        return CurrentItem.GENDER_DEFAULT == null;
+                    case 32: // TELEPHONE_PREFIX
+                        return CurrentItem.TELEPHONE_PREFIX == null;
+                    case 33: // REL_INSTR
+                        return CurrentItem.REL_INSTR == null;
+                    case 34: // CONSECUTIVE_DAYS
+                        return CurrentItem.CONSECUTIVE_DAYS == null;
+                    case 35: // CUMULATIVE_DAYS
+                        return CurrentItem.CUMULATIVE_DAYS == null;
+                    case 36: // OVERALL_DAYS
+                        return CurrentItem.OVERALL_DAYS == null;
+                    case 37: // ADDRESS01
+                        return CurrentItem.ADDRESS01 == null;
+                    case 38: // ADDRESS02
+                        return CurrentItem.ADDRESS02 == null;
+                    case 39: // SUBURB
+                        return CurrentItem.SUBURB == null;
+                    case 40: // STATE
+                        return CurrentItem.STATE == null;
+                    case 41: // POSTCODE
+                        return CurrentItem.POSTCODE == null;
+                    case 42: // TELEPHONE
+                        return CurrentItem.TELEPHONE == null;
+                    case 43: // FAX
+                        return CurrentItem.FAX == null;
+                    case 44: // MAILING_ADDRESS01
+                        return CurrentItem.MAILING_ADDRESS01 == null;
+                    case 45: // MAILING_ADDRESS02
+                        return CurrentItem.MAILING_ADDRESS02 == null;
+                    case 46: // MAILING_SUBURB
+                        return CurrentItem.MAILING_SUBURB == null;
+                    case 47: // MAILING_STATE
+                        return CurrentItem.MAILING_STATE == null;
+                    case 48: // MAILING_POSTCODE
+                        return CurrentItem.MAILING_POSTCODE == null;
+                    case 49: // DELIVERY_ADDRESS01
+                        return CurrentItem.DELIVERY_ADDRESS01 == null;
+                    case 50: // DELIVERY_ADDRESS02
+                        return CurrentItem.DELIVERY_ADDRESS02 == null;
+                    case 51: // DELIVERY_SUBURB
+                        return CurrentItem.DELIVERY_SUBURB == null;
+                    case 52: // DELIVERY_STATE
+                        return CurrentItem.DELIVERY_STATE == null;
+                    case 53: // DELIVERY_POSTCODE
+                        return CurrentItem.DELIVERY_POSTCODE == null;
+                    case 54: // DELIVERY_TELEPHONE
+                        return CurrentItem.DELIVERY_TELEPHONE == null;
+                    case 55: // DELIVERY_FAX
+                        return CurrentItem.DELIVERY_FAX == null;
+                    case 56: // MAP_TYPE
+                        return CurrentItem.MAP_TYPE == null;
+                    case 57: // MAP_NUM
+                        return CurrentItem.MAP_NUM == null;
+                    case 58: // X_AXIS
+                        return CurrentItem.X_AXIS == null;
+                    case 59: // Y_AXIS
+                        return CurrentItem.Y_AXIS == null;
+                    case 60: // DESTINATION_SCHOOL
+                        return CurrentItem.DESTINATION_SCHOOL == null;
+                    case 61: // CAMPUS_EMAIL_CONTACT
+                        return CurrentItem.CAMPUS_EMAIL_CONTACT == null;
+                    case 62: // SCH_AOIC
+                        return CurrentItem.SCH_AOIC == null;
+                    case 63: // SCH_VPRIN
+                        return CurrentItem.SCH_VPRIN == null;
+                    case 64: // SCH_BMANAGER
+                        return CurrentItem.SCH_BMANAGER == null;
+                    case 65: // SCH_VAC_CONTACT
+                        return CurrentItem.SCH_VAC_CONTACT == null;
+                    case 66: // SCH_EMERG_CONTACT
+                        return CurrentItem.SCH_EMERG_CONTACT == null;
+                    case 67: // SCH_COUNCIL_PRES
+                        return CurrentItem.SCH_COUNCIL_PRES == null;
+                    case 68: // SCH_MASTER_KEY
+                        return CurrentItem.SCH_MASTER_KEY == null;
+                    case 69: // PROFILE_UPDATED
+                        return CurrentItem.PROFILE_UPDATED == null;
+                    case 70: // CAMPUS_OPEN_IND
+                        return CurrentItem.CAMPUS_OPEN_IND == null;
+                    case 71: // PROFILE_SENT
+                        return CurrentItem.PROFILE_SENT == null;
+                    case 72: // SPEC_CURR_IND
+                        return CurrentItem.SPEC_CURR_IND == null;
+                    case 73: // GLOBAL_ID
+                        return CurrentItem.GLOBAL_ID == null;
+                    case 74: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 75: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 76: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SCIKEY
+                        return "SCIKEY";
+                    case 1: // CAMPUS_NAME
+                        return "CAMPUS_NAME";
+                    case 2: // CAMPUS_TYPE
+                        return "CAMPUS_TYPE";
+                    case 3: // SCHOOL_LINK
+                        return "SCHOOL_LINK";
+                    case 4: // SCHOOL_TYPE
+                        return "SCHOOL_TYPE";
+                    case 5: // SCHOOL_NAME
+                        return "SCHOOL_NAME";
+                    case 6: // MASTER_KEY
+                        return "MASTER_KEY";
+                    case 7: // ADMIN_SITE
+                        return "ADMIN_SITE";
+                    case 8: // SCH_PRINCIPAL
+                        return "SCH_PRINCIPAL";
+                    case 9: // SF_OIC
+                        return "SF_OIC";
+                    case 10: // SF_VPRIN
+                        return "SF_VPRIN";
+                    case 11: // SF_2VPRIN
+                        return "SF_2VPRIN";
+                    case 12: // SF_3VPRIN
+                        return "SF_3VPRIN";
+                    case 13: // SF_APRIN
+                        return "SF_APRIN";
+                    case 14: // SF_BMANAGER
+                        return "SF_BMANAGER";
+                    case 15: // SF_VAC_CONTACT
+                        return "SF_VAC_CONTACT";
+                    case 16: // SF_EMERG_CONTACT
+                        return "SF_EMERG_CONTACT";
+                    case 17: // SAM_SCH_COUNCIL
+                        return "SAM_SCH_COUNCIL";
+                    case 18: // PLATFORM
+                        return "PLATFORM";
+                    case 19: // CURRENT_RELEASE
+                        return "CURRENT_RELEASE";
+                    case 20: // RELEASE_ACTION
+                        return "RELEASE_ACTION";
+                    case 21: // RELEASE_DATE
+                        return "RELEASE_DATE";
+                    case 22: // SCHEMA_VERIFIED
+                        return "SCHEMA_VERIFIED";
+                    case 23: // UPGRADE_VERSION
+                        return "UPGRADE_VERSION";
+                    case 24: // ECASES21_VERSION
+                        return "ECASES21_VERSION";
+                    case 25: // DMIRROR_VERSION
+                        return "DMIRROR_VERSION";
+                    case 26: // CURRENT_QUILT
+                        return "CURRENT_QUILT";
+                    case 27: // CURRENT_SEMESTER
+                        return "CURRENT_SEMESTER";
+                    case 28: // LAST_PROMOTION_DATE
+                        return "LAST_PROMOTION_DATE";
+                    case 29: // AGE_CALCULATION_DATE
+                        return "AGE_CALCULATION_DATE";
+                    case 30: // NEXT_ENROLMENT_DATE
+                        return "NEXT_ENROLMENT_DATE";
+                    case 31: // GENDER_DEFAULT
+                        return "GENDER_DEFAULT";
+                    case 32: // TELEPHONE_PREFIX
+                        return "TELEPHONE_PREFIX";
+                    case 33: // REL_INSTR
+                        return "REL_INSTR";
+                    case 34: // CONSECUTIVE_DAYS
+                        return "CONSECUTIVE_DAYS";
+                    case 35: // CUMULATIVE_DAYS
+                        return "CUMULATIVE_DAYS";
+                    case 36: // OVERALL_DAYS
+                        return "OVERALL_DAYS";
+                    case 37: // ADDRESS01
+                        return "ADDRESS01";
+                    case 38: // ADDRESS02
+                        return "ADDRESS02";
+                    case 39: // SUBURB
+                        return "SUBURB";
+                    case 40: // STATE
+                        return "STATE";
+                    case 41: // POSTCODE
+                        return "POSTCODE";
+                    case 42: // TELEPHONE
+                        return "TELEPHONE";
+                    case 43: // FAX
+                        return "FAX";
+                    case 44: // MAILING_ADDRESS01
+                        return "MAILING_ADDRESS01";
+                    case 45: // MAILING_ADDRESS02
+                        return "MAILING_ADDRESS02";
+                    case 46: // MAILING_SUBURB
+                        return "MAILING_SUBURB";
+                    case 47: // MAILING_STATE
+                        return "MAILING_STATE";
+                    case 48: // MAILING_POSTCODE
+                        return "MAILING_POSTCODE";
+                    case 49: // DELIVERY_ADDRESS01
+                        return "DELIVERY_ADDRESS01";
+                    case 50: // DELIVERY_ADDRESS02
+                        return "DELIVERY_ADDRESS02";
+                    case 51: // DELIVERY_SUBURB
+                        return "DELIVERY_SUBURB";
+                    case 52: // DELIVERY_STATE
+                        return "DELIVERY_STATE";
+                    case 53: // DELIVERY_POSTCODE
+                        return "DELIVERY_POSTCODE";
+                    case 54: // DELIVERY_TELEPHONE
+                        return "DELIVERY_TELEPHONE";
+                    case 55: // DELIVERY_FAX
+                        return "DELIVERY_FAX";
+                    case 56: // MAP_TYPE
+                        return "MAP_TYPE";
+                    case 57: // MAP_NUM
+                        return "MAP_NUM";
+                    case 58: // X_AXIS
+                        return "X_AXIS";
+                    case 59: // Y_AXIS
+                        return "Y_AXIS";
+                    case 60: // DESTINATION_SCHOOL
+                        return "DESTINATION_SCHOOL";
+                    case 61: // CAMPUS_EMAIL_CONTACT
+                        return "CAMPUS_EMAIL_CONTACT";
+                    case 62: // SCH_AOIC
+                        return "SCH_AOIC";
+                    case 63: // SCH_VPRIN
+                        return "SCH_VPRIN";
+                    case 64: // SCH_BMANAGER
+                        return "SCH_BMANAGER";
+                    case 65: // SCH_VAC_CONTACT
+                        return "SCH_VAC_CONTACT";
+                    case 66: // SCH_EMERG_CONTACT
+                        return "SCH_EMERG_CONTACT";
+                    case 67: // SCH_COUNCIL_PRES
+                        return "SCH_COUNCIL_PRES";
+                    case 68: // SCH_MASTER_KEY
+                        return "SCH_MASTER_KEY";
+                    case 69: // PROFILE_UPDATED
+                        return "PROFILE_UPDATED";
+                    case 70: // CAMPUS_OPEN_IND
+                        return "CAMPUS_OPEN_IND";
+                    case 71: // PROFILE_SENT
+                        return "PROFILE_SENT";
+                    case 72: // SPEC_CURR_IND
+                        return "SPEC_CURR_IND";
+                    case 73: // GLOBAL_ID
+                        return "GLOBAL_ID";
+                    case 74: // LW_DATE
+                        return "LW_DATE";
+                    case 75: // LW_TIME
+                        return "LW_TIME";
+                    case 76: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SCIKEY":
+                        return 0;
+                    case "CAMPUS_NAME":
+                        return 1;
+                    case "CAMPUS_TYPE":
+                        return 2;
+                    case "SCHOOL_LINK":
+                        return 3;
+                    case "SCHOOL_TYPE":
+                        return 4;
+                    case "SCHOOL_NAME":
+                        return 5;
+                    case "MASTER_KEY":
+                        return 6;
+                    case "ADMIN_SITE":
+                        return 7;
+                    case "SCH_PRINCIPAL":
+                        return 8;
+                    case "SF_OIC":
+                        return 9;
+                    case "SF_VPRIN":
+                        return 10;
+                    case "SF_2VPRIN":
+                        return 11;
+                    case "SF_3VPRIN":
+                        return 12;
+                    case "SF_APRIN":
+                        return 13;
+                    case "SF_BMANAGER":
+                        return 14;
+                    case "SF_VAC_CONTACT":
+                        return 15;
+                    case "SF_EMERG_CONTACT":
+                        return 16;
+                    case "SAM_SCH_COUNCIL":
+                        return 17;
+                    case "PLATFORM":
+                        return 18;
+                    case "CURRENT_RELEASE":
+                        return 19;
+                    case "RELEASE_ACTION":
+                        return 20;
+                    case "RELEASE_DATE":
+                        return 21;
+                    case "SCHEMA_VERIFIED":
+                        return 22;
+                    case "UPGRADE_VERSION":
+                        return 23;
+                    case "ECASES21_VERSION":
+                        return 24;
+                    case "DMIRROR_VERSION":
+                        return 25;
+                    case "CURRENT_QUILT":
+                        return 26;
+                    case "CURRENT_SEMESTER":
+                        return 27;
+                    case "LAST_PROMOTION_DATE":
+                        return 28;
+                    case "AGE_CALCULATION_DATE":
+                        return 29;
+                    case "NEXT_ENROLMENT_DATE":
+                        return 30;
+                    case "GENDER_DEFAULT":
+                        return 31;
+                    case "TELEPHONE_PREFIX":
+                        return 32;
+                    case "REL_INSTR":
+                        return 33;
+                    case "CONSECUTIVE_DAYS":
+                        return 34;
+                    case "CUMULATIVE_DAYS":
+                        return 35;
+                    case "OVERALL_DAYS":
+                        return 36;
+                    case "ADDRESS01":
+                        return 37;
+                    case "ADDRESS02":
+                        return 38;
+                    case "SUBURB":
+                        return 39;
+                    case "STATE":
+                        return 40;
+                    case "POSTCODE":
+                        return 41;
+                    case "TELEPHONE":
+                        return 42;
+                    case "FAX":
+                        return 43;
+                    case "MAILING_ADDRESS01":
+                        return 44;
+                    case "MAILING_ADDRESS02":
+                        return 45;
+                    case "MAILING_SUBURB":
+                        return 46;
+                    case "MAILING_STATE":
+                        return 47;
+                    case "MAILING_POSTCODE":
+                        return 48;
+                    case "DELIVERY_ADDRESS01":
+                        return 49;
+                    case "DELIVERY_ADDRESS02":
+                        return 50;
+                    case "DELIVERY_SUBURB":
+                        return 51;
+                    case "DELIVERY_STATE":
+                        return 52;
+                    case "DELIVERY_POSTCODE":
+                        return 53;
+                    case "DELIVERY_TELEPHONE":
+                        return 54;
+                    case "DELIVERY_FAX":
+                        return 55;
+                    case "MAP_TYPE":
+                        return 56;
+                    case "MAP_NUM":
+                        return 57;
+                    case "X_AXIS":
+                        return 58;
+                    case "Y_AXIS":
+                        return 59;
+                    case "DESTINATION_SCHOOL":
+                        return 60;
+                    case "CAMPUS_EMAIL_CONTACT":
+                        return 61;
+                    case "SCH_AOIC":
+                        return 62;
+                    case "SCH_VPRIN":
+                        return 63;
+                    case "SCH_BMANAGER":
+                        return 64;
+                    case "SCH_VAC_CONTACT":
+                        return 65;
+                    case "SCH_EMERG_CONTACT":
+                        return 66;
+                    case "SCH_COUNCIL_PRES":
+                        return 67;
+                    case "SCH_MASTER_KEY":
+                        return 68;
+                    case "PROFILE_UPDATED":
+                        return 69;
+                    case "CAMPUS_OPEN_IND":
+                        return 70;
+                    case "PROFILE_SENT":
+                        return 71;
+                    case "SPEC_CURR_IND":
+                        return 72;
+                    case "GLOBAL_ID":
+                        return 73;
+                    case "LW_DATE":
+                        return 74;
+                    case "LW_TIME":
+                        return 75;
+                    case "LW_USER":
+                        return 76;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

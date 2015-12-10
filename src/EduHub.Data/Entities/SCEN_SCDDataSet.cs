@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Column-Display Metadata for displaying Student Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_SCDDataSet : SetBase<SCEN_SCD>
+    public sealed partial class SCEN_SCDDataSet : DataSetBase<SCEN_SCD>
     {
         /// <summary>
         /// Data Set Name
@@ -138,6 +139,210 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SCEN_SCD table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_SCD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SCEN_SCD](
+        [ID] int IDENTITY NOT NULL,
+        [COLUMNNAME] varchar(255) NULL,
+        [COLUMNDISPLAYNAME] varchar(255) NULL,
+        [DEFAULTCOLUMNDISPLAYWIDTH] smallint NULL,
+        [DEFAULTCOLUMNDISPLAYORDER] smallint NULL,
+        [PREFERREDCOLUMNDISPLAYWIDTH] smallint NULL,
+        [PREFERREDCOLUMNDISPLAYORDER] smallint NULL,
+        CONSTRAINT [SCEN_SCD_Index_ID] PRIMARY KEY CLUSTERED (
+            [ID] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCEN_SCD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCEN_SCD data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SCEN_SCDDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SCEN_SCDDataReader : IDataReader, IDataRecord
+        {
+            private List<SCEN_SCD> Items;
+            private int CurrentIndex;
+            private SCEN_SCD CurrentItem;
+
+            public SCEN_SCDDataReader(List<SCEN_SCD> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 7; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // ID
+                        return CurrentItem.ID;
+                    case 1: // COLUMNNAME
+                        return CurrentItem.COLUMNNAME;
+                    case 2: // COLUMNDISPLAYNAME
+                        return CurrentItem.COLUMNDISPLAYNAME;
+                    case 3: // DEFAULTCOLUMNDISPLAYWIDTH
+                        return CurrentItem.DEFAULTCOLUMNDISPLAYWIDTH;
+                    case 4: // DEFAULTCOLUMNDISPLAYORDER
+                        return CurrentItem.DEFAULTCOLUMNDISPLAYORDER;
+                    case 5: // PREFERREDCOLUMNDISPLAYWIDTH
+                        return CurrentItem.PREFERREDCOLUMNDISPLAYWIDTH;
+                    case 6: // PREFERREDCOLUMNDISPLAYORDER
+                        return CurrentItem.PREFERREDCOLUMNDISPLAYORDER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // COLUMNNAME
+                        return CurrentItem.COLUMNNAME == null;
+                    case 2: // COLUMNDISPLAYNAME
+                        return CurrentItem.COLUMNDISPLAYNAME == null;
+                    case 3: // DEFAULTCOLUMNDISPLAYWIDTH
+                        return CurrentItem.DEFAULTCOLUMNDISPLAYWIDTH == null;
+                    case 4: // DEFAULTCOLUMNDISPLAYORDER
+                        return CurrentItem.DEFAULTCOLUMNDISPLAYORDER == null;
+                    case 5: // PREFERREDCOLUMNDISPLAYWIDTH
+                        return CurrentItem.PREFERREDCOLUMNDISPLAYWIDTH == null;
+                    case 6: // PREFERREDCOLUMNDISPLAYORDER
+                        return CurrentItem.PREFERREDCOLUMNDISPLAYORDER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // ID
+                        return "ID";
+                    case 1: // COLUMNNAME
+                        return "COLUMNNAME";
+                    case 2: // COLUMNDISPLAYNAME
+                        return "COLUMNDISPLAYNAME";
+                    case 3: // DEFAULTCOLUMNDISPLAYWIDTH
+                        return "DEFAULTCOLUMNDISPLAYWIDTH";
+                    case 4: // DEFAULTCOLUMNDISPLAYORDER
+                        return "DEFAULTCOLUMNDISPLAYORDER";
+                    case 5: // PREFERREDCOLUMNDISPLAYWIDTH
+                        return "PREFERREDCOLUMNDISPLAYWIDTH";
+                    case 6: // PREFERREDCOLUMNDISPLAYORDER
+                        return "PREFERREDCOLUMNDISPLAYORDER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "ID":
+                        return 0;
+                    case "COLUMNNAME":
+                        return 1;
+                    case "COLUMNDISPLAYNAME":
+                        return 2;
+                    case "DEFAULTCOLUMNDISPLAYWIDTH":
+                        return 3;
+                    case "DEFAULTCOLUMNDISPLAYORDER":
+                        return 4;
+                    case "PREFERREDCOLUMNDISPLAYWIDTH":
+                        return 5;
+                    case "PREFERREDCOLUMNDISPLAYORDER":
+                        return 6;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

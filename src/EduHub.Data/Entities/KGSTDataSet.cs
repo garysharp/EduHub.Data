@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// GST Percentages Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGSTDataSet : SetBase<KGST>
+    public sealed partial class KGSTDataSet : DataSetBase<KGST>
     {
         /// <summary>
         /// Data Set Name
@@ -194,6 +195,250 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KGST table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KGST](
+        [KGSTKEY] varchar(4) NOT NULL,
+        [DESCRIPTION] varchar(40) NULL,
+        [SALE_PURCH] varchar(2) NULL,
+        [GST_RATE] float NULL,
+        [GST_BOX] varchar(3) NULL,
+        [GLGST_CODE] varchar(10) NULL,
+        [GST_RECLAIM] varchar(1) NULL,
+        [PRIOR_PERIOD_GST] varchar(4) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KGST_Index_KGSTKEY] PRIMARY KEY CLUSTERED (
+            [KGSTKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KGST_Index_GLGST_CODE] ON [dbo].[KGST]
+    (
+            [GLGST_CODE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGST data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGST data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KGSTDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KGSTDataReader : IDataReader, IDataRecord
+        {
+            private List<KGST> Items;
+            private int CurrentIndex;
+            private KGST CurrentItem;
+
+            public KGSTDataReader(List<KGST> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 11; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KGSTKEY
+                        return CurrentItem.KGSTKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // SALE_PURCH
+                        return CurrentItem.SALE_PURCH;
+                    case 3: // GST_RATE
+                        return CurrentItem.GST_RATE;
+                    case 4: // GST_BOX
+                        return CurrentItem.GST_BOX;
+                    case 5: // GLGST_CODE
+                        return CurrentItem.GLGST_CODE;
+                    case 6: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM;
+                    case 7: // PRIOR_PERIOD_GST
+                        return CurrentItem.PRIOR_PERIOD_GST;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // SALE_PURCH
+                        return CurrentItem.SALE_PURCH == null;
+                    case 3: // GST_RATE
+                        return CurrentItem.GST_RATE == null;
+                    case 4: // GST_BOX
+                        return CurrentItem.GST_BOX == null;
+                    case 5: // GLGST_CODE
+                        return CurrentItem.GLGST_CODE == null;
+                    case 6: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM == null;
+                    case 7: // PRIOR_PERIOD_GST
+                        return CurrentItem.PRIOR_PERIOD_GST == null;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KGSTKEY
+                        return "KGSTKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // SALE_PURCH
+                        return "SALE_PURCH";
+                    case 3: // GST_RATE
+                        return "GST_RATE";
+                    case 4: // GST_BOX
+                        return "GST_BOX";
+                    case 5: // GLGST_CODE
+                        return "GLGST_CODE";
+                    case 6: // GST_RECLAIM
+                        return "GST_RECLAIM";
+                    case 7: // PRIOR_PERIOD_GST
+                        return "PRIOR_PERIOD_GST";
+                    case 8: // LW_DATE
+                        return "LW_DATE";
+                    case 9: // LW_TIME
+                        return "LW_TIME";
+                    case 10: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KGSTKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "SALE_PURCH":
+                        return 2;
+                    case "GST_RATE":
+                        return 3;
+                    case "GST_BOX":
+                        return 4;
+                    case "GLGST_CODE":
+                        return 5;
+                    case "GST_RECLAIM":
+                        return 6;
+                    case "PRIOR_PERIOD_GST":
+                        return 7;
+                    case "LW_DATE":
+                        return 8;
+                    case "LW_TIME":
+                        return 9;
+                    case "LW_USER":
+                        return 10;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

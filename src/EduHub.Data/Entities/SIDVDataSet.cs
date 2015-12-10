@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Incident Victims/Recipients Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIDVDataSet : SetBase<SIDV>
+    public sealed partial class SIDVDataSet : DataSetBase<SIDV>
     {
         /// <summary>
         /// Data Set Name
@@ -194,6 +195,248 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SIDV table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SIDV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SIDV](
+        [TID] int IDENTITY NOT NULL,
+        [INCIDENT_KEY] int NOT NULL,
+        [RECIPIENT_TYPE] varchar(2) NULL,
+        [RECIPIENT] varchar(10) NULL,
+        [RECIPIENT_NAME] varchar(64) NULL,
+        [RECIPIENT_ADDRESS] text NULL,
+        [RECIPIENT_PHONE] varchar(20) NULL,
+        [HOW_AFFECTED] text NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SIDV_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE CLUSTERED INDEX [SIDV_Index_INCIDENT_KEY] ON [dbo].[SIDV]
+    (
+            [INCIDENT_KEY] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SIDV data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SIDV data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SIDVDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SIDVDataReader : IDataReader, IDataRecord
+        {
+            private List<SIDV> Items;
+            private int CurrentIndex;
+            private SIDV CurrentItem;
+
+            public SIDVDataReader(List<SIDV> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 11; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // INCIDENT_KEY
+                        return CurrentItem.INCIDENT_KEY;
+                    case 2: // RECIPIENT_TYPE
+                        return CurrentItem.RECIPIENT_TYPE;
+                    case 3: // RECIPIENT
+                        return CurrentItem.RECIPIENT;
+                    case 4: // RECIPIENT_NAME
+                        return CurrentItem.RECIPIENT_NAME;
+                    case 5: // RECIPIENT_ADDRESS
+                        return CurrentItem.RECIPIENT_ADDRESS;
+                    case 6: // RECIPIENT_PHONE
+                        return CurrentItem.RECIPIENT_PHONE;
+                    case 7: // HOW_AFFECTED
+                        return CurrentItem.HOW_AFFECTED;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // RECIPIENT_TYPE
+                        return CurrentItem.RECIPIENT_TYPE == null;
+                    case 3: // RECIPIENT
+                        return CurrentItem.RECIPIENT == null;
+                    case 4: // RECIPIENT_NAME
+                        return CurrentItem.RECIPIENT_NAME == null;
+                    case 5: // RECIPIENT_ADDRESS
+                        return CurrentItem.RECIPIENT_ADDRESS == null;
+                    case 6: // RECIPIENT_PHONE
+                        return CurrentItem.RECIPIENT_PHONE == null;
+                    case 7: // HOW_AFFECTED
+                        return CurrentItem.HOW_AFFECTED == null;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // INCIDENT_KEY
+                        return "INCIDENT_KEY";
+                    case 2: // RECIPIENT_TYPE
+                        return "RECIPIENT_TYPE";
+                    case 3: // RECIPIENT
+                        return "RECIPIENT";
+                    case 4: // RECIPIENT_NAME
+                        return "RECIPIENT_NAME";
+                    case 5: // RECIPIENT_ADDRESS
+                        return "RECIPIENT_ADDRESS";
+                    case 6: // RECIPIENT_PHONE
+                        return "RECIPIENT_PHONE";
+                    case 7: // HOW_AFFECTED
+                        return "HOW_AFFECTED";
+                    case 8: // LW_DATE
+                        return "LW_DATE";
+                    case 9: // LW_TIME
+                        return "LW_TIME";
+                    case 10: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "INCIDENT_KEY":
+                        return 1;
+                    case "RECIPIENT_TYPE":
+                        return 2;
+                    case "RECIPIENT":
+                        return 3;
+                    case "RECIPIENT_NAME":
+                        return 4;
+                    case "RECIPIENT_ADDRESS":
+                        return 5;
+                    case "RECIPIENT_PHONE":
+                        return 6;
+                    case "HOW_AFFECTED":
+                        return 7;
+                    case "LW_DATE":
+                        return 8;
+                    case "LW_TIME":
+                        return 9;
+                    case "LW_USER":
+                        return 10;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Re-Enrolment Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STREDataSet : SetBase<STRE>
+    public sealed partial class STREDataSet : DataSetBase<STRE>
     {
         /// <summary>
         /// Data Set Name
@@ -912,6 +913,610 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a STRE table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[STRE](
+        [TID] int IDENTITY NOT NULL,
+        [SKEY] varchar(10) NOT NULL,
+        [ST_ENTRY] datetime NULL,
+        [ST_EXIT_DATE] datetime NULL,
+        [ST_SCHOOL_YEAR] varchar(4) NULL,
+        [ST_HOME_GROUP] varchar(3) NULL,
+        [ST_PREVIOUS_SCHOOL] varchar(8) NULL,
+        [ST_RESIDENT_STATUS] varchar(1) NULL,
+        [ST_PERMANENT_BASIS] varchar(1) NULL,
+        [ST_VISA_SUBCLASS] varchar(3) NULL,
+        [ST_VISA_STAT_CODE] varchar(4) NULL,
+        [ST_SGB_FUNDED] varchar(1) NULL,
+        [ST_LIVING_ARR] varchar(1) NULL,
+        [ST_FULLTIME] varchar(1) NULL,
+        [ST_HOME_LANG] varchar(7) NULL,
+        [ST_ED_ALLOW] varchar(1) NULL,
+        [ST_YOUTH_ALLOW] varchar(1) NULL,
+        [ST_CAMPUS] int NULL,
+        [DF_OCCUP_STATUS_A] varchar(1) NULL,
+        [DF_OCCUP_STATUS_B] varchar(1) NULL,
+        [STPT_SCHL_NUM01] varchar(8) NULL,
+        [STPT_SCHL_NUM02] varchar(8) NULL,
+        [STPT_SCHL_NUM03] varchar(8) NULL,
+        [STPT_SCHL_NUM04] varchar(8) NULL,
+        [STPT_SGB_TIME_FRACTION01] float NULL,
+        [STPT_SGB_TIME_FRACTION02] float NULL,
+        [STPT_SGB_TIME_FRACTION03] float NULL,
+        [STPT_SGB_TIME_FRACTION04] float NULL,
+        [STPT_ACTUAL_TIME_FRACTION01] float NULL,
+        [STPT_ACTUAL_TIME_FRACTION02] float NULL,
+        [STPT_ACTUAL_TIME_FRACTION03] float NULL,
+        [STPT_ACTUAL_TIME_FRACTION04] float NULL,
+        [STPT_ENROLLED01] varchar(1) NULL,
+        [STPT_ENROLLED02] varchar(1) NULL,
+        [STPT_ENROLLED03] varchar(1) NULL,
+        [STPT_ENROLLED04] varchar(1) NULL,
+        [ST_NEXT_SCHOOL] varchar(8) NULL,
+        [ST_VISA_EXPIRY] datetime NULL,
+        [ST_PARENTAL_APPROVAL_NOTE] varchar(200) NULL,
+        [ST_LOTE_HOME_CODE] varchar(7) NULL,
+        [DF_LOTE_HOME_CODE_A] varchar(7) NULL,
+        [DF_LOTE_HOME_CODE_B] varchar(7) NULL,
+        [LW_TIME] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [STRE_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_DF_LOTE_HOME_CODE_A] ON [dbo].[STRE]
+    (
+            [DF_LOTE_HOME_CODE_A] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_DF_LOTE_HOME_CODE_B] ON [dbo].[STRE]
+    (
+            [DF_LOTE_HOME_CODE_B] ASC
+    );
+    CREATE CLUSTERED INDEX [STRE_Index_SKEY] ON [dbo].[STRE]
+    (
+            [SKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_CAMPUS] ON [dbo].[STRE]
+    (
+            [ST_CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_HOME_GROUP] ON [dbo].[STRE]
+    (
+            [ST_HOME_GROUP] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_HOME_LANG] ON [dbo].[STRE]
+    (
+            [ST_HOME_LANG] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_LOTE_HOME_CODE] ON [dbo].[STRE]
+    (
+            [ST_LOTE_HOME_CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_NEXT_SCHOOL] ON [dbo].[STRE]
+    (
+            [ST_NEXT_SCHOOL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_PREVIOUS_SCHOOL] ON [dbo].[STRE]
+    (
+            [ST_PREVIOUS_SCHOOL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_SCHOOL_YEAR] ON [dbo].[STRE]
+    (
+            [ST_SCHOOL_YEAR] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_ST_VISA_SUBCLASS] ON [dbo].[STRE]
+    (
+            [ST_VISA_SUBCLASS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_STPT_SCHL_NUM01] ON [dbo].[STRE]
+    (
+            [STPT_SCHL_NUM01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_STPT_SCHL_NUM02] ON [dbo].[STRE]
+    (
+            [STPT_SCHL_NUM02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_STPT_SCHL_NUM03] ON [dbo].[STRE]
+    (
+            [STPT_SCHL_NUM03] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STRE_Index_STPT_SCHL_NUM04] ON [dbo].[STRE]
+    (
+            [STPT_SCHL_NUM04] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STRE data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STRE data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new STREDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class STREDataReader : IDataReader, IDataRecord
+        {
+            private List<STRE> Items;
+            private int CurrentIndex;
+            private STRE CurrentItem;
+
+            public STREDataReader(List<STRE> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 45; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // SKEY
+                        return CurrentItem.SKEY;
+                    case 2: // ST_ENTRY
+                        return CurrentItem.ST_ENTRY;
+                    case 3: // ST_EXIT_DATE
+                        return CurrentItem.ST_EXIT_DATE;
+                    case 4: // ST_SCHOOL_YEAR
+                        return CurrentItem.ST_SCHOOL_YEAR;
+                    case 5: // ST_HOME_GROUP
+                        return CurrentItem.ST_HOME_GROUP;
+                    case 6: // ST_PREVIOUS_SCHOOL
+                        return CurrentItem.ST_PREVIOUS_SCHOOL;
+                    case 7: // ST_RESIDENT_STATUS
+                        return CurrentItem.ST_RESIDENT_STATUS;
+                    case 8: // ST_PERMANENT_BASIS
+                        return CurrentItem.ST_PERMANENT_BASIS;
+                    case 9: // ST_VISA_SUBCLASS
+                        return CurrentItem.ST_VISA_SUBCLASS;
+                    case 10: // ST_VISA_STAT_CODE
+                        return CurrentItem.ST_VISA_STAT_CODE;
+                    case 11: // ST_SGB_FUNDED
+                        return CurrentItem.ST_SGB_FUNDED;
+                    case 12: // ST_LIVING_ARR
+                        return CurrentItem.ST_LIVING_ARR;
+                    case 13: // ST_FULLTIME
+                        return CurrentItem.ST_FULLTIME;
+                    case 14: // ST_HOME_LANG
+                        return CurrentItem.ST_HOME_LANG;
+                    case 15: // ST_ED_ALLOW
+                        return CurrentItem.ST_ED_ALLOW;
+                    case 16: // ST_YOUTH_ALLOW
+                        return CurrentItem.ST_YOUTH_ALLOW;
+                    case 17: // ST_CAMPUS
+                        return CurrentItem.ST_CAMPUS;
+                    case 18: // DF_OCCUP_STATUS_A
+                        return CurrentItem.DF_OCCUP_STATUS_A;
+                    case 19: // DF_OCCUP_STATUS_B
+                        return CurrentItem.DF_OCCUP_STATUS_B;
+                    case 20: // STPT_SCHL_NUM01
+                        return CurrentItem.STPT_SCHL_NUM01;
+                    case 21: // STPT_SCHL_NUM02
+                        return CurrentItem.STPT_SCHL_NUM02;
+                    case 22: // STPT_SCHL_NUM03
+                        return CurrentItem.STPT_SCHL_NUM03;
+                    case 23: // STPT_SCHL_NUM04
+                        return CurrentItem.STPT_SCHL_NUM04;
+                    case 24: // STPT_SGB_TIME_FRACTION01
+                        return CurrentItem.STPT_SGB_TIME_FRACTION01;
+                    case 25: // STPT_SGB_TIME_FRACTION02
+                        return CurrentItem.STPT_SGB_TIME_FRACTION02;
+                    case 26: // STPT_SGB_TIME_FRACTION03
+                        return CurrentItem.STPT_SGB_TIME_FRACTION03;
+                    case 27: // STPT_SGB_TIME_FRACTION04
+                        return CurrentItem.STPT_SGB_TIME_FRACTION04;
+                    case 28: // STPT_ACTUAL_TIME_FRACTION01
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION01;
+                    case 29: // STPT_ACTUAL_TIME_FRACTION02
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION02;
+                    case 30: // STPT_ACTUAL_TIME_FRACTION03
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION03;
+                    case 31: // STPT_ACTUAL_TIME_FRACTION04
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION04;
+                    case 32: // STPT_ENROLLED01
+                        return CurrentItem.STPT_ENROLLED01;
+                    case 33: // STPT_ENROLLED02
+                        return CurrentItem.STPT_ENROLLED02;
+                    case 34: // STPT_ENROLLED03
+                        return CurrentItem.STPT_ENROLLED03;
+                    case 35: // STPT_ENROLLED04
+                        return CurrentItem.STPT_ENROLLED04;
+                    case 36: // ST_NEXT_SCHOOL
+                        return CurrentItem.ST_NEXT_SCHOOL;
+                    case 37: // ST_VISA_EXPIRY
+                        return CurrentItem.ST_VISA_EXPIRY;
+                    case 38: // ST_PARENTAL_APPROVAL_NOTE
+                        return CurrentItem.ST_PARENTAL_APPROVAL_NOTE;
+                    case 39: // ST_LOTE_HOME_CODE
+                        return CurrentItem.ST_LOTE_HOME_CODE;
+                    case 40: // DF_LOTE_HOME_CODE_A
+                        return CurrentItem.DF_LOTE_HOME_CODE_A;
+                    case 41: // DF_LOTE_HOME_CODE_B
+                        return CurrentItem.DF_LOTE_HOME_CODE_B;
+                    case 42: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 43: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 44: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // ST_ENTRY
+                        return CurrentItem.ST_ENTRY == null;
+                    case 3: // ST_EXIT_DATE
+                        return CurrentItem.ST_EXIT_DATE == null;
+                    case 4: // ST_SCHOOL_YEAR
+                        return CurrentItem.ST_SCHOOL_YEAR == null;
+                    case 5: // ST_HOME_GROUP
+                        return CurrentItem.ST_HOME_GROUP == null;
+                    case 6: // ST_PREVIOUS_SCHOOL
+                        return CurrentItem.ST_PREVIOUS_SCHOOL == null;
+                    case 7: // ST_RESIDENT_STATUS
+                        return CurrentItem.ST_RESIDENT_STATUS == null;
+                    case 8: // ST_PERMANENT_BASIS
+                        return CurrentItem.ST_PERMANENT_BASIS == null;
+                    case 9: // ST_VISA_SUBCLASS
+                        return CurrentItem.ST_VISA_SUBCLASS == null;
+                    case 10: // ST_VISA_STAT_CODE
+                        return CurrentItem.ST_VISA_STAT_CODE == null;
+                    case 11: // ST_SGB_FUNDED
+                        return CurrentItem.ST_SGB_FUNDED == null;
+                    case 12: // ST_LIVING_ARR
+                        return CurrentItem.ST_LIVING_ARR == null;
+                    case 13: // ST_FULLTIME
+                        return CurrentItem.ST_FULLTIME == null;
+                    case 14: // ST_HOME_LANG
+                        return CurrentItem.ST_HOME_LANG == null;
+                    case 15: // ST_ED_ALLOW
+                        return CurrentItem.ST_ED_ALLOW == null;
+                    case 16: // ST_YOUTH_ALLOW
+                        return CurrentItem.ST_YOUTH_ALLOW == null;
+                    case 17: // ST_CAMPUS
+                        return CurrentItem.ST_CAMPUS == null;
+                    case 18: // DF_OCCUP_STATUS_A
+                        return CurrentItem.DF_OCCUP_STATUS_A == null;
+                    case 19: // DF_OCCUP_STATUS_B
+                        return CurrentItem.DF_OCCUP_STATUS_B == null;
+                    case 20: // STPT_SCHL_NUM01
+                        return CurrentItem.STPT_SCHL_NUM01 == null;
+                    case 21: // STPT_SCHL_NUM02
+                        return CurrentItem.STPT_SCHL_NUM02 == null;
+                    case 22: // STPT_SCHL_NUM03
+                        return CurrentItem.STPT_SCHL_NUM03 == null;
+                    case 23: // STPT_SCHL_NUM04
+                        return CurrentItem.STPT_SCHL_NUM04 == null;
+                    case 24: // STPT_SGB_TIME_FRACTION01
+                        return CurrentItem.STPT_SGB_TIME_FRACTION01 == null;
+                    case 25: // STPT_SGB_TIME_FRACTION02
+                        return CurrentItem.STPT_SGB_TIME_FRACTION02 == null;
+                    case 26: // STPT_SGB_TIME_FRACTION03
+                        return CurrentItem.STPT_SGB_TIME_FRACTION03 == null;
+                    case 27: // STPT_SGB_TIME_FRACTION04
+                        return CurrentItem.STPT_SGB_TIME_FRACTION04 == null;
+                    case 28: // STPT_ACTUAL_TIME_FRACTION01
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION01 == null;
+                    case 29: // STPT_ACTUAL_TIME_FRACTION02
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION02 == null;
+                    case 30: // STPT_ACTUAL_TIME_FRACTION03
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION03 == null;
+                    case 31: // STPT_ACTUAL_TIME_FRACTION04
+                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION04 == null;
+                    case 32: // STPT_ENROLLED01
+                        return CurrentItem.STPT_ENROLLED01 == null;
+                    case 33: // STPT_ENROLLED02
+                        return CurrentItem.STPT_ENROLLED02 == null;
+                    case 34: // STPT_ENROLLED03
+                        return CurrentItem.STPT_ENROLLED03 == null;
+                    case 35: // STPT_ENROLLED04
+                        return CurrentItem.STPT_ENROLLED04 == null;
+                    case 36: // ST_NEXT_SCHOOL
+                        return CurrentItem.ST_NEXT_SCHOOL == null;
+                    case 37: // ST_VISA_EXPIRY
+                        return CurrentItem.ST_VISA_EXPIRY == null;
+                    case 38: // ST_PARENTAL_APPROVAL_NOTE
+                        return CurrentItem.ST_PARENTAL_APPROVAL_NOTE == null;
+                    case 39: // ST_LOTE_HOME_CODE
+                        return CurrentItem.ST_LOTE_HOME_CODE == null;
+                    case 40: // DF_LOTE_HOME_CODE_A
+                        return CurrentItem.DF_LOTE_HOME_CODE_A == null;
+                    case 41: // DF_LOTE_HOME_CODE_B
+                        return CurrentItem.DF_LOTE_HOME_CODE_B == null;
+                    case 42: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 43: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 44: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // SKEY
+                        return "SKEY";
+                    case 2: // ST_ENTRY
+                        return "ST_ENTRY";
+                    case 3: // ST_EXIT_DATE
+                        return "ST_EXIT_DATE";
+                    case 4: // ST_SCHOOL_YEAR
+                        return "ST_SCHOOL_YEAR";
+                    case 5: // ST_HOME_GROUP
+                        return "ST_HOME_GROUP";
+                    case 6: // ST_PREVIOUS_SCHOOL
+                        return "ST_PREVIOUS_SCHOOL";
+                    case 7: // ST_RESIDENT_STATUS
+                        return "ST_RESIDENT_STATUS";
+                    case 8: // ST_PERMANENT_BASIS
+                        return "ST_PERMANENT_BASIS";
+                    case 9: // ST_VISA_SUBCLASS
+                        return "ST_VISA_SUBCLASS";
+                    case 10: // ST_VISA_STAT_CODE
+                        return "ST_VISA_STAT_CODE";
+                    case 11: // ST_SGB_FUNDED
+                        return "ST_SGB_FUNDED";
+                    case 12: // ST_LIVING_ARR
+                        return "ST_LIVING_ARR";
+                    case 13: // ST_FULLTIME
+                        return "ST_FULLTIME";
+                    case 14: // ST_HOME_LANG
+                        return "ST_HOME_LANG";
+                    case 15: // ST_ED_ALLOW
+                        return "ST_ED_ALLOW";
+                    case 16: // ST_YOUTH_ALLOW
+                        return "ST_YOUTH_ALLOW";
+                    case 17: // ST_CAMPUS
+                        return "ST_CAMPUS";
+                    case 18: // DF_OCCUP_STATUS_A
+                        return "DF_OCCUP_STATUS_A";
+                    case 19: // DF_OCCUP_STATUS_B
+                        return "DF_OCCUP_STATUS_B";
+                    case 20: // STPT_SCHL_NUM01
+                        return "STPT_SCHL_NUM01";
+                    case 21: // STPT_SCHL_NUM02
+                        return "STPT_SCHL_NUM02";
+                    case 22: // STPT_SCHL_NUM03
+                        return "STPT_SCHL_NUM03";
+                    case 23: // STPT_SCHL_NUM04
+                        return "STPT_SCHL_NUM04";
+                    case 24: // STPT_SGB_TIME_FRACTION01
+                        return "STPT_SGB_TIME_FRACTION01";
+                    case 25: // STPT_SGB_TIME_FRACTION02
+                        return "STPT_SGB_TIME_FRACTION02";
+                    case 26: // STPT_SGB_TIME_FRACTION03
+                        return "STPT_SGB_TIME_FRACTION03";
+                    case 27: // STPT_SGB_TIME_FRACTION04
+                        return "STPT_SGB_TIME_FRACTION04";
+                    case 28: // STPT_ACTUAL_TIME_FRACTION01
+                        return "STPT_ACTUAL_TIME_FRACTION01";
+                    case 29: // STPT_ACTUAL_TIME_FRACTION02
+                        return "STPT_ACTUAL_TIME_FRACTION02";
+                    case 30: // STPT_ACTUAL_TIME_FRACTION03
+                        return "STPT_ACTUAL_TIME_FRACTION03";
+                    case 31: // STPT_ACTUAL_TIME_FRACTION04
+                        return "STPT_ACTUAL_TIME_FRACTION04";
+                    case 32: // STPT_ENROLLED01
+                        return "STPT_ENROLLED01";
+                    case 33: // STPT_ENROLLED02
+                        return "STPT_ENROLLED02";
+                    case 34: // STPT_ENROLLED03
+                        return "STPT_ENROLLED03";
+                    case 35: // STPT_ENROLLED04
+                        return "STPT_ENROLLED04";
+                    case 36: // ST_NEXT_SCHOOL
+                        return "ST_NEXT_SCHOOL";
+                    case 37: // ST_VISA_EXPIRY
+                        return "ST_VISA_EXPIRY";
+                    case 38: // ST_PARENTAL_APPROVAL_NOTE
+                        return "ST_PARENTAL_APPROVAL_NOTE";
+                    case 39: // ST_LOTE_HOME_CODE
+                        return "ST_LOTE_HOME_CODE";
+                    case 40: // DF_LOTE_HOME_CODE_A
+                        return "DF_LOTE_HOME_CODE_A";
+                    case 41: // DF_LOTE_HOME_CODE_B
+                        return "DF_LOTE_HOME_CODE_B";
+                    case 42: // LW_TIME
+                        return "LW_TIME";
+                    case 43: // LW_DATE
+                        return "LW_DATE";
+                    case 44: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "SKEY":
+                        return 1;
+                    case "ST_ENTRY":
+                        return 2;
+                    case "ST_EXIT_DATE":
+                        return 3;
+                    case "ST_SCHOOL_YEAR":
+                        return 4;
+                    case "ST_HOME_GROUP":
+                        return 5;
+                    case "ST_PREVIOUS_SCHOOL":
+                        return 6;
+                    case "ST_RESIDENT_STATUS":
+                        return 7;
+                    case "ST_PERMANENT_BASIS":
+                        return 8;
+                    case "ST_VISA_SUBCLASS":
+                        return 9;
+                    case "ST_VISA_STAT_CODE":
+                        return 10;
+                    case "ST_SGB_FUNDED":
+                        return 11;
+                    case "ST_LIVING_ARR":
+                        return 12;
+                    case "ST_FULLTIME":
+                        return 13;
+                    case "ST_HOME_LANG":
+                        return 14;
+                    case "ST_ED_ALLOW":
+                        return 15;
+                    case "ST_YOUTH_ALLOW":
+                        return 16;
+                    case "ST_CAMPUS":
+                        return 17;
+                    case "DF_OCCUP_STATUS_A":
+                        return 18;
+                    case "DF_OCCUP_STATUS_B":
+                        return 19;
+                    case "STPT_SCHL_NUM01":
+                        return 20;
+                    case "STPT_SCHL_NUM02":
+                        return 21;
+                    case "STPT_SCHL_NUM03":
+                        return 22;
+                    case "STPT_SCHL_NUM04":
+                        return 23;
+                    case "STPT_SGB_TIME_FRACTION01":
+                        return 24;
+                    case "STPT_SGB_TIME_FRACTION02":
+                        return 25;
+                    case "STPT_SGB_TIME_FRACTION03":
+                        return 26;
+                    case "STPT_SGB_TIME_FRACTION04":
+                        return 27;
+                    case "STPT_ACTUAL_TIME_FRACTION01":
+                        return 28;
+                    case "STPT_ACTUAL_TIME_FRACTION02":
+                        return 29;
+                    case "STPT_ACTUAL_TIME_FRACTION03":
+                        return 30;
+                    case "STPT_ACTUAL_TIME_FRACTION04":
+                        return 31;
+                    case "STPT_ENROLLED01":
+                        return 32;
+                    case "STPT_ENROLLED02":
+                        return 33;
+                    case "STPT_ENROLLED03":
+                        return 34;
+                    case "STPT_ENROLLED04":
+                        return 35;
+                    case "ST_NEXT_SCHOOL":
+                        return 36;
+                    case "ST_VISA_EXPIRY":
+                        return 37;
+                    case "ST_PARENTAL_APPROVAL_NOTE":
+                        return 38;
+                    case "ST_LOTE_HOME_CODE":
+                        return 39;
+                    case "DF_LOTE_HOME_CODE_A":
+                        return 40;
+                    case "DF_LOTE_HOME_CODE_B":
+                        return 41;
+                    case "LW_TIME":
+                        return 42;
+                    case "LW_DATE":
+                        return 43;
+                    case "LW_USER":
+                        return 44;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

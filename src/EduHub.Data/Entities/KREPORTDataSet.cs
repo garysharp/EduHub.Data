@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Reports for emailing Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KREPORTDataSet : SetBase<KREPORT>
+    public sealed partial class KREPORTDataSet : DataSetBase<KREPORT>
     {
         /// <summary>
         /// Data Set Name
@@ -182,6 +183,214 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KREPORT table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KREPORT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KREPORT](
+        [KREPORTKEY] varchar(10) NOT NULL,
+        [DESCRIPTION] varchar(50) NULL,
+        [ROLE_CODE] varchar(2) NULL,
+        [REPORT_NAME] varchar(80) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KREPORT_Index_KREPORTKEY] PRIMARY KEY CLUSTERED (
+            [KREPORTKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KREPORT_Index_ROLE_CODE] ON [dbo].[KREPORT]
+    (
+            [ROLE_CODE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KREPORT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KREPORT data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KREPORTDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KREPORTDataReader : IDataReader, IDataRecord
+        {
+            private List<KREPORT> Items;
+            private int CurrentIndex;
+            private KREPORT CurrentItem;
+
+            public KREPORTDataReader(List<KREPORT> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 7; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KREPORTKEY
+                        return CurrentItem.KREPORTKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // ROLE_CODE
+                        return CurrentItem.ROLE_CODE;
+                    case 3: // REPORT_NAME
+                        return CurrentItem.REPORT_NAME;
+                    case 4: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 5: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 6: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // ROLE_CODE
+                        return CurrentItem.ROLE_CODE == null;
+                    case 3: // REPORT_NAME
+                        return CurrentItem.REPORT_NAME == null;
+                    case 4: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 5: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 6: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KREPORTKEY
+                        return "KREPORTKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // ROLE_CODE
+                        return "ROLE_CODE";
+                    case 3: // REPORT_NAME
+                        return "REPORT_NAME";
+                    case 4: // LW_DATE
+                        return "LW_DATE";
+                    case 5: // LW_TIME
+                        return "LW_TIME";
+                    case 6: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KREPORTKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "ROLE_CODE":
+                        return 2;
+                    case "REPORT_NAME":
+                        return 3;
+                    case "LW_DATE":
+                        return 4;
+                    case "LW_TIME":
+                        return 5;
+                    case "LW_USER":
+                        return 6;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Year Levels Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCYDataSet : SetBase<KCY>
+    public sealed partial class KCYDataSet : DataSetBase<KCY>
     {
         /// <summary>
         /// Data Set Name
@@ -291,6 +292,285 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KCY table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KCY](
+        [KCYKEY] varchar(4) NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [NUM_EQVT] smallint NULL,
+        [SHORT_DESC] varchar(10) NULL,
+        [TEACHER] varchar(4) NULL,
+        [TEACHER_B] varchar(4) NULL,
+        [NEXT_YR] varchar(4) NULL,
+        [FINAL_YR] varchar(1) NULL,
+        [CSF_REQUIRED] varchar(1) NULL,
+        [HALF_DAY_ABS] varchar(1) NULL,
+        [PERIOD_ABS] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KCY_Index_KCYKEY] PRIMARY KEY CLUSTERED (
+            [KCYKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KCY_Index_NEXT_YR] ON [dbo].[KCY]
+    (
+            [NEXT_YR] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KCY_Index_TEACHER] ON [dbo].[KCY]
+    (
+            [TEACHER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KCY_Index_TEACHER_B] ON [dbo].[KCY]
+    (
+            [TEACHER_B] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KCY data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KCY data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KCYDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KCYDataReader : IDataReader, IDataRecord
+        {
+            private List<KCY> Items;
+            private int CurrentIndex;
+            private KCY CurrentItem;
+
+            public KCYDataReader(List<KCY> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 14; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KCYKEY
+                        return CurrentItem.KCYKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // NUM_EQVT
+                        return CurrentItem.NUM_EQVT;
+                    case 3: // SHORT_DESC
+                        return CurrentItem.SHORT_DESC;
+                    case 4: // TEACHER
+                        return CurrentItem.TEACHER;
+                    case 5: // TEACHER_B
+                        return CurrentItem.TEACHER_B;
+                    case 6: // NEXT_YR
+                        return CurrentItem.NEXT_YR;
+                    case 7: // FINAL_YR
+                        return CurrentItem.FINAL_YR;
+                    case 8: // CSF_REQUIRED
+                        return CurrentItem.CSF_REQUIRED;
+                    case 9: // HALF_DAY_ABS
+                        return CurrentItem.HALF_DAY_ABS;
+                    case 10: // PERIOD_ABS
+                        return CurrentItem.PERIOD_ABS;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // NUM_EQVT
+                        return CurrentItem.NUM_EQVT == null;
+                    case 3: // SHORT_DESC
+                        return CurrentItem.SHORT_DESC == null;
+                    case 4: // TEACHER
+                        return CurrentItem.TEACHER == null;
+                    case 5: // TEACHER_B
+                        return CurrentItem.TEACHER_B == null;
+                    case 6: // NEXT_YR
+                        return CurrentItem.NEXT_YR == null;
+                    case 7: // FINAL_YR
+                        return CurrentItem.FINAL_YR == null;
+                    case 8: // CSF_REQUIRED
+                        return CurrentItem.CSF_REQUIRED == null;
+                    case 9: // HALF_DAY_ABS
+                        return CurrentItem.HALF_DAY_ABS == null;
+                    case 10: // PERIOD_ABS
+                        return CurrentItem.PERIOD_ABS == null;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KCYKEY
+                        return "KCYKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // NUM_EQVT
+                        return "NUM_EQVT";
+                    case 3: // SHORT_DESC
+                        return "SHORT_DESC";
+                    case 4: // TEACHER
+                        return "TEACHER";
+                    case 5: // TEACHER_B
+                        return "TEACHER_B";
+                    case 6: // NEXT_YR
+                        return "NEXT_YR";
+                    case 7: // FINAL_YR
+                        return "FINAL_YR";
+                    case 8: // CSF_REQUIRED
+                        return "CSF_REQUIRED";
+                    case 9: // HALF_DAY_ABS
+                        return "HALF_DAY_ABS";
+                    case 10: // PERIOD_ABS
+                        return "PERIOD_ABS";
+                    case 11: // LW_DATE
+                        return "LW_DATE";
+                    case 12: // LW_TIME
+                        return "LW_TIME";
+                    case 13: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KCYKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "NUM_EQVT":
+                        return 2;
+                    case "SHORT_DESC":
+                        return 3;
+                    case "TEACHER":
+                        return 4;
+                    case "TEACHER_B":
+                        return 5;
+                    case "NEXT_YR":
+                        return 6;
+                    case "FINAL_YR":
+                        return 7;
+                    case "CSF_REQUIRED":
+                        return 8;
+                    case "HALF_DAY_ABS":
+                        return 9;
+                    case "PERIOD_ABS":
+                        return 10;
+                    case "LW_DATE":
+                        return 11;
+                    case "LW_TIME":
+                        return 12;
+                    case "LW_USER":
+                        return 13;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

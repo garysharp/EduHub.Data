@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Australian Postcodes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAPDataSet : SetBase<KAP>
+    public sealed partial class KAPDataSet : DataSetBase<KAP>
     {
         /// <summary>
         /// Data Set Name
@@ -188,6 +189,232 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KAP table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KAP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KAP](
+        [KAPKEY] varchar(34) NOT NULL,
+        [POSTCODE] varchar(4) NULL,
+        [PLACE_NAME] varchar(30) NULL,
+        [STATE] varchar(3) NULL,
+        [DISCRIMINATOR] varchar(30) NULL,
+        [STREET_ADD] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KAP_Index_KAPKEY] PRIMARY KEY CLUSTERED (
+            [KAPKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KAP_Index_PLACE_NAME] ON [dbo].[KAP]
+    (
+            [PLACE_NAME] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KAP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KAP data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KAPDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KAPDataReader : IDataReader, IDataRecord
+        {
+            private List<KAP> Items;
+            private int CurrentIndex;
+            private KAP CurrentItem;
+
+            public KAPDataReader(List<KAP> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 9; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KAPKEY
+                        return CurrentItem.KAPKEY;
+                    case 1: // POSTCODE
+                        return CurrentItem.POSTCODE;
+                    case 2: // PLACE_NAME
+                        return CurrentItem.PLACE_NAME;
+                    case 3: // STATE
+                        return CurrentItem.STATE;
+                    case 4: // DISCRIMINATOR
+                        return CurrentItem.DISCRIMINATOR;
+                    case 5: // STREET_ADD
+                        return CurrentItem.STREET_ADD;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // POSTCODE
+                        return CurrentItem.POSTCODE == null;
+                    case 2: // PLACE_NAME
+                        return CurrentItem.PLACE_NAME == null;
+                    case 3: // STATE
+                        return CurrentItem.STATE == null;
+                    case 4: // DISCRIMINATOR
+                        return CurrentItem.DISCRIMINATOR == null;
+                    case 5: // STREET_ADD
+                        return CurrentItem.STREET_ADD == null;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KAPKEY
+                        return "KAPKEY";
+                    case 1: // POSTCODE
+                        return "POSTCODE";
+                    case 2: // PLACE_NAME
+                        return "PLACE_NAME";
+                    case 3: // STATE
+                        return "STATE";
+                    case 4: // DISCRIMINATOR
+                        return "DISCRIMINATOR";
+                    case 5: // STREET_ADD
+                        return "STREET_ADD";
+                    case 6: // LW_DATE
+                        return "LW_DATE";
+                    case 7: // LW_TIME
+                        return "LW_TIME";
+                    case 8: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KAPKEY":
+                        return 0;
+                    case "POSTCODE":
+                        return 1;
+                    case "PLACE_NAME":
+                        return 2;
+                    case "STATE":
+                        return 3;
+                    case "DISCRIMINATOR":
+                        return 4;
+                    case "STREET_ADD":
+                        return 5;
+                    case "LW_DATE":
+                        return 6;
+                    case "LW_TIME":
+                        return 7;
+                    case "LW_USER":
+                        return 8;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

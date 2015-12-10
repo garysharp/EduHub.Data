@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Teacher Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTBDataSet : SetBase<TCTB>
+    public sealed partial class TCTBDataSet : DataSetBase<TCTB>
     {
         /// <summary>
         /// Data Set Name
@@ -382,6 +383,300 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a TCTB table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[TCTB](
+        [TID] int IDENTITY NOT NULL,
+        [TCTBKEY] datetime NOT NULL,
+        [SUBJ] varchar(5) NULL,
+        [CLASS] smallint NULL,
+        [TEACHER] varchar(4) NULL,
+        [ROOM] varchar(4) NULL,
+        [TEACHER_AVAILABLE] varchar(1) NULL,
+        [ROOM_AVAILABLE] varchar(1) NULL,
+        [TIME_FROM] datetime NULL,
+        [TIME_TO] datetime NULL,
+        [COMMENT_A] text NULL,
+        [ABSENCE_TYPE] varchar(10) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [TCTB_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [TCTB_Index_ABSENCE_TYPE] ON [dbo].[TCTB]
+    (
+            [ABSENCE_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTB_Index_ROOM] ON [dbo].[TCTB]
+    (
+            [ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTB_Index_SUBJ] ON [dbo].[TCTB]
+    (
+            [SUBJ] ASC
+    );
+    CREATE CLUSTERED INDEX [TCTB_Index_TCTBKEY] ON [dbo].[TCTB]
+    (
+            [TCTBKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TCTB_Index_TEACHER] ON [dbo].[TCTB]
+    (
+            [TEACHER] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TCTB data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TCTB data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new TCTBDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class TCTBDataReader : IDataReader, IDataRecord
+        {
+            private List<TCTB> Items;
+            private int CurrentIndex;
+            private TCTB CurrentItem;
+
+            public TCTBDataReader(List<TCTB> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 15; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // TCTBKEY
+                        return CurrentItem.TCTBKEY;
+                    case 2: // SUBJ
+                        return CurrentItem.SUBJ;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS;
+                    case 4: // TEACHER
+                        return CurrentItem.TEACHER;
+                    case 5: // ROOM
+                        return CurrentItem.ROOM;
+                    case 6: // TEACHER_AVAILABLE
+                        return CurrentItem.TEACHER_AVAILABLE;
+                    case 7: // ROOM_AVAILABLE
+                        return CurrentItem.ROOM_AVAILABLE;
+                    case 8: // TIME_FROM
+                        return CurrentItem.TIME_FROM;
+                    case 9: // TIME_TO
+                        return CurrentItem.TIME_TO;
+                    case 10: // COMMENT_A
+                        return CurrentItem.COMMENT_A;
+                    case 11: // ABSENCE_TYPE
+                        return CurrentItem.ABSENCE_TYPE;
+                    case 12: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 13: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 14: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // SUBJ
+                        return CurrentItem.SUBJ == null;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 4: // TEACHER
+                        return CurrentItem.TEACHER == null;
+                    case 5: // ROOM
+                        return CurrentItem.ROOM == null;
+                    case 6: // TEACHER_AVAILABLE
+                        return CurrentItem.TEACHER_AVAILABLE == null;
+                    case 7: // ROOM_AVAILABLE
+                        return CurrentItem.ROOM_AVAILABLE == null;
+                    case 8: // TIME_FROM
+                        return CurrentItem.TIME_FROM == null;
+                    case 9: // TIME_TO
+                        return CurrentItem.TIME_TO == null;
+                    case 10: // COMMENT_A
+                        return CurrentItem.COMMENT_A == null;
+                    case 11: // ABSENCE_TYPE
+                        return CurrentItem.ABSENCE_TYPE == null;
+                    case 12: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 13: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 14: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // TCTBKEY
+                        return "TCTBKEY";
+                    case 2: // SUBJ
+                        return "SUBJ";
+                    case 3: // CLASS
+                        return "CLASS";
+                    case 4: // TEACHER
+                        return "TEACHER";
+                    case 5: // ROOM
+                        return "ROOM";
+                    case 6: // TEACHER_AVAILABLE
+                        return "TEACHER_AVAILABLE";
+                    case 7: // ROOM_AVAILABLE
+                        return "ROOM_AVAILABLE";
+                    case 8: // TIME_FROM
+                        return "TIME_FROM";
+                    case 9: // TIME_TO
+                        return "TIME_TO";
+                    case 10: // COMMENT_A
+                        return "COMMENT_A";
+                    case 11: // ABSENCE_TYPE
+                        return "ABSENCE_TYPE";
+                    case 12: // LW_DATE
+                        return "LW_DATE";
+                    case 13: // LW_TIME
+                        return "LW_TIME";
+                    case 14: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "TCTBKEY":
+                        return 1;
+                    case "SUBJ":
+                        return 2;
+                    case "CLASS":
+                        return 3;
+                    case "TEACHER":
+                        return 4;
+                    case "ROOM":
+                        return 5;
+                    case "TEACHER_AVAILABLE":
+                        return 6;
+                    case "ROOM_AVAILABLE":
+                        return 7;
+                    case "TIME_FROM":
+                        return 8;
+                    case "TIME_TO":
+                        return 9;
+                    case "COMMENT_A":
+                        return 10;
+                    case "ABSENCE_TYPE":
+                        return 11;
+                    case "LW_DATE":
+                        return 12;
+                    case "LW_TIME":
+                        return 13;
+                    case "LW_USER":
+                        return 14;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

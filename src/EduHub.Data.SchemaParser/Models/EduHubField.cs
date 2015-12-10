@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace EduHub.Data.SchemaParser.Models
@@ -16,6 +14,7 @@ namespace EduHub.Data.SchemaParser.Models
         public string Type { get; private set; }
         public string TypeDescription { get; private set; }
         public int TypeMaxLength { get; internal set; }
+        public string SqlType { get; internal set; }
         public bool IsKey { get; internal set; }
         public bool IsNullable { get; internal set; }
         public bool IsIdentity { get; internal set; }
@@ -84,16 +83,17 @@ namespace EduHub.Data.SchemaParser.Models
         {
             List<object> contents = new List<object>();
 
-            contents.Add(new XAttribute("Name", Name));
-            contents.Add(new XAttribute("IsKey", IsKey));
-            contents.Add(new XAttribute("IsNullable", IsNullable));
-            contents.Add(new XAttribute("IsIdentity", IsIdentity));
-            contents.Add(new XAttribute("Type", Type));
-            contents.Add(new XAttribute("TypeDescription", TypeDescription));
+            contents.Add(new XAttribute(nameof(Name), Name));
+            contents.Add(new XAttribute(nameof(IsKey), IsKey));
+            contents.Add(new XAttribute(nameof(IsNullable), IsNullable));
+            contents.Add(new XAttribute(nameof(IsIdentity), IsIdentity));
+            contents.Add(new XAttribute(nameof(Type), Type));
+            contents.Add(new XAttribute(nameof(TypeDescription), TypeDescription));
             if (TypeMaxLength != 0)
             {
-                contents.Add(new XAttribute("TypeMaxLength", TypeMaxLength));
+                contents.Add(new XAttribute(nameof(TypeMaxLength), TypeMaxLength));
             }
+            contents.Add(new XAttribute(nameof(SqlType), SqlType));
             if (ForeignParentKey != null)
             {
                 contents.Add(new XAttribute("ForeignParent", $"{ForeignParentKey.Item1}:{ForeignParentKey.Item2}"));

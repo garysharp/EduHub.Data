@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Assets Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ARDataSet : SetBase<AR>
+    public sealed partial class ARDataSet : DataSetBase<AR>
     {
         /// <summary>
         /// Data Set Name
@@ -1112,6 +1113,1195 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a AR table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[AR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[AR](
+        [ARKEY] varchar(10) NOT NULL,
+        [ARNUMBER] int IDENTITY NOT NULL,
+        [TITLE] varchar(40) NULL,
+        [DESCRIPTION01] varchar(30) NULL,
+        [DESCRIPTION02] varchar(30) NULL,
+        [CATEGORY] varchar(10) NULL,
+        [ASSET_TYPE] varchar(2) NULL,
+        [RELEASE_TYPE] varchar(2) NULL,
+        [TAX_CATEGORY] varchar(10) NULL,
+        [LOCATION] varchar(10) NULL,
+        [DEPARTMENT] varchar(10) NULL,
+        [BRANCH] varchar(10) NULL,
+        [LEASE_START_DATE] datetime NULL,
+        [LEASE_END_DATE] datetime NULL,
+        [LEASE_COST_MONTH] money NULL,
+        [ORIG_SUPPLIER] varchar(10) NULL,
+        [CURR_SUPPLIER] varchar(10) NULL,
+        [ORIG_INVOICE_NO] varchar(10) NULL,
+        [LAST_INVOICE_NO] varchar(10) NULL,
+        [PURDATE] datetime NULL,
+        [LAST_ADDN_DATE] datetime NULL,
+        [LAST_DISP_DATE] datetime NULL,
+        [LAST_GST_RECLAIM] datetime NULL,
+        [LAST_REVAL_DATE] datetime NULL,
+        [PTE_GLCODE] varchar(10) NULL,
+        [PTE_USE_RATE] float NULL,
+        [AOB_COST] money NULL,
+        [AOB_REVALS] money NULL,
+        [AOB_DISP_COST] money NULL,
+        [AOB_DISP_REVALS] money NULL,
+        [ATY_COST] money NULL,
+        [ATY_REVALS] money NULL,
+        [ATY_DISP_REVALS] money NULL,
+        [ATY_DISP_COST] money NULL,
+        [AOB_DEPN] money NULL,
+        [AOB_PTE_DEPN] money NULL,
+        [AOB_DISP_DEPN] money NULL,
+        [AOB_DISP_PROF] money NULL,
+        [ATY_DEPN] money NULL,
+        [ATY_PTE_DEPN] money NULL,
+        [ATY_DISP_DEPN] money NULL,
+        [ATY_DISP_PROF] money NULL,
+        [ARATE] float NULL,
+        [AMETHOD] varchar(1) NULL,
+        [AEST_LIFE_UNITS] int NULL,
+        [AUNITS_DESC] varchar(30) NULL,
+        [AUNITS_TO_DATE] int NULL,
+        [AFLAG] varchar(1) NULL,
+        [ADEPN_START] datetime NULL,
+        [ADEPN_LAST_DATE] datetime NULL,
+        [AOB_ORIG_GST] money NULL,
+        [AOB_UNCL_GST] money NULL,
+        [AOB_DISP_UNCL_GST] money NULL,
+        [AOB_DISP_ORIG_GST] money NULL,
+        [ATY_ORIG_GST] money NULL,
+        [ATY_UNCL_GST] money NULL,
+        [ATY_DISP_UNCL_GST] money NULL,
+        [ATY_DISP_ORIG_GST] money NULL,
+        [TOB_COST] money NULL,
+        [TOB_DEPN] money NULL,
+        [TOB_PTE_DEPN] money NULL,
+        [TOB_DISP_COST] money NULL,
+        [TOB_DISP_DEPN] money NULL,
+        [TOB_DISP_PROF] money NULL,
+        [TOB_DISP_GAIN] money NULL,
+        [TTY_COST] money NULL,
+        [TTY_DEPN] money NULL,
+        [TTY_PTE_DEPN] money NULL,
+        [TTY_DISP_COST] money NULL,
+        [TTY_DISP_DEPN] money NULL,
+        [TTY_DISP_PROF] money NULL,
+        [TTY_DISP_GAIN] money NULL,
+        [TRATE] float NULL,
+        [TMETHOD] varchar(1) NULL,
+        [TFLAG] varchar(1) NULL,
+        [TDEPN_START] datetime NULL,
+        [TDEPN_LAST_DATE] datetime NULL,
+        [TOB_ORIG_GST] money NULL,
+        [TOB_UNCL_GST] money NULL,
+        [TOB_DISP_UNCL_GST] money NULL,
+        [TOB_DISP_ORIG_GST] money NULL,
+        [TTY_ORIG_GST] money NULL,
+        [TTY_UNCL_GST] money NULL,
+        [TTY_DISP_UNCL_GST] money NULL,
+        [TTY_DISP_ORIG_GST] money NULL,
+        [OB_QTY] smallint NULL,
+        [OB_DISP_QTY] smallint NULL,
+        [TY_QTY] smallint NULL,
+        [TY_DISP_QTY] smallint NULL,
+        [OB_DISP_PROC] money NULL,
+        [TY_DISP_PROC] money NULL,
+        [LAST_ST_DATE] datetime NULL,
+        [LAST_SVC_DATE] datetime NULL,
+        [NEXT_SVC_DATE] datetime NULL,
+        [LAST_SVC_DETAILS] text NULL,
+        [OWNER] varchar(30) NULL,
+        [EXPECTED_LIFE] smallint NULL,
+        [WARRANTY] smallint NULL,
+        [WARRANTYEXP] datetime NULL,
+        [SERIAL] varchar(20) NULL,
+        [CLEANING] text NULL,
+        [HAZARD] text NULL,
+        [SITE_REFERENCE] varchar(20) NULL,
+        [EXTRA_DETAILS] text NULL,
+        [COMPONENT_OF] varchar(10) NULL,
+        [ASSET_PIC] image NULL,
+        [CAMPUS] int NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [AR_Index_ARKEY] PRIMARY KEY CLUSTERED (
+            [ARKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_AMETHOD] ON [dbo].[AR]
+    (
+            [AMETHOD] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_ARNUMBER] ON [dbo].[AR]
+    (
+            [ARNUMBER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_ASSET_TYPE] ON [dbo].[AR]
+    (
+            [ASSET_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_BRANCH] ON [dbo].[AR]
+    (
+            [BRANCH] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_CAMPUS] ON [dbo].[AR]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_CATEGORY] ON [dbo].[AR]
+    (
+            [CATEGORY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_COMPONENT_OF] ON [dbo].[AR]
+    (
+            [COMPONENT_OF] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_CURR_SUPPLIER] ON [dbo].[AR]
+    (
+            [CURR_SUPPLIER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_DEPARTMENT] ON [dbo].[AR]
+    (
+            [DEPARTMENT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_LOCATION] ON [dbo].[AR]
+    (
+            [LOCATION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_ORIG_SUPPLIER] ON [dbo].[AR]
+    (
+            [ORIG_SUPPLIER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_PTE_GLCODE] ON [dbo].[AR]
+    (
+            [PTE_GLCODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_RELEASE_TYPE] ON [dbo].[AR]
+    (
+            [RELEASE_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_TAX_CATEGORY] ON [dbo].[AR]
+    (
+            [TAX_CATEGORY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [AR_Index_TMETHOD] ON [dbo].[AR]
+    (
+            [TMETHOD] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the AR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the AR data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new ARDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class ARDataReader : IDataReader, IDataRecord
+        {
+            private List<AR> Items;
+            private int CurrentIndex;
+            private AR CurrentItem;
+
+            public ARDataReader(List<AR> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 110; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // ARKEY
+                        return CurrentItem.ARKEY;
+                    case 1: // ARNUMBER
+                        return CurrentItem.ARNUMBER;
+                    case 2: // TITLE
+                        return CurrentItem.TITLE;
+                    case 3: // DESCRIPTION01
+                        return CurrentItem.DESCRIPTION01;
+                    case 4: // DESCRIPTION02
+                        return CurrentItem.DESCRIPTION02;
+                    case 5: // CATEGORY
+                        return CurrentItem.CATEGORY;
+                    case 6: // ASSET_TYPE
+                        return CurrentItem.ASSET_TYPE;
+                    case 7: // RELEASE_TYPE
+                        return CurrentItem.RELEASE_TYPE;
+                    case 8: // TAX_CATEGORY
+                        return CurrentItem.TAX_CATEGORY;
+                    case 9: // LOCATION
+                        return CurrentItem.LOCATION;
+                    case 10: // DEPARTMENT
+                        return CurrentItem.DEPARTMENT;
+                    case 11: // BRANCH
+                        return CurrentItem.BRANCH;
+                    case 12: // LEASE_START_DATE
+                        return CurrentItem.LEASE_START_DATE;
+                    case 13: // LEASE_END_DATE
+                        return CurrentItem.LEASE_END_DATE;
+                    case 14: // LEASE_COST_MONTH
+                        return CurrentItem.LEASE_COST_MONTH;
+                    case 15: // ORIG_SUPPLIER
+                        return CurrentItem.ORIG_SUPPLIER;
+                    case 16: // CURR_SUPPLIER
+                        return CurrentItem.CURR_SUPPLIER;
+                    case 17: // ORIG_INVOICE_NO
+                        return CurrentItem.ORIG_INVOICE_NO;
+                    case 18: // LAST_INVOICE_NO
+                        return CurrentItem.LAST_INVOICE_NO;
+                    case 19: // PURDATE
+                        return CurrentItem.PURDATE;
+                    case 20: // LAST_ADDN_DATE
+                        return CurrentItem.LAST_ADDN_DATE;
+                    case 21: // LAST_DISP_DATE
+                        return CurrentItem.LAST_DISP_DATE;
+                    case 22: // LAST_GST_RECLAIM
+                        return CurrentItem.LAST_GST_RECLAIM;
+                    case 23: // LAST_REVAL_DATE
+                        return CurrentItem.LAST_REVAL_DATE;
+                    case 24: // PTE_GLCODE
+                        return CurrentItem.PTE_GLCODE;
+                    case 25: // PTE_USE_RATE
+                        return CurrentItem.PTE_USE_RATE;
+                    case 26: // AOB_COST
+                        return CurrentItem.AOB_COST;
+                    case 27: // AOB_REVALS
+                        return CurrentItem.AOB_REVALS;
+                    case 28: // AOB_DISP_COST
+                        return CurrentItem.AOB_DISP_COST;
+                    case 29: // AOB_DISP_REVALS
+                        return CurrentItem.AOB_DISP_REVALS;
+                    case 30: // ATY_COST
+                        return CurrentItem.ATY_COST;
+                    case 31: // ATY_REVALS
+                        return CurrentItem.ATY_REVALS;
+                    case 32: // ATY_DISP_REVALS
+                        return CurrentItem.ATY_DISP_REVALS;
+                    case 33: // ATY_DISP_COST
+                        return CurrentItem.ATY_DISP_COST;
+                    case 34: // AOB_DEPN
+                        return CurrentItem.AOB_DEPN;
+                    case 35: // AOB_PTE_DEPN
+                        return CurrentItem.AOB_PTE_DEPN;
+                    case 36: // AOB_DISP_DEPN
+                        return CurrentItem.AOB_DISP_DEPN;
+                    case 37: // AOB_DISP_PROF
+                        return CurrentItem.AOB_DISP_PROF;
+                    case 38: // ATY_DEPN
+                        return CurrentItem.ATY_DEPN;
+                    case 39: // ATY_PTE_DEPN
+                        return CurrentItem.ATY_PTE_DEPN;
+                    case 40: // ATY_DISP_DEPN
+                        return CurrentItem.ATY_DISP_DEPN;
+                    case 41: // ATY_DISP_PROF
+                        return CurrentItem.ATY_DISP_PROF;
+                    case 42: // ARATE
+                        return CurrentItem.ARATE;
+                    case 43: // AMETHOD
+                        return CurrentItem.AMETHOD;
+                    case 44: // AEST_LIFE_UNITS
+                        return CurrentItem.AEST_LIFE_UNITS;
+                    case 45: // AUNITS_DESC
+                        return CurrentItem.AUNITS_DESC;
+                    case 46: // AUNITS_TO_DATE
+                        return CurrentItem.AUNITS_TO_DATE;
+                    case 47: // AFLAG
+                        return CurrentItem.AFLAG;
+                    case 48: // ADEPN_START
+                        return CurrentItem.ADEPN_START;
+                    case 49: // ADEPN_LAST_DATE
+                        return CurrentItem.ADEPN_LAST_DATE;
+                    case 50: // AOB_ORIG_GST
+                        return CurrentItem.AOB_ORIG_GST;
+                    case 51: // AOB_UNCL_GST
+                        return CurrentItem.AOB_UNCL_GST;
+                    case 52: // AOB_DISP_UNCL_GST
+                        return CurrentItem.AOB_DISP_UNCL_GST;
+                    case 53: // AOB_DISP_ORIG_GST
+                        return CurrentItem.AOB_DISP_ORIG_GST;
+                    case 54: // ATY_ORIG_GST
+                        return CurrentItem.ATY_ORIG_GST;
+                    case 55: // ATY_UNCL_GST
+                        return CurrentItem.ATY_UNCL_GST;
+                    case 56: // ATY_DISP_UNCL_GST
+                        return CurrentItem.ATY_DISP_UNCL_GST;
+                    case 57: // ATY_DISP_ORIG_GST
+                        return CurrentItem.ATY_DISP_ORIG_GST;
+                    case 58: // TOB_COST
+                        return CurrentItem.TOB_COST;
+                    case 59: // TOB_DEPN
+                        return CurrentItem.TOB_DEPN;
+                    case 60: // TOB_PTE_DEPN
+                        return CurrentItem.TOB_PTE_DEPN;
+                    case 61: // TOB_DISP_COST
+                        return CurrentItem.TOB_DISP_COST;
+                    case 62: // TOB_DISP_DEPN
+                        return CurrentItem.TOB_DISP_DEPN;
+                    case 63: // TOB_DISP_PROF
+                        return CurrentItem.TOB_DISP_PROF;
+                    case 64: // TOB_DISP_GAIN
+                        return CurrentItem.TOB_DISP_GAIN;
+                    case 65: // TTY_COST
+                        return CurrentItem.TTY_COST;
+                    case 66: // TTY_DEPN
+                        return CurrentItem.TTY_DEPN;
+                    case 67: // TTY_PTE_DEPN
+                        return CurrentItem.TTY_PTE_DEPN;
+                    case 68: // TTY_DISP_COST
+                        return CurrentItem.TTY_DISP_COST;
+                    case 69: // TTY_DISP_DEPN
+                        return CurrentItem.TTY_DISP_DEPN;
+                    case 70: // TTY_DISP_PROF
+                        return CurrentItem.TTY_DISP_PROF;
+                    case 71: // TTY_DISP_GAIN
+                        return CurrentItem.TTY_DISP_GAIN;
+                    case 72: // TRATE
+                        return CurrentItem.TRATE;
+                    case 73: // TMETHOD
+                        return CurrentItem.TMETHOD;
+                    case 74: // TFLAG
+                        return CurrentItem.TFLAG;
+                    case 75: // TDEPN_START
+                        return CurrentItem.TDEPN_START;
+                    case 76: // TDEPN_LAST_DATE
+                        return CurrentItem.TDEPN_LAST_DATE;
+                    case 77: // TOB_ORIG_GST
+                        return CurrentItem.TOB_ORIG_GST;
+                    case 78: // TOB_UNCL_GST
+                        return CurrentItem.TOB_UNCL_GST;
+                    case 79: // TOB_DISP_UNCL_GST
+                        return CurrentItem.TOB_DISP_UNCL_GST;
+                    case 80: // TOB_DISP_ORIG_GST
+                        return CurrentItem.TOB_DISP_ORIG_GST;
+                    case 81: // TTY_ORIG_GST
+                        return CurrentItem.TTY_ORIG_GST;
+                    case 82: // TTY_UNCL_GST
+                        return CurrentItem.TTY_UNCL_GST;
+                    case 83: // TTY_DISP_UNCL_GST
+                        return CurrentItem.TTY_DISP_UNCL_GST;
+                    case 84: // TTY_DISP_ORIG_GST
+                        return CurrentItem.TTY_DISP_ORIG_GST;
+                    case 85: // OB_QTY
+                        return CurrentItem.OB_QTY;
+                    case 86: // OB_DISP_QTY
+                        return CurrentItem.OB_DISP_QTY;
+                    case 87: // TY_QTY
+                        return CurrentItem.TY_QTY;
+                    case 88: // TY_DISP_QTY
+                        return CurrentItem.TY_DISP_QTY;
+                    case 89: // OB_DISP_PROC
+                        return CurrentItem.OB_DISP_PROC;
+                    case 90: // TY_DISP_PROC
+                        return CurrentItem.TY_DISP_PROC;
+                    case 91: // LAST_ST_DATE
+                        return CurrentItem.LAST_ST_DATE;
+                    case 92: // LAST_SVC_DATE
+                        return CurrentItem.LAST_SVC_DATE;
+                    case 93: // NEXT_SVC_DATE
+                        return CurrentItem.NEXT_SVC_DATE;
+                    case 94: // LAST_SVC_DETAILS
+                        return CurrentItem.LAST_SVC_DETAILS;
+                    case 95: // OWNER
+                        return CurrentItem.OWNER;
+                    case 96: // EXPECTED_LIFE
+                        return CurrentItem.EXPECTED_LIFE;
+                    case 97: // WARRANTY
+                        return CurrentItem.WARRANTY;
+                    case 98: // WARRANTYEXP
+                        return CurrentItem.WARRANTYEXP;
+                    case 99: // SERIAL
+                        return CurrentItem.SERIAL;
+                    case 100: // CLEANING
+                        return CurrentItem.CLEANING;
+                    case 101: // HAZARD
+                        return CurrentItem.HAZARD;
+                    case 102: // SITE_REFERENCE
+                        return CurrentItem.SITE_REFERENCE;
+                    case 103: // EXTRA_DETAILS
+                        return CurrentItem.EXTRA_DETAILS;
+                    case 104: // COMPONENT_OF
+                        return CurrentItem.COMPONENT_OF;
+                    case 105: // ASSET_PIC
+                        return CurrentItem.ASSET_PIC;
+                    case 106: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 107: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 108: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 109: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 3: // DESCRIPTION01
+                        return CurrentItem.DESCRIPTION01 == null;
+                    case 4: // DESCRIPTION02
+                        return CurrentItem.DESCRIPTION02 == null;
+                    case 5: // CATEGORY
+                        return CurrentItem.CATEGORY == null;
+                    case 6: // ASSET_TYPE
+                        return CurrentItem.ASSET_TYPE == null;
+                    case 7: // RELEASE_TYPE
+                        return CurrentItem.RELEASE_TYPE == null;
+                    case 8: // TAX_CATEGORY
+                        return CurrentItem.TAX_CATEGORY == null;
+                    case 9: // LOCATION
+                        return CurrentItem.LOCATION == null;
+                    case 10: // DEPARTMENT
+                        return CurrentItem.DEPARTMENT == null;
+                    case 11: // BRANCH
+                        return CurrentItem.BRANCH == null;
+                    case 12: // LEASE_START_DATE
+                        return CurrentItem.LEASE_START_DATE == null;
+                    case 13: // LEASE_END_DATE
+                        return CurrentItem.LEASE_END_DATE == null;
+                    case 14: // LEASE_COST_MONTH
+                        return CurrentItem.LEASE_COST_MONTH == null;
+                    case 15: // ORIG_SUPPLIER
+                        return CurrentItem.ORIG_SUPPLIER == null;
+                    case 16: // CURR_SUPPLIER
+                        return CurrentItem.CURR_SUPPLIER == null;
+                    case 17: // ORIG_INVOICE_NO
+                        return CurrentItem.ORIG_INVOICE_NO == null;
+                    case 18: // LAST_INVOICE_NO
+                        return CurrentItem.LAST_INVOICE_NO == null;
+                    case 19: // PURDATE
+                        return CurrentItem.PURDATE == null;
+                    case 20: // LAST_ADDN_DATE
+                        return CurrentItem.LAST_ADDN_DATE == null;
+                    case 21: // LAST_DISP_DATE
+                        return CurrentItem.LAST_DISP_DATE == null;
+                    case 22: // LAST_GST_RECLAIM
+                        return CurrentItem.LAST_GST_RECLAIM == null;
+                    case 23: // LAST_REVAL_DATE
+                        return CurrentItem.LAST_REVAL_DATE == null;
+                    case 24: // PTE_GLCODE
+                        return CurrentItem.PTE_GLCODE == null;
+                    case 25: // PTE_USE_RATE
+                        return CurrentItem.PTE_USE_RATE == null;
+                    case 26: // AOB_COST
+                        return CurrentItem.AOB_COST == null;
+                    case 27: // AOB_REVALS
+                        return CurrentItem.AOB_REVALS == null;
+                    case 28: // AOB_DISP_COST
+                        return CurrentItem.AOB_DISP_COST == null;
+                    case 29: // AOB_DISP_REVALS
+                        return CurrentItem.AOB_DISP_REVALS == null;
+                    case 30: // ATY_COST
+                        return CurrentItem.ATY_COST == null;
+                    case 31: // ATY_REVALS
+                        return CurrentItem.ATY_REVALS == null;
+                    case 32: // ATY_DISP_REVALS
+                        return CurrentItem.ATY_DISP_REVALS == null;
+                    case 33: // ATY_DISP_COST
+                        return CurrentItem.ATY_DISP_COST == null;
+                    case 34: // AOB_DEPN
+                        return CurrentItem.AOB_DEPN == null;
+                    case 35: // AOB_PTE_DEPN
+                        return CurrentItem.AOB_PTE_DEPN == null;
+                    case 36: // AOB_DISP_DEPN
+                        return CurrentItem.AOB_DISP_DEPN == null;
+                    case 37: // AOB_DISP_PROF
+                        return CurrentItem.AOB_DISP_PROF == null;
+                    case 38: // ATY_DEPN
+                        return CurrentItem.ATY_DEPN == null;
+                    case 39: // ATY_PTE_DEPN
+                        return CurrentItem.ATY_PTE_DEPN == null;
+                    case 40: // ATY_DISP_DEPN
+                        return CurrentItem.ATY_DISP_DEPN == null;
+                    case 41: // ATY_DISP_PROF
+                        return CurrentItem.ATY_DISP_PROF == null;
+                    case 42: // ARATE
+                        return CurrentItem.ARATE == null;
+                    case 43: // AMETHOD
+                        return CurrentItem.AMETHOD == null;
+                    case 44: // AEST_LIFE_UNITS
+                        return CurrentItem.AEST_LIFE_UNITS == null;
+                    case 45: // AUNITS_DESC
+                        return CurrentItem.AUNITS_DESC == null;
+                    case 46: // AUNITS_TO_DATE
+                        return CurrentItem.AUNITS_TO_DATE == null;
+                    case 47: // AFLAG
+                        return CurrentItem.AFLAG == null;
+                    case 48: // ADEPN_START
+                        return CurrentItem.ADEPN_START == null;
+                    case 49: // ADEPN_LAST_DATE
+                        return CurrentItem.ADEPN_LAST_DATE == null;
+                    case 50: // AOB_ORIG_GST
+                        return CurrentItem.AOB_ORIG_GST == null;
+                    case 51: // AOB_UNCL_GST
+                        return CurrentItem.AOB_UNCL_GST == null;
+                    case 52: // AOB_DISP_UNCL_GST
+                        return CurrentItem.AOB_DISP_UNCL_GST == null;
+                    case 53: // AOB_DISP_ORIG_GST
+                        return CurrentItem.AOB_DISP_ORIG_GST == null;
+                    case 54: // ATY_ORIG_GST
+                        return CurrentItem.ATY_ORIG_GST == null;
+                    case 55: // ATY_UNCL_GST
+                        return CurrentItem.ATY_UNCL_GST == null;
+                    case 56: // ATY_DISP_UNCL_GST
+                        return CurrentItem.ATY_DISP_UNCL_GST == null;
+                    case 57: // ATY_DISP_ORIG_GST
+                        return CurrentItem.ATY_DISP_ORIG_GST == null;
+                    case 58: // TOB_COST
+                        return CurrentItem.TOB_COST == null;
+                    case 59: // TOB_DEPN
+                        return CurrentItem.TOB_DEPN == null;
+                    case 60: // TOB_PTE_DEPN
+                        return CurrentItem.TOB_PTE_DEPN == null;
+                    case 61: // TOB_DISP_COST
+                        return CurrentItem.TOB_DISP_COST == null;
+                    case 62: // TOB_DISP_DEPN
+                        return CurrentItem.TOB_DISP_DEPN == null;
+                    case 63: // TOB_DISP_PROF
+                        return CurrentItem.TOB_DISP_PROF == null;
+                    case 64: // TOB_DISP_GAIN
+                        return CurrentItem.TOB_DISP_GAIN == null;
+                    case 65: // TTY_COST
+                        return CurrentItem.TTY_COST == null;
+                    case 66: // TTY_DEPN
+                        return CurrentItem.TTY_DEPN == null;
+                    case 67: // TTY_PTE_DEPN
+                        return CurrentItem.TTY_PTE_DEPN == null;
+                    case 68: // TTY_DISP_COST
+                        return CurrentItem.TTY_DISP_COST == null;
+                    case 69: // TTY_DISP_DEPN
+                        return CurrentItem.TTY_DISP_DEPN == null;
+                    case 70: // TTY_DISP_PROF
+                        return CurrentItem.TTY_DISP_PROF == null;
+                    case 71: // TTY_DISP_GAIN
+                        return CurrentItem.TTY_DISP_GAIN == null;
+                    case 72: // TRATE
+                        return CurrentItem.TRATE == null;
+                    case 73: // TMETHOD
+                        return CurrentItem.TMETHOD == null;
+                    case 74: // TFLAG
+                        return CurrentItem.TFLAG == null;
+                    case 75: // TDEPN_START
+                        return CurrentItem.TDEPN_START == null;
+                    case 76: // TDEPN_LAST_DATE
+                        return CurrentItem.TDEPN_LAST_DATE == null;
+                    case 77: // TOB_ORIG_GST
+                        return CurrentItem.TOB_ORIG_GST == null;
+                    case 78: // TOB_UNCL_GST
+                        return CurrentItem.TOB_UNCL_GST == null;
+                    case 79: // TOB_DISP_UNCL_GST
+                        return CurrentItem.TOB_DISP_UNCL_GST == null;
+                    case 80: // TOB_DISP_ORIG_GST
+                        return CurrentItem.TOB_DISP_ORIG_GST == null;
+                    case 81: // TTY_ORIG_GST
+                        return CurrentItem.TTY_ORIG_GST == null;
+                    case 82: // TTY_UNCL_GST
+                        return CurrentItem.TTY_UNCL_GST == null;
+                    case 83: // TTY_DISP_UNCL_GST
+                        return CurrentItem.TTY_DISP_UNCL_GST == null;
+                    case 84: // TTY_DISP_ORIG_GST
+                        return CurrentItem.TTY_DISP_ORIG_GST == null;
+                    case 85: // OB_QTY
+                        return CurrentItem.OB_QTY == null;
+                    case 86: // OB_DISP_QTY
+                        return CurrentItem.OB_DISP_QTY == null;
+                    case 87: // TY_QTY
+                        return CurrentItem.TY_QTY == null;
+                    case 88: // TY_DISP_QTY
+                        return CurrentItem.TY_DISP_QTY == null;
+                    case 89: // OB_DISP_PROC
+                        return CurrentItem.OB_DISP_PROC == null;
+                    case 90: // TY_DISP_PROC
+                        return CurrentItem.TY_DISP_PROC == null;
+                    case 91: // LAST_ST_DATE
+                        return CurrentItem.LAST_ST_DATE == null;
+                    case 92: // LAST_SVC_DATE
+                        return CurrentItem.LAST_SVC_DATE == null;
+                    case 93: // NEXT_SVC_DATE
+                        return CurrentItem.NEXT_SVC_DATE == null;
+                    case 94: // LAST_SVC_DETAILS
+                        return CurrentItem.LAST_SVC_DETAILS == null;
+                    case 95: // OWNER
+                        return CurrentItem.OWNER == null;
+                    case 96: // EXPECTED_LIFE
+                        return CurrentItem.EXPECTED_LIFE == null;
+                    case 97: // WARRANTY
+                        return CurrentItem.WARRANTY == null;
+                    case 98: // WARRANTYEXP
+                        return CurrentItem.WARRANTYEXP == null;
+                    case 99: // SERIAL
+                        return CurrentItem.SERIAL == null;
+                    case 100: // CLEANING
+                        return CurrentItem.CLEANING == null;
+                    case 101: // HAZARD
+                        return CurrentItem.HAZARD == null;
+                    case 102: // SITE_REFERENCE
+                        return CurrentItem.SITE_REFERENCE == null;
+                    case 103: // EXTRA_DETAILS
+                        return CurrentItem.EXTRA_DETAILS == null;
+                    case 104: // COMPONENT_OF
+                        return CurrentItem.COMPONENT_OF == null;
+                    case 105: // ASSET_PIC
+                        return CurrentItem.ASSET_PIC == null;
+                    case 106: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 107: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 108: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 109: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // ARKEY
+                        return "ARKEY";
+                    case 1: // ARNUMBER
+                        return "ARNUMBER";
+                    case 2: // TITLE
+                        return "TITLE";
+                    case 3: // DESCRIPTION01
+                        return "DESCRIPTION01";
+                    case 4: // DESCRIPTION02
+                        return "DESCRIPTION02";
+                    case 5: // CATEGORY
+                        return "CATEGORY";
+                    case 6: // ASSET_TYPE
+                        return "ASSET_TYPE";
+                    case 7: // RELEASE_TYPE
+                        return "RELEASE_TYPE";
+                    case 8: // TAX_CATEGORY
+                        return "TAX_CATEGORY";
+                    case 9: // LOCATION
+                        return "LOCATION";
+                    case 10: // DEPARTMENT
+                        return "DEPARTMENT";
+                    case 11: // BRANCH
+                        return "BRANCH";
+                    case 12: // LEASE_START_DATE
+                        return "LEASE_START_DATE";
+                    case 13: // LEASE_END_DATE
+                        return "LEASE_END_DATE";
+                    case 14: // LEASE_COST_MONTH
+                        return "LEASE_COST_MONTH";
+                    case 15: // ORIG_SUPPLIER
+                        return "ORIG_SUPPLIER";
+                    case 16: // CURR_SUPPLIER
+                        return "CURR_SUPPLIER";
+                    case 17: // ORIG_INVOICE_NO
+                        return "ORIG_INVOICE_NO";
+                    case 18: // LAST_INVOICE_NO
+                        return "LAST_INVOICE_NO";
+                    case 19: // PURDATE
+                        return "PURDATE";
+                    case 20: // LAST_ADDN_DATE
+                        return "LAST_ADDN_DATE";
+                    case 21: // LAST_DISP_DATE
+                        return "LAST_DISP_DATE";
+                    case 22: // LAST_GST_RECLAIM
+                        return "LAST_GST_RECLAIM";
+                    case 23: // LAST_REVAL_DATE
+                        return "LAST_REVAL_DATE";
+                    case 24: // PTE_GLCODE
+                        return "PTE_GLCODE";
+                    case 25: // PTE_USE_RATE
+                        return "PTE_USE_RATE";
+                    case 26: // AOB_COST
+                        return "AOB_COST";
+                    case 27: // AOB_REVALS
+                        return "AOB_REVALS";
+                    case 28: // AOB_DISP_COST
+                        return "AOB_DISP_COST";
+                    case 29: // AOB_DISP_REVALS
+                        return "AOB_DISP_REVALS";
+                    case 30: // ATY_COST
+                        return "ATY_COST";
+                    case 31: // ATY_REVALS
+                        return "ATY_REVALS";
+                    case 32: // ATY_DISP_REVALS
+                        return "ATY_DISP_REVALS";
+                    case 33: // ATY_DISP_COST
+                        return "ATY_DISP_COST";
+                    case 34: // AOB_DEPN
+                        return "AOB_DEPN";
+                    case 35: // AOB_PTE_DEPN
+                        return "AOB_PTE_DEPN";
+                    case 36: // AOB_DISP_DEPN
+                        return "AOB_DISP_DEPN";
+                    case 37: // AOB_DISP_PROF
+                        return "AOB_DISP_PROF";
+                    case 38: // ATY_DEPN
+                        return "ATY_DEPN";
+                    case 39: // ATY_PTE_DEPN
+                        return "ATY_PTE_DEPN";
+                    case 40: // ATY_DISP_DEPN
+                        return "ATY_DISP_DEPN";
+                    case 41: // ATY_DISP_PROF
+                        return "ATY_DISP_PROF";
+                    case 42: // ARATE
+                        return "ARATE";
+                    case 43: // AMETHOD
+                        return "AMETHOD";
+                    case 44: // AEST_LIFE_UNITS
+                        return "AEST_LIFE_UNITS";
+                    case 45: // AUNITS_DESC
+                        return "AUNITS_DESC";
+                    case 46: // AUNITS_TO_DATE
+                        return "AUNITS_TO_DATE";
+                    case 47: // AFLAG
+                        return "AFLAG";
+                    case 48: // ADEPN_START
+                        return "ADEPN_START";
+                    case 49: // ADEPN_LAST_DATE
+                        return "ADEPN_LAST_DATE";
+                    case 50: // AOB_ORIG_GST
+                        return "AOB_ORIG_GST";
+                    case 51: // AOB_UNCL_GST
+                        return "AOB_UNCL_GST";
+                    case 52: // AOB_DISP_UNCL_GST
+                        return "AOB_DISP_UNCL_GST";
+                    case 53: // AOB_DISP_ORIG_GST
+                        return "AOB_DISP_ORIG_GST";
+                    case 54: // ATY_ORIG_GST
+                        return "ATY_ORIG_GST";
+                    case 55: // ATY_UNCL_GST
+                        return "ATY_UNCL_GST";
+                    case 56: // ATY_DISP_UNCL_GST
+                        return "ATY_DISP_UNCL_GST";
+                    case 57: // ATY_DISP_ORIG_GST
+                        return "ATY_DISP_ORIG_GST";
+                    case 58: // TOB_COST
+                        return "TOB_COST";
+                    case 59: // TOB_DEPN
+                        return "TOB_DEPN";
+                    case 60: // TOB_PTE_DEPN
+                        return "TOB_PTE_DEPN";
+                    case 61: // TOB_DISP_COST
+                        return "TOB_DISP_COST";
+                    case 62: // TOB_DISP_DEPN
+                        return "TOB_DISP_DEPN";
+                    case 63: // TOB_DISP_PROF
+                        return "TOB_DISP_PROF";
+                    case 64: // TOB_DISP_GAIN
+                        return "TOB_DISP_GAIN";
+                    case 65: // TTY_COST
+                        return "TTY_COST";
+                    case 66: // TTY_DEPN
+                        return "TTY_DEPN";
+                    case 67: // TTY_PTE_DEPN
+                        return "TTY_PTE_DEPN";
+                    case 68: // TTY_DISP_COST
+                        return "TTY_DISP_COST";
+                    case 69: // TTY_DISP_DEPN
+                        return "TTY_DISP_DEPN";
+                    case 70: // TTY_DISP_PROF
+                        return "TTY_DISP_PROF";
+                    case 71: // TTY_DISP_GAIN
+                        return "TTY_DISP_GAIN";
+                    case 72: // TRATE
+                        return "TRATE";
+                    case 73: // TMETHOD
+                        return "TMETHOD";
+                    case 74: // TFLAG
+                        return "TFLAG";
+                    case 75: // TDEPN_START
+                        return "TDEPN_START";
+                    case 76: // TDEPN_LAST_DATE
+                        return "TDEPN_LAST_DATE";
+                    case 77: // TOB_ORIG_GST
+                        return "TOB_ORIG_GST";
+                    case 78: // TOB_UNCL_GST
+                        return "TOB_UNCL_GST";
+                    case 79: // TOB_DISP_UNCL_GST
+                        return "TOB_DISP_UNCL_GST";
+                    case 80: // TOB_DISP_ORIG_GST
+                        return "TOB_DISP_ORIG_GST";
+                    case 81: // TTY_ORIG_GST
+                        return "TTY_ORIG_GST";
+                    case 82: // TTY_UNCL_GST
+                        return "TTY_UNCL_GST";
+                    case 83: // TTY_DISP_UNCL_GST
+                        return "TTY_DISP_UNCL_GST";
+                    case 84: // TTY_DISP_ORIG_GST
+                        return "TTY_DISP_ORIG_GST";
+                    case 85: // OB_QTY
+                        return "OB_QTY";
+                    case 86: // OB_DISP_QTY
+                        return "OB_DISP_QTY";
+                    case 87: // TY_QTY
+                        return "TY_QTY";
+                    case 88: // TY_DISP_QTY
+                        return "TY_DISP_QTY";
+                    case 89: // OB_DISP_PROC
+                        return "OB_DISP_PROC";
+                    case 90: // TY_DISP_PROC
+                        return "TY_DISP_PROC";
+                    case 91: // LAST_ST_DATE
+                        return "LAST_ST_DATE";
+                    case 92: // LAST_SVC_DATE
+                        return "LAST_SVC_DATE";
+                    case 93: // NEXT_SVC_DATE
+                        return "NEXT_SVC_DATE";
+                    case 94: // LAST_SVC_DETAILS
+                        return "LAST_SVC_DETAILS";
+                    case 95: // OWNER
+                        return "OWNER";
+                    case 96: // EXPECTED_LIFE
+                        return "EXPECTED_LIFE";
+                    case 97: // WARRANTY
+                        return "WARRANTY";
+                    case 98: // WARRANTYEXP
+                        return "WARRANTYEXP";
+                    case 99: // SERIAL
+                        return "SERIAL";
+                    case 100: // CLEANING
+                        return "CLEANING";
+                    case 101: // HAZARD
+                        return "HAZARD";
+                    case 102: // SITE_REFERENCE
+                        return "SITE_REFERENCE";
+                    case 103: // EXTRA_DETAILS
+                        return "EXTRA_DETAILS";
+                    case 104: // COMPONENT_OF
+                        return "COMPONENT_OF";
+                    case 105: // ASSET_PIC
+                        return "ASSET_PIC";
+                    case 106: // CAMPUS
+                        return "CAMPUS";
+                    case 107: // LW_DATE
+                        return "LW_DATE";
+                    case 108: // LW_TIME
+                        return "LW_TIME";
+                    case 109: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "ARKEY":
+                        return 0;
+                    case "ARNUMBER":
+                        return 1;
+                    case "TITLE":
+                        return 2;
+                    case "DESCRIPTION01":
+                        return 3;
+                    case "DESCRIPTION02":
+                        return 4;
+                    case "CATEGORY":
+                        return 5;
+                    case "ASSET_TYPE":
+                        return 6;
+                    case "RELEASE_TYPE":
+                        return 7;
+                    case "TAX_CATEGORY":
+                        return 8;
+                    case "LOCATION":
+                        return 9;
+                    case "DEPARTMENT":
+                        return 10;
+                    case "BRANCH":
+                        return 11;
+                    case "LEASE_START_DATE":
+                        return 12;
+                    case "LEASE_END_DATE":
+                        return 13;
+                    case "LEASE_COST_MONTH":
+                        return 14;
+                    case "ORIG_SUPPLIER":
+                        return 15;
+                    case "CURR_SUPPLIER":
+                        return 16;
+                    case "ORIG_INVOICE_NO":
+                        return 17;
+                    case "LAST_INVOICE_NO":
+                        return 18;
+                    case "PURDATE":
+                        return 19;
+                    case "LAST_ADDN_DATE":
+                        return 20;
+                    case "LAST_DISP_DATE":
+                        return 21;
+                    case "LAST_GST_RECLAIM":
+                        return 22;
+                    case "LAST_REVAL_DATE":
+                        return 23;
+                    case "PTE_GLCODE":
+                        return 24;
+                    case "PTE_USE_RATE":
+                        return 25;
+                    case "AOB_COST":
+                        return 26;
+                    case "AOB_REVALS":
+                        return 27;
+                    case "AOB_DISP_COST":
+                        return 28;
+                    case "AOB_DISP_REVALS":
+                        return 29;
+                    case "ATY_COST":
+                        return 30;
+                    case "ATY_REVALS":
+                        return 31;
+                    case "ATY_DISP_REVALS":
+                        return 32;
+                    case "ATY_DISP_COST":
+                        return 33;
+                    case "AOB_DEPN":
+                        return 34;
+                    case "AOB_PTE_DEPN":
+                        return 35;
+                    case "AOB_DISP_DEPN":
+                        return 36;
+                    case "AOB_DISP_PROF":
+                        return 37;
+                    case "ATY_DEPN":
+                        return 38;
+                    case "ATY_PTE_DEPN":
+                        return 39;
+                    case "ATY_DISP_DEPN":
+                        return 40;
+                    case "ATY_DISP_PROF":
+                        return 41;
+                    case "ARATE":
+                        return 42;
+                    case "AMETHOD":
+                        return 43;
+                    case "AEST_LIFE_UNITS":
+                        return 44;
+                    case "AUNITS_DESC":
+                        return 45;
+                    case "AUNITS_TO_DATE":
+                        return 46;
+                    case "AFLAG":
+                        return 47;
+                    case "ADEPN_START":
+                        return 48;
+                    case "ADEPN_LAST_DATE":
+                        return 49;
+                    case "AOB_ORIG_GST":
+                        return 50;
+                    case "AOB_UNCL_GST":
+                        return 51;
+                    case "AOB_DISP_UNCL_GST":
+                        return 52;
+                    case "AOB_DISP_ORIG_GST":
+                        return 53;
+                    case "ATY_ORIG_GST":
+                        return 54;
+                    case "ATY_UNCL_GST":
+                        return 55;
+                    case "ATY_DISP_UNCL_GST":
+                        return 56;
+                    case "ATY_DISP_ORIG_GST":
+                        return 57;
+                    case "TOB_COST":
+                        return 58;
+                    case "TOB_DEPN":
+                        return 59;
+                    case "TOB_PTE_DEPN":
+                        return 60;
+                    case "TOB_DISP_COST":
+                        return 61;
+                    case "TOB_DISP_DEPN":
+                        return 62;
+                    case "TOB_DISP_PROF":
+                        return 63;
+                    case "TOB_DISP_GAIN":
+                        return 64;
+                    case "TTY_COST":
+                        return 65;
+                    case "TTY_DEPN":
+                        return 66;
+                    case "TTY_PTE_DEPN":
+                        return 67;
+                    case "TTY_DISP_COST":
+                        return 68;
+                    case "TTY_DISP_DEPN":
+                        return 69;
+                    case "TTY_DISP_PROF":
+                        return 70;
+                    case "TTY_DISP_GAIN":
+                        return 71;
+                    case "TRATE":
+                        return 72;
+                    case "TMETHOD":
+                        return 73;
+                    case "TFLAG":
+                        return 74;
+                    case "TDEPN_START":
+                        return 75;
+                    case "TDEPN_LAST_DATE":
+                        return 76;
+                    case "TOB_ORIG_GST":
+                        return 77;
+                    case "TOB_UNCL_GST":
+                        return 78;
+                    case "TOB_DISP_UNCL_GST":
+                        return 79;
+                    case "TOB_DISP_ORIG_GST":
+                        return 80;
+                    case "TTY_ORIG_GST":
+                        return 81;
+                    case "TTY_UNCL_GST":
+                        return 82;
+                    case "TTY_DISP_UNCL_GST":
+                        return 83;
+                    case "TTY_DISP_ORIG_GST":
+                        return 84;
+                    case "OB_QTY":
+                        return 85;
+                    case "OB_DISP_QTY":
+                        return 86;
+                    case "TY_QTY":
+                        return 87;
+                    case "TY_DISP_QTY":
+                        return 88;
+                    case "OB_DISP_PROC":
+                        return 89;
+                    case "TY_DISP_PROC":
+                        return 90;
+                    case "LAST_ST_DATE":
+                        return 91;
+                    case "LAST_SVC_DATE":
+                        return 92;
+                    case "NEXT_SVC_DATE":
+                        return 93;
+                    case "LAST_SVC_DETAILS":
+                        return 94;
+                    case "OWNER":
+                        return 95;
+                    case "EXPECTED_LIFE":
+                        return 96;
+                    case "WARRANTY":
+                        return 97;
+                    case "WARRANTYEXP":
+                        return 98;
+                    case "SERIAL":
+                        return 99;
+                    case "CLEANING":
+                        return 100;
+                    case "HAZARD":
+                        return 101;
+                    case "SITE_REFERENCE":
+                        return 102;
+                    case "EXTRA_DETAILS":
+                        return 103;
+                    case "COMPONENT_OF":
+                        return 104;
+                    case "ASSET_PIC":
+                        return 105;
+                    case "CAMPUS":
+                        return 106;
+                    case "LW_DATE":
+                        return 107;
+                    case "LW_TIME":
+                        return 108;
+                    case "LW_USER":
+                        return 109;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Calendar Dates for Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCCDataSet : SetBase<KCC>
+    public sealed partial class KCCDataSet : DataSetBase<KCC>
     {
         /// <summary>
         /// Data Set Name
@@ -212,6 +213,304 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KCC table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KCC](
+        [KCCKEY] datetime NOT NULL,
+        [DAYTODAY] varchar(10) NULL,
+        [DAY_TYPE] varchar(1) NULL,
+        [JULIAN] smallint NULL,
+        [SEMESTER] smallint NULL,
+        [DAY_YEAR] smallint NULL,
+        [DAY_MONTH] smallint NULL,
+        [TERM] smallint NULL,
+        [WEEK] smallint NULL,
+        [DAY_CYCLE] smallint NULL,
+        [CURRENT_QUILT] varchar(8) NULL,
+        [HALF_DAY_GENERATED] varchar(1) NULL,
+        [PERIOD_GENERATED] varchar(1) NULL,
+        [PAR_SOURCE] varchar(3) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KCC_Index_KCCKEY] PRIMARY KEY CLUSTERED (
+            [KCCKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KCC_Index_CURRENT_QUILT] ON [dbo].[KCC]
+    (
+            [CURRENT_QUILT] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KCC data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KCC data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KCCDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KCCDataReader : IDataReader, IDataRecord
+        {
+            private List<KCC> Items;
+            private int CurrentIndex;
+            private KCC CurrentItem;
+
+            public KCCDataReader(List<KCC> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 17; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KCCKEY
+                        return CurrentItem.KCCKEY;
+                    case 1: // DAYTODAY
+                        return CurrentItem.DAYTODAY;
+                    case 2: // DAY_TYPE
+                        return CurrentItem.DAY_TYPE;
+                    case 3: // JULIAN
+                        return CurrentItem.JULIAN;
+                    case 4: // SEMESTER
+                        return CurrentItem.SEMESTER;
+                    case 5: // DAY_YEAR
+                        return CurrentItem.DAY_YEAR;
+                    case 6: // DAY_MONTH
+                        return CurrentItem.DAY_MONTH;
+                    case 7: // TERM
+                        return CurrentItem.TERM;
+                    case 8: // WEEK
+                        return CurrentItem.WEEK;
+                    case 9: // DAY_CYCLE
+                        return CurrentItem.DAY_CYCLE;
+                    case 10: // CURRENT_QUILT
+                        return CurrentItem.CURRENT_QUILT;
+                    case 11: // HALF_DAY_GENERATED
+                        return CurrentItem.HALF_DAY_GENERATED;
+                    case 12: // PERIOD_GENERATED
+                        return CurrentItem.PERIOD_GENERATED;
+                    case 13: // PAR_SOURCE
+                        return CurrentItem.PAR_SOURCE;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DAYTODAY
+                        return CurrentItem.DAYTODAY == null;
+                    case 2: // DAY_TYPE
+                        return CurrentItem.DAY_TYPE == null;
+                    case 3: // JULIAN
+                        return CurrentItem.JULIAN == null;
+                    case 4: // SEMESTER
+                        return CurrentItem.SEMESTER == null;
+                    case 5: // DAY_YEAR
+                        return CurrentItem.DAY_YEAR == null;
+                    case 6: // DAY_MONTH
+                        return CurrentItem.DAY_MONTH == null;
+                    case 7: // TERM
+                        return CurrentItem.TERM == null;
+                    case 8: // WEEK
+                        return CurrentItem.WEEK == null;
+                    case 9: // DAY_CYCLE
+                        return CurrentItem.DAY_CYCLE == null;
+                    case 10: // CURRENT_QUILT
+                        return CurrentItem.CURRENT_QUILT == null;
+                    case 11: // HALF_DAY_GENERATED
+                        return CurrentItem.HALF_DAY_GENERATED == null;
+                    case 12: // PERIOD_GENERATED
+                        return CurrentItem.PERIOD_GENERATED == null;
+                    case 13: // PAR_SOURCE
+                        return CurrentItem.PAR_SOURCE == null;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KCCKEY
+                        return "KCCKEY";
+                    case 1: // DAYTODAY
+                        return "DAYTODAY";
+                    case 2: // DAY_TYPE
+                        return "DAY_TYPE";
+                    case 3: // JULIAN
+                        return "JULIAN";
+                    case 4: // SEMESTER
+                        return "SEMESTER";
+                    case 5: // DAY_YEAR
+                        return "DAY_YEAR";
+                    case 6: // DAY_MONTH
+                        return "DAY_MONTH";
+                    case 7: // TERM
+                        return "TERM";
+                    case 8: // WEEK
+                        return "WEEK";
+                    case 9: // DAY_CYCLE
+                        return "DAY_CYCLE";
+                    case 10: // CURRENT_QUILT
+                        return "CURRENT_QUILT";
+                    case 11: // HALF_DAY_GENERATED
+                        return "HALF_DAY_GENERATED";
+                    case 12: // PERIOD_GENERATED
+                        return "PERIOD_GENERATED";
+                    case 13: // PAR_SOURCE
+                        return "PAR_SOURCE";
+                    case 14: // LW_DATE
+                        return "LW_DATE";
+                    case 15: // LW_TIME
+                        return "LW_TIME";
+                    case 16: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KCCKEY":
+                        return 0;
+                    case "DAYTODAY":
+                        return 1;
+                    case "DAY_TYPE":
+                        return 2;
+                    case "JULIAN":
+                        return 3;
+                    case "SEMESTER":
+                        return 4;
+                    case "DAY_YEAR":
+                        return 5;
+                    case "DAY_MONTH":
+                        return 6;
+                    case "TERM":
+                        return 7;
+                    case "WEEK":
+                        return 8;
+                    case "DAY_CYCLE":
+                        return 9;
+                    case "CURRENT_QUILT":
+                        return 10;
+                    case "HALF_DAY_GENERATED":
+                        return 11;
+                    case "PERIOD_GENERATED":
+                        return 12;
+                    case "PAR_SOURCE":
+                        return 13;
+                    case "LW_DATE":
+                        return 14;
+                    case "LW_TIME":
+                        return 15;
+                    case "LW_USER":
+                        return 16;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

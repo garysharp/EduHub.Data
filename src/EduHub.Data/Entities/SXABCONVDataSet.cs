@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Converted Student Half-Day Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXABCONVDataSet : SetBase<SXABCONV>
+    public sealed partial class SXABCONVDataSet : DataSetBase<SXABCONV>
     {
         /// <summary>
         /// Data Set Name
@@ -428,6 +429,289 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SXABCONV table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SXABCONV](
+        [SXABCONV_ID] int IDENTITY NOT NULL,
+        [STKEY] varchar(10) NULL,
+        [ST_YEAR_LEVEL] varchar(4) NULL,
+        [ABSENCE_DATE] datetime NULL,
+        [AM_TYPE] smallint NULL,
+        [AM_ATTENDED] varchar(1) NULL,
+        [AM_APPROVED] varchar(1) NULL,
+        [PM_TYPE] smallint NULL,
+        [PM_ATTENDED] varchar(1) NULL,
+        [PM_APPROVED] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [RECORD_SOURCE] varchar(20) NULL,
+        CONSTRAINT [SXABCONV_Index_SXABCONV_ID] PRIMARY KEY CLUSTERED (
+            [SXABCONV_ID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_AM_TYPE] ON [dbo].[SXABCONV]
+    (
+            [AM_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_LW_DATE] ON [dbo].[SXABCONV]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_PM_TYPE] ON [dbo].[SXABCONV]
+    (
+            [PM_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_ST_YEAR_LEVEL] ON [dbo].[SXABCONV]
+    (
+            [ST_YEAR_LEVEL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_STKEY] ON [dbo].[SXABCONV]
+    (
+            [STKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXABCONV_Index_STKEY_ABSENCE_DATE] ON [dbo].[SXABCONV]
+    (
+            [STKEY] ASC,
+            [ABSENCE_DATE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SXABCONV data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SXABCONV data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SXABCONVDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SXABCONVDataReader : IDataReader, IDataRecord
+        {
+            private List<SXABCONV> Items;
+            private int CurrentIndex;
+            private SXABCONV CurrentItem;
+
+            public SXABCONVDataReader(List<SXABCONV> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 13; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SXABCONV_ID
+                        return CurrentItem.SXABCONV_ID;
+                    case 1: // STKEY
+                        return CurrentItem.STKEY;
+                    case 2: // ST_YEAR_LEVEL
+                        return CurrentItem.ST_YEAR_LEVEL;
+                    case 3: // ABSENCE_DATE
+                        return CurrentItem.ABSENCE_DATE;
+                    case 4: // AM_TYPE
+                        return CurrentItem.AM_TYPE;
+                    case 5: // AM_ATTENDED
+                        return CurrentItem.AM_ATTENDED;
+                    case 6: // AM_APPROVED
+                        return CurrentItem.AM_APPROVED;
+                    case 7: // PM_TYPE
+                        return CurrentItem.PM_TYPE;
+                    case 8: // PM_ATTENDED
+                        return CurrentItem.PM_ATTENDED;
+                    case 9: // PM_APPROVED
+                        return CurrentItem.PM_APPROVED;
+                    case 10: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 11: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 12: // RECORD_SOURCE
+                        return CurrentItem.RECORD_SOURCE;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // STKEY
+                        return CurrentItem.STKEY == null;
+                    case 2: // ST_YEAR_LEVEL
+                        return CurrentItem.ST_YEAR_LEVEL == null;
+                    case 3: // ABSENCE_DATE
+                        return CurrentItem.ABSENCE_DATE == null;
+                    case 4: // AM_TYPE
+                        return CurrentItem.AM_TYPE == null;
+                    case 5: // AM_ATTENDED
+                        return CurrentItem.AM_ATTENDED == null;
+                    case 6: // AM_APPROVED
+                        return CurrentItem.AM_APPROVED == null;
+                    case 7: // PM_TYPE
+                        return CurrentItem.PM_TYPE == null;
+                    case 8: // PM_ATTENDED
+                        return CurrentItem.PM_ATTENDED == null;
+                    case 9: // PM_APPROVED
+                        return CurrentItem.PM_APPROVED == null;
+                    case 10: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 11: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 12: // RECORD_SOURCE
+                        return CurrentItem.RECORD_SOURCE == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SXABCONV_ID
+                        return "SXABCONV_ID";
+                    case 1: // STKEY
+                        return "STKEY";
+                    case 2: // ST_YEAR_LEVEL
+                        return "ST_YEAR_LEVEL";
+                    case 3: // ABSENCE_DATE
+                        return "ABSENCE_DATE";
+                    case 4: // AM_TYPE
+                        return "AM_TYPE";
+                    case 5: // AM_ATTENDED
+                        return "AM_ATTENDED";
+                    case 6: // AM_APPROVED
+                        return "AM_APPROVED";
+                    case 7: // PM_TYPE
+                        return "PM_TYPE";
+                    case 8: // PM_ATTENDED
+                        return "PM_ATTENDED";
+                    case 9: // PM_APPROVED
+                        return "PM_APPROVED";
+                    case 10: // LW_DATE
+                        return "LW_DATE";
+                    case 11: // LW_TIME
+                        return "LW_TIME";
+                    case 12: // RECORD_SOURCE
+                        return "RECORD_SOURCE";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SXABCONV_ID":
+                        return 0;
+                    case "STKEY":
+                        return 1;
+                    case "ST_YEAR_LEVEL":
+                        return 2;
+                    case "ABSENCE_DATE":
+                        return 3;
+                    case "AM_TYPE":
+                        return 4;
+                    case "AM_ATTENDED":
+                        return 5;
+                    case "AM_APPROVED":
+                        return 6;
+                    case "PM_TYPE":
+                        return 7;
+                    case "PM_ATTENDED":
+                        return 8;
+                    case "PM_APPROVED":
+                        return 9;
+                    case "LW_DATE":
+                        return 10;
+                    case "LW_TIME":
+                        return 11;
+                    case "RECORD_SOURCE":
+                        return 12;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

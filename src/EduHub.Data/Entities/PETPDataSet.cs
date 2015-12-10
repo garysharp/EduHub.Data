@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Termination Payment Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PETPDataSet : SetBase<PETP>
+    public sealed partial class PETPDataSet : DataSetBase<PETP>
     {
         /// <summary>
         /// Data Set Name
@@ -247,6 +248,279 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a PETP table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PETP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[PETP](
+        [TID] int IDENTITY NOT NULL,
+        [CODE] varchar(10) NOT NULL,
+        [PAYITEM] smallint NULL,
+        [PEFTID] int NULL,
+        [DEATH_BENEFIT] varchar(1) NULL,
+        [BENEFIT_TYPE] varchar(1) NULL,
+        [TRANSITIONAL] varchar(1) NULL,
+        [RELATED] varchar(1) NULL,
+        [ETP_CODE] varchar(1) NULL,
+        [TAX_RATE] float NULL,
+        [PATCH_RECORD] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [PETP_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE CLUSTERED INDEX [PETP_Index_CODE] ON [dbo].[PETP]
+    (
+            [CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PETP_Index_PAYITEM] ON [dbo].[PETP]
+    (
+            [PAYITEM] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PETP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PETP data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new PETPDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class PETPDataReader : IDataReader, IDataRecord
+        {
+            private List<PETP> Items;
+            private int CurrentIndex;
+            private PETP CurrentItem;
+
+            public PETPDataReader(List<PETP> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 14; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // CODE
+                        return CurrentItem.CODE;
+                    case 2: // PAYITEM
+                        return CurrentItem.PAYITEM;
+                    case 3: // PEFTID
+                        return CurrentItem.PEFTID;
+                    case 4: // DEATH_BENEFIT
+                        return CurrentItem.DEATH_BENEFIT;
+                    case 5: // BENEFIT_TYPE
+                        return CurrentItem.BENEFIT_TYPE;
+                    case 6: // TRANSITIONAL
+                        return CurrentItem.TRANSITIONAL;
+                    case 7: // RELATED
+                        return CurrentItem.RELATED;
+                    case 8: // ETP_CODE
+                        return CurrentItem.ETP_CODE;
+                    case 9: // TAX_RATE
+                        return CurrentItem.TAX_RATE;
+                    case 10: // PATCH_RECORD
+                        return CurrentItem.PATCH_RECORD;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // PAYITEM
+                        return CurrentItem.PAYITEM == null;
+                    case 3: // PEFTID
+                        return CurrentItem.PEFTID == null;
+                    case 4: // DEATH_BENEFIT
+                        return CurrentItem.DEATH_BENEFIT == null;
+                    case 5: // BENEFIT_TYPE
+                        return CurrentItem.BENEFIT_TYPE == null;
+                    case 6: // TRANSITIONAL
+                        return CurrentItem.TRANSITIONAL == null;
+                    case 7: // RELATED
+                        return CurrentItem.RELATED == null;
+                    case 8: // ETP_CODE
+                        return CurrentItem.ETP_CODE == null;
+                    case 9: // TAX_RATE
+                        return CurrentItem.TAX_RATE == null;
+                    case 10: // PATCH_RECORD
+                        return CurrentItem.PATCH_RECORD == null;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // CODE
+                        return "CODE";
+                    case 2: // PAYITEM
+                        return "PAYITEM";
+                    case 3: // PEFTID
+                        return "PEFTID";
+                    case 4: // DEATH_BENEFIT
+                        return "DEATH_BENEFIT";
+                    case 5: // BENEFIT_TYPE
+                        return "BENEFIT_TYPE";
+                    case 6: // TRANSITIONAL
+                        return "TRANSITIONAL";
+                    case 7: // RELATED
+                        return "RELATED";
+                    case 8: // ETP_CODE
+                        return "ETP_CODE";
+                    case 9: // TAX_RATE
+                        return "TAX_RATE";
+                    case 10: // PATCH_RECORD
+                        return "PATCH_RECORD";
+                    case 11: // LW_DATE
+                        return "LW_DATE";
+                    case 12: // LW_TIME
+                        return "LW_TIME";
+                    case 13: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "CODE":
+                        return 1;
+                    case "PAYITEM":
+                        return 2;
+                    case "PEFTID":
+                        return 3;
+                    case "DEATH_BENEFIT":
+                        return 4;
+                    case "BENEFIT_TYPE":
+                        return 5;
+                    case "TRANSITIONAL":
+                        return 6;
+                    case "RELATED":
+                        return 7;
+                    case "ETP_CODE":
+                        return 8;
+                    case "TAX_RATE":
+                        return 9;
+                    case "PATCH_RECORD":
+                        return 10;
+                    case "LW_DATE":
+                        return 11;
+                    case "LW_TIME":
+                        return 12;
+                    case "LW_USER":
+                        return 13;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

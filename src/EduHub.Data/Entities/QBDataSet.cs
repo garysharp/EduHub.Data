@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Batch Headers Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class QBDataSet : SetBase<QB>
+    public sealed partial class QBDataSet : DataSetBase<QB>
     {
         /// <summary>
         /// Data Set Name
@@ -162,6 +163,282 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a QB table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[QB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[QB](
+        [QBKEY] int NOT NULL,
+        [NARRATIVE] varchar(40) NULL,
+        [TOTAL] money NULL,
+        [CLASS] varchar(2) NULL,
+        [QUANTITY] int NULL,
+        [BATCHTYPE] varchar(1) NULL,
+        [TRANSTYPE] varchar(1) NULL,
+        [BATCHDATA] image NULL,
+        [BATCHPRINTED] varchar(1) NULL,
+        [BANKPRINTED] varchar(1) NULL,
+        [BATCHTRACE] varchar(1) NULL,
+        [BATCHCLASS] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [QB_Index_QBKEY] PRIMARY KEY CLUSTERED (
+            [QBKEY] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the QB data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the QB data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new QBDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class QBDataReader : IDataReader, IDataRecord
+        {
+            private List<QB> Items;
+            private int CurrentIndex;
+            private QB CurrentItem;
+
+            public QBDataReader(List<QB> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 15; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // QBKEY
+                        return CurrentItem.QBKEY;
+                    case 1: // NARRATIVE
+                        return CurrentItem.NARRATIVE;
+                    case 2: // TOTAL
+                        return CurrentItem.TOTAL;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS;
+                    case 4: // QUANTITY
+                        return CurrentItem.QUANTITY;
+                    case 5: // BATCHTYPE
+                        return CurrentItem.BATCHTYPE;
+                    case 6: // TRANSTYPE
+                        return CurrentItem.TRANSTYPE;
+                    case 7: // BATCHDATA
+                        return CurrentItem.BATCHDATA;
+                    case 8: // BATCHPRINTED
+                        return CurrentItem.BATCHPRINTED;
+                    case 9: // BANKPRINTED
+                        return CurrentItem.BANKPRINTED;
+                    case 10: // BATCHTRACE
+                        return CurrentItem.BATCHTRACE;
+                    case 11: // BATCHCLASS
+                        return CurrentItem.BATCHCLASS;
+                    case 12: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 13: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 14: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // NARRATIVE
+                        return CurrentItem.NARRATIVE == null;
+                    case 2: // TOTAL
+                        return CurrentItem.TOTAL == null;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 4: // QUANTITY
+                        return CurrentItem.QUANTITY == null;
+                    case 5: // BATCHTYPE
+                        return CurrentItem.BATCHTYPE == null;
+                    case 6: // TRANSTYPE
+                        return CurrentItem.TRANSTYPE == null;
+                    case 7: // BATCHDATA
+                        return CurrentItem.BATCHDATA == null;
+                    case 8: // BATCHPRINTED
+                        return CurrentItem.BATCHPRINTED == null;
+                    case 9: // BANKPRINTED
+                        return CurrentItem.BANKPRINTED == null;
+                    case 10: // BATCHTRACE
+                        return CurrentItem.BATCHTRACE == null;
+                    case 11: // BATCHCLASS
+                        return CurrentItem.BATCHCLASS == null;
+                    case 12: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 13: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 14: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // QBKEY
+                        return "QBKEY";
+                    case 1: // NARRATIVE
+                        return "NARRATIVE";
+                    case 2: // TOTAL
+                        return "TOTAL";
+                    case 3: // CLASS
+                        return "CLASS";
+                    case 4: // QUANTITY
+                        return "QUANTITY";
+                    case 5: // BATCHTYPE
+                        return "BATCHTYPE";
+                    case 6: // TRANSTYPE
+                        return "TRANSTYPE";
+                    case 7: // BATCHDATA
+                        return "BATCHDATA";
+                    case 8: // BATCHPRINTED
+                        return "BATCHPRINTED";
+                    case 9: // BANKPRINTED
+                        return "BANKPRINTED";
+                    case 10: // BATCHTRACE
+                        return "BATCHTRACE";
+                    case 11: // BATCHCLASS
+                        return "BATCHCLASS";
+                    case 12: // LW_DATE
+                        return "LW_DATE";
+                    case 13: // LW_TIME
+                        return "LW_TIME";
+                    case 14: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "QBKEY":
+                        return 0;
+                    case "NARRATIVE":
+                        return 1;
+                    case "TOTAL":
+                        return 2;
+                    case "CLASS":
+                        return 3;
+                    case "QUANTITY":
+                        return 4;
+                    case "BATCHTYPE":
+                        return 5;
+                    case "TRANSTYPE":
+                        return 6;
+                    case "BATCHDATA":
+                        return 7;
+                    case "BATCHPRINTED":
+                        return 8;
+                    case "BANKPRINTED":
+                        return 9;
+                    case "BATCHTRACE":
+                        return 10;
+                    case "BATCHCLASS":
+                        return 11;
+                    case "LW_DATE":
+                        return 12;
+                    case "LW_TIME":
+                        return 13;
+                    case "LW_USER":
+                        return 14;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

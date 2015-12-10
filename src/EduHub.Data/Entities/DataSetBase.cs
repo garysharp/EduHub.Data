@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 
 namespace EduHub.Data.Entities
@@ -9,7 +11,7 @@ namespace EduHub.Data.Entities
     /// Base Data Set for eduHub Entities
     /// </summary>
     /// <typeparam name="T">An eduHub Entity derived from <see cref="EntityBase"/></typeparam>
-    public abstract class SetBase<T> : IReadOnlyList<T> where T : EntityBase
+    public abstract class DataSetBase<T> : IDataSet, IReadOnlyList<T> where T : EntityBase
     {
         /// <summary>
         /// EduHubContext this Data Set belongs to
@@ -19,18 +21,19 @@ namespace EduHub.Data.Entities
         /// Helper method for Mapper Builders used to ignore fields (no operation)
         /// </summary>
         protected static Action<T, string> MapperNoOp = (entity, field) => { };
-        private Lazy<List<T>> Items;
+        /// <summary>
+        /// Internal list of entities
+        /// </summary>
+        protected Lazy<List<T>> Items;
         private DateTime? age;
 
-        internal SetBase(EduHubContext Context)
+        internal DataSetBase(EduHubContext Context)
         {
             this.Context = Context;
-            this.Items = new Lazy<List<T>>(Load);
+            Items = new Lazy<List<T>>(Load);
         }
 
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public abstract string Name { get; }
 
         /// <summary>
@@ -48,9 +51,7 @@ namespace EduHub.Data.Entities
         /// <returns>A merged list of sorted items where possible</returns>
         protected abstract List<T> ApplyDeltaItems(List<T> Items, List<T> DeltaItems);
 
-        /// <summary>
-        /// Data Set Location
-        /// </summary>
+        /// <inheritdoc />
         public string Filename
         {
             get
@@ -59,9 +60,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        /// <summary>
-        /// Data Set Delta Location
-        /// </summary>
+        /// <inheritdoc />
         public string FilenameDelta
         {
             get
@@ -70,9 +69,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        /// <summary>
-        /// Indicates if the eduHub Directory contains this data set
-        /// </summary>
+        /// <inheritdoc />
         public bool IsAvailable
         {
             get
@@ -81,9 +78,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        /// <summary>
-        /// Indicates if the eduHub Directory contains this data set and a newer matching delta file
-        /// </summary>
+        /// <inheritdoc />
         public bool IsDeltaAvailable
         {
             get
@@ -97,9 +92,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        /// <summary>
-        /// Throws an exception if the set is unavailable
-        /// </summary>
+        /// <inheritdoc />
         public void EnsureAvailable()
         {
             if (!IsAvailable)
@@ -108,9 +101,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        /// <summary>
-        /// Data Set Age
-        /// </summary>
+        /// <inheritdoc />
         public DateTime? Age
         {
             get
@@ -123,6 +114,93 @@ namespace EduHub.Data.Entities
                 {
                     return CalculateAge();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a database table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected abstract string GetCreateTableSql();
+
+        /// <inheritdoc />
+        public abstract IDataReader GetDataReader();
+
+        /// <inheritdoc />
+        public void WriteToSqlServer(string Server, string Database)
+        {
+            var builder = new SqlConnectionStringBuilder()
+            {
+                ApplicationName = "EduHub.Data",
+                DataSource = Server,
+                InitialCatalog = Database,
+                MultipleActiveResultSets = true,
+                IntegratedSecurity = true
+            };
+
+            using (var connection = new SqlConnection(builder.ConnectionString))
+            {
+                WriteToSqlServer(connection);
+            }
+        }
+
+        /// <inheritdoc />
+        public void WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            var builder = new SqlConnectionStringBuilder()
+            {
+                ApplicationName = "EduHub.Data",
+                DataSource = Server,
+                InitialCatalog = Database,
+                MultipleActiveResultSets = true,
+                UserID = SqlUsername,
+                Password = SqlPassword
+            };
+
+            using (var connection = new SqlConnection(builder.ConnectionString))
+            {
+                WriteToSqlServer(connection);
+            }
+        }
+
+        /// <inheritdoc />
+        public void WriteToSqlServer(SqlConnection Connection)
+        {
+            // Open the SQL Connection
+            if (Connection.State != ConnectionState.Open)
+            {
+                Connection.Open();
+            }
+
+            // Create table (if it doesn't exist)
+            using (var command = new SqlCommand(GetCreateTableSql(), Connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            // Create transaction
+            using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
+            {
+                // Drop records
+                using (var command = new SqlCommand($"DELETE {Name}", Connection, transaction))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                // Bulk copy records
+                using (var bulkCopy = new SqlBulkCopy(Connection,
+                    SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.KeepNulls | SqlBulkCopyOptions.TableLock,
+                    transaction))
+                {
+                    bulkCopy.DestinationTableName = Name;
+                    bulkCopy.EnableStreaming = true;
+
+                    using (var dataReader = GetDataReader())
+                    {
+                        bulkCopy.WriteToServer(dataReader);
+                    }
+                }
+
+                transaction.Commit();
             }
         }
 
@@ -224,6 +302,8 @@ namespace EduHub.Data.Entities
             return items;
         }
 
+        public bool IsReadOnly { get { return true; } }
+
         /// <summary>
         /// Gets the EduHub entity at the specified index in the data set.
         /// </summary>
@@ -249,6 +329,30 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <inheritdoc />
+        public bool IsFixedSize { get { return true; } }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public object SyncRoot { get { throw new NotSupportedException("The data set is read-only"); } }
+
+        /// <inheritdoc />
+        public bool IsSynchronized { get { return true; } }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                return Items.Value[index];
+            }
+
+            set
+            {
+                throw new NotSupportedException("The data set is read-only");
+            }
+        }
+
         /// <summary>
         /// Returns an enumerator that iterates through the data set.
         /// </summary>
@@ -265,6 +369,76 @@ namespace EduHub.Data.Entities
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Items.Value.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public int Add(object value)
+        {
+            throw new NotSupportedException("The data set is read-only");
+        }
+
+        /// <inheritdoc />
+        public bool Contains(object value)
+        {
+            T entity = value as T;
+            if (entity != null)
+            {
+                return Items.Value.Contains(entity);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public void Clear()
+        {
+            throw new NotSupportedException("The data set is read-only");
+        }
+
+        /// <inheritdoc />
+        public int IndexOf(object value)
+        {
+            T entity = value as T;
+            if (entity != null)
+            {
+                return Items.Value.IndexOf(entity);
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public void Insert(int index, object value)
+        {
+            throw new NotSupportedException("The data set is read-only");
+        }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public void Remove(object value)
+        {
+            throw new NotSupportedException("The data set is read-only");
+        }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public void RemoveAt(int index)
+        {
+            throw new NotSupportedException("The data set is read-only");
+        }
+
+        /// <summary>
+        /// Not Supported.
+        /// </summary>
+        public void CopyTo(Array array, int index)
+        {
+            throw new NotSupportedException();
         }
     }
 }

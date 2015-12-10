@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// KCD Transfer Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCD_TFRDataSet : SetBase<KCD_TFR>
+    public sealed partial class KCD_TFRDataSet : DataSetBase<KCD_TFR>
     {
         /// <summary>
         /// Data Set Name
@@ -273,6 +274,342 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KCD_TFR table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCD_TFR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KCD_TFR](
+        [TID] int IDENTITY NOT NULL,
+        [ORIG_SCHOOL] varchar(8) NOT NULL,
+        [KCD_TRANS_ID] varchar(30) NULL,
+        [KCDKEY] varchar(10) NULL,
+        [KCDKEY_NEW] varchar(10) NULL,
+        [TITLE] varchar(30) NULL,
+        [DR_GROUP] varchar(1) NULL,
+        [ADDRESS01] varchar(30) NULL,
+        [ADDRESS02] varchar(30) NULL,
+        [SUBURB] varchar(30) NULL,
+        [STATE] varchar(3) NULL,
+        [POSTCODE] varchar(4) NULL,
+        [TELEPHONE] varchar(20) NULL,
+        [FAX] varchar(20) NULL,
+        [KAP_LINK] varchar(34) NULL,
+        [KAP_LINK_NEW] varchar(34) NULL,
+        [IMP_STATUS] varchar(15) NULL,
+        [IMP_DATE] datetime NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KCD_TFR_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KCD_TFR_Index_KCD_TRANS_ID] ON [dbo].[KCD_TFR]
+    (
+            [KCD_TRANS_ID] ASC
+    );
+    CREATE CLUSTERED INDEX [KCD_TFR_Index_ORIG_SCHOOL] ON [dbo].[KCD_TFR]
+    (
+            [ORIG_SCHOOL] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KCD_TFR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KCD_TFR data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KCD_TFRDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KCD_TFRDataReader : IDataReader, IDataRecord
+        {
+            private List<KCD_TFR> Items;
+            private int CurrentIndex;
+            private KCD_TFR CurrentItem;
+
+            public KCD_TFRDataReader(List<KCD_TFR> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 21; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // ORIG_SCHOOL
+                        return CurrentItem.ORIG_SCHOOL;
+                    case 2: // KCD_TRANS_ID
+                        return CurrentItem.KCD_TRANS_ID;
+                    case 3: // KCDKEY
+                        return CurrentItem.KCDKEY;
+                    case 4: // KCDKEY_NEW
+                        return CurrentItem.KCDKEY_NEW;
+                    case 5: // TITLE
+                        return CurrentItem.TITLE;
+                    case 6: // DR_GROUP
+                        return CurrentItem.DR_GROUP;
+                    case 7: // ADDRESS01
+                        return CurrentItem.ADDRESS01;
+                    case 8: // ADDRESS02
+                        return CurrentItem.ADDRESS02;
+                    case 9: // SUBURB
+                        return CurrentItem.SUBURB;
+                    case 10: // STATE
+                        return CurrentItem.STATE;
+                    case 11: // POSTCODE
+                        return CurrentItem.POSTCODE;
+                    case 12: // TELEPHONE
+                        return CurrentItem.TELEPHONE;
+                    case 13: // FAX
+                        return CurrentItem.FAX;
+                    case 14: // KAP_LINK
+                        return CurrentItem.KAP_LINK;
+                    case 15: // KAP_LINK_NEW
+                        return CurrentItem.KAP_LINK_NEW;
+                    case 16: // IMP_STATUS
+                        return CurrentItem.IMP_STATUS;
+                    case 17: // IMP_DATE
+                        return CurrentItem.IMP_DATE;
+                    case 18: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 19: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 20: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // KCD_TRANS_ID
+                        return CurrentItem.KCD_TRANS_ID == null;
+                    case 3: // KCDKEY
+                        return CurrentItem.KCDKEY == null;
+                    case 4: // KCDKEY_NEW
+                        return CurrentItem.KCDKEY_NEW == null;
+                    case 5: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 6: // DR_GROUP
+                        return CurrentItem.DR_GROUP == null;
+                    case 7: // ADDRESS01
+                        return CurrentItem.ADDRESS01 == null;
+                    case 8: // ADDRESS02
+                        return CurrentItem.ADDRESS02 == null;
+                    case 9: // SUBURB
+                        return CurrentItem.SUBURB == null;
+                    case 10: // STATE
+                        return CurrentItem.STATE == null;
+                    case 11: // POSTCODE
+                        return CurrentItem.POSTCODE == null;
+                    case 12: // TELEPHONE
+                        return CurrentItem.TELEPHONE == null;
+                    case 13: // FAX
+                        return CurrentItem.FAX == null;
+                    case 14: // KAP_LINK
+                        return CurrentItem.KAP_LINK == null;
+                    case 15: // KAP_LINK_NEW
+                        return CurrentItem.KAP_LINK_NEW == null;
+                    case 16: // IMP_STATUS
+                        return CurrentItem.IMP_STATUS == null;
+                    case 17: // IMP_DATE
+                        return CurrentItem.IMP_DATE == null;
+                    case 18: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 19: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 20: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // ORIG_SCHOOL
+                        return "ORIG_SCHOOL";
+                    case 2: // KCD_TRANS_ID
+                        return "KCD_TRANS_ID";
+                    case 3: // KCDKEY
+                        return "KCDKEY";
+                    case 4: // KCDKEY_NEW
+                        return "KCDKEY_NEW";
+                    case 5: // TITLE
+                        return "TITLE";
+                    case 6: // DR_GROUP
+                        return "DR_GROUP";
+                    case 7: // ADDRESS01
+                        return "ADDRESS01";
+                    case 8: // ADDRESS02
+                        return "ADDRESS02";
+                    case 9: // SUBURB
+                        return "SUBURB";
+                    case 10: // STATE
+                        return "STATE";
+                    case 11: // POSTCODE
+                        return "POSTCODE";
+                    case 12: // TELEPHONE
+                        return "TELEPHONE";
+                    case 13: // FAX
+                        return "FAX";
+                    case 14: // KAP_LINK
+                        return "KAP_LINK";
+                    case 15: // KAP_LINK_NEW
+                        return "KAP_LINK_NEW";
+                    case 16: // IMP_STATUS
+                        return "IMP_STATUS";
+                    case 17: // IMP_DATE
+                        return "IMP_DATE";
+                    case 18: // LW_DATE
+                        return "LW_DATE";
+                    case 19: // LW_TIME
+                        return "LW_TIME";
+                    case 20: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "ORIG_SCHOOL":
+                        return 1;
+                    case "KCD_TRANS_ID":
+                        return 2;
+                    case "KCDKEY":
+                        return 3;
+                    case "KCDKEY_NEW":
+                        return 4;
+                    case "TITLE":
+                        return 5;
+                    case "DR_GROUP":
+                        return 6;
+                    case "ADDRESS01":
+                        return 7;
+                    case "ADDRESS02":
+                        return 8;
+                    case "SUBURB":
+                        return 9;
+                    case "STATE":
+                        return 10;
+                    case "POSTCODE":
+                        return 11;
+                    case "TELEPHONE":
+                        return 12;
+                    case "FAX":
+                        return 13;
+                    case "KAP_LINK":
+                        return 14;
+                    case "KAP_LINK_NEW":
+                        return 15;
+                    case "IMP_STATUS":
+                        return 16;
+                    case "IMP_DATE":
+                        return 17;
+                    case "LW_DATE":
+                        return 18;
+                    case "LW_TIME":
+                        return 19;
+                    case "LW_USER":
+                        return 20;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

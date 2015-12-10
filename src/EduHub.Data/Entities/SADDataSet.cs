@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Accidents Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADDataSet : SetBase<SAD>
+    public sealed partial class SADDataSet : DataSetBase<SAD>
     {
         /// <summary>
         /// Data Set Name
@@ -315,6 +316,357 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SAD table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SAD](
+        [SADKEY] int IDENTITY NOT NULL,
+        [DETAIL_OUTLINE] text NULL,
+        [ACCIDENT_DATE] datetime NULL,
+        [ACCIDENT_TIME] smallint NULL,
+        [GENERAL_ACTIVITY] smallint NULL,
+        [DETAILED_ACTIVITY] smallint NULL,
+        [OTHER_ACTIVITY_INFO] text NULL,
+        [DESCRIPTION] smallint NULL,
+        [OTHER_DESC_INFO] text NULL,
+        [ACCIDENT_SITE] smallint NULL,
+        [CAMPUS] int NULL,
+        [EXTERNAL_ADDRESS] text NULL,
+        [ROOM] varchar(4) NULL,
+        [AREA_DUTY_TEACHER] varchar(4) NULL,
+        [DUTY_TEACHER_FULL_NAME] varchar(64) NULL,
+        [TEACHERS_ON_DUTY] smallint NULL,
+        [CREATION_DATE] datetime NULL,
+        [MAILED] varchar(1) NULL,
+        [FIRST_INJURED_PARTY] varchar(64) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SAD_Index_SADKEY] PRIMARY KEY CLUSTERED (
+            [SADKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SAD_Index_AREA_DUTY_TEACHER] ON [dbo].[SAD]
+    (
+            [AREA_DUTY_TEACHER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SAD_Index_CAMPUS] ON [dbo].[SAD]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SAD_Index_ROOM] ON [dbo].[SAD]
+    (
+            [ROOM] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAD data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SADDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SADDataReader : IDataReader, IDataRecord
+        {
+            private List<SAD> Items;
+            private int CurrentIndex;
+            private SAD CurrentItem;
+
+            public SADDataReader(List<SAD> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 22; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SADKEY
+                        return CurrentItem.SADKEY;
+                    case 1: // DETAIL_OUTLINE
+                        return CurrentItem.DETAIL_OUTLINE;
+                    case 2: // ACCIDENT_DATE
+                        return CurrentItem.ACCIDENT_DATE;
+                    case 3: // ACCIDENT_TIME
+                        return CurrentItem.ACCIDENT_TIME;
+                    case 4: // GENERAL_ACTIVITY
+                        return CurrentItem.GENERAL_ACTIVITY;
+                    case 5: // DETAILED_ACTIVITY
+                        return CurrentItem.DETAILED_ACTIVITY;
+                    case 6: // OTHER_ACTIVITY_INFO
+                        return CurrentItem.OTHER_ACTIVITY_INFO;
+                    case 7: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 8: // OTHER_DESC_INFO
+                        return CurrentItem.OTHER_DESC_INFO;
+                    case 9: // ACCIDENT_SITE
+                        return CurrentItem.ACCIDENT_SITE;
+                    case 10: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 11: // EXTERNAL_ADDRESS
+                        return CurrentItem.EXTERNAL_ADDRESS;
+                    case 12: // ROOM
+                        return CurrentItem.ROOM;
+                    case 13: // AREA_DUTY_TEACHER
+                        return CurrentItem.AREA_DUTY_TEACHER;
+                    case 14: // DUTY_TEACHER_FULL_NAME
+                        return CurrentItem.DUTY_TEACHER_FULL_NAME;
+                    case 15: // TEACHERS_ON_DUTY
+                        return CurrentItem.TEACHERS_ON_DUTY;
+                    case 16: // CREATION_DATE
+                        return CurrentItem.CREATION_DATE;
+                    case 17: // MAILED
+                        return CurrentItem.MAILED;
+                    case 18: // FIRST_INJURED_PARTY
+                        return CurrentItem.FIRST_INJURED_PARTY;
+                    case 19: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 20: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 21: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DETAIL_OUTLINE
+                        return CurrentItem.DETAIL_OUTLINE == null;
+                    case 2: // ACCIDENT_DATE
+                        return CurrentItem.ACCIDENT_DATE == null;
+                    case 3: // ACCIDENT_TIME
+                        return CurrentItem.ACCIDENT_TIME == null;
+                    case 4: // GENERAL_ACTIVITY
+                        return CurrentItem.GENERAL_ACTIVITY == null;
+                    case 5: // DETAILED_ACTIVITY
+                        return CurrentItem.DETAILED_ACTIVITY == null;
+                    case 6: // OTHER_ACTIVITY_INFO
+                        return CurrentItem.OTHER_ACTIVITY_INFO == null;
+                    case 7: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 8: // OTHER_DESC_INFO
+                        return CurrentItem.OTHER_DESC_INFO == null;
+                    case 9: // ACCIDENT_SITE
+                        return CurrentItem.ACCIDENT_SITE == null;
+                    case 10: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 11: // EXTERNAL_ADDRESS
+                        return CurrentItem.EXTERNAL_ADDRESS == null;
+                    case 12: // ROOM
+                        return CurrentItem.ROOM == null;
+                    case 13: // AREA_DUTY_TEACHER
+                        return CurrentItem.AREA_DUTY_TEACHER == null;
+                    case 14: // DUTY_TEACHER_FULL_NAME
+                        return CurrentItem.DUTY_TEACHER_FULL_NAME == null;
+                    case 15: // TEACHERS_ON_DUTY
+                        return CurrentItem.TEACHERS_ON_DUTY == null;
+                    case 16: // CREATION_DATE
+                        return CurrentItem.CREATION_DATE == null;
+                    case 17: // MAILED
+                        return CurrentItem.MAILED == null;
+                    case 18: // FIRST_INJURED_PARTY
+                        return CurrentItem.FIRST_INJURED_PARTY == null;
+                    case 19: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 20: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 21: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SADKEY
+                        return "SADKEY";
+                    case 1: // DETAIL_OUTLINE
+                        return "DETAIL_OUTLINE";
+                    case 2: // ACCIDENT_DATE
+                        return "ACCIDENT_DATE";
+                    case 3: // ACCIDENT_TIME
+                        return "ACCIDENT_TIME";
+                    case 4: // GENERAL_ACTIVITY
+                        return "GENERAL_ACTIVITY";
+                    case 5: // DETAILED_ACTIVITY
+                        return "DETAILED_ACTIVITY";
+                    case 6: // OTHER_ACTIVITY_INFO
+                        return "OTHER_ACTIVITY_INFO";
+                    case 7: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 8: // OTHER_DESC_INFO
+                        return "OTHER_DESC_INFO";
+                    case 9: // ACCIDENT_SITE
+                        return "ACCIDENT_SITE";
+                    case 10: // CAMPUS
+                        return "CAMPUS";
+                    case 11: // EXTERNAL_ADDRESS
+                        return "EXTERNAL_ADDRESS";
+                    case 12: // ROOM
+                        return "ROOM";
+                    case 13: // AREA_DUTY_TEACHER
+                        return "AREA_DUTY_TEACHER";
+                    case 14: // DUTY_TEACHER_FULL_NAME
+                        return "DUTY_TEACHER_FULL_NAME";
+                    case 15: // TEACHERS_ON_DUTY
+                        return "TEACHERS_ON_DUTY";
+                    case 16: // CREATION_DATE
+                        return "CREATION_DATE";
+                    case 17: // MAILED
+                        return "MAILED";
+                    case 18: // FIRST_INJURED_PARTY
+                        return "FIRST_INJURED_PARTY";
+                    case 19: // LW_DATE
+                        return "LW_DATE";
+                    case 20: // LW_TIME
+                        return "LW_TIME";
+                    case 21: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SADKEY":
+                        return 0;
+                    case "DETAIL_OUTLINE":
+                        return 1;
+                    case "ACCIDENT_DATE":
+                        return 2;
+                    case "ACCIDENT_TIME":
+                        return 3;
+                    case "GENERAL_ACTIVITY":
+                        return 4;
+                    case "DETAILED_ACTIVITY":
+                        return 5;
+                    case "OTHER_ACTIVITY_INFO":
+                        return 6;
+                    case "DESCRIPTION":
+                        return 7;
+                    case "OTHER_DESC_INFO":
+                        return 8;
+                    case "ACCIDENT_SITE":
+                        return 9;
+                    case "CAMPUS":
+                        return 10;
+                    case "EXTERNAL_ADDRESS":
+                        return 11;
+                    case "ROOM":
+                        return 12;
+                    case "AREA_DUTY_TEACHER":
+                        return 13;
+                    case "DUTY_TEACHER_FULL_NAME":
+                        return 14;
+                    case "TEACHERS_ON_DUTY":
+                        return 15;
+                    case "CREATION_DATE":
+                        return 16;
+                    case "MAILED":
+                        return 17;
+                    case "FIRST_INJURED_PARTY":
+                        return 18;
+                    case "LW_DATE":
+                        return 19;
+                    case "LW_TIME":
+                        return 20;
+                    case "LW_USER":
+                        return 21;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

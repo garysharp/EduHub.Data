@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Rooms Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMDataSet : SetBase<SM>
+    public sealed partial class SMDataSet : DataSetBase<SM>
     {
         /// <summary>
         /// Data Set Name
@@ -300,6 +301,312 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SM table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SM](
+        [ROOM] varchar(4) NOT NULL,
+        [TITLE] varchar(30) NULL,
+        [SEATING] smallint NULL,
+        [DESCRIPTION] varchar(40) NULL,
+        [ROOM_TYPE] varchar(1) NULL,
+        [FACULTY] varchar(10) NULL,
+        [AREA_CODE] varchar(4) NULL,
+        [CAMPUS] int NULL,
+        [STAFF_CODE] varchar(4) NULL,
+        [COMMENTA] text NULL,
+        [BOARD] varchar(4) NULL,
+        [BLACKOUT] varchar(1) NULL,
+        [NORMAL_ALLOTMENT] smallint NULL,
+        [GROUP_INDICATOR] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SM_Index_ROOM] PRIMARY KEY CLUSTERED (
+            [ROOM] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SM_Index_CAMPUS] ON [dbo].[SM]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SM_Index_FACULTY] ON [dbo].[SM]
+    (
+            [FACULTY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SM_Index_STAFF_CODE] ON [dbo].[SM]
+    (
+            [STAFF_CODE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SM data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SMDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SMDataReader : IDataReader, IDataRecord
+        {
+            private List<SM> Items;
+            private int CurrentIndex;
+            private SM CurrentItem;
+
+            public SMDataReader(List<SM> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 17; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // ROOM
+                        return CurrentItem.ROOM;
+                    case 1: // TITLE
+                        return CurrentItem.TITLE;
+                    case 2: // SEATING
+                        return CurrentItem.SEATING;
+                    case 3: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 4: // ROOM_TYPE
+                        return CurrentItem.ROOM_TYPE;
+                    case 5: // FACULTY
+                        return CurrentItem.FACULTY;
+                    case 6: // AREA_CODE
+                        return CurrentItem.AREA_CODE;
+                    case 7: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 8: // STAFF_CODE
+                        return CurrentItem.STAFF_CODE;
+                    case 9: // COMMENTA
+                        return CurrentItem.COMMENTA;
+                    case 10: // BOARD
+                        return CurrentItem.BOARD;
+                    case 11: // BLACKOUT
+                        return CurrentItem.BLACKOUT;
+                    case 12: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT;
+                    case 13: // GROUP_INDICATOR
+                        return CurrentItem.GROUP_INDICATOR;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 2: // SEATING
+                        return CurrentItem.SEATING == null;
+                    case 3: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 4: // ROOM_TYPE
+                        return CurrentItem.ROOM_TYPE == null;
+                    case 5: // FACULTY
+                        return CurrentItem.FACULTY == null;
+                    case 6: // AREA_CODE
+                        return CurrentItem.AREA_CODE == null;
+                    case 7: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 8: // STAFF_CODE
+                        return CurrentItem.STAFF_CODE == null;
+                    case 9: // COMMENTA
+                        return CurrentItem.COMMENTA == null;
+                    case 10: // BOARD
+                        return CurrentItem.BOARD == null;
+                    case 11: // BLACKOUT
+                        return CurrentItem.BLACKOUT == null;
+                    case 12: // NORMAL_ALLOTMENT
+                        return CurrentItem.NORMAL_ALLOTMENT == null;
+                    case 13: // GROUP_INDICATOR
+                        return CurrentItem.GROUP_INDICATOR == null;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // ROOM
+                        return "ROOM";
+                    case 1: // TITLE
+                        return "TITLE";
+                    case 2: // SEATING
+                        return "SEATING";
+                    case 3: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 4: // ROOM_TYPE
+                        return "ROOM_TYPE";
+                    case 5: // FACULTY
+                        return "FACULTY";
+                    case 6: // AREA_CODE
+                        return "AREA_CODE";
+                    case 7: // CAMPUS
+                        return "CAMPUS";
+                    case 8: // STAFF_CODE
+                        return "STAFF_CODE";
+                    case 9: // COMMENTA
+                        return "COMMENTA";
+                    case 10: // BOARD
+                        return "BOARD";
+                    case 11: // BLACKOUT
+                        return "BLACKOUT";
+                    case 12: // NORMAL_ALLOTMENT
+                        return "NORMAL_ALLOTMENT";
+                    case 13: // GROUP_INDICATOR
+                        return "GROUP_INDICATOR";
+                    case 14: // LW_DATE
+                        return "LW_DATE";
+                    case 15: // LW_TIME
+                        return "LW_TIME";
+                    case 16: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "ROOM":
+                        return 0;
+                    case "TITLE":
+                        return 1;
+                    case "SEATING":
+                        return 2;
+                    case "DESCRIPTION":
+                        return 3;
+                    case "ROOM_TYPE":
+                        return 4;
+                    case "FACULTY":
+                        return 5;
+                    case "AREA_CODE":
+                        return 6;
+                    case "CAMPUS":
+                        return 7;
+                    case "STAFF_CODE":
+                        return 8;
+                    case "COMMENTA":
+                        return 9;
+                    case "BOARD":
+                        return 10;
+                    case "BLACKOUT":
+                        return 11;
+                    case "NORMAL_ALLOTMENT":
+                        return 12;
+                    case "GROUP_INDICATOR":
+                        return 13;
+                    case "LW_DATE":
+                        return 14;
+                    case "LW_TIME":
+                        return 15;
+                    case "LW_USER":
+                        return 16;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

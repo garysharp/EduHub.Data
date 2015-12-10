@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Subject Classes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCLDataSet : SetBase<SCL>
+    public sealed partial class SCLDataSet : DataSetBase<SCL>
     {
         /// <summary>
         /// Data Set Name
@@ -578,6 +579,347 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SCL table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SCL](
+        [SCLKEY] varchar(17) NOT NULL,
+        [QUILT] varchar(8) NULL,
+        [SUBJECT] varchar(5) NULL,
+        [CLASS] smallint NULL,
+        [TEACHER01] varchar(4) NULL,
+        [TEACHER02] varchar(4) NULL,
+        [ROOM01] varchar(4) NULL,
+        [ROOM02] varchar(4) NULL,
+        [FREQUENCY] smallint NULL,
+        [PRINT_FLAGS01] varchar(1) NULL,
+        [PRINT_FLAGS02] varchar(1) NULL,
+        [PRINT_FLAGS03] varchar(1) NULL,
+        [PERIOD_ABSENCES] varchar(1) NULL,
+        [CAMPUS] int NULL,
+        [ALIAS] varchar(10) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SCL_Index_SCLKEY] PRIMARY KEY CLUSTERED (
+            [SCLKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_CAMPUS] ON [dbo].[SCL]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_LW_DATE] ON [dbo].[SCL]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_QUILT] ON [dbo].[SCL]
+    (
+            [QUILT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_QUILT_SUBJECT_CLASS] ON [dbo].[SCL]
+    (
+            [QUILT] ASC,
+            [SUBJECT] ASC,
+            [CLASS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_ROOM01] ON [dbo].[SCL]
+    (
+            [ROOM01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_ROOM02] ON [dbo].[SCL]
+    (
+            [ROOM02] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_SUBJECT] ON [dbo].[SCL]
+    (
+            [SUBJECT] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_TEACHER01] ON [dbo].[SCL]
+    (
+            [TEACHER01] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SCL_Index_TEACHER02] ON [dbo].[SCL]
+    (
+            [TEACHER02] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCL data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCL data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SCLDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SCLDataReader : IDataReader, IDataRecord
+        {
+            private List<SCL> Items;
+            private int CurrentIndex;
+            private SCL CurrentItem;
+
+            public SCLDataReader(List<SCL> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 18; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SCLKEY
+                        return CurrentItem.SCLKEY;
+                    case 1: // QUILT
+                        return CurrentItem.QUILT;
+                    case 2: // SUBJECT
+                        return CurrentItem.SUBJECT;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS;
+                    case 4: // TEACHER01
+                        return CurrentItem.TEACHER01;
+                    case 5: // TEACHER02
+                        return CurrentItem.TEACHER02;
+                    case 6: // ROOM01
+                        return CurrentItem.ROOM01;
+                    case 7: // ROOM02
+                        return CurrentItem.ROOM02;
+                    case 8: // FREQUENCY
+                        return CurrentItem.FREQUENCY;
+                    case 9: // PRINT_FLAGS01
+                        return CurrentItem.PRINT_FLAGS01;
+                    case 10: // PRINT_FLAGS02
+                        return CurrentItem.PRINT_FLAGS02;
+                    case 11: // PRINT_FLAGS03
+                        return CurrentItem.PRINT_FLAGS03;
+                    case 12: // PERIOD_ABSENCES
+                        return CurrentItem.PERIOD_ABSENCES;
+                    case 13: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 14: // ALIAS
+                        return CurrentItem.ALIAS;
+                    case 15: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 16: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 17: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // QUILT
+                        return CurrentItem.QUILT == null;
+                    case 2: // SUBJECT
+                        return CurrentItem.SUBJECT == null;
+                    case 3: // CLASS
+                        return CurrentItem.CLASS == null;
+                    case 4: // TEACHER01
+                        return CurrentItem.TEACHER01 == null;
+                    case 5: // TEACHER02
+                        return CurrentItem.TEACHER02 == null;
+                    case 6: // ROOM01
+                        return CurrentItem.ROOM01 == null;
+                    case 7: // ROOM02
+                        return CurrentItem.ROOM02 == null;
+                    case 8: // FREQUENCY
+                        return CurrentItem.FREQUENCY == null;
+                    case 9: // PRINT_FLAGS01
+                        return CurrentItem.PRINT_FLAGS01 == null;
+                    case 10: // PRINT_FLAGS02
+                        return CurrentItem.PRINT_FLAGS02 == null;
+                    case 11: // PRINT_FLAGS03
+                        return CurrentItem.PRINT_FLAGS03 == null;
+                    case 12: // PERIOD_ABSENCES
+                        return CurrentItem.PERIOD_ABSENCES == null;
+                    case 13: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 14: // ALIAS
+                        return CurrentItem.ALIAS == null;
+                    case 15: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 16: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 17: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SCLKEY
+                        return "SCLKEY";
+                    case 1: // QUILT
+                        return "QUILT";
+                    case 2: // SUBJECT
+                        return "SUBJECT";
+                    case 3: // CLASS
+                        return "CLASS";
+                    case 4: // TEACHER01
+                        return "TEACHER01";
+                    case 5: // TEACHER02
+                        return "TEACHER02";
+                    case 6: // ROOM01
+                        return "ROOM01";
+                    case 7: // ROOM02
+                        return "ROOM02";
+                    case 8: // FREQUENCY
+                        return "FREQUENCY";
+                    case 9: // PRINT_FLAGS01
+                        return "PRINT_FLAGS01";
+                    case 10: // PRINT_FLAGS02
+                        return "PRINT_FLAGS02";
+                    case 11: // PRINT_FLAGS03
+                        return "PRINT_FLAGS03";
+                    case 12: // PERIOD_ABSENCES
+                        return "PERIOD_ABSENCES";
+                    case 13: // CAMPUS
+                        return "CAMPUS";
+                    case 14: // ALIAS
+                        return "ALIAS";
+                    case 15: // LW_DATE
+                        return "LW_DATE";
+                    case 16: // LW_TIME
+                        return "LW_TIME";
+                    case 17: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SCLKEY":
+                        return 0;
+                    case "QUILT":
+                        return 1;
+                    case "SUBJECT":
+                        return 2;
+                    case "CLASS":
+                        return 3;
+                    case "TEACHER01":
+                        return 4;
+                    case "TEACHER02":
+                        return 5;
+                    case "ROOM01":
+                        return 6;
+                    case "ROOM02":
+                        return 7;
+                    case "FREQUENCY":
+                        return 8;
+                    case "PRINT_FLAGS01":
+                        return 9;
+                    case "PRINT_FLAGS02":
+                        return 10;
+                    case "PRINT_FLAGS03":
+                        return 11;
+                    case "PERIOD_ABSENCES":
+                        return 12;
+                    case "CAMPUS":
+                        return 13;
+                    case "ALIAS":
+                        return 14;
+                    case "LW_DATE":
+                        return 15;
+                    case "LW_TIME":
+                        return 16;
+                    case "LW_USER":
+                        return 17;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

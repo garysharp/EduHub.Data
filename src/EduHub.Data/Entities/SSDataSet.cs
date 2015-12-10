@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Specialist Subjects Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SSDataSet : SetBase<SS>
+    public sealed partial class SSDataSet : DataSetBase<SS>
     {
         /// <summary>
         /// Data Set Name
@@ -320,6 +321,244 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SS table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SS](
+        [SSKEY] varchar(10) NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [FROM_HOMEGROUP] varchar(3) NULL,
+        [TO_HOMEGROUP] varchar(3) NULL,
+        [ACTIVE] varchar(1) NULL,
+        [DEFAULT_TEACHER] varchar(4) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SS_Index_SSKEY] PRIMARY KEY CLUSTERED (
+            [SSKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SS_Index_DEFAULT_TEACHER] ON [dbo].[SS]
+    (
+            [DEFAULT_TEACHER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SS_Index_FROM_HOMEGROUP] ON [dbo].[SS]
+    (
+            [FROM_HOMEGROUP] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SS_Index_LW_DATE] ON [dbo].[SS]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SS_Index_TO_HOMEGROUP] ON [dbo].[SS]
+    (
+            [TO_HOMEGROUP] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SS data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SS data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SSDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SSDataReader : IDataReader, IDataRecord
+        {
+            private List<SS> Items;
+            private int CurrentIndex;
+            private SS CurrentItem;
+
+            public SSDataReader(List<SS> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 9; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SSKEY
+                        return CurrentItem.SSKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // FROM_HOMEGROUP
+                        return CurrentItem.FROM_HOMEGROUP;
+                    case 3: // TO_HOMEGROUP
+                        return CurrentItem.TO_HOMEGROUP;
+                    case 4: // ACTIVE
+                        return CurrentItem.ACTIVE;
+                    case 5: // DEFAULT_TEACHER
+                        return CurrentItem.DEFAULT_TEACHER;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // FROM_HOMEGROUP
+                        return CurrentItem.FROM_HOMEGROUP == null;
+                    case 3: // TO_HOMEGROUP
+                        return CurrentItem.TO_HOMEGROUP == null;
+                    case 4: // ACTIVE
+                        return CurrentItem.ACTIVE == null;
+                    case 5: // DEFAULT_TEACHER
+                        return CurrentItem.DEFAULT_TEACHER == null;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SSKEY
+                        return "SSKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // FROM_HOMEGROUP
+                        return "FROM_HOMEGROUP";
+                    case 3: // TO_HOMEGROUP
+                        return "TO_HOMEGROUP";
+                    case 4: // ACTIVE
+                        return "ACTIVE";
+                    case 5: // DEFAULT_TEACHER
+                        return "DEFAULT_TEACHER";
+                    case 6: // LW_DATE
+                        return "LW_DATE";
+                    case 7: // LW_TIME
+                        return "LW_TIME";
+                    case 8: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SSKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "FROM_HOMEGROUP":
+                        return 2;
+                    case "TO_HOMEGROUP":
+                        return 3;
+                    case "ACTIVE":
+                        return 4;
+                    case "DEFAULT_TEACHER":
+                        return 5;
+                    case "LW_DATE":
+                        return 6;
+                    case "LW_TIME":
+                        return 7;
+                    case "LW_USER":
+                        return 8;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Home Groups Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGCDataSet : SetBase<KGC>
+    public sealed partial class KGCDataSet : DataSetBase<KGC>
     {
         /// <summary>
         /// Data Set Name
@@ -473,6 +474,319 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KGC table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KGC](
+        [KGCKEY] varchar(3) NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [CAMPUS] int NULL,
+        [TEACHER] varchar(4) NULL,
+        [TEACHER_B] varchar(4) NULL,
+        [ACTIVE] varchar(1) NULL,
+        [ROOM] varchar(4) NULL,
+        [HG_SIZE] smallint NULL,
+        [MALES] smallint NULL,
+        [FEMALES] smallint NULL,
+        [MIN_AC_YR] varchar(4) NULL,
+        [MAX_AC_YR] varchar(4) NULL,
+        [NEXT_HG] varchar(3) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KGC_Index_KGCKEY] PRIMARY KEY CLUSTERED (
+            [KGCKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_CAMPUS] ON [dbo].[KGC]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_MAX_AC_YR] ON [dbo].[KGC]
+    (
+            [MAX_AC_YR] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_MIN_AC_YR] ON [dbo].[KGC]
+    (
+            [MIN_AC_YR] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_NEXT_HG] ON [dbo].[KGC]
+    (
+            [NEXT_HG] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_ROOM] ON [dbo].[KGC]
+    (
+            [ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_TEACHER] ON [dbo].[KGC]
+    (
+            [TEACHER] ASC
+    );
+    CREATE NONCLUSTERED INDEX [KGC_Index_TEACHER_B] ON [dbo].[KGC]
+    (
+            [TEACHER_B] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGC data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGC data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KGCDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KGCDataReader : IDataReader, IDataRecord
+        {
+            private List<KGC> Items;
+            private int CurrentIndex;
+            private KGC CurrentItem;
+
+            public KGCDataReader(List<KGC> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 16; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // KGCKEY
+                        return CurrentItem.KGCKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 3: // TEACHER
+                        return CurrentItem.TEACHER;
+                    case 4: // TEACHER_B
+                        return CurrentItem.TEACHER_B;
+                    case 5: // ACTIVE
+                        return CurrentItem.ACTIVE;
+                    case 6: // ROOM
+                        return CurrentItem.ROOM;
+                    case 7: // HG_SIZE
+                        return CurrentItem.HG_SIZE;
+                    case 8: // MALES
+                        return CurrentItem.MALES;
+                    case 9: // FEMALES
+                        return CurrentItem.FEMALES;
+                    case 10: // MIN_AC_YR
+                        return CurrentItem.MIN_AC_YR;
+                    case 11: // MAX_AC_YR
+                        return CurrentItem.MAX_AC_YR;
+                    case 12: // NEXT_HG
+                        return CurrentItem.NEXT_HG;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 3: // TEACHER
+                        return CurrentItem.TEACHER == null;
+                    case 4: // TEACHER_B
+                        return CurrentItem.TEACHER_B == null;
+                    case 5: // ACTIVE
+                        return CurrentItem.ACTIVE == null;
+                    case 6: // ROOM
+                        return CurrentItem.ROOM == null;
+                    case 7: // HG_SIZE
+                        return CurrentItem.HG_SIZE == null;
+                    case 8: // MALES
+                        return CurrentItem.MALES == null;
+                    case 9: // FEMALES
+                        return CurrentItem.FEMALES == null;
+                    case 10: // MIN_AC_YR
+                        return CurrentItem.MIN_AC_YR == null;
+                    case 11: // MAX_AC_YR
+                        return CurrentItem.MAX_AC_YR == null;
+                    case 12: // NEXT_HG
+                        return CurrentItem.NEXT_HG == null;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // KGCKEY
+                        return "KGCKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // CAMPUS
+                        return "CAMPUS";
+                    case 3: // TEACHER
+                        return "TEACHER";
+                    case 4: // TEACHER_B
+                        return "TEACHER_B";
+                    case 5: // ACTIVE
+                        return "ACTIVE";
+                    case 6: // ROOM
+                        return "ROOM";
+                    case 7: // HG_SIZE
+                        return "HG_SIZE";
+                    case 8: // MALES
+                        return "MALES";
+                    case 9: // FEMALES
+                        return "FEMALES";
+                    case 10: // MIN_AC_YR
+                        return "MIN_AC_YR";
+                    case 11: // MAX_AC_YR
+                        return "MAX_AC_YR";
+                    case 12: // NEXT_HG
+                        return "NEXT_HG";
+                    case 13: // LW_DATE
+                        return "LW_DATE";
+                    case 14: // LW_TIME
+                        return "LW_TIME";
+                    case 15: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "KGCKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "CAMPUS":
+                        return 2;
+                    case "TEACHER":
+                        return 3;
+                    case "TEACHER_B":
+                        return 4;
+                    case "ACTIVE":
+                        return 5;
+                    case "ROOM":
+                        return 6;
+                    case "HG_SIZE":
+                        return 7;
+                    case "MALES":
+                        return 8;
+                    case "FEMALES":
+                        return 9;
+                    case "MIN_AC_YR":
+                        return 10;
+                    case "MAX_AC_YR":
+                        return 11;
+                    case "NEXT_HG":
+                        return 12;
+                    case "LW_DATE":
+                        return 13;
+                    case "LW_TIME":
+                        return 14;
+                    case "LW_USER":
+                        return 15;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

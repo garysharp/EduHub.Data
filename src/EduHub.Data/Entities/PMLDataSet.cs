@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Medicare Levy Parameters Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PMLDataSet : SetBase<PML>
+    public sealed partial class PMLDataSet : DataSetBase<PML>
     {
         /// <summary>
         /// Data Set Name
@@ -156,6 +157,264 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a PML table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PML]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[PML](
+        [SCALE] smallint NOT NULL,
+        [WEEKLY_EARNING_THRESHOLD] money NULL,
+        [WEEKLY_SHADEIN_THRESHOLD] money NULL,
+        [MEDLEVY_FAMILY_THRESHOLD] money NULL,
+        [WFT_DIVISOR] float NULL,
+        [ADDITIONAL_CHILD] money NULL,
+        [SOP_MULTIPLIER] float NULL,
+        [SOP_DIVISOR] float NULL,
+        [WLA_FALCTOR] float NULL,
+        [MEDICARE_LEVY] float NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [PML_Index_SCALE] PRIMARY KEY CLUSTERED (
+            [SCALE] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PML data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PML data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new PMLDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class PMLDataReader : IDataReader, IDataRecord
+        {
+            private List<PML> Items;
+            private int CurrentIndex;
+            private PML CurrentItem;
+
+            public PMLDataReader(List<PML> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 13; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SCALE
+                        return CurrentItem.SCALE;
+                    case 1: // WEEKLY_EARNING_THRESHOLD
+                        return CurrentItem.WEEKLY_EARNING_THRESHOLD;
+                    case 2: // WEEKLY_SHADEIN_THRESHOLD
+                        return CurrentItem.WEEKLY_SHADEIN_THRESHOLD;
+                    case 3: // MEDLEVY_FAMILY_THRESHOLD
+                        return CurrentItem.MEDLEVY_FAMILY_THRESHOLD;
+                    case 4: // WFT_DIVISOR
+                        return CurrentItem.WFT_DIVISOR;
+                    case 5: // ADDITIONAL_CHILD
+                        return CurrentItem.ADDITIONAL_CHILD;
+                    case 6: // SOP_MULTIPLIER
+                        return CurrentItem.SOP_MULTIPLIER;
+                    case 7: // SOP_DIVISOR
+                        return CurrentItem.SOP_DIVISOR;
+                    case 8: // WLA_FALCTOR
+                        return CurrentItem.WLA_FALCTOR;
+                    case 9: // MEDICARE_LEVY
+                        return CurrentItem.MEDICARE_LEVY;
+                    case 10: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 11: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 12: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // WEEKLY_EARNING_THRESHOLD
+                        return CurrentItem.WEEKLY_EARNING_THRESHOLD == null;
+                    case 2: // WEEKLY_SHADEIN_THRESHOLD
+                        return CurrentItem.WEEKLY_SHADEIN_THRESHOLD == null;
+                    case 3: // MEDLEVY_FAMILY_THRESHOLD
+                        return CurrentItem.MEDLEVY_FAMILY_THRESHOLD == null;
+                    case 4: // WFT_DIVISOR
+                        return CurrentItem.WFT_DIVISOR == null;
+                    case 5: // ADDITIONAL_CHILD
+                        return CurrentItem.ADDITIONAL_CHILD == null;
+                    case 6: // SOP_MULTIPLIER
+                        return CurrentItem.SOP_MULTIPLIER == null;
+                    case 7: // SOP_DIVISOR
+                        return CurrentItem.SOP_DIVISOR == null;
+                    case 8: // WLA_FALCTOR
+                        return CurrentItem.WLA_FALCTOR == null;
+                    case 9: // MEDICARE_LEVY
+                        return CurrentItem.MEDICARE_LEVY == null;
+                    case 10: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 11: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 12: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SCALE
+                        return "SCALE";
+                    case 1: // WEEKLY_EARNING_THRESHOLD
+                        return "WEEKLY_EARNING_THRESHOLD";
+                    case 2: // WEEKLY_SHADEIN_THRESHOLD
+                        return "WEEKLY_SHADEIN_THRESHOLD";
+                    case 3: // MEDLEVY_FAMILY_THRESHOLD
+                        return "MEDLEVY_FAMILY_THRESHOLD";
+                    case 4: // WFT_DIVISOR
+                        return "WFT_DIVISOR";
+                    case 5: // ADDITIONAL_CHILD
+                        return "ADDITIONAL_CHILD";
+                    case 6: // SOP_MULTIPLIER
+                        return "SOP_MULTIPLIER";
+                    case 7: // SOP_DIVISOR
+                        return "SOP_DIVISOR";
+                    case 8: // WLA_FALCTOR
+                        return "WLA_FALCTOR";
+                    case 9: // MEDICARE_LEVY
+                        return "MEDICARE_LEVY";
+                    case 10: // LW_DATE
+                        return "LW_DATE";
+                    case 11: // LW_TIME
+                        return "LW_TIME";
+                    case 12: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SCALE":
+                        return 0;
+                    case "WEEKLY_EARNING_THRESHOLD":
+                        return 1;
+                    case "WEEKLY_SHADEIN_THRESHOLD":
+                        return 2;
+                    case "MEDLEVY_FAMILY_THRESHOLD":
+                        return 3;
+                    case "WFT_DIVISOR":
+                        return 4;
+                    case "ADDITIONAL_CHILD":
+                        return 5;
+                    case "SOP_MULTIPLIER":
+                        return 6;
+                    case "SOP_DIVISOR":
+                        return 7;
+                    case "WLA_FALCTOR":
+                        return 8;
+                    case "MEDICARE_LEVY":
+                        return 9;
+                    case "LW_DATE":
+                        return 10;
+                    case "LW_TIME":
+                        return 11;
+                    case "LW_USER":
+                        return 12;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

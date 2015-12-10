@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduHub.Data.SchemaParser.Db
 {
@@ -20,7 +18,7 @@ JOIN sys.columns c on c.object_id=t.object_id
 JOIN sys.systypes st ON c.system_type_id=st.xtype
 WHERE t.name=@TableName
 ORDER BY c.column_id";
-            const string sqlIndexes = @"SELECT t.object_id, i.index_id, i.name, i.is_unique, i.type
+            const string sqlIndexes = @"SELECT t.object_id, i.index_id, i.name, i.is_primary_key, i.is_unique, i.type
 FROM sys.tables t
 JOIN sys.indexes i ON i.object_id=t.object_id
 WHERE t.name=@TableName";
@@ -55,6 +53,8 @@ ORDER BY ic.key_ordinal;";
                                 var frameworkType = DetermineFrameworkType(fieldType);
 
                                 var field = entity.Fields.First(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
+
+                                field.SqlType = fieldType;
 
                                 // Check Framework Type
                                 if (field.Type != frameworkType)
@@ -114,8 +114,9 @@ ORDER BY ic.key_ordinal;";
                                 var objectId = dbIndexesReader.GetInt32(0);
                                 var indexId = dbIndexesReader.GetInt32(1);
                                 var name = dbIndexesReader.GetString(2);
-                                var isUnique = dbIndexesReader.GetBoolean(3);
-                                var isClustered = dbIndexesReader.GetByte(4) == 1; // 1 = Clustered, 2 = Non Clustered
+                                var isPrimary = dbIndexesReader.GetBoolean(3);
+                                var isUnique = dbIndexesReader.GetBoolean(4);
+                                var isClustered = dbIndexesReader.GetByte(5) == 1; // 1 = Clustered, 2 = Non Clustered
                                 List<EduHubField> fields = new List<EduHubField>();
 
                                 using (SqlCommand dbIndexCommand = new SqlCommand(sqlIndex, dbConnection))
@@ -144,6 +145,7 @@ ORDER BY ic.key_ordinal;";
                                     Entity: entity,
                                     Name: name,
                                     Fields: fields.AsReadOnly(),
+                                    IsPrimary: isPrimary,
                                     IsUnique: isUnique,
                                     IsClustered: isClustered);
 
@@ -152,6 +154,7 @@ ORDER BY ic.key_ordinal;";
                                 if (matchingIndex != null)
                                 {
                                     if ((!matchingIndex.IsUnique && index.IsUnique) || // New Index is unique
+                                        (!matchingIndex.IsPrimary && index.IsPrimary) || // New Index is primary
                                         (!matchingIndex.IsClustered && index.IsClustered) || // New Index is clustered
                                         (index.Name.Length < matchingIndex.Name.Length)) // New Index has shorter name
                                     {
@@ -177,6 +180,7 @@ ORDER BY ic.key_ordinal;";
                             Entity: entity,
                             Name: name,
                             Fields: new List<EduHubField>() { identityField }.AsReadOnly(),
+                            IsPrimary: false,
                             IsUnique: true,
                             IsClustered: false);
 
@@ -191,6 +195,10 @@ ORDER BY ic.key_ordinal;";
                                 {
                                     throw new InvalidOperationException("Shouldn't replace clustered indexes");
                                 }
+                                if (matchingIndex.IsPrimary)
+                                {
+                                    throw new InvalidOperationException("Shouldn't replace primary indexes");
+                                }
 
                                 // Remove existing, add new
                                 entity.RemoveIndex(matchingIndex);
@@ -204,6 +212,18 @@ ORDER BY ic.key_ordinal;";
                     }
                 }
                 dbConnection.Close();
+            }
+        }
+
+        public static string DetermineSqlType(string SqlType, int MaxLength)
+        {
+            if (SqlType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{SqlType}({MaxLength})";
+            }
+            else
+            {
+                return SqlType;
             }
         }
 

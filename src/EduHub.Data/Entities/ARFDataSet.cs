@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Financial Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ARFDataSet : SetBase<ARF>
+    public sealed partial class ARFDataSet : DataSetBase<ARF>
     {
         /// <summary>
         /// Data Set Name
@@ -788,6 +789,878 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a ARF table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[ARF](
+        [TID] int NOT NULL,
+        [CODE] varchar(10) NOT NULL,
+        [TRREF] varchar(10) NULL,
+        [TRXCODE] varchar(10) NULL,
+        [GL_TRXCODE] varchar(10) NULL,
+        [TRXLEDGER] varchar(2) NULL,
+        [GL_TRXLEDGER] varchar(2) NULL,
+        [TRDATE] datetime NULL,
+        [TRTYPE] varchar(1) NULL,
+        [TRDET] varchar(30) NULL,
+        [TRPERD] int NULL,
+        [TRBATCH] int NULL,
+        [TRBANK] varchar(10) NULL,
+        [DRAWER] varchar(20) NULL,
+        [BSB] varchar(6) NULL,
+        [BANK] varchar(20) NULL,
+        [BRANCH] varchar(20) NULL,
+        [ACCOUNT_NUMBER] int NULL,
+        [RTYPE] varchar(2) NULL,
+        [TRQTY] smallint NULL,
+        [ST_QTY] smallint NULL,
+        [AMEMO] text NULL,
+        [AMEMO_COPY] varchar(1) NULL,
+        [NEXT_SVC_DATE] datetime NULL,
+        [TRCOST] money NULL,
+        [TRNETT] money NULL,
+        [TRAMT] money NULL,
+        [TRGROSS] money NULL,
+        [GST_TYPE] varchar(4) NULL,
+        [GST_RATE] float NULL,
+        [GST_RECLAIM] varchar(1) NULL,
+        [ACOST] money NULL,
+        [GST_AMOUNT] money NULL,
+        [GST_AMOUNT_SALE] money NULL,
+        [AUNCL_GST] money NULL,
+        [ADEPN] money NULL,
+        [APTE_DEPN] money NULL,
+        [AFLAG] varchar(1) NULL,
+        [ADEPN_BEGIN] datetime NULL,
+        [ARATE] float NULL,
+        [AMETHOD] varchar(1) NULL,
+        [AREVALS] money NULL,
+        [AUNITS] int NULL,
+        [TINCLUDE] varchar(1) NULL,
+        [TCOST] money NULL,
+        [TTRNETT] money NULL,
+        [TTRAMT] money NULL,
+        [TGST_AMOUNT] money NULL,
+        [TUNCL_GST] money NULL,
+        [TDEPN] money NULL,
+        [TPTE_DEPN] money NULL,
+        [TFLAG] varchar(1) NULL,
+        [TDEPN_BEGIN] datetime NULL,
+        [TRATE] float NULL,
+        [TMETHOD] varchar(1) NULL,
+        [TCON] money NULL,
+        [ACON] money NULL,
+        [TRORIG] money NULL,
+        [ADEPLY] money NULL,
+        [ADEPTY] money NULL,
+        [AWDV] money NULL,
+        [CRKEY] varchar(10) NULL,
+        [TRINSTALL] varchar(1) NULL,
+        [TDEPTY] money NULL,
+        [TDEPLY] money NULL,
+        [TWDV] money NULL,
+        [LINE_NO] int NULL,
+        [FLAG] int NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [GLPROGRAM] varchar(3) NULL,
+        [INITIATIVE] varchar(3) NULL,
+        [RELEASE_TYPE] varchar(2) NULL,
+        [RECEIVED_FROM] varchar(50) NULL,
+        [LOCATION] varchar(10) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [ARF_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_AMETHOD] ON [dbo].[ARF]
+    (
+            [AMETHOD] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_BSB] ON [dbo].[ARF]
+    (
+            [BSB] ASC
+    );
+    CREATE CLUSTERED INDEX [ARF_Index_CODE] ON [dbo].[ARF]
+    (
+            [CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_GST_TYPE] ON [dbo].[ARF]
+    (
+            [GST_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_INITIATIVE] ON [dbo].[ARF]
+    (
+            [INITIATIVE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_LOCATION] ON [dbo].[ARF]
+    (
+            [LOCATION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_RELEASE_TYPE] ON [dbo].[ARF]
+    (
+            [RELEASE_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_SUBPROGRAM] ON [dbo].[ARF]
+    (
+            [SUBPROGRAM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_TMETHOD] ON [dbo].[ARF]
+    (
+            [TMETHOD] ASC
+    );
+    CREATE NONCLUSTERED INDEX [ARF_Index_TRREF] ON [dbo].[ARF]
+    (
+            [TRREF] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the ARF data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the ARF data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new ARFDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class ARFDataReader : IDataReader, IDataRecord
+        {
+            private List<ARF> Items;
+            private int CurrentIndex;
+            private ARF CurrentItem;
+
+            public ARFDataReader(List<ARF> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 77; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // CODE
+                        return CurrentItem.CODE;
+                    case 2: // TRREF
+                        return CurrentItem.TRREF;
+                    case 3: // TRXCODE
+                        return CurrentItem.TRXCODE;
+                    case 4: // GL_TRXCODE
+                        return CurrentItem.GL_TRXCODE;
+                    case 5: // TRXLEDGER
+                        return CurrentItem.TRXLEDGER;
+                    case 6: // GL_TRXLEDGER
+                        return CurrentItem.GL_TRXLEDGER;
+                    case 7: // TRDATE
+                        return CurrentItem.TRDATE;
+                    case 8: // TRTYPE
+                        return CurrentItem.TRTYPE;
+                    case 9: // TRDET
+                        return CurrentItem.TRDET;
+                    case 10: // TRPERD
+                        return CurrentItem.TRPERD;
+                    case 11: // TRBATCH
+                        return CurrentItem.TRBATCH;
+                    case 12: // TRBANK
+                        return CurrentItem.TRBANK;
+                    case 13: // DRAWER
+                        return CurrentItem.DRAWER;
+                    case 14: // BSB
+                        return CurrentItem.BSB;
+                    case 15: // BANK
+                        return CurrentItem.BANK;
+                    case 16: // BRANCH
+                        return CurrentItem.BRANCH;
+                    case 17: // ACCOUNT_NUMBER
+                        return CurrentItem.ACCOUNT_NUMBER;
+                    case 18: // RTYPE
+                        return CurrentItem.RTYPE;
+                    case 19: // TRQTY
+                        return CurrentItem.TRQTY;
+                    case 20: // ST_QTY
+                        return CurrentItem.ST_QTY;
+                    case 21: // AMEMO
+                        return CurrentItem.AMEMO;
+                    case 22: // AMEMO_COPY
+                        return CurrentItem.AMEMO_COPY;
+                    case 23: // NEXT_SVC_DATE
+                        return CurrentItem.NEXT_SVC_DATE;
+                    case 24: // TRCOST
+                        return CurrentItem.TRCOST;
+                    case 25: // TRNETT
+                        return CurrentItem.TRNETT;
+                    case 26: // TRAMT
+                        return CurrentItem.TRAMT;
+                    case 27: // TRGROSS
+                        return CurrentItem.TRGROSS;
+                    case 28: // GST_TYPE
+                        return CurrentItem.GST_TYPE;
+                    case 29: // GST_RATE
+                        return CurrentItem.GST_RATE;
+                    case 30: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM;
+                    case 31: // ACOST
+                        return CurrentItem.ACOST;
+                    case 32: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT;
+                    case 33: // GST_AMOUNT_SALE
+                        return CurrentItem.GST_AMOUNT_SALE;
+                    case 34: // AUNCL_GST
+                        return CurrentItem.AUNCL_GST;
+                    case 35: // ADEPN
+                        return CurrentItem.ADEPN;
+                    case 36: // APTE_DEPN
+                        return CurrentItem.APTE_DEPN;
+                    case 37: // AFLAG
+                        return CurrentItem.AFLAG;
+                    case 38: // ADEPN_BEGIN
+                        return CurrentItem.ADEPN_BEGIN;
+                    case 39: // ARATE
+                        return CurrentItem.ARATE;
+                    case 40: // AMETHOD
+                        return CurrentItem.AMETHOD;
+                    case 41: // AREVALS
+                        return CurrentItem.AREVALS;
+                    case 42: // AUNITS
+                        return CurrentItem.AUNITS;
+                    case 43: // TINCLUDE
+                        return CurrentItem.TINCLUDE;
+                    case 44: // TCOST
+                        return CurrentItem.TCOST;
+                    case 45: // TTRNETT
+                        return CurrentItem.TTRNETT;
+                    case 46: // TTRAMT
+                        return CurrentItem.TTRAMT;
+                    case 47: // TGST_AMOUNT
+                        return CurrentItem.TGST_AMOUNT;
+                    case 48: // TUNCL_GST
+                        return CurrentItem.TUNCL_GST;
+                    case 49: // TDEPN
+                        return CurrentItem.TDEPN;
+                    case 50: // TPTE_DEPN
+                        return CurrentItem.TPTE_DEPN;
+                    case 51: // TFLAG
+                        return CurrentItem.TFLAG;
+                    case 52: // TDEPN_BEGIN
+                        return CurrentItem.TDEPN_BEGIN;
+                    case 53: // TRATE
+                        return CurrentItem.TRATE;
+                    case 54: // TMETHOD
+                        return CurrentItem.TMETHOD;
+                    case 55: // TCON
+                        return CurrentItem.TCON;
+                    case 56: // ACON
+                        return CurrentItem.ACON;
+                    case 57: // TRORIG
+                        return CurrentItem.TRORIG;
+                    case 58: // ADEPLY
+                        return CurrentItem.ADEPLY;
+                    case 59: // ADEPTY
+                        return CurrentItem.ADEPTY;
+                    case 60: // AWDV
+                        return CurrentItem.AWDV;
+                    case 61: // CRKEY
+                        return CurrentItem.CRKEY;
+                    case 62: // TRINSTALL
+                        return CurrentItem.TRINSTALL;
+                    case 63: // TDEPTY
+                        return CurrentItem.TDEPTY;
+                    case 64: // TDEPLY
+                        return CurrentItem.TDEPLY;
+                    case 65: // TWDV
+                        return CurrentItem.TWDV;
+                    case 66: // LINE_NO
+                        return CurrentItem.LINE_NO;
+                    case 67: // FLAG
+                        return CurrentItem.FLAG;
+                    case 68: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 69: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM;
+                    case 70: // INITIATIVE
+                        return CurrentItem.INITIATIVE;
+                    case 71: // RELEASE_TYPE
+                        return CurrentItem.RELEASE_TYPE;
+                    case 72: // RECEIVED_FROM
+                        return CurrentItem.RECEIVED_FROM;
+                    case 73: // LOCATION
+                        return CurrentItem.LOCATION;
+                    case 74: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 75: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 76: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // TRREF
+                        return CurrentItem.TRREF == null;
+                    case 3: // TRXCODE
+                        return CurrentItem.TRXCODE == null;
+                    case 4: // GL_TRXCODE
+                        return CurrentItem.GL_TRXCODE == null;
+                    case 5: // TRXLEDGER
+                        return CurrentItem.TRXLEDGER == null;
+                    case 6: // GL_TRXLEDGER
+                        return CurrentItem.GL_TRXLEDGER == null;
+                    case 7: // TRDATE
+                        return CurrentItem.TRDATE == null;
+                    case 8: // TRTYPE
+                        return CurrentItem.TRTYPE == null;
+                    case 9: // TRDET
+                        return CurrentItem.TRDET == null;
+                    case 10: // TRPERD
+                        return CurrentItem.TRPERD == null;
+                    case 11: // TRBATCH
+                        return CurrentItem.TRBATCH == null;
+                    case 12: // TRBANK
+                        return CurrentItem.TRBANK == null;
+                    case 13: // DRAWER
+                        return CurrentItem.DRAWER == null;
+                    case 14: // BSB
+                        return CurrentItem.BSB == null;
+                    case 15: // BANK
+                        return CurrentItem.BANK == null;
+                    case 16: // BRANCH
+                        return CurrentItem.BRANCH == null;
+                    case 17: // ACCOUNT_NUMBER
+                        return CurrentItem.ACCOUNT_NUMBER == null;
+                    case 18: // RTYPE
+                        return CurrentItem.RTYPE == null;
+                    case 19: // TRQTY
+                        return CurrentItem.TRQTY == null;
+                    case 20: // ST_QTY
+                        return CurrentItem.ST_QTY == null;
+                    case 21: // AMEMO
+                        return CurrentItem.AMEMO == null;
+                    case 22: // AMEMO_COPY
+                        return CurrentItem.AMEMO_COPY == null;
+                    case 23: // NEXT_SVC_DATE
+                        return CurrentItem.NEXT_SVC_DATE == null;
+                    case 24: // TRCOST
+                        return CurrentItem.TRCOST == null;
+                    case 25: // TRNETT
+                        return CurrentItem.TRNETT == null;
+                    case 26: // TRAMT
+                        return CurrentItem.TRAMT == null;
+                    case 27: // TRGROSS
+                        return CurrentItem.TRGROSS == null;
+                    case 28: // GST_TYPE
+                        return CurrentItem.GST_TYPE == null;
+                    case 29: // GST_RATE
+                        return CurrentItem.GST_RATE == null;
+                    case 30: // GST_RECLAIM
+                        return CurrentItem.GST_RECLAIM == null;
+                    case 31: // ACOST
+                        return CurrentItem.ACOST == null;
+                    case 32: // GST_AMOUNT
+                        return CurrentItem.GST_AMOUNT == null;
+                    case 33: // GST_AMOUNT_SALE
+                        return CurrentItem.GST_AMOUNT_SALE == null;
+                    case 34: // AUNCL_GST
+                        return CurrentItem.AUNCL_GST == null;
+                    case 35: // ADEPN
+                        return CurrentItem.ADEPN == null;
+                    case 36: // APTE_DEPN
+                        return CurrentItem.APTE_DEPN == null;
+                    case 37: // AFLAG
+                        return CurrentItem.AFLAG == null;
+                    case 38: // ADEPN_BEGIN
+                        return CurrentItem.ADEPN_BEGIN == null;
+                    case 39: // ARATE
+                        return CurrentItem.ARATE == null;
+                    case 40: // AMETHOD
+                        return CurrentItem.AMETHOD == null;
+                    case 41: // AREVALS
+                        return CurrentItem.AREVALS == null;
+                    case 42: // AUNITS
+                        return CurrentItem.AUNITS == null;
+                    case 43: // TINCLUDE
+                        return CurrentItem.TINCLUDE == null;
+                    case 44: // TCOST
+                        return CurrentItem.TCOST == null;
+                    case 45: // TTRNETT
+                        return CurrentItem.TTRNETT == null;
+                    case 46: // TTRAMT
+                        return CurrentItem.TTRAMT == null;
+                    case 47: // TGST_AMOUNT
+                        return CurrentItem.TGST_AMOUNT == null;
+                    case 48: // TUNCL_GST
+                        return CurrentItem.TUNCL_GST == null;
+                    case 49: // TDEPN
+                        return CurrentItem.TDEPN == null;
+                    case 50: // TPTE_DEPN
+                        return CurrentItem.TPTE_DEPN == null;
+                    case 51: // TFLAG
+                        return CurrentItem.TFLAG == null;
+                    case 52: // TDEPN_BEGIN
+                        return CurrentItem.TDEPN_BEGIN == null;
+                    case 53: // TRATE
+                        return CurrentItem.TRATE == null;
+                    case 54: // TMETHOD
+                        return CurrentItem.TMETHOD == null;
+                    case 55: // TCON
+                        return CurrentItem.TCON == null;
+                    case 56: // ACON
+                        return CurrentItem.ACON == null;
+                    case 57: // TRORIG
+                        return CurrentItem.TRORIG == null;
+                    case 58: // ADEPLY
+                        return CurrentItem.ADEPLY == null;
+                    case 59: // ADEPTY
+                        return CurrentItem.ADEPTY == null;
+                    case 60: // AWDV
+                        return CurrentItem.AWDV == null;
+                    case 61: // CRKEY
+                        return CurrentItem.CRKEY == null;
+                    case 62: // TRINSTALL
+                        return CurrentItem.TRINSTALL == null;
+                    case 63: // TDEPTY
+                        return CurrentItem.TDEPTY == null;
+                    case 64: // TDEPLY
+                        return CurrentItem.TDEPLY == null;
+                    case 65: // TWDV
+                        return CurrentItem.TWDV == null;
+                    case 66: // LINE_NO
+                        return CurrentItem.LINE_NO == null;
+                    case 67: // FLAG
+                        return CurrentItem.FLAG == null;
+                    case 68: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM == null;
+                    case 69: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM == null;
+                    case 70: // INITIATIVE
+                        return CurrentItem.INITIATIVE == null;
+                    case 71: // RELEASE_TYPE
+                        return CurrentItem.RELEASE_TYPE == null;
+                    case 72: // RECEIVED_FROM
+                        return CurrentItem.RECEIVED_FROM == null;
+                    case 73: // LOCATION
+                        return CurrentItem.LOCATION == null;
+                    case 74: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 75: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 76: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // CODE
+                        return "CODE";
+                    case 2: // TRREF
+                        return "TRREF";
+                    case 3: // TRXCODE
+                        return "TRXCODE";
+                    case 4: // GL_TRXCODE
+                        return "GL_TRXCODE";
+                    case 5: // TRXLEDGER
+                        return "TRXLEDGER";
+                    case 6: // GL_TRXLEDGER
+                        return "GL_TRXLEDGER";
+                    case 7: // TRDATE
+                        return "TRDATE";
+                    case 8: // TRTYPE
+                        return "TRTYPE";
+                    case 9: // TRDET
+                        return "TRDET";
+                    case 10: // TRPERD
+                        return "TRPERD";
+                    case 11: // TRBATCH
+                        return "TRBATCH";
+                    case 12: // TRBANK
+                        return "TRBANK";
+                    case 13: // DRAWER
+                        return "DRAWER";
+                    case 14: // BSB
+                        return "BSB";
+                    case 15: // BANK
+                        return "BANK";
+                    case 16: // BRANCH
+                        return "BRANCH";
+                    case 17: // ACCOUNT_NUMBER
+                        return "ACCOUNT_NUMBER";
+                    case 18: // RTYPE
+                        return "RTYPE";
+                    case 19: // TRQTY
+                        return "TRQTY";
+                    case 20: // ST_QTY
+                        return "ST_QTY";
+                    case 21: // AMEMO
+                        return "AMEMO";
+                    case 22: // AMEMO_COPY
+                        return "AMEMO_COPY";
+                    case 23: // NEXT_SVC_DATE
+                        return "NEXT_SVC_DATE";
+                    case 24: // TRCOST
+                        return "TRCOST";
+                    case 25: // TRNETT
+                        return "TRNETT";
+                    case 26: // TRAMT
+                        return "TRAMT";
+                    case 27: // TRGROSS
+                        return "TRGROSS";
+                    case 28: // GST_TYPE
+                        return "GST_TYPE";
+                    case 29: // GST_RATE
+                        return "GST_RATE";
+                    case 30: // GST_RECLAIM
+                        return "GST_RECLAIM";
+                    case 31: // ACOST
+                        return "ACOST";
+                    case 32: // GST_AMOUNT
+                        return "GST_AMOUNT";
+                    case 33: // GST_AMOUNT_SALE
+                        return "GST_AMOUNT_SALE";
+                    case 34: // AUNCL_GST
+                        return "AUNCL_GST";
+                    case 35: // ADEPN
+                        return "ADEPN";
+                    case 36: // APTE_DEPN
+                        return "APTE_DEPN";
+                    case 37: // AFLAG
+                        return "AFLAG";
+                    case 38: // ADEPN_BEGIN
+                        return "ADEPN_BEGIN";
+                    case 39: // ARATE
+                        return "ARATE";
+                    case 40: // AMETHOD
+                        return "AMETHOD";
+                    case 41: // AREVALS
+                        return "AREVALS";
+                    case 42: // AUNITS
+                        return "AUNITS";
+                    case 43: // TINCLUDE
+                        return "TINCLUDE";
+                    case 44: // TCOST
+                        return "TCOST";
+                    case 45: // TTRNETT
+                        return "TTRNETT";
+                    case 46: // TTRAMT
+                        return "TTRAMT";
+                    case 47: // TGST_AMOUNT
+                        return "TGST_AMOUNT";
+                    case 48: // TUNCL_GST
+                        return "TUNCL_GST";
+                    case 49: // TDEPN
+                        return "TDEPN";
+                    case 50: // TPTE_DEPN
+                        return "TPTE_DEPN";
+                    case 51: // TFLAG
+                        return "TFLAG";
+                    case 52: // TDEPN_BEGIN
+                        return "TDEPN_BEGIN";
+                    case 53: // TRATE
+                        return "TRATE";
+                    case 54: // TMETHOD
+                        return "TMETHOD";
+                    case 55: // TCON
+                        return "TCON";
+                    case 56: // ACON
+                        return "ACON";
+                    case 57: // TRORIG
+                        return "TRORIG";
+                    case 58: // ADEPLY
+                        return "ADEPLY";
+                    case 59: // ADEPTY
+                        return "ADEPTY";
+                    case 60: // AWDV
+                        return "AWDV";
+                    case 61: // CRKEY
+                        return "CRKEY";
+                    case 62: // TRINSTALL
+                        return "TRINSTALL";
+                    case 63: // TDEPTY
+                        return "TDEPTY";
+                    case 64: // TDEPLY
+                        return "TDEPLY";
+                    case 65: // TWDV
+                        return "TWDV";
+                    case 66: // LINE_NO
+                        return "LINE_NO";
+                    case 67: // FLAG
+                        return "FLAG";
+                    case 68: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 69: // GLPROGRAM
+                        return "GLPROGRAM";
+                    case 70: // INITIATIVE
+                        return "INITIATIVE";
+                    case 71: // RELEASE_TYPE
+                        return "RELEASE_TYPE";
+                    case 72: // RECEIVED_FROM
+                        return "RECEIVED_FROM";
+                    case 73: // LOCATION
+                        return "LOCATION";
+                    case 74: // LW_DATE
+                        return "LW_DATE";
+                    case 75: // LW_TIME
+                        return "LW_TIME";
+                    case 76: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "CODE":
+                        return 1;
+                    case "TRREF":
+                        return 2;
+                    case "TRXCODE":
+                        return 3;
+                    case "GL_TRXCODE":
+                        return 4;
+                    case "TRXLEDGER":
+                        return 5;
+                    case "GL_TRXLEDGER":
+                        return 6;
+                    case "TRDATE":
+                        return 7;
+                    case "TRTYPE":
+                        return 8;
+                    case "TRDET":
+                        return 9;
+                    case "TRPERD":
+                        return 10;
+                    case "TRBATCH":
+                        return 11;
+                    case "TRBANK":
+                        return 12;
+                    case "DRAWER":
+                        return 13;
+                    case "BSB":
+                        return 14;
+                    case "BANK":
+                        return 15;
+                    case "BRANCH":
+                        return 16;
+                    case "ACCOUNT_NUMBER":
+                        return 17;
+                    case "RTYPE":
+                        return 18;
+                    case "TRQTY":
+                        return 19;
+                    case "ST_QTY":
+                        return 20;
+                    case "AMEMO":
+                        return 21;
+                    case "AMEMO_COPY":
+                        return 22;
+                    case "NEXT_SVC_DATE":
+                        return 23;
+                    case "TRCOST":
+                        return 24;
+                    case "TRNETT":
+                        return 25;
+                    case "TRAMT":
+                        return 26;
+                    case "TRGROSS":
+                        return 27;
+                    case "GST_TYPE":
+                        return 28;
+                    case "GST_RATE":
+                        return 29;
+                    case "GST_RECLAIM":
+                        return 30;
+                    case "ACOST":
+                        return 31;
+                    case "GST_AMOUNT":
+                        return 32;
+                    case "GST_AMOUNT_SALE":
+                        return 33;
+                    case "AUNCL_GST":
+                        return 34;
+                    case "ADEPN":
+                        return 35;
+                    case "APTE_DEPN":
+                        return 36;
+                    case "AFLAG":
+                        return 37;
+                    case "ADEPN_BEGIN":
+                        return 38;
+                    case "ARATE":
+                        return 39;
+                    case "AMETHOD":
+                        return 40;
+                    case "AREVALS":
+                        return 41;
+                    case "AUNITS":
+                        return 42;
+                    case "TINCLUDE":
+                        return 43;
+                    case "TCOST":
+                        return 44;
+                    case "TTRNETT":
+                        return 45;
+                    case "TTRAMT":
+                        return 46;
+                    case "TGST_AMOUNT":
+                        return 47;
+                    case "TUNCL_GST":
+                        return 48;
+                    case "TDEPN":
+                        return 49;
+                    case "TPTE_DEPN":
+                        return 50;
+                    case "TFLAG":
+                        return 51;
+                    case "TDEPN_BEGIN":
+                        return 52;
+                    case "TRATE":
+                        return 53;
+                    case "TMETHOD":
+                        return 54;
+                    case "TCON":
+                        return 55;
+                    case "ACON":
+                        return 56;
+                    case "TRORIG":
+                        return 57;
+                    case "ADEPLY":
+                        return 58;
+                    case "ADEPTY":
+                        return 59;
+                    case "AWDV":
+                        return 60;
+                    case "CRKEY":
+                        return 61;
+                    case "TRINSTALL":
+                        return 62;
+                    case "TDEPTY":
+                        return 63;
+                    case "TDEPLY":
+                        return 64;
+                    case "TWDV":
+                        return 65;
+                    case "LINE_NO":
+                        return 66;
+                    case "FLAG":
+                        return 67;
+                    case "SUBPROGRAM":
+                        return 68;
+                    case "GLPROGRAM":
+                        return 69;
+                    case "INITIATIVE":
+                        return 70;
+                    case "RELEASE_TYPE":
+                        return 71;
+                    case "RECEIVED_FROM":
+                        return 72;
+                    case "LOCATION":
+                        return 73;
+                    case "LW_DATE":
+                        return 74;
+                    case "LW_TIME":
+                        return 75;
+                    case "LW_USER":
+                        return 76;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

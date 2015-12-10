@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Routes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRPROUTDataSet : SetBase<TRPROUT>
+    public sealed partial class TRPROUTDataSet : DataSetBase<TRPROUT>
     {
         /// <summary>
         /// Data Set Name
@@ -253,6 +254,299 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a TRPROUT table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[TRPROUT](
+        [ROUTE_ID] int IDENTITY NOT NULL,
+        [ROUTE_NAME] varchar(40) NULL,
+        [TRANSPORT_MODE_ID] int NULL,
+        [TRANSPORT_COMPANY_ID] int NULL,
+        [ROUTE_CONTRACT_NO] varchar(20) NULL,
+        [CONTACT1_FIRST_NAME] varchar(20) NULL,
+        [CONTACT1_LAST_NAME] varchar(20) NULL,
+        [CONTACT1_PHONE] varchar(20) NULL,
+        [CONTACT2_FIRST_NAME] varchar(20) NULL,
+        [CONTACT2_LAST_NAME] varchar(20) NULL,
+        [CONTACT2_PHONE] varchar(20) NULL,
+        [AM_SETDOWN_TIME] smallint NULL,
+        [PM_PICKUP_TIME] smallint NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [TRPROUT_Index_ROUTE_ID] PRIMARY KEY CLUSTERED (
+            [ROUTE_ID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [TRPROUT_Index_TRANSPORT_COMPANY_ID] ON [dbo].[TRPROUT]
+    (
+            [TRANSPORT_COMPANY_ID] ASC
+    );
+    CREATE NONCLUSTERED INDEX [TRPROUT_Index_TRANSPORT_MODE_ID] ON [dbo].[TRPROUT]
+    (
+            [TRANSPORT_MODE_ID] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TRPROUT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TRPROUT data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new TRPROUTDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class TRPROUTDataReader : IDataReader, IDataRecord
+        {
+            private List<TRPROUT> Items;
+            private int CurrentIndex;
+            private TRPROUT CurrentItem;
+
+            public TRPROUTDataReader(List<TRPROUT> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 16; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // ROUTE_ID
+                        return CurrentItem.ROUTE_ID;
+                    case 1: // ROUTE_NAME
+                        return CurrentItem.ROUTE_NAME;
+                    case 2: // TRANSPORT_MODE_ID
+                        return CurrentItem.TRANSPORT_MODE_ID;
+                    case 3: // TRANSPORT_COMPANY_ID
+                        return CurrentItem.TRANSPORT_COMPANY_ID;
+                    case 4: // ROUTE_CONTRACT_NO
+                        return CurrentItem.ROUTE_CONTRACT_NO;
+                    case 5: // CONTACT1_FIRST_NAME
+                        return CurrentItem.CONTACT1_FIRST_NAME;
+                    case 6: // CONTACT1_LAST_NAME
+                        return CurrentItem.CONTACT1_LAST_NAME;
+                    case 7: // CONTACT1_PHONE
+                        return CurrentItem.CONTACT1_PHONE;
+                    case 8: // CONTACT2_FIRST_NAME
+                        return CurrentItem.CONTACT2_FIRST_NAME;
+                    case 9: // CONTACT2_LAST_NAME
+                        return CurrentItem.CONTACT2_LAST_NAME;
+                    case 10: // CONTACT2_PHONE
+                        return CurrentItem.CONTACT2_PHONE;
+                    case 11: // AM_SETDOWN_TIME
+                        return CurrentItem.AM_SETDOWN_TIME;
+                    case 12: // PM_PICKUP_TIME
+                        return CurrentItem.PM_PICKUP_TIME;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // ROUTE_NAME
+                        return CurrentItem.ROUTE_NAME == null;
+                    case 2: // TRANSPORT_MODE_ID
+                        return CurrentItem.TRANSPORT_MODE_ID == null;
+                    case 3: // TRANSPORT_COMPANY_ID
+                        return CurrentItem.TRANSPORT_COMPANY_ID == null;
+                    case 4: // ROUTE_CONTRACT_NO
+                        return CurrentItem.ROUTE_CONTRACT_NO == null;
+                    case 5: // CONTACT1_FIRST_NAME
+                        return CurrentItem.CONTACT1_FIRST_NAME == null;
+                    case 6: // CONTACT1_LAST_NAME
+                        return CurrentItem.CONTACT1_LAST_NAME == null;
+                    case 7: // CONTACT1_PHONE
+                        return CurrentItem.CONTACT1_PHONE == null;
+                    case 8: // CONTACT2_FIRST_NAME
+                        return CurrentItem.CONTACT2_FIRST_NAME == null;
+                    case 9: // CONTACT2_LAST_NAME
+                        return CurrentItem.CONTACT2_LAST_NAME == null;
+                    case 10: // CONTACT2_PHONE
+                        return CurrentItem.CONTACT2_PHONE == null;
+                    case 11: // AM_SETDOWN_TIME
+                        return CurrentItem.AM_SETDOWN_TIME == null;
+                    case 12: // PM_PICKUP_TIME
+                        return CurrentItem.PM_PICKUP_TIME == null;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // ROUTE_ID
+                        return "ROUTE_ID";
+                    case 1: // ROUTE_NAME
+                        return "ROUTE_NAME";
+                    case 2: // TRANSPORT_MODE_ID
+                        return "TRANSPORT_MODE_ID";
+                    case 3: // TRANSPORT_COMPANY_ID
+                        return "TRANSPORT_COMPANY_ID";
+                    case 4: // ROUTE_CONTRACT_NO
+                        return "ROUTE_CONTRACT_NO";
+                    case 5: // CONTACT1_FIRST_NAME
+                        return "CONTACT1_FIRST_NAME";
+                    case 6: // CONTACT1_LAST_NAME
+                        return "CONTACT1_LAST_NAME";
+                    case 7: // CONTACT1_PHONE
+                        return "CONTACT1_PHONE";
+                    case 8: // CONTACT2_FIRST_NAME
+                        return "CONTACT2_FIRST_NAME";
+                    case 9: // CONTACT2_LAST_NAME
+                        return "CONTACT2_LAST_NAME";
+                    case 10: // CONTACT2_PHONE
+                        return "CONTACT2_PHONE";
+                    case 11: // AM_SETDOWN_TIME
+                        return "AM_SETDOWN_TIME";
+                    case 12: // PM_PICKUP_TIME
+                        return "PM_PICKUP_TIME";
+                    case 13: // LW_DATE
+                        return "LW_DATE";
+                    case 14: // LW_TIME
+                        return "LW_TIME";
+                    case 15: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "ROUTE_ID":
+                        return 0;
+                    case "ROUTE_NAME":
+                        return 1;
+                    case "TRANSPORT_MODE_ID":
+                        return 2;
+                    case "TRANSPORT_COMPANY_ID":
+                        return 3;
+                    case "ROUTE_CONTRACT_NO":
+                        return 4;
+                    case "CONTACT1_FIRST_NAME":
+                        return 5;
+                    case "CONTACT1_LAST_NAME":
+                        return 6;
+                    case "CONTACT1_PHONE":
+                        return 7;
+                    case "CONTACT2_FIRST_NAME":
+                        return 8;
+                    case "CONTACT2_LAST_NAME":
+                        return 9;
+                    case "CONTACT2_PHONE":
+                        return 10;
+                    case "AM_SETDOWN_TIME":
+                        return 11;
+                    case "PM_PICKUP_TIME":
+                        return 12;
+                    case "LW_DATE":
+                        return 13;
+                    case "LW_TIME":
+                        return 14;
+                    case "LW_USER":
+                        return 15;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

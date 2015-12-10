@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace EduHub.Data.SchemaParser.Models
@@ -56,8 +53,8 @@ namespace EduHub.Data.SchemaParser.Models
         public XElement ToXElement()
         {
             return new XElement("Entity",
-                new XAttribute("Name", Name),
-                new XAttribute("Description", Description),
+                new XAttribute(nameof(Name), Name),
+                new XAttribute(nameof(Description), Description),
                 new XElement("Fields", Fields.Select(f => f.ToXElement())),
                 new XElement("Indexes", Indexes.OrderBy(i => i.Name).Select(i => i.ToXElement())));
         }

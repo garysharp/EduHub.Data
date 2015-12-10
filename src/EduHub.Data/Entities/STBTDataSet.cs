@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Usage Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STBTDataSet : SetBase<STBT>
+    public sealed partial class STBTDataSet : DataSetBase<STBT>
     {
         /// <summary>
         /// Data Set Name
@@ -1277,6 +1278,809 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a STBT table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[STBT](
+        [TID] int IDENTITY NOT NULL,
+        [STBTKEY] varchar(10) NOT NULL,
+        [ROUTE] varchar(6) NULL,
+        [DAYS_USED01] varchar(1) NULL,
+        [DAYS_USED02] varchar(1) NULL,
+        [DAYS_USED03] varchar(1) NULL,
+        [DAYS_USED04] varchar(1) NULL,
+        [DAYS_USED05] varchar(1) NULL,
+        [TRANSPORT_NOTES] text NULL,
+        [DATE_STARTED] datetime NULL,
+        [TERMINATED] datetime NULL,
+        [AM1_PICKUP] smallint NULL,
+        [AM1_PU_SITE] varchar(4) NULL,
+        [AM1_SETDOWN] smallint NULL,
+        [AM1_SD_SITE] int NULL,
+        [AM1_ROUTE] varchar(6) NULL,
+        [PM1_PICKUP] smallint NULL,
+        [PM1_PU_SITE] int NULL,
+        [PM1_SETDOWN] smallint NULL,
+        [PM1_SD_SITE] varchar(4) NULL,
+        [PM1_ROUTE] varchar(6) NULL,
+        [AM2_PICKUP] smallint NULL,
+        [AM2_PU_SITE] varchar(4) NULL,
+        [AM2_SETDOWN] smallint NULL,
+        [AM2_SD_SITE] int NULL,
+        [AM2_ROUTE] varchar(6) NULL,
+        [PM2_PICKUP] smallint NULL,
+        [PM2_PU_SITE] int NULL,
+        [PM2_SETDOWN] smallint NULL,
+        [PM2_SD_SITE] varchar(4) NULL,
+        [PM2_ROUTE] varchar(6) NULL,
+        [AM3_PICKUP] smallint NULL,
+        [AM3_PU_SITE] varchar(4) NULL,
+        [AM3_SETDOWN] smallint NULL,
+        [AM3_SD_SITE] int NULL,
+        [AM3_ROUTE] varchar(6) NULL,
+        [PM3_PICKUP] smallint NULL,
+        [PM3_PU_SITE] int NULL,
+        [PM3_SETDOWN] smallint NULL,
+        [PM3_SD_SITE] varchar(4) NULL,
+        [PM3_ROUTE] varchar(6) NULL,
+        [AM4_PICKUP] smallint NULL,
+        [AM4_PU_SITE] varchar(4) NULL,
+        [AM4_SETDOWN] smallint NULL,
+        [AM4_SD_SITE] int NULL,
+        [AM4_ROUTE] varchar(6) NULL,
+        [PM4_PICKUP] smallint NULL,
+        [PM4_PU_SITE] int NULL,
+        [PM4_SETDOWN] smallint NULL,
+        [PM4_SD_SITE] varchar(4) NULL,
+        [PM4_ROUTE] varchar(6) NULL,
+        [AM5_PICKUP] smallint NULL,
+        [AM5_PU_SITE] varchar(4) NULL,
+        [AM5_SETDOWN] smallint NULL,
+        [AM5_SD_SITE] int NULL,
+        [AM5_ROUTE] varchar(6) NULL,
+        [PM5_PICKUP] smallint NULL,
+        [PM5_PU_SITE] int NULL,
+        [PM5_SETDOWN] smallint NULL,
+        [PM5_SD_SITE] varchar(4) NULL,
+        [PM5_ROUTE] varchar(6) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [STBT_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM1_ROUTE] ON [dbo].[STBT]
+    (
+            [AM1_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM1_SD_SITE] ON [dbo].[STBT]
+    (
+            [AM1_SD_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM2_ROUTE] ON [dbo].[STBT]
+    (
+            [AM2_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM2_SD_SITE] ON [dbo].[STBT]
+    (
+            [AM2_SD_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM3_ROUTE] ON [dbo].[STBT]
+    (
+            [AM3_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM3_SD_SITE] ON [dbo].[STBT]
+    (
+            [AM3_SD_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM4_ROUTE] ON [dbo].[STBT]
+    (
+            [AM4_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM4_SD_SITE] ON [dbo].[STBT]
+    (
+            [AM4_SD_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM5_ROUTE] ON [dbo].[STBT]
+    (
+            [AM5_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_AM5_SD_SITE] ON [dbo].[STBT]
+    (
+            [AM5_SD_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM1_PU_SITE] ON [dbo].[STBT]
+    (
+            [PM1_PU_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM1_ROUTE] ON [dbo].[STBT]
+    (
+            [PM1_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM2_PU_SITE] ON [dbo].[STBT]
+    (
+            [PM2_PU_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM2_ROUTE] ON [dbo].[STBT]
+    (
+            [PM2_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM3_PU_SITE] ON [dbo].[STBT]
+    (
+            [PM3_PU_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM3_ROUTE] ON [dbo].[STBT]
+    (
+            [PM3_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM4_PU_SITE] ON [dbo].[STBT]
+    (
+            [PM4_PU_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM4_ROUTE] ON [dbo].[STBT]
+    (
+            [PM4_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM5_PU_SITE] ON [dbo].[STBT]
+    (
+            [PM5_PU_SITE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_PM5_ROUTE] ON [dbo].[STBT]
+    (
+            [PM5_ROUTE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STBT_Index_ROUTE] ON [dbo].[STBT]
+    (
+            [ROUTE] ASC
+    );
+    CREATE CLUSTERED INDEX [STBT_Index_STBTKEY] ON [dbo].[STBT]
+    (
+            [STBTKEY] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STBT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STBT data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new STBTDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class STBTDataReader : IDataReader, IDataRecord
+        {
+            private List<STBT> Items;
+            private int CurrentIndex;
+            private STBT CurrentItem;
+
+            public STBTDataReader(List<STBT> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 64; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // STBTKEY
+                        return CurrentItem.STBTKEY;
+                    case 2: // ROUTE
+                        return CurrentItem.ROUTE;
+                    case 3: // DAYS_USED01
+                        return CurrentItem.DAYS_USED01;
+                    case 4: // DAYS_USED02
+                        return CurrentItem.DAYS_USED02;
+                    case 5: // DAYS_USED03
+                        return CurrentItem.DAYS_USED03;
+                    case 6: // DAYS_USED04
+                        return CurrentItem.DAYS_USED04;
+                    case 7: // DAYS_USED05
+                        return CurrentItem.DAYS_USED05;
+                    case 8: // TRANSPORT_NOTES
+                        return CurrentItem.TRANSPORT_NOTES;
+                    case 9: // DATE_STARTED
+                        return CurrentItem.DATE_STARTED;
+                    case 10: // TERMINATED
+                        return CurrentItem.TERMINATED;
+                    case 11: // AM1_PICKUP
+                        return CurrentItem.AM1_PICKUP;
+                    case 12: // AM1_PU_SITE
+                        return CurrentItem.AM1_PU_SITE;
+                    case 13: // AM1_SETDOWN
+                        return CurrentItem.AM1_SETDOWN;
+                    case 14: // AM1_SD_SITE
+                        return CurrentItem.AM1_SD_SITE;
+                    case 15: // AM1_ROUTE
+                        return CurrentItem.AM1_ROUTE;
+                    case 16: // PM1_PICKUP
+                        return CurrentItem.PM1_PICKUP;
+                    case 17: // PM1_PU_SITE
+                        return CurrentItem.PM1_PU_SITE;
+                    case 18: // PM1_SETDOWN
+                        return CurrentItem.PM1_SETDOWN;
+                    case 19: // PM1_SD_SITE
+                        return CurrentItem.PM1_SD_SITE;
+                    case 20: // PM1_ROUTE
+                        return CurrentItem.PM1_ROUTE;
+                    case 21: // AM2_PICKUP
+                        return CurrentItem.AM2_PICKUP;
+                    case 22: // AM2_PU_SITE
+                        return CurrentItem.AM2_PU_SITE;
+                    case 23: // AM2_SETDOWN
+                        return CurrentItem.AM2_SETDOWN;
+                    case 24: // AM2_SD_SITE
+                        return CurrentItem.AM2_SD_SITE;
+                    case 25: // AM2_ROUTE
+                        return CurrentItem.AM2_ROUTE;
+                    case 26: // PM2_PICKUP
+                        return CurrentItem.PM2_PICKUP;
+                    case 27: // PM2_PU_SITE
+                        return CurrentItem.PM2_PU_SITE;
+                    case 28: // PM2_SETDOWN
+                        return CurrentItem.PM2_SETDOWN;
+                    case 29: // PM2_SD_SITE
+                        return CurrentItem.PM2_SD_SITE;
+                    case 30: // PM2_ROUTE
+                        return CurrentItem.PM2_ROUTE;
+                    case 31: // AM3_PICKUP
+                        return CurrentItem.AM3_PICKUP;
+                    case 32: // AM3_PU_SITE
+                        return CurrentItem.AM3_PU_SITE;
+                    case 33: // AM3_SETDOWN
+                        return CurrentItem.AM3_SETDOWN;
+                    case 34: // AM3_SD_SITE
+                        return CurrentItem.AM3_SD_SITE;
+                    case 35: // AM3_ROUTE
+                        return CurrentItem.AM3_ROUTE;
+                    case 36: // PM3_PICKUP
+                        return CurrentItem.PM3_PICKUP;
+                    case 37: // PM3_PU_SITE
+                        return CurrentItem.PM3_PU_SITE;
+                    case 38: // PM3_SETDOWN
+                        return CurrentItem.PM3_SETDOWN;
+                    case 39: // PM3_SD_SITE
+                        return CurrentItem.PM3_SD_SITE;
+                    case 40: // PM3_ROUTE
+                        return CurrentItem.PM3_ROUTE;
+                    case 41: // AM4_PICKUP
+                        return CurrentItem.AM4_PICKUP;
+                    case 42: // AM4_PU_SITE
+                        return CurrentItem.AM4_PU_SITE;
+                    case 43: // AM4_SETDOWN
+                        return CurrentItem.AM4_SETDOWN;
+                    case 44: // AM4_SD_SITE
+                        return CurrentItem.AM4_SD_SITE;
+                    case 45: // AM4_ROUTE
+                        return CurrentItem.AM4_ROUTE;
+                    case 46: // PM4_PICKUP
+                        return CurrentItem.PM4_PICKUP;
+                    case 47: // PM4_PU_SITE
+                        return CurrentItem.PM4_PU_SITE;
+                    case 48: // PM4_SETDOWN
+                        return CurrentItem.PM4_SETDOWN;
+                    case 49: // PM4_SD_SITE
+                        return CurrentItem.PM4_SD_SITE;
+                    case 50: // PM4_ROUTE
+                        return CurrentItem.PM4_ROUTE;
+                    case 51: // AM5_PICKUP
+                        return CurrentItem.AM5_PICKUP;
+                    case 52: // AM5_PU_SITE
+                        return CurrentItem.AM5_PU_SITE;
+                    case 53: // AM5_SETDOWN
+                        return CurrentItem.AM5_SETDOWN;
+                    case 54: // AM5_SD_SITE
+                        return CurrentItem.AM5_SD_SITE;
+                    case 55: // AM5_ROUTE
+                        return CurrentItem.AM5_ROUTE;
+                    case 56: // PM5_PICKUP
+                        return CurrentItem.PM5_PICKUP;
+                    case 57: // PM5_PU_SITE
+                        return CurrentItem.PM5_PU_SITE;
+                    case 58: // PM5_SETDOWN
+                        return CurrentItem.PM5_SETDOWN;
+                    case 59: // PM5_SD_SITE
+                        return CurrentItem.PM5_SD_SITE;
+                    case 60: // PM5_ROUTE
+                        return CurrentItem.PM5_ROUTE;
+                    case 61: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 62: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 63: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // ROUTE
+                        return CurrentItem.ROUTE == null;
+                    case 3: // DAYS_USED01
+                        return CurrentItem.DAYS_USED01 == null;
+                    case 4: // DAYS_USED02
+                        return CurrentItem.DAYS_USED02 == null;
+                    case 5: // DAYS_USED03
+                        return CurrentItem.DAYS_USED03 == null;
+                    case 6: // DAYS_USED04
+                        return CurrentItem.DAYS_USED04 == null;
+                    case 7: // DAYS_USED05
+                        return CurrentItem.DAYS_USED05 == null;
+                    case 8: // TRANSPORT_NOTES
+                        return CurrentItem.TRANSPORT_NOTES == null;
+                    case 9: // DATE_STARTED
+                        return CurrentItem.DATE_STARTED == null;
+                    case 10: // TERMINATED
+                        return CurrentItem.TERMINATED == null;
+                    case 11: // AM1_PICKUP
+                        return CurrentItem.AM1_PICKUP == null;
+                    case 12: // AM1_PU_SITE
+                        return CurrentItem.AM1_PU_SITE == null;
+                    case 13: // AM1_SETDOWN
+                        return CurrentItem.AM1_SETDOWN == null;
+                    case 14: // AM1_SD_SITE
+                        return CurrentItem.AM1_SD_SITE == null;
+                    case 15: // AM1_ROUTE
+                        return CurrentItem.AM1_ROUTE == null;
+                    case 16: // PM1_PICKUP
+                        return CurrentItem.PM1_PICKUP == null;
+                    case 17: // PM1_PU_SITE
+                        return CurrentItem.PM1_PU_SITE == null;
+                    case 18: // PM1_SETDOWN
+                        return CurrentItem.PM1_SETDOWN == null;
+                    case 19: // PM1_SD_SITE
+                        return CurrentItem.PM1_SD_SITE == null;
+                    case 20: // PM1_ROUTE
+                        return CurrentItem.PM1_ROUTE == null;
+                    case 21: // AM2_PICKUP
+                        return CurrentItem.AM2_PICKUP == null;
+                    case 22: // AM2_PU_SITE
+                        return CurrentItem.AM2_PU_SITE == null;
+                    case 23: // AM2_SETDOWN
+                        return CurrentItem.AM2_SETDOWN == null;
+                    case 24: // AM2_SD_SITE
+                        return CurrentItem.AM2_SD_SITE == null;
+                    case 25: // AM2_ROUTE
+                        return CurrentItem.AM2_ROUTE == null;
+                    case 26: // PM2_PICKUP
+                        return CurrentItem.PM2_PICKUP == null;
+                    case 27: // PM2_PU_SITE
+                        return CurrentItem.PM2_PU_SITE == null;
+                    case 28: // PM2_SETDOWN
+                        return CurrentItem.PM2_SETDOWN == null;
+                    case 29: // PM2_SD_SITE
+                        return CurrentItem.PM2_SD_SITE == null;
+                    case 30: // PM2_ROUTE
+                        return CurrentItem.PM2_ROUTE == null;
+                    case 31: // AM3_PICKUP
+                        return CurrentItem.AM3_PICKUP == null;
+                    case 32: // AM3_PU_SITE
+                        return CurrentItem.AM3_PU_SITE == null;
+                    case 33: // AM3_SETDOWN
+                        return CurrentItem.AM3_SETDOWN == null;
+                    case 34: // AM3_SD_SITE
+                        return CurrentItem.AM3_SD_SITE == null;
+                    case 35: // AM3_ROUTE
+                        return CurrentItem.AM3_ROUTE == null;
+                    case 36: // PM3_PICKUP
+                        return CurrentItem.PM3_PICKUP == null;
+                    case 37: // PM3_PU_SITE
+                        return CurrentItem.PM3_PU_SITE == null;
+                    case 38: // PM3_SETDOWN
+                        return CurrentItem.PM3_SETDOWN == null;
+                    case 39: // PM3_SD_SITE
+                        return CurrentItem.PM3_SD_SITE == null;
+                    case 40: // PM3_ROUTE
+                        return CurrentItem.PM3_ROUTE == null;
+                    case 41: // AM4_PICKUP
+                        return CurrentItem.AM4_PICKUP == null;
+                    case 42: // AM4_PU_SITE
+                        return CurrentItem.AM4_PU_SITE == null;
+                    case 43: // AM4_SETDOWN
+                        return CurrentItem.AM4_SETDOWN == null;
+                    case 44: // AM4_SD_SITE
+                        return CurrentItem.AM4_SD_SITE == null;
+                    case 45: // AM4_ROUTE
+                        return CurrentItem.AM4_ROUTE == null;
+                    case 46: // PM4_PICKUP
+                        return CurrentItem.PM4_PICKUP == null;
+                    case 47: // PM4_PU_SITE
+                        return CurrentItem.PM4_PU_SITE == null;
+                    case 48: // PM4_SETDOWN
+                        return CurrentItem.PM4_SETDOWN == null;
+                    case 49: // PM4_SD_SITE
+                        return CurrentItem.PM4_SD_SITE == null;
+                    case 50: // PM4_ROUTE
+                        return CurrentItem.PM4_ROUTE == null;
+                    case 51: // AM5_PICKUP
+                        return CurrentItem.AM5_PICKUP == null;
+                    case 52: // AM5_PU_SITE
+                        return CurrentItem.AM5_PU_SITE == null;
+                    case 53: // AM5_SETDOWN
+                        return CurrentItem.AM5_SETDOWN == null;
+                    case 54: // AM5_SD_SITE
+                        return CurrentItem.AM5_SD_SITE == null;
+                    case 55: // AM5_ROUTE
+                        return CurrentItem.AM5_ROUTE == null;
+                    case 56: // PM5_PICKUP
+                        return CurrentItem.PM5_PICKUP == null;
+                    case 57: // PM5_PU_SITE
+                        return CurrentItem.PM5_PU_SITE == null;
+                    case 58: // PM5_SETDOWN
+                        return CurrentItem.PM5_SETDOWN == null;
+                    case 59: // PM5_SD_SITE
+                        return CurrentItem.PM5_SD_SITE == null;
+                    case 60: // PM5_ROUTE
+                        return CurrentItem.PM5_ROUTE == null;
+                    case 61: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 62: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 63: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // STBTKEY
+                        return "STBTKEY";
+                    case 2: // ROUTE
+                        return "ROUTE";
+                    case 3: // DAYS_USED01
+                        return "DAYS_USED01";
+                    case 4: // DAYS_USED02
+                        return "DAYS_USED02";
+                    case 5: // DAYS_USED03
+                        return "DAYS_USED03";
+                    case 6: // DAYS_USED04
+                        return "DAYS_USED04";
+                    case 7: // DAYS_USED05
+                        return "DAYS_USED05";
+                    case 8: // TRANSPORT_NOTES
+                        return "TRANSPORT_NOTES";
+                    case 9: // DATE_STARTED
+                        return "DATE_STARTED";
+                    case 10: // TERMINATED
+                        return "TERMINATED";
+                    case 11: // AM1_PICKUP
+                        return "AM1_PICKUP";
+                    case 12: // AM1_PU_SITE
+                        return "AM1_PU_SITE";
+                    case 13: // AM1_SETDOWN
+                        return "AM1_SETDOWN";
+                    case 14: // AM1_SD_SITE
+                        return "AM1_SD_SITE";
+                    case 15: // AM1_ROUTE
+                        return "AM1_ROUTE";
+                    case 16: // PM1_PICKUP
+                        return "PM1_PICKUP";
+                    case 17: // PM1_PU_SITE
+                        return "PM1_PU_SITE";
+                    case 18: // PM1_SETDOWN
+                        return "PM1_SETDOWN";
+                    case 19: // PM1_SD_SITE
+                        return "PM1_SD_SITE";
+                    case 20: // PM1_ROUTE
+                        return "PM1_ROUTE";
+                    case 21: // AM2_PICKUP
+                        return "AM2_PICKUP";
+                    case 22: // AM2_PU_SITE
+                        return "AM2_PU_SITE";
+                    case 23: // AM2_SETDOWN
+                        return "AM2_SETDOWN";
+                    case 24: // AM2_SD_SITE
+                        return "AM2_SD_SITE";
+                    case 25: // AM2_ROUTE
+                        return "AM2_ROUTE";
+                    case 26: // PM2_PICKUP
+                        return "PM2_PICKUP";
+                    case 27: // PM2_PU_SITE
+                        return "PM2_PU_SITE";
+                    case 28: // PM2_SETDOWN
+                        return "PM2_SETDOWN";
+                    case 29: // PM2_SD_SITE
+                        return "PM2_SD_SITE";
+                    case 30: // PM2_ROUTE
+                        return "PM2_ROUTE";
+                    case 31: // AM3_PICKUP
+                        return "AM3_PICKUP";
+                    case 32: // AM3_PU_SITE
+                        return "AM3_PU_SITE";
+                    case 33: // AM3_SETDOWN
+                        return "AM3_SETDOWN";
+                    case 34: // AM3_SD_SITE
+                        return "AM3_SD_SITE";
+                    case 35: // AM3_ROUTE
+                        return "AM3_ROUTE";
+                    case 36: // PM3_PICKUP
+                        return "PM3_PICKUP";
+                    case 37: // PM3_PU_SITE
+                        return "PM3_PU_SITE";
+                    case 38: // PM3_SETDOWN
+                        return "PM3_SETDOWN";
+                    case 39: // PM3_SD_SITE
+                        return "PM3_SD_SITE";
+                    case 40: // PM3_ROUTE
+                        return "PM3_ROUTE";
+                    case 41: // AM4_PICKUP
+                        return "AM4_PICKUP";
+                    case 42: // AM4_PU_SITE
+                        return "AM4_PU_SITE";
+                    case 43: // AM4_SETDOWN
+                        return "AM4_SETDOWN";
+                    case 44: // AM4_SD_SITE
+                        return "AM4_SD_SITE";
+                    case 45: // AM4_ROUTE
+                        return "AM4_ROUTE";
+                    case 46: // PM4_PICKUP
+                        return "PM4_PICKUP";
+                    case 47: // PM4_PU_SITE
+                        return "PM4_PU_SITE";
+                    case 48: // PM4_SETDOWN
+                        return "PM4_SETDOWN";
+                    case 49: // PM4_SD_SITE
+                        return "PM4_SD_SITE";
+                    case 50: // PM4_ROUTE
+                        return "PM4_ROUTE";
+                    case 51: // AM5_PICKUP
+                        return "AM5_PICKUP";
+                    case 52: // AM5_PU_SITE
+                        return "AM5_PU_SITE";
+                    case 53: // AM5_SETDOWN
+                        return "AM5_SETDOWN";
+                    case 54: // AM5_SD_SITE
+                        return "AM5_SD_SITE";
+                    case 55: // AM5_ROUTE
+                        return "AM5_ROUTE";
+                    case 56: // PM5_PICKUP
+                        return "PM5_PICKUP";
+                    case 57: // PM5_PU_SITE
+                        return "PM5_PU_SITE";
+                    case 58: // PM5_SETDOWN
+                        return "PM5_SETDOWN";
+                    case 59: // PM5_SD_SITE
+                        return "PM5_SD_SITE";
+                    case 60: // PM5_ROUTE
+                        return "PM5_ROUTE";
+                    case 61: // LW_DATE
+                        return "LW_DATE";
+                    case 62: // LW_TIME
+                        return "LW_TIME";
+                    case 63: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "STBTKEY":
+                        return 1;
+                    case "ROUTE":
+                        return 2;
+                    case "DAYS_USED01":
+                        return 3;
+                    case "DAYS_USED02":
+                        return 4;
+                    case "DAYS_USED03":
+                        return 5;
+                    case "DAYS_USED04":
+                        return 6;
+                    case "DAYS_USED05":
+                        return 7;
+                    case "TRANSPORT_NOTES":
+                        return 8;
+                    case "DATE_STARTED":
+                        return 9;
+                    case "TERMINATED":
+                        return 10;
+                    case "AM1_PICKUP":
+                        return 11;
+                    case "AM1_PU_SITE":
+                        return 12;
+                    case "AM1_SETDOWN":
+                        return 13;
+                    case "AM1_SD_SITE":
+                        return 14;
+                    case "AM1_ROUTE":
+                        return 15;
+                    case "PM1_PICKUP":
+                        return 16;
+                    case "PM1_PU_SITE":
+                        return 17;
+                    case "PM1_SETDOWN":
+                        return 18;
+                    case "PM1_SD_SITE":
+                        return 19;
+                    case "PM1_ROUTE":
+                        return 20;
+                    case "AM2_PICKUP":
+                        return 21;
+                    case "AM2_PU_SITE":
+                        return 22;
+                    case "AM2_SETDOWN":
+                        return 23;
+                    case "AM2_SD_SITE":
+                        return 24;
+                    case "AM2_ROUTE":
+                        return 25;
+                    case "PM2_PICKUP":
+                        return 26;
+                    case "PM2_PU_SITE":
+                        return 27;
+                    case "PM2_SETDOWN":
+                        return 28;
+                    case "PM2_SD_SITE":
+                        return 29;
+                    case "PM2_ROUTE":
+                        return 30;
+                    case "AM3_PICKUP":
+                        return 31;
+                    case "AM3_PU_SITE":
+                        return 32;
+                    case "AM3_SETDOWN":
+                        return 33;
+                    case "AM3_SD_SITE":
+                        return 34;
+                    case "AM3_ROUTE":
+                        return 35;
+                    case "PM3_PICKUP":
+                        return 36;
+                    case "PM3_PU_SITE":
+                        return 37;
+                    case "PM3_SETDOWN":
+                        return 38;
+                    case "PM3_SD_SITE":
+                        return 39;
+                    case "PM3_ROUTE":
+                        return 40;
+                    case "AM4_PICKUP":
+                        return 41;
+                    case "AM4_PU_SITE":
+                        return 42;
+                    case "AM4_SETDOWN":
+                        return 43;
+                    case "AM4_SD_SITE":
+                        return 44;
+                    case "AM4_ROUTE":
+                        return 45;
+                    case "PM4_PICKUP":
+                        return 46;
+                    case "PM4_PU_SITE":
+                        return 47;
+                    case "PM4_SETDOWN":
+                        return 48;
+                    case "PM4_SD_SITE":
+                        return 49;
+                    case "PM4_ROUTE":
+                        return 50;
+                    case "AM5_PICKUP":
+                        return 51;
+                    case "AM5_PU_SITE":
+                        return 52;
+                    case "AM5_SETDOWN":
+                        return 53;
+                    case "AM5_SD_SITE":
+                        return 54;
+                    case "AM5_ROUTE":
+                        return 55;
+                    case "PM5_PICKUP":
+                        return 56;
+                    case "PM5_PU_SITE":
+                        return 57;
+                    case "PM5_SETDOWN":
+                        return 58;
+                    case "PM5_SD_SITE":
+                        return 59;
+                    case "PM5_ROUTE":
+                        return 60;
+                    case "LW_DATE":
+                        return 61;
+                    case "LW_TIME":
+                        return 62;
+                    case "LW_USER":
+                        return 63;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Association Members Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAMDataSet : SetBase<SAM>
+    public sealed partial class SAMDataSet : DataSetBase<SAM>
     {
         /// <summary>
         /// Data Set Name
@@ -383,6 +384,433 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SAM table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SAM](
+        [SAMKEY] int IDENTITY NOT NULL,
+        [PERSON_TYPE] varchar(2) NULL,
+        [PERSON] varchar(10) NULL,
+        [WHICH_PARENT] varchar(1) NULL,
+        [GENDER] varchar(1) NULL,
+        [BIRTHDATE] datetime NULL,
+        [KOORIE] varchar(1) NULL,
+        [PARENT_OS] varchar(1) NULL,
+        [LOTE] varchar(1) NULL,
+        [LBOTE] varchar(1) NULL,
+        [DISABILITY] varchar(1) NULL,
+        [ASSOC_NAME] varchar(15) NULL,
+        [ASSOC_POSN] varchar(25) NULL,
+        [ADDRESSKEY] int NULL,
+        [MAILKEY] int NULL,
+        [HOME_E_MAIL] varchar(60) NULL,
+        [WORK_PHONE] varchar(20) NULL,
+        [WORK_FAX] varchar(20) NULL,
+        [WORK_E_MAIL] varchar(60) NULL,
+        [SURNAME] varchar(30) NULL,
+        [FIRST_NAME] varchar(20) NULL,
+        [TITLE] varchar(4) NULL,
+        [MOBILE_PHONE] varchar(20) NULL,
+        [SIGNATORY] varchar(1) NULL,
+        [SAM_COMMENT] text NULL,
+        [START_DATE] datetime NULL,
+        [END_DATE] datetime NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SAM_Index_SAMKEY] PRIMARY KEY CLUSTERED (
+            [SAMKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SAM_Index_ADDRESSKEY] ON [dbo].[SAM]
+    (
+            [ADDRESSKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SAM_Index_ASSOC_NAME] ON [dbo].[SAM]
+    (
+            [ASSOC_NAME] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SAM_Index_ASSOC_POSN] ON [dbo].[SAM]
+    (
+            [ASSOC_POSN] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SAM_Index_MAILKEY] ON [dbo].[SAM]
+    (
+            [MAILKEY] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAM data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SAMDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SAMDataReader : IDataReader, IDataRecord
+        {
+            private List<SAM> Items;
+            private int CurrentIndex;
+            private SAM CurrentItem;
+
+            public SAMDataReader(List<SAM> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 30; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SAMKEY
+                        return CurrentItem.SAMKEY;
+                    case 1: // PERSON_TYPE
+                        return CurrentItem.PERSON_TYPE;
+                    case 2: // PERSON
+                        return CurrentItem.PERSON;
+                    case 3: // WHICH_PARENT
+                        return CurrentItem.WHICH_PARENT;
+                    case 4: // GENDER
+                        return CurrentItem.GENDER;
+                    case 5: // BIRTHDATE
+                        return CurrentItem.BIRTHDATE;
+                    case 6: // KOORIE
+                        return CurrentItem.KOORIE;
+                    case 7: // PARENT_OS
+                        return CurrentItem.PARENT_OS;
+                    case 8: // LOTE
+                        return CurrentItem.LOTE;
+                    case 9: // LBOTE
+                        return CurrentItem.LBOTE;
+                    case 10: // DISABILITY
+                        return CurrentItem.DISABILITY;
+                    case 11: // ASSOC_NAME
+                        return CurrentItem.ASSOC_NAME;
+                    case 12: // ASSOC_POSN
+                        return CurrentItem.ASSOC_POSN;
+                    case 13: // ADDRESSKEY
+                        return CurrentItem.ADDRESSKEY;
+                    case 14: // MAILKEY
+                        return CurrentItem.MAILKEY;
+                    case 15: // HOME_E_MAIL
+                        return CurrentItem.HOME_E_MAIL;
+                    case 16: // WORK_PHONE
+                        return CurrentItem.WORK_PHONE;
+                    case 17: // WORK_FAX
+                        return CurrentItem.WORK_FAX;
+                    case 18: // WORK_E_MAIL
+                        return CurrentItem.WORK_E_MAIL;
+                    case 19: // SURNAME
+                        return CurrentItem.SURNAME;
+                    case 20: // FIRST_NAME
+                        return CurrentItem.FIRST_NAME;
+                    case 21: // TITLE
+                        return CurrentItem.TITLE;
+                    case 22: // MOBILE_PHONE
+                        return CurrentItem.MOBILE_PHONE;
+                    case 23: // SIGNATORY
+                        return CurrentItem.SIGNATORY;
+                    case 24: // SAM_COMMENT
+                        return CurrentItem.SAM_COMMENT;
+                    case 25: // START_DATE
+                        return CurrentItem.START_DATE;
+                    case 26: // END_DATE
+                        return CurrentItem.END_DATE;
+                    case 27: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 28: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 29: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // PERSON_TYPE
+                        return CurrentItem.PERSON_TYPE == null;
+                    case 2: // PERSON
+                        return CurrentItem.PERSON == null;
+                    case 3: // WHICH_PARENT
+                        return CurrentItem.WHICH_PARENT == null;
+                    case 4: // GENDER
+                        return CurrentItem.GENDER == null;
+                    case 5: // BIRTHDATE
+                        return CurrentItem.BIRTHDATE == null;
+                    case 6: // KOORIE
+                        return CurrentItem.KOORIE == null;
+                    case 7: // PARENT_OS
+                        return CurrentItem.PARENT_OS == null;
+                    case 8: // LOTE
+                        return CurrentItem.LOTE == null;
+                    case 9: // LBOTE
+                        return CurrentItem.LBOTE == null;
+                    case 10: // DISABILITY
+                        return CurrentItem.DISABILITY == null;
+                    case 11: // ASSOC_NAME
+                        return CurrentItem.ASSOC_NAME == null;
+                    case 12: // ASSOC_POSN
+                        return CurrentItem.ASSOC_POSN == null;
+                    case 13: // ADDRESSKEY
+                        return CurrentItem.ADDRESSKEY == null;
+                    case 14: // MAILKEY
+                        return CurrentItem.MAILKEY == null;
+                    case 15: // HOME_E_MAIL
+                        return CurrentItem.HOME_E_MAIL == null;
+                    case 16: // WORK_PHONE
+                        return CurrentItem.WORK_PHONE == null;
+                    case 17: // WORK_FAX
+                        return CurrentItem.WORK_FAX == null;
+                    case 18: // WORK_E_MAIL
+                        return CurrentItem.WORK_E_MAIL == null;
+                    case 19: // SURNAME
+                        return CurrentItem.SURNAME == null;
+                    case 20: // FIRST_NAME
+                        return CurrentItem.FIRST_NAME == null;
+                    case 21: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 22: // MOBILE_PHONE
+                        return CurrentItem.MOBILE_PHONE == null;
+                    case 23: // SIGNATORY
+                        return CurrentItem.SIGNATORY == null;
+                    case 24: // SAM_COMMENT
+                        return CurrentItem.SAM_COMMENT == null;
+                    case 25: // START_DATE
+                        return CurrentItem.START_DATE == null;
+                    case 26: // END_DATE
+                        return CurrentItem.END_DATE == null;
+                    case 27: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 28: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 29: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SAMKEY
+                        return "SAMKEY";
+                    case 1: // PERSON_TYPE
+                        return "PERSON_TYPE";
+                    case 2: // PERSON
+                        return "PERSON";
+                    case 3: // WHICH_PARENT
+                        return "WHICH_PARENT";
+                    case 4: // GENDER
+                        return "GENDER";
+                    case 5: // BIRTHDATE
+                        return "BIRTHDATE";
+                    case 6: // KOORIE
+                        return "KOORIE";
+                    case 7: // PARENT_OS
+                        return "PARENT_OS";
+                    case 8: // LOTE
+                        return "LOTE";
+                    case 9: // LBOTE
+                        return "LBOTE";
+                    case 10: // DISABILITY
+                        return "DISABILITY";
+                    case 11: // ASSOC_NAME
+                        return "ASSOC_NAME";
+                    case 12: // ASSOC_POSN
+                        return "ASSOC_POSN";
+                    case 13: // ADDRESSKEY
+                        return "ADDRESSKEY";
+                    case 14: // MAILKEY
+                        return "MAILKEY";
+                    case 15: // HOME_E_MAIL
+                        return "HOME_E_MAIL";
+                    case 16: // WORK_PHONE
+                        return "WORK_PHONE";
+                    case 17: // WORK_FAX
+                        return "WORK_FAX";
+                    case 18: // WORK_E_MAIL
+                        return "WORK_E_MAIL";
+                    case 19: // SURNAME
+                        return "SURNAME";
+                    case 20: // FIRST_NAME
+                        return "FIRST_NAME";
+                    case 21: // TITLE
+                        return "TITLE";
+                    case 22: // MOBILE_PHONE
+                        return "MOBILE_PHONE";
+                    case 23: // SIGNATORY
+                        return "SIGNATORY";
+                    case 24: // SAM_COMMENT
+                        return "SAM_COMMENT";
+                    case 25: // START_DATE
+                        return "START_DATE";
+                    case 26: // END_DATE
+                        return "END_DATE";
+                    case 27: // LW_DATE
+                        return "LW_DATE";
+                    case 28: // LW_TIME
+                        return "LW_TIME";
+                    case 29: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SAMKEY":
+                        return 0;
+                    case "PERSON_TYPE":
+                        return 1;
+                    case "PERSON":
+                        return 2;
+                    case "WHICH_PARENT":
+                        return 3;
+                    case "GENDER":
+                        return 4;
+                    case "BIRTHDATE":
+                        return 5;
+                    case "KOORIE":
+                        return 6;
+                    case "PARENT_OS":
+                        return 7;
+                    case "LOTE":
+                        return 8;
+                    case "LBOTE":
+                        return 9;
+                    case "DISABILITY":
+                        return 10;
+                    case "ASSOC_NAME":
+                        return 11;
+                    case "ASSOC_POSN":
+                        return 12;
+                    case "ADDRESSKEY":
+                        return 13;
+                    case "MAILKEY":
+                        return 14;
+                    case "HOME_E_MAIL":
+                        return 15;
+                    case "WORK_PHONE":
+                        return 16;
+                    case "WORK_FAX":
+                        return 17;
+                    case "WORK_E_MAIL":
+                        return 18;
+                    case "SURNAME":
+                        return 19;
+                    case "FIRST_NAME":
+                        return 20;
+                    case "TITLE":
+                        return 21;
+                    case "MOBILE_PHONE":
+                        return 22;
+                    case "SIGNATORY":
+                        return 23;
+                    case "SAM_COMMENT":
+                        return 24;
+                    case "START_DATE":
+                        return 25;
+                    case "END_DATE":
+                        return 26;
+                    case "LW_DATE":
+                        return 27;
+                    case "LW_TIME":
+                        return 28;
+                    case "LW_USER":
+                        return 29;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

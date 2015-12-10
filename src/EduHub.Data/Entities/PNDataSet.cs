@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Payroll Groups Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PNDataSet : SetBase<PN>
+    public sealed partial class PNDataSet : DataSetBase<PN>
     {
         /// <summary>
         /// Data Set Name
@@ -488,6 +489,364 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a PN table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PN]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[PN](
+        [PNKEY] smallint NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [TRANSTYPE] varchar(1) NULL,
+        [FIRSTDATE] datetime NULL,
+        [NEXTDATE] datetime NULL,
+        [NO_PAYS] smallint NULL,
+        [ROUNDOFF] money NULL,
+        [PPDKEY] varchar(10) NULL,
+        [PAY_TYPE] varchar(1) NULL,
+        [ACN] varchar(12) NULL,
+        [ABN] varchar(16) NULL,
+        [DD_GLCODE] varchar(10) NULL,
+        [GLCODE] varchar(10) NULL,
+        [GLBANK] varchar(10) NULL,
+        [GLTAX] varchar(10) NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [GLPROGRAM] varchar(3) NULL,
+        [INITIATIVE] varchar(3) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [PN_Index_PNKEY] PRIMARY KEY CLUSTERED (
+            [PNKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_DD_GLCODE] ON [dbo].[PN]
+    (
+            [DD_GLCODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_GLBANK] ON [dbo].[PN]
+    (
+            [GLBANK] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_GLCODE] ON [dbo].[PN]
+    (
+            [GLCODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_GLTAX] ON [dbo].[PN]
+    (
+            [GLTAX] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_INITIATIVE] ON [dbo].[PN]
+    (
+            [INITIATIVE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_PPDKEY] ON [dbo].[PN]
+    (
+            [PPDKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PN_Index_SUBPROGRAM] ON [dbo].[PN]
+    (
+            [SUBPROGRAM] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PN data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PN data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new PNDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class PNDataReader : IDataReader, IDataRecord
+        {
+            private List<PN> Items;
+            private int CurrentIndex;
+            private PN CurrentItem;
+
+            public PNDataReader(List<PN> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 21; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // PNKEY
+                        return CurrentItem.PNKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // TRANSTYPE
+                        return CurrentItem.TRANSTYPE;
+                    case 3: // FIRSTDATE
+                        return CurrentItem.FIRSTDATE;
+                    case 4: // NEXTDATE
+                        return CurrentItem.NEXTDATE;
+                    case 5: // NO_PAYS
+                        return CurrentItem.NO_PAYS;
+                    case 6: // ROUNDOFF
+                        return CurrentItem.ROUNDOFF;
+                    case 7: // PPDKEY
+                        return CurrentItem.PPDKEY;
+                    case 8: // PAY_TYPE
+                        return CurrentItem.PAY_TYPE;
+                    case 9: // ACN
+                        return CurrentItem.ACN;
+                    case 10: // ABN
+                        return CurrentItem.ABN;
+                    case 11: // DD_GLCODE
+                        return CurrentItem.DD_GLCODE;
+                    case 12: // GLCODE
+                        return CurrentItem.GLCODE;
+                    case 13: // GLBANK
+                        return CurrentItem.GLBANK;
+                    case 14: // GLTAX
+                        return CurrentItem.GLTAX;
+                    case 15: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 16: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM;
+                    case 17: // INITIATIVE
+                        return CurrentItem.INITIATIVE;
+                    case 18: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 19: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 20: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // TRANSTYPE
+                        return CurrentItem.TRANSTYPE == null;
+                    case 3: // FIRSTDATE
+                        return CurrentItem.FIRSTDATE == null;
+                    case 4: // NEXTDATE
+                        return CurrentItem.NEXTDATE == null;
+                    case 5: // NO_PAYS
+                        return CurrentItem.NO_PAYS == null;
+                    case 6: // ROUNDOFF
+                        return CurrentItem.ROUNDOFF == null;
+                    case 7: // PPDKEY
+                        return CurrentItem.PPDKEY == null;
+                    case 8: // PAY_TYPE
+                        return CurrentItem.PAY_TYPE == null;
+                    case 9: // ACN
+                        return CurrentItem.ACN == null;
+                    case 10: // ABN
+                        return CurrentItem.ABN == null;
+                    case 11: // DD_GLCODE
+                        return CurrentItem.DD_GLCODE == null;
+                    case 12: // GLCODE
+                        return CurrentItem.GLCODE == null;
+                    case 13: // GLBANK
+                        return CurrentItem.GLBANK == null;
+                    case 14: // GLTAX
+                        return CurrentItem.GLTAX == null;
+                    case 15: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM == null;
+                    case 16: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM == null;
+                    case 17: // INITIATIVE
+                        return CurrentItem.INITIATIVE == null;
+                    case 18: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 19: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 20: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // PNKEY
+                        return "PNKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // TRANSTYPE
+                        return "TRANSTYPE";
+                    case 3: // FIRSTDATE
+                        return "FIRSTDATE";
+                    case 4: // NEXTDATE
+                        return "NEXTDATE";
+                    case 5: // NO_PAYS
+                        return "NO_PAYS";
+                    case 6: // ROUNDOFF
+                        return "ROUNDOFF";
+                    case 7: // PPDKEY
+                        return "PPDKEY";
+                    case 8: // PAY_TYPE
+                        return "PAY_TYPE";
+                    case 9: // ACN
+                        return "ACN";
+                    case 10: // ABN
+                        return "ABN";
+                    case 11: // DD_GLCODE
+                        return "DD_GLCODE";
+                    case 12: // GLCODE
+                        return "GLCODE";
+                    case 13: // GLBANK
+                        return "GLBANK";
+                    case 14: // GLTAX
+                        return "GLTAX";
+                    case 15: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 16: // GLPROGRAM
+                        return "GLPROGRAM";
+                    case 17: // INITIATIVE
+                        return "INITIATIVE";
+                    case 18: // LW_DATE
+                        return "LW_DATE";
+                    case 19: // LW_TIME
+                        return "LW_TIME";
+                    case 20: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "PNKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "TRANSTYPE":
+                        return 2;
+                    case "FIRSTDATE":
+                        return 3;
+                    case "NEXTDATE":
+                        return 4;
+                    case "NO_PAYS":
+                        return 5;
+                    case "ROUNDOFF":
+                        return 6;
+                    case "PPDKEY":
+                        return 7;
+                    case "PAY_TYPE":
+                        return 8;
+                    case "ACN":
+                        return 9;
+                    case "ABN":
+                        return 10;
+                    case "DD_GLCODE":
+                        return 11;
+                    case "GLCODE":
+                        return 12;
+                    case "GLBANK":
+                        return 13;
+                    case "GLTAX":
+                        return 14;
+                    case "SUBPROGRAM":
+                        return 15;
+                    case "GLPROGRAM":
+                        return 16;
+                    case "INITIATIVE":
+                        return 17;
+                    case "LW_DATE":
+                        return 18;
+                    case "LW_TIME":
+                        return 19;
+                    case "LW_USER":
+                        return 20;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

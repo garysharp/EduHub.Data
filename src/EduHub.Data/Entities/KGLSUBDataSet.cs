@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Sub Programs Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGLSUBDataSet : SetBase<KGLSUB>
+    public sealed partial class KGLSUBDataSet : DataSetBase<KGLSUB>
     {
         /// <summary>
         /// Data Set Name
@@ -188,6 +189,232 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a KGLSUB table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGLSUB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[KGLSUB](
+        [SUBPROGRAM] varchar(4) NOT NULL,
+        [TITLE] varchar(30) NULL,
+        [GL_PROGRAM] varchar(3) NULL,
+        [ACTIVE] varchar(1) NULL,
+        [USER_DEFINABLE] varchar(1) NULL,
+        [RESERVED] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [KGLSUB_Index_SUBPROGRAM] PRIMARY KEY CLUSTERED (
+            [SUBPROGRAM] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [KGLSUB_Index_GL_PROGRAM] ON [dbo].[KGLSUB]
+    (
+            [GL_PROGRAM] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGLSUB data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGLSUB data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new KGLSUBDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class KGLSUBDataReader : IDataReader, IDataRecord
+        {
+            private List<KGLSUB> Items;
+            private int CurrentIndex;
+            private KGLSUB CurrentItem;
+
+            public KGLSUBDataReader(List<KGLSUB> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 9; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 1: // TITLE
+                        return CurrentItem.TITLE;
+                    case 2: // GL_PROGRAM
+                        return CurrentItem.GL_PROGRAM;
+                    case 3: // ACTIVE
+                        return CurrentItem.ACTIVE;
+                    case 4: // USER_DEFINABLE
+                        return CurrentItem.USER_DEFINABLE;
+                    case 5: // RESERVED
+                        return CurrentItem.RESERVED;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 2: // GL_PROGRAM
+                        return CurrentItem.GL_PROGRAM == null;
+                    case 3: // ACTIVE
+                        return CurrentItem.ACTIVE == null;
+                    case 4: // USER_DEFINABLE
+                        return CurrentItem.USER_DEFINABLE == null;
+                    case 5: // RESERVED
+                        return CurrentItem.RESERVED == null;
+                    case 6: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 7: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 8: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 1: // TITLE
+                        return "TITLE";
+                    case 2: // GL_PROGRAM
+                        return "GL_PROGRAM";
+                    case 3: // ACTIVE
+                        return "ACTIVE";
+                    case 4: // USER_DEFINABLE
+                        return "USER_DEFINABLE";
+                    case 5: // RESERVED
+                        return "RESERVED";
+                    case 6: // LW_DATE
+                        return "LW_DATE";
+                    case 7: // LW_TIME
+                        return "LW_TIME";
+                    case 8: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SUBPROGRAM":
+                        return 0;
+                    case "TITLE":
+                        return 1;
+                    case "GL_PROGRAM":
+                        return 2;
+                    case "ACTIVE":
+                        return 3;
+                    case "USER_DEFINABLE":
+                        return 4;
+                    case "RESERVED":
+                        return 5;
+                    case "LW_DATE":
+                        return 6;
+                    case "LW_TIME":
+                        return 7;
+                    case "LW_USER":
+                        return 8;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

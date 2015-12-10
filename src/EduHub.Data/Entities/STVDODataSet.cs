@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// VELS Domain Results Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STVDODataSet : SetBase<STVDO>
+    public sealed partial class STVDODataSet : DataSetBase<STVDO>
     {
         /// <summary>
         /// Data Set Name
@@ -414,6 +415,268 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a STVDO table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[STVDO](
+        [TID] int IDENTITY NOT NULL,
+        [SKEY] varchar(10) NOT NULL,
+        [SCHOOL_YEAR] varchar(4) NULL,
+        [CAMPUS] int NULL,
+        [YEAR_SEMESTER] varchar(6) NULL,
+        [VDOMAIN] varchar(5) NULL,
+        [VDIMENSION] varchar(10) NULL,
+        [SCORE] varchar(4) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [STVDO_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_CAMPUS] ON [dbo].[STVDO]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_LW_DATE] ON [dbo].[STVDO]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_SCHOOL_YEAR] ON [dbo].[STVDO]
+    (
+            [SCHOOL_YEAR] ASC
+    );
+    CREATE CLUSTERED INDEX [STVDO_Index_SKEY] ON [dbo].[STVDO]
+    (
+            [SKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_VDIMENSION] ON [dbo].[STVDO]
+    (
+            [VDIMENSION] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_VDOMAIN] ON [dbo].[STVDO]
+    (
+            [VDOMAIN] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STVDO data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STVDO data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new STVDODataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class STVDODataReader : IDataReader, IDataRecord
+        {
+            private List<STVDO> Items;
+            private int CurrentIndex;
+            private STVDO CurrentItem;
+
+            public STVDODataReader(List<STVDO> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 11; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // SKEY
+                        return CurrentItem.SKEY;
+                    case 2: // SCHOOL_YEAR
+                        return CurrentItem.SCHOOL_YEAR;
+                    case 3: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 4: // YEAR_SEMESTER
+                        return CurrentItem.YEAR_SEMESTER;
+                    case 5: // VDOMAIN
+                        return CurrentItem.VDOMAIN;
+                    case 6: // VDIMENSION
+                        return CurrentItem.VDIMENSION;
+                    case 7: // SCORE
+                        return CurrentItem.SCORE;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // SCHOOL_YEAR
+                        return CurrentItem.SCHOOL_YEAR == null;
+                    case 3: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 4: // YEAR_SEMESTER
+                        return CurrentItem.YEAR_SEMESTER == null;
+                    case 5: // VDOMAIN
+                        return CurrentItem.VDOMAIN == null;
+                    case 6: // VDIMENSION
+                        return CurrentItem.VDIMENSION == null;
+                    case 7: // SCORE
+                        return CurrentItem.SCORE == null;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // SKEY
+                        return "SKEY";
+                    case 2: // SCHOOL_YEAR
+                        return "SCHOOL_YEAR";
+                    case 3: // CAMPUS
+                        return "CAMPUS";
+                    case 4: // YEAR_SEMESTER
+                        return "YEAR_SEMESTER";
+                    case 5: // VDOMAIN
+                        return "VDOMAIN";
+                    case 6: // VDIMENSION
+                        return "VDIMENSION";
+                    case 7: // SCORE
+                        return "SCORE";
+                    case 8: // LW_DATE
+                        return "LW_DATE";
+                    case 9: // LW_TIME
+                        return "LW_TIME";
+                    case 10: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "SKEY":
+                        return 1;
+                    case "SCHOOL_YEAR":
+                        return 2;
+                    case "CAMPUS":
+                        return 3;
+                    case "YEAR_SEMESTER":
+                        return 4;
+                    case "VDOMAIN":
+                        return 5;
+                    case "VDIMENSION":
+                        return 6;
+                    case "SCORE":
+                        return 7;
+                    case "LW_DATE":
+                        return 8;
+                    case "LW_TIME":
+                        return 9;
+                    case "LW_USER":
+                        return 10;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Half-Day Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXABDataSet : SetBase<SXAB>
+    public sealed partial class SXABDataSet : DataSetBase<SXAB>
     {
         /// <summary>
         /// Data Set Name
@@ -608,6 +609,445 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SXAB table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SXAB](
+        [SXAB_ID] int IDENTITY NOT NULL,
+        [TXHG_TID] int NULL,
+        [STKEY] varchar(10) NULL,
+        [ST_YEAR_LEVEL] varchar(4) NULL,
+        [ABSENCE_DATE] datetime NULL,
+        [ABSENCE_COMMENT] varchar(30) NULL,
+        [AM_EXP_TYPE] smallint NULL,
+        [AM_ATTENDED] varchar(1) NULL,
+        [AM_ACT_TYPE] smallint NULL,
+        [AM_APPROVED] varchar(1) NULL,
+        [AM_LATE_ARRIVAL] smallint NULL,
+        [AM_EARLY_LEFT] smallint NULL,
+        [PM_EXP_TYPE] smallint NULL,
+        [PM_ATTENDED] varchar(1) NULL,
+        [PM_ACT_TYPE] smallint NULL,
+        [PM_APPROVED] varchar(1) NULL,
+        [PM_LATE_ARRIVAL] smallint NULL,
+        [PM_EARLY_LEFT] smallint NULL,
+        [CONTACT] varchar(1) NULL,
+        [CONTACT_METHOD] varchar(1) NULL,
+        [SICKBAY] varchar(1) NULL,
+        [LAST_ACTION] varchar(1) NULL,
+        [SMS_AM_KEY] int NULL,
+        [SMS_PM_KEY] int NULL,
+        [EMAIL_AM_KEY] int NULL,
+        [EMAIL_PM_KEY] int NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SXAB_Index_SXAB_ID] PRIMARY KEY CLUSTERED (
+            [SXAB_ID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_AM_ACT_TYPE] ON [dbo].[SXAB]
+    (
+            [AM_ACT_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_AM_EXP_TYPE] ON [dbo].[SXAB]
+    (
+            [AM_EXP_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_LW_DATE] ON [dbo].[SXAB]
+    (
+            [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_PM_ACT_TYPE] ON [dbo].[SXAB]
+    (
+            [PM_ACT_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_PM_EXP_TYPE] ON [dbo].[SXAB]
+    (
+            [PM_EXP_TYPE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_ST_YEAR_LEVEL] ON [dbo].[SXAB]
+    (
+            [ST_YEAR_LEVEL] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_STKEY] ON [dbo].[SXAB]
+    (
+            [STKEY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB]
+    (
+            [STKEY] ASC,
+            [ABSENCE_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_TXHG_TID] ON [dbo].[SXAB]
+    (
+            [TXHG_TID] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SXAB data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SXAB data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SXABDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SXABDataReader : IDataReader, IDataRecord
+        {
+            private List<SXAB> Items;
+            private int CurrentIndex;
+            private SXAB CurrentItem;
+
+            public SXABDataReader(List<SXAB> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 29; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SXAB_ID
+                        return CurrentItem.SXAB_ID;
+                    case 1: // TXHG_TID
+                        return CurrentItem.TXHG_TID;
+                    case 2: // STKEY
+                        return CurrentItem.STKEY;
+                    case 3: // ST_YEAR_LEVEL
+                        return CurrentItem.ST_YEAR_LEVEL;
+                    case 4: // ABSENCE_DATE
+                        return CurrentItem.ABSENCE_DATE;
+                    case 5: // ABSENCE_COMMENT
+                        return CurrentItem.ABSENCE_COMMENT;
+                    case 6: // AM_EXP_TYPE
+                        return CurrentItem.AM_EXP_TYPE;
+                    case 7: // AM_ATTENDED
+                        return CurrentItem.AM_ATTENDED;
+                    case 8: // AM_ACT_TYPE
+                        return CurrentItem.AM_ACT_TYPE;
+                    case 9: // AM_APPROVED
+                        return CurrentItem.AM_APPROVED;
+                    case 10: // AM_LATE_ARRIVAL
+                        return CurrentItem.AM_LATE_ARRIVAL;
+                    case 11: // AM_EARLY_LEFT
+                        return CurrentItem.AM_EARLY_LEFT;
+                    case 12: // PM_EXP_TYPE
+                        return CurrentItem.PM_EXP_TYPE;
+                    case 13: // PM_ATTENDED
+                        return CurrentItem.PM_ATTENDED;
+                    case 14: // PM_ACT_TYPE
+                        return CurrentItem.PM_ACT_TYPE;
+                    case 15: // PM_APPROVED
+                        return CurrentItem.PM_APPROVED;
+                    case 16: // PM_LATE_ARRIVAL
+                        return CurrentItem.PM_LATE_ARRIVAL;
+                    case 17: // PM_EARLY_LEFT
+                        return CurrentItem.PM_EARLY_LEFT;
+                    case 18: // CONTACT
+                        return CurrentItem.CONTACT;
+                    case 19: // CONTACT_METHOD
+                        return CurrentItem.CONTACT_METHOD;
+                    case 20: // SICKBAY
+                        return CurrentItem.SICKBAY;
+                    case 21: // LAST_ACTION
+                        return CurrentItem.LAST_ACTION;
+                    case 22: // SMS_AM_KEY
+                        return CurrentItem.SMS_AM_KEY;
+                    case 23: // SMS_PM_KEY
+                        return CurrentItem.SMS_PM_KEY;
+                    case 24: // EMAIL_AM_KEY
+                        return CurrentItem.EMAIL_AM_KEY;
+                    case 25: // EMAIL_PM_KEY
+                        return CurrentItem.EMAIL_PM_KEY;
+                    case 26: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 27: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 28: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // TXHG_TID
+                        return CurrentItem.TXHG_TID == null;
+                    case 2: // STKEY
+                        return CurrentItem.STKEY == null;
+                    case 3: // ST_YEAR_LEVEL
+                        return CurrentItem.ST_YEAR_LEVEL == null;
+                    case 4: // ABSENCE_DATE
+                        return CurrentItem.ABSENCE_DATE == null;
+                    case 5: // ABSENCE_COMMENT
+                        return CurrentItem.ABSENCE_COMMENT == null;
+                    case 6: // AM_EXP_TYPE
+                        return CurrentItem.AM_EXP_TYPE == null;
+                    case 7: // AM_ATTENDED
+                        return CurrentItem.AM_ATTENDED == null;
+                    case 8: // AM_ACT_TYPE
+                        return CurrentItem.AM_ACT_TYPE == null;
+                    case 9: // AM_APPROVED
+                        return CurrentItem.AM_APPROVED == null;
+                    case 10: // AM_LATE_ARRIVAL
+                        return CurrentItem.AM_LATE_ARRIVAL == null;
+                    case 11: // AM_EARLY_LEFT
+                        return CurrentItem.AM_EARLY_LEFT == null;
+                    case 12: // PM_EXP_TYPE
+                        return CurrentItem.PM_EXP_TYPE == null;
+                    case 13: // PM_ATTENDED
+                        return CurrentItem.PM_ATTENDED == null;
+                    case 14: // PM_ACT_TYPE
+                        return CurrentItem.PM_ACT_TYPE == null;
+                    case 15: // PM_APPROVED
+                        return CurrentItem.PM_APPROVED == null;
+                    case 16: // PM_LATE_ARRIVAL
+                        return CurrentItem.PM_LATE_ARRIVAL == null;
+                    case 17: // PM_EARLY_LEFT
+                        return CurrentItem.PM_EARLY_LEFT == null;
+                    case 18: // CONTACT
+                        return CurrentItem.CONTACT == null;
+                    case 19: // CONTACT_METHOD
+                        return CurrentItem.CONTACT_METHOD == null;
+                    case 20: // SICKBAY
+                        return CurrentItem.SICKBAY == null;
+                    case 21: // LAST_ACTION
+                        return CurrentItem.LAST_ACTION == null;
+                    case 22: // SMS_AM_KEY
+                        return CurrentItem.SMS_AM_KEY == null;
+                    case 23: // SMS_PM_KEY
+                        return CurrentItem.SMS_PM_KEY == null;
+                    case 24: // EMAIL_AM_KEY
+                        return CurrentItem.EMAIL_AM_KEY == null;
+                    case 25: // EMAIL_PM_KEY
+                        return CurrentItem.EMAIL_PM_KEY == null;
+                    case 26: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 27: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 28: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SXAB_ID
+                        return "SXAB_ID";
+                    case 1: // TXHG_TID
+                        return "TXHG_TID";
+                    case 2: // STKEY
+                        return "STKEY";
+                    case 3: // ST_YEAR_LEVEL
+                        return "ST_YEAR_LEVEL";
+                    case 4: // ABSENCE_DATE
+                        return "ABSENCE_DATE";
+                    case 5: // ABSENCE_COMMENT
+                        return "ABSENCE_COMMENT";
+                    case 6: // AM_EXP_TYPE
+                        return "AM_EXP_TYPE";
+                    case 7: // AM_ATTENDED
+                        return "AM_ATTENDED";
+                    case 8: // AM_ACT_TYPE
+                        return "AM_ACT_TYPE";
+                    case 9: // AM_APPROVED
+                        return "AM_APPROVED";
+                    case 10: // AM_LATE_ARRIVAL
+                        return "AM_LATE_ARRIVAL";
+                    case 11: // AM_EARLY_LEFT
+                        return "AM_EARLY_LEFT";
+                    case 12: // PM_EXP_TYPE
+                        return "PM_EXP_TYPE";
+                    case 13: // PM_ATTENDED
+                        return "PM_ATTENDED";
+                    case 14: // PM_ACT_TYPE
+                        return "PM_ACT_TYPE";
+                    case 15: // PM_APPROVED
+                        return "PM_APPROVED";
+                    case 16: // PM_LATE_ARRIVAL
+                        return "PM_LATE_ARRIVAL";
+                    case 17: // PM_EARLY_LEFT
+                        return "PM_EARLY_LEFT";
+                    case 18: // CONTACT
+                        return "CONTACT";
+                    case 19: // CONTACT_METHOD
+                        return "CONTACT_METHOD";
+                    case 20: // SICKBAY
+                        return "SICKBAY";
+                    case 21: // LAST_ACTION
+                        return "LAST_ACTION";
+                    case 22: // SMS_AM_KEY
+                        return "SMS_AM_KEY";
+                    case 23: // SMS_PM_KEY
+                        return "SMS_PM_KEY";
+                    case 24: // EMAIL_AM_KEY
+                        return "EMAIL_AM_KEY";
+                    case 25: // EMAIL_PM_KEY
+                        return "EMAIL_PM_KEY";
+                    case 26: // LW_DATE
+                        return "LW_DATE";
+                    case 27: // LW_TIME
+                        return "LW_TIME";
+                    case 28: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SXAB_ID":
+                        return 0;
+                    case "TXHG_TID":
+                        return 1;
+                    case "STKEY":
+                        return 2;
+                    case "ST_YEAR_LEVEL":
+                        return 3;
+                    case "ABSENCE_DATE":
+                        return 4;
+                    case "ABSENCE_COMMENT":
+                        return 5;
+                    case "AM_EXP_TYPE":
+                        return 6;
+                    case "AM_ATTENDED":
+                        return 7;
+                    case "AM_ACT_TYPE":
+                        return 8;
+                    case "AM_APPROVED":
+                        return 9;
+                    case "AM_LATE_ARRIVAL":
+                        return 10;
+                    case "AM_EARLY_LEFT":
+                        return 11;
+                    case "PM_EXP_TYPE":
+                        return 12;
+                    case "PM_ATTENDED":
+                        return 13;
+                    case "PM_ACT_TYPE":
+                        return 14;
+                    case "PM_APPROVED":
+                        return 15;
+                    case "PM_LATE_ARRIVAL":
+                        return 16;
+                    case "PM_EARLY_LEFT":
+                        return 17;
+                    case "CONTACT":
+                        return 18;
+                    case "CONTACT_METHOD":
+                        return 19;
+                    case "SICKBAY":
+                        return 20;
+                    case "LAST_ACTION":
+                        return 21;
+                    case "SMS_AM_KEY":
+                        return 22;
+                    case "SMS_PM_KEY":
+                        return 23;
+                    case "EMAIL_AM_KEY":
+                        return 24;
+                    case "EMAIL_PM_KEY":
+                        return 25;
+                    case "LW_DATE":
+                        return 26;
+                    case "LW_TIME":
+                        return 27;
+                    case "LW_USER":
+                        return 28;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

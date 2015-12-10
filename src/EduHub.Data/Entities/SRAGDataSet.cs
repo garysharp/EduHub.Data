@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// FTE Student Retentions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SRAGDataSet : SetBase<SRAG>
+    public sealed partial class SRAGDataSet : DataSetBase<SRAG>
     {
         /// <summary>
         /// Data Set Name
@@ -138,6 +139,210 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SRAG table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SRAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SRAG](
+        [SRAG_ID] int IDENTITY NOT NULL,
+        [BRY] smallint NULL,
+        [PERIOD] varchar(20) NULL,
+        [RETENTION] float NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SRAG_Index_SRAG_ID] PRIMARY KEY CLUSTERED (
+            [SRAG_ID] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SRAG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SRAG data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SRAGDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SRAGDataReader : IDataReader, IDataRecord
+        {
+            private List<SRAG> Items;
+            private int CurrentIndex;
+            private SRAG CurrentItem;
+
+            public SRAGDataReader(List<SRAG> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 7; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SRAG_ID
+                        return CurrentItem.SRAG_ID;
+                    case 1: // BRY
+                        return CurrentItem.BRY;
+                    case 2: // PERIOD
+                        return CurrentItem.PERIOD;
+                    case 3: // RETENTION
+                        return CurrentItem.RETENTION;
+                    case 4: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 5: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 6: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // BRY
+                        return CurrentItem.BRY == null;
+                    case 2: // PERIOD
+                        return CurrentItem.PERIOD == null;
+                    case 3: // RETENTION
+                        return CurrentItem.RETENTION == null;
+                    case 4: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 5: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 6: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SRAG_ID
+                        return "SRAG_ID";
+                    case 1: // BRY
+                        return "BRY";
+                    case 2: // PERIOD
+                        return "PERIOD";
+                    case 3: // RETENTION
+                        return "RETENTION";
+                    case 4: // LW_DATE
+                        return "LW_DATE";
+                    case 5: // LW_TIME
+                        return "LW_TIME";
+                    case 6: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SRAG_ID":
+                        return 0;
+                    case "BRY":
+                        return 1;
+                    case "PERIOD":
+                        return 2;
+                    case "RETENTION":
+                        return 3;
+                    case "LW_DATE":
+                        return 4;
+                    case "LW_TIME":
+                        return 5;
+                    case "LW_USER":
+                        return 6;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

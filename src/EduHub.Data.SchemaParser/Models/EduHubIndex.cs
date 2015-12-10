@@ -11,12 +11,14 @@ namespace EduHub.Data.SchemaParser.Models
         public IReadOnlyList<EduHubField> Fields { get; private set; }
         public bool IsUnique { get; private set; }
         public bool IsClustered { get; private set; }
+        public bool IsPrimary { get; private set; }
 
-        internal EduHubIndex(EduHubEntity Entity, string Name, IReadOnlyList<EduHubField> Fields, bool IsUnique, bool IsClustered)
+        internal EduHubIndex(EduHubEntity Entity, string Name, IReadOnlyList<EduHubField> Fields, bool IsPrimary, bool IsUnique, bool IsClustered)
         {
             this.Entity = Entity;
             this.Name = Name;
             this.Fields = Fields;
+            this.IsPrimary = IsPrimary;
             this.IsUnique = IsUnique;
             this.IsClustered = IsClustered;
         }
@@ -24,15 +26,16 @@ namespace EduHub.Data.SchemaParser.Models
         public XElement ToXElement()
         {
             return new XElement("Index",
-                new XAttribute("Name", Name),
-                new XAttribute("IsUnique", IsUnique),
-                new XAttribute("IsClustered", IsClustered),
+                new XAttribute(nameof(Name), Name),
+                new XAttribute(nameof(IsPrimary), IsPrimary),
+                new XAttribute(nameof(IsUnique), IsUnique),
+                new XAttribute(nameof(IsClustered), IsClustered),
                 Fields.Select(f => new XElement("Field", new XText(f.Name))));
         }
 
         public override string ToString()
         {
-            return $"{Name} {(IsUnique ? " (Unique)" : null)}";
+            return $"{Name} {(IsPrimary ? " (Primary)" : null)}{(IsUnique ? " (Unique)" : null)}{(IsClustered ? " (Clustered)" : null)}";
         }
     }
 }

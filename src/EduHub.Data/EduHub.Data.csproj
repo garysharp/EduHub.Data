@@ -303,6 +303,7 @@
     <Compile Include="Entities\GLPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\IDataSet.cs" />
     <Compile Include="Entities\KAB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1166,7 +1167,7 @@
     <Compile Include="Entities\SEC_USRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\SetBase.cs" />
+    <Compile Include="Entities\DataSetBase.cs" />
     <Compile Include="Entities\SF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>

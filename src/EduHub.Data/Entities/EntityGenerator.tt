@@ -28,6 +28,7 @@
         manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
 #>
 using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace EduHub.Data.Entities
     /// <#= entity.Description #> Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class <#= entity.Name #>DataSet : SetBase<<#= entity.Name #>>
+    public sealed partial class <#= entity.Name #>DataSet : DataSetBase<<#= entity.Name #>>
     {
         /// <summary>
         /// Data Set Name
@@ -256,6 +257,226 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a <#= entity.Name #> table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[<#= entity.Name #>](
+<#
+        foreach (EduHubField field in entity.Fields)
+        {
+#>
+        <#= field.SqlColumn #>,
+<#
+        }
+        EduHubIndex primaryIndex = entity.PrimaryIndex;
+        if (primaryIndex != null)
+        {
+#>
+        CONSTRAINT [<#= entity.Name #>_<#= primaryIndex.Name #>] PRIMARY KEY <#= (primaryIndex.IsClustered ? "CLUSTERED" : "NONCLUSTERED") #> (
+<#
+            foreach (EduHubField field in primaryIndex.Fields.Take(primaryIndex.Fields.Count - 1))
+            {
+#>
+            [<#= field.Name #>] ASC,
+<#
+            }
+#>
+            [<#= primaryIndex.Fields.Last().Name #>] ASC
+<#
+        }
+#>
+        )
+    );
+<#
+        foreach (EduHubIndex index in entity.Indexes.Where(i => i != primaryIndex))
+        {
+#>
+    CREATE <#= (index.IsClustered ? "CLUSTERED" : "NONCLUSTERED") #> INDEX [<#= entity.Name #>_<#= index.Name #>] ON [dbo].[<#= entity.Name #>]
+    (
+<#
+            foreach (EduHubField field in index.Fields.Take(index.Fields.Count - 1))
+            {
+#>
+            [<#= field.Name #>] ASC,
+<#
+            }
+#>
+            [<#= index.Fields.Last().Name #>] ASC
+    );
+<#
+        }
+#>
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the <#= entity.Name #> data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the <#= entity.Name #> data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new <#= entity.Name #>DataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class <#= entity.Name #>DataReader : IDataReader, IDataRecord
+        {
+            private List<<#= entity.Name #>> Items;
+            private int CurrentIndex;
+            private <#= entity.Name #> CurrentItem;
+
+            public <#= entity.Name #>DataReader(List<<#= entity.Name #>> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return <#= entity.Fields.Count #>; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+<#
+        foreach (EduHubField field in entity.Fields)
+        {
+#>
+                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
+                        return CurrentItem.<#= field.Name #>;
+<#
+        }
+#>
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+<#
+        foreach (EduHubField field in entity.Fields.Where(f => f.IsNullable))
+        {
+#>
+                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
+                        return CurrentItem.<#= field.Name #> == null;
+<#
+        }
+#>
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+<#
+        foreach (EduHubField field in entity.Fields)
+        {
+#>
+                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
+                        return "<#= field.Name #>";
+<#
+        }
+#>
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+<#
+        foreach (EduHubField field in entity.Fields)
+        {
+#>
+                    case "<#= field.Name #>":
+                        return <#= entity.Fields.IndexOf(field) #>;
+<#
+        }
+#>
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
+            }
+        }
+
+        #endregion
 
     }
 }
@@ -525,6 +746,16 @@ namespace EduHub.Data.Entities
                     .FirstOrDefault();
             }
         }
+
+        public EduHubIndex PrimaryIndex
+        {
+            get
+            {
+                return Indexes
+                    .Where(i => i.IsPrimary)
+                    .FirstOrDefault();
+            }
+        }
     }
 
     public class EduHubField
@@ -537,6 +768,8 @@ namespace EduHub.Data.Entities
         public string Type;
         public string TypeDescription;
         public int TypeMaxLength;
+
+        public string SqlType;
 
         public bool IsKey;
         public bool IsNullable;
@@ -661,6 +894,33 @@ namespace EduHub.Data.Entities
             }
         }
 
+        public string SqlColumn
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Append("[").Append(Name).Append("] ");
+                builder.Append(SqlType);
+                if (TypeMaxLength > 0)
+                {
+                    builder.Append("(").Append(TypeMaxLength).Append(")");
+                }
+                if (IsIdentity)
+                {
+                    builder.Append(" IDENTITY");
+                }
+                if (IsNullable)
+                {
+                    builder.Append(" NULL");
+                }
+                else
+                {
+                    builder.Append(" NOT NULL");
+                }
+                return builder.ToString();
+            }
+        }
+
         public string MapperConverter
         {
             get
@@ -718,8 +978,8 @@ namespace EduHub.Data.Entities
 
         public List<EduHubField> Fields;
 
+        public bool IsPrimary;
         public bool IsUnique;
-
         public bool IsClustered;
 
         public string Key
@@ -942,6 +1202,7 @@ namespace EduHub.Data.Entities
                     Type = f.Attribute("Type").Value,
                     TypeDescription = f.Attribute("TypeDescription").Value,
                     TypeMaxLength = f.Attribute("TypeMaxLength") == null ? 0 : int.Parse(f.Attribute("TypeMaxLength").Value),
+                    SqlType = f.Attribute("SqlType").Value,
                     IsKey = bool.Parse(f.Attribute("IsKey").Value),
                     IsNullable = bool.Parse(f.Attribute("IsNullable").Value),
                     IsIdentity = bool.Parse(f.Attribute("IsIdentity").Value),
@@ -951,6 +1212,7 @@ namespace EduHub.Data.Entities
                 entity.Indexes = e.Element("Indexes").Elements("Index").Select(i => new EduHubIndex() {
                     Entity = entity,
                     Name = i.Attribute("Name").Value,
+                    IsPrimary = bool.Parse(i.Attribute("IsPrimary").Value),
                     IsUnique = bool.Parse(i.Attribute("IsUnique").Value),
                     IsClustered = bool.Parse(i.Attribute("IsClustered").Value),
                     Fields = i.Elements("Field").Select(fn => entity.Fields.First(f => f.Name == fn.Value)).ToList()

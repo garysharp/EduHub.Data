@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Publications Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPUDataSet : SetBase<SPU>
+    public sealed partial class SPUDataSet : DataSetBase<SPU>
     {
         /// <summary>
         /// Data Set Name
@@ -253,6 +254,299 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SPU table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SPU](
+        [SPUKEY] varchar(10) NOT NULL,
+        [TITLE] varchar(30) NULL,
+        [DESCRIPTION] text NULL,
+        [TARGET] varchar(1) NULL,
+        [LANGUAGE_INDICATOR] varchar(1) NULL,
+        [MAILING_MECHANISM] varchar(1) NULL,
+        [PUBLICATION_TYPE] varchar(1) NULL,
+        [ADDRESS_COMMENT] varchar(40) NULL,
+        [STUDENT_SPECIFIC] varchar(1) NULL,
+        [MAILING_LIST] varchar(12) NULL,
+        [ACTUAL_ELIGIBLE_MEMBERS] varchar(1) NULL,
+        [HOME_LANGUAGE] varchar(7) NULL,
+        [PRIMARY_SORT] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SPU_Index_SPUKEY] PRIMARY KEY CLUSTERED (
+            [SPUKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SPU_Index_HOME_LANGUAGE] ON [dbo].[SPU]
+    (
+            [HOME_LANGUAGE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SPU_Index_MAILING_LIST] ON [dbo].[SPU]
+    (
+            [MAILING_LIST] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SPU data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SPU data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SPUDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SPUDataReader : IDataReader, IDataRecord
+        {
+            private List<SPU> Items;
+            private int CurrentIndex;
+            private SPU CurrentItem;
+
+            public SPUDataReader(List<SPU> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 16; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SPUKEY
+                        return CurrentItem.SPUKEY;
+                    case 1: // TITLE
+                        return CurrentItem.TITLE;
+                    case 2: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 3: // TARGET
+                        return CurrentItem.TARGET;
+                    case 4: // LANGUAGE_INDICATOR
+                        return CurrentItem.LANGUAGE_INDICATOR;
+                    case 5: // MAILING_MECHANISM
+                        return CurrentItem.MAILING_MECHANISM;
+                    case 6: // PUBLICATION_TYPE
+                        return CurrentItem.PUBLICATION_TYPE;
+                    case 7: // ADDRESS_COMMENT
+                        return CurrentItem.ADDRESS_COMMENT;
+                    case 8: // STUDENT_SPECIFIC
+                        return CurrentItem.STUDENT_SPECIFIC;
+                    case 9: // MAILING_LIST
+                        return CurrentItem.MAILING_LIST;
+                    case 10: // ACTUAL_ELIGIBLE_MEMBERS
+                        return CurrentItem.ACTUAL_ELIGIBLE_MEMBERS;
+                    case 11: // HOME_LANGUAGE
+                        return CurrentItem.HOME_LANGUAGE;
+                    case 12: // PRIMARY_SORT
+                        return CurrentItem.PRIMARY_SORT;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // TITLE
+                        return CurrentItem.TITLE == null;
+                    case 2: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 3: // TARGET
+                        return CurrentItem.TARGET == null;
+                    case 4: // LANGUAGE_INDICATOR
+                        return CurrentItem.LANGUAGE_INDICATOR == null;
+                    case 5: // MAILING_MECHANISM
+                        return CurrentItem.MAILING_MECHANISM == null;
+                    case 6: // PUBLICATION_TYPE
+                        return CurrentItem.PUBLICATION_TYPE == null;
+                    case 7: // ADDRESS_COMMENT
+                        return CurrentItem.ADDRESS_COMMENT == null;
+                    case 8: // STUDENT_SPECIFIC
+                        return CurrentItem.STUDENT_SPECIFIC == null;
+                    case 9: // MAILING_LIST
+                        return CurrentItem.MAILING_LIST == null;
+                    case 10: // ACTUAL_ELIGIBLE_MEMBERS
+                        return CurrentItem.ACTUAL_ELIGIBLE_MEMBERS == null;
+                    case 11: // HOME_LANGUAGE
+                        return CurrentItem.HOME_LANGUAGE == null;
+                    case 12: // PRIMARY_SORT
+                        return CurrentItem.PRIMARY_SORT == null;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SPUKEY
+                        return "SPUKEY";
+                    case 1: // TITLE
+                        return "TITLE";
+                    case 2: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 3: // TARGET
+                        return "TARGET";
+                    case 4: // LANGUAGE_INDICATOR
+                        return "LANGUAGE_INDICATOR";
+                    case 5: // MAILING_MECHANISM
+                        return "MAILING_MECHANISM";
+                    case 6: // PUBLICATION_TYPE
+                        return "PUBLICATION_TYPE";
+                    case 7: // ADDRESS_COMMENT
+                        return "ADDRESS_COMMENT";
+                    case 8: // STUDENT_SPECIFIC
+                        return "STUDENT_SPECIFIC";
+                    case 9: // MAILING_LIST
+                        return "MAILING_LIST";
+                    case 10: // ACTUAL_ELIGIBLE_MEMBERS
+                        return "ACTUAL_ELIGIBLE_MEMBERS";
+                    case 11: // HOME_LANGUAGE
+                        return "HOME_LANGUAGE";
+                    case 12: // PRIMARY_SORT
+                        return "PRIMARY_SORT";
+                    case 13: // LW_DATE
+                        return "LW_DATE";
+                    case 14: // LW_TIME
+                        return "LW_TIME";
+                    case 15: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SPUKEY":
+                        return 0;
+                    case "TITLE":
+                        return 1;
+                    case "DESCRIPTION":
+                        return 2;
+                    case "TARGET":
+                        return 3;
+                    case "LANGUAGE_INDICATOR":
+                        return 4;
+                    case "MAILING_MECHANISM":
+                        return 5;
+                    case "PUBLICATION_TYPE":
+                        return 6;
+                    case "ADDRESS_COMMENT":
+                        return 7;
+                    case "STUDENT_SPECIFIC":
+                        return 8;
+                    case "MAILING_LIST":
+                        return 9;
+                    case "ACTUAL_ELIGIBLE_MEMBERS":
+                        return 10;
+                    case "HOME_LANGUAGE":
+                        return 11;
+                    case "PRIMARY_SORT":
+                        return 12;
+                    case "LW_DATE":
+                        return 13;
+                    case "LW_TIME":
+                        return 14;
+                    case "LW_USER":
+                        return 15;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

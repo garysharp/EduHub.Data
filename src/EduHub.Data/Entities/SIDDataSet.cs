@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Disciplinary Incidents Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIDDataSet : SetBase<SID>
+    public sealed partial class SIDDataSet : DataSetBase<SID>
     {
         /// <summary>
         /// Data Set Name
@@ -247,6 +248,281 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SID table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SID]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SID](
+        [SIDKEY] int IDENTITY NOT NULL,
+        [SID_DATE] datetime NULL,
+        [SID_TIME] smallint NULL,
+        [INCIDENT_TYPE] varchar(10) NULL,
+        [INCIDENT_DESC] text NULL,
+        [OFFICE_USE_ONLY] text NULL,
+        [CAMPUS] int NULL,
+        [EXT_ADDRESS] text NULL,
+        [RESP_PERSON_TYPE] varchar(2) NULL,
+        [RESP_PERSON] varchar(10) NULL,
+        [RESP_PERSON_NAME] varchar(64) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [SID_Index_SIDKEY] PRIMARY KEY CLUSTERED (
+            [SIDKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [SID_Index_CAMPUS] ON [dbo].[SID]
+    (
+            [CAMPUS] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SID_Index_INCIDENT_TYPE] ON [dbo].[SID]
+    (
+            [INCIDENT_TYPE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SID data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SID data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SIDDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SIDDataReader : IDataReader, IDataRecord
+        {
+            private List<SID> Items;
+            private int CurrentIndex;
+            private SID CurrentItem;
+
+            public SIDDataReader(List<SID> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 14; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SIDKEY
+                        return CurrentItem.SIDKEY;
+                    case 1: // SID_DATE
+                        return CurrentItem.SID_DATE;
+                    case 2: // SID_TIME
+                        return CurrentItem.SID_TIME;
+                    case 3: // INCIDENT_TYPE
+                        return CurrentItem.INCIDENT_TYPE;
+                    case 4: // INCIDENT_DESC
+                        return CurrentItem.INCIDENT_DESC;
+                    case 5: // OFFICE_USE_ONLY
+                        return CurrentItem.OFFICE_USE_ONLY;
+                    case 6: // CAMPUS
+                        return CurrentItem.CAMPUS;
+                    case 7: // EXT_ADDRESS
+                        return CurrentItem.EXT_ADDRESS;
+                    case 8: // RESP_PERSON_TYPE
+                        return CurrentItem.RESP_PERSON_TYPE;
+                    case 9: // RESP_PERSON
+                        return CurrentItem.RESP_PERSON;
+                    case 10: // RESP_PERSON_NAME
+                        return CurrentItem.RESP_PERSON_NAME;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // SID_DATE
+                        return CurrentItem.SID_DATE == null;
+                    case 2: // SID_TIME
+                        return CurrentItem.SID_TIME == null;
+                    case 3: // INCIDENT_TYPE
+                        return CurrentItem.INCIDENT_TYPE == null;
+                    case 4: // INCIDENT_DESC
+                        return CurrentItem.INCIDENT_DESC == null;
+                    case 5: // OFFICE_USE_ONLY
+                        return CurrentItem.OFFICE_USE_ONLY == null;
+                    case 6: // CAMPUS
+                        return CurrentItem.CAMPUS == null;
+                    case 7: // EXT_ADDRESS
+                        return CurrentItem.EXT_ADDRESS == null;
+                    case 8: // RESP_PERSON_TYPE
+                        return CurrentItem.RESP_PERSON_TYPE == null;
+                    case 9: // RESP_PERSON
+                        return CurrentItem.RESP_PERSON == null;
+                    case 10: // RESP_PERSON_NAME
+                        return CurrentItem.RESP_PERSON_NAME == null;
+                    case 11: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 12: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 13: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SIDKEY
+                        return "SIDKEY";
+                    case 1: // SID_DATE
+                        return "SID_DATE";
+                    case 2: // SID_TIME
+                        return "SID_TIME";
+                    case 3: // INCIDENT_TYPE
+                        return "INCIDENT_TYPE";
+                    case 4: // INCIDENT_DESC
+                        return "INCIDENT_DESC";
+                    case 5: // OFFICE_USE_ONLY
+                        return "OFFICE_USE_ONLY";
+                    case 6: // CAMPUS
+                        return "CAMPUS";
+                    case 7: // EXT_ADDRESS
+                        return "EXT_ADDRESS";
+                    case 8: // RESP_PERSON_TYPE
+                        return "RESP_PERSON_TYPE";
+                    case 9: // RESP_PERSON
+                        return "RESP_PERSON";
+                    case 10: // RESP_PERSON_NAME
+                        return "RESP_PERSON_NAME";
+                    case 11: // LW_DATE
+                        return "LW_DATE";
+                    case 12: // LW_TIME
+                        return "LW_TIME";
+                    case 13: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SIDKEY":
+                        return 0;
+                    case "SID_DATE":
+                        return 1;
+                    case "SID_TIME":
+                        return 2;
+                    case "INCIDENT_TYPE":
+                        return 3;
+                    case "INCIDENT_DESC":
+                        return 4;
+                    case "OFFICE_USE_ONLY":
+                        return 5;
+                    case "CAMPUS":
+                        return 6;
+                    case "EXT_ADDRESS":
+                        return 7;
+                    case "RESP_PERSON_TYPE":
+                        return 8;
+                    case "RESP_PERSON":
+                        return 9;
+                    case "RESP_PERSON_NAME":
+                        return 10;
+                    case "LW_DATE":
+                        return 11;
+                    case "LW_TIME":
+                        return 12;
+                    case "LW_USER":
+                        return 13;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 School Message Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_MSGDataSet : SetBase<SEC_MSG>
+    public sealed partial class SEC_MSGDataSet : DataSetBase<SEC_MSG>
     {
         /// <summary>
         /// Data Set Name
@@ -129,6 +130,183 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a SEC_MSG table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SEC_MSG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[SEC_MSG](
+        [SCHOOLMSGID] int IDENTITY NOT NULL,
+        [MSGTEXT] text NULL,
+        [EDITBYUSERID] varchar(10) NULL,
+        [EDITDATE] datetime NULL,
+        CONSTRAINT [SEC_MSG_Index_SCHOOLMSGID] PRIMARY KEY CLUSTERED (
+            [SCHOOLMSGID] ASC
+        )
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SEC_MSG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SEC_MSG data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new SEC_MSGDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class SEC_MSGDataReader : IDataReader, IDataRecord
+        {
+            private List<SEC_MSG> Items;
+            private int CurrentIndex;
+            private SEC_MSG CurrentItem;
+
+            public SEC_MSGDataReader(List<SEC_MSG> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 4; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // SCHOOLMSGID
+                        return CurrentItem.SCHOOLMSGID;
+                    case 1: // MSGTEXT
+                        return CurrentItem.MSGTEXT;
+                    case 2: // EDITBYUSERID
+                        return CurrentItem.EDITBYUSERID;
+                    case 3: // EDITDATE
+                        return CurrentItem.EDITDATE;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // MSGTEXT
+                        return CurrentItem.MSGTEXT == null;
+                    case 2: // EDITBYUSERID
+                        return CurrentItem.EDITBYUSERID == null;
+                    case 3: // EDITDATE
+                        return CurrentItem.EDITDATE == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // SCHOOLMSGID
+                        return "SCHOOLMSGID";
+                    case 1: // MSGTEXT
+                        return "MSGTEXT";
+                    case 2: // EDITBYUSERID
+                        return "EDITBYUSERID";
+                    case 3: // EDITDATE
+                        return "EDITDATE";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "SCHOOLMSGID":
+                        return 0;
+                    case "MSGTEXT":
+                        return 1;
+                    case "EDITBYUSERID":
+                        return 2;
+                    case "EDITDATE":
+                        return 3;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

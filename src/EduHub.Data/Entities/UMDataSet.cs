@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Addresses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class UMDataSet : SetBase<UM>
+    public sealed partial class UMDataSet : DataSetBase<UM>
     {
         /// <summary>
         /// Data Set Name
@@ -256,6 +257,308 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a UM table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[UM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[UM](
+        [UMKEY] int IDENTITY NOT NULL,
+        [ADDRESS01] varchar(30) NULL,
+        [ADDRESS02] varchar(30) NULL,
+        [ADDRESS03] varchar(30) NULL,
+        [STATE] varchar(3) NULL,
+        [POSTCODE] varchar(4) NULL,
+        [TELEPHONE] varchar(20) NULL,
+        [MOBILE] varchar(20) NULL,
+        [SILENT] varchar(1) NULL,
+        [FAX] varchar(20) NULL,
+        [KAP_LINK] varchar(34) NULL,
+        [COUNTRY] varchar(6) NULL,
+        [DPID] int NULL,
+        [BARCODE] varchar(37) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [UM_Index_UMKEY] PRIMARY KEY CLUSTERED (
+            [UMKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [UM_Index_COUNTRY] ON [dbo].[UM]
+    (
+            [COUNTRY] ASC
+    );
+    CREATE NONCLUSTERED INDEX [UM_Index_LW_DATE] ON [dbo].[UM]
+    (
+            [LW_DATE] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the UM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the UM data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new UMDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class UMDataReader : IDataReader, IDataRecord
+        {
+            private List<UM> Items;
+            private int CurrentIndex;
+            private UM CurrentItem;
+
+            public UMDataReader(List<UM> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 17; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // UMKEY
+                        return CurrentItem.UMKEY;
+                    case 1: // ADDRESS01
+                        return CurrentItem.ADDRESS01;
+                    case 2: // ADDRESS02
+                        return CurrentItem.ADDRESS02;
+                    case 3: // ADDRESS03
+                        return CurrentItem.ADDRESS03;
+                    case 4: // STATE
+                        return CurrentItem.STATE;
+                    case 5: // POSTCODE
+                        return CurrentItem.POSTCODE;
+                    case 6: // TELEPHONE
+                        return CurrentItem.TELEPHONE;
+                    case 7: // MOBILE
+                        return CurrentItem.MOBILE;
+                    case 8: // SILENT
+                        return CurrentItem.SILENT;
+                    case 9: // FAX
+                        return CurrentItem.FAX;
+                    case 10: // KAP_LINK
+                        return CurrentItem.KAP_LINK;
+                    case 11: // COUNTRY
+                        return CurrentItem.COUNTRY;
+                    case 12: // DPID
+                        return CurrentItem.DPID;
+                    case 13: // BARCODE
+                        return CurrentItem.BARCODE;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // ADDRESS01
+                        return CurrentItem.ADDRESS01 == null;
+                    case 2: // ADDRESS02
+                        return CurrentItem.ADDRESS02 == null;
+                    case 3: // ADDRESS03
+                        return CurrentItem.ADDRESS03 == null;
+                    case 4: // STATE
+                        return CurrentItem.STATE == null;
+                    case 5: // POSTCODE
+                        return CurrentItem.POSTCODE == null;
+                    case 6: // TELEPHONE
+                        return CurrentItem.TELEPHONE == null;
+                    case 7: // MOBILE
+                        return CurrentItem.MOBILE == null;
+                    case 8: // SILENT
+                        return CurrentItem.SILENT == null;
+                    case 9: // FAX
+                        return CurrentItem.FAX == null;
+                    case 10: // KAP_LINK
+                        return CurrentItem.KAP_LINK == null;
+                    case 11: // COUNTRY
+                        return CurrentItem.COUNTRY == null;
+                    case 12: // DPID
+                        return CurrentItem.DPID == null;
+                    case 13: // BARCODE
+                        return CurrentItem.BARCODE == null;
+                    case 14: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 15: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 16: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // UMKEY
+                        return "UMKEY";
+                    case 1: // ADDRESS01
+                        return "ADDRESS01";
+                    case 2: // ADDRESS02
+                        return "ADDRESS02";
+                    case 3: // ADDRESS03
+                        return "ADDRESS03";
+                    case 4: // STATE
+                        return "STATE";
+                    case 5: // POSTCODE
+                        return "POSTCODE";
+                    case 6: // TELEPHONE
+                        return "TELEPHONE";
+                    case 7: // MOBILE
+                        return "MOBILE";
+                    case 8: // SILENT
+                        return "SILENT";
+                    case 9: // FAX
+                        return "FAX";
+                    case 10: // KAP_LINK
+                        return "KAP_LINK";
+                    case 11: // COUNTRY
+                        return "COUNTRY";
+                    case 12: // DPID
+                        return "DPID";
+                    case 13: // BARCODE
+                        return "BARCODE";
+                    case 14: // LW_DATE
+                        return "LW_DATE";
+                    case 15: // LW_TIME
+                        return "LW_TIME";
+                    case 16: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "UMKEY":
+                        return 0;
+                    case "ADDRESS01":
+                        return 1;
+                    case "ADDRESS02":
+                        return 2;
+                    case "ADDRESS03":
+                        return 3;
+                    case "STATE":
+                        return 4;
+                    case "POSTCODE":
+                        return 5;
+                    case "TELEPHONE":
+                        return 6;
+                    case "MOBILE":
+                        return 7;
+                    case "SILENT":
+                        return 8;
+                    case "FAX":
+                        return 9;
+                    case "KAP_LINK":
+                        return 10;
+                    case "COUNTRY":
+                        return 11;
+                    case "DPID":
+                        return 12;
+                    case "BARCODE":
+                        return 13;
+                    case "LW_DATE":
+                        return 14;
+                    case "LW_TIME":
+                        return 15;
+                    case "LW_USER":
+                        return 16;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

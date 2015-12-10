@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Position or Group Memberships Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STPODataSet : SetBase<STPO>
+    public sealed partial class STPODataSet : DataSetBase<STPO>
     {
         /// <summary>
         /// Data Set Name
@@ -253,6 +254,297 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a STPO table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STPO]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[STPO](
+        [TID] int IDENTITY NOT NULL,
+        [STPOKEY] varchar(10) NOT NULL,
+        [SGLINK] varchar(12) NULL,
+        [START_DATE] datetime NULL,
+        [END_DATE] datetime NULL,
+        [PERFORMANCE] text NULL,
+        [GROUP_ROLE] varchar(30) NULL,
+        [OTHER] text NULL,
+        [SG_TYPE] varchar(1) NULL,
+        [HOUSE_HG] varchar(10) NULL,
+        [PERMISSION] varchar(1) NULL,
+        [SCH_PERMISSION] varchar(1) NULL,
+        [FULLY_PAID] varchar(1) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [STPO_Index_TID] PRIMARY KEY NONCLUSTERED (
+            [TID] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [STPO_Index_SGLINK] ON [dbo].[STPO]
+    (
+            [SGLINK] ASC
+    );
+    CREATE CLUSTERED INDEX [STPO_Index_STPOKEY] ON [dbo].[STPO]
+    (
+            [STPOKEY] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STPO data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STPO data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new STPODataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class STPODataReader : IDataReader, IDataRecord
+        {
+            private List<STPO> Items;
+            private int CurrentIndex;
+            private STPO CurrentItem;
+
+            public STPODataReader(List<STPO> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 16; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // TID
+                        return CurrentItem.TID;
+                    case 1: // STPOKEY
+                        return CurrentItem.STPOKEY;
+                    case 2: // SGLINK
+                        return CurrentItem.SGLINK;
+                    case 3: // START_DATE
+                        return CurrentItem.START_DATE;
+                    case 4: // END_DATE
+                        return CurrentItem.END_DATE;
+                    case 5: // PERFORMANCE
+                        return CurrentItem.PERFORMANCE;
+                    case 6: // GROUP_ROLE
+                        return CurrentItem.GROUP_ROLE;
+                    case 7: // OTHER
+                        return CurrentItem.OTHER;
+                    case 8: // SG_TYPE
+                        return CurrentItem.SG_TYPE;
+                    case 9: // HOUSE_HG
+                        return CurrentItem.HOUSE_HG;
+                    case 10: // PERMISSION
+                        return CurrentItem.PERMISSION;
+                    case 11: // SCH_PERMISSION
+                        return CurrentItem.SCH_PERMISSION;
+                    case 12: // FULLY_PAID
+                        return CurrentItem.FULLY_PAID;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 2: // SGLINK
+                        return CurrentItem.SGLINK == null;
+                    case 3: // START_DATE
+                        return CurrentItem.START_DATE == null;
+                    case 4: // END_DATE
+                        return CurrentItem.END_DATE == null;
+                    case 5: // PERFORMANCE
+                        return CurrentItem.PERFORMANCE == null;
+                    case 6: // GROUP_ROLE
+                        return CurrentItem.GROUP_ROLE == null;
+                    case 7: // OTHER
+                        return CurrentItem.OTHER == null;
+                    case 8: // SG_TYPE
+                        return CurrentItem.SG_TYPE == null;
+                    case 9: // HOUSE_HG
+                        return CurrentItem.HOUSE_HG == null;
+                    case 10: // PERMISSION
+                        return CurrentItem.PERMISSION == null;
+                    case 11: // SCH_PERMISSION
+                        return CurrentItem.SCH_PERMISSION == null;
+                    case 12: // FULLY_PAID
+                        return CurrentItem.FULLY_PAID == null;
+                    case 13: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 14: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 15: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // TID
+                        return "TID";
+                    case 1: // STPOKEY
+                        return "STPOKEY";
+                    case 2: // SGLINK
+                        return "SGLINK";
+                    case 3: // START_DATE
+                        return "START_DATE";
+                    case 4: // END_DATE
+                        return "END_DATE";
+                    case 5: // PERFORMANCE
+                        return "PERFORMANCE";
+                    case 6: // GROUP_ROLE
+                        return "GROUP_ROLE";
+                    case 7: // OTHER
+                        return "OTHER";
+                    case 8: // SG_TYPE
+                        return "SG_TYPE";
+                    case 9: // HOUSE_HG
+                        return "HOUSE_HG";
+                    case 10: // PERMISSION
+                        return "PERMISSION";
+                    case 11: // SCH_PERMISSION
+                        return "SCH_PERMISSION";
+                    case 12: // FULLY_PAID
+                        return "FULLY_PAID";
+                    case 13: // LW_DATE
+                        return "LW_DATE";
+                    case 14: // LW_TIME
+                        return "LW_TIME";
+                    case 15: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "TID":
+                        return 0;
+                    case "STPOKEY":
+                        return 1;
+                    case "SGLINK":
+                        return 2;
+                    case "START_DATE":
+                        return 3;
+                    case "END_DATE":
+                        return 4;
+                    case "PERFORMANCE":
+                        return 5;
+                    case "GROUP_ROLE":
+                        return 6;
+                    case "OTHER":
+                        return 7;
+                    case "SG_TYPE":
+                        return 8;
+                    case "HOUSE_HG":
+                        return 9;
+                    case "PERMISSION":
+                        return 10;
+                    case "SCH_PERMISSION":
+                        return 11;
+                    case "FULLY_PAID":
+                        return 12;
+                    case "LW_DATE":
+                        return 13;
+                    case "LW_TIME":
+                        return 14;
+                    case "LW_USER":
+                        return 15;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Departments Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PDDataSet : SetBase<PD>
+    public sealed partial class PDDataSet : DataSetBase<PD>
     {
         /// <summary>
         /// Data Set Name
@@ -370,6 +371,266 @@ namespace EduHub.Data.Entities
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region SQL Integration
+
+        /// <summary>
+        /// Returns SQL which checks for the existence of a PD table, and if not found, creates the table and associated indexes.
+        /// </summary>
+        protected override string GetCreateTableSql()
+        {
+            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+BEGIN
+    CREATE TABLE [dbo].[PD](
+        [PDKEY] varchar(10) NOT NULL,
+        [DESCRIPTION] varchar(30) NULL,
+        [GLCODE] varchar(10) NULL,
+        [GLBANK] varchar(10) NULL,
+        [GLTAX] varchar(10) NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [GLPROGRAM] varchar(3) NULL,
+        [INITIATIVE] varchar(3) NULL,
+        [LW_DATE] datetime NULL,
+        [LW_TIME] smallint NULL,
+        [LW_USER] varchar(128) NULL,
+        CONSTRAINT [PD_Index_PDKEY] PRIMARY KEY CLUSTERED (
+            [PDKEY] ASC
+        )
+    );
+    CREATE NONCLUSTERED INDEX [PD_Index_GLBANK] ON [dbo].[PD]
+    (
+            [GLBANK] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PD_Index_GLCODE] ON [dbo].[PD]
+    (
+            [GLCODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PD_Index_GLTAX] ON [dbo].[PD]
+    (
+            [GLTAX] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PD_Index_INITIATIVE] ON [dbo].[PD]
+    (
+            [INITIATIVE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [PD_Index_SUBPROGRAM] ON [dbo].[PD]
+    (
+            [SUBPROGRAM] ASC
+    );
+END";
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PD data set</returns>
+        public override IDataReader GetDataReader()
+        {
+            return new PDDataReader(Items.Value);
+        }
+
+        // Modest implementation to primarily support SqlBulkCopy
+        private class PDDataReader : IDataReader, IDataRecord
+        {
+            private List<PD> Items;
+            private int CurrentIndex;
+            private PD CurrentItem;
+
+            public PDDataReader(List<PD> Items)
+            {
+                this.Items = Items;
+
+                CurrentIndex = -1;
+                CurrentItem = null;
+            }
+
+            public int FieldCount { get { return 11; } }
+            public bool IsClosed { get { return false; } }
+
+            public object this[string name]
+            {
+                get
+                {
+                    return GetValue(GetOrdinal(name));
+                }
+            }
+
+            public object this[int i]
+            {
+                get
+                {
+                    return GetValue(i);
+                }
+            }
+
+            public bool Read()
+            {
+                CurrentIndex++;
+                if (CurrentIndex < Items.Count)
+                {
+                    CurrentItem = Items[CurrentIndex];
+                    return true;
+                }
+                else
+                {
+                    CurrentItem = null;
+                    return false;
+                }
+            }
+
+            public object GetValue(int i)
+            {
+                switch (i)
+                {
+                    case 0: // PDKEY
+                        return CurrentItem.PDKEY;
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION;
+                    case 2: // GLCODE
+                        return CurrentItem.GLCODE;
+                    case 3: // GLBANK
+                        return CurrentItem.GLBANK;
+                    case 4: // GLTAX
+                        return CurrentItem.GLTAX;
+                    case 5: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM;
+                    case 6: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM;
+                    case 7: // INITIATIVE
+                        return CurrentItem.INITIATIVE;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(i));
+                }
+            }
+
+            public bool IsDBNull(int i)
+            {
+                switch (i)
+                {
+                    case 1: // DESCRIPTION
+                        return CurrentItem.DESCRIPTION == null;
+                    case 2: // GLCODE
+                        return CurrentItem.GLCODE == null;
+                    case 3: // GLBANK
+                        return CurrentItem.GLBANK == null;
+                    case 4: // GLTAX
+                        return CurrentItem.GLTAX == null;
+                    case 5: // SUBPROGRAM
+                        return CurrentItem.SUBPROGRAM == null;
+                    case 6: // GLPROGRAM
+                        return CurrentItem.GLPROGRAM == null;
+                    case 7: // INITIATIVE
+                        return CurrentItem.INITIATIVE == null;
+                    case 8: // LW_DATE
+                        return CurrentItem.LW_DATE == null;
+                    case 9: // LW_TIME
+                        return CurrentItem.LW_TIME == null;
+                    case 10: // LW_USER
+                        return CurrentItem.LW_USER == null;
+                    default:
+                        return false;
+                }
+            }
+
+            public string GetName(int ordinal)
+            {
+                switch (ordinal)
+                {
+                    case 0: // PDKEY
+                        return "PDKEY";
+                    case 1: // DESCRIPTION
+                        return "DESCRIPTION";
+                    case 2: // GLCODE
+                        return "GLCODE";
+                    case 3: // GLBANK
+                        return "GLBANK";
+                    case 4: // GLTAX
+                        return "GLTAX";
+                    case 5: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 6: // GLPROGRAM
+                        return "GLPROGRAM";
+                    case 7: // INITIATIVE
+                        return "INITIATIVE";
+                    case 8: // LW_DATE
+                        return "LW_DATE";
+                    case 9: // LW_TIME
+                        return "LW_TIME";
+                    case 10: // LW_USER
+                        return "LW_USER";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ordinal));
+                }
+            }
+
+            public int GetOrdinal(string name)
+            {
+                switch (name)
+                {
+                    case "PDKEY":
+                        return 0;
+                    case "DESCRIPTION":
+                        return 1;
+                    case "GLCODE":
+                        return 2;
+                    case "GLBANK":
+                        return 3;
+                    case "GLTAX":
+                        return 4;
+                    case "SUBPROGRAM":
+                        return 5;
+                    case "GLPROGRAM":
+                        return 6;
+                    case "INITIATIVE":
+                        return 7;
+                    case "LW_DATE":
+                        return 8;
+                    case "LW_TIME":
+                        return 9;
+                    case "LW_USER":
+                        return 10;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(name));
+                }
+            }
+
+            public int Depth { get { throw new NotImplementedException(); } }
+            public int RecordsAffected { get { throw new NotImplementedException(); } }
+            public void Close() { throw new NotImplementedException(); }
+            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
+            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
+            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public char GetChar(int ordinal) { throw new NotImplementedException(); }
+            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
+            public IDataReader GetData(int i) { throw new NotImplementedException(); }
+            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
+            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
+            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
+            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
+            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
+            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
+            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
+            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
+            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
+            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
+            public string GetString(int ordinal) { throw new NotImplementedException(); }
+            public int GetValues(object[] values) { throw new NotImplementedException(); }
+            public bool NextResult() { throw new NotImplementedException(); }
+            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
+            public void Dispose()
+            {
+                return;
             }
         }
 
