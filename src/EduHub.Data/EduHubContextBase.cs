@@ -184,11 +184,11 @@ namespace EduHub.Data
 
             if (identifiers.Count == 0)
             {
-                throw new ArgumentException("EduHub Directory [{EduHubDirectory}] contains no valid data sets.", nameof(EduHubDirectory));
+                throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] contains no valid data sets.", nameof(EduHubDirectory));
             }
             else if (identifiers.Count > 1)
             {
-                throw new ArgumentException("EduHub Directory [{EduHubDirectory}] contains data sets for multiple sites. Explicitly pass a site identifier.", nameof(EduHubDirectory));
+                throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] contains data sets for multiple sites. Explicitly pass a site identifier.", nameof(EduHubDirectory));
             }
 
             return identifiers[0];
