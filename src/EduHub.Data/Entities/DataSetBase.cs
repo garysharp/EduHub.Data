@@ -302,6 +302,7 @@ namespace EduHub.Data.Entities
             return items;
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly { get { return true; } }
 
         /// <summary>

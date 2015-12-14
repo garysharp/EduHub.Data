@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EduHub.Data.SeamlessViews;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -9,6 +10,8 @@ namespace EduHub.Data
 {
     public partial class EduHubContext
     {
+        private readonly SeamlessViewsContext seamlessViews;
+
         /// <summary>
         /// Default directory used when creating a context if none is provided to the constructor
         /// </summary>
@@ -27,40 +30,6 @@ namespace EduHub.Data
         /// Data Set CSV Suffix
         /// </summary>
         public string EduHubSiteIdentifier { get; private set; }
-
-        /// <summary>
-        /// Creates an EduHubContextBase
-        /// </summary>
-        /// <param name="EduHubDirectory">Directory which contains the eduHub CSV Data Sets</param>
-        /// <param name="EduHubSiteIdentifier">Data Set Suffix for each CSV file</param>
-        /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
-        public EduHubContext(string EduHubDirectory, string EduHubSiteIdentifier)
-        {
-            // Use default directory if none provided
-            if (string.IsNullOrWhiteSpace(EduHubDirectory))
-            {
-                EduHubDirectory = DefaultEduHubDirectory;
-            }
-
-            // Use default identifier if none provided
-            if (string.IsNullOrWhiteSpace(EduHubSiteIdentifier))
-            {
-                if (DefaultEduHubSiteIdentifier == null)
-                {
-                    DefaultEduHubSiteIdentifier = GetSiteIdentifier(EduHubDirectory);
-                }
-                EduHubSiteIdentifier = DefaultEduHubSiteIdentifier;
-            }
-
-            // Ensure directory exists
-            if (!Directory.Exists(EduHubDirectory))
-                throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] does not exist");
-
-            this.EduHubDirectory = EduHubDirectory;
-            this.EduHubSiteIdentifier = EduHubSiteIdentifier;
-
-            Initialize();
-        }
 
         /// <summary>
         /// Creates an EduHubContext with a dynamically determined site identifier
@@ -207,6 +176,17 @@ namespace EduHub.Data
                 throw new ArgumentNullException(nameof(DefaultEduHubDirectory));
 
             return GetSiteIdentifier(DefaultEduHubDirectory);
+        }
+
+        /// <summary>
+        /// Seamless Views
+        /// </summary>
+        public SeamlessViewsContext SeamlessViews
+        {
+            get
+            {
+                return seamlessViews;
+            }
         }
 
         /// <summary>

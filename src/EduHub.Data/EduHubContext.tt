@@ -16,8 +16,10 @@
 <#
     var schema = LoadSchema(this.Host.ResolvePath(@"CASES21v56 Schema v2.xml"));
 #>
+using EduHub.Data.SeamlessViews;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using EduHub.Data.Entities;
 
 namespace EduHub.Data
@@ -32,14 +34,43 @@ namespace EduHub.Data
     foreach (EduHubEntity entity in schema.Entities)
     {
 #>
-        private <#=entity.Name#>DataSet _<#=entity.Name#>;
+        private readonly <#=entity.Name#>DataSet _<#=entity.Name#>;
 <#
     }
 #>
 #endregion
 
-        private void Initialize()
+        /// <summary>
+        /// Creates an EduHubContextBase
+        /// </summary>
+        /// <param name="EduHubDirectory">Directory which contains the eduHub CSV Data Sets</param>
+        /// <param name="EduHubSiteIdentifier">Data Set Suffix for each CSV file</param>
+        /// <exception cref="ArgumentException">eduHub Directory does not exist, has no valid data sets or contains multiple data sets</exception>
+        public EduHubContext(string EduHubDirectory, string EduHubSiteIdentifier)
         {
+            // Use default directory if none provided
+            if (string.IsNullOrWhiteSpace(EduHubDirectory))
+            {
+                EduHubDirectory = DefaultEduHubDirectory;
+            }
+
+            // Use default identifier if none provided
+            if (string.IsNullOrWhiteSpace(EduHubSiteIdentifier))
+            {
+                if (DefaultEduHubSiteIdentifier == null)
+                {
+                    DefaultEduHubSiteIdentifier = GetSiteIdentifier(EduHubDirectory);
+                }
+                EduHubSiteIdentifier = DefaultEduHubSiteIdentifier;
+            }
+
+            // Ensure directory exists
+            if (!Directory.Exists(EduHubDirectory))
+                throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] does not exist");
+
+            this.EduHubDirectory = EduHubDirectory;
+            this.EduHubSiteIdentifier = EduHubSiteIdentifier;
+
 <#
     foreach (EduHubEntity entity in schema.Entities)
     {
@@ -48,6 +79,8 @@ namespace EduHub.Data
 <#
     }
 #>
+
+            seamlessViews = new SeamlessViewsContext(this);
         }
 
         /// <summary>

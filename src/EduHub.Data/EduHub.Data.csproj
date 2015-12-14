@@ -1686,6 +1686,13 @@
     <Compile Include="FrameworkExtensions.cs" />
     <Compile Include="NullDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeamlessViews\Entities\SeamlessViewsDataSetBase.cs" />
+    <Compile Include="SeamlessViews\Entities\SeamlessViewsEntityBase.cs" />
+    <Compile Include="SeamlessViews\Entities\V_AIM.cs" />
+    <Compile Include="SeamlessViews\Entities\V_ST.cs" />
+    <Compile Include="SeamlessViews\Entities\V_AIMDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_STDataSet.cs" />
+    <Compile Include="SeamlessViews\SeamlessViewsContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EduHub.Data.nuspec" />
