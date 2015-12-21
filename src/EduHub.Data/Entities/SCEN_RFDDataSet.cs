@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Field-Display Metadata for Census Return Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_RFDDataSet : DataSetBase<SCEN_RFD>
+    public sealed partial class SCEN_RFDDataSet : EduHubDataSet<SCEN_RFD>
     {
         /// <summary>
         /// Data Set Name

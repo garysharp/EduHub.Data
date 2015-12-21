@@ -1,4 +1,5 @@
-﻿using EduHub.Data.SeamlessViews;
+﻿using EduHub.Data.Entities;
+using EduHub.Data.SeamlessViews;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -57,18 +58,46 @@ namespace EduHub.Data
         {
             get
             {
-                return GetAvailableFiles()
+                return GetAvailableDataSetFiles()
                     .Max(f => (DateTime?)File.GetLastWriteTime(f));
             }
         }
 
         /// <summary>
-        /// Filenames of all available eduHub Data Sets
+        /// Names of all Data Sets
         /// </summary>
-        public IEnumerable<string> GetAvailableFiles()
+        public IEnumerable<string> GetDataSetNames()
+        {
+            foreach (var dataSet in GetDataSets())
+            {
+                yield return dataSet.Name;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a Data Set by Name
+        /// </summary>
+        /// <param name="Name">Name of the Data Set</param>
+        public IEduHubDataSet GetDataSet(string Name)
+        {
+            foreach (var dataSet in GetDataSets())
+            {
+                if (dataSet.Name.Equals(Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return dataSet;
+                }
+            }
+
+            throw new ArgumentException($"Unknown EduHub Data Set [{Name}]", nameof(Name));
+        }
+
+        /// <summary>
+        /// Filenames of all Available eduHub Data Sets
+        /// </summary>
+        public IEnumerable<string> GetAvailableDataSetFiles()
         {
             // Valid Sets
-            var sets = new HashSet<string>(GetNames(), StringComparer.OrdinalIgnoreCase);
+            var sets = new HashSet<string>(GetDataSetNames(), StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(EduHubDirectory, $"*_{EduHubSiteIdentifier}.csv"))
             {
@@ -82,14 +111,25 @@ namespace EduHub.Data
         }
 
         /// <summary>
-        /// Names of available Data Sets
+        /// Names of Available Data Sets
         /// </summary>
-        public IEnumerable<string> GetAvailableSets()
+        public IEnumerable<string> GetAvailableDataSetNames()
         {
-            foreach (var file in GetAvailableFiles())
+            foreach (var file in GetAvailableDataSetFiles())
             {
                 var filename = Path.GetFileName(file);
                 yield return filename.Substring(0, filename.Length - EduHubSiteIdentifier.Length - 5);
+            }
+        }
+
+        /// <summary>
+        /// Available Data Sets
+        /// </summary>
+        public IEnumerable<IEduHubDataSet> GetAvailableDataSets()
+        {
+            foreach (var name in GetAvailableDataSetNames())
+            {
+                yield return GetDataSet(name);
             }
         }
 
@@ -242,10 +282,8 @@ namespace EduHub.Data
         /// <param name="Connection">An existing connection to the SQL Server</param>
         public void WriteToSqlServer(SqlConnection Connection)
         {
-            foreach (var dataSetName in GetAvailableSets())
+            foreach (var dataSet in GetAvailableDataSets())
             {
-                var dataSet = GetDataSet(dataSetName);
-
                 dataSet.WriteToSqlServer(Connection);
             }
         }

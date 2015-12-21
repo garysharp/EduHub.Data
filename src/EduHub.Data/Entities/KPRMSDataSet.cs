@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// PRMS Order Details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPRMSDataSet : DataSetBase<KPRMS>
+    public sealed partial class KPRMSDataSet : EduHubDataSet<KPRMS>
     {
         /// <summary>
         /// Data Set Name

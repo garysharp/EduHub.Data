@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// FDT Financial Raw Import Table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FDT_IMP : EntityBase
+    public sealed partial class FDT_IMP : EduHubEntity
     {
 
         #region Field Properties

@@ -22,6 +22,27 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// ESL
+        /// (Based on usr_fn_ESL)
+        /// </summary>
+        /// <param name="CutOff">ESL cut off date</param>
+        /// <param name="YearSpan">Year span</param>
+        /// <returns></returns>
+        public string ESL(DateTime CutOff, short YearSpan)
+        {
+            if (HOME_LANG != "1201" &&
+                AUSSIE_SCHOOL.Value.AddYears(YearSpan) >= CutOff &&
+                LBOTE == "Y")
+            {
+                return "Y";
+            }
+            else
+            {
+                return "N";
+            }
+        }
+
+        /// <summary>
         /// Student's Family Occupation
         /// (Based on usr_fn_family_occupation)
         /// </summary>

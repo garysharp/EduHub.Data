@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// BPAY Receipts
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFB : EntityBase
+    public sealed partial class DFB : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Stored SQL
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class QS : EntityBase
+    public sealed partial class QS : EduHubEntity
     {
 
         #region Field Properties

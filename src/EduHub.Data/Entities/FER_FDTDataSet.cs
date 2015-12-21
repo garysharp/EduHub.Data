@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// FDT Financal Holding Table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FER_FDTDataSet : DataSetBase<FER_FDT>
+    public sealed partial class FER_FDTDataSet : EduHubDataSet<FER_FDT>
     {
         /// <summary>
         /// Data Set Name

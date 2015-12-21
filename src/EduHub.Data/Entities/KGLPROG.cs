@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Programs
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGLPROG : EntityBase
+    public sealed partial class KGLPROG : EduHubEntity
     {
 
         #region Foreign Navigation Properties

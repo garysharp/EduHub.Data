@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Employee Super LTD History Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PESHDataSet : DataSetBase<PESH>
+    public sealed partial class PESHDataSet : EduHubDataSet<PESH>
     {
         /// <summary>
         /// Data Set Name

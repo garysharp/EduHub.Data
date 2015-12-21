@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Absence by Cohort Aggregations
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADAG : EntityBase
+    public sealed partial class SADAG : EduHubEntity
     {
 
         #region Field Properties

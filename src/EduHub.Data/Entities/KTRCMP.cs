@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Company
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTRCMP : EntityBase
+    public sealed partial class KTRCMP : EduHubEntity
     {
 
         #region Foreign Navigation Properties

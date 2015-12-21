@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Financial Data Export
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FDT_EXP : EntityBase
+    public sealed partial class FDT_EXP : EduHubEntity
     {
 
         #region Navigation Property Cache

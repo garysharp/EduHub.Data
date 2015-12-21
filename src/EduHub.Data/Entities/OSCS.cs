@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// CASES Past Students
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class OSCS : EntityBase
+    public sealed partial class OSCS : EduHubEntity
     {
 
         #region Navigation Property Cache

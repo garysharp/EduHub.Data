@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Calendar Events
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TE : EntityBase
+    public sealed partial class TE : EduHubEntity
     {
 
         #region Navigation Property Cache

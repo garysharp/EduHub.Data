@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Faculties Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSFDataSet : DataSetBase<KSF>
+    public sealed partial class KSFDataSet : EduHubDataSet<KSF>
     {
         /// <summary>
         /// Data Set Name

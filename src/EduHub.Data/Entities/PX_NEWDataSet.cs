@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Future Tax Scales Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PX_NEWDataSet : DataSetBase<PX_NEW>
+    public sealed partial class PX_NEWDataSet : EduHubDataSet<PX_NEW>
     {
         /// <summary>
         /// Data Set Name

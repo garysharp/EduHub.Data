@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Schools
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SKGS : EntityBase
+    public sealed partial class SKGS : EduHubEntity
     {
 
         #region Foreign Navigation Properties

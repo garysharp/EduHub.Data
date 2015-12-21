@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Temporary Group Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGTRX : EntityBase
+    public sealed partial class SGTRX : EduHubEntity
     {
 
         #region Navigation Property Cache

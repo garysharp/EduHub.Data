@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// KCM Transfer Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCM_TFRDataSet : DataSetBase<KCM_TFR>
+    public sealed partial class KCM_TFRDataSet : EduHubDataSet<KCM_TFR>
     {
         /// <summary>
         /// Data Set Name

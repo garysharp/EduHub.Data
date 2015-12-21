@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Task Message Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTMDataSet : DataSetBase<KTM>
+    public sealed partial class KTMDataSet : EduHubDataSet<KTM>
     {
         /// <summary>
         /// Data Set Name

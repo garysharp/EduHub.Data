@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Incident Victims/Recipients Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIDVDataSet : DataSetBase<SIDV>
+    public sealed partial class SIDVDataSet : EduHubDataSet<SIDV>
     {
         /// <summary>
         /// Data Set Name

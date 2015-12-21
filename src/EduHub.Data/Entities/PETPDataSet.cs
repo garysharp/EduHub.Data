@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Termination Payment Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PETPDataSet : DataSetBase<PETP>
+    public sealed partial class PETPDataSet : EduHubDataSet<PETP>
     {
         /// <summary>
         /// Data Set Name

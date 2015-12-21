@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Absence Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCTDataSet : DataSetBase<KCT>
+    public sealed partial class KCTDataSet : EduHubDataSet<KCT>
     {
         /// <summary>
         /// Data Set Name

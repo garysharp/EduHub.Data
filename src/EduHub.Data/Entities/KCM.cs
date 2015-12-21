@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Medical Conditions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCM : EntityBase
+    public sealed partial class KCM : EduHubEntity
     {
 
         #region Foreign Navigation Properties

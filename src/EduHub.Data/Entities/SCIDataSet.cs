@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Information Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCIDataSet : DataSetBase<SCI>
+    public sealed partial class SCIDataSet : EduHubDataSet<SCI>
     {
         /// <summary>
         /// Data Set Name

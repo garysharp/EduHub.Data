@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Asset Financial Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ARF : EntityBase
+    public sealed partial class ARF : EduHubEntity
     {
 
         #region Navigation Property Cache

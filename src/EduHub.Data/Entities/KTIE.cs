@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Timetable Import Errors
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTIE : EntityBase
+    public sealed partial class KTIE : EduHubEntity
     {
 
         #region Field Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Transport Routes/Stops Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCRDataSet : DataSetBase<KCR>
+    public sealed partial class KCRDataSet : EduHubDataSet<KCR>
     {
         /// <summary>
         /// Data Set Name

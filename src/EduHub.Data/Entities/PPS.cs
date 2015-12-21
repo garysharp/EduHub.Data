@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// PAYG Supplier Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PPS : EntityBase
+    public sealed partial class PPS : EduHubEntity
     {
 
         #region Navigation Property Cache

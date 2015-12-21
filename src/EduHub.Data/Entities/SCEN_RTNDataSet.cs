@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Census Return Summary Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_RTNDataSet : DataSetBase<SCEN_RTN>
+    public sealed partial class SCEN_RTNDataSet : EduHubDataSet<SCEN_RTN>
     {
         /// <summary>
         /// Data Set Name

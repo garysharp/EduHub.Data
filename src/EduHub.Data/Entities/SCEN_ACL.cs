@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Archived Census Class Sizes Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_ACL : EntityBase
+    public sealed partial class SCEN_ACL : EduHubEntity
     {
 
         #region Field Properties

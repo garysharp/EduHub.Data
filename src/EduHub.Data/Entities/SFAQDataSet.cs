@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Staff Availability in Quilt Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SFAQDataSet : DataSetBase<SFAQ>
+    public sealed partial class SFAQDataSet : EduHubDataSet<SFAQ>
     {
         /// <summary>
         /// Data Set Name

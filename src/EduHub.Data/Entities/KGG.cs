@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Year 9-12 Exit Categories
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGG : EntityBase
+    public sealed partial class KGG : EduHubEntity
     {
 
         #region Foreign Navigation Properties

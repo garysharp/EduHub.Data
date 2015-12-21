@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Fees - Billing Templates Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SABDataSet : DataSetBase<SAB>
+    public sealed partial class SABDataSet : EduHubDataSet<SAB>
     {
         /// <summary>
         /// Data Set Name

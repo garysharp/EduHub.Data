@@ -1,16 +1,11 @@
 ﻿using EduHub.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduHub.Data.SeamlessViews.Entities
 {
     /// <summary>
     /// AIM
     /// </summary>
-    public class V_AIM : SeamlessViewsEntityBase
+    public class V_AIM : SeamlessViewsEntity
     {
         #region Backing Fields
 
@@ -30,7 +25,8 @@ namespace EduHub.Data.SeamlessViews.Entities
 
         #endregion
 
-        internal V_AIM(ST ST)
+        internal V_AIM(SeamlessViewsContext Context, ST ST)
+            : base(Context)
         {
             _student_code = ST.STKEY;
             _first_name = ST.FIRST_NAME;

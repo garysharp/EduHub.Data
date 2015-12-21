@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Future Pay Steps or Pay Class
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PSF : EntityBase
+    public sealed partial class PSF : EduHubEntity
     {
 
         #region Navigation Property Cache

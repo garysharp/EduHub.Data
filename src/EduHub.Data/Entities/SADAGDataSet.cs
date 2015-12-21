@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Absence by Cohort Aggregations Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADAGDataSet : DataSetBase<SADAG>
+    public sealed partial class SADAGDataSet : EduHubDataSet<SADAG>
     {
         /// <summary>
         /// Data Set Name

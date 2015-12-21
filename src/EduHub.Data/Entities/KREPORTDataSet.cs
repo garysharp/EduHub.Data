@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Reports for emailing Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KREPORTDataSet : DataSetBase<KREPORT>
+    public sealed partial class KREPORTDataSet : EduHubDataSet<KREPORT>
     {
         /// <summary>
         /// Data Set Name

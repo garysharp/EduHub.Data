@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Staff Absence Types
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCAT : EntityBase
+    public sealed partial class TCAT : EduHubEntity
     {
 
         #region Foreign Navigation Properties

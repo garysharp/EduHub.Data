@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Leave Management Group
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PLG : EntityBase
+    public sealed partial class PLG : EduHubEntity
     {
 
         #region Foreign Navigation Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Delivery Addresses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KADDataSet : DataSetBase<KAD>
+    public sealed partial class KADDataSet : EduHubDataSet<KAD>
     {
         /// <summary>
         /// Data Set Name

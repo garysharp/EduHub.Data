@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// On line receipt history Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIRHDataSet : DataSetBase<SIRH>
+    public sealed partial class SIRHDataSet : EduHubDataSet<SIRH>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Home Group Daily Attendance Records
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TXHG : EntityBase
+    public sealed partial class TXHG : EduHubEntity
     {
 
         #region Navigation Property Cache

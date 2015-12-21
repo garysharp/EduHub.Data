@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// SMC Transfer Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMC_TFRDataSet : DataSetBase<SMC_TFR>
+    public sealed partial class SMC_TFRDataSet : EduHubDataSet<SMC_TFR>
     {
         /// <summary>
         /// Data Set Name

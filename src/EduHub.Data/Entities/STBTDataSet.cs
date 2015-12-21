@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Usage Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STBTDataSet : DataSetBase<STBT>
+    public sealed partial class STBTDataSet : EduHubDataSet<STBT>
     {
         /// <summary>
         /// Data Set Name

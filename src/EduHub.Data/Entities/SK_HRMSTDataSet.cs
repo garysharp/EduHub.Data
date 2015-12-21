@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// HRMS Temp Import Table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SK_HRMSTDataSet : DataSetBase<SK_HRMST>
+    public sealed partial class SK_HRMSTDataSet : EduHubDataSet<SK_HRMST>
     {
         /// <summary>
         /// Data Set Name

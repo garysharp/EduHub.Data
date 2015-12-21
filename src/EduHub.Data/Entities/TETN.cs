@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Event Attendees
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TETN : EntityBase
+    public sealed partial class TETN : EduHubEntity
     {
 
         #region Navigation Property Cache

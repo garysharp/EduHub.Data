@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Assets - Sub-Category Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKBDataSet : DataSetBase<AKB>
+    public sealed partial class AKBDataSet : EduHubDataSet<AKB>
     {
         /// <summary>
         /// Data Set Name

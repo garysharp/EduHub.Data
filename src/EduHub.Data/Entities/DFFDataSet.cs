@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Family Financial Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFFDataSet : DataSetBase<DFF>
+    public sealed partial class DFFDataSet : EduHubDataSet<DFF>
     {
         /// <summary>
         /// Data Set Name

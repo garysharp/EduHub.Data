@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Fuel Tax Credit Rates Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KFTCDataSet : DataSetBase<KFTC>
+    public sealed partial class KFTCDataSet : EduHubDataSet<KFTC>
     {
         /// <summary>
         /// Data Set Name

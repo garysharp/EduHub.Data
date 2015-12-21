@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Cohorts for data aggregation
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCOHORT : EntityBase
+    public sealed partial class KCOHORT : EduHubEntity
     {
 
         #region Foreign Navigation Properties

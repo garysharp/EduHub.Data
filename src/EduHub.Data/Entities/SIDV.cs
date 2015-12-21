@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Incident Victims/Recipients
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIDV : EntityBase
+    public sealed partial class SIDV : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// On line receipt history
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIRH : EntityBase
+    public sealed partial class SIRH : EduHubEntity
     {
 
         #region Field Properties

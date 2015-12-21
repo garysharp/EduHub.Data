@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// CSF Data Aggregates Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCSFAGDataSet : DataSetBase<SCSFAG>
+    public sealed partial class SCSFAGDataSet : EduHubDataSet<SCSFAG>
     {
         /// <summary>
         /// Data Set Name

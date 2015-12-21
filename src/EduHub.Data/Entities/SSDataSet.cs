@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Specialist Subjects Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SSDataSet : DataSetBase<SS>
+    public sealed partial class SSDataSet : EduHubDataSet<SS>
     {
         /// <summary>
         /// Data Set Name

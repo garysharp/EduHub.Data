@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Pay Items Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PIDataSet : DataSetBase<PI>
+    public sealed partial class PIDataSet : EduHubDataSet<PI>
     {
         /// <summary>
         /// Data Set Name

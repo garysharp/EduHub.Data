@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Future Pay Steps or Pay Class Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PSFDataSet : DataSetBase<PSF>
+    public sealed partial class PSFDataSet : EduHubDataSet<PSF>
     {
         /// <summary>
         /// Data Set Name

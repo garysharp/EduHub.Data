@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Timetable Grid Templates Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTDataSet : DataSetBase<TT>
+    public sealed partial class TTDataSet : EduHubDataSet<TT>
     {
         /// <summary>
         /// Data Set Name

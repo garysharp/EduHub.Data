@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Column-Display Metadata for displaying Student Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_SCDDataSet : DataSetBase<SCEN_SCD>
+    public sealed partial class SCEN_SCDDataSet : EduHubDataSet<SCEN_SCD>
     {
         /// <summary>
         /// Data Set Name

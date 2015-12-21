@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Special Group Meetings
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGM : EntityBase
+    public sealed partial class SGM : EduHubEntity
     {
 
         #region Navigation Property Cache

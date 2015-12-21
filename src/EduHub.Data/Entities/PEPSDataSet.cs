@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Standard and Last Pays Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPSDataSet : DataSetBase<PEPS>
+    public sealed partial class PEPSDataSet : EduHubDataSet<PEPS>
     {
         /// <summary>
         /// Data Set Name

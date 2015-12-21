@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Employee Super LTD History
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PESH : EntityBase
+    public sealed partial class PESH : EduHubEntity
     {
 
         #region Navigation Property Cache

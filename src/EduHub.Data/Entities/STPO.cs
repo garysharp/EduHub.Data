@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Position or Group Memberships
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STPO : EntityBase
+    public sealed partial class STPO : EduHubEntity
     {
 
         #region Navigation Property Cache

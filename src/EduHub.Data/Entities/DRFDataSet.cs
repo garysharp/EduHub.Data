@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// DR Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DRFDataSet : DataSetBase<DRF>
+    public sealed partial class DRFDataSet : EduHubDataSet<DRF>
     {
         /// <summary>
         /// Data Set Name

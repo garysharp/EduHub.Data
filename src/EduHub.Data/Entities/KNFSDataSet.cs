@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Family/Student ID Sequence Numbers Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KNFSDataSet : DataSetBase<KNFS>
+    public sealed partial class KNFSDataSet : EduHubDataSet<KNFS>
     {
         /// <summary>
         /// Data Set Name

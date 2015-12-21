@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// School Association Positions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAP : EntityBase
+    public sealed partial class SAP : EduHubEntity
     {
 
         #region Foreign Navigation Properties

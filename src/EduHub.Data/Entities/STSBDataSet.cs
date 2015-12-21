@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Family Invoice Allocations Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STSBDataSet : DataSetBase<STSB>
+    public sealed partial class STSBDataSet : EduHubDataSet<STSB>
     {
         /// <summary>
         /// Data Set Name

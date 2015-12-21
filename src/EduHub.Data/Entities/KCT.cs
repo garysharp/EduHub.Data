@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Absence Types
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCT : EntityBase
+    public sealed partial class KCT : EduHubEntity
     {
 
         #region Foreign Navigation Properties

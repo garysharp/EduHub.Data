@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Incident Instigators
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDP : EntityBase
+    public sealed partial class SDP : EduHubEntity
     {
 
         #region Navigation Property Cache

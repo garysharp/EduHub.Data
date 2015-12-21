@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Bank Account Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLBANK : EntityBase
+    public sealed partial class GLBANK : EduHubEntity
     {
 
         #region Foreign Navigation Properties

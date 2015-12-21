@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Trace log for finance import and export Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KLOGDataSet : DataSetBase<KLOG>
+    public sealed partial class KLOGDataSet : EduHubDataSet<KLOG>
     {
         /// <summary>
         /// Data Set Name

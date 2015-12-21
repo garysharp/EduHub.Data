@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Subject/Class Eligibility Criteria
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGSC : EntityBase
+    public sealed partial class SGSC : EduHubEntity
     {
 
         #region Navigation Property Cache

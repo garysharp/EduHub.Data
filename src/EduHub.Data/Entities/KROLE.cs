@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Role Codes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KROLE : EntityBase
+    public sealed partial class KROLE : EduHubEntity
     {
 
         #region Foreign Navigation Properties

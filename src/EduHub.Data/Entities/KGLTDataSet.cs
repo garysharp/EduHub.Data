@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Account Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGLTDataSet : DataSetBase<KGLT>
+    public sealed partial class KGLTDataSet : EduHubDataSet<KGLT>
     {
         /// <summary>
         /// Data Set Name

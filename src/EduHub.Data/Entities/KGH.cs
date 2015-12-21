@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Houses
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGH : EntityBase
+    public sealed partial class KGH : EduHubEntity
     {
 
         #region Navigation Property Cache

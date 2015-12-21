@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Australian Postcodes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAPDataSet : DataSetBase<KAP>
+    public sealed partial class KAPDataSet : EduHubDataSet<KAP>
     {
         /// <summary>
         /// Data Set Name

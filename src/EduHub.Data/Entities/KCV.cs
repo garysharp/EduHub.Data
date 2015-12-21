@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Visa Subclasses
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCV : EntityBase
+    public sealed partial class KCV : EduHubEntity
     {
 
         #region Foreign Navigation Properties

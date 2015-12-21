@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Creditor Fuel Tax Credits Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class CRFTCDataSet : DataSetBase<CRFTC>
+    public sealed partial class CRFTCDataSet : EduHubDataSet<CRFTC>
     {
         /// <summary>
         /// Data Set Name

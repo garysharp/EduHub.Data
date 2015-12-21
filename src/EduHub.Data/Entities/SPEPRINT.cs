@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Report file audit
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPEPRINT : EntityBase
+    public sealed partial class SPEPRINT : EduHubEntity
     {
 
         #region Navigation Property Cache

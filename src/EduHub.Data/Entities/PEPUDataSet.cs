@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Super (SGL and Employee) YTD Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPUDataSet : DataSetBase<PEPU>
+    public sealed partial class PEPUDataSet : EduHubDataSet<PEPU>
     {
         /// <summary>
         /// Data Set Name

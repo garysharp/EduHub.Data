@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Room Availability in Quilt
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMAQ : EntityBase
+    public sealed partial class SMAQ : EduHubEntity
     {
 
         #region Navigation Property Cache

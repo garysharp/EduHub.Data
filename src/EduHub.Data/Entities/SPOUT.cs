@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Stored Procedure Return Values
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPOUT : EntityBase
+    public sealed partial class SPOUT : EduHubEntity
     {
 
         #region Foreign Navigation Properties

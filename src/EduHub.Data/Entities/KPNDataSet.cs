@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Note Categories Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPNDataSet : DataSetBase<KPN>
+    public sealed partial class KPNDataSet : EduHubDataSet<KPN>
     {
         /// <summary>
         /// Data Set Name

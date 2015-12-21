@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Accident Witnesses
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADW : EntityBase
+    public sealed partial class SADW : EduHubEntity
     {
 
         #region Navigation Property Cache

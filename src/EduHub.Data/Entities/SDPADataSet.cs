@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Disciplinary Actions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDPADataSet : DataSetBase<SDPA>
+    public sealed partial class SDPADataSet : EduHubDataSet<SDPA>
     {
         /// <summary>
         /// Data Set Name

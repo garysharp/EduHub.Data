@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Accounts Receivable Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DRDataSet : DataSetBase<DR>
+    public sealed partial class DRDataSet : EduHubDataSet<DR>
     {
         /// <summary>
         /// Data Set Name

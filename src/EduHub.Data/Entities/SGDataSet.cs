@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Groupings Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGDataSet : DataSetBase<SG>
+    public sealed partial class SGDataSet : EduHubDataSet<SG>
     {
         /// <summary>
         /// Data Set Name

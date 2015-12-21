@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Transport Modes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRPMODEDataSet : DataSetBase<TRPMODE>
+    public sealed partial class TRPMODEDataSet : EduHubDataSet<TRPMODE>
     {
         /// <summary>
         /// Data Set Name

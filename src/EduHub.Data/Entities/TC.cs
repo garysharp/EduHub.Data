@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Calendar
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TC : EntityBase
+    public sealed partial class TC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

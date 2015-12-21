@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Accident Witnesses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADWDataSet : DataSetBase<SADW>
+    public sealed partial class SADWDataSet : EduHubDataSet<SADW>
     {
         /// <summary>
         /// Data Set Name

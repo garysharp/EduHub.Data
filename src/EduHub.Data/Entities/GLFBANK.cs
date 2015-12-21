@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Financial Commitments
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFBANK : EntityBase
+    public sealed partial class GLFBANK : EduHubEntity
     {
 
         #region Navigation Property Cache

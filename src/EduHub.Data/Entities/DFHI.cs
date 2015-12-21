@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Family History
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFHI : EntityBase
+    public sealed partial class DFHI : EduHubEntity
     {
 
         #region Navigation Property Cache

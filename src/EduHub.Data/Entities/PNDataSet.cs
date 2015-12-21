@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Payroll Groups Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PNDataSet : DataSetBase<PN>
+    public sealed partial class PNDataSet : EduHubDataSet<PN>
     {
         /// <summary>
         /// Data Set Name

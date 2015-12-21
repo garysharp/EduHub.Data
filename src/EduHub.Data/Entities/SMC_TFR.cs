@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// SMC Transfer
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMC_TFR : EntityBase
+    public sealed partial class SMC_TFR : EduHubEntity
     {
 
         #region Navigation Property Cache

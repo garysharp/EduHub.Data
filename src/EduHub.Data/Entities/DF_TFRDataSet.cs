@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// DF Transfer Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DF_TFRDataSet : DataSetBase<DF_TFR>
+    public sealed partial class DF_TFRDataSet : EduHubDataSet<DF_TFR>
     {
         /// <summary>
         /// Data Set Name

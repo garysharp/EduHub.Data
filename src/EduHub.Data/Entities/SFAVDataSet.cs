@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Staff Availability for Calendar Extras Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SFAVDataSet : DataSetBase<SFAV>
+    public sealed partial class SFAVDataSet : EduHubDataSet<SFAV>
     {
         /// <summary>
         /// Data Set Name

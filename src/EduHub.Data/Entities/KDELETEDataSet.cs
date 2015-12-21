@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Data deleted from DataMirror monitored tables Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KDELETEDataSet : DataSetBase<KDELETE>
+    public sealed partial class KDELETEDataSet : EduHubDataSet<KDELETE>
     {
         /// <summary>
         /// Data Set Name

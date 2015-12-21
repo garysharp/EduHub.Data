@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Awards and Prizes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGWDataSet : DataSetBase<KGW>
+    public sealed partial class KGWDataSet : EduHubDataSet<KGW>
     {
         /// <summary>
         /// Data Set Name

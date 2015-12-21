@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Association Member Attendances
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAMA : EntityBase
+    public sealed partial class SAMA : EduHubEntity
     {
 
         #region Navigation Property Cache

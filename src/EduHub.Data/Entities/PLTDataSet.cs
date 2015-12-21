@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Leave Group Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PLTDataSet : DataSetBase<PLT>
+    public sealed partial class PLTDataSet : EduHubDataSet<PLT>
     {
         /// <summary>
         /// Data Set Name

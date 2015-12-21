@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Staff Availability in Quilt
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SFAQ : EntityBase
+    public sealed partial class SFAQ : EduHubEntity
     {
 
         #region Navigation Property Cache

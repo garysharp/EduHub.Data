@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Data deleted from DataMirror monitored tables
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KDELETE : EntityBase
+    public sealed partial class KDELETE : EduHubEntity
     {
 
         #region Field Properties

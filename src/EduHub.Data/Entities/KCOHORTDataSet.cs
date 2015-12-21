@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Cohorts for data aggregation Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCOHORTDataSet : DataSetBase<KCOHORT>
+    public sealed partial class KCOHORTDataSet : EduHubDataSet<KCOHORT>
     {
         /// <summary>
         /// Data Set Name

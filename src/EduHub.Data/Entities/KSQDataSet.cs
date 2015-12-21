@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Available Qualifications Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSQDataSet : DataSetBase<KSQ>
+    public sealed partial class KSQDataSet : EduHubDataSet<KSQ>
     {
         /// <summary>
         /// Data Set Name

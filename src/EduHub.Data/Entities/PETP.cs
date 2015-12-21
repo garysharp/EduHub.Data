@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Termination Payment
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PETP : EntityBase
+    public sealed partial class PETP : EduHubEntity
     {
 
         #region Navigation Property Cache

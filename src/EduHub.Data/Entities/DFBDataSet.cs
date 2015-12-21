@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// BPAY Receipts Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFBDataSet : DataSetBase<DFB>
+    public sealed partial class DFBDataSet : EduHubDataSet<DFB>
     {
         /// <summary>
         /// Data Set Name

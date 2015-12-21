@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Standard Disciplinary Actions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAM : EntityBase
+    public sealed partial class KAM : EduHubEntity
     {
 
         #region Foreign Navigation Properties

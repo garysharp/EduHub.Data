@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Contact Relationship Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPCRDataSet : DataSetBase<KPCR>
+    public sealed partial class KPCRDataSet : EduHubDataSet<KPCR>
     {
         /// <summary>
         /// Data Set Name

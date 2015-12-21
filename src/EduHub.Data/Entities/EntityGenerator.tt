@@ -39,7 +39,7 @@ namespace EduHub.Data.Entities
     /// <#= entity.Description #> Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class <#= entity.Name #>DataSet : DataSetBase<<#= entity.Name #>>
+    public sealed partial class <#= entity.Name #>DataSet : EduHubDataSet<<#= entity.Name #>>
     {
         /// <summary>
         /// Data Set Name
@@ -496,7 +496,7 @@ namespace EduHub.Data.Entities
     /// <#= entity.Description #>
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class <#= entity.Name #> : EntityBase
+    public sealed partial class <#= entity.Name #> : EduHubEntity
     {
 
 <#

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// FDT Financal Holding Table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FER_FDT : EntityBase
+    public sealed partial class FER_FDT : EduHubEntity
     {
 
         #region Navigation Property Cache

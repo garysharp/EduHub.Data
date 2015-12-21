@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Timetable Quilt Headers
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TH : EntityBase
+    public sealed partial class TH : EduHubEntity
     {
 
         #region Navigation Property Cache

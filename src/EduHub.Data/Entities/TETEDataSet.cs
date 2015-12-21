@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Event Instances Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TETEDataSet : DataSetBase<TETE>
+    public sealed partial class TETEDataSet : EduHubDataSet<TETE>
     {
         /// <summary>
         /// Data Set Name

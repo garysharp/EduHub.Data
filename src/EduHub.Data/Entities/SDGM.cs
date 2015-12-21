@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Adult Group Members
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDGM : EntityBase
+    public sealed partial class SDGM : EduHubEntity
     {
 
         #region Navigation Property Cache

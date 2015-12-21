@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Visa Subclasses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCVDataSet : DataSetBase<KCV>
+    public sealed partial class KCVDataSet : EduHubDataSet<KCV>
     {
         /// <summary>
         /// Data Set Name

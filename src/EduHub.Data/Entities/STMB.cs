@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Merit Behaviour Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STMB : EntityBase
+    public sealed partial class STMB : EduHubEntity
     {
 
         #region Navigation Property Cache

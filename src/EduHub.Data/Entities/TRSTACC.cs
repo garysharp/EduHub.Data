@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// STACC Holding Table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRSTACC : EntityBase
+    public sealed partial class TRSTACC : EduHubEntity
     {
 
         #region Field Properties

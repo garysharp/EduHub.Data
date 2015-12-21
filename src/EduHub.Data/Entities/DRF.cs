@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// DR Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DRF : EntityBase
+    public sealed partial class DRF : EduHubEntity
     {
 
         #region Navigation Property Cache

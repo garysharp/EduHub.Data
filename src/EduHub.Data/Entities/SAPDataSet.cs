@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Association Positions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAPDataSet : DataSetBase<SAP>
+    public sealed partial class SAPDataSet : EduHubDataSet<SAP>
     {
         /// <summary>
         /// Data Set Name

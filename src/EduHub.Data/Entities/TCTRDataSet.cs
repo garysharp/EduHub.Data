@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Teacher Replacements Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTRDataSet : DataSetBase<TCTR>
+    public sealed partial class TCTRDataSet : EduHubDataSet<TCTR>
     {
         /// <summary>
         /// Data Set Name

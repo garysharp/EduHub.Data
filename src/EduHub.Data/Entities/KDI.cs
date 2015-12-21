@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// VELS Dimensions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KDI : EntityBase
+    public sealed partial class KDI : EduHubEntity
     {
 
         #region Foreign Navigation Properties

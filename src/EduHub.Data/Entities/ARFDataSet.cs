@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Financial Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ARFDataSet : DataSetBase<ARF>
+    public sealed partial class ARFDataSet : EduHubDataSet<ARF>
     {
         /// <summary>
         /// Data Set Name

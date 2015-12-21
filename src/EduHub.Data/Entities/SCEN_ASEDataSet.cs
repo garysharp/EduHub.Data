@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Archived Census Student Excluded Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_ASEDataSet : DataSetBase<SCEN_ASE>
+    public sealed partial class SCEN_ASEDataSet : EduHubDataSet<SCEN_ASE>
     {
         /// <summary>
         /// Data Set Name

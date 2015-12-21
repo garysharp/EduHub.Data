@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// CSF Strands Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCSFDataSet : DataSetBase<SCSF>
+    public sealed partial class SCSFDataSet : EduHubDataSet<SCSF>
     {
         /// <summary>
         /// Data Set Name

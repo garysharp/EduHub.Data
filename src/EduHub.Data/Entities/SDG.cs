@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Sundry Debtor Fee Groups
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDG : EntityBase
+    public sealed partial class SDG : EduHubEntity
     {
 
         #region Foreign Navigation Properties

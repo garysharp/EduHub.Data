@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Award Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PSA : EntityBase
+    public sealed partial class PSA : EduHubEntity
     {
 
         #region Foreign Navigation Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFDataSet : DataSetBase<GLF>
+    public sealed partial class GLFDataSet : EduHubDataSet<GLF>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Special Group Meetings Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGMDataSet : DataSetBase<SGM>
+    public sealed partial class SGMDataSet : EduHubDataSet<SGM>
     {
         /// <summary>
         /// Data Set Name

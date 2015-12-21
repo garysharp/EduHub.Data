@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Leave Group Types
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PLT : EntityBase
+    public sealed partial class PLT : EduHubEntity
     {
 
         #region Navigation Property Cache

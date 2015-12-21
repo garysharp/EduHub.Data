@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Fees Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADataSet : DataSetBase<SA>
+    public sealed partial class SADataSet : EduHubDataSet<SA>
     {
         /// <summary>
         /// Data Set Name

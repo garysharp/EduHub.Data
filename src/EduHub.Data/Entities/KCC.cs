@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Calendar Dates for Absences
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCC : EntityBase
+    public sealed partial class KCC : EduHubEntity
     {
 
         #region Navigation Property Cache

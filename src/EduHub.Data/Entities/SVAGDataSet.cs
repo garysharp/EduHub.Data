@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// VELS Aggregated Dimensions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SVAGDataSet : DataSetBase<SVAG>
+    public sealed partial class SVAGDataSet : EduHubDataSet<SVAG>
     {
         /// <summary>
         /// Data Set Name

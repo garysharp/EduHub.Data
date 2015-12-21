@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// SP2 dummy table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFBUDG : EntityBase
+    public sealed partial class GLFBUDG : EduHubEntity
     {
 
         #region Navigation Property Cache

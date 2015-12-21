@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Employee Leave Audit
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PELA : EntityBase
+    public sealed partial class PELA : EduHubEntity
     {
 
         #region Navigation Property Cache

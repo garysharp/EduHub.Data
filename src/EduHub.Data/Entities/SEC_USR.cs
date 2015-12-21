@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 User Sessions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_USR : EntityBase
+    public sealed partial class SEC_USR : EduHubEntity
     {
 
         #region Field Properties

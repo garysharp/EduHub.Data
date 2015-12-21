@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Room Availablity Extras
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMAV : EntityBase
+    public sealed partial class SMAV : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Staff Positions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSCDataSet : DataSetBase<KSC>
+    public sealed partial class KSCDataSet : EduHubDataSet<KSC>
     {
         /// <summary>
         /// Data Set Name

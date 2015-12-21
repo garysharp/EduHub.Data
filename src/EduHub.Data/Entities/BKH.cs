@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Books for Hire
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class BKH : EntityBase
+    public sealed partial class BKH : EduHubEntity
     {
 
         #region Foreign Navigation Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Year 9-12 Exit Categories Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGGDataSet : DataSetBase<KGG>
+    public sealed partial class KGGDataSet : EduHubDataSet<KGG>
     {
         /// <summary>
         /// Data Set Name

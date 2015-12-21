@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Census Return Summary Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_RTN : EntityBase
+    public sealed partial class SCEN_RTN : EduHubEntity
     {
 
         #region Field Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Financial Data Export Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FDT_EXPDataSet : DataSetBase<FDT_EXP>
+    public sealed partial class FDT_EXPDataSet : EduHubDataSet<FDT_EXP>
     {
         /// <summary>
         /// Data Set Name

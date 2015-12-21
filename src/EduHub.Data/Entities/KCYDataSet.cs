@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Year Levels Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCYDataSet : DataSetBase<KCY>
+    public sealed partial class KCYDataSet : EduHubDataSet<KCY>
     {
         /// <summary>
         /// Data Set Name

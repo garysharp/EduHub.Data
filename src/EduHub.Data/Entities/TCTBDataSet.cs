@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Teacher Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTBDataSet : DataSetBase<TCTB>
+    public sealed partial class TCTBDataSet : EduHubDataSet<TCTB>
     {
         /// <summary>
         /// Data Set Name

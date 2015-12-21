@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Grid Subjects Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTTGDataSet : DataSetBase<TTTG>
+    public sealed partial class TTTGDataSet : EduHubDataSet<TTTG>
     {
         /// <summary>
         /// Data Set Name

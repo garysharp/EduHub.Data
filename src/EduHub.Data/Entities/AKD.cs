@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Assets - Departments
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKD : EntityBase
+    public sealed partial class AKD : EduHubEntity
     {
 
         #region Foreign Navigation Properties

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Last Years GL Financial Trans
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFPREV : EntityBase
+    public sealed partial class GLFPREV : EduHubEntity
     {
 
         #region Navigation Property Cache

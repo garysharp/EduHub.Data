@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Disciplinary Incidents Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SIDDataSet : DataSetBase<SID>
+    public sealed partial class SIDDataSet : EduHubDataSet<SID>
     {
         /// <summary>
         /// Data Set Name

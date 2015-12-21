@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Adult Group Members Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGAMDataSet : DataSetBase<SGAM>
+    public sealed partial class SGAMDataSet : EduHubDataSet<SGAM>
     {
         /// <summary>
         /// Data Set Name

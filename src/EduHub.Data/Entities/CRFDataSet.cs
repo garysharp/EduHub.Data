@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Creditor Financial Transaction Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class CRFDataSet : DataSetBase<CRF>
+    public sealed partial class CRFDataSet : EduHubDataSet<CRF>
     {
         /// <summary>
         /// Data Set Name

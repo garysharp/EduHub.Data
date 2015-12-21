@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Accounts Receivable
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DR : EntityBase
+    public sealed partial class DR : EduHubEntity
     {
 
         #region Navigation Property Cache

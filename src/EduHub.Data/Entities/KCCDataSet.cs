@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Calendar Dates for Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCCDataSet : DataSetBase<KCC>
+    public sealed partial class KCCDataSet : EduHubDataSet<KCC>
     {
         /// <summary>
         /// Data Set Name

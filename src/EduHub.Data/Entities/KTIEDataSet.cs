@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Timetable Import Errors Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTIEDataSet : DataSetBase<KTIE>
+    public sealed partial class KTIEDataSet : EduHubDataSet<KTIE>
     {
         /// <summary>
         /// Data Set Name

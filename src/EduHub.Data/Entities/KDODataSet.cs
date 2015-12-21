@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// VELS Domains Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KDODataSet : DataSetBase<KDO>
+    public sealed partial class KDODataSet : EduHubDataSet<KDO>
     {
         /// <summary>
         /// Data Set Name

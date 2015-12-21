@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Schools Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SKGSDataSet : DataSetBase<SKGS>
+    public sealed partial class SKGSDataSet : EduHubDataSet<SKGS>
     {
         /// <summary>
         /// Data Set Name

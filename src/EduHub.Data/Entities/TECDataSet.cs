@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Event Categories Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TECDataSet : DataSetBase<TEC>
+    public sealed partial class TECDataSet : EduHubDataSet<TEC>
     {
         /// <summary>
         /// Data Set Name

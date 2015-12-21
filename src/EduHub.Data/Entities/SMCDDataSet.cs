@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Medication Doses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMCDDataSet : DataSetBase<SMCD>
+    public sealed partial class SMCDDataSet : EduHubDataSet<SMCD>
     {
         /// <summary>
         /// Data Set Name

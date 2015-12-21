@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Medical Conditions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMC : EntityBase
+    public sealed partial class SMC : EduHubEntity
     {
 
         #region Navigation Property Cache

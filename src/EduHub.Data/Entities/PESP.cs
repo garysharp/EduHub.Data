@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Employee Super Payment Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PESP : EntityBase
+    public sealed partial class PESP : EduHubEntity
     {
 
         #region Navigation Property Cache

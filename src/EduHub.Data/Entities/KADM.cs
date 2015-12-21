@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Asset Depreciation Methods
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KADM : EntityBase
+    public sealed partial class KADM : EduHubEntity
     {
 
         #region Foreign Navigation Properties

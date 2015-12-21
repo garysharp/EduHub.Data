@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Contact Links
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPCL : EntityBase
+    public sealed partial class KPCL : EduHubEntity
     {
 
         #region Navigation Property Cache

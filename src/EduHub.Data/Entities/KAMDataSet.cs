@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Standard Disciplinary Actions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAMDataSet : DataSetBase<KAM>
+    public sealed partial class KAMDataSet : EduHubDataSet<KAM>
     {
         /// <summary>
         /// Data Set Name

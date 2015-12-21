@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Superannuation Funds Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PFDataSet : DataSetBase<PF>
+    public sealed partial class PFDataSet : EduHubDataSet<PF>
     {
         /// <summary>
         /// Data Set Name

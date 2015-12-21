@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// BPAY Temp Receipts Import
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KBPT : EntityBase
+    public sealed partial class KBPT : EduHubEntity
     {
 
         #region Field Properties

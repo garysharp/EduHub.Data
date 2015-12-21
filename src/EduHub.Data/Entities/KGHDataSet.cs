@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Houses Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGHDataSet : DataSetBase<KGH>
+    public sealed partial class KGHDataSet : EduHubDataSet<KGH>
     {
         /// <summary>
         /// Data Set Name

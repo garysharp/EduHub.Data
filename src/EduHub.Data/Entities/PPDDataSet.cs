@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// PAYG Payer Details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PPDDataSet : DataSetBase<PPD>
+    public sealed partial class PPDDataSet : EduHubDataSet<PPD>
     {
         /// <summary>
         /// Data Set Name

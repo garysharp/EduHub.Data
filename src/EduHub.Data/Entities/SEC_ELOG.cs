@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 Error Log
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_ELOG : EntityBase
+    public sealed partial class SEC_ELOG : EduHubEntity
     {
 
         #region Field Properties

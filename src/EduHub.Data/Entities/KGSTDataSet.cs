@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// GST Percentages Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGSTDataSet : DataSetBase<KGST>
+    public sealed partial class KGSTDataSet : EduHubDataSet<KGST>
     {
         /// <summary>
         /// Data Set Name

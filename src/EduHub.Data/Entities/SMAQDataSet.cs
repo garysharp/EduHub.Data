@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Room Availability in Quilt Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMAQDataSet : DataSetBase<SMAQ>
+    public sealed partial class SMAQDataSet : EduHubDataSet<SMAQ>
     {
         /// <summary>
         /// Data Set Name

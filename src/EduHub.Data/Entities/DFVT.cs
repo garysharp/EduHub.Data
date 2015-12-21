@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Family Voluntary Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFVT : EntityBase
+    public sealed partial class DFVT : EduHubEntity
     {
 
         #region Navigation Property Cache

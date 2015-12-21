@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// BSB Numbers
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAB : EntityBase
+    public sealed partial class KAB : EduHubEntity
     {
 
         #region Foreign Navigation Properties

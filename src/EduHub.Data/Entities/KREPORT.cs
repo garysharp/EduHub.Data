@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Reports for emailing
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KREPORT : EntityBase
+    public sealed partial class KREPORT : EduHubEntity
     {
 
         #region Navigation Property Cache

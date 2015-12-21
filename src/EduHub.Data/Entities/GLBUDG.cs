@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Budgets
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLBUDG : EntityBase
+    public sealed partial class GLBUDG : EduHubEntity
     {
 
         #region Navigation Property Cache

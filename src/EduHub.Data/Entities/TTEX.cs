@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Exam Grid
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTEX : EntityBase
+    public sealed partial class TTEX : EduHubEntity
     {
 
         #region Navigation Property Cache

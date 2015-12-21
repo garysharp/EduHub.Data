@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Exam Periods
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTEP : EntityBase
+    public sealed partial class TTEP : EduHubEntity
     {
 
         #region Navigation Property Cache

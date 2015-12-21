@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Position or Group Memberships Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STPODataSet : DataSetBase<STPO>
+    public sealed partial class STPODataSet : EduHubDataSet<STPO>
     {
         /// <summary>
         /// Data Set Name

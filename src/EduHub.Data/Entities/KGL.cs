@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Languages
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGL : EntityBase
+    public sealed partial class KGL : EduHubEntity
     {
 
         #region Foreign Navigation Properties

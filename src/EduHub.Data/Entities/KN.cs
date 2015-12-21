@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Notes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KN : EntityBase
+    public sealed partial class KN : EduHubEntity
     {
 
         #region Field Properties

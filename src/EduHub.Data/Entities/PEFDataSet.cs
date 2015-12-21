@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Payroll Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEFDataSet : DataSetBase<PEF>
+    public sealed partial class PEFDataSet : EduHubDataSet<PEF>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Specialist Subjects per Home Group Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SSHGDataSet : DataSetBase<SSHG>
+    public sealed partial class SSHGDataSet : EduHubDataSet<SSHG>
     {
         /// <summary>
         /// Data Set Name

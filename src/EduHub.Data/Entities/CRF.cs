@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Creditor Financial Transaction
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class CRF : EntityBase
+    public sealed partial class CRF : EduHubEntity
     {
 
         #region Navigation Property Cache

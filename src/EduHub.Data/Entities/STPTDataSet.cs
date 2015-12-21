@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Part-Time Enrolments Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STPTDataSet : DataSetBase<STPT>
+    public sealed partial class STPTDataSet : EduHubDataSet<STPT>
     {
         /// <summary>
         /// Data Set Name

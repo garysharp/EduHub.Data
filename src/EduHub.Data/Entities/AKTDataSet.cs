@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKTDataSet : DataSetBase<AKT>
+    public sealed partial class AKTDataSet : EduHubDataSet<AKT>
     {
         /// <summary>
         /// Data Set Name

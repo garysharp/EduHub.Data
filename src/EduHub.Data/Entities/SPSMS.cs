@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// SMS messages
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPSMS : EntityBase
+    public sealed partial class SPSMS : EduHubEntity
     {
 
         #region Foreign Navigation Properties

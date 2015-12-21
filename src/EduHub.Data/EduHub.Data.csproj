@@ -210,7 +210,7 @@
     <Compile Include="Entities\DRFDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\EntityBase.cs" />
+    <Compile Include="Entities\EduHubEntity.cs" />
     <Compile Include="Entities\EntityGenerator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -303,7 +303,7 @@
     <Compile Include="Entities\GLPREVDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\IDataSet.cs" />
+    <Compile Include="Entities\IEduHubDataSet.cs" />
     <Compile Include="Entities\KAB.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1167,7 +1167,7 @@
     <Compile Include="Entities\SEC_USRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\DataSetBase.cs" />
+    <Compile Include="Entities\EduHubDataSet.cs" />
     <Compile Include="Entities\SF.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1686,13 +1686,49 @@
     <Compile Include="FrameworkExtensions.cs" />
     <Compile Include="NullDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SeamlessViews\Entities\SeamlessViewsDataSetBase.cs" />
-    <Compile Include="SeamlessViews\Entities\SeamlessViewsEntityBase.cs" />
+    <Compile Include="SeamlessViews\Entities\ISeamlessViewsDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\SeamlessViewsDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\SeamlessViewsEntity.cs" />
+    <Compile Include="SeamlessViews\Entities\V_RISKDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_RISK.cs" />
+    <Compile Include="SeamlessViews\Entities\V_ST_ATTENDDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_ST_ATTEND.cs" />
+    <Compile Include="SeamlessViews\Entities\V_TXASDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_TXAS.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SXABDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SXAB.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SUDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SU.cs" />
+    <Compile Include="SeamlessViews\Entities\V_STPODataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_STPO.cs" />
+    <Compile Include="SeamlessViews\Entities\V_STMADataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_STMA.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SMDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SM.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SGDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SG.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SFDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SF.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SCLDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SCL.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SCIDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_SCI.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KSFDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KSF.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGLDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGL.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGHDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGH.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGCDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_KGC.cs" />
+    <Compile Include="SeamlessViews\Entities\V_FAMILY_CONTACTDataSet.cs" />
+    <Compile Include="SeamlessViews\Entities\V_FAMILY_CONTACT.cs" />
     <Compile Include="SeamlessViews\Entities\V_AIM.cs" />
     <Compile Include="SeamlessViews\Entities\V_ST.cs" />
     <Compile Include="SeamlessViews\Entities\V_AIMDataSet.cs" />
     <Compile Include="SeamlessViews\Entities\V_STDataSet.cs" />
     <Compile Include="SeamlessViews\SeamlessViewsContext.cs" />
+    <Compile Include="SeamlessViews\SeamlessViewsDataSetNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EduHub.Data.nuspec" />

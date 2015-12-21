@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 User Sessions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_USRDataSet : DataSetBase<SEC_USR>
+    public sealed partial class SEC_USRDataSet : EduHubDataSet<SEC_USR>
     {
         /// <summary>
         /// Data Set Name

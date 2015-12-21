@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Employee Categories Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPECDataSet : DataSetBase<KPEC>
+    public sealed partial class KPECDataSet : EduHubDataSet<KPEC>
     {
         /// <summary>
         /// Data Set Name

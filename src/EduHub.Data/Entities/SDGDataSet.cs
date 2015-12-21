@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Sundry Debtor Fee Groups Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDGDataSet : DataSetBase<SDG>
+    public sealed partial class SDGDataSet : EduHubDataSet<SDG>
     {
         /// <summary>
         /// Data Set Name

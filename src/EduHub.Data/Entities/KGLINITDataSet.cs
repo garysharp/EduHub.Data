@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Initiatives Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGLINITDataSet : DataSetBase<KGLINIT>
+    public sealed partial class KGLINITDataSet : EduHubDataSet<KGLINIT>
     {
         /// <summary>
         /// Data Set Name

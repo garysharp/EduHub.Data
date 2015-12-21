@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Batch Headers
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class QB : EntityBase
+    public sealed partial class QB : EduHubEntity
     {
 
         #region Foreign Navigation Properties

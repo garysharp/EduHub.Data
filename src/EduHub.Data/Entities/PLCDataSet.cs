@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Leave Code Description Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PLCDataSet : DataSetBase<PLC>
+    public sealed partial class PLCDataSet : EduHubDataSet<PLC>
     {
         /// <summary>
         /// Data Set Name

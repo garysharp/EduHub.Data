@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// FTE Student Retentions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SRAG : EntityBase
+    public sealed partial class SRAG : EduHubEntity
     {
 
         #region Field Properties

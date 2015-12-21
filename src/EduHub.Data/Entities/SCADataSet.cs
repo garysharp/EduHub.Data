@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Associations Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCADataSet : DataSetBase<SCA>
+    public sealed partial class SCADataSet : EduHubDataSet<SCA>
     {
         /// <summary>
         /// Data Set Name

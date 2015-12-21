@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// GL Combined Financial Trans Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLCFDataSet : DataSetBase<GLCF>
+    public sealed partial class GLCFDataSet : EduHubDataSet<GLCF>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Creditor Fuel Tax Credits
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class CRFTC : EntityBase
+    public sealed partial class CRFTC : EduHubEntity
     {
 
         #region Navigation Property Cache

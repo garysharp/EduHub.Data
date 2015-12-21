@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Staff Positions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSC : EntityBase
+    public sealed partial class KSC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

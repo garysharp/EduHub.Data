@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Pay Methods
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPM : EntityBase
+    public sealed partial class PEPM : EduHubEntity
     {
 
         #region Navigation Property Cache

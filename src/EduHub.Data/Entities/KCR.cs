@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Transport Routes/Stops
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCR : EntityBase
+    public sealed partial class KCR : EduHubEntity
     {
 
         #region Foreign Navigation Properties

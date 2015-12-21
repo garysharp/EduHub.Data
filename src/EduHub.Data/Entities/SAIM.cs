@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Sickbay Medication Administrations
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAIM : EntityBase
+    public sealed partial class SAIM : EduHubEntity
     {
 
         #region Navigation Property Cache

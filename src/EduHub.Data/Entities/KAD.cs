@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Delivery Addresses
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAD : EntityBase
+    public sealed partial class KAD : EduHubEntity
     {
 
         #region Foreign Navigation Properties

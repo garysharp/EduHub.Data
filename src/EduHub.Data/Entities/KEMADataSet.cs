@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// CSEF Receipt details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KEMADataSet : DataSetBase<KEMA>
+    public sealed partial class KEMADataSet : EduHubDataSet<KEMA>
     {
         /// <summary>
         /// Data Set Name

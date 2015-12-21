@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// VELS Domain Results
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STVDO : EntityBase
+    public sealed partial class STVDO : EduHubEntity
     {
 
         #region Navigation Property Cache

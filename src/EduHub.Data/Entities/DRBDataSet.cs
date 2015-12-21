@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// BPAY Receipts for Sundry Debtors Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DRBDataSet : DataSetBase<DRB>
+    public sealed partial class DRBDataSet : EduHubDataSet<DRB>
     {
         /// <summary>
         /// Data Set Name

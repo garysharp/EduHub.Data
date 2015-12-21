@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Group Membership Eligibility Criteria Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGSGDataSet : DataSetBase<SGSG>
+    public sealed partial class SGSGDataSet : EduHubDataSet<SGSG>
     {
         /// <summary>
         /// Data Set Name

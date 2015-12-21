@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Specialist Subjects per Home Group
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SSHG : EntityBase
+    public sealed partial class SSHG : EduHubEntity
     {
 
         #region Navigation Property Cache

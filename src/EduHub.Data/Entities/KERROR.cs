@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Import or Update Errors
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KERROR : EntityBase
+    public sealed partial class KERROR : EduHubEntity
     {
 
         #region Navigation Property Cache

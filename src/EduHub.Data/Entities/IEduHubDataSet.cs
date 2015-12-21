@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// EduHub data set contract
     /// </summary>
-    public interface IDataSet : IList
+    public interface IEduHubDataSet : IList
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Pay Methods Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPMDataSet : DataSetBase<PEPM>
+    public sealed partial class PEPMDataSet : EduHubDataSet<PEPM>
     {
         /// <summary>
         /// Data Set Name

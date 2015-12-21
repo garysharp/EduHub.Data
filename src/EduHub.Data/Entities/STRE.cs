@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Re-Enrolment
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STRE : EntityBase
+    public sealed partial class STRE : EduHubEntity
     {
 
         #region Navigation Property Cache

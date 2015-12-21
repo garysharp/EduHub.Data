@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Import or Update Errors Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KERRORDataSet : DataSetBase<KERROR>
+    public sealed partial class KERRORDataSet : EduHubDataSet<KERROR>
     {
         /// <summary>
         /// Data Set Name

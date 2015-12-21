@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Family Invoice Allocations
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STSB : EntityBase
+    public sealed partial class STSB : EduHubEntity
     {
 
         #region Navigation Property Cache

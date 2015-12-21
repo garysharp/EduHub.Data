@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Depreciation Methods Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KADMDataSet : DataSetBase<KADM>
+    public sealed partial class KADMDataSet : EduHubDataSet<KADM>
     {
         /// <summary>
         /// Data Set Name

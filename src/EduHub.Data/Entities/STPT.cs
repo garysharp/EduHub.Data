@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Part-Time Enrolments
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STPT : EntityBase
+    public sealed partial class STPT : EduHubEntity
     {
 
         #region Navigation Property Cache

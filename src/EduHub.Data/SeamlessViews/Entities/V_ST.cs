@@ -4,9 +4,9 @@ using System;
 namespace EduHub.Data.SeamlessViews.Entities
 {
     /// <summary>
-    /// Identifies Student Data View
+    /// Students
     /// </summary>
-    public class V_ST : SeamlessViewsEntityBase
+    public class V_ST : SeamlessViewsEntity
     {
         #region Backing Fields
 
@@ -87,7 +87,8 @@ namespace EduHub.Data.SeamlessViews.Entities
 
         #endregion
 
-        internal V_ST(ST ST)
+        internal V_ST(SeamlessViewsContext Context, ST ST)
+            : base(Context)
         {
             var KCY = ST.SCHOOL_YEAR_KCY;
             var DF = ST.FAMILY_DF;

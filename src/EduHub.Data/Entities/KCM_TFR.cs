@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// KCM Transfer
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCM_TFR : EntityBase
+    public sealed partial class KCM_TFR : EduHubEntity
     {
 
         #region Navigation Property Cache

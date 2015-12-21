@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Accident Prevention Measures Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADPDataSet : DataSetBase<SADP>
+    public sealed partial class SADPDataSet : EduHubDataSet<SADP>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// STACC Holding Table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRSTACCDataSet : DataSetBase<TRSTACC>
+    public sealed partial class TRSTACCDataSet : EduHubDataSet<TRSTACC>
     {
         /// <summary>
         /// Data Set Name

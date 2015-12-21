@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Column-Display Metadata for displaying Student Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_SCD : EntityBase
+    public sealed partial class SCEN_SCD : EduHubEntity
     {
 
         #region Field Properties

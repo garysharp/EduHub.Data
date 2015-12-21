@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// GST Percentages
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGST : EntityBase
+    public sealed partial class KGST : EduHubEntity
     {
 
         #region Navigation Property Cache

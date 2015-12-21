@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Financial History Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FINHISTDataSet : DataSetBase<FINHIST>
+    public sealed partial class FINHISTDataSet : EduHubDataSet<FINHIST>
     {
         /// <summary>
         /// Data Set Name

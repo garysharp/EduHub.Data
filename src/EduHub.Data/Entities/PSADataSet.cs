@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Award Details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PSADataSet : DataSetBase<PSA>
+    public sealed partial class PSADataSet : EduHubDataSet<PSA>
     {
         /// <summary>
         /// Data Set Name

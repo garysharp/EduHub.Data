@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Leave Code Description
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PLC : EntityBase
+    public sealed partial class PLC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

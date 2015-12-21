@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// ST Transfer Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ST_TFRDataSet : DataSetBase<ST_TFR>
+    public sealed partial class ST_TFRDataSet : EduHubDataSet<ST_TFR>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Census Student Validation Type Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_SVT : EntityBase
+    public sealed partial class SCEN_SVT : EduHubEntity
     {
 
         #region Field Properties

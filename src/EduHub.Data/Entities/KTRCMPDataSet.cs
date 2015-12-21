@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Company Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTRCMPDataSet : DataSetBase<KTRCMP>
+    public sealed partial class KTRCMPDataSet : EduHubDataSet<KTRCMP>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Group Meeting Attendance
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGMA : EntityBase
+    public sealed partial class SGMA : EduHubEntity
     {
 
         #region Navigation Property Cache

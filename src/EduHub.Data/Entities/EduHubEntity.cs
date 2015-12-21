@@ -1,11 +1,11 @@
-﻿namespace EduHub.Data.SeamlessViews.Entities
+﻿namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// Base object for Seamless Views Entities
+    /// Base object for EduHub Entities
     /// </summary>
-    public abstract class SeamlessViewsEntityBase
+    public abstract class EduHubEntity
     {
-        internal SeamlessViewsEntityBase()
+        internal EduHubEntity()
         { }
 
         /// <summary>

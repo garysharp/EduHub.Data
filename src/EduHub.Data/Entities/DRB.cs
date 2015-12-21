@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// BPAY Receipts for Sundry Debtors
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DRB : EntityBase
+    public sealed partial class DRB : EduHubEntity
     {
 
         #region Navigation Property Cache

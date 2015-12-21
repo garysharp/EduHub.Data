@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Employees Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEDataSet : DataSetBase<PE>
+    public sealed partial class PEDataSet : EduHubDataSet<PE>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// HRMS Temp Import Table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SK_HRMST : EntityBase
+    public sealed partial class SK_HRMST : EduHubEntity
     {
 
         #region Field Properties

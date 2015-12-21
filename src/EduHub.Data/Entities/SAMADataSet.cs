@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Association Member Attendances Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAMADataSet : DataSetBase<SAMA>
+    public sealed partial class SAMADataSet : EduHubDataSet<SAMA>
     {
         /// <summary>
         /// Data Set Name

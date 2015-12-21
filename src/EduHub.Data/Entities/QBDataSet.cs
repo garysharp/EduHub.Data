@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Batch Headers Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class QBDataSet : DataSetBase<QB>
+    public sealed partial class QBDataSet : EduHubDataSet<QB>
     {
         /// <summary>
         /// Data Set Name

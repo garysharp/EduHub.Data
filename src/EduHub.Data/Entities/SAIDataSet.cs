@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Accident Involvements/Sickbay Visits Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAIDataSet : DataSetBase<SAI>
+    public sealed partial class SAIDataSet : EduHubDataSet<SAI>
     {
         /// <summary>
         /// Data Set Name

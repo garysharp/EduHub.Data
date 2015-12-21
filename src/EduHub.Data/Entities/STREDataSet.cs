@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Re-Enrolment Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STREDataSet : DataSetBase<STRE>
+    public sealed partial class STREDataSet : EduHubDataSet<STRE>
     {
         /// <summary>
         /// Data Set Name

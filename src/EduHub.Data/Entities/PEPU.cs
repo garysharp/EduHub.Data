@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Super (SGL and Employee) YTD Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPU : EntityBase
+    public sealed partial class PEPU : EduHubEntity
     {
 
         #region Navigation Property Cache

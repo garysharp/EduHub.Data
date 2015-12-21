@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Book Hire Records
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class BKHR : EntityBase
+    public sealed partial class BKHR : EduHubEntity
     {
 
         #region Navigation Property Cache

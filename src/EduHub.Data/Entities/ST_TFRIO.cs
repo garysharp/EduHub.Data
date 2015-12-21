@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Data Transfer Table
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class ST_TFRIO : EntityBase
+    public sealed partial class ST_TFRIO : EduHubEntity
     {
 
         #region Navigation Property Cache

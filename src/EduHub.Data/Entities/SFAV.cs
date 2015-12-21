@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Staff Availability for Calendar Extras
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SFAV : EntityBase
+    public sealed partial class SFAV : EduHubEntity
     {
 
         #region Navigation Property Cache

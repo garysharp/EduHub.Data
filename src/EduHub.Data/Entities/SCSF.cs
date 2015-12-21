@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// CSF Strands
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCSF : EntityBase
+    public sealed partial class SCSF : EduHubEntity
     {
 
         #region Foreign Navigation Properties

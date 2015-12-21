@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Role Codes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KROLEDataSet : DataSetBase<KROLE>
+    public sealed partial class KROLEDataSet : EduHubDataSet<KROLE>
     {
         /// <summary>
         /// Data Set Name

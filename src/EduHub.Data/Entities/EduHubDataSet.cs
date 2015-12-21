@@ -10,8 +10,8 @@ namespace EduHub.Data.Entities
     /// <summary>
     /// Base Data Set for eduHub Entities
     /// </summary>
-    /// <typeparam name="T">An eduHub Entity derived from <see cref="EntityBase"/></typeparam>
-    public abstract class DataSetBase<T> : IDataSet, IReadOnlyList<T> where T : EntityBase
+    /// <typeparam name="T">An eduHub Entity derived from <see cref="EduHubEntity"/></typeparam>
+    public abstract class EduHubDataSet<T> : IEduHubDataSet, IReadOnlyList<T> where T : EduHubEntity
     {
         /// <summary>
         /// EduHubContext this Data Set belongs to
@@ -27,7 +27,7 @@ namespace EduHub.Data.Entities
         protected Lazy<List<T>> Items;
         private DateTime? age;
 
-        internal DataSetBase(EduHubContext Context)
+        internal EduHubDataSet(EduHubContext Context)
         {
             this.Context = Context;
             Items = new Lazy<List<T>>(Load);
@@ -74,7 +74,7 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                return File.Exists(Filename);
+                return Items.IsValueCreated || File.Exists(Filename);
             }
         }
 
@@ -305,6 +305,29 @@ namespace EduHub.Data.Entities
         /// <inheritdoc />
         public bool IsReadOnly { get { return true; } }
 
+        /// <inheritdoc />
+        public bool IsFixedSize { get { return true; } }
+
+        /// <summary>
+        /// Not Supported. All eduHub data sets are read-only.
+        /// </summary>
+        public object SyncRoot { get { throw new NotSupportedException("The data set is read-only"); } }
+
+        /// <inheritdoc />
+        public bool IsSynchronized { get { return true; } }
+
+        /// <summary>
+        /// Gets the number of entities in the data set.
+        /// </summary>
+        /// <returns>The number of entities in the data set.</returns>
+        public int Count
+        {
+            get
+            {
+                return Items.Value.Count;
+            }
+        }
+
         /// <summary>
         /// Gets the EduHub entity at the specified index in the data set.
         /// </summary>
@@ -319,35 +342,16 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Gets the number of entities in the data set.
+        /// Gets the EduHub entity at the specified index in the data set.
         /// </summary>
-        /// <returns>The number of entities in the data set.</returns>
-        public int Count
-        {
-            get
-            {
-                return Items.Value.Count;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool IsFixedSize { get { return true; } }
-
-        /// <summary>
-        /// Not Supported. All eduHub data sets are read-only.
-        /// </summary>
-        public object SyncRoot { get { throw new NotSupportedException("The data set is read-only"); } }
-
-        /// <inheritdoc />
-        public bool IsSynchronized { get { return true; } }
-
+        /// <param name="index">The zero-based index of the entity to get.</param>
+        /// <returns>The entity at the specified index in the data set.</returns>
         object IList.this[int index]
         {
             get
             {
                 return Items.Value[index];
             }
-
             set
             {
                 throw new NotSupportedException("The data set is read-only");

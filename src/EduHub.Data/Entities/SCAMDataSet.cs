@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// School Association Meetings Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCAMDataSet : DataSetBase<SCAM>
+    public sealed partial class SCAMDataSet : EduHubDataSet<SCAM>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Payroll Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEF : EntityBase
+    public sealed partial class PEF : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Standard and Last Pays
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEPS : EntityBase
+    public sealed partial class PEPS : EduHubEntity
     {
 
         #region Navigation Property Cache

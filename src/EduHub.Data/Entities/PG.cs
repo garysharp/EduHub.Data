@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// PAYG Payment Summary Box
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PG : EntityBase
+    public sealed partial class PG : EduHubEntity
     {
 
         #region Foreign Navigation Properties

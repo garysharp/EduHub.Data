@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Books for Hire Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class BKHDataSet : DataSetBase<BKH>
+    public sealed partial class BKHDataSet : EduHubDataSet<BKH>
     {
         /// <summary>
         /// Data Set Name

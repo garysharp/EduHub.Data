@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Pay Steps or Pay Class Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PSDataSet : DataSetBase<PS>
+    public sealed partial class PSDataSet : EduHubDataSet<PS>
     {
         /// <summary>
         /// Data Set Name

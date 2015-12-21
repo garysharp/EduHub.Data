@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Publications Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPUDataSet : DataSetBase<SPU>
+    public sealed partial class SPUDataSet : EduHubDataSet<SPU>
     {
         /// <summary>
         /// Data Set Name

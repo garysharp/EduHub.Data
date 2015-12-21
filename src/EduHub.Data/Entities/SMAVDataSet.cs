@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Room Availablity Extras Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SMAVDataSet : DataSetBase<SMAV>
+    public sealed partial class SMAVDataSet : EduHubDataSet<SMAV>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Report email templates
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPEMAIL : EntityBase
+    public sealed partial class SPEMAIL : EduHubEntity
     {
 
         #region Navigation Property Cache

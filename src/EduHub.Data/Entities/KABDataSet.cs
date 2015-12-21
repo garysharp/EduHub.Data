@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// BSB Numbers Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KABDataSet : DataSetBase<KAB>
+    public sealed partial class KABDataSet : EduHubDataSet<KAB>
     {
         /// <summary>
         /// Data Set Name

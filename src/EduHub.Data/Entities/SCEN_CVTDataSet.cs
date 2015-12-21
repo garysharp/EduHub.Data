@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Census Class Sizes Validation Type Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_CVTDataSet : DataSetBase<SCEN_CVT>
+    public sealed partial class SCEN_CVTDataSet : EduHubDataSet<SCEN_CVT>
     {
         /// <summary>
         /// Data Set Name

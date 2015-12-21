@@ -584,824 +584,277 @@ namespace EduHub.Data
         }
 
         /// <summary>
-        /// Names of all Data Sets
+        /// All EduHub Data Sets
         /// </summary>
-        public IEnumerable<string> GetNames()
+        public IEnumerable<IEduHubDataSet> GetDataSets()
         {
-            yield return "A_DECRYP";
-            yield return "AKB";
-            yield return "AKC";
-            yield return "AKCT";
-            yield return "AKD";
-            yield return "AKK";
-            yield return "AKL";
-            yield return "AKR";
-            yield return "AKT";
-            yield return "AR";
-            yield return "ARF";
-            yield return "BKH";
-            yield return "BKHR";
-            yield return "BPAY_DAT";
-            yield return "CR";
-            yield return "CRF";
-            yield return "CRFTC";
-            yield return "DF";
-            yield return "DF_TFR";
-            yield return "DFB";
-            yield return "DFF";
-            yield return "DFHI";
-            yield return "DFVT";
-            yield return "DR";
-            yield return "DRB";
-            yield return "DRF";
-            yield return "FDT_EXP";
-            yield return "FDT_IMP";
-            yield return "FER_FDT";
-            yield return "FINHIST";
-            yield return "GL";
-            yield return "GLBANK";
-            yield return "GLBUDG";
-            yield return "GLCF";
-            yield return "GLCFPREV";
-            yield return "GLF";
-            yield return "GLFBANK";
-            yield return "GLFBUDG";
-            yield return "GLFPREV";
-            yield return "GLPREV";
-            yield return "KAB";
-            yield return "KAD";
-            yield return "KADM";
-            yield return "KAM";
-            yield return "KAP";
-            yield return "KBANK";
-            yield return "KBP";
-            yield return "KBPT";
-            yield return "KCB";
-            yield return "KCC";
-            yield return "KCD";
-            yield return "KCD_TFR";
-            yield return "KCI";
-            yield return "KCM";
-            yield return "KCM_TFR";
-            yield return "KCOHORT";
-            yield return "KCR";
-            yield return "KCT";
-            yield return "KCV";
-            yield return "KCY";
-            yield return "KDELETE";
-            yield return "KDI";
-            yield return "KDO";
-            yield return "KEMA";
-            yield return "KERROR";
-            yield return "KFTC";
-            yield return "KGC";
-            yield return "KGCHI";
-            yield return "KGD";
-            yield return "KGG";
-            yield return "KGH";
-            yield return "KGL";
-            yield return "KGLINIT";
-            yield return "KGLPROG";
-            yield return "KGLSUB";
-            yield return "KGLT";
-            yield return "KGR";
-            yield return "KGST";
-            yield return "KGT";
-            yield return "KGW";
-            yield return "KLOG";
-            yield return "KN";
-            yield return "KNFS";
-            yield return "KPC";
-            yield return "KPCL";
-            yield return "KPCR";
-            yield return "KPEC";
-            yield return "KPN";
-            yield return "KPRMS";
-            yield return "KREPORT";
-            yield return "KROLE";
-            yield return "KSA";
-            yield return "KSC";
-            yield return "KSF";
-            yield return "KSQ";
-            yield return "KTIE";
-            yield return "KTM";
-            yield return "KTRCMP";
-            yield return "OSCS";
-            yield return "PC";
-            yield return "PD";
-            yield return "PE";
-            yield return "PEF";
-            yield return "PEFH";
-            yield return "PELA";
-            yield return "PELD";
-            yield return "PEM";
-            yield return "PEPM";
-            yield return "PEPS";
-            yield return "PEPU";
-            yield return "PEPUH";
-            yield return "PEPY";
-            yield return "PESH";
-            yield return "PESP";
-            yield return "PETP";
-            yield return "PF";
-            yield return "PG";
-            yield return "PI";
-            yield return "PILI";
-            yield return "PLC";
-            yield return "PLG";
-            yield return "PLT";
-            yield return "PML";
-            yield return "PML_NEW";
-            yield return "PN";
-            yield return "PPD";
-            yield return "PPS";
-            yield return "PS";
-            yield return "PSA";
-            yield return "PSF";
-            yield return "PX";
-            yield return "PX_NEW";
-            yield return "QB";
-            yield return "QS";
-            yield return "SA";
-            yield return "SAB";
-            yield return "SABT";
-            yield return "SACAG";
-            yield return "SAD";
-            yield return "SADAG";
-            yield return "SADP";
-            yield return "SADW";
-            yield return "SAI";
-            yield return "SAII";
-            yield return "SAIM";
-            yield return "SAM";
-            yield return "SAMA";
-            yield return "SAP";
-            yield return "SC";
-            yield return "SCA";
-            yield return "SCAM";
-            yield return "SCEN_ACL";
-            yield return "SCEN_ACV";
-            yield return "SCEN_APP";
-            yield return "SCEN_ASE";
-            yield return "SCEN_AST";
-            yield return "SCEN_ASV";
-            yield return "SCEN_CL";
-            yield return "SCEN_CLV";
-            yield return "SCEN_CVT";
-            yield return "SCEN_RFD";
-            yield return "SCEN_RPT";
-            yield return "SCEN_RTN";
-            yield return "SCEN_SCD";
-            yield return "SCEN_ST";
-            yield return "SCEN_STE";
-            yield return "SCEN_STV";
-            yield return "SCEN_SVT";
-            yield return "SCI";
-            yield return "SCL";
-            yield return "SCSF";
-            yield return "SCSFAG";
-            yield return "SDFC";
-            yield return "SDG";
-            yield return "SDGM";
-            yield return "SDP";
-            yield return "SDPA";
-            yield return "SEC_ELOG";
-            yield return "SEC_LLOG";
-            yield return "SEC_MSG";
-            yield return "SEC_URL";
-            yield return "SEC_USR";
-            yield return "SF";
-            yield return "SFAQ";
-            yield return "SFAV";
-            yield return "SFQA";
-            yield return "SG";
-            yield return "SGAM";
-            yield return "SGHG";
-            yield return "SGM";
-            yield return "SGMA";
-            yield return "SGSC";
-            yield return "SGSG";
-            yield return "SGTRX";
-            yield return "SID";
-            yield return "SIDV";
-            yield return "SIRH";
-            yield return "SK_HRMS";
-            yield return "SK_HRMST";
-            yield return "SKGS";
-            yield return "SM";
-            yield return "SMAQ";
-            yield return "SMAV";
-            yield return "SMC";
-            yield return "SMC_TFR";
-            yield return "SMCD";
-            yield return "SMGROUP";
-            yield return "SPEMAIL";
-            yield return "SPEPRINT";
-            yield return "SPOUT";
-            yield return "SPRECIP";
-            yield return "SPREPLY";
-            yield return "SPSMS";
-            yield return "SPU";
-            yield return "SRAG";
-            yield return "SS";
-            yield return "SSHG";
-            yield return "ST";
-            yield return "ST_TFR";
-            yield return "ST_TFRIO";
-            yield return "STBT";
-            yield return "STMA";
-            yield return "STMB";
-            yield return "STPO";
-            yield return "STPT";
-            yield return "STRA";
-            yield return "STRE";
-            yield return "STSB";
-            yield return "STSP";
-            yield return "STTRIPS";
-            yield return "STVDI";
-            yield return "STVDO";
-            yield return "SU";
-            yield return "SUBL";
-            yield return "SUPR";
-            yield return "SVAG";
-            yield return "SXAB";
-            yield return "SXABCONV";
-            yield return "SXAS";
-            yield return "SXHI";
-            yield return "TC";
-            yield return "TCAT";
-            yield return "TCTB";
-            yield return "TCTD";
-            yield return "TCTQ";
-            yield return "TCTR";
-            yield return "TE";
-            yield return "TEC";
-            yield return "TETE";
-            yield return "TETN";
-            yield return "TH";
-            yield return "THTN";
-            yield return "THTQ";
-            yield return "TRPMODE";
-            yield return "TRPROUT";
-            yield return "TRSTACC";
-            yield return "TT";
-            yield return "TTEF";
-            yield return "TTEI";
-            yield return "TTEP";
-            yield return "TTES";
-            yield return "TTEX";
-            yield return "TTTG";
-            yield return "TXAS";
-            yield return "TXHG";
-            yield return "UM";
-            yield return "UM_TFR";
-        }
-
-        /// <summary>
-        /// Retrieves a Data Set by name
-        /// </summary>
-        /// <param name="Name">The name of a Data Set</param>
-        public IDataSet GetDataSet(string Name)
-        {
-            switch (Name)
-            {
-                case "A_DECRYP":
-                    return A_DECRYP;
-                case "AKB":
-                    return AKB;
-                case "AKC":
-                    return AKC;
-                case "AKCT":
-                    return AKCT;
-                case "AKD":
-                    return AKD;
-                case "AKK":
-                    return AKK;
-                case "AKL":
-                    return AKL;
-                case "AKR":
-                    return AKR;
-                case "AKT":
-                    return AKT;
-                case "AR":
-                    return AR;
-                case "ARF":
-                    return ARF;
-                case "BKH":
-                    return BKH;
-                case "BKHR":
-                    return BKHR;
-                case "BPAY_DAT":
-                    return BPAY_DAT;
-                case "CR":
-                    return CR;
-                case "CRF":
-                    return CRF;
-                case "CRFTC":
-                    return CRFTC;
-                case "DF":
-                    return DF;
-                case "DF_TFR":
-                    return DF_TFR;
-                case "DFB":
-                    return DFB;
-                case "DFF":
-                    return DFF;
-                case "DFHI":
-                    return DFHI;
-                case "DFVT":
-                    return DFVT;
-                case "DR":
-                    return DR;
-                case "DRB":
-                    return DRB;
-                case "DRF":
-                    return DRF;
-                case "FDT_EXP":
-                    return FDT_EXP;
-                case "FDT_IMP":
-                    return FDT_IMP;
-                case "FER_FDT":
-                    return FER_FDT;
-                case "FINHIST":
-                    return FINHIST;
-                case "GL":
-                    return GL;
-                case "GLBANK":
-                    return GLBANK;
-                case "GLBUDG":
-                    return GLBUDG;
-                case "GLCF":
-                    return GLCF;
-                case "GLCFPREV":
-                    return GLCFPREV;
-                case "GLF":
-                    return GLF;
-                case "GLFBANK":
-                    return GLFBANK;
-                case "GLFBUDG":
-                    return GLFBUDG;
-                case "GLFPREV":
-                    return GLFPREV;
-                case "GLPREV":
-                    return GLPREV;
-                case "KAB":
-                    return KAB;
-                case "KAD":
-                    return KAD;
-                case "KADM":
-                    return KADM;
-                case "KAM":
-                    return KAM;
-                case "KAP":
-                    return KAP;
-                case "KBANK":
-                    return KBANK;
-                case "KBP":
-                    return KBP;
-                case "KBPT":
-                    return KBPT;
-                case "KCB":
-                    return KCB;
-                case "KCC":
-                    return KCC;
-                case "KCD":
-                    return KCD;
-                case "KCD_TFR":
-                    return KCD_TFR;
-                case "KCI":
-                    return KCI;
-                case "KCM":
-                    return KCM;
-                case "KCM_TFR":
-                    return KCM_TFR;
-                case "KCOHORT":
-                    return KCOHORT;
-                case "KCR":
-                    return KCR;
-                case "KCT":
-                    return KCT;
-                case "KCV":
-                    return KCV;
-                case "KCY":
-                    return KCY;
-                case "KDELETE":
-                    return KDELETE;
-                case "KDI":
-                    return KDI;
-                case "KDO":
-                    return KDO;
-                case "KEMA":
-                    return KEMA;
-                case "KERROR":
-                    return KERROR;
-                case "KFTC":
-                    return KFTC;
-                case "KGC":
-                    return KGC;
-                case "KGCHI":
-                    return KGCHI;
-                case "KGD":
-                    return KGD;
-                case "KGG":
-                    return KGG;
-                case "KGH":
-                    return KGH;
-                case "KGL":
-                    return KGL;
-                case "KGLINIT":
-                    return KGLINIT;
-                case "KGLPROG":
-                    return KGLPROG;
-                case "KGLSUB":
-                    return KGLSUB;
-                case "KGLT":
-                    return KGLT;
-                case "KGR":
-                    return KGR;
-                case "KGST":
-                    return KGST;
-                case "KGT":
-                    return KGT;
-                case "KGW":
-                    return KGW;
-                case "KLOG":
-                    return KLOG;
-                case "KN":
-                    return KN;
-                case "KNFS":
-                    return KNFS;
-                case "KPC":
-                    return KPC;
-                case "KPCL":
-                    return KPCL;
-                case "KPCR":
-                    return KPCR;
-                case "KPEC":
-                    return KPEC;
-                case "KPN":
-                    return KPN;
-                case "KPRMS":
-                    return KPRMS;
-                case "KREPORT":
-                    return KREPORT;
-                case "KROLE":
-                    return KROLE;
-                case "KSA":
-                    return KSA;
-                case "KSC":
-                    return KSC;
-                case "KSF":
-                    return KSF;
-                case "KSQ":
-                    return KSQ;
-                case "KTIE":
-                    return KTIE;
-                case "KTM":
-                    return KTM;
-                case "KTRCMP":
-                    return KTRCMP;
-                case "OSCS":
-                    return OSCS;
-                case "PC":
-                    return PC;
-                case "PD":
-                    return PD;
-                case "PE":
-                    return PE;
-                case "PEF":
-                    return PEF;
-                case "PEFH":
-                    return PEFH;
-                case "PELA":
-                    return PELA;
-                case "PELD":
-                    return PELD;
-                case "PEM":
-                    return PEM;
-                case "PEPM":
-                    return PEPM;
-                case "PEPS":
-                    return PEPS;
-                case "PEPU":
-                    return PEPU;
-                case "PEPUH":
-                    return PEPUH;
-                case "PEPY":
-                    return PEPY;
-                case "PESH":
-                    return PESH;
-                case "PESP":
-                    return PESP;
-                case "PETP":
-                    return PETP;
-                case "PF":
-                    return PF;
-                case "PG":
-                    return PG;
-                case "PI":
-                    return PI;
-                case "PILI":
-                    return PILI;
-                case "PLC":
-                    return PLC;
-                case "PLG":
-                    return PLG;
-                case "PLT":
-                    return PLT;
-                case "PML":
-                    return PML;
-                case "PML_NEW":
-                    return PML_NEW;
-                case "PN":
-                    return PN;
-                case "PPD":
-                    return PPD;
-                case "PPS":
-                    return PPS;
-                case "PS":
-                    return PS;
-                case "PSA":
-                    return PSA;
-                case "PSF":
-                    return PSF;
-                case "PX":
-                    return PX;
-                case "PX_NEW":
-                    return PX_NEW;
-                case "QB":
-                    return QB;
-                case "QS":
-                    return QS;
-                case "SA":
-                    return SA;
-                case "SAB":
-                    return SAB;
-                case "SABT":
-                    return SABT;
-                case "SACAG":
-                    return SACAG;
-                case "SAD":
-                    return SAD;
-                case "SADAG":
-                    return SADAG;
-                case "SADP":
-                    return SADP;
-                case "SADW":
-                    return SADW;
-                case "SAI":
-                    return SAI;
-                case "SAII":
-                    return SAII;
-                case "SAIM":
-                    return SAIM;
-                case "SAM":
-                    return SAM;
-                case "SAMA":
-                    return SAMA;
-                case "SAP":
-                    return SAP;
-                case "SC":
-                    return SC;
-                case "SCA":
-                    return SCA;
-                case "SCAM":
-                    return SCAM;
-                case "SCEN_ACL":
-                    return SCEN_ACL;
-                case "SCEN_ACV":
-                    return SCEN_ACV;
-                case "SCEN_APP":
-                    return SCEN_APP;
-                case "SCEN_ASE":
-                    return SCEN_ASE;
-                case "SCEN_AST":
-                    return SCEN_AST;
-                case "SCEN_ASV":
-                    return SCEN_ASV;
-                case "SCEN_CL":
-                    return SCEN_CL;
-                case "SCEN_CLV":
-                    return SCEN_CLV;
-                case "SCEN_CVT":
-                    return SCEN_CVT;
-                case "SCEN_RFD":
-                    return SCEN_RFD;
-                case "SCEN_RPT":
-                    return SCEN_RPT;
-                case "SCEN_RTN":
-                    return SCEN_RTN;
-                case "SCEN_SCD":
-                    return SCEN_SCD;
-                case "SCEN_ST":
-                    return SCEN_ST;
-                case "SCEN_STE":
-                    return SCEN_STE;
-                case "SCEN_STV":
-                    return SCEN_STV;
-                case "SCEN_SVT":
-                    return SCEN_SVT;
-                case "SCI":
-                    return SCI;
-                case "SCL":
-                    return SCL;
-                case "SCSF":
-                    return SCSF;
-                case "SCSFAG":
-                    return SCSFAG;
-                case "SDFC":
-                    return SDFC;
-                case "SDG":
-                    return SDG;
-                case "SDGM":
-                    return SDGM;
-                case "SDP":
-                    return SDP;
-                case "SDPA":
-                    return SDPA;
-                case "SEC_ELOG":
-                    return SEC_ELOG;
-                case "SEC_LLOG":
-                    return SEC_LLOG;
-                case "SEC_MSG":
-                    return SEC_MSG;
-                case "SEC_URL":
-                    return SEC_URL;
-                case "SEC_USR":
-                    return SEC_USR;
-                case "SF":
-                    return SF;
-                case "SFAQ":
-                    return SFAQ;
-                case "SFAV":
-                    return SFAV;
-                case "SFQA":
-                    return SFQA;
-                case "SG":
-                    return SG;
-                case "SGAM":
-                    return SGAM;
-                case "SGHG":
-                    return SGHG;
-                case "SGM":
-                    return SGM;
-                case "SGMA":
-                    return SGMA;
-                case "SGSC":
-                    return SGSC;
-                case "SGSG":
-                    return SGSG;
-                case "SGTRX":
-                    return SGTRX;
-                case "SID":
-                    return SID;
-                case "SIDV":
-                    return SIDV;
-                case "SIRH":
-                    return SIRH;
-                case "SK_HRMS":
-                    return SK_HRMS;
-                case "SK_HRMST":
-                    return SK_HRMST;
-                case "SKGS":
-                    return SKGS;
-                case "SM":
-                    return SM;
-                case "SMAQ":
-                    return SMAQ;
-                case "SMAV":
-                    return SMAV;
-                case "SMC":
-                    return SMC;
-                case "SMC_TFR":
-                    return SMC_TFR;
-                case "SMCD":
-                    return SMCD;
-                case "SMGROUP":
-                    return SMGROUP;
-                case "SPEMAIL":
-                    return SPEMAIL;
-                case "SPEPRINT":
-                    return SPEPRINT;
-                case "SPOUT":
-                    return SPOUT;
-                case "SPRECIP":
-                    return SPRECIP;
-                case "SPREPLY":
-                    return SPREPLY;
-                case "SPSMS":
-                    return SPSMS;
-                case "SPU":
-                    return SPU;
-                case "SRAG":
-                    return SRAG;
-                case "SS":
-                    return SS;
-                case "SSHG":
-                    return SSHG;
-                case "ST":
-                    return ST;
-                case "ST_TFR":
-                    return ST_TFR;
-                case "ST_TFRIO":
-                    return ST_TFRIO;
-                case "STBT":
-                    return STBT;
-                case "STMA":
-                    return STMA;
-                case "STMB":
-                    return STMB;
-                case "STPO":
-                    return STPO;
-                case "STPT":
-                    return STPT;
-                case "STRA":
-                    return STRA;
-                case "STRE":
-                    return STRE;
-                case "STSB":
-                    return STSB;
-                case "STSP":
-                    return STSP;
-                case "STTRIPS":
-                    return STTRIPS;
-                case "STVDI":
-                    return STVDI;
-                case "STVDO":
-                    return STVDO;
-                case "SU":
-                    return SU;
-                case "SUBL":
-                    return SUBL;
-                case "SUPR":
-                    return SUPR;
-                case "SVAG":
-                    return SVAG;
-                case "SXAB":
-                    return SXAB;
-                case "SXABCONV":
-                    return SXABCONV;
-                case "SXAS":
-                    return SXAS;
-                case "SXHI":
-                    return SXHI;
-                case "TC":
-                    return TC;
-                case "TCAT":
-                    return TCAT;
-                case "TCTB":
-                    return TCTB;
-                case "TCTD":
-                    return TCTD;
-                case "TCTQ":
-                    return TCTQ;
-                case "TCTR":
-                    return TCTR;
-                case "TE":
-                    return TE;
-                case "TEC":
-                    return TEC;
-                case "TETE":
-                    return TETE;
-                case "TETN":
-                    return TETN;
-                case "TH":
-                    return TH;
-                case "THTN":
-                    return THTN;
-                case "THTQ":
-                    return THTQ;
-                case "TRPMODE":
-                    return TRPMODE;
-                case "TRPROUT":
-                    return TRPROUT;
-                case "TRSTACC":
-                    return TRSTACC;
-                case "TT":
-                    return TT;
-                case "TTEF":
-                    return TTEF;
-                case "TTEI":
-                    return TTEI;
-                case "TTEP":
-                    return TTEP;
-                case "TTES":
-                    return TTES;
-                case "TTEX":
-                    return TTEX;
-                case "TTTG":
-                    return TTTG;
-                case "TXAS":
-                    return TXAS;
-                case "TXHG":
-                    return TXHG;
-                case "UM":
-                    return UM;
-                case "UM_TFR":
-                    return UM_TFR;
-                default:
-                    throw new ArgumentException("Unknown data set", nameof(Name));
-            }
+            yield return A_DECRYP;
+            yield return AKB;
+            yield return AKC;
+            yield return AKCT;
+            yield return AKD;
+            yield return AKK;
+            yield return AKL;
+            yield return AKR;
+            yield return AKT;
+            yield return AR;
+            yield return ARF;
+            yield return BKH;
+            yield return BKHR;
+            yield return BPAY_DAT;
+            yield return CR;
+            yield return CRF;
+            yield return CRFTC;
+            yield return DF;
+            yield return DF_TFR;
+            yield return DFB;
+            yield return DFF;
+            yield return DFHI;
+            yield return DFVT;
+            yield return DR;
+            yield return DRB;
+            yield return DRF;
+            yield return FDT_EXP;
+            yield return FDT_IMP;
+            yield return FER_FDT;
+            yield return FINHIST;
+            yield return GL;
+            yield return GLBANK;
+            yield return GLBUDG;
+            yield return GLCF;
+            yield return GLCFPREV;
+            yield return GLF;
+            yield return GLFBANK;
+            yield return GLFBUDG;
+            yield return GLFPREV;
+            yield return GLPREV;
+            yield return KAB;
+            yield return KAD;
+            yield return KADM;
+            yield return KAM;
+            yield return KAP;
+            yield return KBANK;
+            yield return KBP;
+            yield return KBPT;
+            yield return KCB;
+            yield return KCC;
+            yield return KCD;
+            yield return KCD_TFR;
+            yield return KCI;
+            yield return KCM;
+            yield return KCM_TFR;
+            yield return KCOHORT;
+            yield return KCR;
+            yield return KCT;
+            yield return KCV;
+            yield return KCY;
+            yield return KDELETE;
+            yield return KDI;
+            yield return KDO;
+            yield return KEMA;
+            yield return KERROR;
+            yield return KFTC;
+            yield return KGC;
+            yield return KGCHI;
+            yield return KGD;
+            yield return KGG;
+            yield return KGH;
+            yield return KGL;
+            yield return KGLINIT;
+            yield return KGLPROG;
+            yield return KGLSUB;
+            yield return KGLT;
+            yield return KGR;
+            yield return KGST;
+            yield return KGT;
+            yield return KGW;
+            yield return KLOG;
+            yield return KN;
+            yield return KNFS;
+            yield return KPC;
+            yield return KPCL;
+            yield return KPCR;
+            yield return KPEC;
+            yield return KPN;
+            yield return KPRMS;
+            yield return KREPORT;
+            yield return KROLE;
+            yield return KSA;
+            yield return KSC;
+            yield return KSF;
+            yield return KSQ;
+            yield return KTIE;
+            yield return KTM;
+            yield return KTRCMP;
+            yield return OSCS;
+            yield return PC;
+            yield return PD;
+            yield return PE;
+            yield return PEF;
+            yield return PEFH;
+            yield return PELA;
+            yield return PELD;
+            yield return PEM;
+            yield return PEPM;
+            yield return PEPS;
+            yield return PEPU;
+            yield return PEPUH;
+            yield return PEPY;
+            yield return PESH;
+            yield return PESP;
+            yield return PETP;
+            yield return PF;
+            yield return PG;
+            yield return PI;
+            yield return PILI;
+            yield return PLC;
+            yield return PLG;
+            yield return PLT;
+            yield return PML;
+            yield return PML_NEW;
+            yield return PN;
+            yield return PPD;
+            yield return PPS;
+            yield return PS;
+            yield return PSA;
+            yield return PSF;
+            yield return PX;
+            yield return PX_NEW;
+            yield return QB;
+            yield return QS;
+            yield return SA;
+            yield return SAB;
+            yield return SABT;
+            yield return SACAG;
+            yield return SAD;
+            yield return SADAG;
+            yield return SADP;
+            yield return SADW;
+            yield return SAI;
+            yield return SAII;
+            yield return SAIM;
+            yield return SAM;
+            yield return SAMA;
+            yield return SAP;
+            yield return SC;
+            yield return SCA;
+            yield return SCAM;
+            yield return SCEN_ACL;
+            yield return SCEN_ACV;
+            yield return SCEN_APP;
+            yield return SCEN_ASE;
+            yield return SCEN_AST;
+            yield return SCEN_ASV;
+            yield return SCEN_CL;
+            yield return SCEN_CLV;
+            yield return SCEN_CVT;
+            yield return SCEN_RFD;
+            yield return SCEN_RPT;
+            yield return SCEN_RTN;
+            yield return SCEN_SCD;
+            yield return SCEN_ST;
+            yield return SCEN_STE;
+            yield return SCEN_STV;
+            yield return SCEN_SVT;
+            yield return SCI;
+            yield return SCL;
+            yield return SCSF;
+            yield return SCSFAG;
+            yield return SDFC;
+            yield return SDG;
+            yield return SDGM;
+            yield return SDP;
+            yield return SDPA;
+            yield return SEC_ELOG;
+            yield return SEC_LLOG;
+            yield return SEC_MSG;
+            yield return SEC_URL;
+            yield return SEC_USR;
+            yield return SF;
+            yield return SFAQ;
+            yield return SFAV;
+            yield return SFQA;
+            yield return SG;
+            yield return SGAM;
+            yield return SGHG;
+            yield return SGM;
+            yield return SGMA;
+            yield return SGSC;
+            yield return SGSG;
+            yield return SGTRX;
+            yield return SID;
+            yield return SIDV;
+            yield return SIRH;
+            yield return SK_HRMS;
+            yield return SK_HRMST;
+            yield return SKGS;
+            yield return SM;
+            yield return SMAQ;
+            yield return SMAV;
+            yield return SMC;
+            yield return SMC_TFR;
+            yield return SMCD;
+            yield return SMGROUP;
+            yield return SPEMAIL;
+            yield return SPEPRINT;
+            yield return SPOUT;
+            yield return SPRECIP;
+            yield return SPREPLY;
+            yield return SPSMS;
+            yield return SPU;
+            yield return SRAG;
+            yield return SS;
+            yield return SSHG;
+            yield return ST;
+            yield return ST_TFR;
+            yield return ST_TFRIO;
+            yield return STBT;
+            yield return STMA;
+            yield return STMB;
+            yield return STPO;
+            yield return STPT;
+            yield return STRA;
+            yield return STRE;
+            yield return STSB;
+            yield return STSP;
+            yield return STTRIPS;
+            yield return STVDI;
+            yield return STVDO;
+            yield return SU;
+            yield return SUBL;
+            yield return SUPR;
+            yield return SVAG;
+            yield return SXAB;
+            yield return SXABCONV;
+            yield return SXAS;
+            yield return SXHI;
+            yield return TC;
+            yield return TCAT;
+            yield return TCTB;
+            yield return TCTD;
+            yield return TCTQ;
+            yield return TCTR;
+            yield return TE;
+            yield return TEC;
+            yield return TETE;
+            yield return TETN;
+            yield return TH;
+            yield return THTN;
+            yield return THTQ;
+            yield return TRPMODE;
+            yield return TRPROUT;
+            yield return TRSTACC;
+            yield return TT;
+            yield return TTEF;
+            yield return TTEI;
+            yield return TTEP;
+            yield return TTES;
+            yield return TTEX;
+            yield return TTTG;
+            yield return TXAS;
+            yield return TXHG;
+            yield return UM;
+            yield return UM_TFR;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Calendar Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCDataSet : DataSetBase<TC>
+    public sealed partial class TCDataSet : EduHubDataSet<TC>
     {
         /// <summary>
         /// Data Set Name

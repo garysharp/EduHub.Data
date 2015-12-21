@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Suspension Details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STSPDataSet : DataSetBase<STSP>
+    public sealed partial class STSPDataSet : EduHubDataSet<STSP>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Release Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKRDataSet : DataSetBase<AKR>
+    public sealed partial class AKRDataSet : EduHubDataSet<AKR>
     {
         /// <summary>
         /// Data Set Name

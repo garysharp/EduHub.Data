@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Timetable Quilt Headers Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class THDataSet : DataSetBase<TH>
+    public sealed partial class THDataSet : EduHubDataSet<TH>
     {
         /// <summary>
         /// Data Set Name

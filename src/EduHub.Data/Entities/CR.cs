@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Accounts Payable
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class CR : EntityBase
+    public sealed partial class CR : EduHubEntity
     {
 
         #region Navigation Property Cache

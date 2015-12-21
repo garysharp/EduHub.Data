@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Last Years General Ledger Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLPREVDataSet : DataSetBase<GLPREV>
+    public sealed partial class GLPREVDataSet : EduHubDataSet<GLPREV>
     {
         /// <summary>
         /// Data Set Name

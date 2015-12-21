@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Home Group Eligibility Criteria
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGHG : EntityBase
+    public sealed partial class SGHG : EduHubEntity
     {
 
         #region Navigation Property Cache

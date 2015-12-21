@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student History Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXHIDataSet : DataSetBase<SXHI>
+    public sealed partial class SXHIDataSet : EduHubDataSet<SXHI>
     {
         /// <summary>
         /// Data Set Name

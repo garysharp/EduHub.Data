@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Accident Involvements/Sickbay Visits
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SAI : EntityBase
+    public sealed partial class SAI : EduHubEntity
     {
 
         #region Navigation Property Cache

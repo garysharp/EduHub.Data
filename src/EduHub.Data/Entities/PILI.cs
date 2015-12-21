@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Pay Item Leave Items
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PILI : EntityBase
+    public sealed partial class PILI : EduHubEntity
     {
 
         #region Navigation Property Cache

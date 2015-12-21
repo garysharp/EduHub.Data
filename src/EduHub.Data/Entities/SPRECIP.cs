@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// SMS Recipients
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPRECIP : EntityBase
+    public sealed partial class SPRECIP : EduHubEntity
     {
 
         #region Navigation Property Cache

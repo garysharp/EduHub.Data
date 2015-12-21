@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Assets - Categories
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKC : EntityBase
+    public sealed partial class AKC : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Awards and Prizes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGW : EntityBase
+    public sealed partial class KGW : EduHubEntity
     {
 
         #region Foreign Navigation Properties

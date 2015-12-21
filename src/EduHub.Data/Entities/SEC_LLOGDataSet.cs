@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 Login Log Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_LLOGDataSet : DataSetBase<SEC_LLOG>
+    public sealed partial class SEC_LLOGDataSet : EduHubDataSet<SEC_LLOG>
     {
         /// <summary>
         /// Data Set Name

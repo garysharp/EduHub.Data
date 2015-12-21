@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Half-Day Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXABDataSet : DataSetBase<SXAB>
+    public sealed partial class SXABDataSet : EduHubDataSet<SXAB>
     {
         /// <summary>
         /// Data Set Name

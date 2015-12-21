@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// PRMS Order Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPRMS : EntityBase
+    public sealed partial class KPRMS : EduHubEntity
     {
 
         #region Field Properties

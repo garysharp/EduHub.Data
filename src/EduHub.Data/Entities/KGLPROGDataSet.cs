@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// General Ledger Programs Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGLPROGDataSet : DataSetBase<KGLPROG>
+    public sealed partial class KGLPROGDataSet : EduHubDataSet<KGLPROG>
     {
         /// <summary>
         /// Data Set Name

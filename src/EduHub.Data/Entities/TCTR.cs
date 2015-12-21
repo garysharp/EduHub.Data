@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Teacher Replacements
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTR : EntityBase
+    public sealed partial class TCTR : EduHubEntity
     {
 
         #region Navigation Property Cache

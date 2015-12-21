@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Assets - Categories Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKCDataSet : DataSetBase<AKC>
+    public sealed partial class AKCDataSet : EduHubDataSet<AKC>
     {
         /// <summary>
         /// Data Set Name

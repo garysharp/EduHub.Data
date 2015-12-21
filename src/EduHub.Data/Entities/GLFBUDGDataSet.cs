@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// SP2 dummy table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFBUDGDataSet : DataSetBase<GLFBUDG>
+    public sealed partial class GLFBUDGDataSet : EduHubDataSet<GLFBUDG>
     {
         /// <summary>
         /// Data Set Name

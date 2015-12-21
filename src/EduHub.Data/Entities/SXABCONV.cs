@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Converted Student Half-Day Absences
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXABCONV : EntityBase
+    public sealed partial class SXABCONV : EduHubEntity
     {
 
         #region Navigation Property Cache

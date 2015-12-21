@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Report file audit Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPEPRINTDataSet : DataSetBase<SPEPRINT>
+    public sealed partial class SPEPRINTDataSet : EduHubDataSet<SPEPRINT>
     {
         /// <summary>
         /// Data Set Name

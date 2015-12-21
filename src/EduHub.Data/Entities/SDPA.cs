@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Disciplinary Actions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDPA : EntityBase
+    public sealed partial class SDPA : EduHubEntity
     {
 
         #region Navigation Property Cache

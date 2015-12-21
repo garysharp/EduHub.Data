@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Religious Instruction Curricula
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCI : EntityBase
+    public sealed partial class KCI : EduHubEntity
     {
 
         #region Foreign Navigation Properties

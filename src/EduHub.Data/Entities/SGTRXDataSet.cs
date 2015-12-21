@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Temporary Group Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SGTRXDataSet : DataSetBase<SGTRX>
+    public sealed partial class SGTRXDataSet : EduHubDataSet<SGTRX>
     {
         /// <summary>
         /// Data Set Name

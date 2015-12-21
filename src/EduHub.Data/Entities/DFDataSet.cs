@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Families Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFDataSet : DataSetBase<DF>
+    public sealed partial class DFDataSet : EduHubDataSet<DF>
     {
         /// <summary>
         /// Data Set Name

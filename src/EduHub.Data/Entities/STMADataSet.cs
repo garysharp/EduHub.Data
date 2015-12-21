@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Subject Selections &amp; Marks Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STMADataSet : DataSetBase<STMA>
+    public sealed partial class STMADataSet : EduHubDataSet<STMA>
     {
         /// <summary>
         /// Data Set Name

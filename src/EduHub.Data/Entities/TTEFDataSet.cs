@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Exam Staff Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TTEFDataSet : DataSetBase<TTEF>
+    public sealed partial class TTEFDataSet : EduHubDataSet<TTEF>
     {
         /// <summary>
         /// Data Set Name

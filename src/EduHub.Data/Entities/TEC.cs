@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Event Categories
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TEC : EntityBase
+    public sealed partial class TEC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

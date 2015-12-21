@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Archived Census Student Excluded Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_ASE : EntityBase
+    public sealed partial class SCEN_ASE : EduHubEntity
     {
 
         #region Field Properties

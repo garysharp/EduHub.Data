@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Home Group Daily Attendance Records Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TXHGDataSet : DataSetBase<TXHG>
+    public sealed partial class TXHGDataSet : EduHubDataSet<TXHG>
     {
         /// <summary>
         /// Data Set Name

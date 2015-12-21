@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Available Qualifications
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSQ : EntityBase
+    public sealed partial class KSQ : EduHubEntity
     {
 
         #region Field Properties

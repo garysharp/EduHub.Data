@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Timetable Labels Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class THTNDataSet : DataSetBase<THTN>
+    public sealed partial class THTNDataSet : EduHubDataSet<THTN>
     {
         /// <summary>
         /// Data Set Name

@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// School Information
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCI : EntityBase
+    public sealed partial class SCI : EduHubEntity
     {
 
         #region Navigation Property Cache

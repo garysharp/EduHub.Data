@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Sundry Debtor Fees
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDFC : EntityBase
+    public sealed partial class SDFC : EduHubEntity
     {
 
         #region Navigation Property Cache

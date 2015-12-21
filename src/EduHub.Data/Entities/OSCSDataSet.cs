@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// CASES Past Students Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class OSCSDataSet : DataSetBase<OSCS>
+    public sealed partial class OSCSDataSet : EduHubDataSet<OSCS>
     {
         /// <summary>
         /// Data Set Name

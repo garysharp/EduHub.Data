@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 School Links URL Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_URLDataSet : DataSetBase<SEC_URL>
+    public sealed partial class SEC_URLDataSet : EduHubDataSet<SEC_URL>
     {
         /// <summary>
         /// Data Set Name

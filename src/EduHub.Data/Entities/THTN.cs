@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Timetable Labels
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class THTN : EntityBase
+    public sealed partial class THTN : EduHubEntity
     {
 
         #region Navigation Property Cache

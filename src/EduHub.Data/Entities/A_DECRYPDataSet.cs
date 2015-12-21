@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Decrypted data IMPORT Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class A_DECRYPDataSet : DataSetBase<A_DECRYP>
+    public sealed partial class A_DECRYPDataSet : EduHubDataSet<A_DECRYP>
     {
         /// <summary>
         /// Data Set Name

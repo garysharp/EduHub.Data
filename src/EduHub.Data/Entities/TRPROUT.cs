@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Student Transport Routes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRPROUT : EntityBase
+    public sealed partial class TRPROUT : EduHubEntity
     {
 
         #region Navigation Property Cache

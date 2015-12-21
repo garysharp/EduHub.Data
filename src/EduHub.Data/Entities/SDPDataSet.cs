@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Incident Instigators Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SDPDataSet : DataSetBase<SDP>
+    public sealed partial class SDPDataSet : EduHubDataSet<SDP>
     {
         /// <summary>
         /// Data Set Name

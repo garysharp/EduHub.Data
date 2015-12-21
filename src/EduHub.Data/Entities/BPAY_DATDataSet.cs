@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// BPay Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class BPAY_DATDataSet : DataSetBase<BPAY_DAT>
+    public sealed partial class BPAY_DATDataSet : EduHubDataSet<BPAY_DAT>
     {
         /// <summary>
         /// Data Set Name

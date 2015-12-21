@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Religions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGR : EntityBase
+    public sealed partial class KGR : EduHubEntity
     {
 
         #region Foreign Navigation Properties

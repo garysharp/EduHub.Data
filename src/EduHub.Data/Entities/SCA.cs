@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// School Associations
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCA : EntityBase
+    public sealed partial class SCA : EduHubEntity
     {
 
         #region Foreign Navigation Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// FTE Student Retentions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SRAGDataSet : DataSetBase<SRAG>
+    public sealed partial class SRAGDataSet : EduHubDataSet<SRAG>
     {
         /// <summary>
         /// Data Set Name

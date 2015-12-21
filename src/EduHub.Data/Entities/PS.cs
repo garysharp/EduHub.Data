@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Pay Steps or Pay Class
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PS : EntityBase
+    public sealed partial class PS : EduHubEntity
     {
 
         #region Foreign Navigation Properties

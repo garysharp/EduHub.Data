@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Employee Categories
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPEC : EntityBase
+    public sealed partial class KPEC : EduHubEntity
     {
 
         #region Field Properties

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Behaviour Classifications Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCBDataSet : DataSetBase<KCB>
+    public sealed partial class KCBDataSet : EduHubDataSet<KCB>
     {
         /// <summary>
         /// Data Set Name

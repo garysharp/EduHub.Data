@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// CSEF Receipt details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KEMA : EntityBase
+    public sealed partial class KEMA : EduHubEntity
     {
 
         #region Field Properties

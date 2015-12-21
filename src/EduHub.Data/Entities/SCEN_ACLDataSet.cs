@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Archived Census Class Sizes Data Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCEN_ACLDataSet : DataSetBase<SCEN_ACL>
+    public sealed partial class SCEN_ACLDataSet : EduHubDataSet<SCEN_ACL>
     {
         /// <summary>
         /// Data Set Name

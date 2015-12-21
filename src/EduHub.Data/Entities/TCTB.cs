@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Teacher Absences
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCTB : EntityBase
+    public sealed partial class TCTB : EduHubEntity
     {
 
         #region Navigation Property Cache

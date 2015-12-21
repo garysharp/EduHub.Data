@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// VELS Dimension Results Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STVDIDataSet : DataSetBase<STVDI>
+    public sealed partial class STVDIDataSet : EduHubDataSet<STVDI>
     {
         /// <summary>
         /// Data Set Name

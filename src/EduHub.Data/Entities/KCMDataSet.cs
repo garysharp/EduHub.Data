@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Medical Conditions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCMDataSet : DataSetBase<KCM>
+    public sealed partial class KCMDataSet : EduHubDataSet<KCM>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Multiple Day Absences Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STRADataSet : DataSetBase<STRA>
+    public sealed partial class STRADataSet : EduHubDataSet<STRA>
     {
         /// <summary>
         /// Data Set Name

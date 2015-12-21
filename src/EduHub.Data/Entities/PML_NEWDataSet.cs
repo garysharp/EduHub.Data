@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Future Medicare Levy Parameters Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PML_NEWDataSet : DataSetBase<PML_NEW>
+    public sealed partial class PML_NEWDataSet : EduHubDataSet<PML_NEW>
     {
         /// <summary>
         /// Data Set Name

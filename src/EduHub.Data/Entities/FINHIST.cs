@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Financial History
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FINHIST : EntityBase
+    public sealed partial class FINHIST : EduHubEntity
     {
 
         #region Field Properties

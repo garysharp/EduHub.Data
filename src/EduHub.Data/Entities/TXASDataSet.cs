@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Actual Sessions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TXASDataSet : DataSetBase<TXAS>
+    public sealed partial class TXASDataSet : EduHubDataSet<TXAS>
     {
         /// <summary>
         /// Data Set Name

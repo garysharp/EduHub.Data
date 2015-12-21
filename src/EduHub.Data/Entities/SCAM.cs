@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// School Association Meetings
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCAM : EntityBase
+    public sealed partial class SCAM : EduHubEntity
     {
 
         #region Navigation Property Cache

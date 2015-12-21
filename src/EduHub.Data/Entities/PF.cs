@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Superannuation Funds
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PF : EntityBase
+    public sealed partial class PF : EduHubEntity
     {
 
         #region Navigation Property Cache

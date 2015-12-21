@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Multiple Day Absences
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STRA : EntityBase
+    public sealed partial class STRA : EduHubEntity
     {
 
         #region Navigation Property Cache

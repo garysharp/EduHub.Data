@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Future Tax Scales
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PX_NEW : EntityBase
+    public sealed partial class PX_NEW : EduHubEntity
     {
 
         #region Field Properties

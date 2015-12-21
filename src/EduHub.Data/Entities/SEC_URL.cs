@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 School Links URL
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_URL : EntityBase
+    public sealed partial class SEC_URL : EduHubEntity
     {
 
         #region Field Properties

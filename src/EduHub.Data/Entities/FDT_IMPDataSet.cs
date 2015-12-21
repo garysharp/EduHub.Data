@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// FDT Financial Raw Import Table Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class FDT_IMPDataSet : DataSetBase<FDT_IMP>
+    public sealed partial class FDT_IMPDataSet : EduHubDataSet<FDT_IMP>
     {
         /// <summary>
         /// Data Set Name

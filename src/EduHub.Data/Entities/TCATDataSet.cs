@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Staff Absence Types Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TCATDataSet : DataSetBase<TCAT>
+    public sealed partial class TCATDataSet : EduHubDataSet<TCAT>
     {
         /// <summary>
         /// Data Set Name

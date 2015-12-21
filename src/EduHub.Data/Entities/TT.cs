@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Timetable Grid Templates
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TT : EntityBase
+    public sealed partial class TT : EduHubEntity
     {
 
         #region Navigation Property Cache

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Pay Advice Slip Message Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEMDataSet : DataSetBase<PEM>
+    public sealed partial class PEMDataSet : EduHubDataSet<PEM>
     {
         /// <summary>
         /// Data Set Name

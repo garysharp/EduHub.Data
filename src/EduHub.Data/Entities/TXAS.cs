@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Actual Sessions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TXAS : EntityBase
+    public sealed partial class TXAS : EduHubEntity
     {
 
         #region Navigation Property Cache

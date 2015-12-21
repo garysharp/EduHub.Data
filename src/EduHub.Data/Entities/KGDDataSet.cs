@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Year 9-12 Exit Destinations Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGDDataSet : DataSetBase<KGD>
+    public sealed partial class KGDDataSet : EduHubDataSet<KGD>
     {
         /// <summary>
         /// Data Set Name

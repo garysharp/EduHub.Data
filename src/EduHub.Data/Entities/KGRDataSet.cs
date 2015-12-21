@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Religions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KGRDataSet : DataSetBase<KGR>
+    public sealed partial class KGRDataSet : EduHubDataSet<KGR>
     {
         /// <summary>
         /// Data Set Name

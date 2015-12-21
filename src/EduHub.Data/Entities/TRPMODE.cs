@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Transport Modes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class TRPMODE : EntityBase
+    public sealed partial class TRPMODE : EduHubEntity
     {
 
         #region Foreign Navigation Properties

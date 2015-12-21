@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Asset Key Holders Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class AKKDataSet : DataSetBase<AKK>
+    public sealed partial class AKKDataSet : EduHubDataSet<AKK>
     {
         /// <summary>
         /// Data Set Name

@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Family Voluntary Transactions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFVTDataSet : DataSetBase<DFVT>
+    public sealed partial class DFVTDataSet : EduHubDataSet<DFVT>
     {
         /// <summary>
         /// Data Set Name

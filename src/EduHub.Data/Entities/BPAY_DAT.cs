@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// BPay Data
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class BPAY_DAT : EntityBase
+    public sealed partial class BPAY_DAT : EduHubEntity
     {
 
         #region Field Properties

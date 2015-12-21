@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Australian Postcodes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KAP : EntityBase
+    public sealed partial class KAP : EduHubEntity
     {
 
         #region Field Properties

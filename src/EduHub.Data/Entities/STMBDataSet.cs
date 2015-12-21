@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Merit Behaviour Details Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STMBDataSet : DataSetBase<STMB>
+    public sealed partial class STMBDataSet : EduHubDataSet<STMB>
     {
         /// <summary>
         /// Data Set Name

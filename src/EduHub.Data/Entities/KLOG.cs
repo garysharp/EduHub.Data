@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Trace log for finance import and export
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KLOG : EntityBase
+    public sealed partial class KLOG : EduHubEntity
     {
 
         #region Field Properties

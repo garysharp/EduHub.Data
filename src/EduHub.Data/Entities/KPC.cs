@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Contacts
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KPC : EntityBase
+    public sealed partial class KPC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

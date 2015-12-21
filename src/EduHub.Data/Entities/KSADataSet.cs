@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Areas of Teaching Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KSADataSet : DataSetBase<KSA>
+    public sealed partial class KSADataSet : EduHubDataSet<KSA>
     {
         /// <summary>
         /// Data Set Name

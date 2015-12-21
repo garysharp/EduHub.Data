@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Subject Book List Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SUBLDataSet : DataSetBase<SUBL>
+    public sealed partial class SUBLDataSet : EduHubDataSet<SUBL>
     {
         /// <summary>
         /// Data Set Name

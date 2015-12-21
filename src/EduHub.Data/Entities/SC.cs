@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Courses
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SC : EntityBase
+    public sealed partial class SC : EduHubEntity
     {
 
         #region Navigation Property Cache

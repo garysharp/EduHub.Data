@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Stored Procedure Return Values Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPOUTDataSet : DataSetBase<SPOUT>
+    public sealed partial class SPOUTDataSet : EduHubDataSet<SPOUT>
     {
         /// <summary>
         /// Data Set Name

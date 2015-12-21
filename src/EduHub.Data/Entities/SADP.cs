@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Accident Prevention Measures
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SADP : EntityBase
+    public sealed partial class SADP : EduHubEntity
     {
 
         #region Navigation Property Cache

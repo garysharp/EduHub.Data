@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Family Financial Transactions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class DFF : EntityBase
+    public sealed partial class DFF : EduHubEntity
     {
 
         #region Navigation Property Cache

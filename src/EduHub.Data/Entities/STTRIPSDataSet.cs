@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Trips Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STTRIPSDataSet : DataSetBase<STTRIPS>
+    public sealed partial class STTRIPSDataSet : EduHubDataSet<STTRIPS>
     {
         /// <summary>
         /// Data Set Name

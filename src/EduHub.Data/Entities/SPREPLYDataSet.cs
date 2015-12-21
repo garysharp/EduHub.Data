@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// SMS Recipients Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPREPLYDataSet : DataSetBase<SPREPLY>
+    public sealed partial class SPREPLYDataSet : EduHubDataSet<SPREPLY>
     {
         /// <summary>
         /// Data Set Name

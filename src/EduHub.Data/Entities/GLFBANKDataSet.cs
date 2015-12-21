@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Financial Commitments Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class GLFBANKDataSet : DataSetBase<GLFBANK>
+    public sealed partial class GLFBANKDataSet : EduHubDataSet<GLFBANK>
     {
         /// <summary>
         /// Data Set Name

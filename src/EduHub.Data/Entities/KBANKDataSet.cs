@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Bank Account Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KBANKDataSet : DataSetBase<KBANK>
+    public sealed partial class KBANKDataSet : EduHubDataSet<KBANK>
     {
         /// <summary>
         /// Data Set Name

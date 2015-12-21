@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Report email templates Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPEMAILDataSet : DataSetBase<SPEMAIL>
+    public sealed partial class SPEMAILDataSet : EduHubDataSet<SPEMAIL>
     {
         /// <summary>
         /// Data Set Name

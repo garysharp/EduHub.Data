@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Stored SQL Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class QSDataSet : DataSetBase<QS>
+    public sealed partial class QSDataSet : EduHubDataSet<QS>
     {
         /// <summary>
         /// Data Set Name

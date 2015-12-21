@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Religious Instruction Curricula Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KCIDataSet : DataSetBase<KCI>
+    public sealed partial class KCIDataSet : EduHubDataSet<KCI>
     {
         /// <summary>
         /// Data Set Name

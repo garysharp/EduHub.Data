@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// Student Scheduled Sessions Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SXASDataSet : DataSetBase<SXAS>
+    public sealed partial class SXASDataSet : EduHubDataSet<SXAS>
     {
         /// <summary>
         /// Data Set Name

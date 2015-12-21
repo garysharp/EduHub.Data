@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// SMS messages Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPSMSDataSet : DataSetBase<SPSMS>
+    public sealed partial class SPSMSDataSet : EduHubDataSet<SPSMS>
     {
         /// <summary>
         /// Data Set Name

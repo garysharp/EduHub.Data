@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Fuel Tax Credit Rates
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KFTC : EntityBase
+    public sealed partial class KFTC : EduHubEntity
     {
 
         #region Foreign Navigation Properties

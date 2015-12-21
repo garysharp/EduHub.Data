@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Future Medicare Levy Parameters
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PML_NEW : EntityBase
+    public sealed partial class PML_NEW : EduHubEntity
     {
 
         #region Field Properties

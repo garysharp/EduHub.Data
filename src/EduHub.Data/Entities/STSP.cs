@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Suspension Details
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class STSP : EntityBase
+    public sealed partial class STSP : EduHubEntity
     {
 
         #region Navigation Property Cache

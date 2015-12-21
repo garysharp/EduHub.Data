@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// BPAY Receipts Import Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KBPDataSet : DataSetBase<KBP>
+    public sealed partial class KBPDataSet : EduHubDataSet<KBP>
     {
         /// <summary>
         /// Data Set Name

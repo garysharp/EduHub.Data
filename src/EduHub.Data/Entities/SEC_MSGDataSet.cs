@@ -10,7 +10,7 @@ namespace EduHub.Data.Entities
     /// eCASES21 School Message Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SEC_MSGDataSet : DataSetBase<SEC_MSG>
+    public sealed partial class SEC_MSGDataSet : EduHubDataSet<SEC_MSG>
     {
         /// <summary>
         /// Data Set Name

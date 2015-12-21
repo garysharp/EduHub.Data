@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Pay Advice Slip Message
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class PEM : EntityBase
+    public sealed partial class PEM : EduHubEntity
     {
 
         #region Navigation Property Cache

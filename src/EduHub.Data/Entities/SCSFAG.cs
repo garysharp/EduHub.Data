@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// CSF Data Aggregates
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SCSFAG : EntityBase
+    public sealed partial class SCSFAG : EduHubEntity
     {
 
         #region Navigation Property Cache

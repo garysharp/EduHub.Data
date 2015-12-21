@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Task Message
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class KTM : EntityBase
+    public sealed partial class KTM : EduHubEntity
     {
 
         #region Field Properties

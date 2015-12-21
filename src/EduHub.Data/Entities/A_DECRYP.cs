@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// Decrypted data IMPORT
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class A_DECRYP : EntityBase
+    public sealed partial class A_DECRYP : EduHubEntity
     {
 
         #region Field Properties

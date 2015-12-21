@@ -8,7 +8,7 @@ namespace EduHub.Data.Entities
     /// VELS Aggregated Dimensions
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SVAG : EntityBase
+    public sealed partial class SVAG : EduHubEntity
     {
 
         #region Navigation Property Cache
