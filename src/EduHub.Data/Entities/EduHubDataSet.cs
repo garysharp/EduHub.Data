@@ -181,7 +181,7 @@ namespace EduHub.Data.Entities
             using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
                 // Drop records
-                using (var command = new SqlCommand($"DELETE {Name}", Connection, transaction))
+                using (var command = new SqlCommand($"TRUNCATE TABLE {Name}", Connection, transaction))
                 {
                     command.ExecuteNonQuery();
                 }
