@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SABDataSet : EduHubDataSet<SAB>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SAB"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SABDataSet(EduHubContext Context)
             : base(Context)
@@ -33,7 +36,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SAB" /> fields for each CSV column header</returns>
-        protected override Action<SAB, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SAB, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SAB, string>[Headers.Count];
 
@@ -99,29 +102,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SAB" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SAB" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SAB" /> items to added or update the base <see cref="SAB" /> items</param>
-        /// <returns>A merged list of <see cref="SAB" /> items</returns>
-        protected override List<SAB> ApplyDeltaItems(List<SAB> Items, List<SAB> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SAB" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SAB" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SAB}"/> of entities</returns>
+        internal override IEnumerable<SAB> ApplyDeltaEntities(IEnumerable<SAB> Entities, List<SAB> DeltaEntities)
         {
-            Dictionary<string, int> Index_SABKEY = Items.ToIndexDictionary(i => i.SABKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_SABKEY = new HashSet<string>(DeltaEntities.Select(i => i.SABKEY));
 
-            foreach (SAB deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SABKEY.TryGetValue(deltaItem.SABKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SABKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SABKEY.Remove(entity.SABKEY);
+                            
+                            if (entity.SABKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SABKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -394,11 +423,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SAB table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SAB table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SAB](
         [SABKEY] varchar(10) NOT NULL,
@@ -441,148 +474,207 @@ BEGIN
     (
             [FEE_CODE_KG] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_1ST')
+    ALTER INDEX [Index_FEE_CODE_1ST] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_2ND')
+    ALTER INDEX [Index_FEE_CODE_2ND] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_3RD')
+    ALTER INDEX [Index_FEE_CODE_3RD] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_4TH')
+    ALTER INDEX [Index_FEE_CODE_4TH] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_KG')
+    ALTER INDEX [Index_FEE_CODE_KG] ON [dbo].[SAB] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_1ST')
+    ALTER INDEX [Index_FEE_CODE_1ST] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_2ND')
+    ALTER INDEX [Index_FEE_CODE_2ND] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_3RD')
+    ALTER INDEX [Index_FEE_CODE_3RD] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_4TH')
+    ALTER INDEX [Index_FEE_CODE_4TH] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_KG')
+    ALTER INDEX [Index_FEE_CODE_KG] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SAB"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SAB"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SAB> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_SABKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SABKEY.Add(entity.SABKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SAB] WHERE");
+
+
+            // Index_SABKEY
+            builder.Append("[SABKEY] IN (");
+            for (int index = 0; index < Index_SABKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SABKEY
+                var parameterSABKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSABKEY);
+                command.Parameters.Add(parameterSABKEY, SqlDbType.VarChar, 10).Value = Index_SABKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SAB data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SAB data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SAB> GetDataSetDataReader()
         {
-            return new SABDataReader(Items.Value);
+            return new SABDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAB data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAB data set</returns>
+        public override EduHubDataSetDataReader<SAB> GetDataSetDataReader(List<SAB> Entities)
+        {
+            return new SABDataReader(new EduHubDataSetLoadedReader<SAB>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SABDataReader : IDataReader, IDataRecord
+        private class SABDataReader : EduHubDataSetDataReader<SAB>
         {
-            private List<SAB> Items;
-            private int CurrentIndex;
-            private SAB CurrentItem;
-
-            public SABDataReader(List<SAB> Items)
+            public SABDataReader(IEduHubDataSetReader<SAB> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 16; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 16; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SABKEY
-                        return CurrentItem.SABKEY;
+                        return Current.SABKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // BILL_TYPE
-                        return CurrentItem.BILL_TYPE;
+                        return Current.BILL_TYPE;
                     case 3: // FROM_CLASS
-                        return CurrentItem.FROM_CLASS;
+                        return Current.FROM_CLASS;
                     case 4: // TO_CLASS
-                        return CurrentItem.TO_CLASS;
+                        return Current.TO_CLASS;
                     case 5: // FROM_YEAR
-                        return CurrentItem.FROM_YEAR;
+                        return Current.FROM_YEAR;
                     case 6: // TO_YEAR
-                        return CurrentItem.TO_YEAR;
+                        return Current.TO_YEAR;
                     case 7: // RES_STATUS
-                        return CurrentItem.RES_STATUS;
+                        return Current.RES_STATUS;
                     case 8: // FEE_CODE_1ST
-                        return CurrentItem.FEE_CODE_1ST;
+                        return Current.FEE_CODE_1ST;
                     case 9: // FEE_CODE_2ND
-                        return CurrentItem.FEE_CODE_2ND;
+                        return Current.FEE_CODE_2ND;
                     case 10: // FEE_CODE_3RD
-                        return CurrentItem.FEE_CODE_3RD;
+                        return Current.FEE_CODE_3RD;
                     case 11: // FEE_CODE_4TH
-                        return CurrentItem.FEE_CODE_4TH;
+                        return Current.FEE_CODE_4TH;
                     case 12: // FEE_CODE_KG
-                        return CurrentItem.FEE_CODE_KG;
+                        return Current.FEE_CODE_KG;
                     case 13: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 14: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 15: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // BILL_TYPE
-                        return CurrentItem.BILL_TYPE == null;
+                        return Current.BILL_TYPE == null;
                     case 3: // FROM_CLASS
-                        return CurrentItem.FROM_CLASS == null;
+                        return Current.FROM_CLASS == null;
                     case 4: // TO_CLASS
-                        return CurrentItem.TO_CLASS == null;
+                        return Current.TO_CLASS == null;
                     case 5: // FROM_YEAR
-                        return CurrentItem.FROM_YEAR == null;
+                        return Current.FROM_YEAR == null;
                     case 6: // TO_YEAR
-                        return CurrentItem.TO_YEAR == null;
+                        return Current.TO_YEAR == null;
                     case 7: // RES_STATUS
-                        return CurrentItem.RES_STATUS == null;
+                        return Current.RES_STATUS == null;
                     case 8: // FEE_CODE_1ST
-                        return CurrentItem.FEE_CODE_1ST == null;
+                        return Current.FEE_CODE_1ST == null;
                     case 9: // FEE_CODE_2ND
-                        return CurrentItem.FEE_CODE_2ND == null;
+                        return Current.FEE_CODE_2ND == null;
                     case 10: // FEE_CODE_3RD
-                        return CurrentItem.FEE_CODE_3RD == null;
+                        return Current.FEE_CODE_3RD == null;
                     case 11: // FEE_CODE_4TH
-                        return CurrentItem.FEE_CODE_4TH == null;
+                        return Current.FEE_CODE_4TH == null;
                     case 12: // FEE_CODE_KG
-                        return CurrentItem.FEE_CODE_KG == null;
+                        return Current.FEE_CODE_KG == null;
                     case 13: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 14: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 15: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -623,7 +715,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -662,35 +754,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

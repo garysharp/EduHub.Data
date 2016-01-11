@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PDDataSet : EduHubDataSet<PD>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PD"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PDDataSet(EduHubContext Context)
             : base(Context)
@@ -33,7 +36,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PD" /> fields for each CSV column header</returns>
-        protected override Action<PD, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PD, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PD, string>[Headers.Count];
 
@@ -84,29 +87,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PD" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PD" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PD" /> items to added or update the base <see cref="PD" /> items</param>
-        /// <returns>A merged list of <see cref="PD" /> items</returns>
-        protected override List<PD> ApplyDeltaItems(List<PD> Items, List<PD> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PD" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PD" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PD}"/> of entities</returns>
+        internal override IEnumerable<PD> ApplyDeltaEntities(IEnumerable<PD> Entities, List<PD> DeltaEntities)
         {
-            Dictionary<string, int> Index_PDKEY = Items.ToIndexDictionary(i => i.PDKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_PDKEY = new HashSet<string>(DeltaEntities.Select(i => i.PDKEY));
 
-            foreach (PD deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_PDKEY.TryGetValue(deltaItem.PDKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PDKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_PDKEY.Remove(entity.PDKEY);
+                            
+                            if (entity.PDKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PDKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -379,11 +408,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PD table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PD table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PD](
         [PDKEY] varchar(10) NOT NULL,
@@ -421,128 +454,187 @@ BEGIN
     (
             [SUBPROGRAM] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLBANK')
+    ALTER INDEX [Index_GLBANK] ON [dbo].[PD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLCODE')
+    ALTER INDEX [Index_GLCODE] ON [dbo].[PD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLTAX')
+    ALTER INDEX [Index_GLTAX] ON [dbo].[PD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PD] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLBANK')
+    ALTER INDEX [Index_GLBANK] ON [dbo].[PD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLCODE')
+    ALTER INDEX [Index_GLCODE] ON [dbo].[PD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_GLTAX')
+    ALTER INDEX [Index_GLTAX] ON [dbo].[PD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PD]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PD] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PD"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PD"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PD> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_PDKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PDKEY.Add(entity.PDKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PD] WHERE");
+
+
+            // Index_PDKEY
+            builder.Append("[PDKEY] IN (");
+            for (int index = 0; index < Index_PDKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PDKEY
+                var parameterPDKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPDKEY);
+                command.Parameters.Add(parameterPDKEY, SqlDbType.VarChar, 10).Value = Index_PDKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PD data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PD data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PD> GetDataSetDataReader()
         {
-            return new PDDataReader(Items.Value);
+            return new PDDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PD data set</returns>
+        public override EduHubDataSetDataReader<PD> GetDataSetDataReader(List<PD> Entities)
+        {
+            return new PDDataReader(new EduHubDataSetLoadedReader<PD>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PDDataReader : IDataReader, IDataRecord
+        private class PDDataReader : EduHubDataSetDataReader<PD>
         {
-            private List<PD> Items;
-            private int CurrentIndex;
-            private PD CurrentItem;
-
-            public PDDataReader(List<PD> Items)
+            public PDDataReader(IEduHubDataSetReader<PD> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 11; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 11; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PDKEY
-                        return CurrentItem.PDKEY;
+                        return Current.PDKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // GLCODE
-                        return CurrentItem.GLCODE;
+                        return Current.GLCODE;
                     case 3: // GLBANK
-                        return CurrentItem.GLBANK;
+                        return Current.GLBANK;
                     case 4: // GLTAX
-                        return CurrentItem.GLTAX;
+                        return Current.GLTAX;
                     case 5: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM;
+                        return Current.SUBPROGRAM;
                     case 6: // GLPROGRAM
-                        return CurrentItem.GLPROGRAM;
+                        return Current.GLPROGRAM;
                     case 7: // INITIATIVE
-                        return CurrentItem.INITIATIVE;
+                        return Current.INITIATIVE;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // GLCODE
-                        return CurrentItem.GLCODE == null;
+                        return Current.GLCODE == null;
                     case 3: // GLBANK
-                        return CurrentItem.GLBANK == null;
+                        return Current.GLBANK == null;
                     case 4: // GLTAX
-                        return CurrentItem.GLTAX == null;
+                        return Current.GLTAX == null;
                     case 5: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM == null;
+                        return Current.SUBPROGRAM == null;
                     case 6: // GLPROGRAM
-                        return CurrentItem.GLPROGRAM == null;
+                        return Current.GLPROGRAM == null;
                     case 7: // INITIATIVE
-                        return CurrentItem.INITIATIVE == null;
+                        return Current.INITIATIVE == null;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -573,7 +665,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -602,35 +694,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

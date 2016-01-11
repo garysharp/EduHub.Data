@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KERRORDataSet : EduHubDataSet<KERROR>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KERROR"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal KERRORDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KERROR" /> fields for each CSV column header</returns>
-        protected override Action<KERROR, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KERROR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KERROR, string>[Headers.Count];
 
@@ -95,29 +98,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KERROR" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KERROR" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KERROR" /> items to added or update the base <see cref="KERROR" /> items</param>
-        /// <returns>A merged list of <see cref="KERROR" /> items</returns>
-        protected override List<KERROR> ApplyDeltaItems(List<KERROR> Items, List<KERROR> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KERROR" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KERROR" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KERROR}"/> of entities</returns>
+        internal override IEnumerable<KERROR> ApplyDeltaEntities(IEnumerable<KERROR> Entities, List<KERROR> DeltaEntities)
         {
-            Dictionary<int, int> Index_KERROR_ID = Items.ToIndexDictionary(i => i.KERROR_ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_KERROR_ID = new HashSet<int>(DeltaEntities.Select(i => i.KERROR_ID));
 
-            foreach (KERROR deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KERROR_ID.TryGetValue(deltaItem.KERROR_ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KERROR_ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KERROR_ID.Remove(entity.KERROR_ID);
+                            
+                            if (entity.KERROR_ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KERROR_ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -218,11 +247,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KERROR table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KERROR table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KERROR](
         [KERROR_ID] int IDENTITY NOT NULL,
@@ -249,148 +282,191 @@ BEGIN
     (
             [SPOUTKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'Index_SPOUTKEY')
+    ALTER INDEX [Index_SPOUTKEY] ON [dbo].[KERROR] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'Index_SPOUTKEY')
+    ALTER INDEX [Index_SPOUTKEY] ON [dbo].[KERROR] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KERROR"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KERROR"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KERROR> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_KERROR_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KERROR_ID.Add(entity.KERROR_ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KERROR] WHERE");
+
+
+            // Index_KERROR_ID
+            builder.Append("[KERROR_ID] IN (");
+            for (int index = 0; index < Index_KERROR_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KERROR_ID
+                var parameterKERROR_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterKERROR_ID);
+                command.Parameters.Add(parameterKERROR_ID, SqlDbType.Int).Value = Index_KERROR_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KERROR data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KERROR data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KERROR> GetDataSetDataReader()
         {
-            return new KERRORDataReader(Items.Value);
+            return new KERRORDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KERROR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KERROR data set</returns>
+        public override EduHubDataSetDataReader<KERROR> GetDataSetDataReader(List<KERROR> Entities)
+        {
+            return new KERRORDataReader(new EduHubDataSetLoadedReader<KERROR>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KERRORDataReader : IDataReader, IDataRecord
+        private class KERRORDataReader : EduHubDataSetDataReader<KERROR>
         {
-            private List<KERROR> Items;
-            private int CurrentIndex;
-            private KERROR CurrentItem;
-
-            public KERRORDataReader(List<KERROR> Items)
+            public KERRORDataReader(IEduHubDataSetReader<KERROR> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 16; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 16; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KERROR_ID
-                        return CurrentItem.KERROR_ID;
+                        return Current.KERROR_ID;
                     case 1: // SOURCE
-                        return CurrentItem.SOURCE;
+                        return Current.SOURCE;
                     case 2: // TEXT01
-                        return CurrentItem.TEXT01;
+                        return Current.TEXT01;
                     case 3: // TEXT02
-                        return CurrentItem.TEXT02;
+                        return Current.TEXT02;
                     case 4: // TEXT03
-                        return CurrentItem.TEXT03;
+                        return Current.TEXT03;
                     case 5: // TEXT04
-                        return CurrentItem.TEXT04;
+                        return Current.TEXT04;
                     case 6: // TEXT05
-                        return CurrentItem.TEXT05;
+                        return Current.TEXT05;
                     case 7: // TEXT06
-                        return CurrentItem.TEXT06;
+                        return Current.TEXT06;
                     case 8: // TEXT07
-                        return CurrentItem.TEXT07;
+                        return Current.TEXT07;
                     case 9: // TEXT08
-                        return CurrentItem.TEXT08;
+                        return Current.TEXT08;
                     case 10: // TEXT09
-                        return CurrentItem.TEXT09;
+                        return Current.TEXT09;
                     case 11: // VALIDATION
-                        return CurrentItem.VALIDATION;
+                        return Current.VALIDATION;
                     case 12: // PROCESSED
-                        return CurrentItem.PROCESSED;
+                        return Current.PROCESSED;
                     case 13: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 14: // ERROR_TEXT
-                        return CurrentItem.ERROR_TEXT;
+                        return Current.ERROR_TEXT;
                     case 15: // SPOUTKEY
-                        return CurrentItem.SPOUTKEY;
+                        return Current.SPOUTKEY;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // SOURCE
-                        return CurrentItem.SOURCE == null;
+                        return Current.SOURCE == null;
                     case 2: // TEXT01
-                        return CurrentItem.TEXT01 == null;
+                        return Current.TEXT01 == null;
                     case 3: // TEXT02
-                        return CurrentItem.TEXT02 == null;
+                        return Current.TEXT02 == null;
                     case 4: // TEXT03
-                        return CurrentItem.TEXT03 == null;
+                        return Current.TEXT03 == null;
                     case 5: // TEXT04
-                        return CurrentItem.TEXT04 == null;
+                        return Current.TEXT04 == null;
                     case 6: // TEXT05
-                        return CurrentItem.TEXT05 == null;
+                        return Current.TEXT05 == null;
                     case 7: // TEXT06
-                        return CurrentItem.TEXT06 == null;
+                        return Current.TEXT06 == null;
                     case 8: // TEXT07
-                        return CurrentItem.TEXT07 == null;
+                        return Current.TEXT07 == null;
                     case 9: // TEXT08
-                        return CurrentItem.TEXT08 == null;
+                        return Current.TEXT08 == null;
                     case 10: // TEXT09
-                        return CurrentItem.TEXT09 == null;
+                        return Current.TEXT09 == null;
                     case 11: // VALIDATION
-                        return CurrentItem.VALIDATION == null;
+                        return Current.VALIDATION == null;
                     case 12: // PROCESSED
-                        return CurrentItem.PROCESSED == null;
+                        return Current.PROCESSED == null;
                     case 13: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 14: // ERROR_TEXT
-                        return CurrentItem.ERROR_TEXT == null;
+                        return Current.ERROR_TEXT == null;
                     case 15: // SPOUTKEY
-                        return CurrentItem.SPOUTKEY == null;
+                        return Current.SPOUTKEY == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -431,7 +507,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -470,35 +546,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

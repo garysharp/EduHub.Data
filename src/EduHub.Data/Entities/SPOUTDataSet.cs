@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPOUTDataSet : EduHubDataSet<SPOUT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SPOUT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SPOUTDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SPOUT" /> fields for each CSV column header</returns>
-        protected override Action<SPOUT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SPOUT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SPOUT, string>[Headers.Count];
 
@@ -103,29 +106,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SPOUT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SPOUT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SPOUT" /> items to added or update the base <see cref="SPOUT" /> items</param>
-        /// <returns>A merged list of <see cref="SPOUT" /> items</returns>
-        protected override List<SPOUT> ApplyDeltaItems(List<SPOUT> Items, List<SPOUT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SPOUT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SPOUT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SPOUT}"/> of entities</returns>
+        internal override IEnumerable<SPOUT> ApplyDeltaEntities(IEnumerable<SPOUT> Entities, List<SPOUT> DeltaEntities)
         {
-            Dictionary<string, int> Index_SPOUTKEY = Items.ToIndexDictionary(i => i.SPOUTKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_SPOUTKEY = new HashSet<string>(DeltaEntities.Select(i => i.SPOUTKEY));
 
-            foreach (SPOUT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SPOUTKEY.TryGetValue(deltaItem.SPOUTKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SPOUTKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SPOUTKEY.Remove(entity.SPOUTKEY);
+                            
+                            if (entity.SPOUTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SPOUTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -183,11 +212,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SPOUT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SPOUT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPOUT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPOUT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SPOUT](
         [SPOUTKEY] varchar(100) NOT NULL,
@@ -213,160 +246,191 @@ BEGIN
             [SPOUTKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SPOUTDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SPOUTDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SPOUT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SPOUT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SPOUT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_SPOUTKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SPOUTKEY.Add(entity.SPOUTKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SPOUT] WHERE");
+
+
+            // Index_SPOUTKEY
+            builder.Append("[SPOUTKEY] IN (");
+            for (int index = 0; index < Index_SPOUTKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SPOUTKEY
+                var parameterSPOUTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSPOUTKEY);
+                command.Parameters.Add(parameterSPOUTKEY, SqlDbType.VarChar, 100).Value = Index_SPOUTKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SPOUT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SPOUT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SPOUT> GetDataSetDataReader()
         {
-            return new SPOUTDataReader(Items.Value);
+            return new SPOUTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SPOUT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SPOUT data set</returns>
+        public override EduHubDataSetDataReader<SPOUT> GetDataSetDataReader(List<SPOUT> Entities)
+        {
+            return new SPOUTDataReader(new EduHubDataSetLoadedReader<SPOUT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SPOUTDataReader : IDataReader, IDataRecord
+        private class SPOUTDataReader : EduHubDataSetDataReader<SPOUT>
         {
-            private List<SPOUT> Items;
-            private int CurrentIndex;
-            private SPOUT CurrentItem;
-
-            public SPOUTDataReader(List<SPOUT> Items)
+            public SPOUTDataReader(IEduHubDataSetReader<SPOUT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 19; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 19; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SPOUTKEY
-                        return CurrentItem.SPOUTKEY;
+                        return Current.SPOUTKEY;
                     case 1: // FILE_NAME
-                        return CurrentItem.FILE_NAME;
+                        return Current.FILE_NAME;
                     case 2: // ENTITYID
-                        return CurrentItem.ENTITYID;
+                        return Current.ENTITYID;
                     case 3: // FLAG01
-                        return CurrentItem.FLAG01;
+                        return Current.FLAG01;
                     case 4: // FLAG02
-                        return CurrentItem.FLAG02;
+                        return Current.FLAG02;
                     case 5: // FLAG03
-                        return CurrentItem.FLAG03;
+                        return Current.FLAG03;
                     case 6: // FLAG04
-                        return CurrentItem.FLAG04;
+                        return Current.FLAG04;
                     case 7: // TXT01
-                        return CurrentItem.TXT01;
+                        return Current.TXT01;
                     case 8: // TXT02
-                        return CurrentItem.TXT02;
+                        return Current.TXT02;
                     case 9: // TXT03
-                        return CurrentItem.TXT03;
+                        return Current.TXT03;
                     case 10: // TXT04
-                        return CurrentItem.TXT04;
+                        return Current.TXT04;
                     case 11: // NUM01
-                        return CurrentItem.NUM01;
+                        return Current.NUM01;
                     case 12: // NUM02
-                        return CurrentItem.NUM02;
+                        return Current.NUM02;
                     case 13: // NUM03
-                        return CurrentItem.NUM03;
+                        return Current.NUM03;
                     case 14: // NUM04
-                        return CurrentItem.NUM04;
+                        return Current.NUM04;
                     case 15: // NOTES
-                        return CurrentItem.NOTES;
+                        return Current.NOTES;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // FILE_NAME
-                        return CurrentItem.FILE_NAME == null;
+                        return Current.FILE_NAME == null;
                     case 2: // ENTITYID
-                        return CurrentItem.ENTITYID == null;
+                        return Current.ENTITYID == null;
                     case 3: // FLAG01
-                        return CurrentItem.FLAG01 == null;
+                        return Current.FLAG01 == null;
                     case 4: // FLAG02
-                        return CurrentItem.FLAG02 == null;
+                        return Current.FLAG02 == null;
                     case 5: // FLAG03
-                        return CurrentItem.FLAG03 == null;
+                        return Current.FLAG03 == null;
                     case 6: // FLAG04
-                        return CurrentItem.FLAG04 == null;
+                        return Current.FLAG04 == null;
                     case 7: // TXT01
-                        return CurrentItem.TXT01 == null;
+                        return Current.TXT01 == null;
                     case 8: // TXT02
-                        return CurrentItem.TXT02 == null;
+                        return Current.TXT02 == null;
                     case 9: // TXT03
-                        return CurrentItem.TXT03 == null;
+                        return Current.TXT03 == null;
                     case 10: // TXT04
-                        return CurrentItem.TXT04 == null;
+                        return Current.TXT04 == null;
                     case 11: // NUM01
-                        return CurrentItem.NUM01 == null;
+                        return Current.NUM01 == null;
                     case 12: // NUM02
-                        return CurrentItem.NUM02 == null;
+                        return Current.NUM02 == null;
                     case 13: // NUM03
-                        return CurrentItem.NUM03 == null;
+                        return Current.NUM03 == null;
                     case 14: // NUM04
-                        return CurrentItem.NUM04 == null;
+                        return Current.NUM04 == null;
                     case 15: // NOTES
-                        return CurrentItem.NOTES == null;
+                        return Current.NOTES == null;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -413,7 +477,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -458,35 +522,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

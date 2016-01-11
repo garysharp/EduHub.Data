@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class UMDataSet : EduHubDataSet<UM>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "UM"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal UMDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="UM" /> fields for each CSV column header</returns>
-        protected override Action<UM, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<UM, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<UM, string>[Headers.Count];
 
@@ -99,29 +102,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="UM" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="UM" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="UM" /> items to added or update the base <see cref="UM" /> items</param>
-        /// <returns>A merged list of <see cref="UM" /> items</returns>
-        protected override List<UM> ApplyDeltaItems(List<UM> Items, List<UM> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="UM" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="UM" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{UM}"/> of entities</returns>
+        internal override IEnumerable<UM> ApplyDeltaEntities(IEnumerable<UM> Entities, List<UM> DeltaEntities)
         {
-            Dictionary<int, int> Index_UMKEY = Items.ToIndexDictionary(i => i.UMKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_UMKEY = new HashSet<int>(DeltaEntities.Select(i => i.UMKEY));
 
-            foreach (UM deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_UMKEY.TryGetValue(deltaItem.UMKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.UMKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_UMKEY.Remove(entity.UMKEY);
+                            
+                            if (entity.UMKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.UMKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -265,11 +294,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a UM table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a UM table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[UM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[UM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[UM](
         [UMKEY] int IDENTITY NOT NULL,
@@ -301,152 +334,199 @@ BEGIN
     (
             [LW_DATE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[UM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[UM] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[UM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[UM] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="UM"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="UM"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<UM> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_UMKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_UMKEY.Add(entity.UMKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[UM] WHERE");
+
+
+            // Index_UMKEY
+            builder.Append("[UMKEY] IN (");
+            for (int index = 0; index < Index_UMKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // UMKEY
+                var parameterUMKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterUMKEY);
+                command.Parameters.Add(parameterUMKEY, SqlDbType.Int).Value = Index_UMKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the UM data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the UM data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<UM> GetDataSetDataReader()
         {
-            return new UMDataReader(Items.Value);
+            return new UMDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the UM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the UM data set</returns>
+        public override EduHubDataSetDataReader<UM> GetDataSetDataReader(List<UM> Entities)
+        {
+            return new UMDataReader(new EduHubDataSetLoadedReader<UM>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class UMDataReader : IDataReader, IDataRecord
+        private class UMDataReader : EduHubDataSetDataReader<UM>
         {
-            private List<UM> Items;
-            private int CurrentIndex;
-            private UM CurrentItem;
-
-            public UMDataReader(List<UM> Items)
+            public UMDataReader(IEduHubDataSetReader<UM> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 17; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 17; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // UMKEY
-                        return CurrentItem.UMKEY;
+                        return Current.UMKEY;
                     case 1: // ADDRESS01
-                        return CurrentItem.ADDRESS01;
+                        return Current.ADDRESS01;
                     case 2: // ADDRESS02
-                        return CurrentItem.ADDRESS02;
+                        return Current.ADDRESS02;
                     case 3: // ADDRESS03
-                        return CurrentItem.ADDRESS03;
+                        return Current.ADDRESS03;
                     case 4: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 5: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 6: // TELEPHONE
-                        return CurrentItem.TELEPHONE;
+                        return Current.TELEPHONE;
                     case 7: // MOBILE
-                        return CurrentItem.MOBILE;
+                        return Current.MOBILE;
                     case 8: // SILENT
-                        return CurrentItem.SILENT;
+                        return Current.SILENT;
                     case 9: // FAX
-                        return CurrentItem.FAX;
+                        return Current.FAX;
                     case 10: // KAP_LINK
-                        return CurrentItem.KAP_LINK;
+                        return Current.KAP_LINK;
                     case 11: // COUNTRY
-                        return CurrentItem.COUNTRY;
+                        return Current.COUNTRY;
                     case 12: // DPID
-                        return CurrentItem.DPID;
+                        return Current.DPID;
                     case 13: // BARCODE
-                        return CurrentItem.BARCODE;
+                        return Current.BARCODE;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // ADDRESS01
-                        return CurrentItem.ADDRESS01 == null;
+                        return Current.ADDRESS01 == null;
                     case 2: // ADDRESS02
-                        return CurrentItem.ADDRESS02 == null;
+                        return Current.ADDRESS02 == null;
                     case 3: // ADDRESS03
-                        return CurrentItem.ADDRESS03 == null;
+                        return Current.ADDRESS03 == null;
                     case 4: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 5: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 6: // TELEPHONE
-                        return CurrentItem.TELEPHONE == null;
+                        return Current.TELEPHONE == null;
                     case 7: // MOBILE
-                        return CurrentItem.MOBILE == null;
+                        return Current.MOBILE == null;
                     case 8: // SILENT
-                        return CurrentItem.SILENT == null;
+                        return Current.SILENT == null;
                     case 9: // FAX
-                        return CurrentItem.FAX == null;
+                        return Current.FAX == null;
                     case 10: // KAP_LINK
-                        return CurrentItem.KAP_LINK == null;
+                        return Current.KAP_LINK == null;
                     case 11: // COUNTRY
-                        return CurrentItem.COUNTRY == null;
+                        return Current.COUNTRY == null;
                     case 12: // DPID
-                        return CurrentItem.DPID == null;
+                        return Current.DPID == null;
                     case 13: // BARCODE
-                        return CurrentItem.BARCODE == null;
+                        return Current.BARCODE == null;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -489,7 +569,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -530,35 +610,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

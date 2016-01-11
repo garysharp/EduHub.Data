@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TTDataSet : EduHubDataSet<TT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TTDataSet(EduHubContext Context)
             : base(Context)
@@ -38,7 +41,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TT" /> fields for each CSV column header</returns>
-        protected override Action<TT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TT, string>[Headers.Count];
 
@@ -230,29 +233,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TT" /> items to added or update the base <see cref="TT" /> items</param>
-        /// <returns>A merged list of <see cref="TT" /> items</returns>
-        protected override List<TT> ApplyDeltaItems(List<TT> Items, List<TT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TT}"/> of entities</returns>
+        internal override IEnumerable<TT> ApplyDeltaEntities(IEnumerable<TT> Entities, List<TT> DeltaEntities)
         {
-            Dictionary<string, int> Index_TTKEY = Items.ToIndexDictionary(i => i.TTKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_TTKEY = new HashSet<string>(DeltaEntities.Select(i => i.TTKEY));
 
-            foreach (TT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TTKEY.TryGetValue(deltaItem.TTKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.TTKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TTKEY.Remove(entity.TTKEY);
+                            
+                            if (entity.TTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.TTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -740,11 +769,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TT](
         [TTKEY] varchar(8) NOT NULL,
@@ -849,316 +882,395 @@ BEGIN
     (
             [SUBJECT_ACADEMIC_YEAR09] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR01')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR01] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR02')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR02] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR03')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR03] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR04')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR04] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR05')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR05] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR06')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR06] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR07')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR07] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR08')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR08] ON [dbo].[TT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR09')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR09] ON [dbo].[TT] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR01')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR01] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR02')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR02] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR03')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR03] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR04')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR04] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR05')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR05] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR06')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR06] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR07')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR07] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR08')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR08] ON [dbo].[TT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TT]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR09')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR09] ON [dbo].[TT] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_TTKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TTKEY.Add(entity.TTKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TT] WHERE");
+
+
+            // Index_TTKEY
+            builder.Append("[TTKEY] IN (");
+            for (int index = 0; index < Index_TTKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TTKEY
+                var parameterTTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterTTKEY);
+                command.Parameters.Add(parameterTTKEY, SqlDbType.VarChar, 8).Value = Index_TTKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TT> GetDataSetDataReader()
         {
-            return new TTDataReader(Items.Value);
+            return new TTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TT data set</returns>
+        public override EduHubDataSetDataReader<TT> GetDataSetDataReader(List<TT> Entities)
+        {
+            return new TTDataReader(new EduHubDataSetLoadedReader<TT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TTDataReader : IDataReader, IDataRecord
+        private class TTDataReader : EduHubDataSetDataReader<TT>
         {
-            private List<TT> Items;
-            private int CurrentIndex;
-            private TT CurrentItem;
-
-            public TTDataReader(List<TT> Items)
+            public TTDataReader(IEduHubDataSetReader<TT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 58; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 58; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TTKEY
-                        return CurrentItem.TTKEY;
+                        return Current.TTKEY;
                     case 1: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 2: // SELECTABLE
-                        return CurrentItem.SELECTABLE;
+                        return Current.SELECTABLE;
                     case 3: // CAMPUS
-                        return CurrentItem.CAMPUS;
+                        return Current.CAMPUS;
                     case 4: // TAG01
-                        return CurrentItem.TAG01;
+                        return Current.TAG01;
                     case 5: // TAG02
-                        return CurrentItem.TAG02;
+                        return Current.TAG02;
                     case 6: // TAG03
-                        return CurrentItem.TAG03;
+                        return Current.TAG03;
                     case 7: // TAG04
-                        return CurrentItem.TAG04;
+                        return Current.TAG04;
                     case 8: // TAG05
-                        return CurrentItem.TAG05;
+                        return Current.TAG05;
                     case 9: // TAG06
-                        return CurrentItem.TAG06;
+                        return Current.TAG06;
                     case 10: // TAG07
-                        return CurrentItem.TAG07;
+                        return Current.TAG07;
                     case 11: // TAG08
-                        return CurrentItem.TAG08;
+                        return Current.TAG08;
                     case 12: // TAG09
-                        return CurrentItem.TAG09;
+                        return Current.TAG09;
                     case 13: // TRPERIOD
-                        return CurrentItem.TRPERIOD;
+                        return Current.TRPERIOD;
                     case 14: // TTPERIOD
-                        return CurrentItem.TTPERIOD;
+                        return Current.TTPERIOD;
                     case 15: // SUBJECT_ACADEMIC_YEAR01
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR01;
+                        return Current.SUBJECT_ACADEMIC_YEAR01;
                     case 16: // SUBJECT_ACADEMIC_YEAR02
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR02;
+                        return Current.SUBJECT_ACADEMIC_YEAR02;
                     case 17: // SUBJECT_ACADEMIC_YEAR03
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR03;
+                        return Current.SUBJECT_ACADEMIC_YEAR03;
                     case 18: // SUBJECT_ACADEMIC_YEAR04
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR04;
+                        return Current.SUBJECT_ACADEMIC_YEAR04;
                     case 19: // SUBJECT_ACADEMIC_YEAR05
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR05;
+                        return Current.SUBJECT_ACADEMIC_YEAR05;
                     case 20: // SUBJECT_ACADEMIC_YEAR06
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR06;
+                        return Current.SUBJECT_ACADEMIC_YEAR06;
                     case 21: // SUBJECT_ACADEMIC_YEAR07
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR07;
+                        return Current.SUBJECT_ACADEMIC_YEAR07;
                     case 22: // SUBJECT_ACADEMIC_YEAR08
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR08;
+                        return Current.SUBJECT_ACADEMIC_YEAR08;
                     case 23: // SUBJECT_ACADEMIC_YEAR09
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR09;
+                        return Current.SUBJECT_ACADEMIC_YEAR09;
                     case 24: // SEMESTER
-                        return CurrentItem.SEMESTER;
+                        return Current.SEMESTER;
                     case 25: // RESERVE
-                        return CurrentItem.RESERVE;
+                        return Current.RESERVE;
                     case 26: // COSET
-                        return CurrentItem.COSET;
+                        return Current.COSET;
                     case 27: // MAXROW
-                        return CurrentItem.MAXROW;
+                        return Current.MAXROW;
                     case 28: // MAXCOL
-                        return CurrentItem.MAXCOL;
+                        return Current.MAXCOL;
                     case 29: // RELAX
-                        return CurrentItem.RELAX;
+                        return Current.RELAX;
                     case 30: // MAXDROP
-                        return CurrentItem.MAXDROP;
+                        return Current.MAXDROP;
                     case 31: // MAXSTORE
-                        return CurrentItem.MAXSTORE;
+                        return Current.MAXSTORE;
                     case 32: // UTEACH
-                        return CurrentItem.UTEACH;
+                        return Current.UTEACH;
                     case 33: // UROOM
-                        return CurrentItem.UROOM;
+                        return Current.UROOM;
                     case 34: // URESOURCES
-                        return CurrentItem.URESOURCES;
+                        return Current.URESOURCES;
                     case 35: // UFIXED
-                        return CurrentItem.UFIXED;
+                        return Current.UFIXED;
                     case 36: // ULINKS
-                        return CurrentItem.ULINKS;
+                        return Current.ULINKS;
                     case 37: // UTIED
-                        return CurrentItem.UTIED;
+                        return Current.UTIED;
                     case 38: // URANGE
-                        return CurrentItem.URANGE;
+                        return Current.URANGE;
                     case 39: // STRATEGY
-                        return CurrentItem.STRATEGY;
+                        return Current.STRATEGY;
                     case 40: // GRIDSORT
-                        return CurrentItem.GRIDSORT;
+                        return Current.GRIDSORT;
                     case 41: // SHARE
-                        return CurrentItem.SHARE;
+                        return Current.SHARE;
                     case 42: // SHUFFLE
-                        return CurrentItem.SHUFFLE;
+                        return Current.SHUFFLE;
                     case 43: // UUNITS
-                        return CurrentItem.UUNITS;
+                        return Current.UUNITS;
                     case 44: // GSOLS
-                        return CurrentItem.GSOLS;
+                        return Current.GSOLS;
                     case 45: // HOMEGRID
-                        return CurrentItem.HOMEGRID;
+                        return Current.HOMEGRID;
                     case 46: // TEACHER_CLASH_FACTOR
-                        return CurrentItem.TEACHER_CLASH_FACTOR;
+                        return Current.TEACHER_CLASH_FACTOR;
                     case 47: // ROOM_CLASH_FACTOR
-                        return CurrentItem.ROOM_CLASH_FACTOR;
+                        return Current.ROOM_CLASH_FACTOR;
                     case 48: // RESOURCE_CLASH_FACTOR
-                        return CurrentItem.RESOURCE_CLASH_FACTOR;
+                        return Current.RESOURCE_CLASH_FACTOR;
                     case 49: // STUDENT_DROP_FACTOR
-                        return CurrentItem.STUDENT_DROP_FACTOR;
+                        return Current.STUDENT_DROP_FACTOR;
                     case 50: // MAX_CLASS_SIZE
-                        return CurrentItem.MAX_CLASS_SIZE;
+                        return Current.MAX_CLASS_SIZE;
                     case 51: // MAXTCLASH
-                        return CurrentItem.MAXTCLASH;
+                        return Current.MAXTCLASH;
                     case 52: // MAXRCLASH
-                        return CurrentItem.MAXRCLASH;
+                        return Current.MAXRCLASH;
                     case 53: // MAXXCLASH
-                        return CurrentItem.MAXXCLASH;
+                        return Current.MAXXCLASH;
                     case 54: // MAXBALANCE
-                        return CurrentItem.MAXBALANCE;
+                        return Current.MAXBALANCE;
                     case 55: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 56: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 57: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 2: // SELECTABLE
-                        return CurrentItem.SELECTABLE == null;
+                        return Current.SELECTABLE == null;
                     case 3: // CAMPUS
-                        return CurrentItem.CAMPUS == null;
+                        return Current.CAMPUS == null;
                     case 4: // TAG01
-                        return CurrentItem.TAG01 == null;
+                        return Current.TAG01 == null;
                     case 5: // TAG02
-                        return CurrentItem.TAG02 == null;
+                        return Current.TAG02 == null;
                     case 6: // TAG03
-                        return CurrentItem.TAG03 == null;
+                        return Current.TAG03 == null;
                     case 7: // TAG04
-                        return CurrentItem.TAG04 == null;
+                        return Current.TAG04 == null;
                     case 8: // TAG05
-                        return CurrentItem.TAG05 == null;
+                        return Current.TAG05 == null;
                     case 9: // TAG06
-                        return CurrentItem.TAG06 == null;
+                        return Current.TAG06 == null;
                     case 10: // TAG07
-                        return CurrentItem.TAG07 == null;
+                        return Current.TAG07 == null;
                     case 11: // TAG08
-                        return CurrentItem.TAG08 == null;
+                        return Current.TAG08 == null;
                     case 12: // TAG09
-                        return CurrentItem.TAG09 == null;
+                        return Current.TAG09 == null;
                     case 13: // TRPERIOD
-                        return CurrentItem.TRPERIOD == null;
+                        return Current.TRPERIOD == null;
                     case 14: // TTPERIOD
-                        return CurrentItem.TTPERIOD == null;
+                        return Current.TTPERIOD == null;
                     case 15: // SUBJECT_ACADEMIC_YEAR01
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR01 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR01 == null;
                     case 16: // SUBJECT_ACADEMIC_YEAR02
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR02 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR02 == null;
                     case 17: // SUBJECT_ACADEMIC_YEAR03
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR03 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR03 == null;
                     case 18: // SUBJECT_ACADEMIC_YEAR04
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR04 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR04 == null;
                     case 19: // SUBJECT_ACADEMIC_YEAR05
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR05 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR05 == null;
                     case 20: // SUBJECT_ACADEMIC_YEAR06
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR06 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR06 == null;
                     case 21: // SUBJECT_ACADEMIC_YEAR07
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR07 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR07 == null;
                     case 22: // SUBJECT_ACADEMIC_YEAR08
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR08 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR08 == null;
                     case 23: // SUBJECT_ACADEMIC_YEAR09
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR09 == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR09 == null;
                     case 24: // SEMESTER
-                        return CurrentItem.SEMESTER == null;
+                        return Current.SEMESTER == null;
                     case 25: // RESERVE
-                        return CurrentItem.RESERVE == null;
+                        return Current.RESERVE == null;
                     case 26: // COSET
-                        return CurrentItem.COSET == null;
+                        return Current.COSET == null;
                     case 27: // MAXROW
-                        return CurrentItem.MAXROW == null;
+                        return Current.MAXROW == null;
                     case 28: // MAXCOL
-                        return CurrentItem.MAXCOL == null;
+                        return Current.MAXCOL == null;
                     case 29: // RELAX
-                        return CurrentItem.RELAX == null;
+                        return Current.RELAX == null;
                     case 30: // MAXDROP
-                        return CurrentItem.MAXDROP == null;
+                        return Current.MAXDROP == null;
                     case 31: // MAXSTORE
-                        return CurrentItem.MAXSTORE == null;
+                        return Current.MAXSTORE == null;
                     case 32: // UTEACH
-                        return CurrentItem.UTEACH == null;
+                        return Current.UTEACH == null;
                     case 33: // UROOM
-                        return CurrentItem.UROOM == null;
+                        return Current.UROOM == null;
                     case 34: // URESOURCES
-                        return CurrentItem.URESOURCES == null;
+                        return Current.URESOURCES == null;
                     case 35: // UFIXED
-                        return CurrentItem.UFIXED == null;
+                        return Current.UFIXED == null;
                     case 36: // ULINKS
-                        return CurrentItem.ULINKS == null;
+                        return Current.ULINKS == null;
                     case 37: // UTIED
-                        return CurrentItem.UTIED == null;
+                        return Current.UTIED == null;
                     case 38: // URANGE
-                        return CurrentItem.URANGE == null;
+                        return Current.URANGE == null;
                     case 39: // STRATEGY
-                        return CurrentItem.STRATEGY == null;
+                        return Current.STRATEGY == null;
                     case 40: // GRIDSORT
-                        return CurrentItem.GRIDSORT == null;
+                        return Current.GRIDSORT == null;
                     case 41: // SHARE
-                        return CurrentItem.SHARE == null;
+                        return Current.SHARE == null;
                     case 42: // SHUFFLE
-                        return CurrentItem.SHUFFLE == null;
+                        return Current.SHUFFLE == null;
                     case 43: // UUNITS
-                        return CurrentItem.UUNITS == null;
+                        return Current.UUNITS == null;
                     case 44: // GSOLS
-                        return CurrentItem.GSOLS == null;
+                        return Current.GSOLS == null;
                     case 45: // HOMEGRID
-                        return CurrentItem.HOMEGRID == null;
+                        return Current.HOMEGRID == null;
                     case 46: // TEACHER_CLASH_FACTOR
-                        return CurrentItem.TEACHER_CLASH_FACTOR == null;
+                        return Current.TEACHER_CLASH_FACTOR == null;
                     case 47: // ROOM_CLASH_FACTOR
-                        return CurrentItem.ROOM_CLASH_FACTOR == null;
+                        return Current.ROOM_CLASH_FACTOR == null;
                     case 48: // RESOURCE_CLASH_FACTOR
-                        return CurrentItem.RESOURCE_CLASH_FACTOR == null;
+                        return Current.RESOURCE_CLASH_FACTOR == null;
                     case 49: // STUDENT_DROP_FACTOR
-                        return CurrentItem.STUDENT_DROP_FACTOR == null;
+                        return Current.STUDENT_DROP_FACTOR == null;
                     case 50: // MAX_CLASS_SIZE
-                        return CurrentItem.MAX_CLASS_SIZE == null;
+                        return Current.MAX_CLASS_SIZE == null;
                     case 51: // MAXTCLASH
-                        return CurrentItem.MAXTCLASH == null;
+                        return Current.MAXTCLASH == null;
                     case 52: // MAXRCLASH
-                        return CurrentItem.MAXRCLASH == null;
+                        return Current.MAXRCLASH == null;
                     case 53: // MAXXCLASH
-                        return CurrentItem.MAXXCLASH == null;
+                        return Current.MAXXCLASH == null;
                     case 54: // MAXBALANCE
-                        return CurrentItem.MAXBALANCE == null;
+                        return Current.MAXBALANCE == null;
                     case 55: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 56: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 57: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1283,7 +1395,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1406,35 +1518,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

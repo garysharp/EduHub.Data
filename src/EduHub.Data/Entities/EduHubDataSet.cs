@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EduHub.Data.Entities
 {
@@ -16,7 +18,7 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// EduHubContext this Data Set belongs to
         /// </summary>
-        protected readonly EduHubContext Context;
+        protected readonly EduHubContext context;
         /// <summary>
         /// Helper method for Mapper Builders used to ignore fields (no operation)
         /// </summary>
@@ -25,34 +27,53 @@ namespace EduHub.Data.Entities
         /// Internal list of entities
         /// </summary>
         protected Lazy<List<T>> Items;
-        private DateTime? age;
 
         internal EduHubDataSet(EduHubContext Context)
         {
-            this.Context = Context;
-            Items = new Lazy<List<T>>(Load);
+            context = Context;
+            Items = new Lazy<List<T>>(LoadCache);
         }
 
         /// <inheritdoc />
         public abstract string Name { get; }
+
+        private string NameDelta { get { return $"{Name}_D"; } }
+
+        /// <inheritdoc />
+        public EduHubContext Context
+        {
+            get
+            {
+                return context;
+            }
+        }
 
         /// <summary>
         /// Matches CSV file headers to actions, used to deserialize an entity
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize entity fields for each CSV column header</returns>
-        protected abstract Action<T, string>[] BuildMapper(IReadOnlyList<string> Headers);
+        internal abstract Action<T, string>[] BuildMapper(IReadOnlyList<string> Headers);
 
         /// <summary>
         /// Merges delta entities
         /// </summary>
-        /// <param name="Items">Base items</param>
-        /// <param name="DeltaItems">Delta items to added or update the base items</param>
-        /// <returns>A merged list of sorted items where possible</returns>
-        protected abstract List<T> ApplyDeltaItems(List<T> Items, List<T> DeltaItems);
+        /// <param name="Entities">Iterator for base entities</param>
+        /// <param name="DeltaEntities">Delta entities to added or update the base entities</param>
+        /// <returns>A merged <see cref="IEnumerable{T}"/> of entities</returns>
+        internal abstract IEnumerable<T> ApplyDeltaEntities(IEnumerable<T> Entities, List<T> DeltaEntities);
 
         /// <inheritdoc />
         public string Filename
+        {
+            get
+            {
+                return FilenameBase;
+            }
+        }
+
+        /// <inheritdoc />
+        public string FilenameBase
         {
             get
             {
@@ -66,6 +87,42 @@ namespace EduHub.Data.Entities
             get
             {
                 return Path.Combine(Context.EduHubDirectory, $"{Name}_{Context.EduHubSiteIdentifier}_D.csv");
+            }
+        }
+
+        /// <inheritdoc />
+        public long FileSize
+        {
+            get
+            {
+                return FileSizeBase + FileSizeDelta;
+            }
+        }
+
+        /// <inheritdoc />
+        public long FileSizeBase
+        {
+            get
+            {
+                if (IsAvailable)
+                {
+                    return new FileInfo(Filename).Length;
+                }
+                return 0;
+            }
+        }
+
+        /// <inheritdoc />
+        public long FileSizeDelta
+        {
+            get
+            {
+                if (IsDeltaAvailable)
+                {
+                    return new FileInfo(FilenameDelta).Length;
+                }
+
+                return 0;
             }
         }
 
@@ -102,202 +159,701 @@ namespace EduHub.Data.Entities
         }
 
         /// <inheritdoc />
-        public DateTime? Age
+        public void EnsureDeltaAvailable()
+        {
+            if (!IsDeltaAvailable)
+            {
+                throw new EduHubDataSetNotFoundException(NameDelta, FilenameDelta);
+            }
+        }
+
+        /// <inheritdoc />
+        public DateTime LastModified
         {
             get
             {
-                if (age.HasValue)
+                if (IsDeltaAvailable)
                 {
-                    return age.Value;
+                    return LastModifiedDelta;
                 }
                 else
                 {
-                    return CalculateAge();
+                    return LastModifiedBase;
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public DateTime LastModifiedBase
+        {
+            get
+            {
+                var filename = Filename;
+
+                if (File.Exists(filename))
+                {
+                    return File.GetLastWriteTime(filename);
+                }
+                else
+                {
+                    throw new EduHubDataSetNotFoundException(Name, Filename);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public DateTime LastModifiedDelta
+        {
+            get
+            {
+                var filenameDelta = FilenameDelta;
+
+                if (File.Exists(filenameDelta))
+                {
+                    return File.GetLastWriteTime(filenameDelta);
+                }
+                else
+                {
+                    throw new EduHubDataSetNotFoundException(NameDelta, FilenameDelta);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public abstract bool SupportsEntityLastModified { get; }
+
+        /// <inheritdoc />
+        public abstract SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection);
+
+        /// <inheritdoc />
+        public abstract SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection);
+
+        /// <inheritdoc />
+        public abstract SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection);
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The entities to be deleted</param>
+        public abstract SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<T> Entities);
+
+        /// <inheritdoc />
+        public IEduHubDataSetDataReader GetDataReader()
+        {
+            return GetDataSetDataReader();
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the data set through <see cref="EduHubDataSetDataReader{T}"/> which includes progress
+        /// </summary>
+        /// <returns>A <see cref="EduHubDataSetDataReader{T}"/> for the data set</returns>
+        public abstract EduHubDataSetDataReader<T> GetDataSetDataReader();
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the provided entities
+        /// </summary>
+        /// <param name="Entities">The entities to be accessed through the <see cref="EduHubDataSetDataReader{T}"/></param>
+        /// <returns>A <see cref="EduHubDataSetDataReader{T}"/> for the provided entities</returns>
+        public abstract EduHubDataSetDataReader<T> GetDataSetDataReader(List<T> Entities);
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(string Server, string Database)
+        {
+            return WriteToSqlServer(Server, Database, null);
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(string Server, string Database)
+        {
+            return WriteToSqlServerAsync(Server, Database, null);
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(string Server, string Database, Action<double, string> ProgressNotification)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
+            {
+                return WriteToSqlServer(connection, ProgressNotification);
+            }
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(string Server, string Database, Action<double, string> ProgressNotification)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
+            {
+                return WriteToSqlServerAsync(connection, ProgressNotification);
+            }
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            return WriteToSqlServer(Server, Database, SqlUsername, SqlPassword, null);
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            return WriteToSqlServerAsync(Server, Database, SqlUsername, SqlPassword, null);
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword, Action<double, string> ProgressNotification)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
+            {
+                return WriteToSqlServer(connection, ProgressNotification);
+            }
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(string Server, string Database, string SqlUsername, string SqlPassword, Action<double, string> ProgressNotification)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
+            {
+                return WriteToSqlServerAsync(connection, ProgressNotification);
+            }
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(SqlConnection Connection)
+        {
+            return WriteToSqlServer(Connection, null);
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(SqlConnection Connection)
+        {
+            return WriteToSqlServerAsync(Connection, null);
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteResult WriteToSqlServer(SqlConnection Connection, Action<double, string> ProgressNotification)
+        {
+            var task = WriteToSqlServerAsync(Connection, ProgressNotification, null, null, null);
+
+            return task.Result;
+        }
+
+        /// <inheritdoc />
+        public Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(SqlConnection Connection, Action<double, string> ProgressNotification)
+        {
+            return WriteToSqlServerAsync(Connection, ProgressNotification, null, null, null);
+        }
+
+        /// <inheritdoc />
+        public async Task<EduHubSqlServerWriteResult> WriteToSqlServerAsync(SqlConnection Connection, Action<double, string> ProgressNotification, DateTime? LastFullWrite, DateTime? LastDeltaWrite, DateTime? EntityLastModified)
+        {
+            if (Connection == null)
+                throw new ArgumentNullException(nameof(Connection));
+            if (!IsAvailable)
+                throw new EduHubDataSetNotFoundException(Name, Filename);
+
+            // Ensure the SQL Connection is open
+            if (Connection.State != ConnectionState.Open)
+            {
+                if (ProgressNotification != null)
+                {
+                    ProgressNotification(0, "Opening database connection");
+                }
+                await Connection.OpenAsync();
+            }
+
+            // Ensure Table Exists
+            if (ProgressNotification != null)
+            {
+                ProgressNotification(0, "Validating database table");
+            }
+            using (var commandQuery = new SqlCommand($"SELECT COUNT(1) FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{Name}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1", Connection))
+            {
+                if ((int)await commandQuery.ExecuteScalarAsync() == 0)
+                {
+                    if (ProgressNotification != null)
+                    {
+                        ProgressNotification(0, $"Creating {Name} database table");
+                    }
+                    // Table doesn't exist. Create
+                    using (var commandCreate = GetSqlCreateTableCommand(Connection))
+                    {
+                        await commandCreate.ExecuteNonQueryAsync();
+
+                        // Table created, reset last write
+                        LastFullWrite = null;
+                        LastDeltaWrite = null;
+                        EntityLastModified = null;
+                    }
+                    if (ProgressNotification != null)
+                    {
+                        ProgressNotification(0, $"Database table {Name} created");
+                    }
+                }
+            }
+
+            // Determine Write Type
+            var mode = DetermineSqlServerWriteType(LastFullWrite, LastDeltaWrite, EntityLastModified.HasValue);
+
+            // Write not required based on specified parameters
+            if (mode == EduHubSqlServerWriteMode.Skipped)
+            {
+                if (ProgressNotification != null)
+                {
+                    ProgressNotification(0, $"Writing the data set is not required");
+                }
+                return new EduHubSqlServerWriteResult(
+                    DataSet: this,
+                    Mode: mode,
+                    Timestamp: DateTime.Now,
+                    LastModified: LastModified);
+            }
+
+            if (ProgressNotification != null)
+            {
+                ProgressNotification(0, $"Writing the data set in {mode} mode");
+            }
+
+            switch (mode)
+            {
+                case EduHubSqlServerWriteMode.Full:
+                    return await WriteToSqlServerFull(Connection, ProgressNotification);
+                case EduHubSqlServerWriteMode.Delta:
+                    return await WriteToSqlServerDelta(Connection, ProgressNotification);
+                case EduHubSqlServerWriteMode.DeltaPartial:
+                    return await WriteToSqlServerDelta(Connection, EntityLastModified.Value, ProgressNotification);
+                default:
+                    throw new InvalidOperationException("Unexpected " + nameof(EduHubSqlServerWriteMode));
             }
         }
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a database table, and if not found, creates the table and associated indexes.
+        /// Writes the entire data set to the SQL Server
         /// </summary>
-        protected abstract string GetCreateTableSql();
-
-        /// <inheritdoc />
-        public abstract IDataReader GetDataReader();
-
-        /// <inheritdoc />
-        public void WriteToSqlServer(string Server, string Database)
+        /// <param name="Connection">A <see cref="SqlConnection"/> to the SQL Server</param>
+        /// <param name="ProgressNotification">A method called to intermittently report the percentage of progress</param>
+        /// <returns></returns>
+        private async Task<EduHubSqlServerWriteResult> WriteToSqlServerFull(SqlConnection Connection, Action<double, string> ProgressNotification)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                IntegratedSecurity = true
-            };
+            DateTime timestamp = DateTime.Now;
+            DateTime lastModified = LastModified;
+            int entitiesDeleted;
+            int entitiesAdded;
+            DateTime? entityLastModifiedMax;
 
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            // Create transaction
+            using (var sqlTransaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
-                WriteToSqlServer(connection);
+                // Disable Indexes
+                using (var sqlCommandDisableIndexes = GetSqlDisableIndexesCommand(Connection))
+                {
+                    if (sqlCommandDisableIndexes != null)
+                    {
+                        if (ProgressNotification != null)
+                        {
+                            ProgressNotification(5, "Disabling database table indexes");
+                        }
+
+                        sqlCommandDisableIndexes.Transaction = sqlTransaction;
+                        await sqlCommandDisableIndexes.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // Drop records
+                using (var sqlCommandTruncate = new SqlCommand($"TRUNCATE TABLE {Name}", Connection, sqlTransaction))
+                {
+                    if (ProgressNotification != null)
+                    {
+                        ProgressNotification(10, "Truncating the database table");
+                    }
+                    entitiesDeleted = await sqlCommandTruncate.ExecuteNonQueryAsync();
+                }
+
+                using (var dataReader = GetDataSetDataReader())
+                {
+                    if (!dataReader.HasEntities)
+                    {
+                        if (ProgressNotification != null)
+                        {
+                            ProgressNotification(95, $"Skipped writing to the database table, the data set is empty");
+                        }
+                        return new EduHubSqlServerWriteResult(
+                            DataSet: this,
+                            Mode: EduHubSqlServerWriteMode.Full,
+                            Timestamp: timestamp,
+                            LastModified: LastModified,
+                            EntityLastModifiedMax: null,
+                            EntitiesDeleted: -1,
+                            EntitiesUpdated: 0,
+                            EntitiesAdded: 0);
+                    }
+                    else
+                    {
+                        // Bulk copy records
+                        using (var sqlBulkCopy = new SqlBulkCopy(Connection,
+                            SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.KeepNulls | SqlBulkCopyOptions.TableLock,
+                            sqlTransaction))
+                        {
+                            sqlBulkCopy.DestinationTableName = Name;
+                            sqlBulkCopy.EnableStreaming = true;
+                            sqlBulkCopy.BulkCopyTimeout = 60 * 2; // 2 Minutes
+                            sqlBulkCopy.NotifyAfter = 2000;
+                            sqlBulkCopy.BatchSize = 2000;
+
+
+                            if (ProgressNotification != null)
+                            {
+                                sqlBulkCopy.SqlRowsCopied += (sender, e) =>
+                                {
+                                    ProgressNotification(15 + (dataReader.Progress * .8), $"Written {e.RowsCopied} records to the database table");
+                                };
+
+                                ProgressNotification(15, "Writing records to the database table");
+                            }
+
+                            await sqlBulkCopy.WriteToServerAsync(dataReader);
+
+                            if (ProgressNotification != null)
+                            {
+                                ProgressNotification(95, $"Wrote {dataReader.EntitiesRead} records to the database table");
+                            }
+
+                            entitiesAdded = dataReader.EntitiesRead;
+                            entityLastModifiedMax = dataReader.EntityLastModifiedMax;
+                        }
+                    }
+                }
+
+                // Rebuild & Enable Indexes
+                using (var sqlCommandEnableIndexes = GetSqlRebuildIndexesCommand(Connection))
+                {
+                    if (sqlCommandEnableIndexes != null)
+                    {
+                        if (ProgressNotification != null)
+                        {
+                            ProgressNotification(95, $"Rebuilding and enabling database table indexes");
+                        }
+                        sqlCommandEnableIndexes.Transaction = sqlTransaction;
+                        await sqlCommandEnableIndexes.ExecuteNonQueryAsync();
+                    }
+                }
+
+                sqlTransaction.Commit();
             }
+
+            if (ProgressNotification != null)
+            {
+                ProgressNotification(100, $"Successfully wrote the data set to the database table");
+            }
+
+            return new EduHubSqlServerWriteResult(
+                DataSet: this,
+                Mode: EduHubSqlServerWriteMode.Full,
+                Timestamp: timestamp,
+                LastModified: lastModified,
+                EntityLastModifiedMax: entityLastModifiedMax,
+                EntitiesDeleted: entitiesDeleted,
+                EntitiesUpdated: 0,
+                EntitiesAdded: entitiesAdded);
         }
 
-        /// <inheritdoc />
-        public void WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
+        private async Task<EduHubSqlServerWriteResult> WriteToSqlServerDelta(SqlConnection Connection, EduHubSqlServerWriteMode Mode, List<T> Entities, Action<double, string> ProgressNotification)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                UserID = SqlUsername,
-                Password = SqlPassword
-            };
-
-            using (var connection = new SqlConnection(builder.ConnectionString))
-            {
-                WriteToSqlServer(connection);
-            }
-        }
-
-        /// <inheritdoc />
-        public void WriteToSqlServer(SqlConnection Connection)
-        {
-            // Open the SQL Connection
-            if (Connection.State != ConnectionState.Open)
-            {
-                Connection.Open();
-            }
-
-            // Create table (if it doesn't exist)
-            using (var command = new SqlCommand(GetCreateTableSql(), Connection))
-            {
-                command.ExecuteNonQuery();
-            }
+            DateTime timestamp = DateTime.Now;
+            DateTime lastModified = LastModified;
+            int entitiesUpdated = 0;
+            int entitiesAdded;
+            DateTime? entityLastModifiedMax;
 
             // Create transaction
             using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
-                // Drop records
-                using (var command = new SqlCommand($"TRUNCATE TABLE {Name}", Connection, transaction))
+                if (ProgressNotification != null)
                 {
-                    command.ExecuteNonQuery();
+                    ProgressNotification(30, "Removing updated records from the database table");
+                }
+                // Delete Entities (based on Unique fields)
+                //  Batches of 100
+                var batchCount = Math.Ceiling(Entities.Count / 100d);
+                for (int batch = 0; batch < batchCount; batch++)
+                {
+                    var batchEntities = Entities.Skip(batch * 100).Take(100);
+                    using (var deleteCommand = GetSqlDeleteCommand(Connection, batchEntities))
+                    {
+                        deleteCommand.Transaction = transaction;
+
+                        entitiesUpdated += await deleteCommand.ExecuteNonQueryAsync();
+                    }
+                    if (ProgressNotification != null)
+                    {
+                        ProgressNotification(30 + ((batch / batchCount) * 0.3), $"Removed {entitiesUpdated} updated records from the database table"); // 30% + 30% Weight
+                    }
                 }
 
-                // Bulk copy records
+                // Bulk Copy Delta Entities
                 using (var bulkCopy = new SqlBulkCopy(Connection,
                     SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.KeepNulls | SqlBulkCopyOptions.TableLock,
                     transaction))
                 {
                     bulkCopy.DestinationTableName = Name;
                     bulkCopy.EnableStreaming = true;
+                    bulkCopy.BulkCopyTimeout = 60 * 2; // 2 Minutes
+                    bulkCopy.NotifyAfter = 2000;
+                    bulkCopy.BatchSize = 2000;
 
-                    using (var dataReader = GetDataReader())
+                    using (var dataReader = GetDataSetDataReader(Entities))
                     {
-                        bulkCopy.WriteToServer(dataReader);
+                        if (ProgressNotification != null)
+                        {
+                            bulkCopy.SqlRowsCopied += (sender, e) =>
+                            {
+                                ProgressNotification(60 + (dataReader.Progress * .35), $"Written {e.RowsCopied} records to the database table"); // 60% + 35% Weight
+                            };
+
+                            ProgressNotification(60, "Writing delta records to the database table");
+                        }
+
+                        await bulkCopy.WriteToServerAsync(dataReader);
+
+                        if (ProgressNotification != null)
+                        {
+                            ProgressNotification(95, $"Wrote {dataReader.EntitiesRead} delta records to the database table");
+                        }
+
+                        entitiesAdded = dataReader.EntitiesRead;
+                        entityLastModifiedMax = dataReader.EntityLastModifiedMax;
                     }
                 }
 
                 transaction.Commit();
             }
+
+            if (ProgressNotification != null)
+            {
+                ProgressNotification(100, $"Successfully wrote the delta data set to the database table");
+            }
+
+            return new EduHubSqlServerWriteResult(
+                DataSet: this,
+                Mode: Mode,
+                Timestamp: timestamp,
+                LastModified: lastModified,
+                EntityLastModifiedMax: entityLastModifiedMax,
+                EntitiesDeleted: 0,
+                EntitiesUpdated: entitiesUpdated,
+                EntitiesAdded: entitiesAdded - entitiesUpdated);
         }
 
-        private DateTime? CalculateAge()
+        /// <summary>
+        /// Writes the data set delta to the SQL Server
+        /// </summary>
+        /// <param name="Connection">A <see cref="SqlConnection"/> to the SQL Server</param>
+        /// <param name="ProgressNotification">A method called to intermittently report the percentage of progress</param>
+        /// <returns></returns>
+        private async Task<EduHubSqlServerWriteResult> WriteToSqlServerDelta(SqlConnection Connection, Action<double, string> ProgressNotification)
         {
-            var filename = Filename;
-            if (File.Exists(filename))
+            List<T> entities;
+
+            // Load Delta Entities
+            if (ProgressNotification == null)
             {
-                var ageBase = File.GetLastWriteTime(filename);
-                var filenameDelta = FilenameDelta;
-                if (File.Exists(filenameDelta))
-                {
-                    var ageDelta = File.GetLastWriteTime(filenameDelta);
-                    if (ageDelta > ageBase)
-                    {
-                        return ageDelta;
-                    }
-                    else
-                    {
-                        return ageBase;
-                    }
-                }
-                else
-                {
-                    return ageBase;
-                }
+                entities = LoadDelta().ToList();
             }
             else
             {
-                return null;
-            }
-        }
+                ProgressNotification(0, "Reading delta records into memory");
 
-        private List<T> Load()
-        {
-            List<T> items;
-
-            // Throw an exception if the dataset is unavailable
-            EnsureAvailable();
-
-            // Load daily/base CSV data
-            items = LoadCsv(Filename);
-
-            // Check for delta
-            if (IsDeltaAvailable)
-            {
-                var deltaItems = LoadCsv(FilenameDelta);
-
-                items = ApplyDeltaItems(items, deltaItems);
-            }
-
-            // Store dataset age values
-            age = CalculateAge();
-
-            return items;
-        }
-
-        private List<T> LoadCsv(string Filename)
-        {
-            List<T> items = new List<T>();
-
-            if (!File.Exists(Filename))
-                throw new EduHubDataSetNotFoundException(Name, Filename);
-
-            // Create temporary file
-            var fileTemp = Path.GetTempFileName();
-
-            // Copy to temporary file (don't directly process eduHub files)
-            try
-            {
-                File.Copy(Filename, fileTemp, true);
-
-                using (FileStream stream = File.OpenRead(fileTemp))
+                // With progress (report every 2000 entities)
+                entities = new List<T>();
+                using (var entityReader = LoadDelta())
                 {
-                    using (CsvReader reader = new CsvReader(stream))
+                    using (var entityEnumerator = entityReader.GetEnumerator())
                     {
-                        var mapper = BuildMapper(reader.Header);
-
-                        foreach (var record in reader.ReadRecords())
+                        int entityCount = 0;
+                        while (entityEnumerator.MoveNext())
                         {
-                            var entity = Activator.CreateInstance<T>();
-                            entity.Context = Context;
-
-                            for (int i = 0; i < record.Count; i++)
+                            entities.Add(entityEnumerator.Current);
+                            if (entityCount++ >= 2000)
                             {
-                                mapper[i](entity, record[i]);
+                                entityCount = 0;
+                                ProgressNotification(entityReader.Progress * 0.3, $"Read {entities.Count} delta records into memory"); // 30% Weight
                             }
-                            items.Add(entity);
                         }
                     }
                 }
+
+                ProgressNotification(30, $"Read {entities.Count} delta records into memory");
             }
-            finally
+
+            if (entities.Count > 0)
             {
-                // Remove temporary file
-                File.Delete(fileTemp);
+                return await WriteToSqlServerDelta(Connection, EduHubSqlServerWriteMode.Delta, entities, ProgressNotification);
             }
+            else
+            {
+                if (ProgressNotification != null)
+                {
+                    ProgressNotification(100, $"Skipped writing the delta data set to the database table, no new records");
+                }
+                return new EduHubSqlServerWriteResult(
+                    DataSet: this,
+                    Mode: EduHubSqlServerWriteMode.Delta,
+                    Timestamp: DateTime.Now,
+                    LastModified: LastModifiedDelta);
+            }
+        }
+
+        /// <summary>
+        /// Writes a subset of the data set delta to the SQL Server
+        /// </summary>
+        /// <param name="Connection">A <see cref="SqlConnection"/> to the SQL Server</param>
+        /// <param name="EntityLastModified">A timestamp used to determine which entities to write</param>
+        /// <param name="ProgressNotification">A method called to intermittently report the percentage of progress</param>
+        /// <returns></returns>
+        private async Task<EduHubSqlServerWriteResult> WriteToSqlServerDelta(SqlConnection Connection, DateTime EntityLastModified, Action<double, string> ProgressNotification)
+        {
+            List<T> entities;
+
+            // Load Delta Entities
+            if (ProgressNotification == null)
+            {
+                entities = LoadDelta()
+                    .Where(e => e.EntityLastModified > EntityLastModified)
+                    .ToList();
+            }
+            else
+            {
+                ProgressNotification(0, "Reading delta records updated after {EntityLastModified:yyyy-MM-dd HH:mm} into memory");
+
+                // With progress (report every 2000 entities)
+                entities = new List<T>();
+                using (var entityReader = LoadDelta())
+                {
+                    using (var entityEnumerator = entityReader.GetEnumerator())
+                    {
+                        int entityCount = 0;
+                        while (entityEnumerator.MoveNext())
+                        {
+                            var entity = entityEnumerator.Current;
+                            if (entity.EntityLastModified > EntityLastModified)
+                            {
+                                entities.Add(entityEnumerator.Current);
+                            }
+                            if (entityCount++ >= 2000)
+                            {
+                                entityCount = 0;
+                                ProgressNotification(entityReader.Progress * 0.3, $"Read {entities.Count} delta records into memory"); // 30% Weight
+                            }
+                        }
+                    }
+                }
+
+                ProgressNotification(30, $"Read {entities.Count} delta records into memory");
+            }
+
+            if (entities.Count > 0)
+            {
+                return await WriteToSqlServerDelta(Connection, EduHubSqlServerWriteMode.DeltaPartial, entities, ProgressNotification);
+            }
+            else
+            {
+                if (ProgressNotification != null)
+                {
+                    ProgressNotification(100, $"Skipped writing the delta data set to the database table, no new records");
+                }
+                return new EduHubSqlServerWriteResult(
+                    DataSet: this,
+                    Mode: EduHubSqlServerWriteMode.DeltaPartial,
+                    Timestamp: DateTime.Now,
+                    LastModified: LastModifiedDelta);
+            }
+        }
+
+        /// <inheritdoc />
+        public EduHubSqlServerWriteMode DetermineSqlServerWriteType(DateTime? LastFullWrite, DateTime? LastDeltaWrite, bool EntityLastModifiedAvailable)
+        {
+            if (LastFullWrite == null ||            // Never written
+                LastModifiedBase > LastFullWrite)   // Newer base file
+            {
+                return EduHubSqlServerWriteMode.Full;
+            }
+            else if (IsDeltaAvailable)
+            {
+                if (LastDeltaWrite == null &&       // Never written delta
+                    LastModifiedDelta > LastFullWrite) // Irrelevant timestamp (delta was already overwritten)
+                {
+                    return EduHubSqlServerWriteMode.Delta;
+                }
+                else if (LastModifiedDelta > LastDeltaWrite) // Newer delta file
+                {
+                    if (SupportsEntityLastModified && EntityLastModifiedAvailable)
+                    {
+                        // Delta previously written and last modified entity timestamp supported
+                        return EduHubSqlServerWriteMode.DeltaPartial;
+                    }
+                    else
+                    {
+                        // Write all delta
+                        return EduHubSqlServerWriteMode.Delta;
+                    }
+                }
+            }
+            // No changes since last write
+            return EduHubSqlServerWriteMode.Skipped;
+        }
+
+        /// <summary>
+        /// Loads delta entities for the data set
+        /// </summary>
+        /// <returns>An <see cref="IEduHubDataSetReader{T}"/> containing delta entities for this data set</returns>
+        public IEduHubDataSetReader<T> LoadDelta()
+        {
+            // Ensure the delta data set (including the base data set) is available
+            EnsureDeltaAvailable();
+
+            // Return a basic data set reader
+            return new EduHubDataSetReader<T>(this, FilenameDelta);
+        }
+
+        /// <summary>
+        /// Loads entities for the data set, applying delta items as the set is gradually loaded
+        /// </summary>
+        /// <returns>An <see cref="IEduHubDataSetReader{T}"/> containing entities for this data set</returns>
+        public IEduHubDataSetReader<T> Load()
+        {
+            // Ensure the data set is available
+            EnsureAvailable();
+
+            // Check if the data set is already loaded into memory
+            if (Items.IsValueCreated)
+            {
+                // Already loaded into memory, use memory cache
+                return new EduHubDataSetLoadedReader<T>(this, Items.Value);
+            }
+            else
+            {
+                // Progressively load
+                if (IsDeltaAvailable)
+                {
+                    // Apply Delta Entities
+                    return new EduHubDataSetDeltaReader<T>(this);
+                }
+                else
+                {
+                    return new EduHubDataSetReader<T>(this);
+                }
+            }
+        }
+
+        private List<T> LoadCache()
+        {
+            List<T> items;
+
+            // Load daily/base CSV data
+            items = Load().ToList();
 
             return items;
         }

@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/garysharp/EduHub.Data</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides strongly-typed object model for eduHub Data Sets</description>
-    <releaseNotes>Initial release.</releaseNotes>
-    <copyright>Copyright 2015 Gary Sharp</copyright>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016 Gary Sharp</copyright>
     <tags>eduHub</tags>
   </metadata>
 </package>

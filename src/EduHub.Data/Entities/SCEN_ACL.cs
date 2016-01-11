@@ -11,6 +11,15 @@ namespace EduHub.Data.Entities
     public sealed partial class SCEN_ACL : EduHubEntity
     {
 
+        /// <inheritdoc />
+        public override DateTime? EntityLastModified
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         #region Field Properties
 
         /// <summary>

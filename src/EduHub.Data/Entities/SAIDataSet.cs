@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAIDataSet : EduHubDataSet<SAI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SAI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SAIDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SAI" /> fields for each CSV column header</returns>
-        protected override Action<SAI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SAI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SAI, string>[Headers.Count];
 
@@ -164,29 +167,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SAI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SAI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SAI" /> items to added or update the base <see cref="SAI" /> items</param>
-        /// <returns>A merged list of <see cref="SAI" /> items</returns>
-        protected override List<SAI> ApplyDeltaItems(List<SAI> Items, List<SAI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SAI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SAI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SAI}"/> of entities</returns>
+        internal override IEnumerable<SAI> ApplyDeltaEntities(IEnumerable<SAI> Entities, List<SAI> DeltaEntities)
         {
-            Dictionary<int, int> Index_SAIKEY = Items.ToIndexDictionary(i => i.SAIKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_SAIKEY = new HashSet<int>(DeltaEntities.Select(i => i.SAIKEY));
 
-            foreach (SAI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SAIKEY.TryGetValue(deltaItem.SAIKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SAIKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SAIKEY.Remove(entity.SAIKEY);
+                            
+                            if (entity.SAIKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SAIKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -287,11 +316,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SAI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SAI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SAI](
         [SAIKEY] int IDENTITY NOT NULL,
@@ -341,240 +374,283 @@ BEGIN
     (
             [ACCIDENTID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAI]') AND name = N'Index_ACCIDENTID')
+    ALTER INDEX [Index_ACCIDENTID] ON [dbo].[SAI] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAI]') AND name = N'Index_ACCIDENTID')
+    ALTER INDEX [Index_ACCIDENTID] ON [dbo].[SAI] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SAI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SAI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SAI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_SAIKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SAIKEY.Add(entity.SAIKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SAI] WHERE");
+
+
+            // Index_SAIKEY
+            builder.Append("[SAIKEY] IN (");
+            for (int index = 0; index < Index_SAIKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SAIKEY
+                var parameterSAIKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSAIKEY);
+                command.Parameters.Add(parameterSAIKEY, SqlDbType.Int).Value = Index_SAIKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SAI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SAI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SAI> GetDataSetDataReader()
         {
-            return new SAIDataReader(Items.Value);
+            return new SAIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAI data set</returns>
+        public override EduHubDataSetDataReader<SAI> GetDataSetDataReader(List<SAI> Entities)
+        {
+            return new SAIDataReader(new EduHubDataSetLoadedReader<SAI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SAIDataReader : IDataReader, IDataRecord
+        private class SAIDataReader : EduHubDataSetDataReader<SAI>
         {
-            private List<SAI> Items;
-            private int CurrentIndex;
-            private SAI CurrentItem;
-
-            public SAIDataReader(List<SAI> Items)
+            public SAIDataReader(IEduHubDataSetReader<SAI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 39; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 39; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SAIKEY
-                        return CurrentItem.SAIKEY;
+                        return Current.SAIKEY;
                     case 1: // ENTRY_TYPE
-                        return CurrentItem.ENTRY_TYPE;
+                        return Current.ENTRY_TYPE;
                     case 2: // ACCIDENTID
-                        return CurrentItem.ACCIDENTID;
+                        return Current.ACCIDENTID;
                     case 3: // INV_PERSON_TYPE
-                        return CurrentItem.INV_PERSON_TYPE;
+                        return Current.INV_PERSON_TYPE;
                     case 4: // INV_PERSONKEY
-                        return CurrentItem.INV_PERSONKEY;
+                        return Current.INV_PERSONKEY;
                     case 5: // INV_PERSON_DFAB
-                        return CurrentItem.INV_PERSON_DFAB;
+                        return Current.INV_PERSON_DFAB;
                     case 6: // INV_FULL_NAME
-                        return CurrentItem.INV_FULL_NAME;
+                        return Current.INV_FULL_NAME;
                     case 7: // INV_ADDRESS
-                        return CurrentItem.INV_ADDRESS;
+                        return Current.INV_ADDRESS;
                     case 8: // INV_TELEPHONE
-                        return CurrentItem.INV_TELEPHONE;
+                        return Current.INV_TELEPHONE;
                     case 9: // INV_BIRTHDATE
-                        return CurrentItem.INV_BIRTHDATE;
+                        return Current.INV_BIRTHDATE;
                     case 10: // INV_GENDER
-                        return CurrentItem.INV_GENDER;
+                        return Current.INV_GENDER;
                     case 11: // INV_PAYROLL_REC_NO
-                        return CurrentItem.INV_PAYROLL_REC_NO;
+                        return Current.INV_PAYROLL_REC_NO;
                     case 12: // INV_STAFF_TYPE
-                        return CurrentItem.INV_STAFF_TYPE;
+                        return Current.INV_STAFF_TYPE;
                     case 13: // HELP_PERSON_TYPE
-                        return CurrentItem.HELP_PERSON_TYPE;
+                        return Current.HELP_PERSON_TYPE;
                     case 14: // HELP_PERSONKEY
-                        return CurrentItem.HELP_PERSONKEY;
+                        return Current.HELP_PERSONKEY;
                     case 15: // HELP_PERSON_DFAB
-                        return CurrentItem.HELP_PERSON_DFAB;
+                        return Current.HELP_PERSON_DFAB;
                     case 16: // HELP_FULL_NAME
-                        return CurrentItem.HELP_FULL_NAME;
+                        return Current.HELP_FULL_NAME;
                     case 17: // INCIDENT_NO
-                        return CurrentItem.INCIDENT_NO;
+                        return Current.INCIDENT_NO;
                     case 18: // SENT_TO_DEPT
-                        return CurrentItem.SENT_TO_DEPT;
+                        return Current.SENT_TO_DEPT;
                     case 19: // CLAIM_LODGED
-                        return CurrentItem.CLAIM_LODGED;
+                        return Current.CLAIM_LODGED;
                     case 20: // CLAIM_DATE
-                        return CurrentItem.CLAIM_DATE;
+                        return Current.CLAIM_DATE;
                     case 21: // WORK_CEASED_DATE
-                        return CurrentItem.WORK_CEASED_DATE;
+                        return Current.WORK_CEASED_DATE;
                     case 22: // SUCCESSFUL_CONTACT
-                        return CurrentItem.SUCCESSFUL_CONTACT;
+                        return Current.SUCCESSFUL_CONTACT;
                     case 23: // OTHER_SUCCESSFUL_CONTACT
-                        return CurrentItem.OTHER_SUCCESSFUL_CONTACT;
+                        return Current.OTHER_SUCCESSFUL_CONTACT;
                     case 24: // DOCTOR
-                        return CurrentItem.DOCTOR;
+                        return Current.DOCTOR;
                     case 25: // OTHER_DOCTOR
-                        return CurrentItem.OTHER_DOCTOR;
+                        return Current.OTHER_DOCTOR;
                     case 26: // HOSPITAL
-                        return CurrentItem.HOSPITAL;
+                        return Current.HOSPITAL;
                     case 27: // AMBULANCE
-                        return CurrentItem.AMBULANCE;
+                        return Current.AMBULANCE;
                     case 28: // ATTENDANCE_DATE
-                        return CurrentItem.ATTENDANCE_DATE;
+                        return Current.ATTENDANCE_DATE;
                     case 29: // ATTENDANCE_IN_TIME
-                        return CurrentItem.ATTENDANCE_IN_TIME;
+                        return Current.ATTENDANCE_IN_TIME;
                     case 30: // ATTENDANCE_OUT_TIME
-                        return CurrentItem.ATTENDANCE_OUT_TIME;
+                        return Current.ATTENDANCE_OUT_TIME;
                     case 31: // SYMPTOMS
-                        return CurrentItem.SYMPTOMS;
+                        return Current.SYMPTOMS;
                     case 32: // SICKBAY_ACTION
-                        return CurrentItem.SICKBAY_ACTION;
+                        return Current.SICKBAY_ACTION;
                     case 33: // ACTION_OUTCOME
-                        return CurrentItem.ACTION_OUTCOME;
+                        return Current.ACTION_OUTCOME;
                     case 34: // SMS_KEY
-                        return CurrentItem.SMS_KEY;
+                        return Current.SMS_KEY;
                     case 35: // EMAIL_KEY
-                        return CurrentItem.EMAIL_KEY;
+                        return Current.EMAIL_KEY;
                     case 36: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 37: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 38: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // ENTRY_TYPE
-                        return CurrentItem.ENTRY_TYPE == null;
+                        return Current.ENTRY_TYPE == null;
                     case 2: // ACCIDENTID
-                        return CurrentItem.ACCIDENTID == null;
+                        return Current.ACCIDENTID == null;
                     case 3: // INV_PERSON_TYPE
-                        return CurrentItem.INV_PERSON_TYPE == null;
+                        return Current.INV_PERSON_TYPE == null;
                     case 4: // INV_PERSONKEY
-                        return CurrentItem.INV_PERSONKEY == null;
+                        return Current.INV_PERSONKEY == null;
                     case 5: // INV_PERSON_DFAB
-                        return CurrentItem.INV_PERSON_DFAB == null;
+                        return Current.INV_PERSON_DFAB == null;
                     case 6: // INV_FULL_NAME
-                        return CurrentItem.INV_FULL_NAME == null;
+                        return Current.INV_FULL_NAME == null;
                     case 7: // INV_ADDRESS
-                        return CurrentItem.INV_ADDRESS == null;
+                        return Current.INV_ADDRESS == null;
                     case 8: // INV_TELEPHONE
-                        return CurrentItem.INV_TELEPHONE == null;
+                        return Current.INV_TELEPHONE == null;
                     case 9: // INV_BIRTHDATE
-                        return CurrentItem.INV_BIRTHDATE == null;
+                        return Current.INV_BIRTHDATE == null;
                     case 10: // INV_GENDER
-                        return CurrentItem.INV_GENDER == null;
+                        return Current.INV_GENDER == null;
                     case 11: // INV_PAYROLL_REC_NO
-                        return CurrentItem.INV_PAYROLL_REC_NO == null;
+                        return Current.INV_PAYROLL_REC_NO == null;
                     case 12: // INV_STAFF_TYPE
-                        return CurrentItem.INV_STAFF_TYPE == null;
+                        return Current.INV_STAFF_TYPE == null;
                     case 13: // HELP_PERSON_TYPE
-                        return CurrentItem.HELP_PERSON_TYPE == null;
+                        return Current.HELP_PERSON_TYPE == null;
                     case 14: // HELP_PERSONKEY
-                        return CurrentItem.HELP_PERSONKEY == null;
+                        return Current.HELP_PERSONKEY == null;
                     case 15: // HELP_PERSON_DFAB
-                        return CurrentItem.HELP_PERSON_DFAB == null;
+                        return Current.HELP_PERSON_DFAB == null;
                     case 16: // HELP_FULL_NAME
-                        return CurrentItem.HELP_FULL_NAME == null;
+                        return Current.HELP_FULL_NAME == null;
                     case 17: // INCIDENT_NO
-                        return CurrentItem.INCIDENT_NO == null;
+                        return Current.INCIDENT_NO == null;
                     case 18: // SENT_TO_DEPT
-                        return CurrentItem.SENT_TO_DEPT == null;
+                        return Current.SENT_TO_DEPT == null;
                     case 19: // CLAIM_LODGED
-                        return CurrentItem.CLAIM_LODGED == null;
+                        return Current.CLAIM_LODGED == null;
                     case 20: // CLAIM_DATE
-                        return CurrentItem.CLAIM_DATE == null;
+                        return Current.CLAIM_DATE == null;
                     case 21: // WORK_CEASED_DATE
-                        return CurrentItem.WORK_CEASED_DATE == null;
+                        return Current.WORK_CEASED_DATE == null;
                     case 22: // SUCCESSFUL_CONTACT
-                        return CurrentItem.SUCCESSFUL_CONTACT == null;
+                        return Current.SUCCESSFUL_CONTACT == null;
                     case 23: // OTHER_SUCCESSFUL_CONTACT
-                        return CurrentItem.OTHER_SUCCESSFUL_CONTACT == null;
+                        return Current.OTHER_SUCCESSFUL_CONTACT == null;
                     case 24: // DOCTOR
-                        return CurrentItem.DOCTOR == null;
+                        return Current.DOCTOR == null;
                     case 25: // OTHER_DOCTOR
-                        return CurrentItem.OTHER_DOCTOR == null;
+                        return Current.OTHER_DOCTOR == null;
                     case 26: // HOSPITAL
-                        return CurrentItem.HOSPITAL == null;
+                        return Current.HOSPITAL == null;
                     case 27: // AMBULANCE
-                        return CurrentItem.AMBULANCE == null;
+                        return Current.AMBULANCE == null;
                     case 28: // ATTENDANCE_DATE
-                        return CurrentItem.ATTENDANCE_DATE == null;
+                        return Current.ATTENDANCE_DATE == null;
                     case 29: // ATTENDANCE_IN_TIME
-                        return CurrentItem.ATTENDANCE_IN_TIME == null;
+                        return Current.ATTENDANCE_IN_TIME == null;
                     case 30: // ATTENDANCE_OUT_TIME
-                        return CurrentItem.ATTENDANCE_OUT_TIME == null;
+                        return Current.ATTENDANCE_OUT_TIME == null;
                     case 31: // SYMPTOMS
-                        return CurrentItem.SYMPTOMS == null;
+                        return Current.SYMPTOMS == null;
                     case 32: // SICKBAY_ACTION
-                        return CurrentItem.SICKBAY_ACTION == null;
+                        return Current.SICKBAY_ACTION == null;
                     case 33: // ACTION_OUTCOME
-                        return CurrentItem.ACTION_OUTCOME == null;
+                        return Current.ACTION_OUTCOME == null;
                     case 34: // SMS_KEY
-                        return CurrentItem.SMS_KEY == null;
+                        return Current.SMS_KEY == null;
                     case 35: // EMAIL_KEY
-                        return CurrentItem.EMAIL_KEY == null;
+                        return Current.EMAIL_KEY == null;
                     case 36: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 37: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 38: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -661,7 +737,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -746,35 +822,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

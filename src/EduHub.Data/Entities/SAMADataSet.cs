@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAMADataSet : EduHubDataSet<SAMA>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SAMA"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SAMADataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SAMA" /> fields for each CSV column header</returns>
-        protected override Action<SAMA, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SAMA, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SAMA, string>[Headers.Count];
 
@@ -69,34 +72,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SAMA" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SAMA" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SAMA" /> items to added or update the base <see cref="SAMA" /> items</param>
-        /// <returns>A merged list of <see cref="SAMA" /> items</returns>
-        protected override List<SAMA> ApplyDeltaItems(List<SAMA> Items, List<SAMA> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SAMA" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SAMA" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SAMA}"/> of entities</returns>
+        internal override IEnumerable<SAMA> ApplyDeltaEntities(IEnumerable<SAMA> Entities, List<SAMA> DeltaEntities)
         {
-            Dictionary<Tuple<int, int?>, int> Index_SAMAKEY_SCAM_TID = Items.ToIndexDictionary(i => Tuple.Create(i.SAMAKEY, i.SCAM_TID));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<int, int?>> Index_SAMAKEY_SCAM_TID = new HashSet<Tuple<int, int?>>(DeltaEntities.Select(i => Tuple.Create(i.SAMAKEY, i.SCAM_TID)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SAMA deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SAMAKEY;
+                        bool yieldEntity = false;
 
-                if (Index_SAMAKEY_SCAM_TID.TryGetValue(Tuple.Create(deltaItem.SAMAKEY, deltaItem.SCAM_TID), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_SAMAKEY_SCAM_TID.Remove(Tuple.Create(entity.SAMAKEY, entity.SCAM_TID));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.SAMAKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SAMAKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -243,11 +270,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SAMA table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SAMA table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SAMA](
         [TID] int IDENTITY NOT NULL,
@@ -270,110 +301,185 @@ BEGIN
             [SAMAKEY] ASC,
             [SCAM_TID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND name = N'Index_SAMAKEY_SCAM_TID')
+    ALTER INDEX [Index_SAMAKEY_SCAM_TID] ON [dbo].[SAMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SAMA] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND name = N'Index_SAMAKEY_SCAM_TID')
+    ALTER INDEX [Index_SAMAKEY_SCAM_TID] ON [dbo].[SAMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAMA]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SAMA] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SAMA"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SAMA"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SAMA> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<int, int?>> Index_SAMAKEY_SCAM_TID = new List<Tuple<int, int?>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SAMAKEY_SCAM_TID.Add(Tuple.Create(entity.SAMAKEY, entity.SCAM_TID));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SAMA] WHERE");
+
+
+            // Index_SAMAKEY_SCAM_TID
+            builder.Append("(");
+            for (int index = 0; index < Index_SAMAKEY_SCAM_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // SAMAKEY
+                var parameterSAMAKEY = $"@p{parameterIndex++}";
+                builder.Append("([SAMAKEY]=").Append(parameterSAMAKEY);
+                command.Parameters.Add(parameterSAMAKEY, SqlDbType.Int).Value = Index_SAMAKEY_SCAM_TID[index].Item1;
+
+                // SCAM_TID
+                if (Index_SAMAKEY_SCAM_TID[index].Item2 == null)
+                {
+                    builder.Append(" AND [SCAM_TID] IS NULL)");
+                }
+                else
+                {
+                    var parameterSCAM_TID = $"@p{parameterIndex++}";
+                    builder.Append(" AND [SCAM_TID]=").Append(parameterSCAM_TID).Append(")");
+                    command.Parameters.Add(parameterSCAM_TID, SqlDbType.Int).Value = Index_SAMAKEY_SCAM_TID[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SAMA data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SAMA data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SAMA> GetDataSetDataReader()
         {
-            return new SAMADataReader(Items.Value);
+            return new SAMADataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAMA data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAMA data set</returns>
+        public override EduHubDataSetDataReader<SAMA> GetDataSetDataReader(List<SAMA> Entities)
+        {
+            return new SAMADataReader(new EduHubDataSetLoadedReader<SAMA>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SAMADataReader : IDataReader, IDataRecord
+        private class SAMADataReader : EduHubDataSetDataReader<SAMA>
         {
-            private List<SAMA> Items;
-            private int CurrentIndex;
-            private SAMA CurrentItem;
-
-            public SAMADataReader(List<SAMA> Items)
+            public SAMADataReader(IEduHubDataSetReader<SAMA> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 7; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 7; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // SAMAKEY
-                        return CurrentItem.SAMAKEY;
+                        return Current.SAMAKEY;
                     case 2: // SCAM_TID
-                        return CurrentItem.SCAM_TID;
+                        return Current.SCAM_TID;
                     case 3: // ATTENDED
-                        return CurrentItem.ATTENDED;
+                        return Current.ATTENDED;
                     case 4: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 5: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 6: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // SCAM_TID
-                        return CurrentItem.SCAM_TID == null;
+                        return Current.SCAM_TID == null;
                     case 3: // ATTENDED
-                        return CurrentItem.ATTENDED == null;
+                        return Current.ATTENDED == null;
                     case 4: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 5: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 6: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -396,7 +502,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -417,35 +523,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PEPMDataSet : EduHubDataSet<PEPM>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PEPM"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PEPMDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PEPM" /> fields for each CSV column header</returns>
-        protected override Action<PEPM, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PEPM, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PEPM, string>[Headers.Count];
 
@@ -99,29 +102,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PEPM" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PEPM" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PEPM" /> items to added or update the base <see cref="PEPM" /> items</param>
-        /// <returns>A merged list of <see cref="PEPM" /> items</returns>
-        protected override List<PEPM> ApplyDeltaItems(List<PEPM> Items, List<PEPM> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PEPM" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PEPM" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PEPM}"/> of entities</returns>
+        internal override IEnumerable<PEPM> ApplyDeltaEntities(IEnumerable<PEPM> Entities, List<PEPM> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (PEPM deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CODE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -265,11 +294,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PEPM table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PEPM table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PEPM](
         [TID] int IDENTITY NOT NULL,
@@ -301,150 +334,197 @@ BEGIN
     (
             [CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_BSB')
+    ALTER INDEX [Index_BSB] ON [dbo].[PEPM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PEPM] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_BSB')
+    ALTER INDEX [Index_BSB] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PEPM"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PEPM"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PEPM> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PEPM] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PEPM data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PEPM data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PEPM> GetDataSetDataReader()
         {
-            return new PEPMDataReader(Items.Value);
+            return new PEPMDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PEPM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PEPM data set</returns>
+        public override EduHubDataSetDataReader<PEPM> GetDataSetDataReader(List<PEPM> Entities)
+        {
+            return new PEPMDataReader(new EduHubDataSetLoadedReader<PEPM>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PEPMDataReader : IDataReader, IDataRecord
+        private class PEPMDataReader : EduHubDataSetDataReader<PEPM>
         {
-            private List<PEPM> Items;
-            private int CurrentIndex;
-            private PEPM CurrentItem;
-
-            public PEPMDataReader(List<PEPM> Items)
+            public PEPMDataReader(IEduHubDataSetReader<PEPM> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 17; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 17; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 2: // NAME
-                        return CurrentItem.NAME;
+                        return Current.NAME;
                     case 3: // PAYMODE
-                        return CurrentItem.PAYMODE;
+                        return Current.PAYMODE;
                     case 4: // REFERENCE_NO
-                        return CurrentItem.REFERENCE_NO;
+                        return Current.REFERENCE_NO;
                     case 5: // CHQ_NO
-                        return CurrentItem.CHQ_NO;
+                        return Current.CHQ_NO;
                     case 6: // DAMOUNT
-                        return CurrentItem.DAMOUNT;
+                        return Current.DAMOUNT;
                     case 7: // BANK
-                        return CurrentItem.BANK;
+                        return Current.BANK;
                     case 8: // BSB
-                        return CurrentItem.BSB;
+                        return Current.BSB;
                     case 9: // ACCOUNT_NO
-                        return CurrentItem.ACCOUNT_NO;
+                        return Current.ACCOUNT_NO;
                     case 10: // AMOUNT
-                        return CurrentItem.AMOUNT;
+                        return Current.AMOUNT;
                     case 11: // FLAG
-                        return CurrentItem.FLAG;
+                        return Current.FLAG;
                     case 12: // TRBATCH
-                        return CurrentItem.TRBATCH;
+                        return Current.TRBATCH;
                     case 13: // EFT_CREATED
-                        return CurrentItem.EFT_CREATED;
+                        return Current.EFT_CREATED;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // NAME
-                        return CurrentItem.NAME == null;
+                        return Current.NAME == null;
                     case 3: // PAYMODE
-                        return CurrentItem.PAYMODE == null;
+                        return Current.PAYMODE == null;
                     case 4: // REFERENCE_NO
-                        return CurrentItem.REFERENCE_NO == null;
+                        return Current.REFERENCE_NO == null;
                     case 5: // CHQ_NO
-                        return CurrentItem.CHQ_NO == null;
+                        return Current.CHQ_NO == null;
                     case 6: // DAMOUNT
-                        return CurrentItem.DAMOUNT == null;
+                        return Current.DAMOUNT == null;
                     case 7: // BANK
-                        return CurrentItem.BANK == null;
+                        return Current.BANK == null;
                     case 8: // BSB
-                        return CurrentItem.BSB == null;
+                        return Current.BSB == null;
                     case 9: // ACCOUNT_NO
-                        return CurrentItem.ACCOUNT_NO == null;
+                        return Current.ACCOUNT_NO == null;
                     case 10: // AMOUNT
-                        return CurrentItem.AMOUNT == null;
+                        return Current.AMOUNT == null;
                     case 11: // FLAG
-                        return CurrentItem.FLAG == null;
+                        return Current.FLAG == null;
                     case 12: // TRBATCH
-                        return CurrentItem.TRBATCH == null;
+                        return Current.TRBATCH == null;
                     case 13: // EFT_CREATED
-                        return CurrentItem.EFT_CREATED == null;
+                        return Current.EFT_CREATED == null;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -487,7 +567,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -528,35 +608,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

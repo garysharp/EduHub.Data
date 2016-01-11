@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGHDataSet : EduHubDataSet<KGH>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KGH"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KGHDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KGH" /> fields for each CSV column header</returns>
-        protected override Action<KGH, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KGH, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KGH, string>[Headers.Count];
 
@@ -197,29 +200,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KGH" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KGH" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KGH" /> items to added or update the base <see cref="KGH" /> items</param>
-        /// <returns>A merged list of <see cref="KGH" /> items</returns>
-        protected override List<KGH> ApplyDeltaItems(List<KGH> Items, List<KGH> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KGH" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KGH" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KGH}"/> of entities</returns>
+        internal override IEnumerable<KGH> ApplyDeltaEntities(IEnumerable<KGH> Entities, List<KGH> DeltaEntities)
         {
-            Dictionary<string, int> Index_KGHKEY = Items.ToIndexDictionary(i => i.KGHKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_KGHKEY = new HashSet<string>(DeltaEntities.Select(i => i.KGHKEY));
 
-            foreach (KGH deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KGHKEY.TryGetValue(deltaItem.KGHKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KGHKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KGHKEY.Remove(entity.KGHKEY);
+                            
+                            if (entity.KGHKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KGHKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -320,11 +349,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KGH table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KGH table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KGH](
         [KGHKEY] varchar(10) NOT NULL,
@@ -385,284 +418,327 @@ BEGIN
     (
             [CAMPUS] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGH] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGH] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KGH"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KGH"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KGH> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_KGHKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KGHKEY.Add(entity.KGHKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KGH] WHERE");
+
+
+            // Index_KGHKEY
+            builder.Append("[KGHKEY] IN (");
+            for (int index = 0; index < Index_KGHKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KGHKEY
+                var parameterKGHKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKGHKEY);
+                command.Parameters.Add(parameterKGHKEY, SqlDbType.VarChar, 10).Value = Index_KGHKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KGH data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KGH data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KGH> GetDataSetDataReader()
         {
-            return new KGHDataReader(Items.Value);
+            return new KGHDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGH data set</returns>
+        public override EduHubDataSetDataReader<KGH> GetDataSetDataReader(List<KGH> Entities)
+        {
+            return new KGHDataReader(new EduHubDataSetLoadedReader<KGH>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KGHDataReader : IDataReader, IDataRecord
+        private class KGHDataReader : EduHubDataSetDataReader<KGH>
         {
-            private List<KGH> Items;
-            private int CurrentIndex;
-            private KGH CurrentItem;
-
-            public KGHDataReader(List<KGH> Items)
+            public KGHDataReader(IEduHubDataSetReader<KGH> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 50; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 50; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KGHKEY
-                        return CurrentItem.KGHKEY;
+                        return Current.KGHKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // CAMPUS
-                        return CurrentItem.CAMPUS;
+                        return Current.CAMPUS;
                     case 3: // ACTIVE
-                        return CurrentItem.ACTIVE;
+                        return Current.ACTIVE;
                     case 4: // HOUSE_SIZE
-                        return CurrentItem.HOUSE_SIZE;
+                        return Current.HOUSE_SIZE;
                     case 5: // MALES
-                        return CurrentItem.MALES;
+                        return Current.MALES;
                     case 6: // FEMALES
-                        return CurrentItem.FEMALES;
+                        return Current.FEMALES;
                     case 7: // AGE_F01
-                        return CurrentItem.AGE_F01;
+                        return Current.AGE_F01;
                     case 8: // AGE_F02
-                        return CurrentItem.AGE_F02;
+                        return Current.AGE_F02;
                     case 9: // AGE_F03
-                        return CurrentItem.AGE_F03;
+                        return Current.AGE_F03;
                     case 10: // AGE_F04
-                        return CurrentItem.AGE_F04;
+                        return Current.AGE_F04;
                     case 11: // AGE_F05
-                        return CurrentItem.AGE_F05;
+                        return Current.AGE_F05;
                     case 12: // AGE_F06
-                        return CurrentItem.AGE_F06;
+                        return Current.AGE_F06;
                     case 13: // AGE_F07
-                        return CurrentItem.AGE_F07;
+                        return Current.AGE_F07;
                     case 14: // AGE_F08
-                        return CurrentItem.AGE_F08;
+                        return Current.AGE_F08;
                     case 15: // AGE_F09
-                        return CurrentItem.AGE_F09;
+                        return Current.AGE_F09;
                     case 16: // AGE_F10
-                        return CurrentItem.AGE_F10;
+                        return Current.AGE_F10;
                     case 17: // AGE_F11
-                        return CurrentItem.AGE_F11;
+                        return Current.AGE_F11;
                     case 18: // AGE_F12
-                        return CurrentItem.AGE_F12;
+                        return Current.AGE_F12;
                     case 19: // AGE_F13
-                        return CurrentItem.AGE_F13;
+                        return Current.AGE_F13;
                     case 20: // AGE_F14
-                        return CurrentItem.AGE_F14;
+                        return Current.AGE_F14;
                     case 21: // AGE_F15
-                        return CurrentItem.AGE_F15;
+                        return Current.AGE_F15;
                     case 22: // AGE_F16
-                        return CurrentItem.AGE_F16;
+                        return Current.AGE_F16;
                     case 23: // AGE_F17
-                        return CurrentItem.AGE_F17;
+                        return Current.AGE_F17;
                     case 24: // AGE_F18
-                        return CurrentItem.AGE_F18;
+                        return Current.AGE_F18;
                     case 25: // AGE_F19
-                        return CurrentItem.AGE_F19;
+                        return Current.AGE_F19;
                     case 26: // AGE_F20
-                        return CurrentItem.AGE_F20;
+                        return Current.AGE_F20;
                     case 27: // AGE_M01
-                        return CurrentItem.AGE_M01;
+                        return Current.AGE_M01;
                     case 28: // AGE_M02
-                        return CurrentItem.AGE_M02;
+                        return Current.AGE_M02;
                     case 29: // AGE_M03
-                        return CurrentItem.AGE_M03;
+                        return Current.AGE_M03;
                     case 30: // AGE_M04
-                        return CurrentItem.AGE_M04;
+                        return Current.AGE_M04;
                     case 31: // AGE_M05
-                        return CurrentItem.AGE_M05;
+                        return Current.AGE_M05;
                     case 32: // AGE_M06
-                        return CurrentItem.AGE_M06;
+                        return Current.AGE_M06;
                     case 33: // AGE_M07
-                        return CurrentItem.AGE_M07;
+                        return Current.AGE_M07;
                     case 34: // AGE_M08
-                        return CurrentItem.AGE_M08;
+                        return Current.AGE_M08;
                     case 35: // AGE_M09
-                        return CurrentItem.AGE_M09;
+                        return Current.AGE_M09;
                     case 36: // AGE_M10
-                        return CurrentItem.AGE_M10;
+                        return Current.AGE_M10;
                     case 37: // AGE_M11
-                        return CurrentItem.AGE_M11;
+                        return Current.AGE_M11;
                     case 38: // AGE_M12
-                        return CurrentItem.AGE_M12;
+                        return Current.AGE_M12;
                     case 39: // AGE_M13
-                        return CurrentItem.AGE_M13;
+                        return Current.AGE_M13;
                     case 40: // AGE_M14
-                        return CurrentItem.AGE_M14;
+                        return Current.AGE_M14;
                     case 41: // AGE_M15
-                        return CurrentItem.AGE_M15;
+                        return Current.AGE_M15;
                     case 42: // AGE_M16
-                        return CurrentItem.AGE_M16;
+                        return Current.AGE_M16;
                     case 43: // AGE_M17
-                        return CurrentItem.AGE_M17;
+                        return Current.AGE_M17;
                     case 44: // AGE_M18
-                        return CurrentItem.AGE_M18;
+                        return Current.AGE_M18;
                     case 45: // AGE_M19
-                        return CurrentItem.AGE_M19;
+                        return Current.AGE_M19;
                     case 46: // AGE_M20
-                        return CurrentItem.AGE_M20;
+                        return Current.AGE_M20;
                     case 47: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 48: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 49: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // CAMPUS
-                        return CurrentItem.CAMPUS == null;
+                        return Current.CAMPUS == null;
                     case 3: // ACTIVE
-                        return CurrentItem.ACTIVE == null;
+                        return Current.ACTIVE == null;
                     case 4: // HOUSE_SIZE
-                        return CurrentItem.HOUSE_SIZE == null;
+                        return Current.HOUSE_SIZE == null;
                     case 5: // MALES
-                        return CurrentItem.MALES == null;
+                        return Current.MALES == null;
                     case 6: // FEMALES
-                        return CurrentItem.FEMALES == null;
+                        return Current.FEMALES == null;
                     case 7: // AGE_F01
-                        return CurrentItem.AGE_F01 == null;
+                        return Current.AGE_F01 == null;
                     case 8: // AGE_F02
-                        return CurrentItem.AGE_F02 == null;
+                        return Current.AGE_F02 == null;
                     case 9: // AGE_F03
-                        return CurrentItem.AGE_F03 == null;
+                        return Current.AGE_F03 == null;
                     case 10: // AGE_F04
-                        return CurrentItem.AGE_F04 == null;
+                        return Current.AGE_F04 == null;
                     case 11: // AGE_F05
-                        return CurrentItem.AGE_F05 == null;
+                        return Current.AGE_F05 == null;
                     case 12: // AGE_F06
-                        return CurrentItem.AGE_F06 == null;
+                        return Current.AGE_F06 == null;
                     case 13: // AGE_F07
-                        return CurrentItem.AGE_F07 == null;
+                        return Current.AGE_F07 == null;
                     case 14: // AGE_F08
-                        return CurrentItem.AGE_F08 == null;
+                        return Current.AGE_F08 == null;
                     case 15: // AGE_F09
-                        return CurrentItem.AGE_F09 == null;
+                        return Current.AGE_F09 == null;
                     case 16: // AGE_F10
-                        return CurrentItem.AGE_F10 == null;
+                        return Current.AGE_F10 == null;
                     case 17: // AGE_F11
-                        return CurrentItem.AGE_F11 == null;
+                        return Current.AGE_F11 == null;
                     case 18: // AGE_F12
-                        return CurrentItem.AGE_F12 == null;
+                        return Current.AGE_F12 == null;
                     case 19: // AGE_F13
-                        return CurrentItem.AGE_F13 == null;
+                        return Current.AGE_F13 == null;
                     case 20: // AGE_F14
-                        return CurrentItem.AGE_F14 == null;
+                        return Current.AGE_F14 == null;
                     case 21: // AGE_F15
-                        return CurrentItem.AGE_F15 == null;
+                        return Current.AGE_F15 == null;
                     case 22: // AGE_F16
-                        return CurrentItem.AGE_F16 == null;
+                        return Current.AGE_F16 == null;
                     case 23: // AGE_F17
-                        return CurrentItem.AGE_F17 == null;
+                        return Current.AGE_F17 == null;
                     case 24: // AGE_F18
-                        return CurrentItem.AGE_F18 == null;
+                        return Current.AGE_F18 == null;
                     case 25: // AGE_F19
-                        return CurrentItem.AGE_F19 == null;
+                        return Current.AGE_F19 == null;
                     case 26: // AGE_F20
-                        return CurrentItem.AGE_F20 == null;
+                        return Current.AGE_F20 == null;
                     case 27: // AGE_M01
-                        return CurrentItem.AGE_M01 == null;
+                        return Current.AGE_M01 == null;
                     case 28: // AGE_M02
-                        return CurrentItem.AGE_M02 == null;
+                        return Current.AGE_M02 == null;
                     case 29: // AGE_M03
-                        return CurrentItem.AGE_M03 == null;
+                        return Current.AGE_M03 == null;
                     case 30: // AGE_M04
-                        return CurrentItem.AGE_M04 == null;
+                        return Current.AGE_M04 == null;
                     case 31: // AGE_M05
-                        return CurrentItem.AGE_M05 == null;
+                        return Current.AGE_M05 == null;
                     case 32: // AGE_M06
-                        return CurrentItem.AGE_M06 == null;
+                        return Current.AGE_M06 == null;
                     case 33: // AGE_M07
-                        return CurrentItem.AGE_M07 == null;
+                        return Current.AGE_M07 == null;
                     case 34: // AGE_M08
-                        return CurrentItem.AGE_M08 == null;
+                        return Current.AGE_M08 == null;
                     case 35: // AGE_M09
-                        return CurrentItem.AGE_M09 == null;
+                        return Current.AGE_M09 == null;
                     case 36: // AGE_M10
-                        return CurrentItem.AGE_M10 == null;
+                        return Current.AGE_M10 == null;
                     case 37: // AGE_M11
-                        return CurrentItem.AGE_M11 == null;
+                        return Current.AGE_M11 == null;
                     case 38: // AGE_M12
-                        return CurrentItem.AGE_M12 == null;
+                        return Current.AGE_M12 == null;
                     case 39: // AGE_M13
-                        return CurrentItem.AGE_M13 == null;
+                        return Current.AGE_M13 == null;
                     case 40: // AGE_M14
-                        return CurrentItem.AGE_M14 == null;
+                        return Current.AGE_M14 == null;
                     case 41: // AGE_M15
-                        return CurrentItem.AGE_M15 == null;
+                        return Current.AGE_M15 == null;
                     case 42: // AGE_M16
-                        return CurrentItem.AGE_M16 == null;
+                        return Current.AGE_M16 == null;
                     case 43: // AGE_M17
-                        return CurrentItem.AGE_M17 == null;
+                        return Current.AGE_M17 == null;
                     case 44: // AGE_M18
-                        return CurrentItem.AGE_M18 == null;
+                        return Current.AGE_M18 == null;
                     case 45: // AGE_M19
-                        return CurrentItem.AGE_M19 == null;
+                        return Current.AGE_M19 == null;
                     case 46: // AGE_M20
-                        return CurrentItem.AGE_M20 == null;
+                        return Current.AGE_M20 == null;
                     case 47: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 48: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 49: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -771,7 +847,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -878,35 +954,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PX_NEWDataSet : EduHubDataSet<PX_NEW>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PX_NEW"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PX_NEWDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PX_NEW" /> fields for each CSV column header</returns>
-        protected override Action<PX_NEW, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PX_NEW, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PX_NEW, string>[Headers.Count];
 
@@ -250,29 +253,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PX_NEW" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PX_NEW" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PX_NEW" /> items to added or update the base <see cref="PX_NEW" /> items</param>
-        /// <returns>A merged list of <see cref="PX_NEW" /> items</returns>
-        protected override List<PX_NEW> ApplyDeltaItems(List<PX_NEW> Items, List<PX_NEW> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PX_NEW" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PX_NEW" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PX_NEW}"/> of entities</returns>
+        internal override IEnumerable<PX_NEW> ApplyDeltaEntities(IEnumerable<PX_NEW> Entities, List<PX_NEW> DeltaEntities)
         {
-            Dictionary<short, int> Index_PXKEY = Items.ToIndexDictionary(i => i.PXKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<short> Index_PXKEY = new HashSet<short>(DeltaEntities.Select(i => i.PXKEY));
 
-            foreach (PX_NEW deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_PXKEY.TryGetValue(deltaItem.PXKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PXKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_PXKEY.Remove(entity.PXKEY);
+                            
+                            if (entity.PXKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PXKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -330,11 +359,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PX_NEW table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PX_NEW table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PX_NEW]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PX_NEW]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PX_NEW](
         [PXKEY] smallint NOT NULL,
@@ -409,356 +442,387 @@ BEGIN
             [PXKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="PX_NEWDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="PX_NEWDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PX_NEW"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PX_NEW"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PX_NEW> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<short> Index_PXKEY = new List<short>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PXKEY.Add(entity.PXKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PX_NEW] WHERE");
+
+
+            // Index_PXKEY
+            builder.Append("[PXKEY] IN (");
+            for (int index = 0; index < Index_PXKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PXKEY
+                var parameterPXKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPXKEY);
+                command.Parameters.Add(parameterPXKEY, SqlDbType.SmallInt).Value = Index_PXKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PX_NEW data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PX_NEW data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PX_NEW> GetDataSetDataReader()
         {
-            return new PX_NEWDataReader(Items.Value);
+            return new PX_NEWDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PX_NEW data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PX_NEW data set</returns>
+        public override EduHubDataSetDataReader<PX_NEW> GetDataSetDataReader(List<PX_NEW> Entities)
+        {
+            return new PX_NEWDataReader(new EduHubDataSetLoadedReader<PX_NEW>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PX_NEWDataReader : IDataReader, IDataRecord
+        private class PX_NEWDataReader : EduHubDataSetDataReader<PX_NEW>
         {
-            private List<PX_NEW> Items;
-            private int CurrentIndex;
-            private PX_NEW CurrentItem;
-
-            public PX_NEWDataReader(List<PX_NEW> Items)
+            public PX_NEWDataReader(IEduHubDataSetReader<PX_NEW> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 68; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 68; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PXKEY
-                        return CurrentItem.PXKEY;
+                        return Current.PXKEY;
                     case 1: // DESCRIPTION01
-                        return CurrentItem.DESCRIPTION01;
+                        return Current.DESCRIPTION01;
                     case 2: // DESCRIPTION02
-                        return CurrentItem.DESCRIPTION02;
+                        return Current.DESCRIPTION02;
                     case 3: // ENDINCOME01
-                        return CurrentItem.ENDINCOME01;
+                        return Current.ENDINCOME01;
                     case 4: // ENDINCOME02
-                        return CurrentItem.ENDINCOME02;
+                        return Current.ENDINCOME02;
                     case 5: // ENDINCOME03
-                        return CurrentItem.ENDINCOME03;
+                        return Current.ENDINCOME03;
                     case 6: // ENDINCOME04
-                        return CurrentItem.ENDINCOME04;
+                        return Current.ENDINCOME04;
                     case 7: // ENDINCOME05
-                        return CurrentItem.ENDINCOME05;
+                        return Current.ENDINCOME05;
                     case 8: // ENDINCOME06
-                        return CurrentItem.ENDINCOME06;
+                        return Current.ENDINCOME06;
                     case 9: // ENDINCOME07
-                        return CurrentItem.ENDINCOME07;
+                        return Current.ENDINCOME07;
                     case 10: // ENDINCOME08
-                        return CurrentItem.ENDINCOME08;
+                        return Current.ENDINCOME08;
                     case 11: // ENDINCOME09
-                        return CurrentItem.ENDINCOME09;
+                        return Current.ENDINCOME09;
                     case 12: // ENDINCOME10
-                        return CurrentItem.ENDINCOME10;
+                        return Current.ENDINCOME10;
                     case 13: // ENDINCOME11
-                        return CurrentItem.ENDINCOME11;
+                        return Current.ENDINCOME11;
                     case 14: // ENDINCOME12
-                        return CurrentItem.ENDINCOME12;
+                        return Current.ENDINCOME12;
                     case 15: // ENDINCOME13
-                        return CurrentItem.ENDINCOME13;
+                        return Current.ENDINCOME13;
                     case 16: // ENDINCOME14
-                        return CurrentItem.ENDINCOME14;
+                        return Current.ENDINCOME14;
                     case 17: // ENDINCOME15
-                        return CurrentItem.ENDINCOME15;
+                        return Current.ENDINCOME15;
                     case 18: // ENDINCOME16
-                        return CurrentItem.ENDINCOME16;
+                        return Current.ENDINCOME16;
                     case 19: // ENDINCOME17
-                        return CurrentItem.ENDINCOME17;
+                        return Current.ENDINCOME17;
                     case 20: // ENDINCOME18
-                        return CurrentItem.ENDINCOME18;
+                        return Current.ENDINCOME18;
                     case 21: // ENDINCOME19
-                        return CurrentItem.ENDINCOME19;
+                        return Current.ENDINCOME19;
                     case 22: // ENDINCOME20
-                        return CurrentItem.ENDINCOME20;
+                        return Current.ENDINCOME20;
                     case 23: // COEFA01
-                        return CurrentItem.COEFA01;
+                        return Current.COEFA01;
                     case 24: // COEFA02
-                        return CurrentItem.COEFA02;
+                        return Current.COEFA02;
                     case 25: // COEFA03
-                        return CurrentItem.COEFA03;
+                        return Current.COEFA03;
                     case 26: // COEFA04
-                        return CurrentItem.COEFA04;
+                        return Current.COEFA04;
                     case 27: // COEFA05
-                        return CurrentItem.COEFA05;
+                        return Current.COEFA05;
                     case 28: // COEFA06
-                        return CurrentItem.COEFA06;
+                        return Current.COEFA06;
                     case 29: // COEFA07
-                        return CurrentItem.COEFA07;
+                        return Current.COEFA07;
                     case 30: // COEFA08
-                        return CurrentItem.COEFA08;
+                        return Current.COEFA08;
                     case 31: // COEFA09
-                        return CurrentItem.COEFA09;
+                        return Current.COEFA09;
                     case 32: // COEFA10
-                        return CurrentItem.COEFA10;
+                        return Current.COEFA10;
                     case 33: // COEFA11
-                        return CurrentItem.COEFA11;
+                        return Current.COEFA11;
                     case 34: // COEFA12
-                        return CurrentItem.COEFA12;
+                        return Current.COEFA12;
                     case 35: // COEFA13
-                        return CurrentItem.COEFA13;
+                        return Current.COEFA13;
                     case 36: // COEFA14
-                        return CurrentItem.COEFA14;
+                        return Current.COEFA14;
                     case 37: // COEFA15
-                        return CurrentItem.COEFA15;
+                        return Current.COEFA15;
                     case 38: // COEFA16
-                        return CurrentItem.COEFA16;
+                        return Current.COEFA16;
                     case 39: // COEFA17
-                        return CurrentItem.COEFA17;
+                        return Current.COEFA17;
                     case 40: // COEFA18
-                        return CurrentItem.COEFA18;
+                        return Current.COEFA18;
                     case 41: // COEFA19
-                        return CurrentItem.COEFA19;
+                        return Current.COEFA19;
                     case 42: // COEFA20
-                        return CurrentItem.COEFA20;
+                        return Current.COEFA20;
                     case 43: // COEFB01
-                        return CurrentItem.COEFB01;
+                        return Current.COEFB01;
                     case 44: // COEFB02
-                        return CurrentItem.COEFB02;
+                        return Current.COEFB02;
                     case 45: // COEFB03
-                        return CurrentItem.COEFB03;
+                        return Current.COEFB03;
                     case 46: // COEFB04
-                        return CurrentItem.COEFB04;
+                        return Current.COEFB04;
                     case 47: // COEFB05
-                        return CurrentItem.COEFB05;
+                        return Current.COEFB05;
                     case 48: // COEFB06
-                        return CurrentItem.COEFB06;
+                        return Current.COEFB06;
                     case 49: // COEFB07
-                        return CurrentItem.COEFB07;
+                        return Current.COEFB07;
                     case 50: // COEFB08
-                        return CurrentItem.COEFB08;
+                        return Current.COEFB08;
                     case 51: // COEFB09
-                        return CurrentItem.COEFB09;
+                        return Current.COEFB09;
                     case 52: // COEFB10
-                        return CurrentItem.COEFB10;
+                        return Current.COEFB10;
                     case 53: // COEFB11
-                        return CurrentItem.COEFB11;
+                        return Current.COEFB11;
                     case 54: // COEFB12
-                        return CurrentItem.COEFB12;
+                        return Current.COEFB12;
                     case 55: // COEFB13
-                        return CurrentItem.COEFB13;
+                        return Current.COEFB13;
                     case 56: // COEFB14
-                        return CurrentItem.COEFB14;
+                        return Current.COEFB14;
                     case 57: // COEFB15
-                        return CurrentItem.COEFB15;
+                        return Current.COEFB15;
                     case 58: // COEFB16
-                        return CurrentItem.COEFB16;
+                        return Current.COEFB16;
                     case 59: // COEFB17
-                        return CurrentItem.COEFB17;
+                        return Current.COEFB17;
                     case 60: // COEFB18
-                        return CurrentItem.COEFB18;
+                        return Current.COEFB18;
                     case 61: // COEFB19
-                        return CurrentItem.COEFB19;
+                        return Current.COEFB19;
                     case 62: // COEFB20
-                        return CurrentItem.COEFB20;
+                        return Current.COEFB20;
                     case 63: // TRANSDATE
-                        return CurrentItem.TRANSDATE;
+                        return Current.TRANSDATE;
                     case 64: // HECS
-                        return CurrentItem.HECS;
+                        return Current.HECS;
                     case 65: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 66: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 67: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION01
-                        return CurrentItem.DESCRIPTION01 == null;
+                        return Current.DESCRIPTION01 == null;
                     case 2: // DESCRIPTION02
-                        return CurrentItem.DESCRIPTION02 == null;
+                        return Current.DESCRIPTION02 == null;
                     case 3: // ENDINCOME01
-                        return CurrentItem.ENDINCOME01 == null;
+                        return Current.ENDINCOME01 == null;
                     case 4: // ENDINCOME02
-                        return CurrentItem.ENDINCOME02 == null;
+                        return Current.ENDINCOME02 == null;
                     case 5: // ENDINCOME03
-                        return CurrentItem.ENDINCOME03 == null;
+                        return Current.ENDINCOME03 == null;
                     case 6: // ENDINCOME04
-                        return CurrentItem.ENDINCOME04 == null;
+                        return Current.ENDINCOME04 == null;
                     case 7: // ENDINCOME05
-                        return CurrentItem.ENDINCOME05 == null;
+                        return Current.ENDINCOME05 == null;
                     case 8: // ENDINCOME06
-                        return CurrentItem.ENDINCOME06 == null;
+                        return Current.ENDINCOME06 == null;
                     case 9: // ENDINCOME07
-                        return CurrentItem.ENDINCOME07 == null;
+                        return Current.ENDINCOME07 == null;
                     case 10: // ENDINCOME08
-                        return CurrentItem.ENDINCOME08 == null;
+                        return Current.ENDINCOME08 == null;
                     case 11: // ENDINCOME09
-                        return CurrentItem.ENDINCOME09 == null;
+                        return Current.ENDINCOME09 == null;
                     case 12: // ENDINCOME10
-                        return CurrentItem.ENDINCOME10 == null;
+                        return Current.ENDINCOME10 == null;
                     case 13: // ENDINCOME11
-                        return CurrentItem.ENDINCOME11 == null;
+                        return Current.ENDINCOME11 == null;
                     case 14: // ENDINCOME12
-                        return CurrentItem.ENDINCOME12 == null;
+                        return Current.ENDINCOME12 == null;
                     case 15: // ENDINCOME13
-                        return CurrentItem.ENDINCOME13 == null;
+                        return Current.ENDINCOME13 == null;
                     case 16: // ENDINCOME14
-                        return CurrentItem.ENDINCOME14 == null;
+                        return Current.ENDINCOME14 == null;
                     case 17: // ENDINCOME15
-                        return CurrentItem.ENDINCOME15 == null;
+                        return Current.ENDINCOME15 == null;
                     case 18: // ENDINCOME16
-                        return CurrentItem.ENDINCOME16 == null;
+                        return Current.ENDINCOME16 == null;
                     case 19: // ENDINCOME17
-                        return CurrentItem.ENDINCOME17 == null;
+                        return Current.ENDINCOME17 == null;
                     case 20: // ENDINCOME18
-                        return CurrentItem.ENDINCOME18 == null;
+                        return Current.ENDINCOME18 == null;
                     case 21: // ENDINCOME19
-                        return CurrentItem.ENDINCOME19 == null;
+                        return Current.ENDINCOME19 == null;
                     case 22: // ENDINCOME20
-                        return CurrentItem.ENDINCOME20 == null;
+                        return Current.ENDINCOME20 == null;
                     case 23: // COEFA01
-                        return CurrentItem.COEFA01 == null;
+                        return Current.COEFA01 == null;
                     case 24: // COEFA02
-                        return CurrentItem.COEFA02 == null;
+                        return Current.COEFA02 == null;
                     case 25: // COEFA03
-                        return CurrentItem.COEFA03 == null;
+                        return Current.COEFA03 == null;
                     case 26: // COEFA04
-                        return CurrentItem.COEFA04 == null;
+                        return Current.COEFA04 == null;
                     case 27: // COEFA05
-                        return CurrentItem.COEFA05 == null;
+                        return Current.COEFA05 == null;
                     case 28: // COEFA06
-                        return CurrentItem.COEFA06 == null;
+                        return Current.COEFA06 == null;
                     case 29: // COEFA07
-                        return CurrentItem.COEFA07 == null;
+                        return Current.COEFA07 == null;
                     case 30: // COEFA08
-                        return CurrentItem.COEFA08 == null;
+                        return Current.COEFA08 == null;
                     case 31: // COEFA09
-                        return CurrentItem.COEFA09 == null;
+                        return Current.COEFA09 == null;
                     case 32: // COEFA10
-                        return CurrentItem.COEFA10 == null;
+                        return Current.COEFA10 == null;
                     case 33: // COEFA11
-                        return CurrentItem.COEFA11 == null;
+                        return Current.COEFA11 == null;
                     case 34: // COEFA12
-                        return CurrentItem.COEFA12 == null;
+                        return Current.COEFA12 == null;
                     case 35: // COEFA13
-                        return CurrentItem.COEFA13 == null;
+                        return Current.COEFA13 == null;
                     case 36: // COEFA14
-                        return CurrentItem.COEFA14 == null;
+                        return Current.COEFA14 == null;
                     case 37: // COEFA15
-                        return CurrentItem.COEFA15 == null;
+                        return Current.COEFA15 == null;
                     case 38: // COEFA16
-                        return CurrentItem.COEFA16 == null;
+                        return Current.COEFA16 == null;
                     case 39: // COEFA17
-                        return CurrentItem.COEFA17 == null;
+                        return Current.COEFA17 == null;
                     case 40: // COEFA18
-                        return CurrentItem.COEFA18 == null;
+                        return Current.COEFA18 == null;
                     case 41: // COEFA19
-                        return CurrentItem.COEFA19 == null;
+                        return Current.COEFA19 == null;
                     case 42: // COEFA20
-                        return CurrentItem.COEFA20 == null;
+                        return Current.COEFA20 == null;
                     case 43: // COEFB01
-                        return CurrentItem.COEFB01 == null;
+                        return Current.COEFB01 == null;
                     case 44: // COEFB02
-                        return CurrentItem.COEFB02 == null;
+                        return Current.COEFB02 == null;
                     case 45: // COEFB03
-                        return CurrentItem.COEFB03 == null;
+                        return Current.COEFB03 == null;
                     case 46: // COEFB04
-                        return CurrentItem.COEFB04 == null;
+                        return Current.COEFB04 == null;
                     case 47: // COEFB05
-                        return CurrentItem.COEFB05 == null;
+                        return Current.COEFB05 == null;
                     case 48: // COEFB06
-                        return CurrentItem.COEFB06 == null;
+                        return Current.COEFB06 == null;
                     case 49: // COEFB07
-                        return CurrentItem.COEFB07 == null;
+                        return Current.COEFB07 == null;
                     case 50: // COEFB08
-                        return CurrentItem.COEFB08 == null;
+                        return Current.COEFB08 == null;
                     case 51: // COEFB09
-                        return CurrentItem.COEFB09 == null;
+                        return Current.COEFB09 == null;
                     case 52: // COEFB10
-                        return CurrentItem.COEFB10 == null;
+                        return Current.COEFB10 == null;
                     case 53: // COEFB11
-                        return CurrentItem.COEFB11 == null;
+                        return Current.COEFB11 == null;
                     case 54: // COEFB12
-                        return CurrentItem.COEFB12 == null;
+                        return Current.COEFB12 == null;
                     case 55: // COEFB13
-                        return CurrentItem.COEFB13 == null;
+                        return Current.COEFB13 == null;
                     case 56: // COEFB14
-                        return CurrentItem.COEFB14 == null;
+                        return Current.COEFB14 == null;
                     case 57: // COEFB15
-                        return CurrentItem.COEFB15 == null;
+                        return Current.COEFB15 == null;
                     case 58: // COEFB16
-                        return CurrentItem.COEFB16 == null;
+                        return Current.COEFB16 == null;
                     case 59: // COEFB17
-                        return CurrentItem.COEFB17 == null;
+                        return Current.COEFB17 == null;
                     case 60: // COEFB18
-                        return CurrentItem.COEFB18 == null;
+                        return Current.COEFB18 == null;
                     case 61: // COEFB19
-                        return CurrentItem.COEFB19 == null;
+                        return Current.COEFB19 == null;
                     case 62: // COEFB20
-                        return CurrentItem.COEFB20 == null;
+                        return Current.COEFB20 == null;
                     case 63: // TRANSDATE
-                        return CurrentItem.TRANSDATE == null;
+                        return Current.TRANSDATE == null;
                     case 64: // HECS
-                        return CurrentItem.HECS == null;
+                        return Current.HECS == null;
                     case 65: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 66: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 67: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -903,7 +967,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1046,35 +1110,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

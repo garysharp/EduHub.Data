@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCSFAGDataSet : EduHubDataSet<SCSFAG>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SCSFAG"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SCSFAGDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCSFAG" /> fields for each CSV column header</returns>
-        protected override Action<SCSFAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SCSFAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCSFAG, string>[Headers.Count];
 
@@ -181,34 +184,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SCSFAG" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SCSFAG" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SCSFAG" /> items to added or update the base <see cref="SCSFAG" /> items</param>
-        /// <returns>A merged list of <see cref="SCSFAG" /> items</returns>
-        protected override List<SCSFAG> ApplyDeltaItems(List<SCSFAG> Items, List<SCSFAG> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SCSFAG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SCSFAG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SCSFAG}"/> of entities</returns>
+        internal override IEnumerable<SCSFAG> ApplyDeltaEntities(IEnumerable<SCSFAG> Entities, List<SCSFAG> DeltaEntities)
         {
-            Dictionary<Tuple<string, string, int?, string, string>, int> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = Items.ToIndexDictionary(i => Tuple.Create(i.SCSFKEY, i.YEAR_SEMESTER, i.ST_CAMPUS, i.ST_YEAR_LEVEL, i.ST_CATEGORY));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, string, int?, string, string>> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = new HashSet<Tuple<string, string, int?, string, string>>(DeltaEntities.Select(i => Tuple.Create(i.SCSFKEY, i.YEAR_SEMESTER, i.ST_CAMPUS, i.ST_YEAR_LEVEL, i.ST_CATEGORY)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SCSFAG deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SCSFKEY;
+                        bool yieldEntity = false;
 
-                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.TryGetValue(Tuple.Create(deltaItem.SCSFKEY, deltaItem.YEAR_SEMESTER, deltaItem.ST_CAMPUS, deltaItem.ST_YEAR_LEVEL, deltaItem.ST_CATEGORY), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Remove(Tuple.Create(entity.SCSFKEY, entity.YEAR_SEMESTER, entity.ST_CAMPUS, entity.ST_YEAR_LEVEL, entity.ST_CATEGORY));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.SCSFKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SCSFKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -407,11 +434,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SCSFAG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SCSFAG table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SCSFAG](
         [TID] int IDENTITY NOT NULL,
@@ -478,258 +509,373 @@ BEGIN
     (
             [ST_YEAR_LEVEL] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY')
+    ALTER INDEX [Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY] ON [dbo].[SCSFAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SCSFAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SCSFAG] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY')
+    ALTER INDEX [Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY] ON [dbo].[SCSFAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SCSFAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCSFAG]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SCSFAG] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SCSFAG"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SCSFAG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SCSFAG> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, string, int?, string, string>> Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY = new List<Tuple<string, string, int?, string, string>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Add(Tuple.Create(entity.SCSFKEY, entity.YEAR_SEMESTER, entity.ST_CAMPUS, entity.ST_YEAR_LEVEL, entity.ST_CATEGORY));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SCSFAG] WHERE");
+
+
+            // Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY
+            builder.Append("(");
+            for (int index = 0; index < Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // SCSFKEY
+                var parameterSCSFKEY = $"@p{parameterIndex++}";
+                builder.Append("([SCSFKEY]=").Append(parameterSCSFKEY);
+                command.Parameters.Add(parameterSCSFKEY, SqlDbType.VarChar, 5).Value = Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item1;
+
+                // YEAR_SEMESTER
+                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item2 == null)
+                {
+                    builder.Append(" AND [YEAR_SEMESTER] IS NULL");
+                }
+                else
+                {
+                    var parameterYEAR_SEMESTER = $"@p{parameterIndex++}";
+                    builder.Append(" AND [YEAR_SEMESTER]=").Append(parameterYEAR_SEMESTER);
+                    command.Parameters.Add(parameterYEAR_SEMESTER, SqlDbType.VarChar, 6).Value = Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item2;
+                }
+
+                // ST_CAMPUS
+                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item3 == null)
+                {
+                    builder.Append(" AND [ST_CAMPUS] IS NULL");
+                }
+                else
+                {
+                    var parameterST_CAMPUS = $"@p{parameterIndex++}";
+                    builder.Append(" AND [ST_CAMPUS]=").Append(parameterST_CAMPUS);
+                    command.Parameters.Add(parameterST_CAMPUS, SqlDbType.Int).Value = Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item3;
+                }
+
+                // ST_YEAR_LEVEL
+                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item4 == null)
+                {
+                    builder.Append(" AND [ST_YEAR_LEVEL] IS NULL");
+                }
+                else
+                {
+                    var parameterST_YEAR_LEVEL = $"@p{parameterIndex++}";
+                    builder.Append(" AND [ST_YEAR_LEVEL]=").Append(parameterST_YEAR_LEVEL);
+                    command.Parameters.Add(parameterST_YEAR_LEVEL, SqlDbType.VarChar, 4).Value = Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item4;
+                }
+
+                // ST_CATEGORY
+                if (Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item5 == null)
+                {
+                    builder.Append(" AND [ST_CATEGORY] IS NULL)");
+                }
+                else
+                {
+                    var parameterST_CATEGORY = $"@p{parameterIndex++}";
+                    builder.Append(" AND [ST_CATEGORY]=").Append(parameterST_CATEGORY).Append(")");
+                    command.Parameters.Add(parameterST_CATEGORY, SqlDbType.VarChar, 2).Value = Index_SCSFKEY_YEAR_SEMESTER_ST_CAMPUS_ST_YEAR_LEVEL_ST_CATEGORY[index].Item5;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SCSFAG data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SCSFAG data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SCSFAG> GetDataSetDataReader()
         {
-            return new SCSFAGDataReader(Items.Value);
+            return new SCSFAGDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCSFAG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCSFAG data set</returns>
+        public override EduHubDataSetDataReader<SCSFAG> GetDataSetDataReader(List<SCSFAG> Entities)
+        {
+            return new SCSFAGDataReader(new EduHubDataSetLoadedReader<SCSFAG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SCSFAGDataReader : IDataReader, IDataRecord
+        private class SCSFAGDataReader : EduHubDataSetDataReader<SCSFAG>
         {
-            private List<SCSFAG> Items;
-            private int CurrentIndex;
-            private SCSFAG CurrentItem;
-
-            public SCSFAGDataReader(List<SCSFAG> Items)
+            public SCSFAGDataReader(IEduHubDataSetReader<SCSFAG> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 44; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 44; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // SCSFKEY
-                        return CurrentItem.SCSFKEY;
+                        return Current.SCSFKEY;
                     case 2: // YEAR_SEMESTER
-                        return CurrentItem.YEAR_SEMESTER;
+                        return Current.YEAR_SEMESTER;
                     case 3: // ST_CAMPUS
-                        return CurrentItem.ST_CAMPUS;
+                        return Current.ST_CAMPUS;
                     case 4: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL;
+                        return Current.ST_YEAR_LEVEL;
                     case 5: // ST_CATEGORY
-                        return CurrentItem.ST_CATEGORY;
+                        return Current.ST_CATEGORY;
                     case 6: // TOTAL_IN_GROUP
-                        return CurrentItem.TOTAL_IN_GROUP;
+                        return Current.TOTAL_IN_GROUP;
                     case 7: // NUMBER_AT01
-                        return CurrentItem.NUMBER_AT01;
+                        return Current.NUMBER_AT01;
                     case 8: // NUMBER_AT02
-                        return CurrentItem.NUMBER_AT02;
+                        return Current.NUMBER_AT02;
                     case 9: // NUMBER_AT03
-                        return CurrentItem.NUMBER_AT03;
+                        return Current.NUMBER_AT03;
                     case 10: // NUMBER_AT04
-                        return CurrentItem.NUMBER_AT04;
+                        return Current.NUMBER_AT04;
                     case 11: // NUMBER_AT05
-                        return CurrentItem.NUMBER_AT05;
+                        return Current.NUMBER_AT05;
                     case 12: // NUMBER_AT06
-                        return CurrentItem.NUMBER_AT06;
+                        return Current.NUMBER_AT06;
                     case 13: // NUMBER_AT07
-                        return CurrentItem.NUMBER_AT07;
+                        return Current.NUMBER_AT07;
                     case 14: // NUMBER_AT08
-                        return CurrentItem.NUMBER_AT08;
+                        return Current.NUMBER_AT08;
                     case 15: // NUMBER_AT09
-                        return CurrentItem.NUMBER_AT09;
+                        return Current.NUMBER_AT09;
                     case 16: // NUMBER_AT10
-                        return CurrentItem.NUMBER_AT10;
+                        return Current.NUMBER_AT10;
                     case 17: // NUMBER_AT11
-                        return CurrentItem.NUMBER_AT11;
+                        return Current.NUMBER_AT11;
                     case 18: // NUMBER_AT12
-                        return CurrentItem.NUMBER_AT12;
+                        return Current.NUMBER_AT12;
                     case 19: // NUMBER_AT13
-                        return CurrentItem.NUMBER_AT13;
+                        return Current.NUMBER_AT13;
                     case 20: // NUMBER_AT14
-                        return CurrentItem.NUMBER_AT14;
+                        return Current.NUMBER_AT14;
                     case 21: // NUMBER_AT15
-                        return CurrentItem.NUMBER_AT15;
+                        return Current.NUMBER_AT15;
                     case 22: // NUMBER_AT16
-                        return CurrentItem.NUMBER_AT16;
+                        return Current.NUMBER_AT16;
                     case 23: // NUMBER_AT17
-                        return CurrentItem.NUMBER_AT17;
+                        return Current.NUMBER_AT17;
                     case 24: // NUMBER_AT18
-                        return CurrentItem.NUMBER_AT18;
+                        return Current.NUMBER_AT18;
                     case 25: // NUMBER_AT19
-                        return CurrentItem.NUMBER_AT19;
+                        return Current.NUMBER_AT19;
                     case 26: // NUMBER_AT20
-                        return CurrentItem.NUMBER_AT20;
+                        return Current.NUMBER_AT20;
                     case 27: // NUMBER_AT21
-                        return CurrentItem.NUMBER_AT21;
+                        return Current.NUMBER_AT21;
                     case 28: // NUMBER_AT22
-                        return CurrentItem.NUMBER_AT22;
+                        return Current.NUMBER_AT22;
                     case 29: // NUMBER_AT23
-                        return CurrentItem.NUMBER_AT23;
+                        return Current.NUMBER_AT23;
                     case 30: // NUMBER_AT24
-                        return CurrentItem.NUMBER_AT24;
+                        return Current.NUMBER_AT24;
                     case 31: // NUMBER_AT25
-                        return CurrentItem.NUMBER_AT25;
+                        return Current.NUMBER_AT25;
                     case 32: // NUMBER_AT26
-                        return CurrentItem.NUMBER_AT26;
+                        return Current.NUMBER_AT26;
                     case 33: // NUMBER_AT27
-                        return CurrentItem.NUMBER_AT27;
+                        return Current.NUMBER_AT27;
                     case 34: // NUMBER_AT28
-                        return CurrentItem.NUMBER_AT28;
+                        return Current.NUMBER_AT28;
                     case 35: // SCHOOL_MEAN
-                        return CurrentItem.SCHOOL_MEAN;
+                        return Current.SCHOOL_MEAN;
                     case 36: // SCHOOL_MIN
-                        return CurrentItem.SCHOOL_MIN;
+                        return Current.SCHOOL_MIN;
                     case 37: // SCHOOL_MAX
-                        return CurrentItem.SCHOOL_MAX;
+                        return Current.SCHOOL_MAX;
                     case 38: // SCHOOL_15TH
-                        return CurrentItem.SCHOOL_15TH;
+                        return Current.SCHOOL_15TH;
                     case 39: // SCHOOL_25TH
-                        return CurrentItem.SCHOOL_25TH;
+                        return Current.SCHOOL_25TH;
                     case 40: // SCHOOL_75TH
-                        return CurrentItem.SCHOOL_75TH;
+                        return Current.SCHOOL_75TH;
                     case 41: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 42: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 43: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // YEAR_SEMESTER
-                        return CurrentItem.YEAR_SEMESTER == null;
+                        return Current.YEAR_SEMESTER == null;
                     case 3: // ST_CAMPUS
-                        return CurrentItem.ST_CAMPUS == null;
+                        return Current.ST_CAMPUS == null;
                     case 4: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL == null;
+                        return Current.ST_YEAR_LEVEL == null;
                     case 5: // ST_CATEGORY
-                        return CurrentItem.ST_CATEGORY == null;
+                        return Current.ST_CATEGORY == null;
                     case 6: // TOTAL_IN_GROUP
-                        return CurrentItem.TOTAL_IN_GROUP == null;
+                        return Current.TOTAL_IN_GROUP == null;
                     case 7: // NUMBER_AT01
-                        return CurrentItem.NUMBER_AT01 == null;
+                        return Current.NUMBER_AT01 == null;
                     case 8: // NUMBER_AT02
-                        return CurrentItem.NUMBER_AT02 == null;
+                        return Current.NUMBER_AT02 == null;
                     case 9: // NUMBER_AT03
-                        return CurrentItem.NUMBER_AT03 == null;
+                        return Current.NUMBER_AT03 == null;
                     case 10: // NUMBER_AT04
-                        return CurrentItem.NUMBER_AT04 == null;
+                        return Current.NUMBER_AT04 == null;
                     case 11: // NUMBER_AT05
-                        return CurrentItem.NUMBER_AT05 == null;
+                        return Current.NUMBER_AT05 == null;
                     case 12: // NUMBER_AT06
-                        return CurrentItem.NUMBER_AT06 == null;
+                        return Current.NUMBER_AT06 == null;
                     case 13: // NUMBER_AT07
-                        return CurrentItem.NUMBER_AT07 == null;
+                        return Current.NUMBER_AT07 == null;
                     case 14: // NUMBER_AT08
-                        return CurrentItem.NUMBER_AT08 == null;
+                        return Current.NUMBER_AT08 == null;
                     case 15: // NUMBER_AT09
-                        return CurrentItem.NUMBER_AT09 == null;
+                        return Current.NUMBER_AT09 == null;
                     case 16: // NUMBER_AT10
-                        return CurrentItem.NUMBER_AT10 == null;
+                        return Current.NUMBER_AT10 == null;
                     case 17: // NUMBER_AT11
-                        return CurrentItem.NUMBER_AT11 == null;
+                        return Current.NUMBER_AT11 == null;
                     case 18: // NUMBER_AT12
-                        return CurrentItem.NUMBER_AT12 == null;
+                        return Current.NUMBER_AT12 == null;
                     case 19: // NUMBER_AT13
-                        return CurrentItem.NUMBER_AT13 == null;
+                        return Current.NUMBER_AT13 == null;
                     case 20: // NUMBER_AT14
-                        return CurrentItem.NUMBER_AT14 == null;
+                        return Current.NUMBER_AT14 == null;
                     case 21: // NUMBER_AT15
-                        return CurrentItem.NUMBER_AT15 == null;
+                        return Current.NUMBER_AT15 == null;
                     case 22: // NUMBER_AT16
-                        return CurrentItem.NUMBER_AT16 == null;
+                        return Current.NUMBER_AT16 == null;
                     case 23: // NUMBER_AT17
-                        return CurrentItem.NUMBER_AT17 == null;
+                        return Current.NUMBER_AT17 == null;
                     case 24: // NUMBER_AT18
-                        return CurrentItem.NUMBER_AT18 == null;
+                        return Current.NUMBER_AT18 == null;
                     case 25: // NUMBER_AT19
-                        return CurrentItem.NUMBER_AT19 == null;
+                        return Current.NUMBER_AT19 == null;
                     case 26: // NUMBER_AT20
-                        return CurrentItem.NUMBER_AT20 == null;
+                        return Current.NUMBER_AT20 == null;
                     case 27: // NUMBER_AT21
-                        return CurrentItem.NUMBER_AT21 == null;
+                        return Current.NUMBER_AT21 == null;
                     case 28: // NUMBER_AT22
-                        return CurrentItem.NUMBER_AT22 == null;
+                        return Current.NUMBER_AT22 == null;
                     case 29: // NUMBER_AT23
-                        return CurrentItem.NUMBER_AT23 == null;
+                        return Current.NUMBER_AT23 == null;
                     case 30: // NUMBER_AT24
-                        return CurrentItem.NUMBER_AT24 == null;
+                        return Current.NUMBER_AT24 == null;
                     case 31: // NUMBER_AT25
-                        return CurrentItem.NUMBER_AT25 == null;
+                        return Current.NUMBER_AT25 == null;
                     case 32: // NUMBER_AT26
-                        return CurrentItem.NUMBER_AT26 == null;
+                        return Current.NUMBER_AT26 == null;
                     case 33: // NUMBER_AT27
-                        return CurrentItem.NUMBER_AT27 == null;
+                        return Current.NUMBER_AT27 == null;
                     case 34: // NUMBER_AT28
-                        return CurrentItem.NUMBER_AT28 == null;
+                        return Current.NUMBER_AT28 == null;
                     case 35: // SCHOOL_MEAN
-                        return CurrentItem.SCHOOL_MEAN == null;
+                        return Current.SCHOOL_MEAN == null;
                     case 36: // SCHOOL_MIN
-                        return CurrentItem.SCHOOL_MIN == null;
+                        return Current.SCHOOL_MIN == null;
                     case 37: // SCHOOL_MAX
-                        return CurrentItem.SCHOOL_MAX == null;
+                        return Current.SCHOOL_MAX == null;
                     case 38: // SCHOOL_15TH
-                        return CurrentItem.SCHOOL_15TH == null;
+                        return Current.SCHOOL_15TH == null;
                     case 39: // SCHOOL_25TH
-                        return CurrentItem.SCHOOL_25TH == null;
+                        return Current.SCHOOL_25TH == null;
                     case 40: // SCHOOL_75TH
-                        return CurrentItem.SCHOOL_75TH == null;
+                        return Current.SCHOOL_75TH == null;
                     case 41: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 42: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 43: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -826,7 +972,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -921,35 +1067,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

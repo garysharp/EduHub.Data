@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PEDataSet : EduHubDataSet<PE>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PE"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PEDataSet(EduHubContext Context)
             : base(Context)
@@ -36,7 +39,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PE" /> fields for each CSV column header</returns>
-        protected override Action<PE, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PE, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PE, string>[Headers.Count];
 
@@ -453,29 +456,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PE" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PE" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PE" /> items to added or update the base <see cref="PE" /> items</param>
-        /// <returns>A merged list of <see cref="PE" /> items</returns>
-        protected override List<PE> ApplyDeltaItems(List<PE> Items, List<PE> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PE" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PE" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PE}"/> of entities</returns>
+        internal override IEnumerable<PE> ApplyDeltaEntities(IEnumerable<PE> Entities, List<PE> DeltaEntities)
         {
-            Dictionary<string, int> Index_PEKEY = Items.ToIndexDictionary(i => i.PEKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_PEKEY = new HashSet<string>(DeltaEntities.Select(i => i.PEKEY));
 
-            foreach (PE deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_PEKEY.TryGetValue(deltaItem.PEKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PEKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_PEKEY.Remove(entity.PEKEY);
+                            
+                            if (entity.PEKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PEKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -877,11 +906,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PE table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PE table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PE](
         [PEKEY] varchar(10) NOT NULL,
@@ -1053,616 +1086,687 @@ BEGIN
     (
             [TAXCODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_DEPARTMENT')
+    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_HOMEKEY')
+    ALTER INDEX [Index_HOMEKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVE_GROUP')
+    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVEKEY')
+    ALTER INDEX [Index_LEAVEKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_MAILKEY')
+    ALTER INDEX [Index_MAILKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_PAYCODE')
+    ALTER INDEX [Index_PAYCODE] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_TAXCODE')
+    ALTER INDEX [Index_TAXCODE] ON [dbo].[PE] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_DEPARTMENT')
+    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_HOMEKEY')
+    ALTER INDEX [Index_HOMEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVE_GROUP')
+    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVEKEY')
+    ALTER INDEX [Index_LEAVEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_MAILKEY')
+    ALTER INDEX [Index_MAILKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_PAYCODE')
+    ALTER INDEX [Index_PAYCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_TAXCODE')
+    ALTER INDEX [Index_TAXCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PE"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PE"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PE> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_PEKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PEKEY.Add(entity.PEKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PE] WHERE");
+
+
+            // Index_PEKEY
+            builder.Append("[PEKEY] IN (");
+            for (int index = 0; index < Index_PEKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PEKEY
+                var parameterPEKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPEKEY);
+                command.Parameters.Add(parameterPEKEY, SqlDbType.VarChar, 10).Value = Index_PEKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PE data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PE data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PE> GetDataSetDataReader()
         {
-            return new PEDataReader(Items.Value);
+            return new PEDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PE data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PE data set</returns>
+        public override EduHubDataSetDataReader<PE> GetDataSetDataReader(List<PE> Entities)
+        {
+            return new PEDataReader(new EduHubDataSetLoadedReader<PE>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PEDataReader : IDataReader, IDataRecord
+        private class PEDataReader : EduHubDataSetDataReader<PE>
         {
-            private List<PE> Items;
-            private int CurrentIndex;
-            private PE CurrentItem;
-
-            public PEDataReader(List<PE> Items)
+            public PEDataReader(IEduHubDataSetReader<PE> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 133; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 133; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PEKEY
-                        return CurrentItem.PEKEY;
+                        return Current.PEKEY;
                     case 1: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 2: // SURNAME
-                        return CurrentItem.SURNAME;
+                        return Current.SURNAME;
                     case 3: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME;
+                        return Current.FIRST_NAME;
                     case 4: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME;
+                        return Current.SECOND_NAME;
                     case 5: // PREF_NAME
-                        return CurrentItem.PREF_NAME;
+                        return Current.PREF_NAME;
                     case 6: // PREVIOUS_NAME
-                        return CurrentItem.PREVIOUS_NAME;
+                        return Current.PREVIOUS_NAME;
                     case 7: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE;
+                        return Current.BIRTHDATE;
                     case 8: // GENDER
-                        return CurrentItem.GENDER;
+                        return Current.GENDER;
                     case 9: // HOMEADD01
-                        return CurrentItem.HOMEADD01;
+                        return Current.HOMEADD01;
                     case 10: // HOMEADD02
-                        return CurrentItem.HOMEADD02;
+                        return Current.HOMEADD02;
                     case 11: // HOMESUBURB
-                        return CurrentItem.HOMESUBURB;
+                        return Current.HOMESUBURB;
                     case 12: // HOMESTATE
-                        return CurrentItem.HOMESTATE;
+                        return Current.HOMESTATE;
                     case 13: // HOMEPOST
-                        return CurrentItem.HOMEPOST;
+                        return Current.HOMEPOST;
                     case 14: // COUNTRY
-                        return CurrentItem.COUNTRY;
+                        return Current.COUNTRY;
                     case 15: // HOMEPHONE
-                        return CurrentItem.HOMEPHONE;
+                        return Current.HOMEPHONE;
                     case 16: // BUS_PHONE
-                        return CurrentItem.BUS_PHONE;
+                        return Current.BUS_PHONE;
                     case 17: // PHONE_EXT
-                        return CurrentItem.PHONE_EXT;
+                        return Current.PHONE_EXT;
                     case 18: // FAX
-                        return CurrentItem.FAX;
+                        return Current.FAX;
                     case 19: // MOBILE
-                        return CurrentItem.MOBILE;
+                        return Current.MOBILE;
                     case 20: // EMAIL
-                        return CurrentItem.EMAIL;
+                        return Current.EMAIL;
                     case 21: // DRIVERS_LIC_NO
-                        return CurrentItem.DRIVERS_LIC_NO;
+                        return Current.DRIVERS_LIC_NO;
                     case 22: // OWN_VEHICLE
-                        return CurrentItem.OWN_VEHICLE;
+                        return Current.OWN_VEHICLE;
                     case 23: // COMMENTS
-                        return CurrentItem.COMMENTS;
+                        return Current.COMMENTS;
                     case 24: // HOMEKEY
-                        return CurrentItem.HOMEKEY;
+                        return Current.HOMEKEY;
                     case 25: // MAILKEY
-                        return CurrentItem.MAILKEY;
+                        return Current.MAILKEY;
                     case 26: // LEAVEKEY
-                        return CurrentItem.LEAVEKEY;
+                        return Current.LEAVEKEY;
                     case 27: // PAYCODE
-                        return CurrentItem.PAYCODE;
+                        return Current.PAYCODE;
                     case 28: // TAXCODE
-                        return CurrentItem.TAXCODE;
+                        return Current.TAXCODE;
                     case 29: // DEPARTMENT
-                        return CurrentItem.DEPARTMENT;
+                        return Current.DEPARTMENT;
                     case 30: // PENUMBER
-                        return CurrentItem.PENUMBER;
+                        return Current.PENUMBER;
                     case 31: // TAXFILENUM
-                        return CurrentItem.TAXFILENUM;
+                        return Current.TAXFILENUM;
                     case 32: // EMPLOY_TYPE
-                        return CurrentItem.EMPLOY_TYPE;
+                        return Current.EMPLOY_TYPE;
                     case 33: // NORMAL_HOURS
-                        return CurrentItem.NORMAL_HOURS;
+                        return Current.NORMAL_HOURS;
                     case 34: // FTE_VALUE
-                        return CurrentItem.FTE_VALUE;
+                        return Current.FTE_VALUE;
                     case 35: // ANNUAL_SALARY
-                        return CurrentItem.ANNUAL_SALARY;
+                        return Current.ANNUAL_SALARY;
                     case 36: // STD_HOURS
-                        return CurrentItem.STD_HOURS;
+                        return Current.STD_HOURS;
                     case 37: // UNION_NAME
-                        return CurrentItem.UNION_NAME;
+                        return Current.UNION_NAME;
                     case 38: // LEAVE_GROUP
-                        return CurrentItem.LEAVE_GROUP;
+                        return Current.LEAVE_GROUP;
                     case 39: // PAY_TYPE
-                        return CurrentItem.PAY_TYPE;
+                        return Current.PAY_TYPE;
                     case 40: // HOURLY_RATE
-                        return CurrentItem.HOURLY_RATE;
+                        return Current.HOURLY_RATE;
                     case 41: // SIX_SUPER_FUND
-                        return CurrentItem.SIX_SUPER_FUND;
+                        return Current.SIX_SUPER_FUND;
                     case 42: // SIX_MEMBER_NO
-                        return CurrentItem.SIX_MEMBER_NO;
+                        return Current.SIX_MEMBER_NO;
                     case 43: // SUPER_LEVY
-                        return CurrentItem.SUPER_LEVY;
+                        return Current.SUPER_LEVY;
                     case 44: // ZONE
-                        return CurrentItem.ZONE;
+                        return Current.ZONE;
                     case 45: // ZONE_CODE
-                        return CurrentItem.ZONE_CODE;
+                        return Current.ZONE_CODE;
                     case 46: // ZONE_ALLOW
-                        return CurrentItem.ZONE_ALLOW;
+                        return Current.ZONE_ALLOW;
                     case 47: // NO_DEPEND
-                        return CurrentItem.NO_DEPEND;
+                        return Current.NO_DEPEND;
                     case 48: // ALLOWANCES
-                        return CurrentItem.ALLOWANCES;
+                        return Current.ALLOWANCES;
                     case 49: // DEP_REBATE
-                        return CurrentItem.DEP_REBATE;
+                        return Current.DEP_REBATE;
                     case 50: // MEDICARE
-                        return CurrentItem.MEDICARE;
+                        return Current.MEDICARE;
                     case 51: // MEDICARE_Q9NOTQ12z
-                        return CurrentItem.MEDICARE_Q9NOTQ12z;
+                        return Current.MEDICARE_Q9NOTQ12z;
                     case 52: // MEDICARE_Q09A
-                        return CurrentItem.MEDICARE_Q09A;
+                        return Current.MEDICARE_Q09A;
                     case 53: // MEDICARE_Q10A
-                        return CurrentItem.MEDICARE_Q10A;
+                        return Current.MEDICARE_Q10A;
                     case 54: // MEDICARE_Q11A
-                        return CurrentItem.MEDICARE_Q11A;
+                        return Current.MEDICARE_Q11A;
                     case 55: // MEDICARE_Q12A
-                        return CurrentItem.MEDICARE_Q12A;
+                        return Current.MEDICARE_Q12A;
                     case 56: // STARTDATE
-                        return CurrentItem.STARTDATE;
+                        return Current.STARTDATE;
                     case 57: // TERMDATE
-                        return CurrentItem.TERMDATE;
+                        return Current.TERMDATE;
                     case 58: // SALREVDATE
-                        return CurrentItem.SALREVDATE;
+                        return Current.SALREVDATE;
                     case 59: // SUSPEND_DATE
-                        return CurrentItem.SUSPEND_DATE;
+                        return Current.SUSPEND_DATE;
                     case 60: // LASTPAYPERD
-                        return CurrentItem.LASTPAYPERD;
+                        return Current.LASTPAYPERD;
                     case 61: // NEXTPAYPERD
-                        return CurrentItem.NEXTPAYPERD;
+                        return Current.NEXTPAYPERD;
                     case 62: // LASTPAYDATE
-                        return CurrentItem.LASTPAYDATE;
+                        return Current.LASTPAYDATE;
                     case 63: // LASTPAYRATE
-                        return CurrentItem.LASTPAYRATE;
+                        return Current.LASTPAYRATE;
                     case 64: // LASTNORMITEM
-                        return CurrentItem.LASTNORMITEM;
+                        return Current.LASTNORMITEM;
                     case 65: // LASTPAYGROSS
-                        return CurrentItem.LASTPAYGROSS;
+                        return Current.LASTPAYGROSS;
                     case 66: // LASTPAYNETT
-                        return CurrentItem.LASTPAYNETT;
+                        return Current.LASTPAYNETT;
                     case 67: // LASTPAYTAX
-                        return CurrentItem.LASTPAYTAX;
+                        return Current.LASTPAYTAX;
                     case 68: // GROSS01
-                        return CurrentItem.GROSS01;
+                        return Current.GROSS01;
                     case 69: // GROSS02
-                        return CurrentItem.GROSS02;
+                        return Current.GROSS02;
                     case 70: // GROSS03
-                        return CurrentItem.GROSS03;
+                        return Current.GROSS03;
                     case 71: // GROSS04
-                        return CurrentItem.GROSS04;
+                        return Current.GROSS04;
                     case 72: // GROSS05
-                        return CurrentItem.GROSS05;
+                        return Current.GROSS05;
                     case 73: // GROSS06
-                        return CurrentItem.GROSS06;
+                        return Current.GROSS06;
                     case 74: // GROSS07
-                        return CurrentItem.GROSS07;
+                        return Current.GROSS07;
                     case 75: // GROSS08
-                        return CurrentItem.GROSS08;
+                        return Current.GROSS08;
                     case 76: // GROSS09
-                        return CurrentItem.GROSS09;
+                        return Current.GROSS09;
                     case 77: // GROSS10
-                        return CurrentItem.GROSS10;
+                        return Current.GROSS10;
                     case 78: // GROSS11
-                        return CurrentItem.GROSS11;
+                        return Current.GROSS11;
                     case 79: // GROSS12
-                        return CurrentItem.GROSS12;
+                        return Current.GROSS12;
                     case 80: // NETT01
-                        return CurrentItem.NETT01;
+                        return Current.NETT01;
                     case 81: // NETT02
-                        return CurrentItem.NETT02;
+                        return Current.NETT02;
                     case 82: // NETT03
-                        return CurrentItem.NETT03;
+                        return Current.NETT03;
                     case 83: // NETT04
-                        return CurrentItem.NETT04;
+                        return Current.NETT04;
                     case 84: // NETT05
-                        return CurrentItem.NETT05;
+                        return Current.NETT05;
                     case 85: // NETT06
-                        return CurrentItem.NETT06;
+                        return Current.NETT06;
                     case 86: // NETT07
-                        return CurrentItem.NETT07;
+                        return Current.NETT07;
                     case 87: // NETT08
-                        return CurrentItem.NETT08;
+                        return Current.NETT08;
                     case 88: // NETT09
-                        return CurrentItem.NETT09;
+                        return Current.NETT09;
                     case 89: // NETT10
-                        return CurrentItem.NETT10;
+                        return Current.NETT10;
                     case 90: // NETT11
-                        return CurrentItem.NETT11;
+                        return Current.NETT11;
                     case 91: // NETT12
-                        return CurrentItem.NETT12;
+                        return Current.NETT12;
                     case 92: // TAX01
-                        return CurrentItem.TAX01;
+                        return Current.TAX01;
                     case 93: // TAX02
-                        return CurrentItem.TAX02;
+                        return Current.TAX02;
                     case 94: // TAX03
-                        return CurrentItem.TAX03;
+                        return Current.TAX03;
                     case 95: // TAX04
-                        return CurrentItem.TAX04;
+                        return Current.TAX04;
                     case 96: // TAX05
-                        return CurrentItem.TAX05;
+                        return Current.TAX05;
                     case 97: // TAX06
-                        return CurrentItem.TAX06;
+                        return Current.TAX06;
                     case 98: // TAX07
-                        return CurrentItem.TAX07;
+                        return Current.TAX07;
                     case 99: // TAX08
-                        return CurrentItem.TAX08;
+                        return Current.TAX08;
                     case 100: // TAX09
-                        return CurrentItem.TAX09;
+                        return Current.TAX09;
                     case 101: // TAX10
-                        return CurrentItem.TAX10;
+                        return Current.TAX10;
                     case 102: // TAX11
-                        return CurrentItem.TAX11;
+                        return Current.TAX11;
                     case 103: // TAX12
-                        return CurrentItem.TAX12;
+                        return Current.TAX12;
                     case 104: // PAYG_SUMMARY
-                        return CurrentItem.PAYG_SUMMARY;
+                        return Current.PAYG_SUMMARY;
                     case 105: // YEAR_LEVEL
-                        return CurrentItem.YEAR_LEVEL;
+                        return Current.YEAR_LEVEL;
                     case 106: // REPORTABLE_FB
-                        return CurrentItem.REPORTABLE_FB;
+                        return Current.REPORTABLE_FB;
                     case 107: // EMPLOYEE_PIC
-                        return CurrentItem.EMPLOYEE_PIC;
+                        return Current.EMPLOYEE_PIC;
                     case 108: // VIT_REGISTRATION
-                        return CurrentItem.VIT_REGISTRATION;
+                        return Current.VIT_REGISTRATION;
                     case 109: // VIT_EXPIRY
-                        return CurrentItem.VIT_EXPIRY;
+                        return Current.VIT_EXPIRY;
                     case 110: // WWCC_NUMBER
-                        return CurrentItem.WWCC_NUMBER;
+                        return Current.WWCC_NUMBER;
                     case 111: // WWCC_EXPIRY
-                        return CurrentItem.WWCC_EXPIRY;
+                        return Current.WWCC_EXPIRY;
                     case 112: // WWCC_TYPE
-                        return CurrentItem.WWCC_TYPE;
+                        return Current.WWCC_TYPE;
                     case 113: // ESUPER_IGNORE_THRESHOLD
-                        return CurrentItem.ESUPER_IGNORE_THRESHOLD;
+                        return Current.ESUPER_IGNORE_THRESHOLD;
                     case 114: // ESUPER_FUND01
-                        return CurrentItem.ESUPER_FUND01;
+                        return Current.ESUPER_FUND01;
                     case 115: // ESUPER_FUND02
-                        return CurrentItem.ESUPER_FUND02;
+                        return Current.ESUPER_FUND02;
                     case 116: // ESUPER_FUND03
-                        return CurrentItem.ESUPER_FUND03;
+                        return Current.ESUPER_FUND03;
                     case 117: // ESUPER_FUND04
-                        return CurrentItem.ESUPER_FUND04;
+                        return Current.ESUPER_FUND04;
                     case 118: // ESUPER_FUND05
-                        return CurrentItem.ESUPER_FUND05;
+                        return Current.ESUPER_FUND05;
                     case 119: // ESUPER_MEMBER01
-                        return CurrentItem.ESUPER_MEMBER01;
+                        return Current.ESUPER_MEMBER01;
                     case 120: // ESUPER_MEMBER02
-                        return CurrentItem.ESUPER_MEMBER02;
+                        return Current.ESUPER_MEMBER02;
                     case 121: // ESUPER_MEMBER03
-                        return CurrentItem.ESUPER_MEMBER03;
+                        return Current.ESUPER_MEMBER03;
                     case 122: // ESUPER_MEMBER04
-                        return CurrentItem.ESUPER_MEMBER04;
+                        return Current.ESUPER_MEMBER04;
                     case 123: // ESUPER_MEMBER05
-                        return CurrentItem.ESUPER_MEMBER05;
+                        return Current.ESUPER_MEMBER05;
                     case 124: // ESUPER_PERCENT01
-                        return CurrentItem.ESUPER_PERCENT01;
+                        return Current.ESUPER_PERCENT01;
                     case 125: // ESUPER_PERCENT02
-                        return CurrentItem.ESUPER_PERCENT02;
+                        return Current.ESUPER_PERCENT02;
                     case 126: // ESUPER_PERCENT03
-                        return CurrentItem.ESUPER_PERCENT03;
+                        return Current.ESUPER_PERCENT03;
                     case 127: // ESUPER_PERCENT04
-                        return CurrentItem.ESUPER_PERCENT04;
+                        return Current.ESUPER_PERCENT04;
                     case 128: // ESUPER_PERCENT05
-                        return CurrentItem.ESUPER_PERCENT05;
+                        return Current.ESUPER_PERCENT05;
                     case 129: // LEAVE_HOURS
-                        return CurrentItem.LEAVE_HOURS;
+                        return Current.LEAVE_HOURS;
                     case 130: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 131: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 132: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 2: // SURNAME
-                        return CurrentItem.SURNAME == null;
+                        return Current.SURNAME == null;
                     case 3: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME == null;
+                        return Current.FIRST_NAME == null;
                     case 4: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME == null;
+                        return Current.SECOND_NAME == null;
                     case 5: // PREF_NAME
-                        return CurrentItem.PREF_NAME == null;
+                        return Current.PREF_NAME == null;
                     case 6: // PREVIOUS_NAME
-                        return CurrentItem.PREVIOUS_NAME == null;
+                        return Current.PREVIOUS_NAME == null;
                     case 7: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE == null;
+                        return Current.BIRTHDATE == null;
                     case 8: // GENDER
-                        return CurrentItem.GENDER == null;
+                        return Current.GENDER == null;
                     case 9: // HOMEADD01
-                        return CurrentItem.HOMEADD01 == null;
+                        return Current.HOMEADD01 == null;
                     case 10: // HOMEADD02
-                        return CurrentItem.HOMEADD02 == null;
+                        return Current.HOMEADD02 == null;
                     case 11: // HOMESUBURB
-                        return CurrentItem.HOMESUBURB == null;
+                        return Current.HOMESUBURB == null;
                     case 12: // HOMESTATE
-                        return CurrentItem.HOMESTATE == null;
+                        return Current.HOMESTATE == null;
                     case 13: // HOMEPOST
-                        return CurrentItem.HOMEPOST == null;
+                        return Current.HOMEPOST == null;
                     case 14: // COUNTRY
-                        return CurrentItem.COUNTRY == null;
+                        return Current.COUNTRY == null;
                     case 15: // HOMEPHONE
-                        return CurrentItem.HOMEPHONE == null;
+                        return Current.HOMEPHONE == null;
                     case 16: // BUS_PHONE
-                        return CurrentItem.BUS_PHONE == null;
+                        return Current.BUS_PHONE == null;
                     case 17: // PHONE_EXT
-                        return CurrentItem.PHONE_EXT == null;
+                        return Current.PHONE_EXT == null;
                     case 18: // FAX
-                        return CurrentItem.FAX == null;
+                        return Current.FAX == null;
                     case 19: // MOBILE
-                        return CurrentItem.MOBILE == null;
+                        return Current.MOBILE == null;
                     case 20: // EMAIL
-                        return CurrentItem.EMAIL == null;
+                        return Current.EMAIL == null;
                     case 21: // DRIVERS_LIC_NO
-                        return CurrentItem.DRIVERS_LIC_NO == null;
+                        return Current.DRIVERS_LIC_NO == null;
                     case 22: // OWN_VEHICLE
-                        return CurrentItem.OWN_VEHICLE == null;
+                        return Current.OWN_VEHICLE == null;
                     case 23: // COMMENTS
-                        return CurrentItem.COMMENTS == null;
+                        return Current.COMMENTS == null;
                     case 24: // HOMEKEY
-                        return CurrentItem.HOMEKEY == null;
+                        return Current.HOMEKEY == null;
                     case 25: // MAILKEY
-                        return CurrentItem.MAILKEY == null;
+                        return Current.MAILKEY == null;
                     case 26: // LEAVEKEY
-                        return CurrentItem.LEAVEKEY == null;
+                        return Current.LEAVEKEY == null;
                     case 27: // PAYCODE
-                        return CurrentItem.PAYCODE == null;
+                        return Current.PAYCODE == null;
                     case 28: // TAXCODE
-                        return CurrentItem.TAXCODE == null;
+                        return Current.TAXCODE == null;
                     case 29: // DEPARTMENT
-                        return CurrentItem.DEPARTMENT == null;
+                        return Current.DEPARTMENT == null;
                     case 30: // PENUMBER
-                        return CurrentItem.PENUMBER == null;
+                        return Current.PENUMBER == null;
                     case 31: // TAXFILENUM
-                        return CurrentItem.TAXFILENUM == null;
+                        return Current.TAXFILENUM == null;
                     case 32: // EMPLOY_TYPE
-                        return CurrentItem.EMPLOY_TYPE == null;
+                        return Current.EMPLOY_TYPE == null;
                     case 33: // NORMAL_HOURS
-                        return CurrentItem.NORMAL_HOURS == null;
+                        return Current.NORMAL_HOURS == null;
                     case 34: // FTE_VALUE
-                        return CurrentItem.FTE_VALUE == null;
+                        return Current.FTE_VALUE == null;
                     case 35: // ANNUAL_SALARY
-                        return CurrentItem.ANNUAL_SALARY == null;
+                        return Current.ANNUAL_SALARY == null;
                     case 36: // STD_HOURS
-                        return CurrentItem.STD_HOURS == null;
+                        return Current.STD_HOURS == null;
                     case 37: // UNION_NAME
-                        return CurrentItem.UNION_NAME == null;
+                        return Current.UNION_NAME == null;
                     case 38: // LEAVE_GROUP
-                        return CurrentItem.LEAVE_GROUP == null;
+                        return Current.LEAVE_GROUP == null;
                     case 39: // PAY_TYPE
-                        return CurrentItem.PAY_TYPE == null;
+                        return Current.PAY_TYPE == null;
                     case 40: // HOURLY_RATE
-                        return CurrentItem.HOURLY_RATE == null;
+                        return Current.HOURLY_RATE == null;
                     case 41: // SIX_SUPER_FUND
-                        return CurrentItem.SIX_SUPER_FUND == null;
+                        return Current.SIX_SUPER_FUND == null;
                     case 42: // SIX_MEMBER_NO
-                        return CurrentItem.SIX_MEMBER_NO == null;
+                        return Current.SIX_MEMBER_NO == null;
                     case 43: // SUPER_LEVY
-                        return CurrentItem.SUPER_LEVY == null;
+                        return Current.SUPER_LEVY == null;
                     case 44: // ZONE
-                        return CurrentItem.ZONE == null;
+                        return Current.ZONE == null;
                     case 45: // ZONE_CODE
-                        return CurrentItem.ZONE_CODE == null;
+                        return Current.ZONE_CODE == null;
                     case 46: // ZONE_ALLOW
-                        return CurrentItem.ZONE_ALLOW == null;
+                        return Current.ZONE_ALLOW == null;
                     case 47: // NO_DEPEND
-                        return CurrentItem.NO_DEPEND == null;
+                        return Current.NO_DEPEND == null;
                     case 48: // ALLOWANCES
-                        return CurrentItem.ALLOWANCES == null;
+                        return Current.ALLOWANCES == null;
                     case 49: // DEP_REBATE
-                        return CurrentItem.DEP_REBATE == null;
+                        return Current.DEP_REBATE == null;
                     case 50: // MEDICARE
-                        return CurrentItem.MEDICARE == null;
+                        return Current.MEDICARE == null;
                     case 51: // MEDICARE_Q9NOTQ12z
-                        return CurrentItem.MEDICARE_Q9NOTQ12z == null;
+                        return Current.MEDICARE_Q9NOTQ12z == null;
                     case 52: // MEDICARE_Q09A
-                        return CurrentItem.MEDICARE_Q09A == null;
+                        return Current.MEDICARE_Q09A == null;
                     case 53: // MEDICARE_Q10A
-                        return CurrentItem.MEDICARE_Q10A == null;
+                        return Current.MEDICARE_Q10A == null;
                     case 54: // MEDICARE_Q11A
-                        return CurrentItem.MEDICARE_Q11A == null;
+                        return Current.MEDICARE_Q11A == null;
                     case 55: // MEDICARE_Q12A
-                        return CurrentItem.MEDICARE_Q12A == null;
+                        return Current.MEDICARE_Q12A == null;
                     case 56: // STARTDATE
-                        return CurrentItem.STARTDATE == null;
+                        return Current.STARTDATE == null;
                     case 57: // TERMDATE
-                        return CurrentItem.TERMDATE == null;
+                        return Current.TERMDATE == null;
                     case 58: // SALREVDATE
-                        return CurrentItem.SALREVDATE == null;
+                        return Current.SALREVDATE == null;
                     case 59: // SUSPEND_DATE
-                        return CurrentItem.SUSPEND_DATE == null;
+                        return Current.SUSPEND_DATE == null;
                     case 60: // LASTPAYPERD
-                        return CurrentItem.LASTPAYPERD == null;
+                        return Current.LASTPAYPERD == null;
                     case 61: // NEXTPAYPERD
-                        return CurrentItem.NEXTPAYPERD == null;
+                        return Current.NEXTPAYPERD == null;
                     case 62: // LASTPAYDATE
-                        return CurrentItem.LASTPAYDATE == null;
+                        return Current.LASTPAYDATE == null;
                     case 63: // LASTPAYRATE
-                        return CurrentItem.LASTPAYRATE == null;
+                        return Current.LASTPAYRATE == null;
                     case 64: // LASTNORMITEM
-                        return CurrentItem.LASTNORMITEM == null;
+                        return Current.LASTNORMITEM == null;
                     case 65: // LASTPAYGROSS
-                        return CurrentItem.LASTPAYGROSS == null;
+                        return Current.LASTPAYGROSS == null;
                     case 66: // LASTPAYNETT
-                        return CurrentItem.LASTPAYNETT == null;
+                        return Current.LASTPAYNETT == null;
                     case 67: // LASTPAYTAX
-                        return CurrentItem.LASTPAYTAX == null;
+                        return Current.LASTPAYTAX == null;
                     case 68: // GROSS01
-                        return CurrentItem.GROSS01 == null;
+                        return Current.GROSS01 == null;
                     case 69: // GROSS02
-                        return CurrentItem.GROSS02 == null;
+                        return Current.GROSS02 == null;
                     case 70: // GROSS03
-                        return CurrentItem.GROSS03 == null;
+                        return Current.GROSS03 == null;
                     case 71: // GROSS04
-                        return CurrentItem.GROSS04 == null;
+                        return Current.GROSS04 == null;
                     case 72: // GROSS05
-                        return CurrentItem.GROSS05 == null;
+                        return Current.GROSS05 == null;
                     case 73: // GROSS06
-                        return CurrentItem.GROSS06 == null;
+                        return Current.GROSS06 == null;
                     case 74: // GROSS07
-                        return CurrentItem.GROSS07 == null;
+                        return Current.GROSS07 == null;
                     case 75: // GROSS08
-                        return CurrentItem.GROSS08 == null;
+                        return Current.GROSS08 == null;
                     case 76: // GROSS09
-                        return CurrentItem.GROSS09 == null;
+                        return Current.GROSS09 == null;
                     case 77: // GROSS10
-                        return CurrentItem.GROSS10 == null;
+                        return Current.GROSS10 == null;
                     case 78: // GROSS11
-                        return CurrentItem.GROSS11 == null;
+                        return Current.GROSS11 == null;
                     case 79: // GROSS12
-                        return CurrentItem.GROSS12 == null;
+                        return Current.GROSS12 == null;
                     case 80: // NETT01
-                        return CurrentItem.NETT01 == null;
+                        return Current.NETT01 == null;
                     case 81: // NETT02
-                        return CurrentItem.NETT02 == null;
+                        return Current.NETT02 == null;
                     case 82: // NETT03
-                        return CurrentItem.NETT03 == null;
+                        return Current.NETT03 == null;
                     case 83: // NETT04
-                        return CurrentItem.NETT04 == null;
+                        return Current.NETT04 == null;
                     case 84: // NETT05
-                        return CurrentItem.NETT05 == null;
+                        return Current.NETT05 == null;
                     case 85: // NETT06
-                        return CurrentItem.NETT06 == null;
+                        return Current.NETT06 == null;
                     case 86: // NETT07
-                        return CurrentItem.NETT07 == null;
+                        return Current.NETT07 == null;
                     case 87: // NETT08
-                        return CurrentItem.NETT08 == null;
+                        return Current.NETT08 == null;
                     case 88: // NETT09
-                        return CurrentItem.NETT09 == null;
+                        return Current.NETT09 == null;
                     case 89: // NETT10
-                        return CurrentItem.NETT10 == null;
+                        return Current.NETT10 == null;
                     case 90: // NETT11
-                        return CurrentItem.NETT11 == null;
+                        return Current.NETT11 == null;
                     case 91: // NETT12
-                        return CurrentItem.NETT12 == null;
+                        return Current.NETT12 == null;
                     case 92: // TAX01
-                        return CurrentItem.TAX01 == null;
+                        return Current.TAX01 == null;
                     case 93: // TAX02
-                        return CurrentItem.TAX02 == null;
+                        return Current.TAX02 == null;
                     case 94: // TAX03
-                        return CurrentItem.TAX03 == null;
+                        return Current.TAX03 == null;
                     case 95: // TAX04
-                        return CurrentItem.TAX04 == null;
+                        return Current.TAX04 == null;
                     case 96: // TAX05
-                        return CurrentItem.TAX05 == null;
+                        return Current.TAX05 == null;
                     case 97: // TAX06
-                        return CurrentItem.TAX06 == null;
+                        return Current.TAX06 == null;
                     case 98: // TAX07
-                        return CurrentItem.TAX07 == null;
+                        return Current.TAX07 == null;
                     case 99: // TAX08
-                        return CurrentItem.TAX08 == null;
+                        return Current.TAX08 == null;
                     case 100: // TAX09
-                        return CurrentItem.TAX09 == null;
+                        return Current.TAX09 == null;
                     case 101: // TAX10
-                        return CurrentItem.TAX10 == null;
+                        return Current.TAX10 == null;
                     case 102: // TAX11
-                        return CurrentItem.TAX11 == null;
+                        return Current.TAX11 == null;
                     case 103: // TAX12
-                        return CurrentItem.TAX12 == null;
+                        return Current.TAX12 == null;
                     case 104: // PAYG_SUMMARY
-                        return CurrentItem.PAYG_SUMMARY == null;
+                        return Current.PAYG_SUMMARY == null;
                     case 105: // YEAR_LEVEL
-                        return CurrentItem.YEAR_LEVEL == null;
+                        return Current.YEAR_LEVEL == null;
                     case 106: // REPORTABLE_FB
-                        return CurrentItem.REPORTABLE_FB == null;
+                        return Current.REPORTABLE_FB == null;
                     case 107: // EMPLOYEE_PIC
-                        return CurrentItem.EMPLOYEE_PIC == null;
+                        return Current.EMPLOYEE_PIC == null;
                     case 108: // VIT_REGISTRATION
-                        return CurrentItem.VIT_REGISTRATION == null;
+                        return Current.VIT_REGISTRATION == null;
                     case 109: // VIT_EXPIRY
-                        return CurrentItem.VIT_EXPIRY == null;
+                        return Current.VIT_EXPIRY == null;
                     case 110: // WWCC_NUMBER
-                        return CurrentItem.WWCC_NUMBER == null;
+                        return Current.WWCC_NUMBER == null;
                     case 111: // WWCC_EXPIRY
-                        return CurrentItem.WWCC_EXPIRY == null;
+                        return Current.WWCC_EXPIRY == null;
                     case 112: // WWCC_TYPE
-                        return CurrentItem.WWCC_TYPE == null;
+                        return Current.WWCC_TYPE == null;
                     case 113: // ESUPER_IGNORE_THRESHOLD
-                        return CurrentItem.ESUPER_IGNORE_THRESHOLD == null;
+                        return Current.ESUPER_IGNORE_THRESHOLD == null;
                     case 114: // ESUPER_FUND01
-                        return CurrentItem.ESUPER_FUND01 == null;
+                        return Current.ESUPER_FUND01 == null;
                     case 115: // ESUPER_FUND02
-                        return CurrentItem.ESUPER_FUND02 == null;
+                        return Current.ESUPER_FUND02 == null;
                     case 116: // ESUPER_FUND03
-                        return CurrentItem.ESUPER_FUND03 == null;
+                        return Current.ESUPER_FUND03 == null;
                     case 117: // ESUPER_FUND04
-                        return CurrentItem.ESUPER_FUND04 == null;
+                        return Current.ESUPER_FUND04 == null;
                     case 118: // ESUPER_FUND05
-                        return CurrentItem.ESUPER_FUND05 == null;
+                        return Current.ESUPER_FUND05 == null;
                     case 119: // ESUPER_MEMBER01
-                        return CurrentItem.ESUPER_MEMBER01 == null;
+                        return Current.ESUPER_MEMBER01 == null;
                     case 120: // ESUPER_MEMBER02
-                        return CurrentItem.ESUPER_MEMBER02 == null;
+                        return Current.ESUPER_MEMBER02 == null;
                     case 121: // ESUPER_MEMBER03
-                        return CurrentItem.ESUPER_MEMBER03 == null;
+                        return Current.ESUPER_MEMBER03 == null;
                     case 122: // ESUPER_MEMBER04
-                        return CurrentItem.ESUPER_MEMBER04 == null;
+                        return Current.ESUPER_MEMBER04 == null;
                     case 123: // ESUPER_MEMBER05
-                        return CurrentItem.ESUPER_MEMBER05 == null;
+                        return Current.ESUPER_MEMBER05 == null;
                     case 124: // ESUPER_PERCENT01
-                        return CurrentItem.ESUPER_PERCENT01 == null;
+                        return Current.ESUPER_PERCENT01 == null;
                     case 125: // ESUPER_PERCENT02
-                        return CurrentItem.ESUPER_PERCENT02 == null;
+                        return Current.ESUPER_PERCENT02 == null;
                     case 126: // ESUPER_PERCENT03
-                        return CurrentItem.ESUPER_PERCENT03 == null;
+                        return Current.ESUPER_PERCENT03 == null;
                     case 127: // ESUPER_PERCENT04
-                        return CurrentItem.ESUPER_PERCENT04 == null;
+                        return Current.ESUPER_PERCENT04 == null;
                     case 128: // ESUPER_PERCENT05
-                        return CurrentItem.ESUPER_PERCENT05 == null;
+                        return Current.ESUPER_PERCENT05 == null;
                     case 129: // LEAVE_HOURS
-                        return CurrentItem.LEAVE_HOURS == null;
+                        return Current.LEAVE_HOURS == null;
                     case 130: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 131: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 132: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1937,7 +2041,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -2210,35 +2314,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -11,6 +11,15 @@ namespace EduHub.Data.Entities
     public sealed partial class FINHIST : EduHubEntity
     {
 
+        /// <inheritdoc />
+        public override DateTime? EntityLastModified
+        {
+            get
+            {
+                return LW_DATE.Value;
+            }
+        }
+
         #region Field Properties
 
         /// <summary>

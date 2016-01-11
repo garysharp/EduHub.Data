@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TTESDataSet : EduHubDataSet<TTES>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TTES"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TTESDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TTES" /> fields for each CSV column header</returns>
-        protected override Action<TTES, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TTES, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TTES, string>[Headers.Count];
 
@@ -117,29 +120,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TTES" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TTES" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TTES" /> items to added or update the base <see cref="TTES" /> items</param>
-        /// <returns>A merged list of <see cref="TTES" /> items</returns>
-        protected override List<TTES> ApplyDeltaItems(List<TTES> Items, List<TTES> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TTES" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TTES" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TTES}"/> of entities</returns>
+        internal override IEnumerable<TTES> ApplyDeltaEntities(IEnumerable<TTES> Entities, List<TTES> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (TTES deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.GKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.GKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.GKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -283,11 +312,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TTES table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TTES table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TTES](
         [TID] int IDENTITY NOT NULL,
@@ -325,174 +358,221 @@ BEGIN
     (
             [SUBJ] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND name = N'Index_SUBJ')
+    ALTER INDEX [Index_SUBJ] ON [dbo].[TTES] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TTES] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND name = N'Index_SUBJ')
+    ALTER INDEX [Index_SUBJ] ON [dbo].[TTES] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTES]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TTES] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TTES"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TTES"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TTES> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TTES] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TTES data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TTES data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TTES> GetDataSetDataReader()
         {
-            return new TTESDataReader(Items.Value);
+            return new TTESDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TTES data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TTES data set</returns>
+        public override EduHubDataSetDataReader<TTES> GetDataSetDataReader(List<TTES> Entities)
+        {
+            return new TTESDataReader(new EduHubDataSetLoadedReader<TTES>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TTESDataReader : IDataReader, IDataRecord
+        private class TTESDataReader : EduHubDataSetDataReader<TTES>
         {
-            private List<TTES> Items;
-            private int CurrentIndex;
-            private TTES CurrentItem;
-
-            public TTESDataReader(List<TTES> Items)
+            public TTESDataReader(IEduHubDataSetReader<TTES> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 23; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 23; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // GKEY
-                        return CurrentItem.GKEY;
+                        return Current.GKEY;
                     case 2: // TTEI_TID
-                        return CurrentItem.TTEI_TID;
+                        return Current.TTEI_TID;
                     case 3: // SUBJ
-                        return CurrentItem.SUBJ;
+                        return Current.SUBJ;
                     case 4: // UNITS
-                        return CurrentItem.UNITS;
+                        return Current.UNITS;
                     case 5: // INCLUDE01
-                        return CurrentItem.INCLUDE01;
+                        return Current.INCLUDE01;
                     case 6: // INCLUDE02
-                        return CurrentItem.INCLUDE02;
+                        return Current.INCLUDE02;
                     case 7: // INCLUDE03
-                        return CurrentItem.INCLUDE03;
+                        return Current.INCLUDE03;
                     case 8: // INCLUDE04
-                        return CurrentItem.INCLUDE04;
+                        return Current.INCLUDE04;
                     case 9: // INCLUDE05
-                        return CurrentItem.INCLUDE05;
+                        return Current.INCLUDE05;
                     case 10: // INCLUDE06
-                        return CurrentItem.INCLUDE06;
+                        return Current.INCLUDE06;
                     case 11: // INCLUDE07
-                        return CurrentItem.INCLUDE07;
+                        return Current.INCLUDE07;
                     case 12: // INCLUDE08
-                        return CurrentItem.INCLUDE08;
+                        return Current.INCLUDE08;
                     case 13: // INCLUDE09
-                        return CurrentItem.INCLUDE09;
+                        return Current.INCLUDE09;
                     case 14: // INCLUDE10
-                        return CurrentItem.INCLUDE10;
+                        return Current.INCLUDE10;
                     case 15: // INCLUDE11
-                        return CurrentItem.INCLUDE11;
+                        return Current.INCLUDE11;
                     case 16: // INCLUDE12
-                        return CurrentItem.INCLUDE12;
+                        return Current.INCLUDE12;
                     case 17: // INCLUDE13
-                        return CurrentItem.INCLUDE13;
+                        return Current.INCLUDE13;
                     case 18: // INCLUDE14
-                        return CurrentItem.INCLUDE14;
+                        return Current.INCLUDE14;
                     case 19: // INCLUDE15
-                        return CurrentItem.INCLUDE15;
+                        return Current.INCLUDE15;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // TTEI_TID
-                        return CurrentItem.TTEI_TID == null;
+                        return Current.TTEI_TID == null;
                     case 3: // SUBJ
-                        return CurrentItem.SUBJ == null;
+                        return Current.SUBJ == null;
                     case 4: // UNITS
-                        return CurrentItem.UNITS == null;
+                        return Current.UNITS == null;
                     case 5: // INCLUDE01
-                        return CurrentItem.INCLUDE01 == null;
+                        return Current.INCLUDE01 == null;
                     case 6: // INCLUDE02
-                        return CurrentItem.INCLUDE02 == null;
+                        return Current.INCLUDE02 == null;
                     case 7: // INCLUDE03
-                        return CurrentItem.INCLUDE03 == null;
+                        return Current.INCLUDE03 == null;
                     case 8: // INCLUDE04
-                        return CurrentItem.INCLUDE04 == null;
+                        return Current.INCLUDE04 == null;
                     case 9: // INCLUDE05
-                        return CurrentItem.INCLUDE05 == null;
+                        return Current.INCLUDE05 == null;
                     case 10: // INCLUDE06
-                        return CurrentItem.INCLUDE06 == null;
+                        return Current.INCLUDE06 == null;
                     case 11: // INCLUDE07
-                        return CurrentItem.INCLUDE07 == null;
+                        return Current.INCLUDE07 == null;
                     case 12: // INCLUDE08
-                        return CurrentItem.INCLUDE08 == null;
+                        return Current.INCLUDE08 == null;
                     case 13: // INCLUDE09
-                        return CurrentItem.INCLUDE09 == null;
+                        return Current.INCLUDE09 == null;
                     case 14: // INCLUDE10
-                        return CurrentItem.INCLUDE10 == null;
+                        return Current.INCLUDE10 == null;
                     case 15: // INCLUDE11
-                        return CurrentItem.INCLUDE11 == null;
+                        return Current.INCLUDE11 == null;
                     case 16: // INCLUDE12
-                        return CurrentItem.INCLUDE12 == null;
+                        return Current.INCLUDE12 == null;
                     case 17: // INCLUDE13
-                        return CurrentItem.INCLUDE13 == null;
+                        return Current.INCLUDE13 == null;
                     case 18: // INCLUDE14
-                        return CurrentItem.INCLUDE14 == null;
+                        return Current.INCLUDE14 == null;
                     case 19: // INCLUDE15
-                        return CurrentItem.INCLUDE15 == null;
+                        return Current.INCLUDE15 == null;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -547,7 +627,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -600,35 +680,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

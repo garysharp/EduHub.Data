@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SUDataSet : EduHubDataSet<SU>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SU"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SUDataSet(EduHubContext Context)
             : base(Context)
@@ -32,7 +35,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SU" /> fields for each CSV column header</returns>
-        protected override Action<SU, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SU, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SU, string>[Headers.Count];
 
@@ -104,29 +107,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SU" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SU" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SU" /> items to added or update the base <see cref="SU" /> items</param>
-        /// <returns>A merged list of <see cref="SU" /> items</returns>
-        protected override List<SU> ApplyDeltaItems(List<SU> Items, List<SU> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SU" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SU" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SU}"/> of entities</returns>
+        internal override IEnumerable<SU> ApplyDeltaEntities(IEnumerable<SU> Entities, List<SU> DeltaEntities)
         {
-            Dictionary<string, int> Index_SUKEY = Items.ToIndexDictionary(i => i.SUKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_SUKEY = new HashSet<string>(DeltaEntities.Select(i => i.SUKEY));
 
-            foreach (SU deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SUKEY.TryGetValue(deltaItem.SUKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SUKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SUKEY.Remove(entity.SUKEY);
+                            
+                            if (entity.SUKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SUKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -356,11 +385,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SU table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SU table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SU]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SU]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SU](
         [SUKEY] varchar(5) NOT NULL,
@@ -401,156 +434,211 @@ BEGIN
     (
             [SUBJECT_ACADEMIC_YEAR] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FACULTY')
+    ALTER INDEX [Index_FACULTY] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FEE_CODE')
+    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_PROMOTE')
+    ALTER INDEX [Index_PROMOTE] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FACULTY')
+    ALTER INDEX [Index_FACULTY] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FEE_CODE')
+    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_PROMOTE')
+    ALTER INDEX [Index_PROMOTE] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SU"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SU"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SU> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_SUKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SUKEY.Add(entity.SUKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SU] WHERE");
+
+
+            // Index_SUKEY
+            builder.Append("[SUKEY] IN (");
+            for (int index = 0; index < Index_SUKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SUKEY
+                var parameterSUKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSUKEY);
+                command.Parameters.Add(parameterSUKEY, SqlDbType.VarChar, 5).Value = Index_SUKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SU data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SU data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SU> GetDataSetDataReader()
         {
-            return new SUDataReader(Items.Value);
+            return new SUDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SU data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SU data set</returns>
+        public override EduHubDataSetDataReader<SU> GetDataSetDataReader(List<SU> Entities)
+        {
+            return new SUDataReader(new EduHubDataSetLoadedReader<SU>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SUDataReader : IDataReader, IDataRecord
+        private class SUDataReader : EduHubDataSetDataReader<SU>
         {
-            private List<SU> Items;
-            private int CurrentIndex;
-            private SU CurrentItem;
-
-            public SUDataReader(List<SU> Items)
+            public SUDataReader(IEduHubDataSetReader<SU> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 18; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 18; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SUKEY
-                        return CurrentItem.SUKEY;
+                        return Current.SUKEY;
                     case 1: // FULLNAME
-                        return CurrentItem.FULLNAME;
+                        return Current.FULLNAME;
                     case 2: // SHORTNAME
-                        return CurrentItem.SHORTNAME;
+                        return Current.SHORTNAME;
                     case 3: // FACULTY
-                        return CurrentItem.FACULTY;
+                        return Current.FACULTY;
                     case 4: // PROMOTE
-                        return CurrentItem.PROMOTE;
+                        return Current.PROMOTE;
                     case 5: // OVERVIEW
-                        return CurrentItem.OVERVIEW;
+                        return Current.OVERVIEW;
                     case 6: // PRIORITY
-                        return CurrentItem.PRIORITY;
+                        return Current.PRIORITY;
                     case 7: // SUBJECT_ACADEMIC_YEAR
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR;
+                        return Current.SUBJECT_ACADEMIC_YEAR;
                     case 8: // SEMESTER
-                        return CurrentItem.SEMESTER;
+                        return Current.SEMESTER;
                     case 9: // DURATION
-                        return CurrentItem.DURATION;
+                        return Current.DURATION;
                     case 10: // SUBJECT_TYPE
-                        return CurrentItem.SUBJECT_TYPE;
+                        return Current.SUBJECT_TYPE;
                     case 11: // PRINT_SEQ_NO
-                        return CurrentItem.PRINT_SEQ_NO;
+                        return Current.PRINT_SEQ_NO;
                     case 12: // ELECTIVE
-                        return CurrentItem.ELECTIVE;
+                        return Current.ELECTIVE;
                     case 13: // VCAA_ID
-                        return CurrentItem.VCAA_ID;
+                        return Current.VCAA_ID;
                     case 14: // FEE_CODE
-                        return CurrentItem.FEE_CODE;
+                        return Current.FEE_CODE;
                     case 15: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 16: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 17: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // FULLNAME
-                        return CurrentItem.FULLNAME == null;
+                        return Current.FULLNAME == null;
                     case 2: // SHORTNAME
-                        return CurrentItem.SHORTNAME == null;
+                        return Current.SHORTNAME == null;
                     case 3: // FACULTY
-                        return CurrentItem.FACULTY == null;
+                        return Current.FACULTY == null;
                     case 4: // PROMOTE
-                        return CurrentItem.PROMOTE == null;
+                        return Current.PROMOTE == null;
                     case 5: // OVERVIEW
-                        return CurrentItem.OVERVIEW == null;
+                        return Current.OVERVIEW == null;
                     case 6: // PRIORITY
-                        return CurrentItem.PRIORITY == null;
+                        return Current.PRIORITY == null;
                     case 7: // SUBJECT_ACADEMIC_YEAR
-                        return CurrentItem.SUBJECT_ACADEMIC_YEAR == null;
+                        return Current.SUBJECT_ACADEMIC_YEAR == null;
                     case 8: // SEMESTER
-                        return CurrentItem.SEMESTER == null;
+                        return Current.SEMESTER == null;
                     case 9: // DURATION
-                        return CurrentItem.DURATION == null;
+                        return Current.DURATION == null;
                     case 10: // SUBJECT_TYPE
-                        return CurrentItem.SUBJECT_TYPE == null;
+                        return Current.SUBJECT_TYPE == null;
                     case 11: // PRINT_SEQ_NO
-                        return CurrentItem.PRINT_SEQ_NO == null;
+                        return Current.PRINT_SEQ_NO == null;
                     case 12: // ELECTIVE
-                        return CurrentItem.ELECTIVE == null;
+                        return Current.ELECTIVE == null;
                     case 13: // VCAA_ID
-                        return CurrentItem.VCAA_ID == null;
+                        return Current.VCAA_ID == null;
                     case 14: // FEE_CODE
-                        return CurrentItem.FEE_CODE == null;
+                        return Current.FEE_CODE == null;
                     case 15: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 16: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 17: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -595,7 +683,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -638,35 +726,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

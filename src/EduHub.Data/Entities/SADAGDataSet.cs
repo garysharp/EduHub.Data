@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SADAGDataSet : EduHubDataSet<SADAG>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SADAG"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SADAGDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SADAG" /> fields for each CSV column header</returns>
-        protected override Action<SADAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SADAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SADAG, string>[Headers.Count];
 
@@ -73,29 +76,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SADAG" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SADAG" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SADAG" /> items to added or update the base <see cref="SADAG" /> items</param>
-        /// <returns>A merged list of <see cref="SADAG" /> items</returns>
-        protected override List<SADAG> ApplyDeltaItems(List<SADAG> Items, List<SADAG> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SADAG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SADAG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SADAG}"/> of entities</returns>
+        internal override IEnumerable<SADAG> ApplyDeltaEntities(IEnumerable<SADAG> Entities, List<SADAG> DeltaEntities)
         {
-            Dictionary<int, int> Index_SADAG_ID = Items.ToIndexDictionary(i => i.SADAG_ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_SADAG_ID = new HashSet<int>(DeltaEntities.Select(i => i.SADAG_ID));
 
-            foreach (SADAG deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SADAG_ID.TryGetValue(deltaItem.SADAG_ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SADAG_ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SADAG_ID.Remove(entity.SADAG_ID);
+                            
+                            if (entity.SADAG_ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SADAG_ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -153,11 +182,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SADAG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SADAG table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SADAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SADAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SADAG](
         [SADAG_ID] int IDENTITY NOT NULL,
@@ -173,120 +206,151 @@ BEGIN
             [SADAG_ID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SADAGDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SADAGDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SADAG"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SADAG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SADAG> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_SADAG_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SADAG_ID.Add(entity.SADAG_ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SADAG] WHERE");
+
+
+            // Index_SADAG_ID
+            builder.Append("[SADAG_ID] IN (");
+            for (int index = 0; index < Index_SADAG_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SADAG_ID
+                var parameterSADAG_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterSADAG_ID);
+                command.Parameters.Add(parameterSADAG_ID, SqlDbType.Int).Value = Index_SADAG_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SADAG data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SADAG data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SADAG> GetDataSetDataReader()
         {
-            return new SADAGDataReader(Items.Value);
+            return new SADAGDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SADAG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SADAG data set</returns>
+        public override EduHubDataSetDataReader<SADAG> GetDataSetDataReader(List<SADAG> Entities)
+        {
+            return new SADAGDataReader(new EduHubDataSetLoadedReader<SADAG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SADAGDataReader : IDataReader, IDataRecord
+        private class SADAGDataReader : EduHubDataSetDataReader<SADAG>
         {
-            private List<SADAG> Items;
-            private int CurrentIndex;
-            private SADAG CurrentItem;
-
-            public SADAGDataReader(List<SADAG> Items)
+            public SADAGDataReader(IEduHubDataSetReader<SADAG> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 9; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 9; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SADAG_ID
-                        return CurrentItem.SADAG_ID;
+                        return Current.SADAG_ID;
                     case 1: // BRY
-                        return CurrentItem.BRY;
+                        return Current.BRY;
                     case 2: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR;
+                        return Current.SCHOOL_YEAR;
                     case 3: // FTE
-                        return CurrentItem.FTE;
+                        return Current.FTE;
                     case 4: // ABS_CODE
-                        return CurrentItem.ABS_CODE;
+                        return Current.ABS_CODE;
                     case 5: // DAYS
-                        return CurrentItem.DAYS;
+                        return Current.DAYS;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // BRY
-                        return CurrentItem.BRY == null;
+                        return Current.BRY == null;
                     case 2: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR == null;
+                        return Current.SCHOOL_YEAR == null;
                     case 3: // FTE
-                        return CurrentItem.FTE == null;
+                        return Current.FTE == null;
                     case 4: // ABS_CODE
-                        return CurrentItem.ABS_CODE == null;
+                        return Current.ABS_CODE == null;
                     case 5: // DAYS
-                        return CurrentItem.DAYS == null;
+                        return Current.DAYS == null;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -313,7 +377,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -338,35 +402,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPRECIPDataSet : EduHubDataSet<SPRECIP>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SPRECIP"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SPRECIPDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SPRECIP" /> fields for each CSV column header</returns>
-        protected override Action<SPRECIP, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SPRECIP, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SPRECIP, string>[Headers.Count];
 
@@ -95,29 +98,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SPRECIP" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SPRECIP" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SPRECIP" /> items to added or update the base <see cref="SPRECIP" /> items</param>
-        /// <returns>A merged list of <see cref="SPRECIP" /> items</returns>
-        protected override List<SPRECIP> ApplyDeltaItems(List<SPRECIP> Items, List<SPRECIP> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SPRECIP" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SPRECIP" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SPRECIP}"/> of entities</returns>
+        internal override IEnumerable<SPRECIP> ApplyDeltaEntities(IEnumerable<SPRECIP> Entities, List<SPRECIP> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SPRECIP deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CODE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -218,11 +247,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SPRECIP table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SPRECIP table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPRECIP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPRECIP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SPRECIP](
         [TID] int IDENTITY NOT NULL,
@@ -249,146 +282,189 @@ BEGIN
     (
             [CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRECIP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SPRECIP] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRECIP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SPRECIP] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SPRECIP"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SPRECIP"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SPRECIP> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SPRECIP] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SPRECIP data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SPRECIP data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SPRECIP> GetDataSetDataReader()
         {
-            return new SPRECIPDataReader(Items.Value);
+            return new SPRECIPDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SPRECIP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SPRECIP data set</returns>
+        public override EduHubDataSetDataReader<SPRECIP> GetDataSetDataReader(List<SPRECIP> Entities)
+        {
+            return new SPRECIPDataReader(new EduHubDataSetLoadedReader<SPRECIP>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SPRECIPDataReader : IDataReader, IDataRecord
+        private class SPRECIPDataReader : EduHubDataSetDataReader<SPRECIP>
         {
-            private List<SPRECIP> Items;
-            private int CurrentIndex;
-            private SPRECIP CurrentItem;
-
-            public SPRECIPDataReader(List<SPRECIP> Items)
+            public SPRECIPDataReader(IEduHubDataSetReader<SPRECIP> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 16; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 16; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 2: // RECIPIENT_TABLE
-                        return CurrentItem.RECIPIENT_TABLE;
+                        return Current.RECIPIENT_TABLE;
                     case 3: // RECIPIENT_KEY
-                        return CurrentItem.RECIPIENT_KEY;
+                        return Current.RECIPIENT_KEY;
                     case 4: // RECIPIENT_NUMBER
-                        return CurrentItem.RECIPIENT_NUMBER;
+                        return Current.RECIPIENT_NUMBER;
                     case 5: // READ_RECEIPT
-                        return CurrentItem.READ_RECEIPT;
+                        return Current.READ_RECEIPT;
                     case 6: // SOURCE_TABLE
-                        return CurrentItem.SOURCE_TABLE;
+                        return Current.SOURCE_TABLE;
                     case 7: // SOURCE_KEY
-                        return CurrentItem.SOURCE_KEY;
+                        return Current.SOURCE_KEY;
                     case 8: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 9: // STATUS_MESSAGE
-                        return CurrentItem.STATUS_MESSAGE;
+                        return Current.STATUS_MESSAGE;
                     case 10: // SEND_DATE
-                        return CurrentItem.SEND_DATE;
+                        return Current.SEND_DATE;
                     case 11: // DELIVERED_DATE
-                        return CurrentItem.DELIVERED_DATE;
+                        return Current.DELIVERED_DATE;
                     case 12: // MESSAGEID
-                        return CurrentItem.MESSAGEID;
+                        return Current.MESSAGEID;
                     case 13: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 14: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 15: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // RECIPIENT_TABLE
-                        return CurrentItem.RECIPIENT_TABLE == null;
+                        return Current.RECIPIENT_TABLE == null;
                     case 3: // RECIPIENT_KEY
-                        return CurrentItem.RECIPIENT_KEY == null;
+                        return Current.RECIPIENT_KEY == null;
                     case 4: // RECIPIENT_NUMBER
-                        return CurrentItem.RECIPIENT_NUMBER == null;
+                        return Current.RECIPIENT_NUMBER == null;
                     case 5: // READ_RECEIPT
-                        return CurrentItem.READ_RECEIPT == null;
+                        return Current.READ_RECEIPT == null;
                     case 6: // SOURCE_TABLE
-                        return CurrentItem.SOURCE_TABLE == null;
+                        return Current.SOURCE_TABLE == null;
                     case 7: // SOURCE_KEY
-                        return CurrentItem.SOURCE_KEY == null;
+                        return Current.SOURCE_KEY == null;
                     case 8: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 9: // STATUS_MESSAGE
-                        return CurrentItem.STATUS_MESSAGE == null;
+                        return Current.STATUS_MESSAGE == null;
                     case 10: // SEND_DATE
-                        return CurrentItem.SEND_DATE == null;
+                        return Current.SEND_DATE == null;
                     case 11: // DELIVERED_DATE
-                        return CurrentItem.DELIVERED_DATE == null;
+                        return Current.DELIVERED_DATE == null;
                     case 12: // MESSAGEID
-                        return CurrentItem.MESSAGEID == null;
+                        return Current.MESSAGEID == null;
                     case 13: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 14: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 15: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -429,7 +505,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -468,35 +544,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

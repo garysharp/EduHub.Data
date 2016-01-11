@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class DFHIDataSet : EduHubDataSet<DFHI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "DFHI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal DFHIDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="DFHI" /> fields for each CSV column header</returns>
-        protected override Action<DFHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<DFHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<DFHI, string>[Headers.Count];
 
@@ -122,29 +125,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="DFHI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="DFHI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="DFHI" /> items to added or update the base <see cref="DFHI" /> items</param>
-        /// <returns>A merged list of <see cref="DFHI" /> items</returns>
-        protected override List<DFHI> ApplyDeltaItems(List<DFHI> Items, List<DFHI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="DFHI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="DFHI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{DFHI}"/> of entities</returns>
+        internal override IEnumerable<DFHI> ApplyDeltaEntities(IEnumerable<DFHI> Entities, List<DFHI> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (DFHI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.FKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.FKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.FKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -245,11 +274,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a DFHI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a DFHI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[DFHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[DFHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[DFHI](
         [TID] int IDENTITY NOT NULL,
@@ -285,182 +318,225 @@ BEGIN
     (
             [FKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFHI]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[DFHI] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFHI]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[DFHI] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="DFHI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="DFHI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<DFHI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[DFHI] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the DFHI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the DFHI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<DFHI> GetDataSetDataReader()
         {
-            return new DFHIDataReader(Items.Value);
+            return new DFHIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the DFHI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the DFHI data set</returns>
+        public override EduHubDataSetDataReader<DFHI> GetDataSetDataReader(List<DFHI> Entities)
+        {
+            return new DFHIDataReader(new EduHubDataSetLoadedReader<DFHI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class DFHIDataReader : IDataReader, IDataRecord
+        private class DFHIDataReader : EduHubDataSetDataReader<DFHI>
         {
-            private List<DFHI> Items;
-            private int CurrentIndex;
-            private DFHI CurrentItem;
-
-            public DFHIDataReader(List<DFHI> Items)
+            public DFHIDataReader(IEduHubDataSetReader<DFHI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 25; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 25; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // FKEY
-                        return CurrentItem.FKEY;
+                        return Current.FKEY;
                     case 2: // CREATION_USER
-                        return CurrentItem.CREATION_USER;
+                        return Current.CREATION_USER;
                     case 3: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE;
+                        return Current.CREATION_DATE;
                     case 4: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME;
+                        return Current.CREATION_TIME;
                     case 5: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER;
+                        return Current.OBSOLETE_USER;
                     case 6: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE;
+                        return Current.OBSOLETE_DATE;
                     case 7: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME;
+                        return Current.OBSOLETE_TIME;
                     case 8: // HKEY
-                        return CurrentItem.HKEY;
+                        return Current.HKEY;
                     case 9: // NAME_A
-                        return CurrentItem.NAME_A;
+                        return Current.NAME_A;
                     case 10: // SURNAME_A
-                        return CurrentItem.SURNAME_A;
+                        return Current.SURNAME_A;
                     case 11: // TITLE_A
-                        return CurrentItem.TITLE_A;
+                        return Current.TITLE_A;
                     case 12: // GENDER_A
-                        return CurrentItem.GENDER_A;
+                        return Current.GENDER_A;
                     case 13: // NAME_B
-                        return CurrentItem.NAME_B;
+                        return Current.NAME_B;
                     case 14: // SURNAME_B
-                        return CurrentItem.SURNAME_B;
+                        return Current.SURNAME_B;
                     case 15: // TITLE_B
-                        return CurrentItem.TITLE_B;
+                        return Current.TITLE_B;
                     case 16: // GENDER_B
-                        return CurrentItem.GENDER_B;
+                        return Current.GENDER_B;
                     case 17: // HOMEKEY
-                        return CurrentItem.HOMEKEY;
+                        return Current.HOMEKEY;
                     case 18: // ADDRESS01
-                        return CurrentItem.ADDRESS01;
+                        return Current.ADDRESS01;
                     case 19: // ADDRESS02
-                        return CurrentItem.ADDRESS02;
+                        return Current.ADDRESS02;
                     case 20: // ADDRESS03
-                        return CurrentItem.ADDRESS03;
+                        return Current.ADDRESS03;
                     case 21: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 22: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 23: // TELEPHONE
-                        return CurrentItem.TELEPHONE;
+                        return Current.TELEPHONE;
                     case 24: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE;
+                        return Current.CHANGE_MADE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // CREATION_USER
-                        return CurrentItem.CREATION_USER == null;
+                        return Current.CREATION_USER == null;
                     case 3: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE == null;
+                        return Current.CREATION_DATE == null;
                     case 4: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME == null;
+                        return Current.CREATION_TIME == null;
                     case 5: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER == null;
+                        return Current.OBSOLETE_USER == null;
                     case 6: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE == null;
+                        return Current.OBSOLETE_DATE == null;
                     case 7: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME == null;
+                        return Current.OBSOLETE_TIME == null;
                     case 8: // HKEY
-                        return CurrentItem.HKEY == null;
+                        return Current.HKEY == null;
                     case 9: // NAME_A
-                        return CurrentItem.NAME_A == null;
+                        return Current.NAME_A == null;
                     case 10: // SURNAME_A
-                        return CurrentItem.SURNAME_A == null;
+                        return Current.SURNAME_A == null;
                     case 11: // TITLE_A
-                        return CurrentItem.TITLE_A == null;
+                        return Current.TITLE_A == null;
                     case 12: // GENDER_A
-                        return CurrentItem.GENDER_A == null;
+                        return Current.GENDER_A == null;
                     case 13: // NAME_B
-                        return CurrentItem.NAME_B == null;
+                        return Current.NAME_B == null;
                     case 14: // SURNAME_B
-                        return CurrentItem.SURNAME_B == null;
+                        return Current.SURNAME_B == null;
                     case 15: // TITLE_B
-                        return CurrentItem.TITLE_B == null;
+                        return Current.TITLE_B == null;
                     case 16: // GENDER_B
-                        return CurrentItem.GENDER_B == null;
+                        return Current.GENDER_B == null;
                     case 17: // HOMEKEY
-                        return CurrentItem.HOMEKEY == null;
+                        return Current.HOMEKEY == null;
                     case 18: // ADDRESS01
-                        return CurrentItem.ADDRESS01 == null;
+                        return Current.ADDRESS01 == null;
                     case 19: // ADDRESS02
-                        return CurrentItem.ADDRESS02 == null;
+                        return Current.ADDRESS02 == null;
                     case 20: // ADDRESS03
-                        return CurrentItem.ADDRESS03 == null;
+                        return Current.ADDRESS03 == null;
                     case 21: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 22: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 23: // TELEPHONE
-                        return CurrentItem.TELEPHONE == null;
+                        return Current.TELEPHONE == null;
                     case 24: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE == null;
+                        return Current.CHANGE_MADE == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -519,7 +595,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -576,35 +652,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

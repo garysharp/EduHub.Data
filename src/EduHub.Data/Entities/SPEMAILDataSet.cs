@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPEMAILDataSet : EduHubDataSet<SPEMAIL>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SPEMAIL"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SPEMAILDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SPEMAIL" /> fields for each CSV column header</returns>
-        protected override Action<SPEMAIL, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SPEMAIL, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SPEMAIL, string>[Headers.Count];
 
@@ -89,29 +92,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SPEMAIL" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SPEMAIL" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SPEMAIL" /> items to added or update the base <see cref="SPEMAIL" /> items</param>
-        /// <returns>A merged list of <see cref="SPEMAIL" /> items</returns>
-        protected override List<SPEMAIL> ApplyDeltaItems(List<SPEMAIL> Items, List<SPEMAIL> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SPEMAIL" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SPEMAIL" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SPEMAIL}"/> of entities</returns>
+        internal override IEnumerable<SPEMAIL> ApplyDeltaEntities(IEnumerable<SPEMAIL> Entities, List<SPEMAIL> DeltaEntities)
         {
-            Dictionary<string, int> Index_SPEMAILKEY = Items.ToIndexDictionary(i => i.SPEMAILKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_SPEMAILKEY = new HashSet<string>(DeltaEntities.Select(i => i.SPEMAILKEY));
 
-            foreach (SPEMAIL deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SPEMAILKEY.TryGetValue(deltaItem.SPEMAILKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SPEMAILKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SPEMAILKEY.Remove(entity.SPEMAILKEY);
+                            
+                            if (entity.SPEMAILKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SPEMAILKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -212,11 +241,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SPEMAIL table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SPEMAIL table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SPEMAIL](
         [SPEMAILKEY] varchar(15) NOT NULL,
@@ -241,140 +274,183 @@ BEGIN
     (
             [REPORT] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'Index_REPORT')
+    ALTER INDEX [Index_REPORT] ON [dbo].[SPEMAIL] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'Index_REPORT')
+    ALTER INDEX [Index_REPORT] ON [dbo].[SPEMAIL] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SPEMAIL"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SPEMAIL"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SPEMAIL> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_SPEMAILKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SPEMAILKEY.Add(entity.SPEMAILKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SPEMAIL] WHERE");
+
+
+            // Index_SPEMAILKEY
+            builder.Append("[SPEMAILKEY] IN (");
+            for (int index = 0; index < Index_SPEMAILKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SPEMAILKEY
+                var parameterSPEMAILKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSPEMAILKEY);
+                command.Parameters.Add(parameterSPEMAILKEY, SqlDbType.VarChar, 15).Value = Index_SPEMAILKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SPEMAIL data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SPEMAIL data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SPEMAIL> GetDataSetDataReader()
         {
-            return new SPEMAILDataReader(Items.Value);
+            return new SPEMAILDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SPEMAIL data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SPEMAIL data set</returns>
+        public override EduHubDataSetDataReader<SPEMAIL> GetDataSetDataReader(List<SPEMAIL> Entities)
+        {
+            return new SPEMAILDataReader(new EduHubDataSetLoadedReader<SPEMAIL>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SPEMAILDataReader : IDataReader, IDataRecord
+        private class SPEMAILDataReader : EduHubDataSetDataReader<SPEMAIL>
         {
-            private List<SPEMAIL> Items;
-            private int CurrentIndex;
-            private SPEMAIL CurrentItem;
-
-            public SPEMAILDataReader(List<SPEMAIL> Items)
+            public SPEMAILDataReader(IEduHubDataSetReader<SPEMAIL> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 14; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 14; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SPEMAILKEY
-                        return CurrentItem.SPEMAILKEY;
+                        return Current.SPEMAILKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // REPORT
-                        return CurrentItem.REPORT;
+                        return Current.REPORT;
                     case 3: // PRINT_PATH
-                        return CurrentItem.PRINT_PATH;
+                        return Current.PRINT_PATH;
                     case 4: // IMPORTANCE
-                        return CurrentItem.IMPORTANCE;
+                        return Current.IMPORTANCE;
                     case 5: // SEND_OPTION
-                        return CurrentItem.SEND_OPTION;
+                        return Current.SEND_OPTION;
                     case 6: // EMAIL_SUBJECT
-                        return CurrentItem.EMAIL_SUBJECT;
+                        return Current.EMAIL_SUBJECT;
                     case 7: // EMAIL_MESSAGE
-                        return CurrentItem.EMAIL_MESSAGE;
+                        return Current.EMAIL_MESSAGE;
                     case 8: // EMAIL_HTML
-                        return CurrentItem.EMAIL_HTML;
+                        return Current.EMAIL_HTML;
                     case 9: // HTML_MESSAGE
-                        return CurrentItem.HTML_MESSAGE;
+                        return Current.HTML_MESSAGE;
                     case 10: // FROM_ADDRESS
-                        return CurrentItem.FROM_ADDRESS;
+                        return Current.FROM_ADDRESS;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // REPORT
-                        return CurrentItem.REPORT == null;
+                        return Current.REPORT == null;
                     case 3: // PRINT_PATH
-                        return CurrentItem.PRINT_PATH == null;
+                        return Current.PRINT_PATH == null;
                     case 4: // IMPORTANCE
-                        return CurrentItem.IMPORTANCE == null;
+                        return Current.IMPORTANCE == null;
                     case 5: // SEND_OPTION
-                        return CurrentItem.SEND_OPTION == null;
+                        return Current.SEND_OPTION == null;
                     case 6: // EMAIL_SUBJECT
-                        return CurrentItem.EMAIL_SUBJECT == null;
+                        return Current.EMAIL_SUBJECT == null;
                     case 7: // EMAIL_MESSAGE
-                        return CurrentItem.EMAIL_MESSAGE == null;
+                        return Current.EMAIL_MESSAGE == null;
                     case 8: // EMAIL_HTML
-                        return CurrentItem.EMAIL_HTML == null;
+                        return Current.EMAIL_HTML == null;
                     case 9: // HTML_MESSAGE
-                        return CurrentItem.HTML_MESSAGE == null;
+                        return Current.HTML_MESSAGE == null;
                     case 10: // FROM_ADDRESS
-                        return CurrentItem.FROM_ADDRESS == null;
+                        return Current.FROM_ADDRESS == null;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -411,7 +487,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -446,35 +522,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

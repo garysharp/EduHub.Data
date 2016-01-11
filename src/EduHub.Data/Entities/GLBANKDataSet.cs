@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLBANKDataSet : EduHubDataSet<GLBANK>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "GLBANK"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal GLBANKDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="GLBANK" /> fields for each CSV column header</returns>
-        protected override Action<GLBANK, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<GLBANK, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<GLBANK, string>[Headers.Count];
 
@@ -173,34 +176,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="GLBANK" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="GLBANK" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="GLBANK" /> items to added or update the base <see cref="GLBANK" /> items</param>
-        /// <returns>A merged list of <see cref="GLBANK" /> items</returns>
-        protected override List<GLBANK> ApplyDeltaItems(List<GLBANK> Items, List<GLBANK> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="GLBANK" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="GLBANK" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{GLBANK}"/> of entities</returns>
+        internal override IEnumerable<GLBANK> ApplyDeltaEntities(IEnumerable<GLBANK> Entities, List<GLBANK> DeltaEntities)
         {
-            Dictionary<int, int> Index_GLBANKKEY = Items.ToIndexDictionary(i => i.GLBANKKEY);
-            Dictionary<string, int> Index_GLCODE = Items.ToIndexDictionary(i => i.GLCODE);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_GLBANKKEY = new HashSet<int>(DeltaEntities.Select(i => i.GLBANKKEY));
+            HashSet<string> Index_GLCODE = new HashSet<string>(DeltaEntities.Select(i => i.GLCODE));
 
-            foreach (GLBANK deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.GLCODE;
+                        bool yieldEntity = false;
 
-                if (Index_GLBANKKEY.TryGetValue(deltaItem.GLBANKKEY, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_GLCODE.TryGetValue(deltaItem.GLCODE, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_GLBANKKEY.Remove(entity.GLBANKKEY);
+                            overwritten = overwritten || Index_GLCODE.Remove(entity.GLCODE);
+                            
+                            if (entity.GLCODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.GLCODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -301,11 +328,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a GLBANK table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a GLBANK table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[GLBANK](
         [GLCODE] varchar(10) NOT NULL,
@@ -358,250 +389,309 @@ BEGIN
     (
             [GLBANKKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'Index_GLBANKKEY')
+    ALTER INDEX [Index_GLBANKKEY] ON [dbo].[GLBANK] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'Index_GLBANKKEY')
+    ALTER INDEX [Index_GLBANKKEY] ON [dbo].[GLBANK] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="GLBANK"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="GLBANK"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<GLBANK> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_GLBANKKEY = new List<int>();
+            List<string> Index_GLCODE = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_GLBANKKEY.Add(entity.GLBANKKEY);
+                Index_GLCODE.Add(entity.GLCODE);
+            }
+
+            builder.AppendLine("DELETE [dbo].[GLBANK] WHERE");
+
+
+            // Index_GLBANKKEY
+            builder.Append("[GLBANKKEY] IN (");
+            for (int index = 0; index < Index_GLBANKKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // GLBANKKEY
+                var parameterGLBANKKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterGLBANKKEY);
+                command.Parameters.Add(parameterGLBANKKEY, SqlDbType.Int).Value = Index_GLBANKKEY[index];
+            }
+            builder.AppendLine(") OR");
+
+            // Index_GLCODE
+            builder.Append("[GLCODE] IN (");
+            for (int index = 0; index < Index_GLCODE.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // GLCODE
+                var parameterGLCODE = $"@p{parameterIndex++}";
+                builder.Append(parameterGLCODE);
+                command.Parameters.Add(parameterGLCODE, SqlDbType.VarChar, 10).Value = Index_GLCODE[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the GLBANK data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the GLBANK data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<GLBANK> GetDataSetDataReader()
         {
-            return new GLBANKDataReader(Items.Value);
+            return new GLBANKDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the GLBANK data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the GLBANK data set</returns>
+        public override EduHubDataSetDataReader<GLBANK> GetDataSetDataReader(List<GLBANK> Entities)
+        {
+            return new GLBANKDataReader(new EduHubDataSetLoadedReader<GLBANK>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class GLBANKDataReader : IDataReader, IDataRecord
+        private class GLBANKDataReader : EduHubDataSetDataReader<GLBANK>
         {
-            private List<GLBANK> Items;
-            private int CurrentIndex;
-            private GLBANK CurrentItem;
-
-            public GLBANKDataReader(List<GLBANK> Items)
+            public GLBANKDataReader(IEduHubDataSetReader<GLBANK> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 42; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 42; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // GLCODE
-                        return CurrentItem.GLCODE;
+                        return Current.GLCODE;
                     case 1: // GLBANKKEY
-                        return CurrentItem.GLBANKKEY;
+                        return Current.GLBANKKEY;
                     case 2: // ACCOUNT_TYPE
-                        return CurrentItem.ACCOUNT_TYPE;
+                        return Current.ACCOUNT_TYPE;
                     case 3: // INTEREST_RATE
-                        return CurrentItem.INTEREST_RATE;
+                        return Current.INTEREST_RATE;
                     case 4: // INVESTMENT_DATE
-                        return CurrentItem.INVESTMENT_DATE;
+                        return Current.INVESTMENT_DATE;
                     case 5: // MATURITY_DATE
-                        return CurrentItem.MATURITY_DATE;
+                        return Current.MATURITY_DATE;
                     case 6: // INTEREST_EARNED
-                        return CurrentItem.INTEREST_EARNED;
+                        return Current.INTEREST_EARNED;
                     case 7: // COMMENTS
-                        return CurrentItem.COMMENTS;
+                        return Current.COMMENTS;
                     case 8: // TOTAL_BANK_BALANCE
-                        return CurrentItem.TOTAL_BANK_BALANCE;
+                        return Current.TOTAL_BANK_BALANCE;
                     case 9: // LY_BANK_BALANCE
-                        return CurrentItem.LY_BANK_BALANCE;
+                        return Current.LY_BANK_BALANCE;
                     case 10: // CASH_GRANT
-                        return CurrentItem.CASH_GRANT;
+                        return Current.CASH_GRANT;
                     case 11: // LY_CASH_GRANT
-                        return CurrentItem.LY_CASH_GRANT;
+                        return Current.LY_CASH_GRANT;
                     case 12: // OPERATING_RESERVE
-                        return CurrentItem.OPERATING_RESERVE;
+                        return Current.OPERATING_RESERVE;
                     case 13: // LY_OPERATING_RESERVE
-                        return CurrentItem.LY_OPERATING_RESERVE;
+                        return Current.LY_OPERATING_RESERVE;
                     case 14: // CURR01
-                        return CurrentItem.CURR01;
+                        return Current.CURR01;
                     case 15: // CURR02
-                        return CurrentItem.CURR02;
+                        return Current.CURR02;
                     case 16: // CURR03
-                        return CurrentItem.CURR03;
+                        return Current.CURR03;
                     case 17: // CURR04
-                        return CurrentItem.CURR04;
+                        return Current.CURR04;
                     case 18: // CURR05
-                        return CurrentItem.CURR05;
+                        return Current.CURR05;
                     case 19: // CURR06
-                        return CurrentItem.CURR06;
+                        return Current.CURR06;
                     case 20: // CURR07
-                        return CurrentItem.CURR07;
+                        return Current.CURR07;
                     case 21: // CURR08
-                        return CurrentItem.CURR08;
+                        return Current.CURR08;
                     case 22: // CURR09
-                        return CurrentItem.CURR09;
+                        return Current.CURR09;
                     case 23: // CURR10
-                        return CurrentItem.CURR10;
+                        return Current.CURR10;
                     case 24: // CURR11
-                        return CurrentItem.CURR11;
+                        return Current.CURR11;
                     case 25: // CURR12
-                        return CurrentItem.CURR12;
+                        return Current.CURR12;
                     case 26: // LASTYR01
-                        return CurrentItem.LASTYR01;
+                        return Current.LASTYR01;
                     case 27: // LASTYR02
-                        return CurrentItem.LASTYR02;
+                        return Current.LASTYR02;
                     case 28: // LASTYR03
-                        return CurrentItem.LASTYR03;
+                        return Current.LASTYR03;
                     case 29: // LASTYR04
-                        return CurrentItem.LASTYR04;
+                        return Current.LASTYR04;
                     case 30: // LASTYR05
-                        return CurrentItem.LASTYR05;
+                        return Current.LASTYR05;
                     case 31: // LASTYR06
-                        return CurrentItem.LASTYR06;
+                        return Current.LASTYR06;
                     case 32: // LASTYR07
-                        return CurrentItem.LASTYR07;
+                        return Current.LASTYR07;
                     case 33: // LASTYR08
-                        return CurrentItem.LASTYR08;
+                        return Current.LASTYR08;
                     case 34: // LASTYR09
-                        return CurrentItem.LASTYR09;
+                        return Current.LASTYR09;
                     case 35: // LASTYR10
-                        return CurrentItem.LASTYR10;
+                        return Current.LASTYR10;
                     case 36: // LASTYR11
-                        return CurrentItem.LASTYR11;
+                        return Current.LASTYR11;
                     case 37: // LASTYR12
-                        return CurrentItem.LASTYR12;
+                        return Current.LASTYR12;
                     case 38: // OPBAL
-                        return CurrentItem.OPBAL;
+                        return Current.OPBAL;
                     case 39: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 40: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 41: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // ACCOUNT_TYPE
-                        return CurrentItem.ACCOUNT_TYPE == null;
+                        return Current.ACCOUNT_TYPE == null;
                     case 3: // INTEREST_RATE
-                        return CurrentItem.INTEREST_RATE == null;
+                        return Current.INTEREST_RATE == null;
                     case 4: // INVESTMENT_DATE
-                        return CurrentItem.INVESTMENT_DATE == null;
+                        return Current.INVESTMENT_DATE == null;
                     case 5: // MATURITY_DATE
-                        return CurrentItem.MATURITY_DATE == null;
+                        return Current.MATURITY_DATE == null;
                     case 6: // INTEREST_EARNED
-                        return CurrentItem.INTEREST_EARNED == null;
+                        return Current.INTEREST_EARNED == null;
                     case 7: // COMMENTS
-                        return CurrentItem.COMMENTS == null;
+                        return Current.COMMENTS == null;
                     case 8: // TOTAL_BANK_BALANCE
-                        return CurrentItem.TOTAL_BANK_BALANCE == null;
+                        return Current.TOTAL_BANK_BALANCE == null;
                     case 9: // LY_BANK_BALANCE
-                        return CurrentItem.LY_BANK_BALANCE == null;
+                        return Current.LY_BANK_BALANCE == null;
                     case 10: // CASH_GRANT
-                        return CurrentItem.CASH_GRANT == null;
+                        return Current.CASH_GRANT == null;
                     case 11: // LY_CASH_GRANT
-                        return CurrentItem.LY_CASH_GRANT == null;
+                        return Current.LY_CASH_GRANT == null;
                     case 12: // OPERATING_RESERVE
-                        return CurrentItem.OPERATING_RESERVE == null;
+                        return Current.OPERATING_RESERVE == null;
                     case 13: // LY_OPERATING_RESERVE
-                        return CurrentItem.LY_OPERATING_RESERVE == null;
+                        return Current.LY_OPERATING_RESERVE == null;
                     case 14: // CURR01
-                        return CurrentItem.CURR01 == null;
+                        return Current.CURR01 == null;
                     case 15: // CURR02
-                        return CurrentItem.CURR02 == null;
+                        return Current.CURR02 == null;
                     case 16: // CURR03
-                        return CurrentItem.CURR03 == null;
+                        return Current.CURR03 == null;
                     case 17: // CURR04
-                        return CurrentItem.CURR04 == null;
+                        return Current.CURR04 == null;
                     case 18: // CURR05
-                        return CurrentItem.CURR05 == null;
+                        return Current.CURR05 == null;
                     case 19: // CURR06
-                        return CurrentItem.CURR06 == null;
+                        return Current.CURR06 == null;
                     case 20: // CURR07
-                        return CurrentItem.CURR07 == null;
+                        return Current.CURR07 == null;
                     case 21: // CURR08
-                        return CurrentItem.CURR08 == null;
+                        return Current.CURR08 == null;
                     case 22: // CURR09
-                        return CurrentItem.CURR09 == null;
+                        return Current.CURR09 == null;
                     case 23: // CURR10
-                        return CurrentItem.CURR10 == null;
+                        return Current.CURR10 == null;
                     case 24: // CURR11
-                        return CurrentItem.CURR11 == null;
+                        return Current.CURR11 == null;
                     case 25: // CURR12
-                        return CurrentItem.CURR12 == null;
+                        return Current.CURR12 == null;
                     case 26: // LASTYR01
-                        return CurrentItem.LASTYR01 == null;
+                        return Current.LASTYR01 == null;
                     case 27: // LASTYR02
-                        return CurrentItem.LASTYR02 == null;
+                        return Current.LASTYR02 == null;
                     case 28: // LASTYR03
-                        return CurrentItem.LASTYR03 == null;
+                        return Current.LASTYR03 == null;
                     case 29: // LASTYR04
-                        return CurrentItem.LASTYR04 == null;
+                        return Current.LASTYR04 == null;
                     case 30: // LASTYR05
-                        return CurrentItem.LASTYR05 == null;
+                        return Current.LASTYR05 == null;
                     case 31: // LASTYR06
-                        return CurrentItem.LASTYR06 == null;
+                        return Current.LASTYR06 == null;
                     case 32: // LASTYR07
-                        return CurrentItem.LASTYR07 == null;
+                        return Current.LASTYR07 == null;
                     case 33: // LASTYR08
-                        return CurrentItem.LASTYR08 == null;
+                        return Current.LASTYR08 == null;
                     case 34: // LASTYR09
-                        return CurrentItem.LASTYR09 == null;
+                        return Current.LASTYR09 == null;
                     case 35: // LASTYR10
-                        return CurrentItem.LASTYR10 == null;
+                        return Current.LASTYR10 == null;
                     case 36: // LASTYR11
-                        return CurrentItem.LASTYR11 == null;
+                        return Current.LASTYR11 == null;
                     case 37: // LASTYR12
-                        return CurrentItem.LASTYR12 == null;
+                        return Current.LASTYR12 == null;
                     case 38: // OPBAL
-                        return CurrentItem.OPBAL == null;
+                        return Current.OPBAL == null;
                     case 39: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 40: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 41: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -694,7 +784,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -785,35 +875,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

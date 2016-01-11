@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SGMDataSet : EduHubDataSet<SGM>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SGM"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SGMDataSet(EduHubContext Context)
             : base(Context)
@@ -32,7 +35,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SGM" /> fields for each CSV column header</returns>
-        protected override Action<SGM, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SGM, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SGM, string>[Headers.Count];
 
@@ -83,34 +86,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SGM" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SGM" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SGM" /> items to added or update the base <see cref="SGM" /> items</param>
-        /// <returns>A merged list of <see cref="SGM" /> items</returns>
-        protected override List<SGM> ApplyDeltaItems(List<SGM> Items, List<SGM> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SGM" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SGM" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SGM}"/> of entities</returns>
+        internal override IEnumerable<SGM> ApplyDeltaEntities(IEnumerable<SGM> Entities, List<SGM> DeltaEntities)
         {
-            Dictionary<Tuple<string, DateTime?, short?>, int> Index_SGMKEY_MEETING_DATE_MEETING_TIME = Items.ToIndexDictionary(i => Tuple.Create(i.SGMKEY, i.MEETING_DATE, i.MEETING_TIME));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, DateTime?, short?>> Index_SGMKEY_MEETING_DATE_MEETING_TIME = new HashSet<Tuple<string, DateTime?, short?>>(DeltaEntities.Select(i => Tuple.Create(i.SGMKEY, i.MEETING_DATE, i.MEETING_TIME)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SGM deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SGMKEY;
+                        bool yieldEntity = false;
 
-                if (Index_SGMKEY_MEETING_DATE_MEETING_TIME.TryGetValue(Tuple.Create(deltaItem.SGMKEY, deltaItem.MEETING_DATE, deltaItem.MEETING_TIME), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_SGMKEY_MEETING_DATE_MEETING_TIME.Remove(Tuple.Create(entity.SGMKEY, entity.MEETING_DATE, entity.MEETING_TIME));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.SGMKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SGMKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -346,11 +373,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SGM table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SGM table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SGM](
         [TID] int IDENTITY NOT NULL,
@@ -386,126 +417,221 @@ BEGIN
             [MEETING_DATE] ASC,
             [MEETING_TIME] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_DATE')
+    ALTER INDEX [Index_MEETING_DATE] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_ROOM')
+    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_SGMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SGM] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_DATE')
+    ALTER INDEX [Index_MEETING_DATE] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_ROOM')
+    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_SGMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SGM"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SGM"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SGM> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, DateTime?, short?>> Index_SGMKEY_MEETING_DATE_MEETING_TIME = new List<Tuple<string, DateTime?, short?>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SGMKEY_MEETING_DATE_MEETING_TIME.Add(Tuple.Create(entity.SGMKEY, entity.MEETING_DATE, entity.MEETING_TIME));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SGM] WHERE");
+
+
+            // Index_SGMKEY_MEETING_DATE_MEETING_TIME
+            builder.Append("(");
+            for (int index = 0; index < Index_SGMKEY_MEETING_DATE_MEETING_TIME.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // SGMKEY
+                var parameterSGMKEY = $"@p{parameterIndex++}";
+                builder.Append("([SGMKEY]=").Append(parameterSGMKEY);
+                command.Parameters.Add(parameterSGMKEY, SqlDbType.VarChar, 12).Value = Index_SGMKEY_MEETING_DATE_MEETING_TIME[index].Item1;
+
+                // MEETING_DATE
+                if (Index_SGMKEY_MEETING_DATE_MEETING_TIME[index].Item2 == null)
+                {
+                    builder.Append(" AND [MEETING_DATE] IS NULL");
+                }
+                else
+                {
+                    var parameterMEETING_DATE = $"@p{parameterIndex++}";
+                    builder.Append(" AND [MEETING_DATE]=").Append(parameterMEETING_DATE);
+                    command.Parameters.Add(parameterMEETING_DATE, SqlDbType.DateTime).Value = Index_SGMKEY_MEETING_DATE_MEETING_TIME[index].Item2;
+                }
+
+                // MEETING_TIME
+                if (Index_SGMKEY_MEETING_DATE_MEETING_TIME[index].Item3 == null)
+                {
+                    builder.Append(" AND [MEETING_TIME] IS NULL)");
+                }
+                else
+                {
+                    var parameterMEETING_TIME = $"@p{parameterIndex++}";
+                    builder.Append(" AND [MEETING_TIME]=").Append(parameterMEETING_TIME).Append(")");
+                    command.Parameters.Add(parameterMEETING_TIME, SqlDbType.SmallInt).Value = Index_SGMKEY_MEETING_DATE_MEETING_TIME[index].Item3;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SGM data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SGM data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SGM> GetDataSetDataReader()
         {
-            return new SGMDataReader(Items.Value);
+            return new SGMDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SGM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SGM data set</returns>
+        public override EduHubDataSetDataReader<SGM> GetDataSetDataReader(List<SGM> Entities)
+        {
+            return new SGMDataReader(new EduHubDataSetLoadedReader<SGM>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SGMDataReader : IDataReader, IDataRecord
+        private class SGMDataReader : EduHubDataSetDataReader<SGM>
         {
-            private List<SGM> Items;
-            private int CurrentIndex;
-            private SGM CurrentItem;
-
-            public SGMDataReader(List<SGM> Items)
+            public SGMDataReader(IEduHubDataSetReader<SGM> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 11; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 11; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // SGMKEY
-                        return CurrentItem.SGMKEY;
+                        return Current.SGMKEY;
                     case 2: // MEETING_DATE
-                        return CurrentItem.MEETING_DATE;
+                        return Current.MEETING_DATE;
                     case 3: // MEETING_TIME
-                        return CurrentItem.MEETING_TIME;
+                        return Current.MEETING_TIME;
                     case 4: // PURPOSE_BRIEF
-                        return CurrentItem.PURPOSE_BRIEF;
+                        return Current.PURPOSE_BRIEF;
                     case 5: // PURPOSE_DETAIL
-                        return CurrentItem.PURPOSE_DETAIL;
+                        return Current.PURPOSE_DETAIL;
                     case 6: // MEETING_ROOM
-                        return CurrentItem.MEETING_ROOM;
+                        return Current.MEETING_ROOM;
                     case 7: // MINUTES_MEMO
-                        return CurrentItem.MINUTES_MEMO;
+                        return Current.MINUTES_MEMO;
                     case 8: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 9: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // MEETING_DATE
-                        return CurrentItem.MEETING_DATE == null;
+                        return Current.MEETING_DATE == null;
                     case 3: // MEETING_TIME
-                        return CurrentItem.MEETING_TIME == null;
+                        return Current.MEETING_TIME == null;
                     case 4: // PURPOSE_BRIEF
-                        return CurrentItem.PURPOSE_BRIEF == null;
+                        return Current.PURPOSE_BRIEF == null;
                     case 5: // PURPOSE_DETAIL
-                        return CurrentItem.PURPOSE_DETAIL == null;
+                        return Current.PURPOSE_DETAIL == null;
                     case 6: // MEETING_ROOM
-                        return CurrentItem.MEETING_ROOM == null;
+                        return Current.MEETING_ROOM == null;
                     case 7: // MINUTES_MEMO
-                        return CurrentItem.MINUTES_MEMO == null;
+                        return Current.MINUTES_MEMO == null;
                     case 8: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 9: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -536,7 +662,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -565,35 +691,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

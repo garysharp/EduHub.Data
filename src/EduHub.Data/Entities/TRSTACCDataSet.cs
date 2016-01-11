@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TRSTACCDataSet : EduHubDataSet<TRSTACC>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TRSTACC"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TRSTACCDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TRSTACC" /> fields for each CSV column header</returns>
-        protected override Action<TRSTACC, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TRSTACC, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TRSTACC, string>[Headers.Count];
 
@@ -166,29 +169,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TRSTACC" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TRSTACC" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TRSTACC" /> items to added or update the base <see cref="TRSTACC" /> items</param>
-        /// <returns>A merged list of <see cref="TRSTACC" /> items</returns>
-        protected override List<TRSTACC> ApplyDeltaItems(List<TRSTACC> Items, List<TRSTACC> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TRSTACC" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TRSTACC" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TRSTACC}"/> of entities</returns>
+        internal override IEnumerable<TRSTACC> ApplyDeltaEntities(IEnumerable<TRSTACC> Entities, List<TRSTACC> DeltaEntities)
         {
-            Dictionary<int, int> Index_STACCKEY = Items.ToIndexDictionary(i => i.STACCKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_STACCKEY = new HashSet<int>(DeltaEntities.Select(i => i.STACCKEY));
 
-            foreach (TRSTACC deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_STACCKEY.TryGetValue(deltaItem.STACCKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.STACCKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_STACCKEY.Remove(entity.STACCKEY);
+                            
+                            if (entity.STACCKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.STACCKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -246,11 +275,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TRSTACC table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TRSTACC table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TRSTACC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TRSTACC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TRSTACC](
         [STACCKEY] int IDENTITY NOT NULL,
@@ -297,244 +330,275 @@ BEGIN
             [STACCKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="TRSTACCDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="TRSTACCDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TRSTACC"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TRSTACC"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TRSTACC> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_STACCKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_STACCKEY.Add(entity.STACCKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TRSTACC] WHERE");
+
+
+            // Index_STACCKEY
+            builder.Append("[STACCKEY] IN (");
+            for (int index = 0; index < Index_STACCKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // STACCKEY
+                var parameterSTACCKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSTACCKEY);
+                command.Parameters.Add(parameterSTACCKEY, SqlDbType.Int).Value = Index_STACCKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TRSTACC data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TRSTACC data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TRSTACC> GetDataSetDataReader()
         {
-            return new TRSTACCDataReader(Items.Value);
+            return new TRSTACCDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TRSTACC data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TRSTACC data set</returns>
+        public override EduHubDataSetDataReader<TRSTACC> GetDataSetDataReader(List<TRSTACC> Entities)
+        {
+            return new TRSTACCDataReader(new EduHubDataSetLoadedReader<TRSTACC>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TRSTACCDataReader : IDataReader, IDataRecord
+        private class TRSTACCDataReader : EduHubDataSetDataReader<TRSTACC>
         {
-            private List<TRSTACC> Items;
-            private int CurrentIndex;
-            private TRSTACC CurrentItem;
-
-            public TRSTACCDataReader(List<TRSTACC> Items)
+            public TRSTACCDataReader(IEduHubDataSetReader<TRSTACC> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 40; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 40; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // STACCKEY
-                        return CurrentItem.STACCKEY;
+                        return Current.STACCKEY;
                     case 1: // FIELD01
-                        return CurrentItem.FIELD01;
+                        return Current.FIELD01;
                     case 2: // FIELD02
-                        return CurrentItem.FIELD02;
+                        return Current.FIELD02;
                     case 3: // FIELD03
-                        return CurrentItem.FIELD03;
+                        return Current.FIELD03;
                     case 4: // FIELD04
-                        return CurrentItem.FIELD04;
+                        return Current.FIELD04;
                     case 5: // FIELD05
-                        return CurrentItem.FIELD05;
+                        return Current.FIELD05;
                     case 6: // FIELD06
-                        return CurrentItem.FIELD06;
+                        return Current.FIELD06;
                     case 7: // FIELD07
-                        return CurrentItem.FIELD07;
+                        return Current.FIELD07;
                     case 8: // FIELD08
-                        return CurrentItem.FIELD08;
+                        return Current.FIELD08;
                     case 9: // FIELD09
-                        return CurrentItem.FIELD09;
+                        return Current.FIELD09;
                     case 10: // FIELD10
-                        return CurrentItem.FIELD10;
+                        return Current.FIELD10;
                     case 11: // FIELD11
-                        return CurrentItem.FIELD11;
+                        return Current.FIELD11;
                     case 12: // FIELD12
-                        return CurrentItem.FIELD12;
+                        return Current.FIELD12;
                     case 13: // FIELD13
-                        return CurrentItem.FIELD13;
+                        return Current.FIELD13;
                     case 14: // FIELD14
-                        return CurrentItem.FIELD14;
+                        return Current.FIELD14;
                     case 15: // FIELD15
-                        return CurrentItem.FIELD15;
+                        return Current.FIELD15;
                     case 16: // FIELD16
-                        return CurrentItem.FIELD16;
+                        return Current.FIELD16;
                     case 17: // FIELD17
-                        return CurrentItem.FIELD17;
+                        return Current.FIELD17;
                     case 18: // FIELD18
-                        return CurrentItem.FIELD18;
+                        return Current.FIELD18;
                     case 19: // FIELD19
-                        return CurrentItem.FIELD19;
+                        return Current.FIELD19;
                     case 20: // FIELD20
-                        return CurrentItem.FIELD20;
+                        return Current.FIELD20;
                     case 21: // FIELD21
-                        return CurrentItem.FIELD21;
+                        return Current.FIELD21;
                     case 22: // FIELD22
-                        return CurrentItem.FIELD22;
+                        return Current.FIELD22;
                     case 23: // FIELD23
-                        return CurrentItem.FIELD23;
+                        return Current.FIELD23;
                     case 24: // FIELD24
-                        return CurrentItem.FIELD24;
+                        return Current.FIELD24;
                     case 25: // FIELD25
-                        return CurrentItem.FIELD25;
+                        return Current.FIELD25;
                     case 26: // FIELD26
-                        return CurrentItem.FIELD26;
+                        return Current.FIELD26;
                     case 27: // FIELD27
-                        return CurrentItem.FIELD27;
+                        return Current.FIELD27;
                     case 28: // FIELD28
-                        return CurrentItem.FIELD28;
+                        return Current.FIELD28;
                     case 29: // FIELD29
-                        return CurrentItem.FIELD29;
+                        return Current.FIELD29;
                     case 30: // FIELD30
-                        return CurrentItem.FIELD30;
+                        return Current.FIELD30;
                     case 31: // FIELD31
-                        return CurrentItem.FIELD31;
+                        return Current.FIELD31;
                     case 32: // FIELD32
-                        return CurrentItem.FIELD32;
+                        return Current.FIELD32;
                     case 33: // FIELD33
-                        return CurrentItem.FIELD33;
+                        return Current.FIELD33;
                     case 34: // ERR_FIELD
-                        return CurrentItem.ERR_FIELD;
+                        return Current.ERR_FIELD;
                     case 35: // AM_UMKEY
-                        return CurrentItem.AM_UMKEY;
+                        return Current.AM_UMKEY;
                     case 36: // PM_UMKEY
-                        return CurrentItem.PM_UMKEY;
+                        return Current.PM_UMKEY;
                     case 37: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 38: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 39: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // FIELD01
-                        return CurrentItem.FIELD01 == null;
+                        return Current.FIELD01 == null;
                     case 2: // FIELD02
-                        return CurrentItem.FIELD02 == null;
+                        return Current.FIELD02 == null;
                     case 3: // FIELD03
-                        return CurrentItem.FIELD03 == null;
+                        return Current.FIELD03 == null;
                     case 4: // FIELD04
-                        return CurrentItem.FIELD04 == null;
+                        return Current.FIELD04 == null;
                     case 5: // FIELD05
-                        return CurrentItem.FIELD05 == null;
+                        return Current.FIELD05 == null;
                     case 6: // FIELD06
-                        return CurrentItem.FIELD06 == null;
+                        return Current.FIELD06 == null;
                     case 7: // FIELD07
-                        return CurrentItem.FIELD07 == null;
+                        return Current.FIELD07 == null;
                     case 8: // FIELD08
-                        return CurrentItem.FIELD08 == null;
+                        return Current.FIELD08 == null;
                     case 9: // FIELD09
-                        return CurrentItem.FIELD09 == null;
+                        return Current.FIELD09 == null;
                     case 10: // FIELD10
-                        return CurrentItem.FIELD10 == null;
+                        return Current.FIELD10 == null;
                     case 11: // FIELD11
-                        return CurrentItem.FIELD11 == null;
+                        return Current.FIELD11 == null;
                     case 12: // FIELD12
-                        return CurrentItem.FIELD12 == null;
+                        return Current.FIELD12 == null;
                     case 13: // FIELD13
-                        return CurrentItem.FIELD13 == null;
+                        return Current.FIELD13 == null;
                     case 14: // FIELD14
-                        return CurrentItem.FIELD14 == null;
+                        return Current.FIELD14 == null;
                     case 15: // FIELD15
-                        return CurrentItem.FIELD15 == null;
+                        return Current.FIELD15 == null;
                     case 16: // FIELD16
-                        return CurrentItem.FIELD16 == null;
+                        return Current.FIELD16 == null;
                     case 17: // FIELD17
-                        return CurrentItem.FIELD17 == null;
+                        return Current.FIELD17 == null;
                     case 18: // FIELD18
-                        return CurrentItem.FIELD18 == null;
+                        return Current.FIELD18 == null;
                     case 19: // FIELD19
-                        return CurrentItem.FIELD19 == null;
+                        return Current.FIELD19 == null;
                     case 20: // FIELD20
-                        return CurrentItem.FIELD20 == null;
+                        return Current.FIELD20 == null;
                     case 21: // FIELD21
-                        return CurrentItem.FIELD21 == null;
+                        return Current.FIELD21 == null;
                     case 22: // FIELD22
-                        return CurrentItem.FIELD22 == null;
+                        return Current.FIELD22 == null;
                     case 23: // FIELD23
-                        return CurrentItem.FIELD23 == null;
+                        return Current.FIELD23 == null;
                     case 24: // FIELD24
-                        return CurrentItem.FIELD24 == null;
+                        return Current.FIELD24 == null;
                     case 25: // FIELD25
-                        return CurrentItem.FIELD25 == null;
+                        return Current.FIELD25 == null;
                     case 26: // FIELD26
-                        return CurrentItem.FIELD26 == null;
+                        return Current.FIELD26 == null;
                     case 27: // FIELD27
-                        return CurrentItem.FIELD27 == null;
+                        return Current.FIELD27 == null;
                     case 28: // FIELD28
-                        return CurrentItem.FIELD28 == null;
+                        return Current.FIELD28 == null;
                     case 29: // FIELD29
-                        return CurrentItem.FIELD29 == null;
+                        return Current.FIELD29 == null;
                     case 30: // FIELD30
-                        return CurrentItem.FIELD30 == null;
+                        return Current.FIELD30 == null;
                     case 31: // FIELD31
-                        return CurrentItem.FIELD31 == null;
+                        return Current.FIELD31 == null;
                     case 32: // FIELD32
-                        return CurrentItem.FIELD32 == null;
+                        return Current.FIELD32 == null;
                     case 33: // FIELD33
-                        return CurrentItem.FIELD33 == null;
+                        return Current.FIELD33 == null;
                     case 34: // ERR_FIELD
-                        return CurrentItem.ERR_FIELD == null;
+                        return Current.ERR_FIELD == null;
                     case 35: // AM_UMKEY
-                        return CurrentItem.AM_UMKEY == null;
+                        return Current.AM_UMKEY == null;
                     case 36: // PM_UMKEY
-                        return CurrentItem.PM_UMKEY == null;
+                        return Current.PM_UMKEY == null;
                     case 37: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 38: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 39: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -623,7 +687,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -710,35 +774,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

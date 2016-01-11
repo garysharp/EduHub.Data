@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SAMDataSet : EduHubDataSet<SAM>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SAM"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SAMDataSet(EduHubContext Context)
             : base(Context)
@@ -32,7 +35,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SAM" /> fields for each CSV column header</returns>
-        protected override Action<SAM, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SAM, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SAM, string>[Headers.Count];
 
@@ -140,29 +143,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SAM" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SAM" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SAM" /> items to added or update the base <see cref="SAM" /> items</param>
-        /// <returns>A merged list of <see cref="SAM" /> items</returns>
-        protected override List<SAM> ApplyDeltaItems(List<SAM> Items, List<SAM> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SAM" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SAM" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SAM}"/> of entities</returns>
+        internal override IEnumerable<SAM> ApplyDeltaEntities(IEnumerable<SAM> Entities, List<SAM> DeltaEntities)
         {
-            Dictionary<int, int> Index_SAMKEY = Items.ToIndexDictionary(i => i.SAMKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_SAMKEY = new HashSet<int>(DeltaEntities.Select(i => i.SAMKEY));
 
-            foreach (SAM deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SAMKEY.TryGetValue(deltaItem.SAMKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SAMKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SAMKEY.Remove(entity.SAMKEY);
+                            
+                            if (entity.SAMKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SAMKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -392,11 +421,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SAM table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SAM table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SAM](
         [SAMKEY] int IDENTITY NOT NULL,
@@ -449,204 +482,259 @@ BEGIN
     (
             [MAILKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ADDRESSKEY')
+    ALTER INDEX [Index_ADDRESSKEY] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_NAME')
+    ALTER INDEX [Index_ASSOC_NAME] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_POSN')
+    ALTER INDEX [Index_ASSOC_POSN] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_MAILKEY')
+    ALTER INDEX [Index_MAILKEY] ON [dbo].[SAM] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ADDRESSKEY')
+    ALTER INDEX [Index_ADDRESSKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_NAME')
+    ALTER INDEX [Index_ASSOC_NAME] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_POSN')
+    ALTER INDEX [Index_ASSOC_POSN] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_MAILKEY')
+    ALTER INDEX [Index_MAILKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SAM"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SAM"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SAM> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_SAMKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SAMKEY.Add(entity.SAMKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SAM] WHERE");
+
+
+            // Index_SAMKEY
+            builder.Append("[SAMKEY] IN (");
+            for (int index = 0; index < Index_SAMKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SAMKEY
+                var parameterSAMKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSAMKEY);
+                command.Parameters.Add(parameterSAMKEY, SqlDbType.Int).Value = Index_SAMKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SAM data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SAM data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SAM> GetDataSetDataReader()
         {
-            return new SAMDataReader(Items.Value);
+            return new SAMDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SAM data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SAM data set</returns>
+        public override EduHubDataSetDataReader<SAM> GetDataSetDataReader(List<SAM> Entities)
+        {
+            return new SAMDataReader(new EduHubDataSetLoadedReader<SAM>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SAMDataReader : IDataReader, IDataRecord
+        private class SAMDataReader : EduHubDataSetDataReader<SAM>
         {
-            private List<SAM> Items;
-            private int CurrentIndex;
-            private SAM CurrentItem;
-
-            public SAMDataReader(List<SAM> Items)
+            public SAMDataReader(IEduHubDataSetReader<SAM> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 30; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 30; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SAMKEY
-                        return CurrentItem.SAMKEY;
+                        return Current.SAMKEY;
                     case 1: // PERSON_TYPE
-                        return CurrentItem.PERSON_TYPE;
+                        return Current.PERSON_TYPE;
                     case 2: // PERSON
-                        return CurrentItem.PERSON;
+                        return Current.PERSON;
                     case 3: // WHICH_PARENT
-                        return CurrentItem.WHICH_PARENT;
+                        return Current.WHICH_PARENT;
                     case 4: // GENDER
-                        return CurrentItem.GENDER;
+                        return Current.GENDER;
                     case 5: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE;
+                        return Current.BIRTHDATE;
                     case 6: // KOORIE
-                        return CurrentItem.KOORIE;
+                        return Current.KOORIE;
                     case 7: // PARENT_OS
-                        return CurrentItem.PARENT_OS;
+                        return Current.PARENT_OS;
                     case 8: // LOTE
-                        return CurrentItem.LOTE;
+                        return Current.LOTE;
                     case 9: // LBOTE
-                        return CurrentItem.LBOTE;
+                        return Current.LBOTE;
                     case 10: // DISABILITY
-                        return CurrentItem.DISABILITY;
+                        return Current.DISABILITY;
                     case 11: // ASSOC_NAME
-                        return CurrentItem.ASSOC_NAME;
+                        return Current.ASSOC_NAME;
                     case 12: // ASSOC_POSN
-                        return CurrentItem.ASSOC_POSN;
+                        return Current.ASSOC_POSN;
                     case 13: // ADDRESSKEY
-                        return CurrentItem.ADDRESSKEY;
+                        return Current.ADDRESSKEY;
                     case 14: // MAILKEY
-                        return CurrentItem.MAILKEY;
+                        return Current.MAILKEY;
                     case 15: // HOME_E_MAIL
-                        return CurrentItem.HOME_E_MAIL;
+                        return Current.HOME_E_MAIL;
                     case 16: // WORK_PHONE
-                        return CurrentItem.WORK_PHONE;
+                        return Current.WORK_PHONE;
                     case 17: // WORK_FAX
-                        return CurrentItem.WORK_FAX;
+                        return Current.WORK_FAX;
                     case 18: // WORK_E_MAIL
-                        return CurrentItem.WORK_E_MAIL;
+                        return Current.WORK_E_MAIL;
                     case 19: // SURNAME
-                        return CurrentItem.SURNAME;
+                        return Current.SURNAME;
                     case 20: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME;
+                        return Current.FIRST_NAME;
                     case 21: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 22: // MOBILE_PHONE
-                        return CurrentItem.MOBILE_PHONE;
+                        return Current.MOBILE_PHONE;
                     case 23: // SIGNATORY
-                        return CurrentItem.SIGNATORY;
+                        return Current.SIGNATORY;
                     case 24: // SAM_COMMENT
-                        return CurrentItem.SAM_COMMENT;
+                        return Current.SAM_COMMENT;
                     case 25: // START_DATE
-                        return CurrentItem.START_DATE;
+                        return Current.START_DATE;
                     case 26: // END_DATE
-                        return CurrentItem.END_DATE;
+                        return Current.END_DATE;
                     case 27: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 28: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 29: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // PERSON_TYPE
-                        return CurrentItem.PERSON_TYPE == null;
+                        return Current.PERSON_TYPE == null;
                     case 2: // PERSON
-                        return CurrentItem.PERSON == null;
+                        return Current.PERSON == null;
                     case 3: // WHICH_PARENT
-                        return CurrentItem.WHICH_PARENT == null;
+                        return Current.WHICH_PARENT == null;
                     case 4: // GENDER
-                        return CurrentItem.GENDER == null;
+                        return Current.GENDER == null;
                     case 5: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE == null;
+                        return Current.BIRTHDATE == null;
                     case 6: // KOORIE
-                        return CurrentItem.KOORIE == null;
+                        return Current.KOORIE == null;
                     case 7: // PARENT_OS
-                        return CurrentItem.PARENT_OS == null;
+                        return Current.PARENT_OS == null;
                     case 8: // LOTE
-                        return CurrentItem.LOTE == null;
+                        return Current.LOTE == null;
                     case 9: // LBOTE
-                        return CurrentItem.LBOTE == null;
+                        return Current.LBOTE == null;
                     case 10: // DISABILITY
-                        return CurrentItem.DISABILITY == null;
+                        return Current.DISABILITY == null;
                     case 11: // ASSOC_NAME
-                        return CurrentItem.ASSOC_NAME == null;
+                        return Current.ASSOC_NAME == null;
                     case 12: // ASSOC_POSN
-                        return CurrentItem.ASSOC_POSN == null;
+                        return Current.ASSOC_POSN == null;
                     case 13: // ADDRESSKEY
-                        return CurrentItem.ADDRESSKEY == null;
+                        return Current.ADDRESSKEY == null;
                     case 14: // MAILKEY
-                        return CurrentItem.MAILKEY == null;
+                        return Current.MAILKEY == null;
                     case 15: // HOME_E_MAIL
-                        return CurrentItem.HOME_E_MAIL == null;
+                        return Current.HOME_E_MAIL == null;
                     case 16: // WORK_PHONE
-                        return CurrentItem.WORK_PHONE == null;
+                        return Current.WORK_PHONE == null;
                     case 17: // WORK_FAX
-                        return CurrentItem.WORK_FAX == null;
+                        return Current.WORK_FAX == null;
                     case 18: // WORK_E_MAIL
-                        return CurrentItem.WORK_E_MAIL == null;
+                        return Current.WORK_E_MAIL == null;
                     case 19: // SURNAME
-                        return CurrentItem.SURNAME == null;
+                        return Current.SURNAME == null;
                     case 20: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME == null;
+                        return Current.FIRST_NAME == null;
                     case 21: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 22: // MOBILE_PHONE
-                        return CurrentItem.MOBILE_PHONE == null;
+                        return Current.MOBILE_PHONE == null;
                     case 23: // SIGNATORY
-                        return CurrentItem.SIGNATORY == null;
+                        return Current.SIGNATORY == null;
                     case 24: // SAM_COMMENT
-                        return CurrentItem.SAM_COMMENT == null;
+                        return Current.SAM_COMMENT == null;
                     case 25: // START_DATE
-                        return CurrentItem.START_DATE == null;
+                        return Current.START_DATE == null;
                     case 26: // END_DATE
-                        return CurrentItem.END_DATE == null;
+                        return Current.END_DATE == null;
                     case 27: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 28: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 29: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -715,7 +803,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -782,35 +870,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

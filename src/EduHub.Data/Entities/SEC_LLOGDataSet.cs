@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SEC_LLOGDataSet : EduHubDataSet<SEC_LLOG>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SEC_LLOG"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SEC_LLOGDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SEC_LLOG" /> fields for each CSV column header</returns>
-        protected override Action<SEC_LLOG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SEC_LLOG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SEC_LLOG, string>[Headers.Count];
 
@@ -88,29 +91,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SEC_LLOG" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SEC_LLOG" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SEC_LLOG" /> items to added or update the base <see cref="SEC_LLOG" /> items</param>
-        /// <returns>A merged list of <see cref="SEC_LLOG" /> items</returns>
-        protected override List<SEC_LLOG> ApplyDeltaItems(List<SEC_LLOG> Items, List<SEC_LLOG> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SEC_LLOG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SEC_LLOG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SEC_LLOG}"/> of entities</returns>
+        internal override IEnumerable<SEC_LLOG> ApplyDeltaEntities(IEnumerable<SEC_LLOG> Entities, List<SEC_LLOG> DeltaEntities)
         {
-            Dictionary<int, int> Index_LOGINLOGID = Items.ToIndexDictionary(i => i.LOGINLOGID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_LOGINLOGID = new HashSet<int>(DeltaEntities.Select(i => i.LOGINLOGID));
 
-            foreach (SEC_LLOG deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_LOGINLOGID.TryGetValue(deltaItem.LOGINLOGID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.LOGINLOGID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_LOGINLOGID.Remove(entity.LOGINLOGID);
+                            
+                            if (entity.LOGINLOGID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.LOGINLOGID)
-                .ToList();
         }
 
         #region Index Fields
@@ -168,11 +197,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SEC_LLOG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SEC_LLOG table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SEC_LLOG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SEC_LLOG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SEC_LLOG](
         [LOGINLOGID] int IDENTITY NOT NULL,
@@ -193,140 +226,171 @@ BEGIN
             [LOGINLOGID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SEC_LLOGDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SEC_LLOGDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SEC_LLOG"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SEC_LLOG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SEC_LLOG> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_LOGINLOGID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_LOGINLOGID.Add(entity.LOGINLOGID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SEC_LLOG] WHERE");
+
+
+            // Index_LOGINLOGID
+            builder.Append("[LOGINLOGID] IN (");
+            for (int index = 0; index < Index_LOGINLOGID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // LOGINLOGID
+                var parameterLOGINLOGID = $"@p{parameterIndex++}";
+                builder.Append(parameterLOGINLOGID);
+                command.Parameters.Add(parameterLOGINLOGID, SqlDbType.Int).Value = Index_LOGINLOGID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SEC_LLOG data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SEC_LLOG data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SEC_LLOG> GetDataSetDataReader()
         {
-            return new SEC_LLOGDataReader(Items.Value);
+            return new SEC_LLOGDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SEC_LLOG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SEC_LLOG data set</returns>
+        public override EduHubDataSetDataReader<SEC_LLOG> GetDataSetDataReader(List<SEC_LLOG> Entities)
+        {
+            return new SEC_LLOGDataReader(new EduHubDataSetLoadedReader<SEC_LLOG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SEC_LLOGDataReader : IDataReader, IDataRecord
+        private class SEC_LLOGDataReader : EduHubDataSetDataReader<SEC_LLOG>
         {
-            private List<SEC_LLOG> Items;
-            private int CurrentIndex;
-            private SEC_LLOG CurrentItem;
-
-            public SEC_LLOGDataReader(List<SEC_LLOG> Items)
+            public SEC_LLOGDataReader(IEduHubDataSetReader<SEC_LLOG> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 14; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 14; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // LOGINLOGID
-                        return CurrentItem.LOGINLOGID;
+                        return Current.LOGINLOGID;
                     case 1: // SERVER
-                        return CurrentItem.SERVER;
+                        return Current.SERVER;
                     case 2: // VERSION
-                        return CurrentItem.VERSION;
+                        return Current.VERSION;
                     case 3: // USERID
-                        return CurrentItem.USERID;
+                        return Current.USERID;
                     case 4: // USERNAME
-                        return CurrentItem.USERNAME;
+                        return Current.USERNAME;
                     case 5: // BROWSER
-                        return CurrentItem.BROWSER;
+                        return Current.BROWSER;
                     case 6: // SCREENSIZE
-                        return CurrentItem.SCREENSIZE;
+                        return Current.SCREENSIZE;
                     case 7: // RESULT
-                        return CurrentItem.RESULT;
+                        return Current.RESULT;
                     case 8: // IPADDRESS
-                        return CurrentItem.IPADDRESS;
+                        return Current.IPADDRESS;
                     case 9: // SESSIONID
-                        return CurrentItem.SESSIONID;
+                        return Current.SESSIONID;
                     case 10: // LOGGEDOUT
-                        return CurrentItem.LOGGEDOUT;
+                        return Current.LOGGEDOUT;
                     case 11: // LOGINTIME
-                        return CurrentItem.LOGINTIME;
+                        return Current.LOGINTIME;
                     case 12: // LOGOUTTIME
-                        return CurrentItem.LOGOUTTIME;
+                        return Current.LOGOUTTIME;
                     case 13: // LOGGEDPERIOD
-                        return CurrentItem.LOGGEDPERIOD;
+                        return Current.LOGGEDPERIOD;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // SERVER
-                        return CurrentItem.SERVER == null;
+                        return Current.SERVER == null;
                     case 2: // VERSION
-                        return CurrentItem.VERSION == null;
+                        return Current.VERSION == null;
                     case 3: // USERID
-                        return CurrentItem.USERID == null;
+                        return Current.USERID == null;
                     case 4: // USERNAME
-                        return CurrentItem.USERNAME == null;
+                        return Current.USERNAME == null;
                     case 5: // BROWSER
-                        return CurrentItem.BROWSER == null;
+                        return Current.BROWSER == null;
                     case 6: // SCREENSIZE
-                        return CurrentItem.SCREENSIZE == null;
+                        return Current.SCREENSIZE == null;
                     case 7: // RESULT
-                        return CurrentItem.RESULT == null;
+                        return Current.RESULT == null;
                     case 8: // IPADDRESS
-                        return CurrentItem.IPADDRESS == null;
+                        return Current.IPADDRESS == null;
                     case 9: // SESSIONID
-                        return CurrentItem.SESSIONID == null;
+                        return Current.SESSIONID == null;
                     case 10: // LOGGEDOUT
-                        return CurrentItem.LOGGEDOUT == null;
+                        return Current.LOGGEDOUT == null;
                     case 11: // LOGINTIME
-                        return CurrentItem.LOGINTIME == null;
+                        return Current.LOGINTIME == null;
                     case 12: // LOGOUTTIME
-                        return CurrentItem.LOGOUTTIME == null;
+                        return Current.LOGOUTTIME == null;
                     case 13: // LOGGEDPERIOD
-                        return CurrentItem.LOGGEDPERIOD == null;
+                        return Current.LOGGEDPERIOD == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -363,7 +427,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -398,35 +462,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

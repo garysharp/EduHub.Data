@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class FDT_IMPDataSet : EduHubDataSet<FDT_IMP>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "FDT_IMP"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal FDT_IMPDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="FDT_IMP" /> fields for each CSV column header</returns>
-        protected override Action<FDT_IMP, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<FDT_IMP, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<FDT_IMP, string>[Headers.Count];
 
@@ -247,29 +250,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="FDT_IMP" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="FDT_IMP" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="FDT_IMP" /> items to added or update the base <see cref="FDT_IMP" /> items</param>
-        /// <returns>A merged list of <see cref="FDT_IMP" /> items</returns>
-        protected override List<FDT_IMP> ApplyDeltaItems(List<FDT_IMP> Items, List<FDT_IMP> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="FDT_IMP" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="FDT_IMP" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{FDT_IMP}"/> of entities</returns>
+        internal override IEnumerable<FDT_IMP> ApplyDeltaEntities(IEnumerable<FDT_IMP> Entities, List<FDT_IMP> DeltaEntities)
         {
-            Dictionary<int, int> Index_FDTKEY = Items.ToIndexDictionary(i => i.FDTKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_FDTKEY = new HashSet<int>(DeltaEntities.Select(i => i.FDTKEY));
 
-            foreach (FDT_IMP deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_FDTKEY.TryGetValue(deltaItem.FDTKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.FDTKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_FDTKEY.Remove(entity.FDTKEY);
+                            
+                            if (entity.FDTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.FDTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -327,11 +356,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a FDT_IMP table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a FDT_IMP table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[FDT_IMP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[FDT_IMP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[FDT_IMP](
         [FDTKEY] int IDENTITY NOT NULL,
@@ -405,352 +438,383 @@ BEGIN
             [FDTKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="FDT_IMPDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="FDT_IMPDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="FDT_IMP"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="FDT_IMP"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<FDT_IMP> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_FDTKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_FDTKEY.Add(entity.FDTKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[FDT_IMP] WHERE");
+
+
+            // Index_FDTKEY
+            builder.Append("[FDTKEY] IN (");
+            for (int index = 0; index < Index_FDTKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // FDTKEY
+                var parameterFDTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterFDTKEY);
+                command.Parameters.Add(parameterFDTKEY, SqlDbType.Int).Value = Index_FDTKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the FDT_IMP data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the FDT_IMP data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<FDT_IMP> GetDataSetDataReader()
         {
-            return new FDT_IMPDataReader(Items.Value);
+            return new FDT_IMPDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the FDT_IMP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the FDT_IMP data set</returns>
+        public override EduHubDataSetDataReader<FDT_IMP> GetDataSetDataReader(List<FDT_IMP> Entities)
+        {
+            return new FDT_IMPDataReader(new EduHubDataSetLoadedReader<FDT_IMP>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class FDT_IMPDataReader : IDataReader, IDataRecord
+        private class FDT_IMPDataReader : EduHubDataSetDataReader<FDT_IMP>
         {
-            private List<FDT_IMP> Items;
-            private int CurrentIndex;
-            private FDT_IMP CurrentItem;
-
-            public FDT_IMPDataReader(List<FDT_IMP> Items)
+            public FDT_IMPDataReader(IEduHubDataSetReader<FDT_IMP> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 67; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 67; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // FDTKEY
-                        return CurrentItem.FDTKEY;
+                        return Current.FDTKEY;
                     case 1: // SOURCE
-                        return CurrentItem.SOURCE;
+                        return Current.SOURCE;
                     case 2: // SOURCE_TABLE
-                        return CurrentItem.SOURCE_TABLE;
+                        return Current.SOURCE_TABLE;
                     case 3: // FIELD01
-                        return CurrentItem.FIELD01;
+                        return Current.FIELD01;
                     case 4: // FIELD02
-                        return CurrentItem.FIELD02;
+                        return Current.FIELD02;
                     case 5: // FIELD03
-                        return CurrentItem.FIELD03;
+                        return Current.FIELD03;
                     case 6: // FIELD04
-                        return CurrentItem.FIELD04;
+                        return Current.FIELD04;
                     case 7: // FIELD05
-                        return CurrentItem.FIELD05;
+                        return Current.FIELD05;
                     case 8: // FIELD06
-                        return CurrentItem.FIELD06;
+                        return Current.FIELD06;
                     case 9: // FIELD07
-                        return CurrentItem.FIELD07;
+                        return Current.FIELD07;
                     case 10: // FIELD08
-                        return CurrentItem.FIELD08;
+                        return Current.FIELD08;
                     case 11: // FIELD09
-                        return CurrentItem.FIELD09;
+                        return Current.FIELD09;
                     case 12: // FIELD10
-                        return CurrentItem.FIELD10;
+                        return Current.FIELD10;
                     case 13: // FIELD11
-                        return CurrentItem.FIELD11;
+                        return Current.FIELD11;
                     case 14: // FIELD12
-                        return CurrentItem.FIELD12;
+                        return Current.FIELD12;
                     case 15: // FIELD13
-                        return CurrentItem.FIELD13;
+                        return Current.FIELD13;
                     case 16: // FIELD14
-                        return CurrentItem.FIELD14;
+                        return Current.FIELD14;
                     case 17: // FIELD15
-                        return CurrentItem.FIELD15;
+                        return Current.FIELD15;
                     case 18: // FIELD16
-                        return CurrentItem.FIELD16;
+                        return Current.FIELD16;
                     case 19: // FIELD17
-                        return CurrentItem.FIELD17;
+                        return Current.FIELD17;
                     case 20: // FIELD18
-                        return CurrentItem.FIELD18;
+                        return Current.FIELD18;
                     case 21: // FIELD19
-                        return CurrentItem.FIELD19;
+                        return Current.FIELD19;
                     case 22: // FIELD20
-                        return CurrentItem.FIELD20;
+                        return Current.FIELD20;
                     case 23: // FIELD21
-                        return CurrentItem.FIELD21;
+                        return Current.FIELD21;
                     case 24: // FIELD22
-                        return CurrentItem.FIELD22;
+                        return Current.FIELD22;
                     case 25: // FIELD23
-                        return CurrentItem.FIELD23;
+                        return Current.FIELD23;
                     case 26: // FIELD24
-                        return CurrentItem.FIELD24;
+                        return Current.FIELD24;
                     case 27: // FIELD25
-                        return CurrentItem.FIELD25;
+                        return Current.FIELD25;
                     case 28: // FIELD26
-                        return CurrentItem.FIELD26;
+                        return Current.FIELD26;
                     case 29: // FIELD27
-                        return CurrentItem.FIELD27;
+                        return Current.FIELD27;
                     case 30: // FIELD28
-                        return CurrentItem.FIELD28;
+                        return Current.FIELD28;
                     case 31: // FIELD29
-                        return CurrentItem.FIELD29;
+                        return Current.FIELD29;
                     case 32: // FIELD30
-                        return CurrentItem.FIELD30;
+                        return Current.FIELD30;
                     case 33: // FIELD31
-                        return CurrentItem.FIELD31;
+                        return Current.FIELD31;
                     case 34: // FIELD32
-                        return CurrentItem.FIELD32;
+                        return Current.FIELD32;
                     case 35: // FIELD33
-                        return CurrentItem.FIELD33;
+                        return Current.FIELD33;
                     case 36: // FIELD34
-                        return CurrentItem.FIELD34;
+                        return Current.FIELD34;
                     case 37: // FIELD35
-                        return CurrentItem.FIELD35;
+                        return Current.FIELD35;
                     case 38: // FIELD36
-                        return CurrentItem.FIELD36;
+                        return Current.FIELD36;
                     case 39: // FIELD37
-                        return CurrentItem.FIELD37;
+                        return Current.FIELD37;
                     case 40: // FIELD38
-                        return CurrentItem.FIELD38;
+                        return Current.FIELD38;
                     case 41: // FIELD39
-                        return CurrentItem.FIELD39;
+                        return Current.FIELD39;
                     case 42: // FIELD40
-                        return CurrentItem.FIELD40;
+                        return Current.FIELD40;
                     case 43: // FIELD41
-                        return CurrentItem.FIELD41;
+                        return Current.FIELD41;
                     case 44: // FIELD42
-                        return CurrentItem.FIELD42;
+                        return Current.FIELD42;
                     case 45: // FIELD43
-                        return CurrentItem.FIELD43;
+                        return Current.FIELD43;
                     case 46: // FIELD44
-                        return CurrentItem.FIELD44;
+                        return Current.FIELD44;
                     case 47: // FIELD45
-                        return CurrentItem.FIELD45;
+                        return Current.FIELD45;
                     case 48: // FIELD46
-                        return CurrentItem.FIELD46;
+                        return Current.FIELD46;
                     case 49: // FIELD47
-                        return CurrentItem.FIELD47;
+                        return Current.FIELD47;
                     case 50: // FIELD48
-                        return CurrentItem.FIELD48;
+                        return Current.FIELD48;
                     case 51: // FIELD49
-                        return CurrentItem.FIELD49;
+                        return Current.FIELD49;
                     case 52: // NOTES01
-                        return CurrentItem.NOTES01;
+                        return Current.NOTES01;
                     case 53: // NOTES02
-                        return CurrentItem.NOTES02;
+                        return Current.NOTES02;
                     case 54: // NOTES03
-                        return CurrentItem.NOTES03;
+                        return Current.NOTES03;
                     case 55: // NOTES04
-                        return CurrentItem.NOTES04;
+                        return Current.NOTES04;
                     case 56: // ITEM_PIC
-                        return CurrentItem.ITEM_PIC;
+                        return Current.ITEM_PIC;
                     case 57: // FDT_SOURCE
-                        return CurrentItem.FDT_SOURCE;
+                        return Current.FDT_SOURCE;
                     case 58: // FDT_DEST
-                        return CurrentItem.FDT_DEST;
+                        return Current.FDT_DEST;
                     case 59: // FDT_DEST_ID
-                        return CurrentItem.FDT_DEST_ID;
+                        return Current.FDT_DEST_ID;
                     case 60: // FDT_EXP_DATE
-                        return CurrentItem.FDT_EXP_DATE;
+                        return Current.FDT_EXP_DATE;
                     case 61: // FDT_EXP_TIME
-                        return CurrentItem.FDT_EXP_TIME;
+                        return Current.FDT_EXP_TIME;
                     case 62: // FDT_COMMENT
-                        return CurrentItem.FDT_COMMENT;
+                        return Current.FDT_COMMENT;
                     case 63: // CURRENT_VER
-                        return CurrentItem.CURRENT_VER;
+                        return Current.CURRENT_VER;
                     case 64: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 65: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 66: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // SOURCE
-                        return CurrentItem.SOURCE == null;
+                        return Current.SOURCE == null;
                     case 2: // SOURCE_TABLE
-                        return CurrentItem.SOURCE_TABLE == null;
+                        return Current.SOURCE_TABLE == null;
                     case 3: // FIELD01
-                        return CurrentItem.FIELD01 == null;
+                        return Current.FIELD01 == null;
                     case 4: // FIELD02
-                        return CurrentItem.FIELD02 == null;
+                        return Current.FIELD02 == null;
                     case 5: // FIELD03
-                        return CurrentItem.FIELD03 == null;
+                        return Current.FIELD03 == null;
                     case 6: // FIELD04
-                        return CurrentItem.FIELD04 == null;
+                        return Current.FIELD04 == null;
                     case 7: // FIELD05
-                        return CurrentItem.FIELD05 == null;
+                        return Current.FIELD05 == null;
                     case 8: // FIELD06
-                        return CurrentItem.FIELD06 == null;
+                        return Current.FIELD06 == null;
                     case 9: // FIELD07
-                        return CurrentItem.FIELD07 == null;
+                        return Current.FIELD07 == null;
                     case 10: // FIELD08
-                        return CurrentItem.FIELD08 == null;
+                        return Current.FIELD08 == null;
                     case 11: // FIELD09
-                        return CurrentItem.FIELD09 == null;
+                        return Current.FIELD09 == null;
                     case 12: // FIELD10
-                        return CurrentItem.FIELD10 == null;
+                        return Current.FIELD10 == null;
                     case 13: // FIELD11
-                        return CurrentItem.FIELD11 == null;
+                        return Current.FIELD11 == null;
                     case 14: // FIELD12
-                        return CurrentItem.FIELD12 == null;
+                        return Current.FIELD12 == null;
                     case 15: // FIELD13
-                        return CurrentItem.FIELD13 == null;
+                        return Current.FIELD13 == null;
                     case 16: // FIELD14
-                        return CurrentItem.FIELD14 == null;
+                        return Current.FIELD14 == null;
                     case 17: // FIELD15
-                        return CurrentItem.FIELD15 == null;
+                        return Current.FIELD15 == null;
                     case 18: // FIELD16
-                        return CurrentItem.FIELD16 == null;
+                        return Current.FIELD16 == null;
                     case 19: // FIELD17
-                        return CurrentItem.FIELD17 == null;
+                        return Current.FIELD17 == null;
                     case 20: // FIELD18
-                        return CurrentItem.FIELD18 == null;
+                        return Current.FIELD18 == null;
                     case 21: // FIELD19
-                        return CurrentItem.FIELD19 == null;
+                        return Current.FIELD19 == null;
                     case 22: // FIELD20
-                        return CurrentItem.FIELD20 == null;
+                        return Current.FIELD20 == null;
                     case 23: // FIELD21
-                        return CurrentItem.FIELD21 == null;
+                        return Current.FIELD21 == null;
                     case 24: // FIELD22
-                        return CurrentItem.FIELD22 == null;
+                        return Current.FIELD22 == null;
                     case 25: // FIELD23
-                        return CurrentItem.FIELD23 == null;
+                        return Current.FIELD23 == null;
                     case 26: // FIELD24
-                        return CurrentItem.FIELD24 == null;
+                        return Current.FIELD24 == null;
                     case 27: // FIELD25
-                        return CurrentItem.FIELD25 == null;
+                        return Current.FIELD25 == null;
                     case 28: // FIELD26
-                        return CurrentItem.FIELD26 == null;
+                        return Current.FIELD26 == null;
                     case 29: // FIELD27
-                        return CurrentItem.FIELD27 == null;
+                        return Current.FIELD27 == null;
                     case 30: // FIELD28
-                        return CurrentItem.FIELD28 == null;
+                        return Current.FIELD28 == null;
                     case 31: // FIELD29
-                        return CurrentItem.FIELD29 == null;
+                        return Current.FIELD29 == null;
                     case 32: // FIELD30
-                        return CurrentItem.FIELD30 == null;
+                        return Current.FIELD30 == null;
                     case 33: // FIELD31
-                        return CurrentItem.FIELD31 == null;
+                        return Current.FIELD31 == null;
                     case 34: // FIELD32
-                        return CurrentItem.FIELD32 == null;
+                        return Current.FIELD32 == null;
                     case 35: // FIELD33
-                        return CurrentItem.FIELD33 == null;
+                        return Current.FIELD33 == null;
                     case 36: // FIELD34
-                        return CurrentItem.FIELD34 == null;
+                        return Current.FIELD34 == null;
                     case 37: // FIELD35
-                        return CurrentItem.FIELD35 == null;
+                        return Current.FIELD35 == null;
                     case 38: // FIELD36
-                        return CurrentItem.FIELD36 == null;
+                        return Current.FIELD36 == null;
                     case 39: // FIELD37
-                        return CurrentItem.FIELD37 == null;
+                        return Current.FIELD37 == null;
                     case 40: // FIELD38
-                        return CurrentItem.FIELD38 == null;
+                        return Current.FIELD38 == null;
                     case 41: // FIELD39
-                        return CurrentItem.FIELD39 == null;
+                        return Current.FIELD39 == null;
                     case 42: // FIELD40
-                        return CurrentItem.FIELD40 == null;
+                        return Current.FIELD40 == null;
                     case 43: // FIELD41
-                        return CurrentItem.FIELD41 == null;
+                        return Current.FIELD41 == null;
                     case 44: // FIELD42
-                        return CurrentItem.FIELD42 == null;
+                        return Current.FIELD42 == null;
                     case 45: // FIELD43
-                        return CurrentItem.FIELD43 == null;
+                        return Current.FIELD43 == null;
                     case 46: // FIELD44
-                        return CurrentItem.FIELD44 == null;
+                        return Current.FIELD44 == null;
                     case 47: // FIELD45
-                        return CurrentItem.FIELD45 == null;
+                        return Current.FIELD45 == null;
                     case 48: // FIELD46
-                        return CurrentItem.FIELD46 == null;
+                        return Current.FIELD46 == null;
                     case 49: // FIELD47
-                        return CurrentItem.FIELD47 == null;
+                        return Current.FIELD47 == null;
                     case 50: // FIELD48
-                        return CurrentItem.FIELD48 == null;
+                        return Current.FIELD48 == null;
                     case 51: // FIELD49
-                        return CurrentItem.FIELD49 == null;
+                        return Current.FIELD49 == null;
                     case 52: // NOTES01
-                        return CurrentItem.NOTES01 == null;
+                        return Current.NOTES01 == null;
                     case 53: // NOTES02
-                        return CurrentItem.NOTES02 == null;
+                        return Current.NOTES02 == null;
                     case 54: // NOTES03
-                        return CurrentItem.NOTES03 == null;
+                        return Current.NOTES03 == null;
                     case 55: // NOTES04
-                        return CurrentItem.NOTES04 == null;
+                        return Current.NOTES04 == null;
                     case 56: // ITEM_PIC
-                        return CurrentItem.ITEM_PIC == null;
+                        return Current.ITEM_PIC == null;
                     case 57: // FDT_SOURCE
-                        return CurrentItem.FDT_SOURCE == null;
+                        return Current.FDT_SOURCE == null;
                     case 58: // FDT_DEST
-                        return CurrentItem.FDT_DEST == null;
+                        return Current.FDT_DEST == null;
                     case 59: // FDT_DEST_ID
-                        return CurrentItem.FDT_DEST_ID == null;
+                        return Current.FDT_DEST_ID == null;
                     case 60: // FDT_EXP_DATE
-                        return CurrentItem.FDT_EXP_DATE == null;
+                        return Current.FDT_EXP_DATE == null;
                     case 61: // FDT_EXP_TIME
-                        return CurrentItem.FDT_EXP_TIME == null;
+                        return Current.FDT_EXP_TIME == null;
                     case 62: // FDT_COMMENT
-                        return CurrentItem.FDT_COMMENT == null;
+                        return Current.FDT_COMMENT == null;
                     case 63: // CURRENT_VER
-                        return CurrentItem.CURRENT_VER == null;
+                        return Current.CURRENT_VER == null;
                     case 64: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 65: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 66: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -893,7 +957,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1034,35 +1098,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

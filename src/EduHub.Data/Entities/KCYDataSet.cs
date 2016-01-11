@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCYDataSet : EduHubDataSet<KCY>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KCY"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KCYDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KCY" /> fields for each CSV column header</returns>
-        protected override Action<KCY, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KCY, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KCY, string>[Headers.Count];
 
@@ -91,29 +94,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KCY" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KCY" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KCY" /> items to added or update the base <see cref="KCY" /> items</param>
-        /// <returns>A merged list of <see cref="KCY" /> items</returns>
-        protected override List<KCY> ApplyDeltaItems(List<KCY> Items, List<KCY> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KCY" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KCY" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KCY}"/> of entities</returns>
+        internal override IEnumerable<KCY> ApplyDeltaEntities(IEnumerable<KCY> Entities, List<KCY> DeltaEntities)
         {
-            Dictionary<string, int> Index_KCYKEY = Items.ToIndexDictionary(i => i.KCYKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_KCYKEY = new HashSet<string>(DeltaEntities.Select(i => i.KCYKEY));
 
-            foreach (KCY deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KCYKEY.TryGetValue(deltaItem.KCYKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KCYKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KCYKEY.Remove(entity.KCYKEY);
+                            
+                            if (entity.KCYKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KCYKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -300,11 +329,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KCY table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KCY table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KCY](
         [KCYKEY] varchar(4) NOT NULL,
@@ -337,140 +370,191 @@ BEGIN
     (
             [TEACHER_B] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_NEXT_YR')
+    ALTER INDEX [Index_NEXT_YR] ON [dbo].[KCY] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER')
+    ALTER INDEX [Index_TEACHER] ON [dbo].[KCY] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER_B')
+    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KCY] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_NEXT_YR')
+    ALTER INDEX [Index_NEXT_YR] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER')
+    ALTER INDEX [Index_TEACHER] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER_B')
+    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KCY"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KCY"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KCY> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_KCYKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KCYKEY.Add(entity.KCYKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KCY] WHERE");
+
+
+            // Index_KCYKEY
+            builder.Append("[KCYKEY] IN (");
+            for (int index = 0; index < Index_KCYKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KCYKEY
+                var parameterKCYKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKCYKEY);
+                command.Parameters.Add(parameterKCYKEY, SqlDbType.VarChar, 4).Value = Index_KCYKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KCY data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KCY data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KCY> GetDataSetDataReader()
         {
-            return new KCYDataReader(Items.Value);
+            return new KCYDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KCY data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KCY data set</returns>
+        public override EduHubDataSetDataReader<KCY> GetDataSetDataReader(List<KCY> Entities)
+        {
+            return new KCYDataReader(new EduHubDataSetLoadedReader<KCY>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KCYDataReader : IDataReader, IDataRecord
+        private class KCYDataReader : EduHubDataSetDataReader<KCY>
         {
-            private List<KCY> Items;
-            private int CurrentIndex;
-            private KCY CurrentItem;
-
-            public KCYDataReader(List<KCY> Items)
+            public KCYDataReader(IEduHubDataSetReader<KCY> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 14; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 14; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KCYKEY
-                        return CurrentItem.KCYKEY;
+                        return Current.KCYKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // NUM_EQVT
-                        return CurrentItem.NUM_EQVT;
+                        return Current.NUM_EQVT;
                     case 3: // SHORT_DESC
-                        return CurrentItem.SHORT_DESC;
+                        return Current.SHORT_DESC;
                     case 4: // TEACHER
-                        return CurrentItem.TEACHER;
+                        return Current.TEACHER;
                     case 5: // TEACHER_B
-                        return CurrentItem.TEACHER_B;
+                        return Current.TEACHER_B;
                     case 6: // NEXT_YR
-                        return CurrentItem.NEXT_YR;
+                        return Current.NEXT_YR;
                     case 7: // FINAL_YR
-                        return CurrentItem.FINAL_YR;
+                        return Current.FINAL_YR;
                     case 8: // CSF_REQUIRED
-                        return CurrentItem.CSF_REQUIRED;
+                        return Current.CSF_REQUIRED;
                     case 9: // HALF_DAY_ABS
-                        return CurrentItem.HALF_DAY_ABS;
+                        return Current.HALF_DAY_ABS;
                     case 10: // PERIOD_ABS
-                        return CurrentItem.PERIOD_ABS;
+                        return Current.PERIOD_ABS;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // NUM_EQVT
-                        return CurrentItem.NUM_EQVT == null;
+                        return Current.NUM_EQVT == null;
                     case 3: // SHORT_DESC
-                        return CurrentItem.SHORT_DESC == null;
+                        return Current.SHORT_DESC == null;
                     case 4: // TEACHER
-                        return CurrentItem.TEACHER == null;
+                        return Current.TEACHER == null;
                     case 5: // TEACHER_B
-                        return CurrentItem.TEACHER_B == null;
+                        return Current.TEACHER_B == null;
                     case 6: // NEXT_YR
-                        return CurrentItem.NEXT_YR == null;
+                        return Current.NEXT_YR == null;
                     case 7: // FINAL_YR
-                        return CurrentItem.FINAL_YR == null;
+                        return Current.FINAL_YR == null;
                     case 8: // CSF_REQUIRED
-                        return CurrentItem.CSF_REQUIRED == null;
+                        return Current.CSF_REQUIRED == null;
                     case 9: // HALF_DAY_ABS
-                        return CurrentItem.HALF_DAY_ABS == null;
+                        return Current.HALF_DAY_ABS == null;
                     case 10: // PERIOD_ABS
-                        return CurrentItem.PERIOD_ABS == null;
+                        return Current.PERIOD_ABS == null;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -507,7 +591,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -542,35 +626,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

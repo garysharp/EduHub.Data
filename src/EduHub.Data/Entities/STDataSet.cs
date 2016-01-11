@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STDataSet : EduHubDataSet<ST>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "ST"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal STDataSet(EduHubContext Context)
             : base(Context)
@@ -56,7 +59,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="ST" /> fields for each CSV column header</returns>
-        protected override Action<ST, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<ST, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<ST, string>[Headers.Count];
 
@@ -584,34 +587,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="ST" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="ST" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="ST" /> items to added or update the base <see cref="ST" /> items</param>
-        /// <returns>A merged list of <see cref="ST" /> items</returns>
-        protected override List<ST> ApplyDeltaItems(List<ST> Items, List<ST> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="ST" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="ST" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{ST}"/> of entities</returns>
+        internal override IEnumerable<ST> ApplyDeltaEntities(IEnumerable<ST> Entities, List<ST> DeltaEntities)
         {
-            Dictionary<int, int> Index_REGISTRATION = Items.ToIndexDictionary(i => i.REGISTRATION);
-            Dictionary<string, int> Index_STKEY = Items.ToIndexDictionary(i => i.STKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_REGISTRATION = new HashSet<int>(DeltaEntities.Select(i => i.REGISTRATION));
+            HashSet<string> Index_STKEY = new HashSet<string>(DeltaEntities.Select(i => i.STKEY));
 
-            foreach (ST deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.STKEY;
+                        bool yieldEntity = false;
 
-                if (Index_REGISTRATION.TryGetValue(deltaItem.REGISTRATION, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_STKEY.TryGetValue(deltaItem.STKEY, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_REGISTRATION.Remove(entity.REGISTRATION);
+                            overwritten = overwritten || Index_STKEY.Remove(entity.STKEY);
+                            
+                            if (entity.STKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.STKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -1873,11 +1900,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a ST table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a ST table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[ST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[ST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[ST](
         [STKEY] varchar(10) NOT NULL,
@@ -2166,762 +2197,929 @@ BEGIN
     (
             [VISA_SUBCLASS] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_BIRTH_COUNTRY')
+    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_DOCTOR')
+    ALTER INDEX [Index_DOCTOR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG01')
+    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG02')
+    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT01')
+    ALTER INDEX [Index_EXIT_CAT01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT02')
+    ALTER INDEX [Index_EXIT_CAT02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST01')
+    ALTER INDEX [Index_EXIT_DEST01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST02')
+    ALTER INDEX [Index_EXIT_DEST02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMB')
+    ALTER INDEX [Index_FAMB] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMC')
+    ALTER INDEX [Index_FAMC] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMILY')
+    ALTER INDEX [Index_FAMILY] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_GROUP')
+    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_LANG')
+    ALTER INDEX [Index_HOME_LANG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOUSE')
+    ALTER INDEX [Index_HOUSE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_INAC_ABS_CODE')
+    ALTER INDEX [Index_INAC_ABS_CODE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LANGUAGE_PREVIOUS_SCHOOLING')
+    ALTER INDEX [Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LOTE_HOME_CODE')
+    ALTER INDEX [Index_LOTE_HOME_CODE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_HG')
+    ALTER INDEX [Index_NEXT_HG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_SCHOOL')
+    ALTER INDEX [Index_NEXT_SCHOOL] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_PREVIOUS_SCHOOL')
+    ALTER INDEX [Index_PREVIOUS_SCHOOL] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REGISTRATION')
+    ALTER INDEX [Index_REGISTRATION] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REL_INSTR')
+    ALTER INDEX [Index_REL_INSTR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_RELIGION')
+    ALTER INDEX [Index_RELIGION] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_SCHOOL_YEAR')
+    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_TAG')
+    ALTER INDEX [Index_TAG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_VISA_SUBCLASS')
+    ALTER INDEX [Index_VISA_SUBCLASS] ON [dbo].[ST] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_BIRTH_COUNTRY')
+    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_CAMPUS')
+    ALTER INDEX [Index_CAMPUS] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_DOCTOR')
+    ALTER INDEX [Index_DOCTOR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG01')
+    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG02')
+    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT01')
+    ALTER INDEX [Index_EXIT_CAT01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT02')
+    ALTER INDEX [Index_EXIT_CAT02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST01')
+    ALTER INDEX [Index_EXIT_DEST01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST02')
+    ALTER INDEX [Index_EXIT_DEST02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMB')
+    ALTER INDEX [Index_FAMB] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMC')
+    ALTER INDEX [Index_FAMC] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMILY')
+    ALTER INDEX [Index_FAMILY] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_GROUP')
+    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_LANG')
+    ALTER INDEX [Index_HOME_LANG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOUSE')
+    ALTER INDEX [Index_HOUSE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_INAC_ABS_CODE')
+    ALTER INDEX [Index_INAC_ABS_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LANGUAGE_PREVIOUS_SCHOOLING')
+    ALTER INDEX [Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LOTE_HOME_CODE')
+    ALTER INDEX [Index_LOTE_HOME_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_HG')
+    ALTER INDEX [Index_NEXT_HG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_SCHOOL')
+    ALTER INDEX [Index_NEXT_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_PREVIOUS_SCHOOL')
+    ALTER INDEX [Index_PREVIOUS_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REGISTRATION')
+    ALTER INDEX [Index_REGISTRATION] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REL_INSTR')
+    ALTER INDEX [Index_REL_INSTR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_RELIGION')
+    ALTER INDEX [Index_RELIGION] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_SCHOOL_YEAR')
+    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_TAG')
+    ALTER INDEX [Index_TAG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_VISA_SUBCLASS')
+    ALTER INDEX [Index_VISA_SUBCLASS] ON [dbo].[ST] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="ST"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="ST"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<ST> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_REGISTRATION = new List<int>();
+            List<string> Index_STKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_REGISTRATION.Add(entity.REGISTRATION);
+                Index_STKEY.Add(entity.STKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[ST] WHERE");
+
+
+            // Index_REGISTRATION
+            builder.Append("[REGISTRATION] IN (");
+            for (int index = 0; index < Index_REGISTRATION.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // REGISTRATION
+                var parameterREGISTRATION = $"@p{parameterIndex++}";
+                builder.Append(parameterREGISTRATION);
+                command.Parameters.Add(parameterREGISTRATION, SqlDbType.Int).Value = Index_REGISTRATION[index];
+            }
+            builder.AppendLine(") OR");
+
+            // Index_STKEY
+            builder.Append("[STKEY] IN (");
+            for (int index = 0; index < Index_STKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // STKEY
+                var parameterSTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSTKEY);
+                command.Parameters.Add(parameterSTKEY, SqlDbType.VarChar, 10).Value = Index_STKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the ST data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the ST data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<ST> GetDataSetDataReader()
         {
-            return new STDataReader(Items.Value);
+            return new STDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the ST data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the ST data set</returns>
+        public override EduHubDataSetDataReader<ST> GetDataSetDataReader(List<ST> Entities)
+        {
+            return new STDataReader(new EduHubDataSetLoadedReader<ST>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class STDataReader : IDataReader, IDataRecord
+        private class STDataReader : EduHubDataSetDataReader<ST>
         {
-            private List<ST> Items;
-            private int CurrentIndex;
-            private ST CurrentItem;
-
-            public STDataReader(List<ST> Items)
+            public STDataReader(IEduHubDataSetReader<ST> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 170; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 170; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // STKEY
-                        return CurrentItem.STKEY;
+                        return Current.STKEY;
                     case 1: // SURNAME
-                        return CurrentItem.SURNAME;
+                        return Current.SURNAME;
                     case 2: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME;
+                        return Current.FIRST_NAME;
                     case 3: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME;
+                        return Current.SECOND_NAME;
                     case 4: // PREF_NAME
-                        return CurrentItem.PREF_NAME;
+                        return Current.PREF_NAME;
                     case 5: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 6: // FAMILY
-                        return CurrentItem.FAMILY;
+                        return Current.FAMILY;
                     case 7: // ACADEMIC_A
-                        return CurrentItem.ACADEMIC_A;
+                        return Current.ACADEMIC_A;
                     case 8: // LIVING_A
-                        return CurrentItem.LIVING_A;
+                        return Current.LIVING_A;
                     case 9: // RELATION_A01
-                        return CurrentItem.RELATION_A01;
+                        return Current.RELATION_A01;
                     case 10: // RELATION_A02
-                        return CurrentItem.RELATION_A02;
+                        return Current.RELATION_A02;
                     case 11: // CONTACT_A
-                        return CurrentItem.CONTACT_A;
+                        return Current.CONTACT_A;
                     case 12: // FAMB
-                        return CurrentItem.FAMB;
+                        return Current.FAMB;
                     case 13: // ACADEMIC_B
-                        return CurrentItem.ACADEMIC_B;
+                        return Current.ACADEMIC_B;
                     case 14: // LIVING_B
-                        return CurrentItem.LIVING_B;
+                        return Current.LIVING_B;
                     case 15: // RELATION_B01
-                        return CurrentItem.RELATION_B01;
+                        return Current.RELATION_B01;
                     case 16: // RELATION_B02
-                        return CurrentItem.RELATION_B02;
+                        return Current.RELATION_B02;
                     case 17: // CONTACT_B
-                        return CurrentItem.CONTACT_B;
+                        return Current.CONTACT_B;
                     case 18: // FAMC
-                        return CurrentItem.FAMC;
+                        return Current.FAMC;
                     case 19: // ACADEMIC_C
-                        return CurrentItem.ACADEMIC_C;
+                        return Current.ACADEMIC_C;
                     case 20: // LIVING_C
-                        return CurrentItem.LIVING_C;
+                        return Current.LIVING_C;
                     case 21: // RELATION_C01
-                        return CurrentItem.RELATION_C01;
+                        return Current.RELATION_C01;
                     case 22: // RELATION_C02
-                        return CurrentItem.RELATION_C02;
+                        return Current.RELATION_C02;
                     case 23: // CONTACT_C
-                        return CurrentItem.CONTACT_C;
+                        return Current.CONTACT_C;
                     case 24: // LIVING_ARR
-                        return CurrentItem.LIVING_ARR;
+                        return Current.LIVING_ARR;
                     case 25: // DIST_SCHL
-                        return CurrentItem.DIST_SCHL;
+                        return Current.DIST_SCHL;
                     case 26: // TRANSPORT
-                        return CurrentItem.TRANSPORT;
+                        return Current.TRANSPORT;
                     case 27: // CAR_REGO
-                        return CurrentItem.CAR_REGO;
+                        return Current.CAR_REGO;
                     case 28: // E_MAIL
-                        return CurrentItem.E_MAIL;
+                        return Current.E_MAIL;
                     case 29: // MOBILE
-                        return CurrentItem.MOBILE;
+                        return Current.MOBILE;
                     case 30: // MAP_TYPE
-                        return CurrentItem.MAP_TYPE;
+                        return Current.MAP_TYPE;
                     case 31: // MAP_NUM
-                        return CurrentItem.MAP_NUM;
+                        return Current.MAP_NUM;
                     case 32: // X_AXIS
-                        return CurrentItem.X_AXIS;
+                        return Current.X_AXIS;
                     case 33: // Y_AXIS
-                        return CurrentItem.Y_AXIS;
+                        return Current.Y_AXIS;
                     case 34: // REGISTRATION
-                        return CurrentItem.REGISTRATION;
+                        return Current.REGISTRATION;
                     case 35: // FIRST_REG_NO
-                        return CurrentItem.FIRST_REG_NO;
+                        return Current.FIRST_REG_NO;
                     case 36: // GENDER
-                        return CurrentItem.GENDER;
+                        return Current.GENDER;
                     case 37: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE;
+                        return Current.BIRTHDATE;
                     case 38: // PROOF_DOB
-                        return CurrentItem.PROOF_DOB;
+                        return Current.PROOF_DOB;
                     case 39: // RESIDENT_STATUS
-                        return CurrentItem.RESIDENT_STATUS;
+                        return Current.RESIDENT_STATUS;
                     case 40: // PERMANENT_BASIS
-                        return CurrentItem.PERMANENT_BASIS;
+                        return Current.PERMANENT_BASIS;
                     case 41: // ENTRY
-                        return CurrentItem.ENTRY;
+                        return Current.ENTRY;
                     case 42: // EXIT_DATE
-                        return CurrentItem.EXIT_DATE;
+                        return Current.EXIT_DATE;
                     case 43: // ARRIVAL
-                        return CurrentItem.ARRIVAL;
+                        return Current.ARRIVAL;
                     case 44: // AUSSIE_SCHOOL
-                        return CurrentItem.AUSSIE_SCHOOL;
+                        return Current.AUSSIE_SCHOOL;
                     case 45: // INTEGRATION
-                        return CurrentItem.INTEGRATION;
+                        return Current.INTEGRATION;
                     case 46: // DATELEFT
-                        return CurrentItem.DATELEFT;
+                        return Current.DATELEFT;
                     case 47: // EXPIRY_DATE
-                        return CurrentItem.EXPIRY_DATE;
+                        return Current.EXPIRY_DATE;
                     case 48: // ID_CARD_VALID
-                        return CurrentItem.ID_CARD_VALID;
+                        return Current.ID_CARD_VALID;
                     case 49: // PREVIOUS_SCHOOL
-                        return CurrentItem.PREVIOUS_SCHOOL;
+                        return Current.PREVIOUS_SCHOOL;
                     case 50: // FAM_ORDER
-                        return CurrentItem.FAM_ORDER;
+                        return Current.FAM_ORDER;
                     case 51: // NOTES
-                        return CurrentItem.NOTES;
+                        return Current.NOTES;
                     case 52: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED;
+                        return Current.SGB_FUNDED;
                     case 53: // ED_ALLOW
-                        return CurrentItem.ED_ALLOW;
+                        return Current.ED_ALLOW;
                     case 54: // EMA_AMT1P
-                        return CurrentItem.EMA_AMT1P;
+                        return Current.EMA_AMT1P;
                     case 55: // EMA_AMT2P
-                        return CurrentItem.EMA_AMT2P;
+                        return Current.EMA_AMT2P;
                     case 56: // CASES_EMA_ID
-                        return CurrentItem.CASES_EMA_ID;
+                        return Current.CASES_EMA_ID;
                     case 57: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 58: // TAG
-                        return CurrentItem.TAG;
+                        return Current.TAG;
                     case 59: // ENROLMENT_YEAR
-                        return CurrentItem.ENROLMENT_YEAR;
+                        return Current.ENROLMENT_YEAR;
                     case 60: // ADV_SCHL_YR
-                        return CurrentItem.ADV_SCHL_YR;
+                        return Current.ADV_SCHL_YR;
                     case 61: // HOME_GROUP
-                        return CurrentItem.HOME_GROUP;
+                        return Current.HOME_GROUP;
                     case 62: // NEXT_HG
-                        return CurrentItem.NEXT_HG;
+                        return Current.NEXT_HG;
                     case 63: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR;
+                        return Current.SCHOOL_YEAR;
                     case 64: // HOUSE
-                        return CurrentItem.HOUSE;
+                        return Current.HOUSE;
                     case 65: // CAMPUS
-                        return CurrentItem.CAMPUS;
+                        return Current.CAMPUS;
                     case 66: // LOCKER_NUM
-                        return CurrentItem.LOCKER_NUM;
+                        return Current.LOCKER_NUM;
                     case 67: // RELIGION
-                        return CurrentItem.RELIGION;
+                        return Current.RELIGION;
                     case 68: // REL_INSTR
-                        return CurrentItem.REL_INSTR;
+                        return Current.REL_INSTR;
                     case 69: // VCE_ID
-                        return CurrentItem.VCE_ID;
+                        return Current.VCE_ID;
                     case 70: // VISA_SUBCLASS
-                        return CurrentItem.VISA_SUBCLASS;
+                        return Current.VISA_SUBCLASS;
                     case 71: // VISA_STAT_CODE
-                        return CurrentItem.VISA_STAT_CODE;
+                        return Current.VISA_STAT_CODE;
                     case 72: // VISA_EXPIRY
-                        return CurrentItem.VISA_EXPIRY;
+                        return Current.VISA_EXPIRY;
                     case 73: // REPEAT
-                        return CurrentItem.REPEAT;
+                        return Current.REPEAT;
                     case 74: // BIRTH_COUNTRY
-                        return CurrentItem.BIRTH_COUNTRY;
+                        return Current.BIRTH_COUNTRY;
                     case 75: // ENG_SPEAK
-                        return CurrentItem.ENG_SPEAK;
+                        return Current.ENG_SPEAK;
                     case 76: // HOME_LANG
-                        return CurrentItem.HOME_LANG;
+                        return Current.HOME_LANG;
                     case 77: // OVERSEAS
-                        return CurrentItem.OVERSEAS;
+                        return Current.OVERSEAS;
                     case 78: // KOORIE
-                        return CurrentItem.KOORIE;
+                        return Current.KOORIE;
                     case 79: // YOUTH_ALLOW
-                        return CurrentItem.YOUTH_ALLOW;
+                        return Current.YOUTH_ALLOW;
                     case 80: // AB_STUDY
-                        return CurrentItem.AB_STUDY;
+                        return Current.AB_STUDY;
                     case 81: // ACCESS
-                        return CurrentItem.ACCESS;
+                        return Current.ACCESS;
                     case 82: // ACCESS_TYPE
-                        return CurrentItem.ACCESS_TYPE;
+                        return Current.ACCESS_TYPE;
                     case 83: // ACCESS_ALERT
-                        return CurrentItem.ACCESS_ALERT;
+                        return Current.ACCESS_ALERT;
                     case 84: // RISK_ALERT
-                        return CurrentItem.RISK_ALERT;
+                        return Current.RISK_ALERT;
                     case 85: // RISK_MEMO
-                        return CurrentItem.RISK_MEMO;
+                        return Current.RISK_MEMO;
                     case 86: // DOCTOR
-                        return CurrentItem.DOCTOR;
+                        return Current.DOCTOR;
                     case 87: // EMERG_NAME01
-                        return CurrentItem.EMERG_NAME01;
+                        return Current.EMERG_NAME01;
                     case 88: // EMERG_NAME02
-                        return CurrentItem.EMERG_NAME02;
+                        return Current.EMERG_NAME02;
                     case 89: // EMERG_LANG01
-                        return CurrentItem.EMERG_LANG01;
+                        return Current.EMERG_LANG01;
                     case 90: // EMERG_LANG02
-                        return CurrentItem.EMERG_LANG02;
+                        return Current.EMERG_LANG02;
                     case 91: // EMERG_RELATION01
-                        return CurrentItem.EMERG_RELATION01;
+                        return Current.EMERG_RELATION01;
                     case 92: // EMERG_RELATION02
-                        return CurrentItem.EMERG_RELATION02;
+                        return Current.EMERG_RELATION02;
                     case 93: // EMERG_CONTACT01
-                        return CurrentItem.EMERG_CONTACT01;
+                        return Current.EMERG_CONTACT01;
                     case 94: // EMERG_CONTACT02
-                        return CurrentItem.EMERG_CONTACT02;
+                        return Current.EMERG_CONTACT02;
                     case 95: // ACC_DECLARATION
-                        return CurrentItem.ACC_DECLARATION;
+                        return Current.ACC_DECLARATION;
                     case 96: // AMBULANCE_SUBSCRIBER
-                        return CurrentItem.AMBULANCE_SUBSCRIBER;
+                        return Current.AMBULANCE_SUBSCRIBER;
                     case 97: // MEDICARE_NO
-                        return CurrentItem.MEDICARE_NO;
+                        return Current.MEDICARE_NO;
                     case 98: // INTERNATIONAL_ST_ID
-                        return CurrentItem.INTERNATIONAL_ST_ID;
+                        return Current.INTERNATIONAL_ST_ID;
                     case 99: // DISABILITY
-                        return CurrentItem.DISABILITY;
+                        return Current.DISABILITY;
                     case 100: // DISABILITY_ID
-                        return CurrentItem.DISABILITY_ID;
+                        return Current.DISABILITY_ID;
                     case 101: // PSDREQ
-                        return CurrentItem.PSDREQ;
+                        return Current.PSDREQ;
                     case 102: // HEARING_IMPAIR
-                        return CurrentItem.HEARING_IMPAIR;
+                        return Current.HEARING_IMPAIR;
                     case 103: // VISUAL_IMPAIR
-                        return CurrentItem.VISUAL_IMPAIR;
+                        return Current.VISUAL_IMPAIR;
                     case 104: // SPEECH_IMPAIR
-                        return CurrentItem.SPEECH_IMPAIR;
+                        return Current.SPEECH_IMPAIR;
                     case 105: // PHYSICAL_IMPAIR
-                        return CurrentItem.PHYSICAL_IMPAIR;
+                        return Current.PHYSICAL_IMPAIR;
                     case 106: // MEDICAL_ALERT
-                        return CurrentItem.MEDICAL_ALERT;
+                        return Current.MEDICAL_ALERT;
                     case 107: // MEDICAL_CONDITION
-                        return CurrentItem.MEDICAL_CONDITION;
+                        return Current.MEDICAL_CONDITION;
                     case 108: // ACTIVITY_RESTRICTION
-                        return CurrentItem.ACTIVITY_RESTRICTION;
+                        return Current.ACTIVITY_RESTRICTION;
                     case 109: // IMMUNISE_CERT_STATUS
-                        return CurrentItem.IMMUNISE_CERT_STATUS;
+                        return Current.IMMUNISE_CERT_STATUS;
                     case 110: // IMMUN_CERT_SIGHTED
-                        return CurrentItem.IMMUN_CERT_SIGHTED;
+                        return Current.IMMUN_CERT_SIGHTED;
                     case 111: // IMMUNISE_PERMISSION
-                        return CurrentItem.IMMUNISE_PERMISSION;
+                        return Current.IMMUNISE_PERMISSION;
                     case 112: // IMMUNIZE
-                        return CurrentItem.IMMUNIZE;
+                        return Current.IMMUNIZE;
                     case 113: // DISABILITY_ADJUSTMENT_ASSESSED
-                        return CurrentItem.DISABILITY_ADJUSTMENT_ASSESSED;
+                        return Current.DISABILITY_ADJUSTMENT_ASSESSED;
                     case 114: // DISABILITY_ADJUSTMENT
-                        return CurrentItem.DISABILITY_ADJUSTMENT;
+                        return Current.DISABILITY_ADJUSTMENT;
                     case 115: // DISABILITY_TYPE
-                        return CurrentItem.DISABILITY_TYPE;
+                        return Current.DISABILITY_TYPE;
                     case 116: // DISABILITY_ADJUSTMENT_LEVEL
-                        return CurrentItem.DISABILITY_ADJUSTMENT_LEVEL;
+                        return Current.DISABILITY_ADJUSTMENT_LEVEL;
                     case 117: // DISABILITY_ADJUSTMENT_LW_DATE
-                        return CurrentItem.DISABILITY_ADJUSTMENT_LW_DATE;
+                        return Current.DISABILITY_ADJUSTMENT_LW_DATE;
                     case 118: // HEAD_LICE_CHECK
-                        return CurrentItem.HEAD_LICE_CHECK;
+                        return Current.HEAD_LICE_CHECK;
                     case 119: // ANNUAL_TOT
-                        return CurrentItem.ANNUAL_TOT;
+                        return Current.ANNUAL_TOT;
                     case 120: // STUDENT_PIC
-                        return CurrentItem.STUDENT_PIC;
+                        return Current.STUDENT_PIC;
                     case 121: // PUBLISH_PHOTO_MEDIA
-                        return CurrentItem.PUBLISH_PHOTO_MEDIA;
+                        return Current.PUBLISH_PHOTO_MEDIA;
                     case 122: // OK_TO_PUBLISH
-                        return CurrentItem.OK_TO_PUBLISH;
+                        return Current.OK_TO_PUBLISH;
                     case 123: // PIC_LW_DATE
-                        return CurrentItem.PIC_LW_DATE;
+                        return Current.PIC_LW_DATE;
                     case 124: // PIC_STATUS
-                        return CurrentItem.PIC_STATUS;
+                        return Current.PIC_STATUS;
                     case 125: // LIBRARY_FLAG
-                        return CurrentItem.LIBRARY_FLAG;
+                        return Current.LIBRARY_FLAG;
                     case 126: // REGISTRAR_FLAG
-                        return CurrentItem.REGISTRAR_FLAG;
+                        return Current.REGISTRAR_FLAG;
                     case 127: // CLEAR1_FLAG
-                        return CurrentItem.CLEAR1_FLAG;
+                        return Current.CLEAR1_FLAG;
                     case 128: // CLEAR2_FLAG
-                        return CurrentItem.CLEAR2_FLAG;
+                        return Current.CLEAR2_FLAG;
                     case 129: // CLEAR3_FLAG
-                        return CurrentItem.CLEAR3_FLAG;
+                        return Current.CLEAR3_FLAG;
                     case 130: // CLEAR4_FLAG
-                        return CurrentItem.CLEAR4_FLAG;
+                        return Current.CLEAR4_FLAG;
                     case 131: // CLEAR5_FLAG
-                        return CurrentItem.CLEAR5_FLAG;
+                        return Current.CLEAR5_FLAG;
                     case 132: // CLEAR6_FLAG
-                        return CurrentItem.CLEAR6_FLAG;
+                        return Current.CLEAR6_FLAG;
                     case 133: // AR_STATUS
-                        return CurrentItem.AR_STATUS;
+                        return Current.AR_STATUS;
                     case 134: // YEARS_PREVIOUS_EDUCATION
-                        return CurrentItem.YEARS_PREVIOUS_EDUCATION;
+                        return Current.YEARS_PREVIOUS_EDUCATION;
                     case 135: // YEARS_INTERRUPTION_EDUCATION
-                        return CurrentItem.YEARS_INTERRUPTION_EDUCATION;
+                        return Current.YEARS_INTERRUPTION_EDUCATION;
                     case 136: // LANGUAGE_PREVIOUS_SCHOOLING
-                        return CurrentItem.LANGUAGE_PREVIOUS_SCHOOLING;
+                        return Current.LANGUAGE_PREVIOUS_SCHOOLING;
                     case 137: // NEXT_SCHOOL
-                        return CurrentItem.NEXT_SCHOOL;
+                        return Current.NEXT_SCHOOL;
                     case 138: // EXIT_CAT01
-                        return CurrentItem.EXIT_CAT01;
+                        return Current.EXIT_CAT01;
                     case 139: // EXIT_CAT02
-                        return CurrentItem.EXIT_CAT02;
+                        return Current.EXIT_CAT02;
                     case 140: // EXIT_DEST01
-                        return CurrentItem.EXIT_DEST01;
+                        return Current.EXIT_DEST01;
                     case 141: // EXIT_DEST02
-                        return CurrentItem.EXIT_DEST02;
+                        return Current.EXIT_DEST02;
                     case 142: // EXIT_MODIFY_DATE01
-                        return CurrentItem.EXIT_MODIFY_DATE01;
+                        return Current.EXIT_MODIFY_DATE01;
                     case 143: // EXIT_MODIFY_DATE02
-                        return CurrentItem.EXIT_MODIFY_DATE02;
+                        return Current.EXIT_MODIFY_DATE02;
                     case 144: // FULLTIME
-                        return CurrentItem.FULLTIME;
+                        return Current.FULLTIME;
                     case 145: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION;
+                        return Current.SGB_TIME_FRACTION;
                     case 146: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION;
+                        return Current.ACTUAL_TIME_FRACTION;
                     case 147: // DEST_ARRIVAL_DATE
-                        return CurrentItem.DEST_ARRIVAL_DATE;
+                        return Current.DEST_ARRIVAL_DATE;
                     case 148: // DEPARTURE_DATE
-                        return CurrentItem.DEPARTURE_DATE;
+                        return Current.DEPARTURE_DATE;
                     case 149: // ARRIVED_DESTINATION
-                        return CurrentItem.ARRIVED_DESTINATION;
+                        return Current.ARRIVED_DESTINATION;
                     case 150: // NOTIFIED_DESTINATION
-                        return CurrentItem.NOTIFIED_DESTINATION;
+                        return Current.NOTIFIED_DESTINATION;
                     case 151: // VCE_NOTIFIED
-                        return CurrentItem.VCE_NOTIFIED;
+                        return Current.VCE_NOTIFIED;
                     case 152: // EXIT_FORM
-                        return CurrentItem.EXIT_FORM;
+                        return Current.EXIT_FORM;
                     case 153: // TRANSFER_FORM
-                        return CurrentItem.TRANSFER_FORM;
+                        return Current.TRANSFER_FORM;
                     case 154: // PARENTAL_APPROVAL_DATE
-                        return CurrentItem.PARENTAL_APPROVAL_DATE;
+                        return Current.PARENTAL_APPROVAL_DATE;
                     case 155: // PARENTAL_APPROVAL_NOTE
-                        return CurrentItem.PARENTAL_APPROVAL_NOTE;
+                        return Current.PARENTAL_APPROVAL_NOTE;
                     case 156: // DISASTER_EXIT_REASON
-                        return CurrentItem.DISASTER_EXIT_REASON;
+                        return Current.DISASTER_EXIT_REASON;
                     case 157: // ATTENDANCE_MEMO
-                        return CurrentItem.ATTENDANCE_MEMO;
+                        return Current.ATTENDANCE_MEMO;
                     case 158: // ABS_HDAY_PERIOD
-                        return CurrentItem.ABS_HDAY_PERIOD;
+                        return Current.ABS_HDAY_PERIOD;
                     case 159: // STRE_FLAG
-                        return CurrentItem.STRE_FLAG;
+                        return Current.STRE_FLAG;
                     case 160: // PROMOTED
-                        return CurrentItem.PROMOTED;
+                        return Current.PROMOTED;
                     case 161: // INAC_ABS_CODE
-                        return CurrentItem.INAC_ABS_CODE;
+                        return Current.INAC_ABS_CODE;
                     case 162: // LOTE_HOME_CODE
-                        return CurrentItem.LOTE_HOME_CODE;
+                        return Current.LOTE_HOME_CODE;
                     case 163: // VSN
-                        return CurrentItem.VSN;
+                        return Current.VSN;
                     case 164: // SPEC_CURR
-                        return CurrentItem.SPEC_CURR;
+                        return Current.SPEC_CURR;
                     case 165: // TRANSITION_STATEMENT
-                        return CurrentItem.TRANSITION_STATEMENT;
+                        return Current.TRANSITION_STATEMENT;
                     case 166: // TFR_PERMISSION
-                        return CurrentItem.TFR_PERMISSION;
+                        return Current.TFR_PERMISSION;
                     case 167: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 168: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 169: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // SURNAME
-                        return CurrentItem.SURNAME == null;
+                        return Current.SURNAME == null;
                     case 2: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME == null;
+                        return Current.FIRST_NAME == null;
                     case 3: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME == null;
+                        return Current.SECOND_NAME == null;
                     case 4: // PREF_NAME
-                        return CurrentItem.PREF_NAME == null;
+                        return Current.PREF_NAME == null;
                     case 5: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 6: // FAMILY
-                        return CurrentItem.FAMILY == null;
+                        return Current.FAMILY == null;
                     case 7: // ACADEMIC_A
-                        return CurrentItem.ACADEMIC_A == null;
+                        return Current.ACADEMIC_A == null;
                     case 8: // LIVING_A
-                        return CurrentItem.LIVING_A == null;
+                        return Current.LIVING_A == null;
                     case 9: // RELATION_A01
-                        return CurrentItem.RELATION_A01 == null;
+                        return Current.RELATION_A01 == null;
                     case 10: // RELATION_A02
-                        return CurrentItem.RELATION_A02 == null;
+                        return Current.RELATION_A02 == null;
                     case 11: // CONTACT_A
-                        return CurrentItem.CONTACT_A == null;
+                        return Current.CONTACT_A == null;
                     case 12: // FAMB
-                        return CurrentItem.FAMB == null;
+                        return Current.FAMB == null;
                     case 13: // ACADEMIC_B
-                        return CurrentItem.ACADEMIC_B == null;
+                        return Current.ACADEMIC_B == null;
                     case 14: // LIVING_B
-                        return CurrentItem.LIVING_B == null;
+                        return Current.LIVING_B == null;
                     case 15: // RELATION_B01
-                        return CurrentItem.RELATION_B01 == null;
+                        return Current.RELATION_B01 == null;
                     case 16: // RELATION_B02
-                        return CurrentItem.RELATION_B02 == null;
+                        return Current.RELATION_B02 == null;
                     case 17: // CONTACT_B
-                        return CurrentItem.CONTACT_B == null;
+                        return Current.CONTACT_B == null;
                     case 18: // FAMC
-                        return CurrentItem.FAMC == null;
+                        return Current.FAMC == null;
                     case 19: // ACADEMIC_C
-                        return CurrentItem.ACADEMIC_C == null;
+                        return Current.ACADEMIC_C == null;
                     case 20: // LIVING_C
-                        return CurrentItem.LIVING_C == null;
+                        return Current.LIVING_C == null;
                     case 21: // RELATION_C01
-                        return CurrentItem.RELATION_C01 == null;
+                        return Current.RELATION_C01 == null;
                     case 22: // RELATION_C02
-                        return CurrentItem.RELATION_C02 == null;
+                        return Current.RELATION_C02 == null;
                     case 23: // CONTACT_C
-                        return CurrentItem.CONTACT_C == null;
+                        return Current.CONTACT_C == null;
                     case 24: // LIVING_ARR
-                        return CurrentItem.LIVING_ARR == null;
+                        return Current.LIVING_ARR == null;
                     case 25: // DIST_SCHL
-                        return CurrentItem.DIST_SCHL == null;
+                        return Current.DIST_SCHL == null;
                     case 26: // TRANSPORT
-                        return CurrentItem.TRANSPORT == null;
+                        return Current.TRANSPORT == null;
                     case 27: // CAR_REGO
-                        return CurrentItem.CAR_REGO == null;
+                        return Current.CAR_REGO == null;
                     case 28: // E_MAIL
-                        return CurrentItem.E_MAIL == null;
+                        return Current.E_MAIL == null;
                     case 29: // MOBILE
-                        return CurrentItem.MOBILE == null;
+                        return Current.MOBILE == null;
                     case 30: // MAP_TYPE
-                        return CurrentItem.MAP_TYPE == null;
+                        return Current.MAP_TYPE == null;
                     case 31: // MAP_NUM
-                        return CurrentItem.MAP_NUM == null;
+                        return Current.MAP_NUM == null;
                     case 32: // X_AXIS
-                        return CurrentItem.X_AXIS == null;
+                        return Current.X_AXIS == null;
                     case 33: // Y_AXIS
-                        return CurrentItem.Y_AXIS == null;
+                        return Current.Y_AXIS == null;
                     case 35: // FIRST_REG_NO
-                        return CurrentItem.FIRST_REG_NO == null;
+                        return Current.FIRST_REG_NO == null;
                     case 36: // GENDER
-                        return CurrentItem.GENDER == null;
+                        return Current.GENDER == null;
                     case 37: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE == null;
+                        return Current.BIRTHDATE == null;
                     case 38: // PROOF_DOB
-                        return CurrentItem.PROOF_DOB == null;
+                        return Current.PROOF_DOB == null;
                     case 39: // RESIDENT_STATUS
-                        return CurrentItem.RESIDENT_STATUS == null;
+                        return Current.RESIDENT_STATUS == null;
                     case 40: // PERMANENT_BASIS
-                        return CurrentItem.PERMANENT_BASIS == null;
+                        return Current.PERMANENT_BASIS == null;
                     case 41: // ENTRY
-                        return CurrentItem.ENTRY == null;
+                        return Current.ENTRY == null;
                     case 42: // EXIT_DATE
-                        return CurrentItem.EXIT_DATE == null;
+                        return Current.EXIT_DATE == null;
                     case 43: // ARRIVAL
-                        return CurrentItem.ARRIVAL == null;
+                        return Current.ARRIVAL == null;
                     case 44: // AUSSIE_SCHOOL
-                        return CurrentItem.AUSSIE_SCHOOL == null;
+                        return Current.AUSSIE_SCHOOL == null;
                     case 45: // INTEGRATION
-                        return CurrentItem.INTEGRATION == null;
+                        return Current.INTEGRATION == null;
                     case 46: // DATELEFT
-                        return CurrentItem.DATELEFT == null;
+                        return Current.DATELEFT == null;
                     case 47: // EXPIRY_DATE
-                        return CurrentItem.EXPIRY_DATE == null;
+                        return Current.EXPIRY_DATE == null;
                     case 48: // ID_CARD_VALID
-                        return CurrentItem.ID_CARD_VALID == null;
+                        return Current.ID_CARD_VALID == null;
                     case 49: // PREVIOUS_SCHOOL
-                        return CurrentItem.PREVIOUS_SCHOOL == null;
+                        return Current.PREVIOUS_SCHOOL == null;
                     case 50: // FAM_ORDER
-                        return CurrentItem.FAM_ORDER == null;
+                        return Current.FAM_ORDER == null;
                     case 51: // NOTES
-                        return CurrentItem.NOTES == null;
+                        return Current.NOTES == null;
                     case 52: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED == null;
+                        return Current.SGB_FUNDED == null;
                     case 53: // ED_ALLOW
-                        return CurrentItem.ED_ALLOW == null;
+                        return Current.ED_ALLOW == null;
                     case 54: // EMA_AMT1P
-                        return CurrentItem.EMA_AMT1P == null;
+                        return Current.EMA_AMT1P == null;
                     case 55: // EMA_AMT2P
-                        return CurrentItem.EMA_AMT2P == null;
+                        return Current.EMA_AMT2P == null;
                     case 56: // CASES_EMA_ID
-                        return CurrentItem.CASES_EMA_ID == null;
+                        return Current.CASES_EMA_ID == null;
                     case 57: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 58: // TAG
-                        return CurrentItem.TAG == null;
+                        return Current.TAG == null;
                     case 59: // ENROLMENT_YEAR
-                        return CurrentItem.ENROLMENT_YEAR == null;
+                        return Current.ENROLMENT_YEAR == null;
                     case 60: // ADV_SCHL_YR
-                        return CurrentItem.ADV_SCHL_YR == null;
+                        return Current.ADV_SCHL_YR == null;
                     case 61: // HOME_GROUP
-                        return CurrentItem.HOME_GROUP == null;
+                        return Current.HOME_GROUP == null;
                     case 62: // NEXT_HG
-                        return CurrentItem.NEXT_HG == null;
+                        return Current.NEXT_HG == null;
                     case 63: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR == null;
+                        return Current.SCHOOL_YEAR == null;
                     case 64: // HOUSE
-                        return CurrentItem.HOUSE == null;
+                        return Current.HOUSE == null;
                     case 65: // CAMPUS
-                        return CurrentItem.CAMPUS == null;
+                        return Current.CAMPUS == null;
                     case 66: // LOCKER_NUM
-                        return CurrentItem.LOCKER_NUM == null;
+                        return Current.LOCKER_NUM == null;
                     case 67: // RELIGION
-                        return CurrentItem.RELIGION == null;
+                        return Current.RELIGION == null;
                     case 68: // REL_INSTR
-                        return CurrentItem.REL_INSTR == null;
+                        return Current.REL_INSTR == null;
                     case 69: // VCE_ID
-                        return CurrentItem.VCE_ID == null;
+                        return Current.VCE_ID == null;
                     case 70: // VISA_SUBCLASS
-                        return CurrentItem.VISA_SUBCLASS == null;
+                        return Current.VISA_SUBCLASS == null;
                     case 71: // VISA_STAT_CODE
-                        return CurrentItem.VISA_STAT_CODE == null;
+                        return Current.VISA_STAT_CODE == null;
                     case 72: // VISA_EXPIRY
-                        return CurrentItem.VISA_EXPIRY == null;
+                        return Current.VISA_EXPIRY == null;
                     case 73: // REPEAT
-                        return CurrentItem.REPEAT == null;
+                        return Current.REPEAT == null;
                     case 74: // BIRTH_COUNTRY
-                        return CurrentItem.BIRTH_COUNTRY == null;
+                        return Current.BIRTH_COUNTRY == null;
                     case 75: // ENG_SPEAK
-                        return CurrentItem.ENG_SPEAK == null;
+                        return Current.ENG_SPEAK == null;
                     case 76: // HOME_LANG
-                        return CurrentItem.HOME_LANG == null;
+                        return Current.HOME_LANG == null;
                     case 77: // OVERSEAS
-                        return CurrentItem.OVERSEAS == null;
+                        return Current.OVERSEAS == null;
                     case 78: // KOORIE
-                        return CurrentItem.KOORIE == null;
+                        return Current.KOORIE == null;
                     case 79: // YOUTH_ALLOW
-                        return CurrentItem.YOUTH_ALLOW == null;
+                        return Current.YOUTH_ALLOW == null;
                     case 80: // AB_STUDY
-                        return CurrentItem.AB_STUDY == null;
+                        return Current.AB_STUDY == null;
                     case 81: // ACCESS
-                        return CurrentItem.ACCESS == null;
+                        return Current.ACCESS == null;
                     case 82: // ACCESS_TYPE
-                        return CurrentItem.ACCESS_TYPE == null;
+                        return Current.ACCESS_TYPE == null;
                     case 83: // ACCESS_ALERT
-                        return CurrentItem.ACCESS_ALERT == null;
+                        return Current.ACCESS_ALERT == null;
                     case 84: // RISK_ALERT
-                        return CurrentItem.RISK_ALERT == null;
+                        return Current.RISK_ALERT == null;
                     case 85: // RISK_MEMO
-                        return CurrentItem.RISK_MEMO == null;
+                        return Current.RISK_MEMO == null;
                     case 86: // DOCTOR
-                        return CurrentItem.DOCTOR == null;
+                        return Current.DOCTOR == null;
                     case 87: // EMERG_NAME01
-                        return CurrentItem.EMERG_NAME01 == null;
+                        return Current.EMERG_NAME01 == null;
                     case 88: // EMERG_NAME02
-                        return CurrentItem.EMERG_NAME02 == null;
+                        return Current.EMERG_NAME02 == null;
                     case 89: // EMERG_LANG01
-                        return CurrentItem.EMERG_LANG01 == null;
+                        return Current.EMERG_LANG01 == null;
                     case 90: // EMERG_LANG02
-                        return CurrentItem.EMERG_LANG02 == null;
+                        return Current.EMERG_LANG02 == null;
                     case 91: // EMERG_RELATION01
-                        return CurrentItem.EMERG_RELATION01 == null;
+                        return Current.EMERG_RELATION01 == null;
                     case 92: // EMERG_RELATION02
-                        return CurrentItem.EMERG_RELATION02 == null;
+                        return Current.EMERG_RELATION02 == null;
                     case 93: // EMERG_CONTACT01
-                        return CurrentItem.EMERG_CONTACT01 == null;
+                        return Current.EMERG_CONTACT01 == null;
                     case 94: // EMERG_CONTACT02
-                        return CurrentItem.EMERG_CONTACT02 == null;
+                        return Current.EMERG_CONTACT02 == null;
                     case 95: // ACC_DECLARATION
-                        return CurrentItem.ACC_DECLARATION == null;
+                        return Current.ACC_DECLARATION == null;
                     case 96: // AMBULANCE_SUBSCRIBER
-                        return CurrentItem.AMBULANCE_SUBSCRIBER == null;
+                        return Current.AMBULANCE_SUBSCRIBER == null;
                     case 97: // MEDICARE_NO
-                        return CurrentItem.MEDICARE_NO == null;
+                        return Current.MEDICARE_NO == null;
                     case 98: // INTERNATIONAL_ST_ID
-                        return CurrentItem.INTERNATIONAL_ST_ID == null;
+                        return Current.INTERNATIONAL_ST_ID == null;
                     case 99: // DISABILITY
-                        return CurrentItem.DISABILITY == null;
+                        return Current.DISABILITY == null;
                     case 100: // DISABILITY_ID
-                        return CurrentItem.DISABILITY_ID == null;
+                        return Current.DISABILITY_ID == null;
                     case 101: // PSDREQ
-                        return CurrentItem.PSDREQ == null;
+                        return Current.PSDREQ == null;
                     case 102: // HEARING_IMPAIR
-                        return CurrentItem.HEARING_IMPAIR == null;
+                        return Current.HEARING_IMPAIR == null;
                     case 103: // VISUAL_IMPAIR
-                        return CurrentItem.VISUAL_IMPAIR == null;
+                        return Current.VISUAL_IMPAIR == null;
                     case 104: // SPEECH_IMPAIR
-                        return CurrentItem.SPEECH_IMPAIR == null;
+                        return Current.SPEECH_IMPAIR == null;
                     case 105: // PHYSICAL_IMPAIR
-                        return CurrentItem.PHYSICAL_IMPAIR == null;
+                        return Current.PHYSICAL_IMPAIR == null;
                     case 106: // MEDICAL_ALERT
-                        return CurrentItem.MEDICAL_ALERT == null;
+                        return Current.MEDICAL_ALERT == null;
                     case 107: // MEDICAL_CONDITION
-                        return CurrentItem.MEDICAL_CONDITION == null;
+                        return Current.MEDICAL_CONDITION == null;
                     case 108: // ACTIVITY_RESTRICTION
-                        return CurrentItem.ACTIVITY_RESTRICTION == null;
+                        return Current.ACTIVITY_RESTRICTION == null;
                     case 109: // IMMUNISE_CERT_STATUS
-                        return CurrentItem.IMMUNISE_CERT_STATUS == null;
+                        return Current.IMMUNISE_CERT_STATUS == null;
                     case 110: // IMMUN_CERT_SIGHTED
-                        return CurrentItem.IMMUN_CERT_SIGHTED == null;
+                        return Current.IMMUN_CERT_SIGHTED == null;
                     case 111: // IMMUNISE_PERMISSION
-                        return CurrentItem.IMMUNISE_PERMISSION == null;
+                        return Current.IMMUNISE_PERMISSION == null;
                     case 112: // IMMUNIZE
-                        return CurrentItem.IMMUNIZE == null;
+                        return Current.IMMUNIZE == null;
                     case 113: // DISABILITY_ADJUSTMENT_ASSESSED
-                        return CurrentItem.DISABILITY_ADJUSTMENT_ASSESSED == null;
+                        return Current.DISABILITY_ADJUSTMENT_ASSESSED == null;
                     case 114: // DISABILITY_ADJUSTMENT
-                        return CurrentItem.DISABILITY_ADJUSTMENT == null;
+                        return Current.DISABILITY_ADJUSTMENT == null;
                     case 115: // DISABILITY_TYPE
-                        return CurrentItem.DISABILITY_TYPE == null;
+                        return Current.DISABILITY_TYPE == null;
                     case 116: // DISABILITY_ADJUSTMENT_LEVEL
-                        return CurrentItem.DISABILITY_ADJUSTMENT_LEVEL == null;
+                        return Current.DISABILITY_ADJUSTMENT_LEVEL == null;
                     case 117: // DISABILITY_ADJUSTMENT_LW_DATE
-                        return CurrentItem.DISABILITY_ADJUSTMENT_LW_DATE == null;
+                        return Current.DISABILITY_ADJUSTMENT_LW_DATE == null;
                     case 118: // HEAD_LICE_CHECK
-                        return CurrentItem.HEAD_LICE_CHECK == null;
+                        return Current.HEAD_LICE_CHECK == null;
                     case 119: // ANNUAL_TOT
-                        return CurrentItem.ANNUAL_TOT == null;
+                        return Current.ANNUAL_TOT == null;
                     case 120: // STUDENT_PIC
-                        return CurrentItem.STUDENT_PIC == null;
+                        return Current.STUDENT_PIC == null;
                     case 121: // PUBLISH_PHOTO_MEDIA
-                        return CurrentItem.PUBLISH_PHOTO_MEDIA == null;
+                        return Current.PUBLISH_PHOTO_MEDIA == null;
                     case 122: // OK_TO_PUBLISH
-                        return CurrentItem.OK_TO_PUBLISH == null;
+                        return Current.OK_TO_PUBLISH == null;
                     case 123: // PIC_LW_DATE
-                        return CurrentItem.PIC_LW_DATE == null;
+                        return Current.PIC_LW_DATE == null;
                     case 124: // PIC_STATUS
-                        return CurrentItem.PIC_STATUS == null;
+                        return Current.PIC_STATUS == null;
                     case 125: // LIBRARY_FLAG
-                        return CurrentItem.LIBRARY_FLAG == null;
+                        return Current.LIBRARY_FLAG == null;
                     case 126: // REGISTRAR_FLAG
-                        return CurrentItem.REGISTRAR_FLAG == null;
+                        return Current.REGISTRAR_FLAG == null;
                     case 127: // CLEAR1_FLAG
-                        return CurrentItem.CLEAR1_FLAG == null;
+                        return Current.CLEAR1_FLAG == null;
                     case 128: // CLEAR2_FLAG
-                        return CurrentItem.CLEAR2_FLAG == null;
+                        return Current.CLEAR2_FLAG == null;
                     case 129: // CLEAR3_FLAG
-                        return CurrentItem.CLEAR3_FLAG == null;
+                        return Current.CLEAR3_FLAG == null;
                     case 130: // CLEAR4_FLAG
-                        return CurrentItem.CLEAR4_FLAG == null;
+                        return Current.CLEAR4_FLAG == null;
                     case 131: // CLEAR5_FLAG
-                        return CurrentItem.CLEAR5_FLAG == null;
+                        return Current.CLEAR5_FLAG == null;
                     case 132: // CLEAR6_FLAG
-                        return CurrentItem.CLEAR6_FLAG == null;
+                        return Current.CLEAR6_FLAG == null;
                     case 133: // AR_STATUS
-                        return CurrentItem.AR_STATUS == null;
+                        return Current.AR_STATUS == null;
                     case 134: // YEARS_PREVIOUS_EDUCATION
-                        return CurrentItem.YEARS_PREVIOUS_EDUCATION == null;
+                        return Current.YEARS_PREVIOUS_EDUCATION == null;
                     case 135: // YEARS_INTERRUPTION_EDUCATION
-                        return CurrentItem.YEARS_INTERRUPTION_EDUCATION == null;
+                        return Current.YEARS_INTERRUPTION_EDUCATION == null;
                     case 136: // LANGUAGE_PREVIOUS_SCHOOLING
-                        return CurrentItem.LANGUAGE_PREVIOUS_SCHOOLING == null;
+                        return Current.LANGUAGE_PREVIOUS_SCHOOLING == null;
                     case 137: // NEXT_SCHOOL
-                        return CurrentItem.NEXT_SCHOOL == null;
+                        return Current.NEXT_SCHOOL == null;
                     case 138: // EXIT_CAT01
-                        return CurrentItem.EXIT_CAT01 == null;
+                        return Current.EXIT_CAT01 == null;
                     case 139: // EXIT_CAT02
-                        return CurrentItem.EXIT_CAT02 == null;
+                        return Current.EXIT_CAT02 == null;
                     case 140: // EXIT_DEST01
-                        return CurrentItem.EXIT_DEST01 == null;
+                        return Current.EXIT_DEST01 == null;
                     case 141: // EXIT_DEST02
-                        return CurrentItem.EXIT_DEST02 == null;
+                        return Current.EXIT_DEST02 == null;
                     case 142: // EXIT_MODIFY_DATE01
-                        return CurrentItem.EXIT_MODIFY_DATE01 == null;
+                        return Current.EXIT_MODIFY_DATE01 == null;
                     case 143: // EXIT_MODIFY_DATE02
-                        return CurrentItem.EXIT_MODIFY_DATE02 == null;
+                        return Current.EXIT_MODIFY_DATE02 == null;
                     case 144: // FULLTIME
-                        return CurrentItem.FULLTIME == null;
+                        return Current.FULLTIME == null;
                     case 145: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION == null;
+                        return Current.SGB_TIME_FRACTION == null;
                     case 146: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION == null;
+                        return Current.ACTUAL_TIME_FRACTION == null;
                     case 147: // DEST_ARRIVAL_DATE
-                        return CurrentItem.DEST_ARRIVAL_DATE == null;
+                        return Current.DEST_ARRIVAL_DATE == null;
                     case 148: // DEPARTURE_DATE
-                        return CurrentItem.DEPARTURE_DATE == null;
+                        return Current.DEPARTURE_DATE == null;
                     case 149: // ARRIVED_DESTINATION
-                        return CurrentItem.ARRIVED_DESTINATION == null;
+                        return Current.ARRIVED_DESTINATION == null;
                     case 150: // NOTIFIED_DESTINATION
-                        return CurrentItem.NOTIFIED_DESTINATION == null;
+                        return Current.NOTIFIED_DESTINATION == null;
                     case 151: // VCE_NOTIFIED
-                        return CurrentItem.VCE_NOTIFIED == null;
+                        return Current.VCE_NOTIFIED == null;
                     case 152: // EXIT_FORM
-                        return CurrentItem.EXIT_FORM == null;
+                        return Current.EXIT_FORM == null;
                     case 153: // TRANSFER_FORM
-                        return CurrentItem.TRANSFER_FORM == null;
+                        return Current.TRANSFER_FORM == null;
                     case 154: // PARENTAL_APPROVAL_DATE
-                        return CurrentItem.PARENTAL_APPROVAL_DATE == null;
+                        return Current.PARENTAL_APPROVAL_DATE == null;
                     case 155: // PARENTAL_APPROVAL_NOTE
-                        return CurrentItem.PARENTAL_APPROVAL_NOTE == null;
+                        return Current.PARENTAL_APPROVAL_NOTE == null;
                     case 156: // DISASTER_EXIT_REASON
-                        return CurrentItem.DISASTER_EXIT_REASON == null;
+                        return Current.DISASTER_EXIT_REASON == null;
                     case 157: // ATTENDANCE_MEMO
-                        return CurrentItem.ATTENDANCE_MEMO == null;
+                        return Current.ATTENDANCE_MEMO == null;
                     case 158: // ABS_HDAY_PERIOD
-                        return CurrentItem.ABS_HDAY_PERIOD == null;
+                        return Current.ABS_HDAY_PERIOD == null;
                     case 159: // STRE_FLAG
-                        return CurrentItem.STRE_FLAG == null;
+                        return Current.STRE_FLAG == null;
                     case 160: // PROMOTED
-                        return CurrentItem.PROMOTED == null;
+                        return Current.PROMOTED == null;
                     case 161: // INAC_ABS_CODE
-                        return CurrentItem.INAC_ABS_CODE == null;
+                        return Current.INAC_ABS_CODE == null;
                     case 162: // LOTE_HOME_CODE
-                        return CurrentItem.LOTE_HOME_CODE == null;
+                        return Current.LOTE_HOME_CODE == null;
                     case 163: // VSN
-                        return CurrentItem.VSN == null;
+                        return Current.VSN == null;
                     case 164: // SPEC_CURR
-                        return CurrentItem.SPEC_CURR == null;
+                        return Current.SPEC_CURR == null;
                     case 165: // TRANSITION_STATEMENT
-                        return CurrentItem.TRANSITION_STATEMENT == null;
+                        return Current.TRANSITION_STATEMENT == null;
                     case 166: // TFR_PERMISSION
-                        return CurrentItem.TFR_PERMISSION == null;
+                        return Current.TFR_PERMISSION == null;
                     case 167: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 168: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 169: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -3270,7 +3468,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -3617,35 +3815,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

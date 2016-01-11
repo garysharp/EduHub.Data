@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SADPDataSet : EduHubDataSet<SADP>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SADP"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SADPDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SADP" /> fields for each CSV column header</returns>
-        protected override Action<SADP, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SADP, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SADP, string>[Headers.Count];
 
@@ -69,34 +72,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SADP" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SADP" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SADP" /> items to added or update the base <see cref="SADP" /> items</param>
-        /// <returns>A merged list of <see cref="SADP" /> items</returns>
-        protected override List<SADP> ApplyDeltaItems(List<SADP> Items, List<SADP> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SADP" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SADP" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SADP}"/> of entities</returns>
+        internal override IEnumerable<SADP> ApplyDeltaEntities(IEnumerable<SADP> Entities, List<SADP> DeltaEntities)
         {
-            Dictionary<Tuple<int, short?>, int> Index_ACCIDENTID_PREVENTION = Items.ToIndexDictionary(i => Tuple.Create(i.ACCIDENTID, i.PREVENTION));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<int, short?>> Index_ACCIDENTID_PREVENTION = new HashSet<Tuple<int, short?>>(DeltaEntities.Select(i => Tuple.Create(i.ACCIDENTID, i.PREVENTION)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SADP deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ACCIDENTID;
+                        bool yieldEntity = false;
 
-                if (Index_ACCIDENTID_PREVENTION.TryGetValue(Tuple.Create(deltaItem.ACCIDENTID, deltaItem.PREVENTION), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_ACCIDENTID_PREVENTION.Remove(Tuple.Create(entity.ACCIDENTID, entity.PREVENTION));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.ACCIDENTID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ACCIDENTID)
-                .ToList();
         }
 
         #region Index Fields
@@ -243,11 +270,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SADP table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SADP table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SADP](
         [TID] int IDENTITY NOT NULL,
@@ -270,110 +301,185 @@ BEGIN
             [ACCIDENTID] ASC,
             [PREVENTION] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_ACCIDENTID_PREVENTION')
+    ALTER INDEX [Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SADP] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_ACCIDENTID_PREVENTION')
+    ALTER INDEX [Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SADP] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SADP"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SADP"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SADP> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<int, short?>> Index_ACCIDENTID_PREVENTION = new List<Tuple<int, short?>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_ACCIDENTID_PREVENTION.Add(Tuple.Create(entity.ACCIDENTID, entity.PREVENTION));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SADP] WHERE");
+
+
+            // Index_ACCIDENTID_PREVENTION
+            builder.Append("(");
+            for (int index = 0; index < Index_ACCIDENTID_PREVENTION.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // ACCIDENTID
+                var parameterACCIDENTID = $"@p{parameterIndex++}";
+                builder.Append("([ACCIDENTID]=").Append(parameterACCIDENTID);
+                command.Parameters.Add(parameterACCIDENTID, SqlDbType.Int).Value = Index_ACCIDENTID_PREVENTION[index].Item1;
+
+                // PREVENTION
+                if (Index_ACCIDENTID_PREVENTION[index].Item2 == null)
+                {
+                    builder.Append(" AND [PREVENTION] IS NULL)");
+                }
+                else
+                {
+                    var parameterPREVENTION = $"@p{parameterIndex++}";
+                    builder.Append(" AND [PREVENTION]=").Append(parameterPREVENTION).Append(")");
+                    command.Parameters.Add(parameterPREVENTION, SqlDbType.SmallInt).Value = Index_ACCIDENTID_PREVENTION[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SADP data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SADP data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SADP> GetDataSetDataReader()
         {
-            return new SADPDataReader(Items.Value);
+            return new SADPDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SADP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SADP data set</returns>
+        public override EduHubDataSetDataReader<SADP> GetDataSetDataReader(List<SADP> Entities)
+        {
+            return new SADPDataReader(new EduHubDataSetLoadedReader<SADP>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SADPDataReader : IDataReader, IDataRecord
+        private class SADPDataReader : EduHubDataSetDataReader<SADP>
         {
-            private List<SADP> Items;
-            private int CurrentIndex;
-            private SADP CurrentItem;
-
-            public SADPDataReader(List<SADP> Items)
+            public SADPDataReader(IEduHubDataSetReader<SADP> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 7; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 7; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // ACCIDENTID
-                        return CurrentItem.ACCIDENTID;
+                        return Current.ACCIDENTID;
                     case 2: // PREVENTION
-                        return CurrentItem.PREVENTION;
+                        return Current.PREVENTION;
                     case 3: // OTHER_PREV_INFO
-                        return CurrentItem.OTHER_PREV_INFO;
+                        return Current.OTHER_PREV_INFO;
                     case 4: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 5: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 6: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // PREVENTION
-                        return CurrentItem.PREVENTION == null;
+                        return Current.PREVENTION == null;
                     case 3: // OTHER_PREV_INFO
-                        return CurrentItem.OTHER_PREV_INFO == null;
+                        return Current.OTHER_PREV_INFO == null;
                     case 4: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 5: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 6: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -396,7 +502,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -417,35 +523,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -29,9 +29,11 @@
 #>
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -41,10 +43,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class <#= entity.Name #>DataSet : EduHubDataSet<<#= entity.Name #>>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "<#= entity.Name #>"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return <#= entity.Fields.Any(f => f.Name == "LW_DATE") ? "true" : "false" #>; } }
 
         internal <#= entity.Name #>DataSet(EduHubContext Context)
             : base(Context)
@@ -71,7 +74,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="<#= entity.Name #>" /> fields for each CSV column header</returns>
-        protected override Action<<#= entity.Name #>, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<<#= entity.Name #>, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<<#= entity.Name #>, string>[Headers.Count];
 
@@ -99,69 +102,106 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="<#= entity.Name #>" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="<#= entity.Name #>" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="<#= entity.Name #>" /> items to added or update the base <see cref="<#= entity.Name #>" /> items</param>
-        /// <returns>A merged list of <see cref="<#= entity.Name #>" /> items</returns>
-        protected override List<<#= entity.Name #>> ApplyDeltaItems(List<<#= entity.Name #>> Items, List<<#= entity.Name #>> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="<#= entity.Name #>" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="<#= entity.Name #>" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{<#= entity.Name #>}"/> of entities</returns>
+        internal override IEnumerable<<#= entity.Name #>> ApplyDeltaEntities(IEnumerable<<#= entity.Name #>> Entities, List<<#= entity.Name #>> DeltaEntities)
         {
 <#
-        if (entity.DeltaIndexes.Count > 0)
+        if (entity.UniqueIndexes.Count > 0)
         {
-            foreach (EduHubIndex index in entity.DeltaIndexes)
+            foreach (EduHubIndex index in entity.UniqueIndexes)
             {
 #>
-            <#=index.FrameworkTypeIndex #> <#=index.Name #> = Items.<#=index.IndexIndexBuilder #>;
+            HashSet<<#=index.FrameworkKeyType #>> <#=index.Name #> = new HashSet<<#=index.FrameworkKeyType #>>(DeltaEntities.Select(i => <#=index.FrameworkValueVariableBuilder("i") #>));
 <#
             }
+        }
 #>
-            HashSet<int> removeIndexes = new HashSet<int>();
 
-            foreach (<#= entity.Name #> deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-<#
-            foreach (EduHubIndex index in entity.DeltaIndexes)
-            {
-#>
-                if (<#=index.Name #>.TryGetValue(<#=index.FrameworkValueVariableBuilder("deltaItem") #>, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
-                }
-<#
-            }
-#>
-            }
-<#
-        }
-#>
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = <#=entity.ClusteredIndex.FrameworkValueVariableBuilder("deltaIterator.Current") #>;
+                        bool yieldEntity = false;
 
-            return Items
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
 <#
-        if (entity.DeltaIndexes.Count > 0)
+        if (entity.UniqueIndexes.Count == 0)
         {
 #>
-                .Remove(removeIndexes)
+                            if (<#=entity.ClusteredIndex.FrameworkValueVariableBuilder("entity") #>.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                yield return entity;
+                            }
+                            else
+                            {
+                                yieldEntity = true;
+                                break;
+                            }
 <#
         }
-#>
-                .Concat(DeltaItems)
-<#
-        EduHubIndex clusteredIndex = entity.ClusteredIndex;
-        if (clusteredIndex != null)
+        else
         {
+            if (entity.UniqueIndexes.Count == 1)
+            {
+                EduHubIndex index = entity.UniqueIndexes.First();
 #>
-                .OrderBy(i => i.<#=clusteredIndex.Fields[0].Name #>)
+                            bool overwritten = <#=index.Name #>.Remove(<#=index.FrameworkValueVariableBuilder("entity") #>);
 <#
-            foreach (EduHubField field in clusteredIndex.Fields.Skip(1))
+            }
+            else
             {
 #>
-                .ThenBy(i => i.<#=field.Name #>)
+                            bool overwritten = false;
 <#
-            }
-        }
+                foreach (EduHubIndex index in entity.UniqueIndexes)
+                {
 #>
-                .ToList();
+                            overwritten = overwritten || <#=index.Name #>.Remove(<#=index.FrameworkValueVariableBuilder("entity") #>);
+<#
+                }    
+#>
+<#
+            }    
+#>
+                            
+                            if (<#=entity.ClusteredIndex.FrameworkValueVariableBuilder("entity") #>.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+<#
+        }    
+#>
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
+                }
+            }
         }
 <#
         if (entity.Indexes.Count > 0)
@@ -171,12 +211,12 @@ namespace EduHub.Data.Entities
         #region Index Fields
 
 <#
-        foreach (EduHubIndex index in entity.Indexes)
-        {
+            foreach (EduHubIndex index in entity.Indexes)
+            {
 #>
         private <#= index.FrameworkType #> <#= index.Name #>;
 <#
-        }
+            }
 #>
 
         #endregion
@@ -184,19 +224,19 @@ namespace EduHub.Data.Entities
         #region Index Methods
 
 <#
-        foreach (EduHubIndex index in entity.Indexes)
-        {
+            foreach (EduHubIndex index in entity.Indexes)
+            {
 #>
         /// <summary>
         /// <#= index.CommentSummary #>
         /// </summary>
 <#
-            foreach (EduHubField field in index.Fields)
-            {
+                foreach (EduHubField field in index.Fields)
+                {
 #>
         /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
 <#
-            }
+                }
 #>
         /// <returns><#= index.CommentReturns #></returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
@@ -209,12 +249,12 @@ namespace EduHub.Data.Entities
         /// <#= index.CommentTrySummary #>
         /// </summary>
 <#
-            foreach (EduHubField field in index.Fields)
-            {
+                foreach (EduHubField field in index.Fields)
+                {
 #>
         /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
 <#
-            }
+                }
 #>
         /// <param name="Value"><#= index.CommentReturns #></param>
         /// <returns><#= index.CommentTryReturns #></returns>
@@ -228,12 +268,12 @@ namespace EduHub.Data.Entities
         /// <#= index.CommentTrySummary #>
         /// </summary>
 <#
-            foreach (EduHubField field in index.Fields)
-            {
+                foreach (EduHubField field in index.Fields)
+                {
 #>
         /// <param name="<#= field.Name #>"><#= field.Name #> value used to find <#= entity.Name #></param>
 <#
-            }
+                }
 #>
         /// <returns><#= index.CommentReturns #>, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
@@ -251,7 +291,7 @@ namespace EduHub.Data.Entities
         }
 
 <#
-        }
+            }
 #>
         #endregion
 <#
@@ -261,11 +301,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a <#= entity.Name #> table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a <#= entity.Name #> table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[<#= entity.Name #>](
 <#
@@ -313,68 +357,293 @@ BEGIN
 <#
         }
 #>
-END";
+END");
+        }
+
+        /// <summary>
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+        /// Returns null as <see cref="<#= entity.Name #>DataSet"/> has no non-clustered indexes.
+<#
+        }
+        else
+        {
+#>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+<#
+        }
+#>
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+        /// <returns>null</returns>
+<#
+        }
+        else
+        {
+#>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+<#
+        }
+#>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+            return null;
+<#
+        }
+        else
+        {
+#>
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"<#
+            foreach (EduHubIndex index in entity.Indexes.Where(i => !i.IsClustered))
+            {
+#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= index.Name #>')
+    ALTER INDEX [<#= index.Name #>] ON [dbo].[<#= entity.Name #>] DISABLE;
+<#
+            }
+#>");
+<#
+        }
+#>
+        }
+
+        /// <summary>
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+        /// Returns null as <see cref="<#= entity.Name #>DataSet"/> has no non-clustered indexes.
+<#
+        }
+        else
+        {
+#>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+<#
+        }
+#>
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+        /// <returns>null</returns>
+<#
+        }
+        else
+        {
+#>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+<#
+        }
+#>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+<#
+        if (entity.Indexes.Where(i => !i.IsClustered).Count() == 0)
+        {
+#>
+            return null;
+<#
+        }
+        else
+        {
+#>
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"<#
+            foreach (EduHubIndex index in entity.Indexes.Where(i => !i.IsClustered))
+            {
+#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= index.Name #>')
+    ALTER INDEX [<#= index.Name #>] ON [dbo].[<#= entity.Name #>] REBUILD PARTITION = ALL;
+<#
+            }
+#>");
+<#
+        }
+#>
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="<#= entity.Name #>"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="<#= entity.Name #>"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<<#= entity.Name #>> Entities)
+        {
+<#
+        if (entity.UniqueIndexes.Count == 0)
+        {
+#>
+            throw new NotSupportedException("The <#= entity.Name #> data set does not contain any unique indexes to identity records. Deleting individual entities is not supported.");
+<#
+        }
+        else
+        {
+            EduHubIndex lastIndex = entity.UniqueIndexes.Last();
+#>
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+<#
+            foreach (EduHubIndex index in entity.UniqueIndexes)
+            {
+#>
+            List<<#=index.FrameworkKeyType #>> <#=index.Name #> = new List<<#=index.FrameworkKeyType #>>();
+<#
+            }
+#>
+
+            foreach (var entity in Entities)
+            {
+<#
+            foreach (EduHubIndex index in entity.UniqueIndexes)
+            {
+#>
+                <#=index.Name #>.Add(<#=index.FrameworkValueVariableBuilder("entity") #>);
+<#
+            }
+#>
+            }
+
+            builder.AppendLine("DELETE [dbo].[<#=entity.Name #>] WHERE");
+
+<#
+            foreach (EduHubIndex index in entity.UniqueIndexes)
+            {
+                if (index.Fields.Count == 1)
+                {
+#>
+
+            // <#=index.Name #>
+            builder.Append("[<#=index.Fields[0].Name #>] IN (");
+            for (int index = 0; index < <#=index.Name #>.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // <#=index.Fields[0].Name #>
+                var parameter<#=index.Fields[0].Name #> = $"@p{parameterIndex++}";
+                builder.Append(parameter<#=index.Fields[0].Name #>);
+                command.Parameters.Add(parameter<#=index.Fields[0].Name #>, <#=index.Fields[0].SqlDbType #><#=(index.Fields[0].TypeMaxLength > 0 ? string.Format(", {0}", index.Fields[0].TypeMaxLength) : "")#>).Value = <#=(index.Fields[0].IsNullable ? "(object)" : "" )#><#=index.Name #>[index]<#=(index.Fields[0].IsNullable ? " ?? DBNull.Value" : "" )#>;
+            }
+<#
+                }
+                else
+                {
+#>
+
+            // <#=index.Name #>
+            builder.Append("(");
+            for (int index = 0; index < <#=index.Name #>.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+<#
+                    foreach (EduHubField field in index.Fields)
+                    {
+                        if (field.IsNullable)
+                        {
+#>
+
+                // <#=field.Name #>
+                if (<#=index.Name #>[index].Item<#=index.Fields.IndexOf(field)+1 #> == null)
+                {
+                    builder.Append("<#=(index.Fields.First() == field ? "(" : " AND ")#>[<#=field.Name #>] IS NULL<#=(index.Fields.Last() == field ? ")" : "")#>");
+                }
+                else
+                {
+                    var parameter<#=field.Name #> = $"@p{parameterIndex++}";
+                    builder.Append("<#=(index.Fields.First() == field ? "(" : " AND ")#>[<#=field.Name #>]=").Append(parameter<#=field.Name #>)<#=(index.Fields.Last() == field ? ".Append(\")\")" : "")#>;
+                    command.Parameters.Add(parameter<#=field.Name #>, <#=field.SqlDbType #><#=(field.TypeMaxLength > 0 ? string.Format(", {0}", field.TypeMaxLength) : "")#>).Value = <#=index.Name #>[index].Item<#=index.Fields.IndexOf(field)+1 #>;
+                }
+<#
+                        }
+                        else
+                        {
+#>
+
+                // <#=field.Name #>
+                var parameter<#=field.Name #> = $"@p{parameterIndex++}";
+                builder.Append("<#=(index.Fields.First() == field ? "(" : " AND ")#>[<#=field.Name #>]=").Append(parameter<#=field.Name #>)<#=(index.Fields.Last() == field ? ".Append(\")\")" : "")#>;
+                command.Parameters.Add(parameter<#=field.Name #>, <#=field.SqlDbType #><#=(field.TypeMaxLength > 0 ? string.Format(", {0}", field.TypeMaxLength) : "")#>).Value = <#=index.Name #>[index].Item<#=index.Fields.IndexOf(field)+1 #>;
+<#
+                        }
+                    }
+#>
+            }
+<#
+                }
+                if (index == lastIndex)
+                {
+#>
+            builder.Append(");");
+<#
+                }
+                else
+                {
+#>
+            builder.AppendLine(") OR");
+<#
+                }
+            }
+#>
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
+<#
+        }
+#>
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the <#= entity.Name #> data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the <#= entity.Name #> data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<<#= entity.Name #>> GetDataSetDataReader()
         {
-            return new <#= entity.Name #>DataReader(Items.Value);
+            return new <#= entity.Name #>DataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the <#= entity.Name #> data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the <#= entity.Name #> data set</returns>
+        public override EduHubDataSetDataReader<<#= entity.Name #>> GetDataSetDataReader(List<<#= entity.Name #>> Entities)
+        {
+            return new <#= entity.Name #>DataReader(new EduHubDataSetLoadedReader<<#= entity.Name #>>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class <#= entity.Name #>DataReader : IDataReader, IDataRecord
+        private class <#= entity.Name #>DataReader : EduHubDataSetDataReader<<#= entity.Name #>>
         {
-            private List<<#= entity.Name #>> Items;
-            private int CurrentIndex;
-            private <#= entity.Name #> CurrentItem;
-
-            public <#= entity.Name #>DataReader(List<<#= entity.Name #>> Items)
+            public <#= entity.Name #>DataReader(IEduHubDataSetReader<<#= entity.Name #>> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return <#= entity.Fields.Count #>; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return <#= entity.Fields.Count #>; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
@@ -383,7 +652,7 @@ END";
         {
 #>
                     case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
-                        return CurrentItem.<#= field.Name #>;
+                        return Current.<#= field.Name #>;
 <#
         }
 #>
@@ -392,7 +661,7 @@ END";
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
@@ -401,7 +670,7 @@ END";
         {
 #>
                     case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
-                        return CurrentItem.<#= field.Name #> == null;
+                        return Current.<#= field.Name #> == null;
 <#
         }
 #>
@@ -410,7 +679,7 @@ END";
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -428,7 +697,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -445,35 +714,6 @@ END";
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
             }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
-            }
         }
 
         #endregion
@@ -482,7 +722,7 @@ END";
 }
 <#
         manager.EndBlock();
-
+        
         // Write Entity Code
         manager.StartNewFile(string.Format(@"{0}.cs", entity.Name));
 #>
@@ -528,14 +768,14 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
 <#
-        foreach (EduHubField foreignField in entity.ForeignFields)
-        {
-            EduHubField field = foreignField.ForeignParent;
-            EduHubIndex index = foreignField.Index;
+            foreach (EduHubField foreignField in entity.ForeignFields)
+            {
+                EduHubField field = foreignField.ForeignParent;
+                EduHubIndex index = foreignField.Index;
 #>
         private <#= index.FrameworkValueType #> Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>;
 <#
-        }
+            }
 #>
 
         #endregion
@@ -543,6 +783,28 @@ namespace EduHub.Data.Entities
 <#
         }
 #>
+        /// <inheritdoc />
+        public override DateTime? EntityLastModified
+        {
+            get
+            {
+<#
+        if (entity.Fields.Any(f => f.Name == "LW_DATE"))
+        {
+#>
+                return LW_DATE.Value;
+<#
+        }
+        else
+        {
+#>
+                return null;
+<#
+        }
+#>
+            }
+        }
+
         #region Field Properties
 <#
         foreach (EduHubField field in entity.Fields)
@@ -566,10 +828,10 @@ namespace EduHub.Data.Entities
         #region Navigation Properties
 
 <#
-        foreach (EduHubField field in entity.NavigationFields)
-        {
-            EduHubField parentField = field.ForeignParent;
-            EduHubIndex index = field.ForeignParentIndex;
+            foreach (EduHubField field in entity.NavigationFields)
+            {
+                EduHubField parentField = field.ForeignParent;
+                EduHubIndex index = field.ForeignParentIndex;
 #>
         /// <summary>
         /// <#= parentField.Entity.Name #> (<#= parentField.Entity.Description #>) related entity by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= parentField.Entity.Name #>.<#= parentField.Name #>]
@@ -580,15 +842,15 @@ namespace EduHub.Data.Entities
             get
             {
 <#
-            if (field.IsNullable && !parentField.IsNullable)
-            {
+                if (field.IsNullable && !parentField.IsNullable)
+                {
 #>
                 if (<#= field.Name #> == null)
                 {
                     return null;
                 }
 <#
-            }
+                }
 #>
                 if (Cache_<#= field.Name #>_<#= parentField.Entity.Name #> == null)
                 {
@@ -600,7 +862,7 @@ namespace EduHub.Data.Entities
         }
 
 <#
-        }
+            }
 #>
         #endregion
 <#
@@ -614,25 +876,25 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
 <#
-        foreach (EduHubField foreignField in entity.ForeignFields)
-        {
-            EduHubField field = foreignField.ForeignParent;
-            EduHubIndex index = foreignField.Index;
+            foreach (EduHubField foreignField in entity.ForeignFields)
+            {
+                EduHubField field = foreignField.ForeignParent;
+                EduHubIndex index = foreignField.Index;
 #>
         /// <summary>
 <#
-            if (index.IsUnique)
-            {
+                if (index.IsUnique)
+                {
 #>
         /// <#= foreignField.Entity.Name #> (<#= foreignField.Entity.Description #>) related entity by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= foreignField.Entity.Name #>.<#= foreignField.Name #>]
 <#
-            }
-            else
-            {
+                }
+                else
+                {
 #>
         /// <#= foreignField.Entity.Name #> (<#= foreignField.Entity.Description #>) related entities by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= foreignField.Entity.Name #>.<#= foreignField.Name #>]
 <#
-            }
+                }
 #>
 <#= field.CommentSummary #>
         /// </summary>
@@ -641,32 +903,32 @@ namespace EduHub.Data.Entities
             get
             {
 <#
-            if (field.IsNullable && !foreignField.IsNullable)
-            {
+                if (field.IsNullable && !foreignField.IsNullable)
+                {
 #>
                 if (<#= field.Name #> == null)
                 {
                     return null;
                 }
 <#
-            }
+                }
 #>
                 if (Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> == null &&
                     !Context.<#= foreignField.Entity.Name #>.TryFindBy<#= index.Key #>(<#= field.PassExpression(foreignField) #>, out Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>))
                 {
 <#
-            if (index.IsUnique)
-            {
+                if (index.IsUnique)
+                {
 #>
                     Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> = null;
 <#
-            }
-            else
-            {
+                }
+                else
+                {
 #>
                     Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #> = new List<<#= foreignField.Entity.Name #>>().AsReadOnly();
 <#
-            }
+                }
 #>
                 }
 
@@ -675,7 +937,7 @@ namespace EduHub.Data.Entities
         }
 
 <#
-        }
+            }
 #>
         #endregion
 <#
@@ -727,7 +989,7 @@ namespace EduHub.Data.Entities
             }
         }
 
-        public List<EduHubIndex> DeltaIndexes
+        public List<EduHubIndex> UniqueIndexes
         {
             get
             {
@@ -918,6 +1180,28 @@ namespace EduHub.Data.Entities
                     builder.Append(" NOT NULL");
                 }
                 return builder.ToString();
+            }
+        }
+
+        public string SqlDbType
+        {
+            get
+            {
+                switch (SqlType)
+                {
+                    case "varchar":
+                        return "SqlDbType.VarChar";
+                    case "int":
+                        return "SqlDbType.Int";
+                    case "tinyint":
+                        return "SqlDbType.TinyInt";
+                    case "smallint":
+                        return "SqlDbType.SmallInt";
+                    case "datetime":
+                        return "SqlDbType.DateTime";
+                    default:
+                        throw new ArgumentException("Unsupported Type: " + SqlType);
+                }
             }
         }
 

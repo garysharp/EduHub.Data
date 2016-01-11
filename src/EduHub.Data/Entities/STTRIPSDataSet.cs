@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STTRIPSDataSet : EduHubDataSet<STTRIPS>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "STTRIPS"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal STTRIPSDataSet(EduHubContext Context)
             : base(Context)
@@ -38,7 +41,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="STTRIPS" /> fields for each CSV column header</returns>
-        protected override Action<STTRIPS, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<STTRIPS, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<STTRIPS, string>[Headers.Count];
 
@@ -164,34 +167,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="STTRIPS" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="STTRIPS" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="STTRIPS" /> items to added or update the base <see cref="STTRIPS" /> items</param>
-        /// <returns>A merged list of <see cref="STTRIPS" /> items</returns>
-        protected override List<STTRIPS> ApplyDeltaItems(List<STTRIPS> Items, List<STTRIPS> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="STTRIPS" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="STTRIPS" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{STTRIPS}"/> of entities</returns>
+        internal override IEnumerable<STTRIPS> ApplyDeltaEntities(IEnumerable<STTRIPS> Entities, List<STTRIPS> DeltaEntities)
         {
-            Dictionary<Tuple<string, string>, int> Index_STUDENT_ID_TRAVEL_DAY = Items.ToIndexDictionary(i => Tuple.Create(i.STUDENT_ID, i.TRAVEL_DAY));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, string>> Index_STUDENT_ID_TRAVEL_DAY = new HashSet<Tuple<string, string>>(DeltaEntities.Select(i => Tuple.Create(i.STUDENT_ID, i.TRAVEL_DAY)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (STTRIPS deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.STUDENT_ID;
+                        bool yieldEntity = false;
 
-                if (Index_STUDENT_ID_TRAVEL_DAY.TryGetValue(Tuple.Create(deltaItem.STUDENT_ID, deltaItem.TRAVEL_DAY), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_STUDENT_ID_TRAVEL_DAY.Remove(Tuple.Create(entity.STUDENT_ID, entity.TRAVEL_DAY));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.STUDENT_ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.STUDENT_ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -682,11 +709,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a STTRIPS table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a STTRIPS table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[STTRIPS](
         [TID] int IDENTITY NOT NULL,
@@ -770,226 +801,333 @@ BEGIN
             [STUDENT_ID] ASC,
             [TRAVEL_DAY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_PICKUP_ADDRESS_ID')
+    ALTER INDEX [Index_AM_PICKUP_ADDRESS_ID] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_ROUTE_ID')
+    ALTER INDEX [Index_AM_ROUTE_ID] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_SETDOWN_CAMPUS')
+    ALTER INDEX [Index_AM_SETDOWN_CAMPUS] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_TRANSPORT_MODE')
+    ALTER INDEX [Index_AM_TRANSPORT_MODE] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_PICKUP_CAMPUS')
+    ALTER INDEX [Index_PM_PICKUP_CAMPUS] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_ROUTE_ID')
+    ALTER INDEX [Index_PM_ROUTE_ID] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_SETDOWN_ADDRESS_ID')
+    ALTER INDEX [Index_PM_SETDOWN_ADDRESS_ID] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_TRANSPORT_MODE')
+    ALTER INDEX [Index_PM_TRANSPORT_MODE] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_STUDENT_ID_TRAVEL_DAY')
+    ALTER INDEX [Index_STUDENT_ID_TRAVEL_DAY] ON [dbo].[STTRIPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STTRIPS] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_PICKUP_ADDRESS_ID')
+    ALTER INDEX [Index_AM_PICKUP_ADDRESS_ID] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_ROUTE_ID')
+    ALTER INDEX [Index_AM_ROUTE_ID] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_SETDOWN_CAMPUS')
+    ALTER INDEX [Index_AM_SETDOWN_CAMPUS] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_AM_TRANSPORT_MODE')
+    ALTER INDEX [Index_AM_TRANSPORT_MODE] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_PICKUP_CAMPUS')
+    ALTER INDEX [Index_PM_PICKUP_CAMPUS] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_ROUTE_ID')
+    ALTER INDEX [Index_PM_ROUTE_ID] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_SETDOWN_ADDRESS_ID')
+    ALTER INDEX [Index_PM_SETDOWN_ADDRESS_ID] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_PM_TRANSPORT_MODE')
+    ALTER INDEX [Index_PM_TRANSPORT_MODE] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_STUDENT_ID_TRAVEL_DAY')
+    ALTER INDEX [Index_STUDENT_ID_TRAVEL_DAY] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STTRIPS]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STTRIPS] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="STTRIPS"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="STTRIPS"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<STTRIPS> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, string>> Index_STUDENT_ID_TRAVEL_DAY = new List<Tuple<string, string>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_STUDENT_ID_TRAVEL_DAY.Add(Tuple.Create(entity.STUDENT_ID, entity.TRAVEL_DAY));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[STTRIPS] WHERE");
+
+
+            // Index_STUDENT_ID_TRAVEL_DAY
+            builder.Append("(");
+            for (int index = 0; index < Index_STUDENT_ID_TRAVEL_DAY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // STUDENT_ID
+                var parameterSTUDENT_ID = $"@p{parameterIndex++}";
+                builder.Append("([STUDENT_ID]=").Append(parameterSTUDENT_ID);
+                command.Parameters.Add(parameterSTUDENT_ID, SqlDbType.VarChar, 10).Value = Index_STUDENT_ID_TRAVEL_DAY[index].Item1;
+
+                // TRAVEL_DAY
+                if (Index_STUDENT_ID_TRAVEL_DAY[index].Item2 == null)
+                {
+                    builder.Append(" AND [TRAVEL_DAY] IS NULL)");
+                }
+                else
+                {
+                    var parameterTRAVEL_DAY = $"@p{parameterIndex++}";
+                    builder.Append(" AND [TRAVEL_DAY]=").Append(parameterTRAVEL_DAY).Append(")");
+                    command.Parameters.Add(parameterTRAVEL_DAY, SqlDbType.VarChar, 2).Value = Index_STUDENT_ID_TRAVEL_DAY[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the STTRIPS data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the STTRIPS data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<STTRIPS> GetDataSetDataReader()
         {
-            return new STTRIPSDataReader(Items.Value);
+            return new STTRIPSDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STTRIPS data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STTRIPS data set</returns>
+        public override EduHubDataSetDataReader<STTRIPS> GetDataSetDataReader(List<STTRIPS> Entities)
+        {
+            return new STTRIPSDataReader(new EduHubDataSetLoadedReader<STTRIPS>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class STTRIPSDataReader : IDataReader, IDataRecord
+        private class STTRIPSDataReader : EduHubDataSetDataReader<STTRIPS>
         {
-            private List<STTRIPS> Items;
-            private int CurrentIndex;
-            private STTRIPS CurrentItem;
-
-            public STTRIPSDataReader(List<STTRIPS> Items)
+            public STTRIPSDataReader(IEduHubDataSetReader<STTRIPS> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 36; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 36; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // STUDENT_ID
-                        return CurrentItem.STUDENT_ID;
+                        return Current.STUDENT_ID;
                     case 2: // TRANSPORT_START_DATE
-                        return CurrentItem.TRANSPORT_START_DATE;
+                        return Current.TRANSPORT_START_DATE;
                     case 3: // TRANSPORT_END_DATE
-                        return CurrentItem.TRANSPORT_END_DATE;
+                        return Current.TRANSPORT_END_DATE;
                     case 4: // TRAVEL_IN_WHEELCHAIR
-                        return CurrentItem.TRAVEL_IN_WHEELCHAIR;
+                        return Current.TRAVEL_IN_WHEELCHAIR;
                     case 5: // TRAVEL_DAY
-                        return CurrentItem.TRAVEL_DAY;
+                        return Current.TRAVEL_DAY;
                     case 6: // TRAVEL_NOTES
-                        return CurrentItem.TRAVEL_NOTES;
+                        return Current.TRAVEL_NOTES;
                     case 7: // AM_ROUTE_ID
-                        return CurrentItem.AM_ROUTE_ID;
+                        return Current.AM_ROUTE_ID;
                     case 8: // AM_TRANSPORT_MODE
-                        return CurrentItem.AM_TRANSPORT_MODE;
+                        return Current.AM_TRANSPORT_MODE;
                     case 9: // AM_ROUTE_EVERY_DAY
-                        return CurrentItem.AM_ROUTE_EVERY_DAY;
+                        return Current.AM_ROUTE_EVERY_DAY;
                     case 10: // AM_PICKUP_TIME
-                        return CurrentItem.AM_PICKUP_TIME;
+                        return Current.AM_PICKUP_TIME;
                     case 11: // AM_PICKUP_ADDRESS_ID
-                        return CurrentItem.AM_PICKUP_ADDRESS_ID;
+                        return Current.AM_PICKUP_ADDRESS_ID;
                     case 12: // AM_PICKUP_ADD_SAME_AS_HOME
-                        return CurrentItem.AM_PICKUP_ADD_SAME_AS_HOME;
+                        return Current.AM_PICKUP_ADD_SAME_AS_HOME;
                     case 13: // AM_PICKUP_DIRECTIONS
-                        return CurrentItem.AM_PICKUP_DIRECTIONS;
+                        return Current.AM_PICKUP_DIRECTIONS;
                     case 14: // AM_PICKUP_ADD_MAP_TYPE
-                        return CurrentItem.AM_PICKUP_ADD_MAP_TYPE;
+                        return Current.AM_PICKUP_ADD_MAP_TYPE;
                     case 15: // AM_PICKUP_ADD_MAP_NO
-                        return CurrentItem.AM_PICKUP_ADD_MAP_NO;
+                        return Current.AM_PICKUP_ADD_MAP_NO;
                     case 16: // AM_PICKUP_ADD_MAP_X_REF
-                        return CurrentItem.AM_PICKUP_ADD_MAP_X_REF;
+                        return Current.AM_PICKUP_ADD_MAP_X_REF;
                     case 17: // AM_PICKUP_ADD_DESCP
-                        return CurrentItem.AM_PICKUP_ADD_DESCP;
+                        return Current.AM_PICKUP_ADD_DESCP;
                     case 18: // AM_SETDOWN_TIME
-                        return CurrentItem.AM_SETDOWN_TIME;
+                        return Current.AM_SETDOWN_TIME;
                     case 19: // AM_SETDOWN_CAMPUS
-                        return CurrentItem.AM_SETDOWN_CAMPUS;
+                        return Current.AM_SETDOWN_CAMPUS;
                     case 20: // PM_ROUTE_ID
-                        return CurrentItem.PM_ROUTE_ID;
+                        return Current.PM_ROUTE_ID;
                     case 21: // PM_TRANSPORT_MODE
-                        return CurrentItem.PM_TRANSPORT_MODE;
+                        return Current.PM_TRANSPORT_MODE;
                     case 22: // PM_ROUTE_EVERY_DAY
-                        return CurrentItem.PM_ROUTE_EVERY_DAY;
+                        return Current.PM_ROUTE_EVERY_DAY;
                     case 23: // PM_PICKUP_TIME
-                        return CurrentItem.PM_PICKUP_TIME;
+                        return Current.PM_PICKUP_TIME;
                     case 24: // PM_PICKUP_CAMPUS
-                        return CurrentItem.PM_PICKUP_CAMPUS;
+                        return Current.PM_PICKUP_CAMPUS;
                     case 25: // PM_SETDOWN_TIME
-                        return CurrentItem.PM_SETDOWN_TIME;
+                        return Current.PM_SETDOWN_TIME;
                     case 26: // PM_SETDOWN_ADDRESS_ID
-                        return CurrentItem.PM_SETDOWN_ADDRESS_ID;
+                        return Current.PM_SETDOWN_ADDRESS_ID;
                     case 27: // PM_STDWN_AM_PKUP_ADD_SAME
-                        return CurrentItem.PM_STDWN_AM_PKUP_ADD_SAME;
+                        return Current.PM_STDWN_AM_PKUP_ADD_SAME;
                     case 28: // PM_SETDOWN_DIRECTIONS
-                        return CurrentItem.PM_SETDOWN_DIRECTIONS;
+                        return Current.PM_SETDOWN_DIRECTIONS;
                     case 29: // PM_SETDOWN_ADD_MAP_TYPE
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_TYPE;
+                        return Current.PM_SETDOWN_ADD_MAP_TYPE;
                     case 30: // PM_SETDOWN_ADD_MAP_NO
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_NO;
+                        return Current.PM_SETDOWN_ADD_MAP_NO;
                     case 31: // PM_SETDOWN_ADD_MAP_X_REF
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_X_REF;
+                        return Current.PM_SETDOWN_ADD_MAP_X_REF;
                     case 32: // PM_SETDOWN_ADD_DESCP
-                        return CurrentItem.PM_SETDOWN_ADD_DESCP;
+                        return Current.PM_SETDOWN_ADD_DESCP;
                     case 33: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 34: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 35: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // TRANSPORT_START_DATE
-                        return CurrentItem.TRANSPORT_START_DATE == null;
+                        return Current.TRANSPORT_START_DATE == null;
                     case 3: // TRANSPORT_END_DATE
-                        return CurrentItem.TRANSPORT_END_DATE == null;
+                        return Current.TRANSPORT_END_DATE == null;
                     case 4: // TRAVEL_IN_WHEELCHAIR
-                        return CurrentItem.TRAVEL_IN_WHEELCHAIR == null;
+                        return Current.TRAVEL_IN_WHEELCHAIR == null;
                     case 5: // TRAVEL_DAY
-                        return CurrentItem.TRAVEL_DAY == null;
+                        return Current.TRAVEL_DAY == null;
                     case 6: // TRAVEL_NOTES
-                        return CurrentItem.TRAVEL_NOTES == null;
+                        return Current.TRAVEL_NOTES == null;
                     case 7: // AM_ROUTE_ID
-                        return CurrentItem.AM_ROUTE_ID == null;
+                        return Current.AM_ROUTE_ID == null;
                     case 8: // AM_TRANSPORT_MODE
-                        return CurrentItem.AM_TRANSPORT_MODE == null;
+                        return Current.AM_TRANSPORT_MODE == null;
                     case 9: // AM_ROUTE_EVERY_DAY
-                        return CurrentItem.AM_ROUTE_EVERY_DAY == null;
+                        return Current.AM_ROUTE_EVERY_DAY == null;
                     case 10: // AM_PICKUP_TIME
-                        return CurrentItem.AM_PICKUP_TIME == null;
+                        return Current.AM_PICKUP_TIME == null;
                     case 11: // AM_PICKUP_ADDRESS_ID
-                        return CurrentItem.AM_PICKUP_ADDRESS_ID == null;
+                        return Current.AM_PICKUP_ADDRESS_ID == null;
                     case 12: // AM_PICKUP_ADD_SAME_AS_HOME
-                        return CurrentItem.AM_PICKUP_ADD_SAME_AS_HOME == null;
+                        return Current.AM_PICKUP_ADD_SAME_AS_HOME == null;
                     case 13: // AM_PICKUP_DIRECTIONS
-                        return CurrentItem.AM_PICKUP_DIRECTIONS == null;
+                        return Current.AM_PICKUP_DIRECTIONS == null;
                     case 14: // AM_PICKUP_ADD_MAP_TYPE
-                        return CurrentItem.AM_PICKUP_ADD_MAP_TYPE == null;
+                        return Current.AM_PICKUP_ADD_MAP_TYPE == null;
                     case 15: // AM_PICKUP_ADD_MAP_NO
-                        return CurrentItem.AM_PICKUP_ADD_MAP_NO == null;
+                        return Current.AM_PICKUP_ADD_MAP_NO == null;
                     case 16: // AM_PICKUP_ADD_MAP_X_REF
-                        return CurrentItem.AM_PICKUP_ADD_MAP_X_REF == null;
+                        return Current.AM_PICKUP_ADD_MAP_X_REF == null;
                     case 17: // AM_PICKUP_ADD_DESCP
-                        return CurrentItem.AM_PICKUP_ADD_DESCP == null;
+                        return Current.AM_PICKUP_ADD_DESCP == null;
                     case 18: // AM_SETDOWN_TIME
-                        return CurrentItem.AM_SETDOWN_TIME == null;
+                        return Current.AM_SETDOWN_TIME == null;
                     case 19: // AM_SETDOWN_CAMPUS
-                        return CurrentItem.AM_SETDOWN_CAMPUS == null;
+                        return Current.AM_SETDOWN_CAMPUS == null;
                     case 20: // PM_ROUTE_ID
-                        return CurrentItem.PM_ROUTE_ID == null;
+                        return Current.PM_ROUTE_ID == null;
                     case 21: // PM_TRANSPORT_MODE
-                        return CurrentItem.PM_TRANSPORT_MODE == null;
+                        return Current.PM_TRANSPORT_MODE == null;
                     case 22: // PM_ROUTE_EVERY_DAY
-                        return CurrentItem.PM_ROUTE_EVERY_DAY == null;
+                        return Current.PM_ROUTE_EVERY_DAY == null;
                     case 23: // PM_PICKUP_TIME
-                        return CurrentItem.PM_PICKUP_TIME == null;
+                        return Current.PM_PICKUP_TIME == null;
                     case 24: // PM_PICKUP_CAMPUS
-                        return CurrentItem.PM_PICKUP_CAMPUS == null;
+                        return Current.PM_PICKUP_CAMPUS == null;
                     case 25: // PM_SETDOWN_TIME
-                        return CurrentItem.PM_SETDOWN_TIME == null;
+                        return Current.PM_SETDOWN_TIME == null;
                     case 26: // PM_SETDOWN_ADDRESS_ID
-                        return CurrentItem.PM_SETDOWN_ADDRESS_ID == null;
+                        return Current.PM_SETDOWN_ADDRESS_ID == null;
                     case 27: // PM_STDWN_AM_PKUP_ADD_SAME
-                        return CurrentItem.PM_STDWN_AM_PKUP_ADD_SAME == null;
+                        return Current.PM_STDWN_AM_PKUP_ADD_SAME == null;
                     case 28: // PM_SETDOWN_DIRECTIONS
-                        return CurrentItem.PM_SETDOWN_DIRECTIONS == null;
+                        return Current.PM_SETDOWN_DIRECTIONS == null;
                     case 29: // PM_SETDOWN_ADD_MAP_TYPE
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_TYPE == null;
+                        return Current.PM_SETDOWN_ADD_MAP_TYPE == null;
                     case 30: // PM_SETDOWN_ADD_MAP_NO
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_NO == null;
+                        return Current.PM_SETDOWN_ADD_MAP_NO == null;
                     case 31: // PM_SETDOWN_ADD_MAP_X_REF
-                        return CurrentItem.PM_SETDOWN_ADD_MAP_X_REF == null;
+                        return Current.PM_SETDOWN_ADD_MAP_X_REF == null;
                     case 32: // PM_SETDOWN_ADD_DESCP
-                        return CurrentItem.PM_SETDOWN_ADD_DESCP == null;
+                        return Current.PM_SETDOWN_ADD_DESCP == null;
                     case 33: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 34: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 35: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1070,7 +1208,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1149,35 +1287,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

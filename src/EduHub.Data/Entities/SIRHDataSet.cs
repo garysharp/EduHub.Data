@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SIRHDataSet : EduHubDataSet<SIRH>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SIRH"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SIRHDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SIRH" /> fields for each CSV column header</returns>
-        protected override Action<SIRH, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SIRH, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SIRH, string>[Headers.Count];
 
@@ -110,34 +113,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SIRH" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SIRH" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SIRH" /> items to added or update the base <see cref="SIRH" /> items</param>
-        /// <returns>A merged list of <see cref="SIRH" /> items</returns>
-        protected override List<SIRH> ApplyDeltaItems(List<SIRH> Items, List<SIRH> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SIRH" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SIRH" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SIRH}"/> of entities</returns>
+        internal override IEnumerable<SIRH> ApplyDeltaEntities(IEnumerable<SIRH> Entities, List<SIRH> DeltaEntities)
         {
-            Dictionary<int, int> Index_PRINT_ID = Items.ToIndexDictionary(i => i.PRINT_ID);
-            Dictionary<string, int> Index_SIRHKEY = Items.ToIndexDictionary(i => i.SIRHKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_PRINT_ID = new HashSet<int>(DeltaEntities.Select(i => i.PRINT_ID));
+            HashSet<string> Index_SIRHKEY = new HashSet<string>(DeltaEntities.Select(i => i.SIRHKEY));
 
-            foreach (SIRH deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SIRHKEY;
+                        bool yieldEntity = false;
 
-                if (Index_PRINT_ID.TryGetValue(deltaItem.PRINT_ID, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_SIRHKEY.TryGetValue(deltaItem.SIRHKEY, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_PRINT_ID.Remove(entity.PRINT_ID);
+                            overwritten = overwritten || Index_SIRHKEY.Remove(entity.SIRHKEY);
+                            
+                            if (entity.SIRHKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SIRHKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -238,11 +265,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SIRH table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SIRH table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SIRH](
         [SIRHKEY] varchar(20) NOT NULL,
@@ -274,166 +305,225 @@ BEGIN
     (
             [PRINT_ID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'Index_PRINT_ID')
+    ALTER INDEX [Index_PRINT_ID] ON [dbo].[SIRH] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'Index_PRINT_ID')
+    ALTER INDEX [Index_PRINT_ID] ON [dbo].[SIRH] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SIRH"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SIRH"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SIRH> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_PRINT_ID = new List<int>();
+            List<string> Index_SIRHKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PRINT_ID.Add(entity.PRINT_ID);
+                Index_SIRHKEY.Add(entity.SIRHKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SIRH] WHERE");
+
+
+            // Index_PRINT_ID
+            builder.Append("[PRINT_ID] IN (");
+            for (int index = 0; index < Index_PRINT_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PRINT_ID
+                var parameterPRINT_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterPRINT_ID);
+                command.Parameters.Add(parameterPRINT_ID, SqlDbType.Int).Value = Index_PRINT_ID[index];
+            }
+            builder.AppendLine(") OR");
+
+            // Index_SIRHKEY
+            builder.Append("[SIRHKEY] IN (");
+            for (int index = 0; index < Index_SIRHKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SIRHKEY
+                var parameterSIRHKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSIRHKEY);
+                command.Parameters.Add(parameterSIRHKEY, SqlDbType.VarChar, 20).Value = Index_SIRHKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SIRH data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SIRH data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SIRH> GetDataSetDataReader()
         {
-            return new SIRHDataReader(Items.Value);
+            return new SIRHDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SIRH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SIRH data set</returns>
+        public override EduHubDataSetDataReader<SIRH> GetDataSetDataReader(List<SIRH> Entities)
+        {
+            return new SIRHDataReader(new EduHubDataSetLoadedReader<SIRH>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SIRHDataReader : IDataReader, IDataRecord
+        private class SIRHDataReader : EduHubDataSetDataReader<SIRH>
         {
-            private List<SIRH> Items;
-            private int CurrentIndex;
-            private SIRH CurrentItem;
-
-            public SIRHDataReader(List<SIRH> Items)
+            public SIRHDataReader(IEduHubDataSetReader<SIRH> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 21; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 21; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SIRHKEY
-                        return CurrentItem.SIRHKEY;
+                        return Current.SIRHKEY;
                     case 1: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 2: // TRXLEDGER
-                        return CurrentItem.TRXLEDGER;
+                        return Current.TRXLEDGER;
                     case 3: // TRREF
-                        return CurrentItem.TRREF;
+                        return Current.TRREF;
                     case 4: // TRBATCH
-                        return CurrentItem.TRBATCH;
+                        return Current.TRBATCH;
                     case 5: // TRDET
-                        return CurrentItem.TRDET;
+                        return Current.TRDET;
                     case 6: // TRDATE
-                        return CurrentItem.TRDATE;
+                        return Current.TRDATE;
                     case 7: // TRAMT
-                        return CurrentItem.TRAMT;
+                        return Current.TRAMT;
                     case 8: // RTYPE
-                        return CurrentItem.RTYPE;
+                        return Current.RTYPE;
                     case 9: // RECEIPT_USER
-                        return CurrentItem.RECEIPT_USER;
+                        return Current.RECEIPT_USER;
                     case 10: // RECEIPT_DATE
-                        return CurrentItem.RECEIPT_DATE;
+                        return Current.RECEIPT_DATE;
                     case 11: // RECEIPT_TIME
-                        return CurrentItem.RECEIPT_TIME;
+                        return Current.RECEIPT_TIME;
                     case 12: // NEW_TRREF
-                        return CurrentItem.NEW_TRREF;
+                        return Current.NEW_TRREF;
                     case 13: // ERROR_FLAG
-                        return CurrentItem.ERROR_FLAG;
+                        return Current.ERROR_FLAG;
                     case 14: // ERROR_COMMENT
-                        return CurrentItem.ERROR_COMMENT;
+                        return Current.ERROR_COMMENT;
                     case 15: // ERROR_USER
-                        return CurrentItem.ERROR_USER;
+                        return Current.ERROR_USER;
                     case 16: // FORMAT_ID
-                        return CurrentItem.FORMAT_ID;
+                        return Current.FORMAT_ID;
                     case 17: // PRINT_ID
-                        return CurrentItem.PRINT_ID;
+                        return Current.PRINT_ID;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // CODE
-                        return CurrentItem.CODE == null;
+                        return Current.CODE == null;
                     case 2: // TRXLEDGER
-                        return CurrentItem.TRXLEDGER == null;
+                        return Current.TRXLEDGER == null;
                     case 3: // TRREF
-                        return CurrentItem.TRREF == null;
+                        return Current.TRREF == null;
                     case 4: // TRBATCH
-                        return CurrentItem.TRBATCH == null;
+                        return Current.TRBATCH == null;
                     case 5: // TRDET
-                        return CurrentItem.TRDET == null;
+                        return Current.TRDET == null;
                     case 6: // TRDATE
-                        return CurrentItem.TRDATE == null;
+                        return Current.TRDATE == null;
                     case 7: // TRAMT
-                        return CurrentItem.TRAMT == null;
+                        return Current.TRAMT == null;
                     case 8: // RTYPE
-                        return CurrentItem.RTYPE == null;
+                        return Current.RTYPE == null;
                     case 9: // RECEIPT_USER
-                        return CurrentItem.RECEIPT_USER == null;
+                        return Current.RECEIPT_USER == null;
                     case 10: // RECEIPT_DATE
-                        return CurrentItem.RECEIPT_DATE == null;
+                        return Current.RECEIPT_DATE == null;
                     case 11: // RECEIPT_TIME
-                        return CurrentItem.RECEIPT_TIME == null;
+                        return Current.RECEIPT_TIME == null;
                     case 12: // NEW_TRREF
-                        return CurrentItem.NEW_TRREF == null;
+                        return Current.NEW_TRREF == null;
                     case 13: // ERROR_FLAG
-                        return CurrentItem.ERROR_FLAG == null;
+                        return Current.ERROR_FLAG == null;
                     case 14: // ERROR_COMMENT
-                        return CurrentItem.ERROR_COMMENT == null;
+                        return Current.ERROR_COMMENT == null;
                     case 15: // ERROR_USER
-                        return CurrentItem.ERROR_USER == null;
+                        return Current.ERROR_USER == null;
                     case 16: // FORMAT_ID
-                        return CurrentItem.FORMAT_ID == null;
+                        return Current.FORMAT_ID == null;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -484,7 +574,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -533,35 +623,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

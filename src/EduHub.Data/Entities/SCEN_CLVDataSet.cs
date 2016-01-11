@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_CLVDataSet : EduHubDataSet<SCEN_CLV>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SCEN_CLV"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SCEN_CLVDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCEN_CLV" /> fields for each CSV column header</returns>
-        protected override Action<SCEN_CLV, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SCEN_CLV, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCEN_CLV, string>[Headers.Count];
 
@@ -70,29 +73,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SCEN_CLV" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SCEN_CLV" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SCEN_CLV" /> items to added or update the base <see cref="SCEN_CLV" /> items</param>
-        /// <returns>A merged list of <see cref="SCEN_CLV" /> items</returns>
-        protected override List<SCEN_CLV> ApplyDeltaItems(List<SCEN_CLV> Items, List<SCEN_CLV> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SCEN_CLV" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SCEN_CLV" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SCEN_CLV}"/> of entities</returns>
+        internal override IEnumerable<SCEN_CLV> ApplyDeltaEntities(IEnumerable<SCEN_CLV> Entities, List<SCEN_CLV> DeltaEntities)
         {
-            Dictionary<int, int> Index_ID = Items.ToIndexDictionary(i => i.ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_ID = new HashSet<int>(DeltaEntities.Select(i => i.ID));
 
-            foreach (SCEN_CLV deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_ID.TryGetValue(deltaItem.ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_ID.Remove(entity.ID);
+                            
+                            if (entity.ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -150,11 +179,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SCEN_CLV table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SCEN_CLV table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_CLV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_CLV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SCEN_CLV](
         [ID] int IDENTITY NOT NULL,
@@ -169,116 +202,147 @@ BEGIN
             [ID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_CLVDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_CLVDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SCEN_CLV"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SCEN_CLV"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SCEN_CLV> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_ID.Add(entity.ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SCEN_CLV] WHERE");
+
+
+            // Index_ID
+            builder.Append("[ID] IN (");
+            for (int index = 0; index < Index_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // ID
+                var parameterID = $"@p{parameterIndex++}";
+                builder.Append(parameterID);
+                command.Parameters.Add(parameterID, SqlDbType.Int).Value = Index_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SCEN_CLV data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SCEN_CLV data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SCEN_CLV> GetDataSetDataReader()
         {
-            return new SCEN_CLVDataReader(Items.Value);
+            return new SCEN_CLVDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCEN_CLV data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCEN_CLV data set</returns>
+        public override EduHubDataSetDataReader<SCEN_CLV> GetDataSetDataReader(List<SCEN_CLV> Entities)
+        {
+            return new SCEN_CLVDataReader(new EduHubDataSetLoadedReader<SCEN_CLV>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SCEN_CLVDataReader : IDataReader, IDataRecord
+        private class SCEN_CLVDataReader : EduHubDataSetDataReader<SCEN_CLV>
         {
-            private List<SCEN_CLV> Items;
-            private int CurrentIndex;
-            private SCEN_CLV CurrentItem;
-
-            public SCEN_CLVDataReader(List<SCEN_CLV> Items)
+            public SCEN_CLVDataReader(IEduHubDataSetReader<SCEN_CLV> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 8; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 8; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // ID
-                        return CurrentItem.ID;
+                        return Current.ID;
                     case 1: // CLASSCODE
-                        return CurrentItem.CLASSCODE;
+                        return Current.CLASSCODE;
                     case 2: // ID_CLASSVALIDATIONTYPE
-                        return CurrentItem.ID_CLASSVALIDATIONTYPE;
+                        return Current.ID_CLASSVALIDATIONTYPE;
                     case 3: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 4: // CREATEUSER
-                        return CurrentItem.CREATEUSER;
+                        return Current.CREATEUSER;
                     case 5: // CREATED
-                        return CurrentItem.CREATED;
+                        return Current.CREATED;
                     case 6: // LUPDATEUSER
-                        return CurrentItem.LUPDATEUSER;
+                        return Current.LUPDATEUSER;
                     case 7: // LUPDATED
-                        return CurrentItem.LUPDATED;
+                        return Current.LUPDATED;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // CLASSCODE
-                        return CurrentItem.CLASSCODE == null;
+                        return Current.CLASSCODE == null;
                     case 2: // ID_CLASSVALIDATIONTYPE
-                        return CurrentItem.ID_CLASSVALIDATIONTYPE == null;
+                        return Current.ID_CLASSVALIDATIONTYPE == null;
                     case 3: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 4: // CREATEUSER
-                        return CurrentItem.CREATEUSER == null;
+                        return Current.CREATEUSER == null;
                     case 5: // CREATED
-                        return CurrentItem.CREATED == null;
+                        return Current.CREATED == null;
                     case 6: // LUPDATEUSER
-                        return CurrentItem.LUPDATEUSER == null;
+                        return Current.LUPDATEUSER == null;
                     case 7: // LUPDATED
-                        return CurrentItem.LUPDATED == null;
+                        return Current.LUPDATED == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -303,7 +367,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -326,35 +390,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SVAGDataSet : EduHubDataSet<SVAG>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SVAG"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SVAGDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SVAG" /> fields for each CSV column header</returns>
-        protected override Action<SVAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SVAG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SVAG, string>[Headers.Count];
 
@@ -175,29 +178,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SVAG" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SVAG" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SVAG" /> items to added or update the base <see cref="SVAG" /> items</param>
-        /// <returns>A merged list of <see cref="SVAG" /> items</returns>
-        protected override List<SVAG> ApplyDeltaItems(List<SVAG> Items, List<SVAG> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SVAG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SVAG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SVAG}"/> of entities</returns>
+        internal override IEnumerable<SVAG> ApplyDeltaEntities(IEnumerable<SVAG> Entities, List<SVAG> DeltaEntities)
         {
-            Dictionary<int, int> Index_SVAGKEY = Items.ToIndexDictionary(i => i.SVAGKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_SVAGKEY = new HashSet<int>(DeltaEntities.Select(i => i.SVAGKEY));
 
-            foreach (SVAG deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SVAGKEY.TryGetValue(deltaItem.SVAGKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SVAGKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SVAGKEY.Remove(entity.SVAGKEY);
+                            
+                            if (entity.SVAGKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SVAGKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -384,11 +413,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SVAG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SVAG table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SVAG](
         [SVAGKEY] int IDENTITY NOT NULL,
@@ -449,252 +482,303 @@ BEGIN
     (
             [VDIMENSION] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
+    ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_SCHOOL_YEAR')
+    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[SVAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
+    ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
+    ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_SCHOOL_YEAR')
+    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
+    ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SVAG"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SVAG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SVAG> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_SVAGKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SVAGKEY.Add(entity.SVAGKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SVAG] WHERE");
+
+
+            // Index_SVAGKEY
+            builder.Append("[SVAGKEY] IN (");
+            for (int index = 0; index < Index_SVAGKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SVAGKEY
+                var parameterSVAGKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSVAGKEY);
+                command.Parameters.Add(parameterSVAGKEY, SqlDbType.Int).Value = Index_SVAGKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SVAG data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SVAG data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SVAG> GetDataSetDataReader()
         {
-            return new SVAGDataReader(Items.Value);
+            return new SVAGDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SVAG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SVAG data set</returns>
+        public override EduHubDataSetDataReader<SVAG> GetDataSetDataReader(List<SVAG> Entities)
+        {
+            return new SVAGDataReader(new EduHubDataSetLoadedReader<SVAG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SVAGDataReader : IDataReader, IDataRecord
+        private class SVAGDataReader : EduHubDataSetDataReader<SVAG>
         {
-            private List<SVAG> Items;
-            private int CurrentIndex;
-            private SVAG CurrentItem;
-
-            public SVAGDataReader(List<SVAG> Items)
+            public SVAGDataReader(IEduHubDataSetReader<SVAG> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 42; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 42; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SVAGKEY
-                        return CurrentItem.SVAGKEY;
+                        return Current.SVAGKEY;
                     case 1: // COHORT
-                        return CurrentItem.COHORT;
+                        return Current.COHORT;
                     case 2: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR;
+                        return Current.SCHOOL_YEAR;
                     case 3: // CAMPUS
-                        return CurrentItem.CAMPUS;
+                        return Current.CAMPUS;
                     case 4: // YEAR_SEMESTER
-                        return CurrentItem.YEAR_SEMESTER;
+                        return Current.YEAR_SEMESTER;
                     case 5: // VDIMENSION
-                        return CurrentItem.VDIMENSION;
+                        return Current.VDIMENSION;
                     case 6: // NUMBER_AT01
-                        return CurrentItem.NUMBER_AT01;
+                        return Current.NUMBER_AT01;
                     case 7: // NUMBER_AT02
-                        return CurrentItem.NUMBER_AT02;
+                        return Current.NUMBER_AT02;
                     case 8: // NUMBER_AT03
-                        return CurrentItem.NUMBER_AT03;
+                        return Current.NUMBER_AT03;
                     case 9: // NUMBER_AT04
-                        return CurrentItem.NUMBER_AT04;
+                        return Current.NUMBER_AT04;
                     case 10: // NUMBER_AT05
-                        return CurrentItem.NUMBER_AT05;
+                        return Current.NUMBER_AT05;
                     case 11: // NUMBER_AT06
-                        return CurrentItem.NUMBER_AT06;
+                        return Current.NUMBER_AT06;
                     case 12: // NUMBER_AT07
-                        return CurrentItem.NUMBER_AT07;
+                        return Current.NUMBER_AT07;
                     case 13: // NUMBER_AT08
-                        return CurrentItem.NUMBER_AT08;
+                        return Current.NUMBER_AT08;
                     case 14: // NUMBER_AT09
-                        return CurrentItem.NUMBER_AT09;
+                        return Current.NUMBER_AT09;
                     case 15: // NUMBER_AT10
-                        return CurrentItem.NUMBER_AT10;
+                        return Current.NUMBER_AT10;
                     case 16: // NUMBER_AT11
-                        return CurrentItem.NUMBER_AT11;
+                        return Current.NUMBER_AT11;
                     case 17: // NUMBER_AT12
-                        return CurrentItem.NUMBER_AT12;
+                        return Current.NUMBER_AT12;
                     case 18: // NUMBER_AT13
-                        return CurrentItem.NUMBER_AT13;
+                        return Current.NUMBER_AT13;
                     case 19: // NUMBER_AT14
-                        return CurrentItem.NUMBER_AT14;
+                        return Current.NUMBER_AT14;
                     case 20: // NUMBER_AT15
-                        return CurrentItem.NUMBER_AT15;
+                        return Current.NUMBER_AT15;
                     case 21: // NUMBER_AT16
-                        return CurrentItem.NUMBER_AT16;
+                        return Current.NUMBER_AT16;
                     case 22: // NUMBER_AT17
-                        return CurrentItem.NUMBER_AT17;
+                        return Current.NUMBER_AT17;
                     case 23: // NUMBER_AT18
-                        return CurrentItem.NUMBER_AT18;
+                        return Current.NUMBER_AT18;
                     case 24: // NUMBER_AT19
-                        return CurrentItem.NUMBER_AT19;
+                        return Current.NUMBER_AT19;
                     case 25: // NUMBER_AT20
-                        return CurrentItem.NUMBER_AT20;
+                        return Current.NUMBER_AT20;
                     case 26: // NUMBER_AT21
-                        return CurrentItem.NUMBER_AT21;
+                        return Current.NUMBER_AT21;
                     case 27: // NUMBER_AT22
-                        return CurrentItem.NUMBER_AT22;
+                        return Current.NUMBER_AT22;
                     case 28: // NUMBER_AT23
-                        return CurrentItem.NUMBER_AT23;
+                        return Current.NUMBER_AT23;
                     case 29: // NUMBER_AT24
-                        return CurrentItem.NUMBER_AT24;
+                        return Current.NUMBER_AT24;
                     case 30: // NUMBER_AT25
-                        return CurrentItem.NUMBER_AT25;
+                        return Current.NUMBER_AT25;
                     case 31: // NUMBER_AT26
-                        return CurrentItem.NUMBER_AT26;
+                        return Current.NUMBER_AT26;
                     case 32: // NUMBER_AT27
-                        return CurrentItem.NUMBER_AT27;
+                        return Current.NUMBER_AT27;
                     case 33: // NUMBER_AT28
-                        return CurrentItem.NUMBER_AT28;
+                        return Current.NUMBER_AT28;
                     case 34: // NUMBER_AT29
-                        return CurrentItem.NUMBER_AT29;
+                        return Current.NUMBER_AT29;
                     case 35: // NUMBER_AT30
-                        return CurrentItem.NUMBER_AT30;
+                        return Current.NUMBER_AT30;
                     case 36: // NO_NA
-                        return CurrentItem.NO_NA;
+                        return Current.NO_NA;
                     case 37: // TOTAL_NUMBER
-                        return CurrentItem.TOTAL_NUMBER;
+                        return Current.TOTAL_NUMBER;
                     case 38: // SENT_TO_DEET
-                        return CurrentItem.SENT_TO_DEET;
+                        return Current.SENT_TO_DEET;
                     case 39: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 40: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 41: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // COHORT
-                        return CurrentItem.COHORT == null;
+                        return Current.COHORT == null;
                     case 2: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR == null;
+                        return Current.SCHOOL_YEAR == null;
                     case 3: // CAMPUS
-                        return CurrentItem.CAMPUS == null;
+                        return Current.CAMPUS == null;
                     case 4: // YEAR_SEMESTER
-                        return CurrentItem.YEAR_SEMESTER == null;
+                        return Current.YEAR_SEMESTER == null;
                     case 5: // VDIMENSION
-                        return CurrentItem.VDIMENSION == null;
+                        return Current.VDIMENSION == null;
                     case 6: // NUMBER_AT01
-                        return CurrentItem.NUMBER_AT01 == null;
+                        return Current.NUMBER_AT01 == null;
                     case 7: // NUMBER_AT02
-                        return CurrentItem.NUMBER_AT02 == null;
+                        return Current.NUMBER_AT02 == null;
                     case 8: // NUMBER_AT03
-                        return CurrentItem.NUMBER_AT03 == null;
+                        return Current.NUMBER_AT03 == null;
                     case 9: // NUMBER_AT04
-                        return CurrentItem.NUMBER_AT04 == null;
+                        return Current.NUMBER_AT04 == null;
                     case 10: // NUMBER_AT05
-                        return CurrentItem.NUMBER_AT05 == null;
+                        return Current.NUMBER_AT05 == null;
                     case 11: // NUMBER_AT06
-                        return CurrentItem.NUMBER_AT06 == null;
+                        return Current.NUMBER_AT06 == null;
                     case 12: // NUMBER_AT07
-                        return CurrentItem.NUMBER_AT07 == null;
+                        return Current.NUMBER_AT07 == null;
                     case 13: // NUMBER_AT08
-                        return CurrentItem.NUMBER_AT08 == null;
+                        return Current.NUMBER_AT08 == null;
                     case 14: // NUMBER_AT09
-                        return CurrentItem.NUMBER_AT09 == null;
+                        return Current.NUMBER_AT09 == null;
                     case 15: // NUMBER_AT10
-                        return CurrentItem.NUMBER_AT10 == null;
+                        return Current.NUMBER_AT10 == null;
                     case 16: // NUMBER_AT11
-                        return CurrentItem.NUMBER_AT11 == null;
+                        return Current.NUMBER_AT11 == null;
                     case 17: // NUMBER_AT12
-                        return CurrentItem.NUMBER_AT12 == null;
+                        return Current.NUMBER_AT12 == null;
                     case 18: // NUMBER_AT13
-                        return CurrentItem.NUMBER_AT13 == null;
+                        return Current.NUMBER_AT13 == null;
                     case 19: // NUMBER_AT14
-                        return CurrentItem.NUMBER_AT14 == null;
+                        return Current.NUMBER_AT14 == null;
                     case 20: // NUMBER_AT15
-                        return CurrentItem.NUMBER_AT15 == null;
+                        return Current.NUMBER_AT15 == null;
                     case 21: // NUMBER_AT16
-                        return CurrentItem.NUMBER_AT16 == null;
+                        return Current.NUMBER_AT16 == null;
                     case 22: // NUMBER_AT17
-                        return CurrentItem.NUMBER_AT17 == null;
+                        return Current.NUMBER_AT17 == null;
                     case 23: // NUMBER_AT18
-                        return CurrentItem.NUMBER_AT18 == null;
+                        return Current.NUMBER_AT18 == null;
                     case 24: // NUMBER_AT19
-                        return CurrentItem.NUMBER_AT19 == null;
+                        return Current.NUMBER_AT19 == null;
                     case 25: // NUMBER_AT20
-                        return CurrentItem.NUMBER_AT20 == null;
+                        return Current.NUMBER_AT20 == null;
                     case 26: // NUMBER_AT21
-                        return CurrentItem.NUMBER_AT21 == null;
+                        return Current.NUMBER_AT21 == null;
                     case 27: // NUMBER_AT22
-                        return CurrentItem.NUMBER_AT22 == null;
+                        return Current.NUMBER_AT22 == null;
                     case 28: // NUMBER_AT23
-                        return CurrentItem.NUMBER_AT23 == null;
+                        return Current.NUMBER_AT23 == null;
                     case 29: // NUMBER_AT24
-                        return CurrentItem.NUMBER_AT24 == null;
+                        return Current.NUMBER_AT24 == null;
                     case 30: // NUMBER_AT25
-                        return CurrentItem.NUMBER_AT25 == null;
+                        return Current.NUMBER_AT25 == null;
                     case 31: // NUMBER_AT26
-                        return CurrentItem.NUMBER_AT26 == null;
+                        return Current.NUMBER_AT26 == null;
                     case 32: // NUMBER_AT27
-                        return CurrentItem.NUMBER_AT27 == null;
+                        return Current.NUMBER_AT27 == null;
                     case 33: // NUMBER_AT28
-                        return CurrentItem.NUMBER_AT28 == null;
+                        return Current.NUMBER_AT28 == null;
                     case 34: // NUMBER_AT29
-                        return CurrentItem.NUMBER_AT29 == null;
+                        return Current.NUMBER_AT29 == null;
                     case 35: // NUMBER_AT30
-                        return CurrentItem.NUMBER_AT30 == null;
+                        return Current.NUMBER_AT30 == null;
                     case 36: // NO_NA
-                        return CurrentItem.NO_NA == null;
+                        return Current.NO_NA == null;
                     case 37: // TOTAL_NUMBER
-                        return CurrentItem.TOTAL_NUMBER == null;
+                        return Current.TOTAL_NUMBER == null;
                     case 38: // SENT_TO_DEET
-                        return CurrentItem.SENT_TO_DEET == null;
+                        return Current.SENT_TO_DEET == null;
                     case 39: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 40: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 41: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -787,7 +871,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -878,35 +962,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

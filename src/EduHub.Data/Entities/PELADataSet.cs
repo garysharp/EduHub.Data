@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PELADataSet : EduHubDataSet<PELA>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PELA"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PELADataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PELA" /> fields for each CSV column header</returns>
-        protected override Action<PELA, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PELA, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PELA, string>[Headers.Count];
 
@@ -105,29 +108,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PELA" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PELA" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PELA" /> items to added or update the base <see cref="PELA" /> items</param>
-        /// <returns>A merged list of <see cref="PELA" /> items</returns>
-        protected override List<PELA> ApplyDeltaItems(List<PELA> Items, List<PELA> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PELA" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PELA" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PELA}"/> of entities</returns>
+        internal override IEnumerable<PELA> ApplyDeltaEntities(IEnumerable<PELA> Entities, List<PELA> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (PELA deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PEKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.PEKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PEKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -271,11 +300,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PELA table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PELA table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PELA](
         [TID] int IDENTITY NOT NULL,
@@ -309,158 +342,205 @@ BEGIN
     (
             [PEKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PELA] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PELA] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PELA"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PELA"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PELA> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PELA] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PELA data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PELA data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PELA> GetDataSetDataReader()
         {
-            return new PELADataReader(Items.Value);
+            return new PELADataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PELA data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PELA data set</returns>
+        public override EduHubDataSetDataReader<PELA> GetDataSetDataReader(List<PELA> Entities)
+        {
+            return new PELADataReader(new EduHubDataSetLoadedReader<PELA>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PELADataReader : IDataReader, IDataRecord
+        private class PELADataReader : EduHubDataSetDataReader<PELA>
         {
-            private List<PELA> Items;
-            private int CurrentIndex;
-            private PELA CurrentItem;
-
-            public PELADataReader(List<PELA> Items)
+            public PELADataReader(IEduHubDataSetReader<PELA> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 19; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 19; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // PEKEY
-                        return CurrentItem.PEKEY;
+                        return Current.PEKEY;
                     case 2: // LEAVE_CODE
-                        return CurrentItem.LEAVE_CODE;
+                        return Current.LEAVE_CODE;
                     case 3: // TRQTY
-                        return CurrentItem.TRQTY;
+                        return Current.TRQTY;
                     case 4: // LEAVE_STARTDATE
-                        return CurrentItem.LEAVE_STARTDATE;
+                        return Current.LEAVE_STARTDATE;
                     case 5: // LAST_CALC_DATE
-                        return CurrentItem.LAST_CALC_DATE;
+                        return Current.LAST_CALC_DATE;
                     case 6: // LAST_ANNIV_DATE
-                        return CurrentItem.LAST_ANNIV_DATE;
+                        return Current.LAST_ANNIV_DATE;
                     case 7: // ANNIVERSARY_DATE
-                        return CurrentItem.ANNIVERSARY_DATE;
+                        return Current.ANNIVERSARY_DATE;
                     case 8: // LEAVE_ENT_HOURS
-                        return CurrentItem.LEAVE_ENT_HOURS;
+                        return Current.LEAVE_ENT_HOURS;
                     case 9: // LEAVE_PRORATA_HOURS
-                        return CurrentItem.LEAVE_PRORATA_HOURS;
+                        return Current.LEAVE_PRORATA_HOURS;
                     case 10: // PERIOD_LENGTH_STEP
-                        return CurrentItem.PERIOD_LENGTH_STEP;
+                        return Current.PERIOD_LENGTH_STEP;
                     case 11: // PENALTY_DAYS
-                        return CurrentItem.PENALTY_DAYS;
+                        return Current.PENALTY_DAYS;
                     case 12: // DATE_START
-                        return CurrentItem.DATE_START;
+                        return Current.DATE_START;
                     case 13: // DATE_END
-                        return CurrentItem.DATE_END;
+                        return Current.DATE_END;
                     case 14: // CHANGE_TYPE
-                        return CurrentItem.CHANGE_TYPE;
+                        return Current.CHANGE_TYPE;
                     case 15: // COMMENTS
-                        return CurrentItem.COMMENTS;
+                        return Current.COMMENTS;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // LEAVE_CODE
-                        return CurrentItem.LEAVE_CODE == null;
+                        return Current.LEAVE_CODE == null;
                     case 3: // TRQTY
-                        return CurrentItem.TRQTY == null;
+                        return Current.TRQTY == null;
                     case 4: // LEAVE_STARTDATE
-                        return CurrentItem.LEAVE_STARTDATE == null;
+                        return Current.LEAVE_STARTDATE == null;
                     case 5: // LAST_CALC_DATE
-                        return CurrentItem.LAST_CALC_DATE == null;
+                        return Current.LAST_CALC_DATE == null;
                     case 6: // LAST_ANNIV_DATE
-                        return CurrentItem.LAST_ANNIV_DATE == null;
+                        return Current.LAST_ANNIV_DATE == null;
                     case 7: // ANNIVERSARY_DATE
-                        return CurrentItem.ANNIVERSARY_DATE == null;
+                        return Current.ANNIVERSARY_DATE == null;
                     case 8: // LEAVE_ENT_HOURS
-                        return CurrentItem.LEAVE_ENT_HOURS == null;
+                        return Current.LEAVE_ENT_HOURS == null;
                     case 9: // LEAVE_PRORATA_HOURS
-                        return CurrentItem.LEAVE_PRORATA_HOURS == null;
+                        return Current.LEAVE_PRORATA_HOURS == null;
                     case 10: // PERIOD_LENGTH_STEP
-                        return CurrentItem.PERIOD_LENGTH_STEP == null;
+                        return Current.PERIOD_LENGTH_STEP == null;
                     case 11: // PENALTY_DAYS
-                        return CurrentItem.PENALTY_DAYS == null;
+                        return Current.PENALTY_DAYS == null;
                     case 12: // DATE_START
-                        return CurrentItem.DATE_START == null;
+                        return Current.DATE_START == null;
                     case 13: // DATE_END
-                        return CurrentItem.DATE_END == null;
+                        return Current.DATE_END == null;
                     case 14: // CHANGE_TYPE
-                        return CurrentItem.CHANGE_TYPE == null;
+                        return Current.CHANGE_TYPE == null;
                     case 15: // COMMENTS
-                        return CurrentItem.COMMENTS == null;
+                        return Current.COMMENTS == null;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -507,7 +587,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -552,35 +632,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class CRFDataSet : EduHubDataSet<CRF>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "CRF"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal CRFDataSet(EduHubContext Context)
             : base(Context)
@@ -37,7 +40,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="CRF" /> fields for each CSV column header</returns>
-        protected override Action<CRF, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<CRF, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<CRF, string>[Headers.Count];
 
@@ -292,29 +295,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="CRF" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="CRF" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="CRF" /> items to added or update the base <see cref="CRF" /> items</param>
-        /// <returns>A merged list of <see cref="CRF" /> items</returns>
-        protected override List<CRF> ApplyDeltaItems(List<CRF> Items, List<CRF> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="CRF" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="CRF" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{CRF}"/> of entities</returns>
+        internal override IEnumerable<CRF> ApplyDeltaEntities(IEnumerable<CRF> Entities, List<CRF> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (CRF deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CODE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -759,11 +788,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a CRF table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a CRF table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[CRF](
         [TID] int NOT NULL,
@@ -885,398 +918,473 @@ BEGIN
     (
             [TRREF] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
+    ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
+    ALTER INDEX [Index_BSB] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_DEL_CODE')
+    ALTER INDEX [Index_DEL_CODE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_GST_TYPE')
+    ALTER INDEX [Index_GST_TYPE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
+    ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TRREF')
+    ALTER INDEX [Index_TRREF] ON [dbo].[CRF] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
+    ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
+    ALTER INDEX [Index_BSB] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_DEL_CODE')
+    ALTER INDEX [Index_DEL_CODE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_GST_TYPE')
+    ALTER INDEX [Index_GST_TYPE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
+    ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TRREF')
+    ALTER INDEX [Index_TRREF] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="CRF"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="CRF"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<CRF> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[CRF] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the CRF data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the CRF data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<CRF> GetDataSetDataReader()
         {
-            return new CRFDataReader(Items.Value);
+            return new CRFDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the CRF data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the CRF data set</returns>
+        public override EduHubDataSetDataReader<CRF> GetDataSetDataReader(List<CRF> Entities)
+        {
+            return new CRFDataReader(new EduHubDataSetLoadedReader<CRF>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class CRFDataReader : IDataReader, IDataRecord
+        private class CRFDataReader : EduHubDataSetDataReader<CRF>
         {
-            private List<CRF> Items;
-            private int CurrentIndex;
-            private CRF CurrentItem;
-
-            public CRFDataReader(List<CRF> Items)
+            public CRFDataReader(IEduHubDataSetReader<CRF> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 79; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 79; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // OTID
-                        return CurrentItem.OTID;
+                        return Current.OTID;
                     case 2: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 3: // TRBATCH
-                        return CurrentItem.TRBATCH;
+                        return Current.TRBATCH;
                     case 4: // TRPERD
-                        return CurrentItem.TRPERD;
+                        return Current.TRPERD;
                     case 5: // TRTYPE
-                        return CurrentItem.TRTYPE;
+                        return Current.TRTYPE;
                     case 6: // TRDATE
-                        return CurrentItem.TRDATE;
+                        return Current.TRDATE;
                     case 7: // TRREF
-                        return CurrentItem.TRREF;
+                        return Current.TRREF;
                     case 8: // TRXLEDGER
-                        return CurrentItem.TRXLEDGER;
+                        return Current.TRXLEDGER;
                     case 9: // TRXCODE
-                        return CurrentItem.TRXCODE;
+                        return Current.TRXCODE;
                     case 10: // TRXTRTYPE
-                        return CurrentItem.TRXTRTYPE;
+                        return Current.TRXTRTYPE;
                     case 11: // TRCOST
-                        return CurrentItem.TRCOST;
+                        return Current.TRCOST;
                     case 12: // TRQTY
-                        return CurrentItem.TRQTY;
+                        return Current.TRQTY;
                     case 13: // TRQTYD
-                        return CurrentItem.TRQTYD;
+                        return Current.TRQTYD;
                     case 14: // TRQTYI
-                        return CurrentItem.TRQTYI;
+                        return Current.TRQTYI;
                     case 15: // TRQTYDX
-                        return CurrentItem.TRQTYDX;
+                        return Current.TRQTYDX;
                     case 16: // TRQTYIX
-                        return CurrentItem.TRQTYIX;
+                        return Current.TRQTYIX;
                     case 17: // AUTODELIVER
-                        return CurrentItem.AUTODELIVER;
+                        return Current.AUTODELIVER;
                     case 18: // TRAMT
-                        return CurrentItem.TRAMT;
+                        return Current.TRAMT;
                     case 19: // DEBIT
-                        return CurrentItem.DEBIT;
+                        return Current.DEBIT;
                     case 20: // CREDIT
-                        return CurrentItem.CREDIT;
+                        return Current.CREDIT;
                     case 21: // TRPAID
-                        return CurrentItem.TRPAID;
+                        return Current.TRPAID;
                     case 22: // TRINV
-                        return CurrentItem.TRINV;
+                        return Current.TRINV;
                     case 23: // TRDELETE
-                        return CurrentItem.TRDELETE;
+                        return Current.TRDELETE;
                     case 24: // TRDET
-                        return CurrentItem.TRDET;
+                        return Current.TRDET;
                     case 25: // TRHOLD
-                        return CurrentItem.TRHOLD;
+                        return Current.TRHOLD;
                     case 26: // TRORDER
-                        return CurrentItem.TRORDER;
+                        return Current.TRORDER;
                     case 27: // TRBANK
-                        return CurrentItem.TRBANK;
+                        return Current.TRBANK;
                     case 28: // CHQ_NO
-                        return CurrentItem.CHQ_NO;
+                        return Current.CHQ_NO;
                     case 29: // ORDER_BY
-                        return CurrentItem.ORDER_BY;
+                        return Current.ORDER_BY;
                     case 30: // COMPLETED
-                        return CurrentItem.COMPLETED;
+                        return Current.COMPLETED;
                     case 31: // TRUNIT
-                        return CurrentItem.TRUNIT;
+                        return Current.TRUNIT;
                     case 32: // REQ_DATE
-                        return CurrentItem.REQ_DATE;
+                        return Current.REQ_DATE;
                     case 33: // CATALOGUE
-                        return CurrentItem.CATALOGUE;
+                        return Current.CATALOGUE;
                     case 34: // DELIVERY
-                        return CurrentItem.DELIVERY;
+                        return Current.DELIVERY;
                     case 35: // PRINT_CHEQUE
-                        return CurrentItem.PRINT_CHEQUE;
+                        return Current.PRINT_CHEQUE;
                     case 36: // TAX
-                        return CurrentItem.TAX;
+                        return Current.TAX;
                     case 37: // TRNETT
-                        return CurrentItem.TRNETT;
+                        return Current.TRNETT;
                     case 38: // TRGROSS
-                        return CurrentItem.TRGROSS;
+                        return Current.TRGROSS;
                     case 39: // GST_AMOUNT
-                        return CurrentItem.GST_AMOUNT;
+                        return Current.GST_AMOUNT;
                     case 40: // GST_TYPE
-                        return CurrentItem.GST_TYPE;
+                        return Current.GST_TYPE;
                     case 41: // GST_RATE
-                        return CurrentItem.GST_RATE;
+                        return Current.GST_RATE;
                     case 42: // GST_RECLAIM
-                        return CurrentItem.GST_RECLAIM;
+                        return Current.GST_RECLAIM;
                     case 43: // WITHHOLD_AMOUNT
-                        return CurrentItem.WITHHOLD_AMOUNT;
+                        return Current.WITHHOLD_AMOUNT;
                     case 44: // INV_DATE
-                        return CurrentItem.INV_DATE;
+                        return Current.INV_DATE;
                     case 45: // DUE_DATE
-                        return CurrentItem.DUE_DATE;
+                        return Current.DUE_DATE;
                     case 46: // RTYPE
-                        return CurrentItem.RTYPE;
+                        return Current.RTYPE;
                     case 47: // DRAWER
-                        return CurrentItem.DRAWER;
+                        return Current.DRAWER;
                     case 48: // BSB
-                        return CurrentItem.BSB;
+                        return Current.BSB;
                     case 49: // BANK
-                        return CurrentItem.BANK;
+                        return Current.BANK;
                     case 50: // BRANCH
-                        return CurrentItem.BRANCH;
+                        return Current.BRANCH;
                     case 51: // ACCOUNT_NUMBER
-                        return CurrentItem.ACCOUNT_NUMBER;
+                        return Current.ACCOUNT_NUMBER;
                     case 52: // EXPECTED_DATE
-                        return CurrentItem.EXPECTED_DATE;
+                        return Current.EXPECTED_DATE;
                     case 53: // DEL_CODE
-                        return CurrentItem.DEL_CODE;
+                        return Current.DEL_CODE;
                     case 54: // DEL_DOCKET_NO
-                        return CurrentItem.DEL_DOCKET_NO;
+                        return Current.DEL_DOCKET_NO;
                     case 55: // ATKEY
-                        return CurrentItem.ATKEY;
+                        return Current.ATKEY;
                     case 56: // TINCLUDE
-                        return CurrentItem.TINCLUDE;
+                        return Current.TINCLUDE;
                     case 57: // TTRNETT
-                        return CurrentItem.TTRNETT;
+                        return Current.TTRNETT;
                     case 58: // TTRAMT
-                        return CurrentItem.TTRAMT;
+                        return Current.TTRAMT;
                     case 59: // TGST_AMOUNT
-                        return CurrentItem.TGST_AMOUNT;
+                        return Current.TGST_AMOUNT;
                     case 60: // AMEMO
-                        return CurrentItem.AMEMO;
+                        return Current.AMEMO;
                     case 61: // AMEMO_COPY
-                        return CurrentItem.AMEMO_COPY;
+                        return Current.AMEMO_COPY;
                     case 62: // NEXT_SVC_DATE
-                        return CurrentItem.NEXT_SVC_DATE;
+                        return Current.NEXT_SVC_DATE;
                     case 63: // MASTERTID
-                        return CurrentItem.MASTERTID;
+                        return Current.MASTERTID;
                     case 64: // ALLOCTID
-                        return CurrentItem.ALLOCTID;
+                        return Current.ALLOCTID;
                     case 65: // PAY_METHOD
-                        return CurrentItem.PAY_METHOD;
+                        return Current.PAY_METHOD;
                     case 66: // WITHHOLD_RATE
-                        return CurrentItem.WITHHOLD_RATE;
+                        return Current.WITHHOLD_RATE;
                     case 67: // TRDEL_MONTHS
-                        return CurrentItem.TRDEL_MONTHS;
+                        return Current.TRDEL_MONTHS;
                     case 68: // LINE_NO
-                        return CurrentItem.LINE_NO;
+                        return Current.LINE_NO;
                     case 69: // FLAG
-                        return CurrentItem.FLAG;
+                        return Current.FLAG;
                     case 70: // INVOICEGST
-                        return CurrentItem.INVOICEGST;
+                        return Current.INVOICEGST;
                     case 71: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM;
+                        return Current.SUBPROGRAM;
                     case 72: // GLPROGRAM
-                        return CurrentItem.GLPROGRAM;
+                        return Current.GLPROGRAM;
                     case 73: // INITIATIVE
-                        return CurrentItem.INITIATIVE;
+                        return Current.INITIATIVE;
                     case 74: // CANCELLED
-                        return CurrentItem.CANCELLED;
+                        return Current.CANCELLED;
                     case 75: // PRMS_TID
-                        return CurrentItem.PRMS_TID;
+                        return Current.PRMS_TID;
                     case 76: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 77: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 78: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // OTID
-                        return CurrentItem.OTID == null;
+                        return Current.OTID == null;
                     case 3: // TRBATCH
-                        return CurrentItem.TRBATCH == null;
+                        return Current.TRBATCH == null;
                     case 4: // TRPERD
-                        return CurrentItem.TRPERD == null;
+                        return Current.TRPERD == null;
                     case 5: // TRTYPE
-                        return CurrentItem.TRTYPE == null;
+                        return Current.TRTYPE == null;
                     case 6: // TRDATE
-                        return CurrentItem.TRDATE == null;
+                        return Current.TRDATE == null;
                     case 7: // TRREF
-                        return CurrentItem.TRREF == null;
+                        return Current.TRREF == null;
                     case 8: // TRXLEDGER
-                        return CurrentItem.TRXLEDGER == null;
+                        return Current.TRXLEDGER == null;
                     case 9: // TRXCODE
-                        return CurrentItem.TRXCODE == null;
+                        return Current.TRXCODE == null;
                     case 10: // TRXTRTYPE
-                        return CurrentItem.TRXTRTYPE == null;
+                        return Current.TRXTRTYPE == null;
                     case 11: // TRCOST
-                        return CurrentItem.TRCOST == null;
+                        return Current.TRCOST == null;
                     case 12: // TRQTY
-                        return CurrentItem.TRQTY == null;
+                        return Current.TRQTY == null;
                     case 13: // TRQTYD
-                        return CurrentItem.TRQTYD == null;
+                        return Current.TRQTYD == null;
                     case 14: // TRQTYI
-                        return CurrentItem.TRQTYI == null;
+                        return Current.TRQTYI == null;
                     case 15: // TRQTYDX
-                        return CurrentItem.TRQTYDX == null;
+                        return Current.TRQTYDX == null;
                     case 16: // TRQTYIX
-                        return CurrentItem.TRQTYIX == null;
+                        return Current.TRQTYIX == null;
                     case 17: // AUTODELIVER
-                        return CurrentItem.AUTODELIVER == null;
+                        return Current.AUTODELIVER == null;
                     case 18: // TRAMT
-                        return CurrentItem.TRAMT == null;
+                        return Current.TRAMT == null;
                     case 19: // DEBIT
-                        return CurrentItem.DEBIT == null;
+                        return Current.DEBIT == null;
                     case 20: // CREDIT
-                        return CurrentItem.CREDIT == null;
+                        return Current.CREDIT == null;
                     case 21: // TRPAID
-                        return CurrentItem.TRPAID == null;
+                        return Current.TRPAID == null;
                     case 22: // TRINV
-                        return CurrentItem.TRINV == null;
+                        return Current.TRINV == null;
                     case 23: // TRDELETE
-                        return CurrentItem.TRDELETE == null;
+                        return Current.TRDELETE == null;
                     case 24: // TRDET
-                        return CurrentItem.TRDET == null;
+                        return Current.TRDET == null;
                     case 25: // TRHOLD
-                        return CurrentItem.TRHOLD == null;
+                        return Current.TRHOLD == null;
                     case 26: // TRORDER
-                        return CurrentItem.TRORDER == null;
+                        return Current.TRORDER == null;
                     case 27: // TRBANK
-                        return CurrentItem.TRBANK == null;
+                        return Current.TRBANK == null;
                     case 28: // CHQ_NO
-                        return CurrentItem.CHQ_NO == null;
+                        return Current.CHQ_NO == null;
                     case 29: // ORDER_BY
-                        return CurrentItem.ORDER_BY == null;
+                        return Current.ORDER_BY == null;
                     case 30: // COMPLETED
-                        return CurrentItem.COMPLETED == null;
+                        return Current.COMPLETED == null;
                     case 31: // TRUNIT
-                        return CurrentItem.TRUNIT == null;
+                        return Current.TRUNIT == null;
                     case 32: // REQ_DATE
-                        return CurrentItem.REQ_DATE == null;
+                        return Current.REQ_DATE == null;
                     case 33: // CATALOGUE
-                        return CurrentItem.CATALOGUE == null;
+                        return Current.CATALOGUE == null;
                     case 34: // DELIVERY
-                        return CurrentItem.DELIVERY == null;
+                        return Current.DELIVERY == null;
                     case 35: // PRINT_CHEQUE
-                        return CurrentItem.PRINT_CHEQUE == null;
+                        return Current.PRINT_CHEQUE == null;
                     case 36: // TAX
-                        return CurrentItem.TAX == null;
+                        return Current.TAX == null;
                     case 37: // TRNETT
-                        return CurrentItem.TRNETT == null;
+                        return Current.TRNETT == null;
                     case 38: // TRGROSS
-                        return CurrentItem.TRGROSS == null;
+                        return Current.TRGROSS == null;
                     case 39: // GST_AMOUNT
-                        return CurrentItem.GST_AMOUNT == null;
+                        return Current.GST_AMOUNT == null;
                     case 40: // GST_TYPE
-                        return CurrentItem.GST_TYPE == null;
+                        return Current.GST_TYPE == null;
                     case 41: // GST_RATE
-                        return CurrentItem.GST_RATE == null;
+                        return Current.GST_RATE == null;
                     case 42: // GST_RECLAIM
-                        return CurrentItem.GST_RECLAIM == null;
+                        return Current.GST_RECLAIM == null;
                     case 43: // WITHHOLD_AMOUNT
-                        return CurrentItem.WITHHOLD_AMOUNT == null;
+                        return Current.WITHHOLD_AMOUNT == null;
                     case 44: // INV_DATE
-                        return CurrentItem.INV_DATE == null;
+                        return Current.INV_DATE == null;
                     case 45: // DUE_DATE
-                        return CurrentItem.DUE_DATE == null;
+                        return Current.DUE_DATE == null;
                     case 46: // RTYPE
-                        return CurrentItem.RTYPE == null;
+                        return Current.RTYPE == null;
                     case 47: // DRAWER
-                        return CurrentItem.DRAWER == null;
+                        return Current.DRAWER == null;
                     case 48: // BSB
-                        return CurrentItem.BSB == null;
+                        return Current.BSB == null;
                     case 49: // BANK
-                        return CurrentItem.BANK == null;
+                        return Current.BANK == null;
                     case 50: // BRANCH
-                        return CurrentItem.BRANCH == null;
+                        return Current.BRANCH == null;
                     case 51: // ACCOUNT_NUMBER
-                        return CurrentItem.ACCOUNT_NUMBER == null;
+                        return Current.ACCOUNT_NUMBER == null;
                     case 52: // EXPECTED_DATE
-                        return CurrentItem.EXPECTED_DATE == null;
+                        return Current.EXPECTED_DATE == null;
                     case 53: // DEL_CODE
-                        return CurrentItem.DEL_CODE == null;
+                        return Current.DEL_CODE == null;
                     case 54: // DEL_DOCKET_NO
-                        return CurrentItem.DEL_DOCKET_NO == null;
+                        return Current.DEL_DOCKET_NO == null;
                     case 55: // ATKEY
-                        return CurrentItem.ATKEY == null;
+                        return Current.ATKEY == null;
                     case 56: // TINCLUDE
-                        return CurrentItem.TINCLUDE == null;
+                        return Current.TINCLUDE == null;
                     case 57: // TTRNETT
-                        return CurrentItem.TTRNETT == null;
+                        return Current.TTRNETT == null;
                     case 58: // TTRAMT
-                        return CurrentItem.TTRAMT == null;
+                        return Current.TTRAMT == null;
                     case 59: // TGST_AMOUNT
-                        return CurrentItem.TGST_AMOUNT == null;
+                        return Current.TGST_AMOUNT == null;
                     case 60: // AMEMO
-                        return CurrentItem.AMEMO == null;
+                        return Current.AMEMO == null;
                     case 61: // AMEMO_COPY
-                        return CurrentItem.AMEMO_COPY == null;
+                        return Current.AMEMO_COPY == null;
                     case 62: // NEXT_SVC_DATE
-                        return CurrentItem.NEXT_SVC_DATE == null;
+                        return Current.NEXT_SVC_DATE == null;
                     case 63: // MASTERTID
-                        return CurrentItem.MASTERTID == null;
+                        return Current.MASTERTID == null;
                     case 64: // ALLOCTID
-                        return CurrentItem.ALLOCTID == null;
+                        return Current.ALLOCTID == null;
                     case 65: // PAY_METHOD
-                        return CurrentItem.PAY_METHOD == null;
+                        return Current.PAY_METHOD == null;
                     case 66: // WITHHOLD_RATE
-                        return CurrentItem.WITHHOLD_RATE == null;
+                        return Current.WITHHOLD_RATE == null;
                     case 67: // TRDEL_MONTHS
-                        return CurrentItem.TRDEL_MONTHS == null;
+                        return Current.TRDEL_MONTHS == null;
                     case 68: // LINE_NO
-                        return CurrentItem.LINE_NO == null;
+                        return Current.LINE_NO == null;
                     case 69: // FLAG
-                        return CurrentItem.FLAG == null;
+                        return Current.FLAG == null;
                     case 70: // INVOICEGST
-                        return CurrentItem.INVOICEGST == null;
+                        return Current.INVOICEGST == null;
                     case 71: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM == null;
+                        return Current.SUBPROGRAM == null;
                     case 72: // GLPROGRAM
-                        return CurrentItem.GLPROGRAM == null;
+                        return Current.GLPROGRAM == null;
                     case 73: // INITIATIVE
-                        return CurrentItem.INITIATIVE == null;
+                        return Current.INITIATIVE == null;
                     case 74: // CANCELLED
-                        return CurrentItem.CANCELLED == null;
+                        return Current.CANCELLED == null;
                     case 75: // PRMS_TID
-                        return CurrentItem.PRMS_TID == null;
+                        return Current.PRMS_TID == null;
                     case 76: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 77: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 78: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1443,7 +1551,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1608,35 +1716,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

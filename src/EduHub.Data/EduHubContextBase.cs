@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace EduHub.Data
 {
@@ -234,20 +235,26 @@ namespace EduHub.Data
         /// </summary>
         /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
         /// <param name="Database">The name of the SQL database</param>
-        public void WriteToSqlServer(string Server, string Database)
+        public List<EduHubSqlServerWriteResult> WriteToSqlServer(string Server, string Database)
         {
-            var builder = new SqlConnectionStringBuilder()
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
             {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                IntegratedSecurity = true
-            };
+                return WriteToSqlServer(connection);
+            }
+        }
 
-            using (var connection = new SqlConnection(builder.ConnectionString))
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table, connecting to the SQL Server using Integrated Authentication.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the SQL database</param>
+        public Task<List<EduHubSqlServerWriteResult>> WriteToSqlServerAsync(string Server, string Database)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
             {
-                WriteToSqlServer(connection);
+                return WriteToSqlServerAsync(connection);
             }
         }
 
@@ -258,21 +265,28 @@ namespace EduHub.Data
         /// <param name="Database">The name of the SQL database</param>
         /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
         /// <param name="SqlPassword">The password for the SQL Server account</param>
-        public void WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
+        public List<EduHubSqlServerWriteResult> WriteToSqlServer(string Server, string Database, string SqlUsername, string SqlPassword)
         {
-            var builder = new SqlConnectionStringBuilder()
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
             {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                UserID = SqlUsername,
-                Password = SqlPassword
-            };
+                return WriteToSqlServer(connection);
+            }
+        }
 
-            using (var connection = new SqlConnection(builder.ConnectionString))
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table, connecting to the SQL Server using the provided username and password.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to</param>
+        /// <param name="Database">The name of the SQL database</param>
+        /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
+        /// <param name="SqlPassword">The password for the SQL Server account</param>
+        public Task<List<EduHubSqlServerWriteResult>> WriteToSqlServerAsync(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
             {
-                WriteToSqlServer(connection);
+                return WriteToSqlServerAsync(connection);
             }
         }
 
@@ -280,12 +294,25 @@ namespace EduHub.Data
         /// Writes all available data sets to a SQL Server database table using the provided SQL Server connection.
         /// </summary>
         /// <param name="Connection">An existing connection to the SQL Server</param>
-        public void WriteToSqlServer(SqlConnection Connection)
+        public List<EduHubSqlServerWriteResult> WriteToSqlServer(SqlConnection Connection)
         {
+            return WriteToSqlServerAsync(Connection).Result;
+        }
+
+        /// <summary>
+        /// Writes all available data sets to a SQL Server database table using the provided SQL Server connection.
+        /// </summary>
+        /// <param name="Connection">An existing connection to the SQL Server</param>
+        public async Task<List<EduHubSqlServerWriteResult>> WriteToSqlServerAsync(SqlConnection Connection)
+        {
+            var results = new List<EduHubSqlServerWriteResult>();
+
             foreach (var dataSet in GetAvailableDataSets())
             {
-                dataSet.WriteToSqlServer(Connection);
+                results.Add(await dataSet.WriteToSqlServerAsync(Connection));
             }
+
+            return results;
         }
 
         /// <summary>

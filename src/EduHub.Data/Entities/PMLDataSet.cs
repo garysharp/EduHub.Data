@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PMLDataSet : EduHubDataSet<PML>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PML"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PMLDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PML" /> fields for each CSV column header</returns>
-        protected override Action<PML, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PML, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PML, string>[Headers.Count];
 
@@ -85,29 +88,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PML" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PML" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PML" /> items to added or update the base <see cref="PML" /> items</param>
-        /// <returns>A merged list of <see cref="PML" /> items</returns>
-        protected override List<PML> ApplyDeltaItems(List<PML> Items, List<PML> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PML" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PML" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PML}"/> of entities</returns>
+        internal override IEnumerable<PML> ApplyDeltaEntities(IEnumerable<PML> Entities, List<PML> DeltaEntities)
         {
-            Dictionary<short, int> Index_SCALE = Items.ToIndexDictionary(i => i.SCALE);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<short> Index_SCALE = new HashSet<short>(DeltaEntities.Select(i => i.SCALE));
 
-            foreach (PML deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SCALE.TryGetValue(deltaItem.SCALE, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SCALE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SCALE.Remove(entity.SCALE);
+                            
+                            if (entity.SCALE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SCALE)
-                .ToList();
         }
 
         #region Index Fields
@@ -165,11 +194,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PML table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PML table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PML]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PML]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PML](
         [SCALE] smallint NOT NULL,
@@ -189,136 +222,167 @@ BEGIN
             [SCALE] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="PMLDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="PMLDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PML"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PML"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PML> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<short> Index_SCALE = new List<short>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SCALE.Add(entity.SCALE);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PML] WHERE");
+
+
+            // Index_SCALE
+            builder.Append("[SCALE] IN (");
+            for (int index = 0; index < Index_SCALE.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SCALE
+                var parameterSCALE = $"@p{parameterIndex++}";
+                builder.Append(parameterSCALE);
+                command.Parameters.Add(parameterSCALE, SqlDbType.SmallInt).Value = Index_SCALE[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PML data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PML data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PML> GetDataSetDataReader()
         {
-            return new PMLDataReader(Items.Value);
+            return new PMLDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PML data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PML data set</returns>
+        public override EduHubDataSetDataReader<PML> GetDataSetDataReader(List<PML> Entities)
+        {
+            return new PMLDataReader(new EduHubDataSetLoadedReader<PML>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PMLDataReader : IDataReader, IDataRecord
+        private class PMLDataReader : EduHubDataSetDataReader<PML>
         {
-            private List<PML> Items;
-            private int CurrentIndex;
-            private PML CurrentItem;
-
-            public PMLDataReader(List<PML> Items)
+            public PMLDataReader(IEduHubDataSetReader<PML> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 13; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 13; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SCALE
-                        return CurrentItem.SCALE;
+                        return Current.SCALE;
                     case 1: // WEEKLY_EARNING_THRESHOLD
-                        return CurrentItem.WEEKLY_EARNING_THRESHOLD;
+                        return Current.WEEKLY_EARNING_THRESHOLD;
                     case 2: // WEEKLY_SHADEIN_THRESHOLD
-                        return CurrentItem.WEEKLY_SHADEIN_THRESHOLD;
+                        return Current.WEEKLY_SHADEIN_THRESHOLD;
                     case 3: // MEDLEVY_FAMILY_THRESHOLD
-                        return CurrentItem.MEDLEVY_FAMILY_THRESHOLD;
+                        return Current.MEDLEVY_FAMILY_THRESHOLD;
                     case 4: // WFT_DIVISOR
-                        return CurrentItem.WFT_DIVISOR;
+                        return Current.WFT_DIVISOR;
                     case 5: // ADDITIONAL_CHILD
-                        return CurrentItem.ADDITIONAL_CHILD;
+                        return Current.ADDITIONAL_CHILD;
                     case 6: // SOP_MULTIPLIER
-                        return CurrentItem.SOP_MULTIPLIER;
+                        return Current.SOP_MULTIPLIER;
                     case 7: // SOP_DIVISOR
-                        return CurrentItem.SOP_DIVISOR;
+                        return Current.SOP_DIVISOR;
                     case 8: // WLA_FALCTOR
-                        return CurrentItem.WLA_FALCTOR;
+                        return Current.WLA_FALCTOR;
                     case 9: // MEDICARE_LEVY
-                        return CurrentItem.MEDICARE_LEVY;
+                        return Current.MEDICARE_LEVY;
                     case 10: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 11: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 12: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // WEEKLY_EARNING_THRESHOLD
-                        return CurrentItem.WEEKLY_EARNING_THRESHOLD == null;
+                        return Current.WEEKLY_EARNING_THRESHOLD == null;
                     case 2: // WEEKLY_SHADEIN_THRESHOLD
-                        return CurrentItem.WEEKLY_SHADEIN_THRESHOLD == null;
+                        return Current.WEEKLY_SHADEIN_THRESHOLD == null;
                     case 3: // MEDLEVY_FAMILY_THRESHOLD
-                        return CurrentItem.MEDLEVY_FAMILY_THRESHOLD == null;
+                        return Current.MEDLEVY_FAMILY_THRESHOLD == null;
                     case 4: // WFT_DIVISOR
-                        return CurrentItem.WFT_DIVISOR == null;
+                        return Current.WFT_DIVISOR == null;
                     case 5: // ADDITIONAL_CHILD
-                        return CurrentItem.ADDITIONAL_CHILD == null;
+                        return Current.ADDITIONAL_CHILD == null;
                     case 6: // SOP_MULTIPLIER
-                        return CurrentItem.SOP_MULTIPLIER == null;
+                        return Current.SOP_MULTIPLIER == null;
                     case 7: // SOP_DIVISOR
-                        return CurrentItem.SOP_DIVISOR == null;
+                        return Current.SOP_DIVISOR == null;
                     case 8: // WLA_FALCTOR
-                        return CurrentItem.WLA_FALCTOR == null;
+                        return Current.WLA_FALCTOR == null;
                     case 9: // MEDICARE_LEVY
-                        return CurrentItem.MEDICARE_LEVY == null;
+                        return Current.MEDICARE_LEVY == null;
                     case 10: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 11: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 12: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -353,7 +417,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -386,35 +450,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

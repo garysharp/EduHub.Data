@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class FDT_EXPDataSet : EduHubDataSet<FDT_EXP>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "FDT_EXP"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal FDT_EXPDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="FDT_EXP" /> fields for each CSV column header</returns>
-        protected override Action<FDT_EXP, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<FDT_EXP, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<FDT_EXP, string>[Headers.Count];
 
@@ -80,29 +83,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="FDT_EXP" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="FDT_EXP" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="FDT_EXP" /> items to added or update the base <see cref="FDT_EXP" /> items</param>
-        /// <returns>A merged list of <see cref="FDT_EXP" /> items</returns>
-        protected override List<FDT_EXP> ApplyDeltaItems(List<FDT_EXP> Items, List<FDT_EXP> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="FDT_EXP" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="FDT_EXP" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{FDT_EXP}"/> of entities</returns>
+        internal override IEnumerable<FDT_EXP> ApplyDeltaEntities(IEnumerable<FDT_EXP> Entities, List<FDT_EXP> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (FDT_EXP deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.DEST;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.DEST.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.DEST)
-                .ToList();
         }
 
         #region Index Fields
@@ -203,11 +232,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a FDT_EXP table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a FDT_EXP table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[FDT_EXP](
         [TID] int IDENTITY NOT NULL,
@@ -229,126 +262,169 @@ BEGIN
     (
             [DEST] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[FDT_EXP] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[FDT_EXP] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="FDT_EXP"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="FDT_EXP"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<FDT_EXP> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[FDT_EXP] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the FDT_EXP data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the FDT_EXP data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<FDT_EXP> GetDataSetDataReader()
         {
-            return new FDT_EXPDataReader(Items.Value);
+            return new FDT_EXPDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the FDT_EXP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the FDT_EXP data set</returns>
+        public override EduHubDataSetDataReader<FDT_EXP> GetDataSetDataReader(List<FDT_EXP> Entities)
+        {
+            return new FDT_EXPDataReader(new EduHubDataSetLoadedReader<FDT_EXP>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class FDT_EXPDataReader : IDataReader, IDataRecord
+        private class FDT_EXPDataReader : EduHubDataSetDataReader<FDT_EXP>
         {
-            private List<FDT_EXP> Items;
-            private int CurrentIndex;
-            private FDT_EXP CurrentItem;
-
-            public FDT_EXPDataReader(List<FDT_EXP> Items)
+            public FDT_EXPDataReader(IEduHubDataSetReader<FDT_EXP> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 11; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 11; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // DEST
-                        return CurrentItem.DEST;
+                        return Current.DEST;
                     case 2: // DEST_ID
-                        return CurrentItem.DEST_ID;
+                        return Current.DEST_ID;
                     case 3: // SOURCE
-                        return CurrentItem.SOURCE;
+                        return Current.SOURCE;
                     case 4: // SOURCE_KEY
-                        return CurrentItem.SOURCE_KEY;
+                        return Current.SOURCE_KEY;
                     case 5: // NOTES
-                        return CurrentItem.NOTES;
+                        return Current.NOTES;
                     case 6: // EXP_DATE
-                        return CurrentItem.EXP_DATE;
+                        return Current.EXP_DATE;
                     case 7: // EXP_TIME
-                        return CurrentItem.EXP_TIME;
+                        return Current.EXP_TIME;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // DEST_ID
-                        return CurrentItem.DEST_ID == null;
+                        return Current.DEST_ID == null;
                     case 3: // SOURCE
-                        return CurrentItem.SOURCE == null;
+                        return Current.SOURCE == null;
                     case 4: // SOURCE_KEY
-                        return CurrentItem.SOURCE_KEY == null;
+                        return Current.SOURCE_KEY == null;
                     case 5: // NOTES
-                        return CurrentItem.NOTES == null;
+                        return Current.NOTES == null;
                     case 6: // EXP_DATE
-                        return CurrentItem.EXP_DATE == null;
+                        return Current.EXP_DATE == null;
                     case 7: // EXP_TIME
-                        return CurrentItem.EXP_TIME == null;
+                        return Current.EXP_TIME == null;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -379,7 +455,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -408,35 +484,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

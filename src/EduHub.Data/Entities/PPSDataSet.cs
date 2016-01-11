@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PPSDataSet : EduHubDataSet<PPS>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PPS"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PPSDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PPS" /> fields for each CSV column header</returns>
-        protected override Action<PPS, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PPS, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PPS, string>[Headers.Count];
 
@@ -117,29 +120,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PPS" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PPS" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PPS" /> items to added or update the base <see cref="PPS" /> items</param>
-        /// <returns>A merged list of <see cref="PPS" /> items</returns>
-        protected override List<PPS> ApplyDeltaItems(List<PPS> Items, List<PPS> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PPS" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PPS" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PPS}"/> of entities</returns>
+        internal override IEnumerable<PPS> ApplyDeltaEntities(IEnumerable<PPS> Entities, List<PPS> DeltaEntities)
         {
-            Dictionary<string, int> Index_PPSKEY = Items.ToIndexDictionary(i => i.PPSKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_PPSKEY = new HashSet<string>(DeltaEntities.Select(i => i.PPSKEY));
 
-            foreach (PPS deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_PPSKEY.TryGetValue(deltaItem.PPSKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PPSKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_PPSKEY.Remove(entity.PPSKEY);
+                            
+                            if (entity.PPSKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PPSKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -283,11 +312,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PPS table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PPS table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PPS](
         [PPSKEY] varchar(10) NOT NULL,
@@ -325,176 +358,223 @@ BEGIN
     (
             [POSTAL_COUNTRY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_POSTAL_COUNTRY')
+    ALTER INDEX [Index_POSTAL_COUNTRY] ON [dbo].[PPS] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_POSTAL_COUNTRY')
+    ALTER INDEX [Index_POSTAL_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PPS"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PPS"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PPS> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_PPSKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PPSKEY.Add(entity.PPSKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PPS] WHERE");
+
+
+            // Index_PPSKEY
+            builder.Append("[PPSKEY] IN (");
+            for (int index = 0; index < Index_PPSKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PPSKEY
+                var parameterPPSKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPPSKEY);
+                command.Parameters.Add(parameterPPSKEY, SqlDbType.VarChar, 10).Value = Index_PPSKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PPS data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PPS data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PPS> GetDataSetDataReader()
         {
-            return new PPSDataReader(Items.Value);
+            return new PPSDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PPS data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PPS data set</returns>
+        public override EduHubDataSetDataReader<PPS> GetDataSetDataReader(List<PPS> Entities)
+        {
+            return new PPSDataReader(new EduHubDataSetLoadedReader<PPS>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PPSDataReader : IDataReader, IDataRecord
+        private class PPSDataReader : EduHubDataSetDataReader<PPS>
         {
-            private List<PPS> Items;
-            private int CurrentIndex;
-            private PPS CurrentItem;
-
-            public PPSDataReader(List<PPS> Items)
+            public PPSDataReader(IEduHubDataSetReader<PPS> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 23; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 23; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PPSKEY
-                        return CurrentItem.PPSKEY;
+                        return Current.PPSKEY;
                     case 1: // ABN
-                        return CurrentItem.ABN;
+                        return Current.ABN;
                     case 2: // NAME
-                        return CurrentItem.NAME;
+                        return Current.NAME;
                     case 3: // CONTACT_NAME
-                        return CurrentItem.CONTACT_NAME;
+                        return Current.CONTACT_NAME;
                     case 4: // CONTACT_PHONE
-                        return CurrentItem.CONTACT_PHONE;
+                        return Current.CONTACT_PHONE;
                     case 5: // FACSIMILE
-                        return CurrentItem.FACSIMILE;
+                        return Current.FACSIMILE;
                     case 6: // FILE_REFERENCE
-                        return CurrentItem.FILE_REFERENCE;
+                        return Current.FILE_REFERENCE;
                     case 7: // L1_ADDRESS
-                        return CurrentItem.L1_ADDRESS;
+                        return Current.L1_ADDRESS;
                     case 8: // L2_ADDRESS
-                        return CurrentItem.L2_ADDRESS;
+                        return Current.L2_ADDRESS;
                     case 9: // SUBURB
-                        return CurrentItem.SUBURB;
+                        return Current.SUBURB;
                     case 10: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 11: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 12: // COUNTRY
-                        return CurrentItem.COUNTRY;
+                        return Current.COUNTRY;
                     case 13: // POSTAL_L1_ADD
-                        return CurrentItem.POSTAL_L1_ADD;
+                        return Current.POSTAL_L1_ADD;
                     case 14: // POSTAL_L2_ADD
-                        return CurrentItem.POSTAL_L2_ADD;
+                        return Current.POSTAL_L2_ADD;
                     case 15: // POSTAL_SUBURB
-                        return CurrentItem.POSTAL_SUBURB;
+                        return Current.POSTAL_SUBURB;
                     case 16: // POSTAL_STATE
-                        return CurrentItem.POSTAL_STATE;
+                        return Current.POSTAL_STATE;
                     case 17: // POSTAL_POSTCODE
-                        return CurrentItem.POSTAL_POSTCODE;
+                        return Current.POSTAL_POSTCODE;
                     case 18: // POSTAL_COUNTRY
-                        return CurrentItem.POSTAL_COUNTRY;
+                        return Current.POSTAL_COUNTRY;
                     case 19: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS;
+                        return Current.EMAIL_ADDRESS;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // ABN
-                        return CurrentItem.ABN == null;
+                        return Current.ABN == null;
                     case 2: // NAME
-                        return CurrentItem.NAME == null;
+                        return Current.NAME == null;
                     case 3: // CONTACT_NAME
-                        return CurrentItem.CONTACT_NAME == null;
+                        return Current.CONTACT_NAME == null;
                     case 4: // CONTACT_PHONE
-                        return CurrentItem.CONTACT_PHONE == null;
+                        return Current.CONTACT_PHONE == null;
                     case 5: // FACSIMILE
-                        return CurrentItem.FACSIMILE == null;
+                        return Current.FACSIMILE == null;
                     case 6: // FILE_REFERENCE
-                        return CurrentItem.FILE_REFERENCE == null;
+                        return Current.FILE_REFERENCE == null;
                     case 7: // L1_ADDRESS
-                        return CurrentItem.L1_ADDRESS == null;
+                        return Current.L1_ADDRESS == null;
                     case 8: // L2_ADDRESS
-                        return CurrentItem.L2_ADDRESS == null;
+                        return Current.L2_ADDRESS == null;
                     case 9: // SUBURB
-                        return CurrentItem.SUBURB == null;
+                        return Current.SUBURB == null;
                     case 10: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 11: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 12: // COUNTRY
-                        return CurrentItem.COUNTRY == null;
+                        return Current.COUNTRY == null;
                     case 13: // POSTAL_L1_ADD
-                        return CurrentItem.POSTAL_L1_ADD == null;
+                        return Current.POSTAL_L1_ADD == null;
                     case 14: // POSTAL_L2_ADD
-                        return CurrentItem.POSTAL_L2_ADD == null;
+                        return Current.POSTAL_L2_ADD == null;
                     case 15: // POSTAL_SUBURB
-                        return CurrentItem.POSTAL_SUBURB == null;
+                        return Current.POSTAL_SUBURB == null;
                     case 16: // POSTAL_STATE
-                        return CurrentItem.POSTAL_STATE == null;
+                        return Current.POSTAL_STATE == null;
                     case 17: // POSTAL_POSTCODE
-                        return CurrentItem.POSTAL_POSTCODE == null;
+                        return Current.POSTAL_POSTCODE == null;
                     case 18: // POSTAL_COUNTRY
-                        return CurrentItem.POSTAL_COUNTRY == null;
+                        return Current.POSTAL_COUNTRY == null;
                     case 19: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS == null;
+                        return Current.EMAIL_ADDRESS == null;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -549,7 +629,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -602,35 +682,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

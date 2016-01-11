@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TRPMODEDataSet : EduHubDataSet<TRPMODE>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TRPMODE"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TRPMODEDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TRPMODE" /> fields for each CSV column header</returns>
-        protected override Action<TRPMODE, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TRPMODE, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TRPMODE, string>[Headers.Count];
 
@@ -61,29 +64,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TRPMODE" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TRPMODE" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TRPMODE" /> items to added or update the base <see cref="TRPMODE" /> items</param>
-        /// <returns>A merged list of <see cref="TRPMODE" /> items</returns>
-        protected override List<TRPMODE> ApplyDeltaItems(List<TRPMODE> Items, List<TRPMODE> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TRPMODE" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TRPMODE" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TRPMODE}"/> of entities</returns>
+        internal override IEnumerable<TRPMODE> ApplyDeltaEntities(IEnumerable<TRPMODE> Entities, List<TRPMODE> DeltaEntities)
         {
-            Dictionary<int, int> Index_TRANSPORT_MODE_ID = Items.ToIndexDictionary(i => i.TRANSPORT_MODE_ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TRANSPORT_MODE_ID = new HashSet<int>(DeltaEntities.Select(i => i.TRANSPORT_MODE_ID));
 
-            foreach (TRPMODE deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TRANSPORT_MODE_ID.TryGetValue(deltaItem.TRANSPORT_MODE_ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.TRANSPORT_MODE_ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TRANSPORT_MODE_ID.Remove(entity.TRANSPORT_MODE_ID);
+                            
+                            if (entity.TRANSPORT_MODE_ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.TRANSPORT_MODE_ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -141,11 +170,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TRPMODE table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TRPMODE table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TRPMODE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TRPMODE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TRPMODE](
         [TRANSPORT_MODE_ID] int IDENTITY NOT NULL,
@@ -157,104 +190,135 @@ BEGIN
             [TRANSPORT_MODE_ID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="TRPMODEDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="TRPMODEDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TRPMODE"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TRPMODE"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TRPMODE> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TRANSPORT_MODE_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TRANSPORT_MODE_ID.Add(entity.TRANSPORT_MODE_ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TRPMODE] WHERE");
+
+
+            // Index_TRANSPORT_MODE_ID
+            builder.Append("[TRANSPORT_MODE_ID] IN (");
+            for (int index = 0; index < Index_TRANSPORT_MODE_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TRANSPORT_MODE_ID
+                var parameterTRANSPORT_MODE_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterTRANSPORT_MODE_ID);
+                command.Parameters.Add(parameterTRANSPORT_MODE_ID, SqlDbType.Int).Value = Index_TRANSPORT_MODE_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TRPMODE data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TRPMODE data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TRPMODE> GetDataSetDataReader()
         {
-            return new TRPMODEDataReader(Items.Value);
+            return new TRPMODEDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TRPMODE data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TRPMODE data set</returns>
+        public override EduHubDataSetDataReader<TRPMODE> GetDataSetDataReader(List<TRPMODE> Entities)
+        {
+            return new TRPMODEDataReader(new EduHubDataSetLoadedReader<TRPMODE>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TRPMODEDataReader : IDataReader, IDataRecord
+        private class TRPMODEDataReader : EduHubDataSetDataReader<TRPMODE>
         {
-            private List<TRPMODE> Items;
-            private int CurrentIndex;
-            private TRPMODE CurrentItem;
-
-            public TRPMODEDataReader(List<TRPMODE> Items)
+            public TRPMODEDataReader(IEduHubDataSetReader<TRPMODE> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 5; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 5; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TRANSPORT_MODE_ID
-                        return CurrentItem.TRANSPORT_MODE_ID;
+                        return Current.TRANSPORT_MODE_ID;
                     case 1: // TRANSPORT_MODE_DESC
-                        return CurrentItem.TRANSPORT_MODE_DESC;
+                        return Current.TRANSPORT_MODE_DESC;
                     case 2: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 3: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 4: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TRANSPORT_MODE_DESC
-                        return CurrentItem.TRANSPORT_MODE_DESC == null;
+                        return Current.TRANSPORT_MODE_DESC == null;
                     case 2: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 3: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 4: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -273,7 +337,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -290,35 +354,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

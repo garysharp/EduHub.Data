@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class ST_TFRIODataSet : EduHubDataSet<ST_TFRIO>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "ST_TFRIO"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal ST_TFRIODataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="ST_TFRIO" /> fields for each CSV column header</returns>
-        protected override Action<ST_TFRIO, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<ST_TFRIO, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<ST_TFRIO, string>[Headers.Count];
 
@@ -93,34 +96,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="ST_TFRIO" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="ST_TFRIO" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="ST_TFRIO" /> items to added or update the base <see cref="ST_TFRIO" /> items</param>
-        /// <returns>A merged list of <see cref="ST_TFRIO" /> items</returns>
-        protected override List<ST_TFRIO> ApplyDeltaItems(List<ST_TFRIO> Items, List<ST_TFRIO> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="ST_TFRIO" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="ST_TFRIO" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{ST_TFRIO}"/> of entities</returns>
+        internal override IEnumerable<ST_TFRIO> ApplyDeltaEntities(IEnumerable<ST_TFRIO> Entities, List<ST_TFRIO> DeltaEntities)
         {
-            NullDictionary<string, int> Index_ST_TRANS_ID = Items.ToIndexNullDictionary(i => i.ST_TRANS_ID);
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_ST_TRANS_ID = new HashSet<string>(DeltaEntities.Select(i => i.ST_TRANS_ID));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (ST_TFRIO deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.DEST_SCHOOL;
+                        bool yieldEntity = false;
 
-                if (Index_ST_TRANS_ID.TryGetValue(deltaItem.ST_TRANS_ID, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_ST_TRANS_ID.Remove(entity.ST_TRANS_ID);
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.DEST_SCHOOL.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.DEST_SCHOOL)
-                .ToList();
         }
 
         #region Index Fields
@@ -264,11 +291,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a ST_TFRIO table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a ST_TFRIO table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[ST_TFRIO](
         [TID] int IDENTITY NOT NULL,
@@ -298,142 +329,205 @@ BEGIN
     (
             [ST_TRANS_ID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_ST_TRANS_ID')
+    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[ST_TFRIO] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_ST_TRANS_ID')
+    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="ST_TFRIO"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="ST_TFRIO"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<ST_TFRIO> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_ST_TRANS_ID = new List<string>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_ST_TRANS_ID.Add(entity.ST_TRANS_ID);
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[ST_TFRIO] WHERE");
+
+
+            // Index_ST_TRANS_ID
+            builder.Append("[ST_TRANS_ID] IN (");
+            for (int index = 0; index < Index_ST_TRANS_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // ST_TRANS_ID
+                var parameterST_TRANS_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterST_TRANS_ID);
+                command.Parameters.Add(parameterST_TRANS_ID, SqlDbType.VarChar, 30).Value = (object)Index_ST_TRANS_ID[index] ?? DBNull.Value;
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the ST_TFRIO data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the ST_TFRIO data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<ST_TFRIO> GetDataSetDataReader()
         {
-            return new ST_TFRIODataReader(Items.Value);
+            return new ST_TFRIODataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the ST_TFRIO data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the ST_TFRIO data set</returns>
+        public override EduHubDataSetDataReader<ST_TFRIO> GetDataSetDataReader(List<ST_TFRIO> Entities)
+        {
+            return new ST_TFRIODataReader(new EduHubDataSetLoadedReader<ST_TFRIO>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class ST_TFRIODataReader : IDataReader, IDataRecord
+        private class ST_TFRIODataReader : EduHubDataSetDataReader<ST_TFRIO>
         {
-            private List<ST_TFRIO> Items;
-            private int CurrentIndex;
-            private ST_TFRIO CurrentItem;
-
-            public ST_TFRIODataReader(List<ST_TFRIO> Items)
+            public ST_TFRIODataReader(IEduHubDataSetReader<ST_TFRIO> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 15; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 15; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // ST_TRANS_ID
-                        return CurrentItem.ST_TRANS_ID;
+                        return Current.ST_TRANS_ID;
                     case 2: // STKEY
-                        return CurrentItem.STKEY;
+                        return Current.STKEY;
                     case 3: // STKEY_NEW
-                        return CurrentItem.STKEY_NEW;
+                        return Current.STKEY_NEW;
                     case 4: // REGISTRATION
-                        return CurrentItem.REGISTRATION;
+                        return Current.REGISTRATION;
                     case 5: // TFR_PERMISSION
-                        return CurrentItem.TFR_PERMISSION;
+                        return Current.TFR_PERMISSION;
                     case 6: // SOURCE_SCHOOL
-                        return CurrentItem.SOURCE_SCHOOL;
+                        return Current.SOURCE_SCHOOL;
                     case 7: // DEST_SCHOOL
-                        return CurrentItem.DEST_SCHOOL;
+                        return Current.DEST_SCHOOL;
                     case 8: // RECD_AT_DEST
-                        return CurrentItem.RECD_AT_DEST;
+                        return Current.RECD_AT_DEST;
                     case 9: // TFR_STATUS
-                        return CurrentItem.TFR_STATUS;
+                        return Current.TFR_STATUS;
                     case 10: // TFR_DATE
-                        return CurrentItem.TFR_DATE;
+                        return Current.TFR_DATE;
                     case 11: // TFR_COMMENT
-                        return CurrentItem.TFR_COMMENT;
+                        return Current.TFR_COMMENT;
                     case 12: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 13: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 14: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // ST_TRANS_ID
-                        return CurrentItem.ST_TRANS_ID == null;
+                        return Current.ST_TRANS_ID == null;
                     case 2: // STKEY
-                        return CurrentItem.STKEY == null;
+                        return Current.STKEY == null;
                     case 3: // STKEY_NEW
-                        return CurrentItem.STKEY_NEW == null;
+                        return Current.STKEY_NEW == null;
                     case 4: // REGISTRATION
-                        return CurrentItem.REGISTRATION == null;
+                        return Current.REGISTRATION == null;
                     case 5: // TFR_PERMISSION
-                        return CurrentItem.TFR_PERMISSION == null;
+                        return Current.TFR_PERMISSION == null;
                     case 6: // SOURCE_SCHOOL
-                        return CurrentItem.SOURCE_SCHOOL == null;
+                        return Current.SOURCE_SCHOOL == null;
                     case 8: // RECD_AT_DEST
-                        return CurrentItem.RECD_AT_DEST == null;
+                        return Current.RECD_AT_DEST == null;
                     case 9: // TFR_STATUS
-                        return CurrentItem.TFR_STATUS == null;
+                        return Current.TFR_STATUS == null;
                     case 10: // TFR_DATE
-                        return CurrentItem.TFR_DATE == null;
+                        return Current.TFR_DATE == null;
                     case 11: // TFR_COMMENT
-                        return CurrentItem.TFR_COMMENT == null;
+                        return Current.TFR_COMMENT == null;
                     case 12: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 13: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 14: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -472,7 +566,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -509,35 +603,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PLTDataSet : EduHubDataSet<PLT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PLT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PLTDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PLT" /> fields for each CSV column header</returns>
-        protected override Action<PLT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PLT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PLT, string>[Headers.Count];
 
@@ -163,34 +166,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PLT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PLT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PLT" /> items to added or update the base <see cref="PLT" /> items</param>
-        /// <returns>A merged list of <see cref="PLT" /> items</returns>
-        protected override List<PLT> ApplyDeltaItems(List<PLT> Items, List<PLT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PLT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PLT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PLT}"/> of entities</returns>
+        internal override IEnumerable<PLT> ApplyDeltaEntities(IEnumerable<PLT> Entities, List<PLT> DeltaEntities)
         {
-            Dictionary<Tuple<string, string>, int> Index_LEAVE_GROUP_LEAVE_CODE = Items.ToIndexDictionary(i => Tuple.Create(i.LEAVE_GROUP, i.LEAVE_CODE));
-            Dictionary<string, int> Index_PLTKEY = Items.ToIndexDictionary(i => i.PLTKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, string>> Index_LEAVE_GROUP_LEAVE_CODE = new HashSet<Tuple<string, string>>(DeltaEntities.Select(i => Tuple.Create(i.LEAVE_GROUP, i.LEAVE_CODE)));
+            HashSet<string> Index_PLTKEY = new HashSet<string>(DeltaEntities.Select(i => i.PLTKEY));
 
-            foreach (PLT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PLTKEY;
+                        bool yieldEntity = false;
 
-                if (Index_LEAVE_GROUP_LEAVE_CODE.TryGetValue(Tuple.Create(deltaItem.LEAVE_GROUP, deltaItem.LEAVE_CODE), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_PLTKEY.TryGetValue(deltaItem.PLTKEY, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_LEAVE_GROUP_LEAVE_CODE.Remove(Tuple.Create(entity.LEAVE_GROUP, entity.LEAVE_CODE));
+                            overwritten = overwritten || Index_PLTKEY.Remove(entity.PLTKEY);
+                            
+                            if (entity.PLTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PLTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -380,11 +407,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PLT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PLT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PLT](
         [PLTKEY] varchar(16) NOT NULL,
@@ -442,236 +473,322 @@ BEGIN
             [LEAVE_GROUP] ASC,
             [LEAVE_CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP')
+    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PLT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP')
+    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP_LEAVE_CODE')
+    ALTER INDEX [Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PLT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PLT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PLT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, string>> Index_LEAVE_GROUP_LEAVE_CODE = new List<Tuple<string, string>>();
+            List<string> Index_PLTKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_LEAVE_GROUP_LEAVE_CODE.Add(Tuple.Create(entity.LEAVE_GROUP, entity.LEAVE_CODE));
+                Index_PLTKEY.Add(entity.PLTKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PLT] WHERE");
+
+
+            // Index_LEAVE_GROUP_LEAVE_CODE
+            builder.Append("(");
+            for (int index = 0; index < Index_LEAVE_GROUP_LEAVE_CODE.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // LEAVE_GROUP
+                if (Index_LEAVE_GROUP_LEAVE_CODE[index].Item1 == null)
+                {
+                    builder.Append("([LEAVE_GROUP] IS NULL");
+                }
+                else
+                {
+                    var parameterLEAVE_GROUP = $"@p{parameterIndex++}";
+                    builder.Append("([LEAVE_GROUP]=").Append(parameterLEAVE_GROUP);
+                    command.Parameters.Add(parameterLEAVE_GROUP, SqlDbType.VarChar, 8).Value = Index_LEAVE_GROUP_LEAVE_CODE[index].Item1;
+                }
+
+                // LEAVE_CODE
+                if (Index_LEAVE_GROUP_LEAVE_CODE[index].Item2 == null)
+                {
+                    builder.Append(" AND [LEAVE_CODE] IS NULL)");
+                }
+                else
+                {
+                    var parameterLEAVE_CODE = $"@p{parameterIndex++}";
+                    builder.Append(" AND [LEAVE_CODE]=").Append(parameterLEAVE_CODE).Append(")");
+                    command.Parameters.Add(parameterLEAVE_CODE, SqlDbType.VarChar, 8).Value = Index_LEAVE_GROUP_LEAVE_CODE[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_PLTKEY
+            builder.Append("[PLTKEY] IN (");
+            for (int index = 0; index < Index_PLTKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PLTKEY
+                var parameterPLTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPLTKEY);
+                command.Parameters.Add(parameterPLTKEY, SqlDbType.VarChar, 16).Value = Index_PLTKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PLT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PLT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PLT> GetDataSetDataReader()
         {
-            return new PLTDataReader(Items.Value);
+            return new PLTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PLT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PLT data set</returns>
+        public override EduHubDataSetDataReader<PLT> GetDataSetDataReader(List<PLT> Entities)
+        {
+            return new PLTDataReader(new EduHubDataSetLoadedReader<PLT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PLTDataReader : IDataReader, IDataRecord
+        private class PLTDataReader : EduHubDataSetDataReader<PLT>
         {
-            private List<PLT> Items;
-            private int CurrentIndex;
-            private PLT CurrentItem;
-
-            public PLTDataReader(List<PLT> Items)
+            public PLTDataReader(IEduHubDataSetReader<PLT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 38; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 38; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PLTKEY
-                        return CurrentItem.PLTKEY;
+                        return Current.PLTKEY;
                     case 1: // LEAVE_GROUP
-                        return CurrentItem.LEAVE_GROUP;
+                        return Current.LEAVE_GROUP;
                     case 2: // LEAVE_CODE
-                        return CurrentItem.LEAVE_CODE;
+                        return Current.LEAVE_CODE;
                     case 3: // CALC_METHOD
-                        return CurrentItem.CALC_METHOD;
+                        return Current.CALC_METHOD;
                     case 4: // PERIOD_ALLOT01
-                        return CurrentItem.PERIOD_ALLOT01;
+                        return Current.PERIOD_ALLOT01;
                     case 5: // PERIOD_ALLOT02
-                        return CurrentItem.PERIOD_ALLOT02;
+                        return Current.PERIOD_ALLOT02;
                     case 6: // PERIOD_ALLOT03
-                        return CurrentItem.PERIOD_ALLOT03;
+                        return Current.PERIOD_ALLOT03;
                     case 7: // PERIOD_ALLOT04
-                        return CurrentItem.PERIOD_ALLOT04;
+                        return Current.PERIOD_ALLOT04;
                     case 8: // PERIOD_ALLOT05
-                        return CurrentItem.PERIOD_ALLOT05;
+                        return Current.PERIOD_ALLOT05;
                     case 9: // PERIOD_ALLOT06
-                        return CurrentItem.PERIOD_ALLOT06;
+                        return Current.PERIOD_ALLOT06;
                     case 10: // PERIOD_ALLOT07
-                        return CurrentItem.PERIOD_ALLOT07;
+                        return Current.PERIOD_ALLOT07;
                     case 11: // PERIOD_ALLOT08
-                        return CurrentItem.PERIOD_ALLOT08;
+                        return Current.PERIOD_ALLOT08;
                     case 12: // PERIOD_ALLOT09
-                        return CurrentItem.PERIOD_ALLOT09;
+                        return Current.PERIOD_ALLOT09;
                     case 13: // PERIOD_ALLOT10
-                        return CurrentItem.PERIOD_ALLOT10;
+                        return Current.PERIOD_ALLOT10;
                     case 14: // PERIOD_ALLOT11
-                        return CurrentItem.PERIOD_ALLOT11;
+                        return Current.PERIOD_ALLOT11;
                     case 15: // PERIOD_ALLOT12
-                        return CurrentItem.PERIOD_ALLOT12;
+                        return Current.PERIOD_ALLOT12;
                     case 16: // PERIOD_LENGTH01
-                        return CurrentItem.PERIOD_LENGTH01;
+                        return Current.PERIOD_LENGTH01;
                     case 17: // PERIOD_LENGTH02
-                        return CurrentItem.PERIOD_LENGTH02;
+                        return Current.PERIOD_LENGTH02;
                     case 18: // PERIOD_LENGTH03
-                        return CurrentItem.PERIOD_LENGTH03;
+                        return Current.PERIOD_LENGTH03;
                     case 19: // PERIOD_LENGTH04
-                        return CurrentItem.PERIOD_LENGTH04;
+                        return Current.PERIOD_LENGTH04;
                     case 20: // PERIOD_LENGTH05
-                        return CurrentItem.PERIOD_LENGTH05;
+                        return Current.PERIOD_LENGTH05;
                     case 21: // PERIOD_LENGTH06
-                        return CurrentItem.PERIOD_LENGTH06;
+                        return Current.PERIOD_LENGTH06;
                     case 22: // PERIOD_LENGTH07
-                        return CurrentItem.PERIOD_LENGTH07;
+                        return Current.PERIOD_LENGTH07;
                     case 23: // PERIOD_LENGTH08
-                        return CurrentItem.PERIOD_LENGTH08;
+                        return Current.PERIOD_LENGTH08;
                     case 24: // PERIOD_LENGTH09
-                        return CurrentItem.PERIOD_LENGTH09;
+                        return Current.PERIOD_LENGTH09;
                     case 25: // PERIOD_LENGTH10
-                        return CurrentItem.PERIOD_LENGTH10;
+                        return Current.PERIOD_LENGTH10;
                     case 26: // PERIOD_LENGTH11
-                        return CurrentItem.PERIOD_LENGTH11;
+                        return Current.PERIOD_LENGTH11;
                     case 27: // PERIOD_LENGTH12
-                        return CurrentItem.PERIOD_LENGTH12;
+                        return Current.PERIOD_LENGTH12;
                     case 28: // PERIOD_UNITS
-                        return CurrentItem.PERIOD_UNITS;
+                        return Current.PERIOD_UNITS;
                     case 29: // ANNUAL_ENTITLEMENT
-                        return CurrentItem.ANNUAL_ENTITLEMENT;
+                        return Current.ANNUAL_ENTITLEMENT;
                     case 30: // ROLL_OVER
-                        return CurrentItem.ROLL_OVER;
+                        return Current.ROLL_OVER;
                     case 31: // ROLL_PERCENT
-                        return CurrentItem.ROLL_PERCENT;
+                        return Current.ROLL_PERCENT;
                     case 32: // LEAVE_LOADING
-                        return CurrentItem.LEAVE_LOADING;
+                        return Current.LEAVE_LOADING;
                     case 33: // LOADING_PERCENT
-                        return CurrentItem.LOADING_PERCENT;
+                        return Current.LOADING_PERCENT;
                     case 34: // ACTIVE
-                        return CurrentItem.ACTIVE;
+                        return Current.ACTIVE;
                     case 35: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 36: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 37: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // LEAVE_GROUP
-                        return CurrentItem.LEAVE_GROUP == null;
+                        return Current.LEAVE_GROUP == null;
                     case 2: // LEAVE_CODE
-                        return CurrentItem.LEAVE_CODE == null;
+                        return Current.LEAVE_CODE == null;
                     case 3: // CALC_METHOD
-                        return CurrentItem.CALC_METHOD == null;
+                        return Current.CALC_METHOD == null;
                     case 4: // PERIOD_ALLOT01
-                        return CurrentItem.PERIOD_ALLOT01 == null;
+                        return Current.PERIOD_ALLOT01 == null;
                     case 5: // PERIOD_ALLOT02
-                        return CurrentItem.PERIOD_ALLOT02 == null;
+                        return Current.PERIOD_ALLOT02 == null;
                     case 6: // PERIOD_ALLOT03
-                        return CurrentItem.PERIOD_ALLOT03 == null;
+                        return Current.PERIOD_ALLOT03 == null;
                     case 7: // PERIOD_ALLOT04
-                        return CurrentItem.PERIOD_ALLOT04 == null;
+                        return Current.PERIOD_ALLOT04 == null;
                     case 8: // PERIOD_ALLOT05
-                        return CurrentItem.PERIOD_ALLOT05 == null;
+                        return Current.PERIOD_ALLOT05 == null;
                     case 9: // PERIOD_ALLOT06
-                        return CurrentItem.PERIOD_ALLOT06 == null;
+                        return Current.PERIOD_ALLOT06 == null;
                     case 10: // PERIOD_ALLOT07
-                        return CurrentItem.PERIOD_ALLOT07 == null;
+                        return Current.PERIOD_ALLOT07 == null;
                     case 11: // PERIOD_ALLOT08
-                        return CurrentItem.PERIOD_ALLOT08 == null;
+                        return Current.PERIOD_ALLOT08 == null;
                     case 12: // PERIOD_ALLOT09
-                        return CurrentItem.PERIOD_ALLOT09 == null;
+                        return Current.PERIOD_ALLOT09 == null;
                     case 13: // PERIOD_ALLOT10
-                        return CurrentItem.PERIOD_ALLOT10 == null;
+                        return Current.PERIOD_ALLOT10 == null;
                     case 14: // PERIOD_ALLOT11
-                        return CurrentItem.PERIOD_ALLOT11 == null;
+                        return Current.PERIOD_ALLOT11 == null;
                     case 15: // PERIOD_ALLOT12
-                        return CurrentItem.PERIOD_ALLOT12 == null;
+                        return Current.PERIOD_ALLOT12 == null;
                     case 16: // PERIOD_LENGTH01
-                        return CurrentItem.PERIOD_LENGTH01 == null;
+                        return Current.PERIOD_LENGTH01 == null;
                     case 17: // PERIOD_LENGTH02
-                        return CurrentItem.PERIOD_LENGTH02 == null;
+                        return Current.PERIOD_LENGTH02 == null;
                     case 18: // PERIOD_LENGTH03
-                        return CurrentItem.PERIOD_LENGTH03 == null;
+                        return Current.PERIOD_LENGTH03 == null;
                     case 19: // PERIOD_LENGTH04
-                        return CurrentItem.PERIOD_LENGTH04 == null;
+                        return Current.PERIOD_LENGTH04 == null;
                     case 20: // PERIOD_LENGTH05
-                        return CurrentItem.PERIOD_LENGTH05 == null;
+                        return Current.PERIOD_LENGTH05 == null;
                     case 21: // PERIOD_LENGTH06
-                        return CurrentItem.PERIOD_LENGTH06 == null;
+                        return Current.PERIOD_LENGTH06 == null;
                     case 22: // PERIOD_LENGTH07
-                        return CurrentItem.PERIOD_LENGTH07 == null;
+                        return Current.PERIOD_LENGTH07 == null;
                     case 23: // PERIOD_LENGTH08
-                        return CurrentItem.PERIOD_LENGTH08 == null;
+                        return Current.PERIOD_LENGTH08 == null;
                     case 24: // PERIOD_LENGTH09
-                        return CurrentItem.PERIOD_LENGTH09 == null;
+                        return Current.PERIOD_LENGTH09 == null;
                     case 25: // PERIOD_LENGTH10
-                        return CurrentItem.PERIOD_LENGTH10 == null;
+                        return Current.PERIOD_LENGTH10 == null;
                     case 26: // PERIOD_LENGTH11
-                        return CurrentItem.PERIOD_LENGTH11 == null;
+                        return Current.PERIOD_LENGTH11 == null;
                     case 27: // PERIOD_LENGTH12
-                        return CurrentItem.PERIOD_LENGTH12 == null;
+                        return Current.PERIOD_LENGTH12 == null;
                     case 28: // PERIOD_UNITS
-                        return CurrentItem.PERIOD_UNITS == null;
+                        return Current.PERIOD_UNITS == null;
                     case 29: // ANNUAL_ENTITLEMENT
-                        return CurrentItem.ANNUAL_ENTITLEMENT == null;
+                        return Current.ANNUAL_ENTITLEMENT == null;
                     case 30: // ROLL_OVER
-                        return CurrentItem.ROLL_OVER == null;
+                        return Current.ROLL_OVER == null;
                     case 31: // ROLL_PERCENT
-                        return CurrentItem.ROLL_PERCENT == null;
+                        return Current.ROLL_PERCENT == null;
                     case 32: // LEAVE_LOADING
-                        return CurrentItem.LEAVE_LOADING == null;
+                        return Current.LEAVE_LOADING == null;
                     case 33: // LOADING_PERCENT
-                        return CurrentItem.LOADING_PERCENT == null;
+                        return Current.LOADING_PERCENT == null;
                     case 34: // ACTIVE
-                        return CurrentItem.ACTIVE == null;
+                        return Current.ACTIVE == null;
                     case 35: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 36: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 37: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -756,7 +873,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -839,35 +956,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

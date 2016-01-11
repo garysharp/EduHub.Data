@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STPTDataSet : EduHubDataSet<STPT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "STPT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal STPTDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="STPT" /> fields for each CSV column header</returns>
-        protected override Action<STPT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<STPT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<STPT, string>[Headers.Count];
 
@@ -76,34 +79,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="STPT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="STPT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="STPT" /> items to added or update the base <see cref="STPT" /> items</param>
-        /// <returns>A merged list of <see cref="STPT" /> items</returns>
-        protected override List<STPT> ApplyDeltaItems(List<STPT> Items, List<STPT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="STPT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="STPT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{STPT}"/> of entities</returns>
+        internal override IEnumerable<STPT> ApplyDeltaEntities(IEnumerable<STPT> Entities, List<STPT> DeltaEntities)
         {
-            Dictionary<Tuple<string, string>, int> Index_STPTKEY_SCHL_NUM = Items.ToIndexDictionary(i => Tuple.Create(i.STPTKEY, i.SCHL_NUM));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, string>> Index_STPTKEY_SCHL_NUM = new HashSet<Tuple<string, string>>(DeltaEntities.Select(i => Tuple.Create(i.STPTKEY, i.SCHL_NUM)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (STPT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.STPTKEY;
+                        bool yieldEntity = false;
 
-                if (Index_STPTKEY_SCHL_NUM.TryGetValue(Tuple.Create(deltaItem.STPTKEY, deltaItem.SCHL_NUM), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_STPTKEY_SCHL_NUM.Remove(Tuple.Create(entity.STPTKEY, entity.SCHL_NUM));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.STPTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.STPTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -293,11 +320,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a STPT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a STPT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[STPT](
         [TID] int IDENTITY NOT NULL,
@@ -326,118 +357,197 @@ BEGIN
             [STPTKEY] ASC,
             [SCHL_NUM] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_SCHL_NUM')
+    ALTER INDEX [Index_SCHL_NUM] ON [dbo].[STPT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_STPTKEY_SCHL_NUM')
+    ALTER INDEX [Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STPT] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_SCHL_NUM')
+    ALTER INDEX [Index_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_STPTKEY_SCHL_NUM')
+    ALTER INDEX [Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="STPT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="STPT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<STPT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, string>> Index_STPTKEY_SCHL_NUM = new List<Tuple<string, string>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_STPTKEY_SCHL_NUM.Add(Tuple.Create(entity.STPTKEY, entity.SCHL_NUM));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[STPT] WHERE");
+
+
+            // Index_STPTKEY_SCHL_NUM
+            builder.Append("(");
+            for (int index = 0; index < Index_STPTKEY_SCHL_NUM.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // STPTKEY
+                var parameterSTPTKEY = $"@p{parameterIndex++}";
+                builder.Append("([STPTKEY]=").Append(parameterSTPTKEY);
+                command.Parameters.Add(parameterSTPTKEY, SqlDbType.VarChar, 10).Value = Index_STPTKEY_SCHL_NUM[index].Item1;
+
+                // SCHL_NUM
+                if (Index_STPTKEY_SCHL_NUM[index].Item2 == null)
+                {
+                    builder.Append(" AND [SCHL_NUM] IS NULL)");
+                }
+                else
+                {
+                    var parameterSCHL_NUM = $"@p{parameterIndex++}";
+                    builder.Append(" AND [SCHL_NUM]=").Append(parameterSCHL_NUM).Append(")");
+                    command.Parameters.Add(parameterSCHL_NUM, SqlDbType.VarChar, 8).Value = Index_STPTKEY_SCHL_NUM[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the STPT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the STPT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<STPT> GetDataSetDataReader()
         {
-            return new STPTDataReader(Items.Value);
+            return new STPTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STPT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STPT data set</returns>
+        public override EduHubDataSetDataReader<STPT> GetDataSetDataReader(List<STPT> Entities)
+        {
+            return new STPTDataReader(new EduHubDataSetLoadedReader<STPT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class STPTDataReader : IDataReader, IDataRecord
+        private class STPTDataReader : EduHubDataSetDataReader<STPT>
         {
-            private List<STPT> Items;
-            private int CurrentIndex;
-            private STPT CurrentItem;
-
-            public STPTDataReader(List<STPT> Items)
+            public STPTDataReader(IEduHubDataSetReader<STPT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 9; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 9; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // STPTKEY
-                        return CurrentItem.STPTKEY;
+                        return Current.STPTKEY;
                     case 2: // SCHL_NUM
-                        return CurrentItem.SCHL_NUM;
+                        return Current.SCHL_NUM;
                     case 3: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION;
+                        return Current.SGB_TIME_FRACTION;
                     case 4: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION;
+                        return Current.ACTUAL_TIME_FRACTION;
                     case 5: // ENROLLED
-                        return CurrentItem.ENROLLED;
+                        return Current.ENROLLED;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // SCHL_NUM
-                        return CurrentItem.SCHL_NUM == null;
+                        return Current.SCHL_NUM == null;
                     case 3: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION == null;
+                        return Current.SGB_TIME_FRACTION == null;
                     case 4: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION == null;
+                        return Current.ACTUAL_TIME_FRACTION == null;
                     case 5: // ENROLLED
-                        return CurrentItem.ENROLLED == null;
+                        return Current.ENROLLED == null;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -464,7 +574,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -489,35 +599,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

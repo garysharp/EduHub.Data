@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGCHIDataSet : EduHubDataSet<KGCHI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KGCHI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal KGCHIDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KGCHI" /> fields for each CSV column header</returns>
-        protected override Action<KGCHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KGCHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KGCHI, string>[Headers.Count];
 
@@ -86,29 +89,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KGCHI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KGCHI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KGCHI" /> items to added or update the base <see cref="KGCHI" /> items</param>
-        /// <returns>A merged list of <see cref="KGCHI" /> items</returns>
-        protected override List<KGCHI> ApplyDeltaItems(List<KGCHI> Items, List<KGCHI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KGCHI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KGCHI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KGCHI}"/> of entities</returns>
+        internal override IEnumerable<KGCHI> ApplyDeltaEntities(IEnumerable<KGCHI> Entities, List<KGCHI> DeltaEntities)
         {
-            Dictionary<int, int> Index_KGCHIKEY = Items.ToIndexDictionary(i => i.KGCHIKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_KGCHIKEY = new HashSet<int>(DeltaEntities.Select(i => i.KGCHIKEY));
 
-            foreach (KGCHI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KGCHIKEY.TryGetValue(deltaItem.KGCHIKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KGCHIKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KGCHIKEY.Remove(entity.KGCHIKEY);
+                            
+                            if (entity.KGCHIKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KGCHIKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -209,11 +238,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KGCHI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KGCHI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KGCHI](
         [KGCHIKEY] int IDENTITY NOT NULL,
@@ -237,136 +270,179 @@ BEGIN
     (
             [KGCKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'Index_KGCKEY')
+    ALTER INDEX [Index_KGCKEY] ON [dbo].[KGCHI] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'Index_KGCKEY')
+    ALTER INDEX [Index_KGCKEY] ON [dbo].[KGCHI] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KGCHI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KGCHI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KGCHI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_KGCHIKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KGCHIKEY.Add(entity.KGCHIKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KGCHI] WHERE");
+
+
+            // Index_KGCHIKEY
+            builder.Append("[KGCHIKEY] IN (");
+            for (int index = 0; index < Index_KGCHIKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KGCHIKEY
+                var parameterKGCHIKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKGCHIKEY);
+                command.Parameters.Add(parameterKGCHIKEY, SqlDbType.Int).Value = Index_KGCHIKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KGCHI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KGCHI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KGCHI> GetDataSetDataReader()
         {
-            return new KGCHIDataReader(Items.Value);
+            return new KGCHIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGCHI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGCHI data set</returns>
+        public override EduHubDataSetDataReader<KGCHI> GetDataSetDataReader(List<KGCHI> Entities)
+        {
+            return new KGCHIDataReader(new EduHubDataSetLoadedReader<KGCHI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KGCHIDataReader : IDataReader, IDataRecord
+        private class KGCHIDataReader : EduHubDataSetDataReader<KGCHI>
         {
-            private List<KGCHI> Items;
-            private int CurrentIndex;
-            private KGCHI CurrentItem;
-
-            public KGCHIDataReader(List<KGCHI> Items)
+            public KGCHIDataReader(IEduHubDataSetReader<KGCHI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 13; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 13; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KGCHIKEY
-                        return CurrentItem.KGCHIKEY;
+                        return Current.KGCHIKEY;
                     case 1: // KGCKEY
-                        return CurrentItem.KGCKEY;
+                        return Current.KGCKEY;
                     case 2: // CREATION_USER
-                        return CurrentItem.CREATION_USER;
+                        return Current.CREATION_USER;
                     case 3: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE;
+                        return Current.CREATION_DATE;
                     case 4: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME;
+                        return Current.CREATION_TIME;
                     case 5: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER;
+                        return Current.OBSOLETE_USER;
                     case 6: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE;
+                        return Current.OBSOLETE_DATE;
                     case 7: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME;
+                        return Current.OBSOLETE_TIME;
                     case 8: // CAMPUS
-                        return CurrentItem.CAMPUS;
+                        return Current.CAMPUS;
                     case 9: // TEACHER
-                        return CurrentItem.TEACHER;
+                        return Current.TEACHER;
                     case 10: // TEACHER_B
-                        return CurrentItem.TEACHER_B;
+                        return Current.TEACHER_B;
                     case 11: // ROOM
-                        return CurrentItem.ROOM;
+                        return Current.ROOM;
                     case 12: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE;
+                        return Current.CHANGE_MADE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // KGCKEY
-                        return CurrentItem.KGCKEY == null;
+                        return Current.KGCKEY == null;
                     case 2: // CREATION_USER
-                        return CurrentItem.CREATION_USER == null;
+                        return Current.CREATION_USER == null;
                     case 3: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE == null;
+                        return Current.CREATION_DATE == null;
                     case 4: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME == null;
+                        return Current.CREATION_TIME == null;
                     case 5: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER == null;
+                        return Current.OBSOLETE_USER == null;
                     case 6: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE == null;
+                        return Current.OBSOLETE_DATE == null;
                     case 7: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME == null;
+                        return Current.OBSOLETE_TIME == null;
                     case 8: // CAMPUS
-                        return CurrentItem.CAMPUS == null;
+                        return Current.CAMPUS == null;
                     case 9: // TEACHER
-                        return CurrentItem.TEACHER == null;
+                        return Current.TEACHER == null;
                     case 10: // TEACHER_B
-                        return CurrentItem.TEACHER_B == null;
+                        return Current.TEACHER_B == null;
                     case 11: // ROOM
-                        return CurrentItem.ROOM == null;
+                        return Current.ROOM == null;
                     case 12: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE == null;
+                        return Current.CHANGE_MADE == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -401,7 +477,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -434,35 +510,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

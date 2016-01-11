@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SXHIDataSet : EduHubDataSet<SXHI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SXHI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SXHIDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SXHI" /> fields for each CSV column header</returns>
-        protected override Action<SXHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SXHI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SXHI, string>[Headers.Count];
 
@@ -167,29 +170,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SXHI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SXHI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SXHI" /> items to added or update the base <see cref="SXHI" /> items</param>
-        /// <returns>A merged list of <see cref="SXHI" /> items</returns>
-        protected override List<SXHI> ApplyDeltaItems(List<SXHI> Items, List<SXHI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SXHI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SXHI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SXHI}"/> of entities</returns>
+        internal override IEnumerable<SXHI> ApplyDeltaEntities(IEnumerable<SXHI> Entities, List<SXHI> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SXHI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.TID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.TID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.TID)
-                .ToList();
         }
 
         #region Index Fields
@@ -290,11 +319,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SXHI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SXHI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SXHI](
         [TID] int IDENTITY NOT NULL,
@@ -345,244 +378,287 @@ BEGIN
     (
             [SKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'Index_SKEY')
+    ALTER INDEX [Index_SKEY] ON [dbo].[SXHI] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'Index_SKEY')
+    ALTER INDEX [Index_SKEY] ON [dbo].[SXHI] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SXHI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SXHI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SXHI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SXHI] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SXHI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SXHI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SXHI> GetDataSetDataReader()
         {
-            return new SXHIDataReader(Items.Value);
+            return new SXHIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SXHI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SXHI data set</returns>
+        public override EduHubDataSetDataReader<SXHI> GetDataSetDataReader(List<SXHI> Entities)
+        {
+            return new SXHIDataReader(new EduHubDataSetLoadedReader<SXHI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SXHIDataReader : IDataReader, IDataRecord
+        private class SXHIDataReader : EduHubDataSetDataReader<SXHI>
         {
-            private List<SXHI> Items;
-            private int CurrentIndex;
-            private SXHI CurrentItem;
-
-            public SXHIDataReader(List<SXHI> Items)
+            public SXHIDataReader(IEduHubDataSetReader<SXHI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 40; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 40; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // STREG
-                        return CurrentItem.STREG;
+                        return Current.STREG;
                     case 2: // SKEY
-                        return CurrentItem.SKEY;
+                        return Current.SKEY;
                     case 3: // HKEY
-                        return CurrentItem.HKEY;
+                        return Current.HKEY;
                     case 4: // CREATION_USER
-                        return CurrentItem.CREATION_USER;
+                        return Current.CREATION_USER;
                     case 5: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE;
+                        return Current.CREATION_DATE;
                     case 6: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME;
+                        return Current.CREATION_TIME;
                     case 7: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER;
+                        return Current.OBSOLETE_USER;
                     case 8: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE;
+                        return Current.OBSOLETE_DATE;
                     case 9: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME;
+                        return Current.OBSOLETE_TIME;
                     case 10: // SURNAME
-                        return CurrentItem.SURNAME;
+                        return Current.SURNAME;
                     case 11: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME;
+                        return Current.FIRST_NAME;
                     case 12: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 13: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR;
+                        return Current.SCHOOL_YEAR;
                     case 14: // HOME_GROUP
-                        return CurrentItem.HOME_GROUP;
+                        return Current.HOME_GROUP;
                     case 15: // FAMILY
-                        return CurrentItem.FAMILY;
+                        return Current.FAMILY;
                     case 16: // FAMB
-                        return CurrentItem.FAMB;
+                        return Current.FAMB;
                     case 17: // FAMC
-                        return CurrentItem.FAMC;
+                        return Current.FAMC;
                     case 18: // RESIDENT_STATUS
-                        return CurrentItem.RESIDENT_STATUS;
+                        return Current.RESIDENT_STATUS;
                     case 19: // PERMANENT_BASIS
-                        return CurrentItem.PERMANENT_BASIS;
+                        return Current.PERMANENT_BASIS;
                     case 20: // VISA_SUBCLASS
-                        return CurrentItem.VISA_SUBCLASS;
+                        return Current.VISA_SUBCLASS;
                     case 21: // VISA_STAT_CODE
-                        return CurrentItem.VISA_STAT_CODE;
+                        return Current.VISA_STAT_CODE;
                     case 22: // VISA_EXPIRY
-                        return CurrentItem.VISA_EXPIRY;
+                        return Current.VISA_EXPIRY;
                     case 23: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED;
+                        return Current.SGB_FUNDED;
                     case 24: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION;
+                        return Current.SGB_TIME_FRACTION;
                     case 25: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION;
+                        return Current.ACTUAL_TIME_FRACTION;
                     case 26: // ACCESS_ALERT
-                        return CurrentItem.ACCESS_ALERT;
+                        return Current.ACCESS_ALERT;
                     case 27: // ACCESS
-                        return CurrentItem.ACCESS;
+                        return Current.ACCESS;
                     case 28: // ACCESS_TYPE
-                        return CurrentItem.ACCESS_TYPE;
+                        return Current.ACCESS_TYPE;
                     case 29: // NEXT_SCHOOL
-                        return CurrentItem.NEXT_SCHOOL;
+                        return Current.NEXT_SCHOOL;
                     case 30: // ENTRY
-                        return CurrentItem.ENTRY;
+                        return Current.ENTRY;
                     case 31: // EXIT_DATE
-                        return CurrentItem.EXIT_DATE;
+                        return Current.EXIT_DATE;
                     case 32: // INTERNATIONAL_ST_ID
-                        return CurrentItem.INTERNATIONAL_ST_ID;
+                        return Current.INTERNATIONAL_ST_ID;
                     case 33: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME;
+                        return Current.SECOND_NAME;
                     case 34: // GENDER
-                        return CurrentItem.GENDER;
+                        return Current.GENDER;
                     case 35: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE;
+                        return Current.BIRTHDATE;
                     case 36: // VSN
-                        return CurrentItem.VSN;
+                        return Current.VSN;
                     case 37: // VSR_TYPE
-                        return CurrentItem.VSR_TYPE;
+                        return Current.VSR_TYPE;
                     case 38: // PREVIOUS_TID
-                        return CurrentItem.PREVIOUS_TID;
+                        return Current.PREVIOUS_TID;
                     case 39: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE;
+                        return Current.CHANGE_MADE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // STREG
-                        return CurrentItem.STREG == null;
+                        return Current.STREG == null;
                     case 2: // SKEY
-                        return CurrentItem.SKEY == null;
+                        return Current.SKEY == null;
                     case 3: // HKEY
-                        return CurrentItem.HKEY == null;
+                        return Current.HKEY == null;
                     case 4: // CREATION_USER
-                        return CurrentItem.CREATION_USER == null;
+                        return Current.CREATION_USER == null;
                     case 5: // CREATION_DATE
-                        return CurrentItem.CREATION_DATE == null;
+                        return Current.CREATION_DATE == null;
                     case 6: // CREATION_TIME
-                        return CurrentItem.CREATION_TIME == null;
+                        return Current.CREATION_TIME == null;
                     case 7: // OBSOLETE_USER
-                        return CurrentItem.OBSOLETE_USER == null;
+                        return Current.OBSOLETE_USER == null;
                     case 8: // OBSOLETE_DATE
-                        return CurrentItem.OBSOLETE_DATE == null;
+                        return Current.OBSOLETE_DATE == null;
                     case 9: // OBSOLETE_TIME
-                        return CurrentItem.OBSOLETE_TIME == null;
+                        return Current.OBSOLETE_TIME == null;
                     case 10: // SURNAME
-                        return CurrentItem.SURNAME == null;
+                        return Current.SURNAME == null;
                     case 11: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME == null;
+                        return Current.FIRST_NAME == null;
                     case 12: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 13: // SCHOOL_YEAR
-                        return CurrentItem.SCHOOL_YEAR == null;
+                        return Current.SCHOOL_YEAR == null;
                     case 14: // HOME_GROUP
-                        return CurrentItem.HOME_GROUP == null;
+                        return Current.HOME_GROUP == null;
                     case 15: // FAMILY
-                        return CurrentItem.FAMILY == null;
+                        return Current.FAMILY == null;
                     case 16: // FAMB
-                        return CurrentItem.FAMB == null;
+                        return Current.FAMB == null;
                     case 17: // FAMC
-                        return CurrentItem.FAMC == null;
+                        return Current.FAMC == null;
                     case 18: // RESIDENT_STATUS
-                        return CurrentItem.RESIDENT_STATUS == null;
+                        return Current.RESIDENT_STATUS == null;
                     case 19: // PERMANENT_BASIS
-                        return CurrentItem.PERMANENT_BASIS == null;
+                        return Current.PERMANENT_BASIS == null;
                     case 20: // VISA_SUBCLASS
-                        return CurrentItem.VISA_SUBCLASS == null;
+                        return Current.VISA_SUBCLASS == null;
                     case 21: // VISA_STAT_CODE
-                        return CurrentItem.VISA_STAT_CODE == null;
+                        return Current.VISA_STAT_CODE == null;
                     case 22: // VISA_EXPIRY
-                        return CurrentItem.VISA_EXPIRY == null;
+                        return Current.VISA_EXPIRY == null;
                     case 23: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED == null;
+                        return Current.SGB_FUNDED == null;
                     case 24: // SGB_TIME_FRACTION
-                        return CurrentItem.SGB_TIME_FRACTION == null;
+                        return Current.SGB_TIME_FRACTION == null;
                     case 25: // ACTUAL_TIME_FRACTION
-                        return CurrentItem.ACTUAL_TIME_FRACTION == null;
+                        return Current.ACTUAL_TIME_FRACTION == null;
                     case 26: // ACCESS_ALERT
-                        return CurrentItem.ACCESS_ALERT == null;
+                        return Current.ACCESS_ALERT == null;
                     case 27: // ACCESS
-                        return CurrentItem.ACCESS == null;
+                        return Current.ACCESS == null;
                     case 28: // ACCESS_TYPE
-                        return CurrentItem.ACCESS_TYPE == null;
+                        return Current.ACCESS_TYPE == null;
                     case 29: // NEXT_SCHOOL
-                        return CurrentItem.NEXT_SCHOOL == null;
+                        return Current.NEXT_SCHOOL == null;
                     case 30: // ENTRY
-                        return CurrentItem.ENTRY == null;
+                        return Current.ENTRY == null;
                     case 31: // EXIT_DATE
-                        return CurrentItem.EXIT_DATE == null;
+                        return Current.EXIT_DATE == null;
                     case 32: // INTERNATIONAL_ST_ID
-                        return CurrentItem.INTERNATIONAL_ST_ID == null;
+                        return Current.INTERNATIONAL_ST_ID == null;
                     case 33: // SECOND_NAME
-                        return CurrentItem.SECOND_NAME == null;
+                        return Current.SECOND_NAME == null;
                     case 34: // GENDER
-                        return CurrentItem.GENDER == null;
+                        return Current.GENDER == null;
                     case 35: // BIRTHDATE
-                        return CurrentItem.BIRTHDATE == null;
+                        return Current.BIRTHDATE == null;
                     case 36: // VSN
-                        return CurrentItem.VSN == null;
+                        return Current.VSN == null;
                     case 37: // VSR_TYPE
-                        return CurrentItem.VSR_TYPE == null;
+                        return Current.VSR_TYPE == null;
                     case 38: // PREVIOUS_TID
-                        return CurrentItem.PREVIOUS_TID == null;
+                        return Current.PREVIOUS_TID == null;
                     case 39: // CHANGE_MADE
-                        return CurrentItem.CHANGE_MADE == null;
+                        return Current.CHANGE_MADE == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -671,7 +747,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -758,35 +834,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

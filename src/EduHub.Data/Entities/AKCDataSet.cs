@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class AKCDataSet : EduHubDataSet<AKC>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "AKC"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal AKCDataSet(EduHubContext Context)
             : base(Context)
@@ -39,7 +42,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="AKC" /> fields for each CSV column header</returns>
-        protected override Action<AKC, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<AKC, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<AKC, string>[Headers.Count];
 
@@ -132,29 +135,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="AKC" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="AKC" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="AKC" /> items to added or update the base <see cref="AKC" /> items</param>
-        /// <returns>A merged list of <see cref="AKC" /> items</returns>
-        protected override List<AKC> ApplyDeltaItems(List<AKC> Items, List<AKC> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="AKC" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="AKC" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{AKC}"/> of entities</returns>
+        internal override IEnumerable<AKC> ApplyDeltaEntities(IEnumerable<AKC> Entities, List<AKC> DeltaEntities)
         {
-            Dictionary<string, int> Index_CATEGORY = Items.ToIndexDictionary(i => i.CATEGORY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_CATEGORY = new HashSet<string>(DeltaEntities.Select(i => i.CATEGORY));
 
-            foreach (AKC deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_CATEGORY.TryGetValue(deltaItem.CATEGORY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CATEGORY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_CATEGORY.Remove(entity.CATEGORY);
+                            
+                            if (entity.CATEGORY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CATEGORY)
-                .ToList();
         }
 
         #region Index Fields
@@ -685,11 +714,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a AKC table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a AKC table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[AKC](
         [CATEGORY] varchar(10) NOT NULL,
@@ -765,184 +798,267 @@ BEGIN
     (
             [GLCODE_PRV] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_APTE_GLCODE')
+    ALTER INDEX [Index_APTE_GLCODE] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_AMETHOD')
+    ALTER INDEX [Index_DEPN_AMETHOD] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_TMETHOD')
+    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROC')
+    ALTER INDEX [Index_GL_DISP_PROC] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROF')
+    ALTER INDEX [Index_GL_DISP_PROF] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_ASS')
+    ALTER INDEX [Index_GL_REVALS_ASS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_BS')
+    ALTER INDEX [Index_GL_REVALS_BS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_PL')
+    ALTER INDEX [Index_GL_REVALS_PL] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_ASS')
+    ALTER INDEX [Index_GLCODE_ASS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_EXP')
+    ALTER INDEX [Index_GLCODE_EXP] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_PRV')
+    ALTER INDEX [Index_GLCODE_PRV] ON [dbo].[AKC] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_APTE_GLCODE')
+    ALTER INDEX [Index_APTE_GLCODE] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_AMETHOD')
+    ALTER INDEX [Index_DEPN_AMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_TMETHOD')
+    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROC')
+    ALTER INDEX [Index_GL_DISP_PROC] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROF')
+    ALTER INDEX [Index_GL_DISP_PROF] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_ASS')
+    ALTER INDEX [Index_GL_REVALS_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_BS')
+    ALTER INDEX [Index_GL_REVALS_BS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_PL')
+    ALTER INDEX [Index_GL_REVALS_PL] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_ASS')
+    ALTER INDEX [Index_GLCODE_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_EXP')
+    ALTER INDEX [Index_GLCODE_EXP] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_PRV')
+    ALTER INDEX [Index_GLCODE_PRV] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="AKC"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="AKC"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<AKC> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_CATEGORY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_CATEGORY.Add(entity.CATEGORY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[AKC] WHERE");
+
+
+            // Index_CATEGORY
+            builder.Append("[CATEGORY] IN (");
+            for (int index = 0; index < Index_CATEGORY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // CATEGORY
+                var parameterCATEGORY = $"@p{parameterIndex++}";
+                builder.Append(parameterCATEGORY);
+                command.Parameters.Add(parameterCATEGORY, SqlDbType.VarChar, 10).Value = Index_CATEGORY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the AKC data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the AKC data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<AKC> GetDataSetDataReader()
         {
-            return new AKCDataReader(Items.Value);
+            return new AKCDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the AKC data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the AKC data set</returns>
+        public override EduHubDataSetDataReader<AKC> GetDataSetDataReader(List<AKC> Entities)
+        {
+            return new AKCDataReader(new EduHubDataSetLoadedReader<AKC>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class AKCDataReader : IDataReader, IDataRecord
+        private class AKCDataReader : EduHubDataSetDataReader<AKC>
         {
-            private List<AKC> Items;
-            private int CurrentIndex;
-            private AKC CurrentItem;
-
-            public AKCDataReader(List<AKC> Items)
+            public AKCDataReader(IEduHubDataSetReader<AKC> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 25; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 25; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // CATEGORY
-                        return CurrentItem.CATEGORY;
+                        return Current.CATEGORY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // GLCODE_ASS
-                        return CurrentItem.GLCODE_ASS;
+                        return Current.GLCODE_ASS;
                     case 3: // GLCODE_PRV
-                        return CurrentItem.GLCODE_PRV;
+                        return Current.GLCODE_PRV;
                     case 4: // GLCODE_EXP
-                        return CurrentItem.GLCODE_EXP;
+                        return Current.GLCODE_EXP;
                     case 5: // GL_REVALS_BS
-                        return CurrentItem.GL_REVALS_BS;
+                        return Current.GL_REVALS_BS;
                     case 6: // GL_REVALS_PL
-                        return CurrentItem.GL_REVALS_PL;
+                        return Current.GL_REVALS_PL;
                     case 7: // GL_REVALS_ASS
-                        return CurrentItem.GL_REVALS_ASS;
+                        return Current.GL_REVALS_ASS;
                     case 8: // GL_DISP_PROF
-                        return CurrentItem.GL_DISP_PROF;
+                        return Current.GL_DISP_PROF;
                     case 9: // GL_DISP_PROC
-                        return CurrentItem.GL_DISP_PROC;
+                        return Current.GL_DISP_PROC;
                     case 10: // APTE_GLCODE
-                        return CurrentItem.APTE_GLCODE;
+                        return Current.APTE_GLCODE;
                     case 11: // PTE_USE_RATE
-                        return CurrentItem.PTE_USE_RATE;
+                        return Current.PTE_USE_RATE;
                     case 12: // DEPN_AMETHOD
-                        return CurrentItem.DEPN_AMETHOD;
+                        return Current.DEPN_AMETHOD;
                     case 13: // DEPN_TMETHOD
-                        return CurrentItem.DEPN_TMETHOD;
+                        return Current.DEPN_TMETHOD;
                     case 14: // DEPN_ARATE
-                        return CurrentItem.DEPN_ARATE;
+                        return Current.DEPN_ARATE;
                     case 15: // APTE_USE_RATE
-                        return CurrentItem.APTE_USE_RATE;
+                        return Current.APTE_USE_RATE;
                     case 16: // DEPN_TRATE
-                        return CurrentItem.DEPN_TRATE;
+                        return Current.DEPN_TRATE;
                     case 17: // TPTE_USE_RATE
-                        return CurrentItem.TPTE_USE_RATE;
+                        return Current.TPTE_USE_RATE;
                     case 18: // EXPECTED_LIFE
-                        return CurrentItem.EXPECTED_LIFE;
+                        return Current.EXPECTED_LIFE;
                     case 19: // SEND_TO_FLAG
-                        return CurrentItem.SEND_TO_FLAG;
+                        return Current.SEND_TO_FLAG;
                     case 20: // ACTIVE
-                        return CurrentItem.ACTIVE;
+                        return Current.ACTIVE;
                     case 21: // MAP_CATEGORY
-                        return CurrentItem.MAP_CATEGORY;
+                        return Current.MAP_CATEGORY;
                     case 22: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 23: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 24: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // GLCODE_ASS
-                        return CurrentItem.GLCODE_ASS == null;
+                        return Current.GLCODE_ASS == null;
                     case 3: // GLCODE_PRV
-                        return CurrentItem.GLCODE_PRV == null;
+                        return Current.GLCODE_PRV == null;
                     case 4: // GLCODE_EXP
-                        return CurrentItem.GLCODE_EXP == null;
+                        return Current.GLCODE_EXP == null;
                     case 5: // GL_REVALS_BS
-                        return CurrentItem.GL_REVALS_BS == null;
+                        return Current.GL_REVALS_BS == null;
                     case 6: // GL_REVALS_PL
-                        return CurrentItem.GL_REVALS_PL == null;
+                        return Current.GL_REVALS_PL == null;
                     case 7: // GL_REVALS_ASS
-                        return CurrentItem.GL_REVALS_ASS == null;
+                        return Current.GL_REVALS_ASS == null;
                     case 8: // GL_DISP_PROF
-                        return CurrentItem.GL_DISP_PROF == null;
+                        return Current.GL_DISP_PROF == null;
                     case 9: // GL_DISP_PROC
-                        return CurrentItem.GL_DISP_PROC == null;
+                        return Current.GL_DISP_PROC == null;
                     case 10: // APTE_GLCODE
-                        return CurrentItem.APTE_GLCODE == null;
+                        return Current.APTE_GLCODE == null;
                     case 11: // PTE_USE_RATE
-                        return CurrentItem.PTE_USE_RATE == null;
+                        return Current.PTE_USE_RATE == null;
                     case 12: // DEPN_AMETHOD
-                        return CurrentItem.DEPN_AMETHOD == null;
+                        return Current.DEPN_AMETHOD == null;
                     case 13: // DEPN_TMETHOD
-                        return CurrentItem.DEPN_TMETHOD == null;
+                        return Current.DEPN_TMETHOD == null;
                     case 14: // DEPN_ARATE
-                        return CurrentItem.DEPN_ARATE == null;
+                        return Current.DEPN_ARATE == null;
                     case 15: // APTE_USE_RATE
-                        return CurrentItem.APTE_USE_RATE == null;
+                        return Current.APTE_USE_RATE == null;
                     case 16: // DEPN_TRATE
-                        return CurrentItem.DEPN_TRATE == null;
+                        return Current.DEPN_TRATE == null;
                     case 17: // TPTE_USE_RATE
-                        return CurrentItem.TPTE_USE_RATE == null;
+                        return Current.TPTE_USE_RATE == null;
                     case 18: // EXPECTED_LIFE
-                        return CurrentItem.EXPECTED_LIFE == null;
+                        return Current.EXPECTED_LIFE == null;
                     case 19: // SEND_TO_FLAG
-                        return CurrentItem.SEND_TO_FLAG == null;
+                        return Current.SEND_TO_FLAG == null;
                     case 20: // ACTIVE
-                        return CurrentItem.ACTIVE == null;
+                        return Current.ACTIVE == null;
                     case 21: // MAP_CATEGORY
-                        return CurrentItem.MAP_CATEGORY == null;
+                        return Current.MAP_CATEGORY == null;
                     case 22: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 23: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 24: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1001,7 +1117,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1058,35 +1174,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

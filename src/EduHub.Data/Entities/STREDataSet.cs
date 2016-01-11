@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STREDataSet : EduHubDataSet<STRE>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "STRE"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal STREDataSet(EduHubContext Context)
             : base(Context)
@@ -43,7 +46,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="STRE" /> fields for each CSV column header</returns>
-        protected override Action<STRE, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<STRE, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<STRE, string>[Headers.Count];
 
@@ -196,29 +199,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="STRE" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="STRE" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="STRE" /> items to added or update the base <see cref="STRE" /> items</param>
-        /// <returns>A merged list of <see cref="STRE" /> items</returns>
-        protected override List<STRE> ApplyDeltaItems(List<STRE> Items, List<STRE> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="STRE" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="STRE" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{STRE}"/> of entities</returns>
+        internal override IEnumerable<STRE> ApplyDeltaEntities(IEnumerable<STRE> Entities, List<STRE> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (STRE deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.SKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -921,11 +950,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a STRE table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a STRE table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[STRE](
         [TID] int IDENTITY NOT NULL,
@@ -1037,262 +1070,361 @@ BEGIN
     (
             [STPT_SCHL_NUM04] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_DF_LOTE_HOME_CODE_A')
+    ALTER INDEX [Index_DF_LOTE_HOME_CODE_A] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_DF_LOTE_HOME_CODE_B')
+    ALTER INDEX [Index_DF_LOTE_HOME_CODE_B] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_CAMPUS')
+    ALTER INDEX [Index_ST_CAMPUS] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_HOME_GROUP')
+    ALTER INDEX [Index_ST_HOME_GROUP] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_HOME_LANG')
+    ALTER INDEX [Index_ST_HOME_LANG] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_LOTE_HOME_CODE')
+    ALTER INDEX [Index_ST_LOTE_HOME_CODE] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_NEXT_SCHOOL')
+    ALTER INDEX [Index_ST_NEXT_SCHOOL] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_PREVIOUS_SCHOOL')
+    ALTER INDEX [Index_ST_PREVIOUS_SCHOOL] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_SCHOOL_YEAR')
+    ALTER INDEX [Index_ST_SCHOOL_YEAR] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_VISA_SUBCLASS')
+    ALTER INDEX [Index_ST_VISA_SUBCLASS] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM01')
+    ALTER INDEX [Index_STPT_SCHL_NUM01] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM02')
+    ALTER INDEX [Index_STPT_SCHL_NUM02] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM03')
+    ALTER INDEX [Index_STPT_SCHL_NUM03] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM04')
+    ALTER INDEX [Index_STPT_SCHL_NUM04] ON [dbo].[STRE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STRE] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_DF_LOTE_HOME_CODE_A')
+    ALTER INDEX [Index_DF_LOTE_HOME_CODE_A] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_DF_LOTE_HOME_CODE_B')
+    ALTER INDEX [Index_DF_LOTE_HOME_CODE_B] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_CAMPUS')
+    ALTER INDEX [Index_ST_CAMPUS] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_HOME_GROUP')
+    ALTER INDEX [Index_ST_HOME_GROUP] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_HOME_LANG')
+    ALTER INDEX [Index_ST_HOME_LANG] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_LOTE_HOME_CODE')
+    ALTER INDEX [Index_ST_LOTE_HOME_CODE] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_NEXT_SCHOOL')
+    ALTER INDEX [Index_ST_NEXT_SCHOOL] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_PREVIOUS_SCHOOL')
+    ALTER INDEX [Index_ST_PREVIOUS_SCHOOL] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_SCHOOL_YEAR')
+    ALTER INDEX [Index_ST_SCHOOL_YEAR] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_ST_VISA_SUBCLASS')
+    ALTER INDEX [Index_ST_VISA_SUBCLASS] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM01')
+    ALTER INDEX [Index_STPT_SCHL_NUM01] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM02')
+    ALTER INDEX [Index_STPT_SCHL_NUM02] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM03')
+    ALTER INDEX [Index_STPT_SCHL_NUM03] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_STPT_SCHL_NUM04')
+    ALTER INDEX [Index_STPT_SCHL_NUM04] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STRE] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="STRE"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="STRE"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<STRE> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[STRE] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the STRE data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the STRE data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<STRE> GetDataSetDataReader()
         {
-            return new STREDataReader(Items.Value);
+            return new STREDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STRE data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STRE data set</returns>
+        public override EduHubDataSetDataReader<STRE> GetDataSetDataReader(List<STRE> Entities)
+        {
+            return new STREDataReader(new EduHubDataSetLoadedReader<STRE>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class STREDataReader : IDataReader, IDataRecord
+        private class STREDataReader : EduHubDataSetDataReader<STRE>
         {
-            private List<STRE> Items;
-            private int CurrentIndex;
-            private STRE CurrentItem;
-
-            public STREDataReader(List<STRE> Items)
+            public STREDataReader(IEduHubDataSetReader<STRE> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 45; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 45; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // SKEY
-                        return CurrentItem.SKEY;
+                        return Current.SKEY;
                     case 2: // ST_ENTRY
-                        return CurrentItem.ST_ENTRY;
+                        return Current.ST_ENTRY;
                     case 3: // ST_EXIT_DATE
-                        return CurrentItem.ST_EXIT_DATE;
+                        return Current.ST_EXIT_DATE;
                     case 4: // ST_SCHOOL_YEAR
-                        return CurrentItem.ST_SCHOOL_YEAR;
+                        return Current.ST_SCHOOL_YEAR;
                     case 5: // ST_HOME_GROUP
-                        return CurrentItem.ST_HOME_GROUP;
+                        return Current.ST_HOME_GROUP;
                     case 6: // ST_PREVIOUS_SCHOOL
-                        return CurrentItem.ST_PREVIOUS_SCHOOL;
+                        return Current.ST_PREVIOUS_SCHOOL;
                     case 7: // ST_RESIDENT_STATUS
-                        return CurrentItem.ST_RESIDENT_STATUS;
+                        return Current.ST_RESIDENT_STATUS;
                     case 8: // ST_PERMANENT_BASIS
-                        return CurrentItem.ST_PERMANENT_BASIS;
+                        return Current.ST_PERMANENT_BASIS;
                     case 9: // ST_VISA_SUBCLASS
-                        return CurrentItem.ST_VISA_SUBCLASS;
+                        return Current.ST_VISA_SUBCLASS;
                     case 10: // ST_VISA_STAT_CODE
-                        return CurrentItem.ST_VISA_STAT_CODE;
+                        return Current.ST_VISA_STAT_CODE;
                     case 11: // ST_SGB_FUNDED
-                        return CurrentItem.ST_SGB_FUNDED;
+                        return Current.ST_SGB_FUNDED;
                     case 12: // ST_LIVING_ARR
-                        return CurrentItem.ST_LIVING_ARR;
+                        return Current.ST_LIVING_ARR;
                     case 13: // ST_FULLTIME
-                        return CurrentItem.ST_FULLTIME;
+                        return Current.ST_FULLTIME;
                     case 14: // ST_HOME_LANG
-                        return CurrentItem.ST_HOME_LANG;
+                        return Current.ST_HOME_LANG;
                     case 15: // ST_ED_ALLOW
-                        return CurrentItem.ST_ED_ALLOW;
+                        return Current.ST_ED_ALLOW;
                     case 16: // ST_YOUTH_ALLOW
-                        return CurrentItem.ST_YOUTH_ALLOW;
+                        return Current.ST_YOUTH_ALLOW;
                     case 17: // ST_CAMPUS
-                        return CurrentItem.ST_CAMPUS;
+                        return Current.ST_CAMPUS;
                     case 18: // DF_OCCUP_STATUS_A
-                        return CurrentItem.DF_OCCUP_STATUS_A;
+                        return Current.DF_OCCUP_STATUS_A;
                     case 19: // DF_OCCUP_STATUS_B
-                        return CurrentItem.DF_OCCUP_STATUS_B;
+                        return Current.DF_OCCUP_STATUS_B;
                     case 20: // STPT_SCHL_NUM01
-                        return CurrentItem.STPT_SCHL_NUM01;
+                        return Current.STPT_SCHL_NUM01;
                     case 21: // STPT_SCHL_NUM02
-                        return CurrentItem.STPT_SCHL_NUM02;
+                        return Current.STPT_SCHL_NUM02;
                     case 22: // STPT_SCHL_NUM03
-                        return CurrentItem.STPT_SCHL_NUM03;
+                        return Current.STPT_SCHL_NUM03;
                     case 23: // STPT_SCHL_NUM04
-                        return CurrentItem.STPT_SCHL_NUM04;
+                        return Current.STPT_SCHL_NUM04;
                     case 24: // STPT_SGB_TIME_FRACTION01
-                        return CurrentItem.STPT_SGB_TIME_FRACTION01;
+                        return Current.STPT_SGB_TIME_FRACTION01;
                     case 25: // STPT_SGB_TIME_FRACTION02
-                        return CurrentItem.STPT_SGB_TIME_FRACTION02;
+                        return Current.STPT_SGB_TIME_FRACTION02;
                     case 26: // STPT_SGB_TIME_FRACTION03
-                        return CurrentItem.STPT_SGB_TIME_FRACTION03;
+                        return Current.STPT_SGB_TIME_FRACTION03;
                     case 27: // STPT_SGB_TIME_FRACTION04
-                        return CurrentItem.STPT_SGB_TIME_FRACTION04;
+                        return Current.STPT_SGB_TIME_FRACTION04;
                     case 28: // STPT_ACTUAL_TIME_FRACTION01
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION01;
+                        return Current.STPT_ACTUAL_TIME_FRACTION01;
                     case 29: // STPT_ACTUAL_TIME_FRACTION02
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION02;
+                        return Current.STPT_ACTUAL_TIME_FRACTION02;
                     case 30: // STPT_ACTUAL_TIME_FRACTION03
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION03;
+                        return Current.STPT_ACTUAL_TIME_FRACTION03;
                     case 31: // STPT_ACTUAL_TIME_FRACTION04
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION04;
+                        return Current.STPT_ACTUAL_TIME_FRACTION04;
                     case 32: // STPT_ENROLLED01
-                        return CurrentItem.STPT_ENROLLED01;
+                        return Current.STPT_ENROLLED01;
                     case 33: // STPT_ENROLLED02
-                        return CurrentItem.STPT_ENROLLED02;
+                        return Current.STPT_ENROLLED02;
                     case 34: // STPT_ENROLLED03
-                        return CurrentItem.STPT_ENROLLED03;
+                        return Current.STPT_ENROLLED03;
                     case 35: // STPT_ENROLLED04
-                        return CurrentItem.STPT_ENROLLED04;
+                        return Current.STPT_ENROLLED04;
                     case 36: // ST_NEXT_SCHOOL
-                        return CurrentItem.ST_NEXT_SCHOOL;
+                        return Current.ST_NEXT_SCHOOL;
                     case 37: // ST_VISA_EXPIRY
-                        return CurrentItem.ST_VISA_EXPIRY;
+                        return Current.ST_VISA_EXPIRY;
                     case 38: // ST_PARENTAL_APPROVAL_NOTE
-                        return CurrentItem.ST_PARENTAL_APPROVAL_NOTE;
+                        return Current.ST_PARENTAL_APPROVAL_NOTE;
                     case 39: // ST_LOTE_HOME_CODE
-                        return CurrentItem.ST_LOTE_HOME_CODE;
+                        return Current.ST_LOTE_HOME_CODE;
                     case 40: // DF_LOTE_HOME_CODE_A
-                        return CurrentItem.DF_LOTE_HOME_CODE_A;
+                        return Current.DF_LOTE_HOME_CODE_A;
                     case 41: // DF_LOTE_HOME_CODE_B
-                        return CurrentItem.DF_LOTE_HOME_CODE_B;
+                        return Current.DF_LOTE_HOME_CODE_B;
                     case 42: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 43: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 44: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // ST_ENTRY
-                        return CurrentItem.ST_ENTRY == null;
+                        return Current.ST_ENTRY == null;
                     case 3: // ST_EXIT_DATE
-                        return CurrentItem.ST_EXIT_DATE == null;
+                        return Current.ST_EXIT_DATE == null;
                     case 4: // ST_SCHOOL_YEAR
-                        return CurrentItem.ST_SCHOOL_YEAR == null;
+                        return Current.ST_SCHOOL_YEAR == null;
                     case 5: // ST_HOME_GROUP
-                        return CurrentItem.ST_HOME_GROUP == null;
+                        return Current.ST_HOME_GROUP == null;
                     case 6: // ST_PREVIOUS_SCHOOL
-                        return CurrentItem.ST_PREVIOUS_SCHOOL == null;
+                        return Current.ST_PREVIOUS_SCHOOL == null;
                     case 7: // ST_RESIDENT_STATUS
-                        return CurrentItem.ST_RESIDENT_STATUS == null;
+                        return Current.ST_RESIDENT_STATUS == null;
                     case 8: // ST_PERMANENT_BASIS
-                        return CurrentItem.ST_PERMANENT_BASIS == null;
+                        return Current.ST_PERMANENT_BASIS == null;
                     case 9: // ST_VISA_SUBCLASS
-                        return CurrentItem.ST_VISA_SUBCLASS == null;
+                        return Current.ST_VISA_SUBCLASS == null;
                     case 10: // ST_VISA_STAT_CODE
-                        return CurrentItem.ST_VISA_STAT_CODE == null;
+                        return Current.ST_VISA_STAT_CODE == null;
                     case 11: // ST_SGB_FUNDED
-                        return CurrentItem.ST_SGB_FUNDED == null;
+                        return Current.ST_SGB_FUNDED == null;
                     case 12: // ST_LIVING_ARR
-                        return CurrentItem.ST_LIVING_ARR == null;
+                        return Current.ST_LIVING_ARR == null;
                     case 13: // ST_FULLTIME
-                        return CurrentItem.ST_FULLTIME == null;
+                        return Current.ST_FULLTIME == null;
                     case 14: // ST_HOME_LANG
-                        return CurrentItem.ST_HOME_LANG == null;
+                        return Current.ST_HOME_LANG == null;
                     case 15: // ST_ED_ALLOW
-                        return CurrentItem.ST_ED_ALLOW == null;
+                        return Current.ST_ED_ALLOW == null;
                     case 16: // ST_YOUTH_ALLOW
-                        return CurrentItem.ST_YOUTH_ALLOW == null;
+                        return Current.ST_YOUTH_ALLOW == null;
                     case 17: // ST_CAMPUS
-                        return CurrentItem.ST_CAMPUS == null;
+                        return Current.ST_CAMPUS == null;
                     case 18: // DF_OCCUP_STATUS_A
-                        return CurrentItem.DF_OCCUP_STATUS_A == null;
+                        return Current.DF_OCCUP_STATUS_A == null;
                     case 19: // DF_OCCUP_STATUS_B
-                        return CurrentItem.DF_OCCUP_STATUS_B == null;
+                        return Current.DF_OCCUP_STATUS_B == null;
                     case 20: // STPT_SCHL_NUM01
-                        return CurrentItem.STPT_SCHL_NUM01 == null;
+                        return Current.STPT_SCHL_NUM01 == null;
                     case 21: // STPT_SCHL_NUM02
-                        return CurrentItem.STPT_SCHL_NUM02 == null;
+                        return Current.STPT_SCHL_NUM02 == null;
                     case 22: // STPT_SCHL_NUM03
-                        return CurrentItem.STPT_SCHL_NUM03 == null;
+                        return Current.STPT_SCHL_NUM03 == null;
                     case 23: // STPT_SCHL_NUM04
-                        return CurrentItem.STPT_SCHL_NUM04 == null;
+                        return Current.STPT_SCHL_NUM04 == null;
                     case 24: // STPT_SGB_TIME_FRACTION01
-                        return CurrentItem.STPT_SGB_TIME_FRACTION01 == null;
+                        return Current.STPT_SGB_TIME_FRACTION01 == null;
                     case 25: // STPT_SGB_TIME_FRACTION02
-                        return CurrentItem.STPT_SGB_TIME_FRACTION02 == null;
+                        return Current.STPT_SGB_TIME_FRACTION02 == null;
                     case 26: // STPT_SGB_TIME_FRACTION03
-                        return CurrentItem.STPT_SGB_TIME_FRACTION03 == null;
+                        return Current.STPT_SGB_TIME_FRACTION03 == null;
                     case 27: // STPT_SGB_TIME_FRACTION04
-                        return CurrentItem.STPT_SGB_TIME_FRACTION04 == null;
+                        return Current.STPT_SGB_TIME_FRACTION04 == null;
                     case 28: // STPT_ACTUAL_TIME_FRACTION01
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION01 == null;
+                        return Current.STPT_ACTUAL_TIME_FRACTION01 == null;
                     case 29: // STPT_ACTUAL_TIME_FRACTION02
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION02 == null;
+                        return Current.STPT_ACTUAL_TIME_FRACTION02 == null;
                     case 30: // STPT_ACTUAL_TIME_FRACTION03
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION03 == null;
+                        return Current.STPT_ACTUAL_TIME_FRACTION03 == null;
                     case 31: // STPT_ACTUAL_TIME_FRACTION04
-                        return CurrentItem.STPT_ACTUAL_TIME_FRACTION04 == null;
+                        return Current.STPT_ACTUAL_TIME_FRACTION04 == null;
                     case 32: // STPT_ENROLLED01
-                        return CurrentItem.STPT_ENROLLED01 == null;
+                        return Current.STPT_ENROLLED01 == null;
                     case 33: // STPT_ENROLLED02
-                        return CurrentItem.STPT_ENROLLED02 == null;
+                        return Current.STPT_ENROLLED02 == null;
                     case 34: // STPT_ENROLLED03
-                        return CurrentItem.STPT_ENROLLED03 == null;
+                        return Current.STPT_ENROLLED03 == null;
                     case 35: // STPT_ENROLLED04
-                        return CurrentItem.STPT_ENROLLED04 == null;
+                        return Current.STPT_ENROLLED04 == null;
                     case 36: // ST_NEXT_SCHOOL
-                        return CurrentItem.ST_NEXT_SCHOOL == null;
+                        return Current.ST_NEXT_SCHOOL == null;
                     case 37: // ST_VISA_EXPIRY
-                        return CurrentItem.ST_VISA_EXPIRY == null;
+                        return Current.ST_VISA_EXPIRY == null;
                     case 38: // ST_PARENTAL_APPROVAL_NOTE
-                        return CurrentItem.ST_PARENTAL_APPROVAL_NOTE == null;
+                        return Current.ST_PARENTAL_APPROVAL_NOTE == null;
                     case 39: // ST_LOTE_HOME_CODE
-                        return CurrentItem.ST_LOTE_HOME_CODE == null;
+                        return Current.ST_LOTE_HOME_CODE == null;
                     case 40: // DF_LOTE_HOME_CODE_A
-                        return CurrentItem.DF_LOTE_HOME_CODE_A == null;
+                        return Current.DF_LOTE_HOME_CODE_A == null;
                     case 41: // DF_LOTE_HOME_CODE_B
-                        return CurrentItem.DF_LOTE_HOME_CODE_B == null;
+                        return Current.DF_LOTE_HOME_CODE_B == null;
                     case 42: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 43: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 44: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1391,7 +1523,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1488,35 +1620,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

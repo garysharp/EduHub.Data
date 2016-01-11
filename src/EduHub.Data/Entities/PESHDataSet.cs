@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PESHDataSet : EduHubDataSet<PESH>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PESH"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PESHDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PESH" /> fields for each CSV column header</returns>
-        protected override Action<PESH, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PESH, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PESH, string>[Headers.Count];
 
@@ -164,29 +167,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PESH" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PESH" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PESH" /> items to added or update the base <see cref="PESH" /> items</param>
-        /// <returns>A merged list of <see cref="PESH" /> items</returns>
-        protected override List<PESH> ApplyDeltaItems(List<PESH> Items, List<PESH> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PESH" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PESH" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PESH}"/> of entities</returns>
+        internal override IEnumerable<PESH> ApplyDeltaEntities(IEnumerable<PESH> Entities, List<PESH> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (PESH deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CODE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -287,11 +316,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PESH table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PESH table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PESH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PESH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PESH](
         [TID] int IDENTITY NOT NULL,
@@ -341,238 +374,281 @@ BEGIN
     (
             [CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PESH]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PESH] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PESH]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[PESH] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PESH"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PESH"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PESH> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PESH] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PESH data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PESH data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PESH> GetDataSetDataReader()
         {
-            return new PESHDataReader(Items.Value);
+            return new PESHDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PESH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PESH data set</returns>
+        public override EduHubDataSetDataReader<PESH> GetDataSetDataReader(List<PESH> Entities)
+        {
+            return new PESHDataReader(new EduHubDataSetLoadedReader<PESH>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PESHDataReader : IDataReader, IDataRecord
+        private class PESHDataReader : EduHubDataSetDataReader<PESH>
         {
-            private List<PESH> Items;
-            private int CurrentIndex;
-            private PESH CurrentItem;
-
-            public PESHDataReader(List<PESH> Items)
+            public PESHDataReader(IEduHubDataSetReader<PESH> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 39; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 39; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 2: // TRTYPE
-                        return CurrentItem.TRTYPE;
+                        return Current.TRTYPE;
                     case 3: // SUPER_FUND
-                        return CurrentItem.SUPER_FUND;
+                        return Current.SUPER_FUND;
                     case 4: // SUPER_MEMBER
-                        return CurrentItem.SUPER_MEMBER;
+                        return Current.SUPER_MEMBER;
                     case 5: // LASTPAYDATE
-                        return CurrentItem.LASTPAYDATE;
+                        return Current.LASTPAYDATE;
                     case 6: // AMOUNT_OPBAL
-                        return CurrentItem.AMOUNT_OPBAL;
+                        return Current.AMOUNT_OPBAL;
                     case 7: // AMOUNT_YTD
-                        return CurrentItem.AMOUNT_YTD;
+                        return Current.AMOUNT_YTD;
                     case 8: // AMOUNT_LTD
-                        return CurrentItem.AMOUNT_LTD;
+                        return Current.AMOUNT_LTD;
                     case 9: // SUPER_MTH01
-                        return CurrentItem.SUPER_MTH01;
+                        return Current.SUPER_MTH01;
                     case 10: // SUPER_MTH02
-                        return CurrentItem.SUPER_MTH02;
+                        return Current.SUPER_MTH02;
                     case 11: // SUPER_MTH03
-                        return CurrentItem.SUPER_MTH03;
+                        return Current.SUPER_MTH03;
                     case 12: // SUPER_MTH04
-                        return CurrentItem.SUPER_MTH04;
+                        return Current.SUPER_MTH04;
                     case 13: // SUPER_MTH05
-                        return CurrentItem.SUPER_MTH05;
+                        return Current.SUPER_MTH05;
                     case 14: // SUPER_MTH06
-                        return CurrentItem.SUPER_MTH06;
+                        return Current.SUPER_MTH06;
                     case 15: // SUPER_MTH07
-                        return CurrentItem.SUPER_MTH07;
+                        return Current.SUPER_MTH07;
                     case 16: // SUPER_MTH08
-                        return CurrentItem.SUPER_MTH08;
+                        return Current.SUPER_MTH08;
                     case 17: // SUPER_MTH09
-                        return CurrentItem.SUPER_MTH09;
+                        return Current.SUPER_MTH09;
                     case 18: // SUPER_MTH10
-                        return CurrentItem.SUPER_MTH10;
+                        return Current.SUPER_MTH10;
                     case 19: // SUPER_MTH11
-                        return CurrentItem.SUPER_MTH11;
+                        return Current.SUPER_MTH11;
                     case 20: // SUPER_MTH12
-                        return CurrentItem.SUPER_MTH12;
+                        return Current.SUPER_MTH12;
                     case 21: // SUPER_PROV01
-                        return CurrentItem.SUPER_PROV01;
+                        return Current.SUPER_PROV01;
                     case 22: // SUPER_PROV02
-                        return CurrentItem.SUPER_PROV02;
+                        return Current.SUPER_PROV02;
                     case 23: // SUPER_PROV03
-                        return CurrentItem.SUPER_PROV03;
+                        return Current.SUPER_PROV03;
                     case 24: // SUPER_PROV04
-                        return CurrentItem.SUPER_PROV04;
+                        return Current.SUPER_PROV04;
                     case 25: // SUPER_PROV05
-                        return CurrentItem.SUPER_PROV05;
+                        return Current.SUPER_PROV05;
                     case 26: // SUPER_PROV06
-                        return CurrentItem.SUPER_PROV06;
+                        return Current.SUPER_PROV06;
                     case 27: // SUPER_PROV07
-                        return CurrentItem.SUPER_PROV07;
+                        return Current.SUPER_PROV07;
                     case 28: // SUPER_PROV08
-                        return CurrentItem.SUPER_PROV08;
+                        return Current.SUPER_PROV08;
                     case 29: // SUPER_PROV09
-                        return CurrentItem.SUPER_PROV09;
+                        return Current.SUPER_PROV09;
                     case 30: // SUPER_PROV10
-                        return CurrentItem.SUPER_PROV10;
+                        return Current.SUPER_PROV10;
                     case 31: // SUPER_PROV11
-                        return CurrentItem.SUPER_PROV11;
+                        return Current.SUPER_PROV11;
                     case 32: // SUPER_PROV12
-                        return CurrentItem.SUPER_PROV12;
+                        return Current.SUPER_PROV12;
                     case 33: // SUPER_PAID_YTD
-                        return CurrentItem.SUPER_PAID_YTD;
+                        return Current.SUPER_PAID_YTD;
                     case 34: // SUPER_PAID_TODATE
-                        return CurrentItem.SUPER_PAID_TODATE;
+                        return Current.SUPER_PAID_TODATE;
                     case 35: // SUPER_UNPAID_LYR
-                        return CurrentItem.SUPER_UNPAID_LYR;
+                        return Current.SUPER_UNPAID_LYR;
                     case 36: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 37: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 38: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // TRTYPE
-                        return CurrentItem.TRTYPE == null;
+                        return Current.TRTYPE == null;
                     case 3: // SUPER_FUND
-                        return CurrentItem.SUPER_FUND == null;
+                        return Current.SUPER_FUND == null;
                     case 4: // SUPER_MEMBER
-                        return CurrentItem.SUPER_MEMBER == null;
+                        return Current.SUPER_MEMBER == null;
                     case 5: // LASTPAYDATE
-                        return CurrentItem.LASTPAYDATE == null;
+                        return Current.LASTPAYDATE == null;
                     case 6: // AMOUNT_OPBAL
-                        return CurrentItem.AMOUNT_OPBAL == null;
+                        return Current.AMOUNT_OPBAL == null;
                     case 7: // AMOUNT_YTD
-                        return CurrentItem.AMOUNT_YTD == null;
+                        return Current.AMOUNT_YTD == null;
                     case 8: // AMOUNT_LTD
-                        return CurrentItem.AMOUNT_LTD == null;
+                        return Current.AMOUNT_LTD == null;
                     case 9: // SUPER_MTH01
-                        return CurrentItem.SUPER_MTH01 == null;
+                        return Current.SUPER_MTH01 == null;
                     case 10: // SUPER_MTH02
-                        return CurrentItem.SUPER_MTH02 == null;
+                        return Current.SUPER_MTH02 == null;
                     case 11: // SUPER_MTH03
-                        return CurrentItem.SUPER_MTH03 == null;
+                        return Current.SUPER_MTH03 == null;
                     case 12: // SUPER_MTH04
-                        return CurrentItem.SUPER_MTH04 == null;
+                        return Current.SUPER_MTH04 == null;
                     case 13: // SUPER_MTH05
-                        return CurrentItem.SUPER_MTH05 == null;
+                        return Current.SUPER_MTH05 == null;
                     case 14: // SUPER_MTH06
-                        return CurrentItem.SUPER_MTH06 == null;
+                        return Current.SUPER_MTH06 == null;
                     case 15: // SUPER_MTH07
-                        return CurrentItem.SUPER_MTH07 == null;
+                        return Current.SUPER_MTH07 == null;
                     case 16: // SUPER_MTH08
-                        return CurrentItem.SUPER_MTH08 == null;
+                        return Current.SUPER_MTH08 == null;
                     case 17: // SUPER_MTH09
-                        return CurrentItem.SUPER_MTH09 == null;
+                        return Current.SUPER_MTH09 == null;
                     case 18: // SUPER_MTH10
-                        return CurrentItem.SUPER_MTH10 == null;
+                        return Current.SUPER_MTH10 == null;
                     case 19: // SUPER_MTH11
-                        return CurrentItem.SUPER_MTH11 == null;
+                        return Current.SUPER_MTH11 == null;
                     case 20: // SUPER_MTH12
-                        return CurrentItem.SUPER_MTH12 == null;
+                        return Current.SUPER_MTH12 == null;
                     case 21: // SUPER_PROV01
-                        return CurrentItem.SUPER_PROV01 == null;
+                        return Current.SUPER_PROV01 == null;
                     case 22: // SUPER_PROV02
-                        return CurrentItem.SUPER_PROV02 == null;
+                        return Current.SUPER_PROV02 == null;
                     case 23: // SUPER_PROV03
-                        return CurrentItem.SUPER_PROV03 == null;
+                        return Current.SUPER_PROV03 == null;
                     case 24: // SUPER_PROV04
-                        return CurrentItem.SUPER_PROV04 == null;
+                        return Current.SUPER_PROV04 == null;
                     case 25: // SUPER_PROV05
-                        return CurrentItem.SUPER_PROV05 == null;
+                        return Current.SUPER_PROV05 == null;
                     case 26: // SUPER_PROV06
-                        return CurrentItem.SUPER_PROV06 == null;
+                        return Current.SUPER_PROV06 == null;
                     case 27: // SUPER_PROV07
-                        return CurrentItem.SUPER_PROV07 == null;
+                        return Current.SUPER_PROV07 == null;
                     case 28: // SUPER_PROV08
-                        return CurrentItem.SUPER_PROV08 == null;
+                        return Current.SUPER_PROV08 == null;
                     case 29: // SUPER_PROV09
-                        return CurrentItem.SUPER_PROV09 == null;
+                        return Current.SUPER_PROV09 == null;
                     case 30: // SUPER_PROV10
-                        return CurrentItem.SUPER_PROV10 == null;
+                        return Current.SUPER_PROV10 == null;
                     case 31: // SUPER_PROV11
-                        return CurrentItem.SUPER_PROV11 == null;
+                        return Current.SUPER_PROV11 == null;
                     case 32: // SUPER_PROV12
-                        return CurrentItem.SUPER_PROV12 == null;
+                        return Current.SUPER_PROV12 == null;
                     case 33: // SUPER_PAID_YTD
-                        return CurrentItem.SUPER_PAID_YTD == null;
+                        return Current.SUPER_PAID_YTD == null;
                     case 34: // SUPER_PAID_TODATE
-                        return CurrentItem.SUPER_PAID_TODATE == null;
+                        return Current.SUPER_PAID_TODATE == null;
                     case 35: // SUPER_UNPAID_LYR
-                        return CurrentItem.SUPER_UNPAID_LYR == null;
+                        return Current.SUPER_UNPAID_LYR == null;
                     case 36: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 37: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 38: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -659,7 +735,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -744,35 +820,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

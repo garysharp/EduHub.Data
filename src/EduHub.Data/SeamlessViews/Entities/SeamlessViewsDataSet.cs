@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EduHub.Data.SeamlessViews.Entities
 {
@@ -51,7 +52,7 @@ namespace EduHub.Data.SeamlessViews.Entities
 
             if (missingDataSet != null)
             {
-                throw new SeamlessViewsDataSetNotFoundException(Name, missingDataSet.Name, missingDataSet.Filename);
+                throw new SeamlessViewsDataSetNotFoundException(Name, missingDataSet.Name, missingDataSet.FilenameBase);
             }
         }
 
@@ -80,20 +81,28 @@ namespace EduHub.Data.SeamlessViews.Entities
         }
 
         /// <inheritdoc />
+        public Task CreateInSqlServerAsync(string Server, string Database)
+        {
+            return CreateInSqlServerAsync(Server, Database, Database);
+        }
+
+        /// <inheritdoc />
         public void CreateInSqlServer(string Server, string Database, string ParentDatabase)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                IntegratedSecurity = true
-            };
-
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
             {
                 CreateInSqlServer(connection, ParentDatabase);
+            }
+        }
+
+        /// <inheritdoc />
+        public Task CreateInSqlServerAsync(string Server, string Database, string ParentDatabase)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
+            {
+                return CreateInSqlServerAsync(connection, ParentDatabase);
             }
         }
 
@@ -104,21 +113,28 @@ namespace EduHub.Data.SeamlessViews.Entities
         }
 
         /// <inheritdoc />
+        public Task CreateInSqlServerAsync(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            return CreateInSqlServerAsync(Server, Database, Database, SqlUsername, SqlPassword);
+        }
+
+        /// <inheritdoc />
         public void CreateInSqlServer(string Server, string Database, string ParentDatabase, string SqlUsername, string SqlPassword)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                UserID = SqlUsername,
-                Password = SqlPassword
-            };
-
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
             {
                 CreateInSqlServer(connection, ParentDatabase);
+            }
+        }
+
+        /// <inheritdoc />
+        public Task CreateInSqlServerAsync(string Server, string Database, string ParentDatabase, string SqlUsername, string SqlPassword)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
+            {
+                return CreateInSqlServerAsync(connection, ParentDatabase);
             }
         }
 
@@ -129,6 +145,12 @@ namespace EduHub.Data.SeamlessViews.Entities
         }
 
         /// <inheritdoc />
+        public Task CreateInSqlServerAsync(SqlConnection Connection)
+        {
+            return CreateInSqlServerAsync(Connection, Connection.Database);
+        }
+
+        /// <inheritdoc />
         public void CreateInSqlServer(SqlConnection Connection, string ParentDatabase)
         {
             // Open the SQL Connection
@@ -136,11 +158,27 @@ namespace EduHub.Data.SeamlessViews.Entities
             {
                 Connection.Open();
             }
-            
+
             // Create view (if it doesn't exist)
             using (var command = new SqlCommand(GetCreateViewSql(ParentDatabase), Connection))
             {
                 command.ExecuteNonQuery();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task CreateInSqlServerAsync(SqlConnection Connection, string ParentDatabase)
+        {
+            // Open the SQL Connection
+            if (Connection.State != ConnectionState.Open)
+            {
+                await Connection.OpenAsync();
+            }
+
+            // Create view (if it doesn't exist)
+            using (var command = new SqlCommand(GetCreateViewSql(ParentDatabase), Connection))
+            {
+                await command.ExecuteNonQueryAsync();
             }
         }
 

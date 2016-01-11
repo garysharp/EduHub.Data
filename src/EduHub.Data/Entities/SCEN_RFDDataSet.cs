@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_RFDDataSet : EduHubDataSet<SCEN_RFD>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SCEN_RFD"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SCEN_RFDDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCEN_RFD" /> fields for each CSV column header</returns>
-        protected override Action<SCEN_RFD, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SCEN_RFD, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCEN_RFD, string>[Headers.Count];
 
@@ -64,29 +67,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SCEN_RFD" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SCEN_RFD" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SCEN_RFD" /> items to added or update the base <see cref="SCEN_RFD" /> items</param>
-        /// <returns>A merged list of <see cref="SCEN_RFD" /> items</returns>
-        protected override List<SCEN_RFD> ApplyDeltaItems(List<SCEN_RFD> Items, List<SCEN_RFD> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SCEN_RFD" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SCEN_RFD" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SCEN_RFD}"/> of entities</returns>
+        internal override IEnumerable<SCEN_RFD> ApplyDeltaEntities(IEnumerable<SCEN_RFD> Entities, List<SCEN_RFD> DeltaEntities)
         {
-            Dictionary<int, int> Index_ID = Items.ToIndexDictionary(i => i.ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_ID = new HashSet<int>(DeltaEntities.Select(i => i.ID));
 
-            foreach (SCEN_RFD deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_ID.TryGetValue(deltaItem.ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_ID.Remove(entity.ID);
+                            
+                            if (entity.ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -144,11 +173,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SCEN_RFD table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SCEN_RFD table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_RFD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_RFD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SCEN_RFD](
         [ID] int IDENTITY NOT NULL,
@@ -161,108 +194,139 @@ BEGIN
             [ID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_RFDDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_RFDDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SCEN_RFD"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SCEN_RFD"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SCEN_RFD> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_ID.Add(entity.ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SCEN_RFD] WHERE");
+
+
+            // Index_ID
+            builder.Append("[ID] IN (");
+            for (int index = 0; index < Index_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // ID
+                var parameterID = $"@p{parameterIndex++}";
+                builder.Append(parameterID);
+                command.Parameters.Add(parameterID, SqlDbType.Int).Value = Index_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SCEN_RFD data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SCEN_RFD data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SCEN_RFD> GetDataSetDataReader()
         {
-            return new SCEN_RFDDataReader(Items.Value);
+            return new SCEN_RFDDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCEN_RFD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCEN_RFD data set</returns>
+        public override EduHubDataSetDataReader<SCEN_RFD> GetDataSetDataReader(List<SCEN_RFD> Entities)
+        {
+            return new SCEN_RFDDataReader(new EduHubDataSetLoadedReader<SCEN_RFD>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SCEN_RFDDataReader : IDataReader, IDataRecord
+        private class SCEN_RFDDataReader : EduHubDataSetDataReader<SCEN_RFD>
         {
-            private List<SCEN_RFD> Items;
-            private int CurrentIndex;
-            private SCEN_RFD CurrentItem;
-
-            public SCEN_RFDDataReader(List<SCEN_RFD> Items)
+            public SCEN_RFDDataReader(IEduHubDataSetReader<SCEN_RFD> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 6; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 6; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // ID
-                        return CurrentItem.ID;
+                        return Current.ID;
                     case 1: // COLUMNNAME
-                        return CurrentItem.COLUMNNAME;
+                        return Current.COLUMNNAME;
                     case 2: // COLUMNDISPLAYNAME
-                        return CurrentItem.COLUMNDISPLAYNAME;
+                        return Current.COLUMNDISPLAYNAME;
                     case 3: // RFD_TYPE
-                        return CurrentItem.RFD_TYPE;
+                        return Current.RFD_TYPE;
                     case 4: // TYPEORDER
-                        return CurrentItem.TYPEORDER;
+                        return Current.TYPEORDER;
                     case 5: // DEFAULTCOLUMNDISPLAYORDER
-                        return CurrentItem.DEFAULTCOLUMNDISPLAYORDER;
+                        return Current.DEFAULTCOLUMNDISPLAYORDER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // COLUMNNAME
-                        return CurrentItem.COLUMNNAME == null;
+                        return Current.COLUMNNAME == null;
                     case 2: // COLUMNDISPLAYNAME
-                        return CurrentItem.COLUMNDISPLAYNAME == null;
+                        return Current.COLUMNDISPLAYNAME == null;
                     case 3: // RFD_TYPE
-                        return CurrentItem.RFD_TYPE == null;
+                        return Current.RFD_TYPE == null;
                     case 4: // TYPEORDER
-                        return CurrentItem.TYPEORDER == null;
+                        return Current.TYPEORDER == null;
                     case 5: // DEFAULTCOLUMNDISPLAYORDER
-                        return CurrentItem.DEFAULTCOLUMNDISPLAYORDER == null;
+                        return Current.DEFAULTCOLUMNDISPLAYORDER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -283,7 +347,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -302,35 +366,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

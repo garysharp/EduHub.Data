@@ -1,16 +1,19 @@
-﻿namespace EduHub.Data.Entities
+﻿using System;
+
+namespace EduHub.Data.Entities
 {
     /// <summary>
     /// Base object for EduHub Entities
     /// </summary>
-    public abstract class EduHubEntity
+    public abstract class EduHubEntity : IEduHubEntity
     {
         internal EduHubEntity()
         { }
 
-        /// <summary>
-        /// <see cref="EduHubContext"/> this entity belongs to
-        /// </summary>
+        /// <inheritdoc />
         public EduHubContext Context { get; internal set; }
+
+        /// <inheritdoc />
+        public abstract DateTime? EntityLastModified { get; }
     }
 }

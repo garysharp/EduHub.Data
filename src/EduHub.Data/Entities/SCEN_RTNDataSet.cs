@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCEN_RTNDataSet : EduHubDataSet<SCEN_RTN>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SCEN_RTN"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SCEN_RTNDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCEN_RTN" /> fields for each CSV column header</returns>
-        protected override Action<SCEN_RTN, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SCEN_RTN, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCEN_RTN, string>[Headers.Count];
 
@@ -181,29 +184,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SCEN_RTN" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SCEN_RTN" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SCEN_RTN" /> items to added or update the base <see cref="SCEN_RTN" /> items</param>
-        /// <returns>A merged list of <see cref="SCEN_RTN" /> items</returns>
-        protected override List<SCEN_RTN> ApplyDeltaItems(List<SCEN_RTN> Items, List<SCEN_RTN> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SCEN_RTN" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SCEN_RTN" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SCEN_RTN}"/> of entities</returns>
+        internal override IEnumerable<SCEN_RTN> ApplyDeltaEntities(IEnumerable<SCEN_RTN> Entities, List<SCEN_RTN> DeltaEntities)
         {
-            Dictionary<int, int> Index_ID = Items.ToIndexDictionary(i => i.ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_ID = new HashSet<int>(DeltaEntities.Select(i => i.ID));
 
-            foreach (SCEN_RTN deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_ID.TryGetValue(deltaItem.ID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_ID.Remove(entity.ID);
+                            
+                            if (entity.ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -261,11 +290,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SCEN_RTN table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SCEN_RTN table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_RTN]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCEN_RTN]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SCEN_RTN](
         [ID] int IDENTITY NOT NULL,
@@ -317,264 +350,295 @@ BEGIN
             [ID] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_RTNDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SCEN_RTNDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SCEN_RTN"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SCEN_RTN"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SCEN_RTN> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_ID.Add(entity.ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SCEN_RTN] WHERE");
+
+
+            // Index_ID
+            builder.Append("[ID] IN (");
+            for (int index = 0; index < Index_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // ID
+                var parameterID = $"@p{parameterIndex++}";
+                builder.Append(parameterID);
+                command.Parameters.Add(parameterID, SqlDbType.Int).Value = Index_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SCEN_RTN data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SCEN_RTN data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SCEN_RTN> GetDataSetDataReader()
         {
-            return new SCEN_RTNDataReader(Items.Value);
+            return new SCEN_RTNDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCEN_RTN data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCEN_RTN data set</returns>
+        public override EduHubDataSetDataReader<SCEN_RTN> GetDataSetDataReader(List<SCEN_RTN> Entities)
+        {
+            return new SCEN_RTNDataReader(new EduHubDataSetLoadedReader<SCEN_RTN>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SCEN_RTNDataReader : IDataReader, IDataRecord
+        private class SCEN_RTNDataReader : EduHubDataSetDataReader<SCEN_RTN>
         {
-            private List<SCEN_RTN> Items;
-            private int CurrentIndex;
-            private SCEN_RTN CurrentItem;
-
-            public SCEN_RTNDataReader(List<SCEN_RTN> Items)
+            public SCEN_RTNDataReader(IEduHubDataSetReader<SCEN_RTN> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 45; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 45; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // ID
-                        return CurrentItem.ID;
+                        return Current.ID;
                     case 1: // RN_SCHOOLNUMBER
-                        return CurrentItem.RN_SCHOOLNUMBER;
+                        return Current.RN_SCHOOLNUMBER;
                     case 2: // RN_SCHOOLNAME
-                        return CurrentItem.RN_SCHOOLNAME;
+                        return Current.RN_SCHOOLNAME;
                     case 3: // RN_SCHOOLTYPE
-                        return CurrentItem.RN_SCHOOLTYPE;
+                        return Current.RN_SCHOOLTYPE;
                     case 4: // RN_MONTH
-                        return CurrentItem.RN_MONTH;
+                        return Current.RN_MONTH;
                     case 5: // RN_YEAR
-                        return CurrentItem.RN_YEAR;
+                        return Current.RN_YEAR;
                     case 6: // RN_STATUS
-                        return CurrentItem.RN_STATUS;
+                        return Current.RN_STATUS;
                     case 7: // RN_CREATED
-                        return CurrentItem.RN_CREATED;
+                        return Current.RN_CREATED;
                     case 8: // RN_CREATEUSER
-                        return CurrentItem.RN_CREATEUSER;
+                        return Current.RN_CREATEUSER;
                     case 9: // RN_LUPDATED
-                        return CurrentItem.RN_LUPDATED;
+                        return Current.RN_LUPDATED;
                     case 10: // RN_LUPDATEUSER
-                        return CurrentItem.RN_LUPDATEUSER;
+                        return Current.RN_LUPDATEUSER;
                     case 11: // SD_LREFRESHED
-                        return CurrentItem.SD_LREFRESHED;
+                        return Current.SD_LREFRESHED;
                     case 12: // SD_LVALIDATED
-                        return CurrentItem.SD_LVALIDATED;
+                        return Current.SD_LVALIDATED;
                     case 13: // SD_SRPFUNDEDFTE
-                        return CurrentItem.SD_SRPFUNDEDFTE;
+                        return Current.SD_SRPFUNDEDFTE;
                     case 14: // SD_NOTSRPFUNDEDFTE
-                        return CurrentItem.SD_NOTSRPFUNDEDFTE;
+                        return Current.SD_NOTSRPFUNDEDFTE;
                     case 15: // SD_TOTALFTE
-                        return CurrentItem.SD_TOTALFTE;
+                        return Current.SD_TOTALFTE;
                     case 16: // SD_INCLUDEDHC
-                        return CurrentItem.SD_INCLUDEDHC;
+                        return Current.SD_INCLUDEDHC;
                     case 17: // SD_SYSTEMEXCLUDEDHC
-                        return CurrentItem.SD_SYSTEMEXCLUDEDHC;
+                        return Current.SD_SYSTEMEXCLUDEDHC;
                     case 18: // SD_MANUALLYEXCLUDEDHC
-                        return CurrentItem.SD_MANUALLYEXCLUDEDHC;
+                        return Current.SD_MANUALLYEXCLUDEDHC;
                     case 19: // SD_TOTALHC
-                        return CurrentItem.SD_TOTALHC;
+                        return Current.SD_TOTALHC;
                     case 20: // SD_ERRORCOUNT
-                        return CurrentItem.SD_ERRORCOUNT;
+                        return Current.SD_ERRORCOUNT;
                     case 21: // SD_UNPROCESSEDWARNINGCOUNT
-                        return CurrentItem.SD_UNPROCESSEDWARNINGCOUNT;
+                        return Current.SD_UNPROCESSEDWARNINGCOUNT;
                     case 22: // SD_ACKNOWLEDGEDWARNINGCOUNT
-                        return CurrentItem.SD_ACKNOWLEDGEDWARNINGCOUNT;
+                        return Current.SD_ACKNOWLEDGEDWARNINGCOUNT;
                     case 23: // CSD_LHMGREFRESHED
-                        return CurrentItem.CSD_LHMGREFRESHED;
+                        return Current.CSD_LHMGREFRESHED;
                     case 24: // CSD_LUPDATED
-                        return CurrentItem.CSD_LUPDATED;
+                        return Current.CSD_LUPDATED;
                     case 25: // CSD_LUPDATEUSER
-                        return CurrentItem.CSD_LUPDATEUSER;
+                        return Current.CSD_LUPDATEUSER;
                     case 26: // CSD_LVALIDATED
-                        return CurrentItem.CSD_LVALIDATED;
+                        return Current.CSD_LVALIDATED;
                     case 27: // CSD_CLASSCOUNT
-                        return CurrentItem.CSD_CLASSCOUNT;
+                        return Current.CSD_CLASSCOUNT;
                     case 28: // CSD_STUDENTHC
-                        return CurrentItem.CSD_STUDENTHC;
+                        return Current.CSD_STUDENTHC;
                     case 29: // CSD_TEACHERFTE
-                        return CurrentItem.CSD_TEACHERFTE;
+                        return Current.CSD_TEACHERFTE;
                     case 30: // CSD_ERRORCOUNT
-                        return CurrentItem.CSD_ERRORCOUNT;
+                        return Current.CSD_ERRORCOUNT;
                     case 31: // CSD_UNPROCESSEDWARNINGCOUNT
-                        return CurrentItem.CSD_UNPROCESSEDWARNINGCOUNT;
+                        return Current.CSD_UNPROCESSEDWARNINGCOUNT;
                     case 32: // CSD_ACKNOWLEDGEDWARNINGCOUNT
-                        return CurrentItem.CSD_ACKNOWLEDGEDWARNINGCOUNT;
+                        return Current.CSD_ACKNOWLEDGEDWARNINGCOUNT;
                     case 33: // LD_CONTACTNAME
-                        return CurrentItem.LD_CONTACTNAME;
+                        return Current.LD_CONTACTNAME;
                     case 34: // LD_CONTACTPHONE
-                        return CurrentItem.LD_CONTACTPHONE;
+                        return Current.LD_CONTACTPHONE;
                     case 35: // LD_PRINCIPALNAME
-                        return CurrentItem.LD_PRINCIPALNAME;
+                        return Current.LD_PRINCIPALNAME;
                     case 36: // LD_PRINCIPALPHONE
-                        return CurrentItem.LD_PRINCIPALPHONE;
+                        return Current.LD_PRINCIPALPHONE;
                     case 37: // LD_COMMENTS
-                        return CurrentItem.LD_COMMENTS;
+                        return Current.LD_COMMENTS;
                     case 38: // LD_USERCERTIFICATION
-                        return CurrentItem.LD_USERCERTIFICATION;
+                        return Current.LD_USERCERTIFICATION;
                     case 39: // LD_FINALREPORTLOCATION
-                        return CurrentItem.LD_FINALREPORTLOCATION;
+                        return Current.LD_FINALREPORTLOCATION;
                     case 40: // LD_STATUS
-                        return CurrentItem.LD_STATUS;
+                        return Current.LD_STATUS;
                     case 41: // LD_CREATED
-                        return CurrentItem.LD_CREATED;
+                        return Current.LD_CREATED;
                     case 42: // LD_LODGED
-                        return CurrentItem.LD_LODGED;
+                        return Current.LD_LODGED;
                     case 43: // LD_LUPDATEUSER
-                        return CurrentItem.LD_LUPDATEUSER;
+                        return Current.LD_LUPDATEUSER;
                     case 44: // LD_LUPDATED
-                        return CurrentItem.LD_LUPDATED;
+                        return Current.LD_LUPDATED;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // RN_SCHOOLNUMBER
-                        return CurrentItem.RN_SCHOOLNUMBER == null;
+                        return Current.RN_SCHOOLNUMBER == null;
                     case 2: // RN_SCHOOLNAME
-                        return CurrentItem.RN_SCHOOLNAME == null;
+                        return Current.RN_SCHOOLNAME == null;
                     case 3: // RN_SCHOOLTYPE
-                        return CurrentItem.RN_SCHOOLTYPE == null;
+                        return Current.RN_SCHOOLTYPE == null;
                     case 4: // RN_MONTH
-                        return CurrentItem.RN_MONTH == null;
+                        return Current.RN_MONTH == null;
                     case 5: // RN_YEAR
-                        return CurrentItem.RN_YEAR == null;
+                        return Current.RN_YEAR == null;
                     case 6: // RN_STATUS
-                        return CurrentItem.RN_STATUS == null;
+                        return Current.RN_STATUS == null;
                     case 7: // RN_CREATED
-                        return CurrentItem.RN_CREATED == null;
+                        return Current.RN_CREATED == null;
                     case 8: // RN_CREATEUSER
-                        return CurrentItem.RN_CREATEUSER == null;
+                        return Current.RN_CREATEUSER == null;
                     case 9: // RN_LUPDATED
-                        return CurrentItem.RN_LUPDATED == null;
+                        return Current.RN_LUPDATED == null;
                     case 10: // RN_LUPDATEUSER
-                        return CurrentItem.RN_LUPDATEUSER == null;
+                        return Current.RN_LUPDATEUSER == null;
                     case 11: // SD_LREFRESHED
-                        return CurrentItem.SD_LREFRESHED == null;
+                        return Current.SD_LREFRESHED == null;
                     case 12: // SD_LVALIDATED
-                        return CurrentItem.SD_LVALIDATED == null;
+                        return Current.SD_LVALIDATED == null;
                     case 13: // SD_SRPFUNDEDFTE
-                        return CurrentItem.SD_SRPFUNDEDFTE == null;
+                        return Current.SD_SRPFUNDEDFTE == null;
                     case 14: // SD_NOTSRPFUNDEDFTE
-                        return CurrentItem.SD_NOTSRPFUNDEDFTE == null;
+                        return Current.SD_NOTSRPFUNDEDFTE == null;
                     case 15: // SD_TOTALFTE
-                        return CurrentItem.SD_TOTALFTE == null;
+                        return Current.SD_TOTALFTE == null;
                     case 16: // SD_INCLUDEDHC
-                        return CurrentItem.SD_INCLUDEDHC == null;
+                        return Current.SD_INCLUDEDHC == null;
                     case 17: // SD_SYSTEMEXCLUDEDHC
-                        return CurrentItem.SD_SYSTEMEXCLUDEDHC == null;
+                        return Current.SD_SYSTEMEXCLUDEDHC == null;
                     case 18: // SD_MANUALLYEXCLUDEDHC
-                        return CurrentItem.SD_MANUALLYEXCLUDEDHC == null;
+                        return Current.SD_MANUALLYEXCLUDEDHC == null;
                     case 19: // SD_TOTALHC
-                        return CurrentItem.SD_TOTALHC == null;
+                        return Current.SD_TOTALHC == null;
                     case 20: // SD_ERRORCOUNT
-                        return CurrentItem.SD_ERRORCOUNT == null;
+                        return Current.SD_ERRORCOUNT == null;
                     case 21: // SD_UNPROCESSEDWARNINGCOUNT
-                        return CurrentItem.SD_UNPROCESSEDWARNINGCOUNT == null;
+                        return Current.SD_UNPROCESSEDWARNINGCOUNT == null;
                     case 22: // SD_ACKNOWLEDGEDWARNINGCOUNT
-                        return CurrentItem.SD_ACKNOWLEDGEDWARNINGCOUNT == null;
+                        return Current.SD_ACKNOWLEDGEDWARNINGCOUNT == null;
                     case 23: // CSD_LHMGREFRESHED
-                        return CurrentItem.CSD_LHMGREFRESHED == null;
+                        return Current.CSD_LHMGREFRESHED == null;
                     case 24: // CSD_LUPDATED
-                        return CurrentItem.CSD_LUPDATED == null;
+                        return Current.CSD_LUPDATED == null;
                     case 25: // CSD_LUPDATEUSER
-                        return CurrentItem.CSD_LUPDATEUSER == null;
+                        return Current.CSD_LUPDATEUSER == null;
                     case 26: // CSD_LVALIDATED
-                        return CurrentItem.CSD_LVALIDATED == null;
+                        return Current.CSD_LVALIDATED == null;
                     case 27: // CSD_CLASSCOUNT
-                        return CurrentItem.CSD_CLASSCOUNT == null;
+                        return Current.CSD_CLASSCOUNT == null;
                     case 28: // CSD_STUDENTHC
-                        return CurrentItem.CSD_STUDENTHC == null;
+                        return Current.CSD_STUDENTHC == null;
                     case 29: // CSD_TEACHERFTE
-                        return CurrentItem.CSD_TEACHERFTE == null;
+                        return Current.CSD_TEACHERFTE == null;
                     case 30: // CSD_ERRORCOUNT
-                        return CurrentItem.CSD_ERRORCOUNT == null;
+                        return Current.CSD_ERRORCOUNT == null;
                     case 31: // CSD_UNPROCESSEDWARNINGCOUNT
-                        return CurrentItem.CSD_UNPROCESSEDWARNINGCOUNT == null;
+                        return Current.CSD_UNPROCESSEDWARNINGCOUNT == null;
                     case 32: // CSD_ACKNOWLEDGEDWARNINGCOUNT
-                        return CurrentItem.CSD_ACKNOWLEDGEDWARNINGCOUNT == null;
+                        return Current.CSD_ACKNOWLEDGEDWARNINGCOUNT == null;
                     case 33: // LD_CONTACTNAME
-                        return CurrentItem.LD_CONTACTNAME == null;
+                        return Current.LD_CONTACTNAME == null;
                     case 34: // LD_CONTACTPHONE
-                        return CurrentItem.LD_CONTACTPHONE == null;
+                        return Current.LD_CONTACTPHONE == null;
                     case 35: // LD_PRINCIPALNAME
-                        return CurrentItem.LD_PRINCIPALNAME == null;
+                        return Current.LD_PRINCIPALNAME == null;
                     case 36: // LD_PRINCIPALPHONE
-                        return CurrentItem.LD_PRINCIPALPHONE == null;
+                        return Current.LD_PRINCIPALPHONE == null;
                     case 37: // LD_COMMENTS
-                        return CurrentItem.LD_COMMENTS == null;
+                        return Current.LD_COMMENTS == null;
                     case 38: // LD_USERCERTIFICATION
-                        return CurrentItem.LD_USERCERTIFICATION == null;
+                        return Current.LD_USERCERTIFICATION == null;
                     case 39: // LD_FINALREPORTLOCATION
-                        return CurrentItem.LD_FINALREPORTLOCATION == null;
+                        return Current.LD_FINALREPORTLOCATION == null;
                     case 40: // LD_STATUS
-                        return CurrentItem.LD_STATUS == null;
+                        return Current.LD_STATUS == null;
                     case 41: // LD_CREATED
-                        return CurrentItem.LD_CREATED == null;
+                        return Current.LD_CREATED == null;
                     case 42: // LD_LODGED
-                        return CurrentItem.LD_LODGED == null;
+                        return Current.LD_LODGED == null;
                     case 43: // LD_LUPDATEUSER
-                        return CurrentItem.LD_LUPDATEUSER == null;
+                        return Current.LD_LUPDATEUSER == null;
                     case 44: // LD_LUPDATED
-                        return CurrentItem.LD_LUPDATED == null;
+                        return Current.LD_LUPDATED == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -673,7 +737,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -770,35 +834,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

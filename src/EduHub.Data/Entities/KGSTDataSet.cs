@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KGSTDataSet : EduHubDataSet<KGST>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KGST"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KGSTDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KGST" /> fields for each CSV column header</returns>
-        protected override Action<KGST, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KGST, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KGST, string>[Headers.Count];
 
@@ -80,29 +83,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KGST" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KGST" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KGST" /> items to added or update the base <see cref="KGST" /> items</param>
-        /// <returns>A merged list of <see cref="KGST" /> items</returns>
-        protected override List<KGST> ApplyDeltaItems(List<KGST> Items, List<KGST> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KGST" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KGST" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KGST}"/> of entities</returns>
+        internal override IEnumerable<KGST> ApplyDeltaEntities(IEnumerable<KGST> Entities, List<KGST> DeltaEntities)
         {
-            Dictionary<string, int> Index_KGSTKEY = Items.ToIndexDictionary(i => i.KGSTKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_KGSTKEY = new HashSet<string>(DeltaEntities.Select(i => i.KGSTKEY));
 
-            foreach (KGST deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KGSTKEY.TryGetValue(deltaItem.KGSTKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KGSTKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KGSTKEY.Remove(entity.KGSTKEY);
+                            
+                            if (entity.KGSTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KGSTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -203,11 +232,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KGST table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KGST table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KGST](
         [KGSTKEY] varchar(4) NOT NULL,
@@ -229,128 +262,171 @@ BEGIN
     (
             [GLGST_CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'Index_GLGST_CODE')
+    ALTER INDEX [Index_GLGST_CODE] ON [dbo].[KGST] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'Index_GLGST_CODE')
+    ALTER INDEX [Index_GLGST_CODE] ON [dbo].[KGST] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KGST"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KGST"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KGST> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_KGSTKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KGSTKEY.Add(entity.KGSTKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KGST] WHERE");
+
+
+            // Index_KGSTKEY
+            builder.Append("[KGSTKEY] IN (");
+            for (int index = 0; index < Index_KGSTKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KGSTKEY
+                var parameterKGSTKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKGSTKEY);
+                command.Parameters.Add(parameterKGSTKEY, SqlDbType.VarChar, 4).Value = Index_KGSTKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KGST data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KGST data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KGST> GetDataSetDataReader()
         {
-            return new KGSTDataReader(Items.Value);
+            return new KGSTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KGST data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KGST data set</returns>
+        public override EduHubDataSetDataReader<KGST> GetDataSetDataReader(List<KGST> Entities)
+        {
+            return new KGSTDataReader(new EduHubDataSetLoadedReader<KGST>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KGSTDataReader : IDataReader, IDataRecord
+        private class KGSTDataReader : EduHubDataSetDataReader<KGST>
         {
-            private List<KGST> Items;
-            private int CurrentIndex;
-            private KGST CurrentItem;
-
-            public KGSTDataReader(List<KGST> Items)
+            public KGSTDataReader(IEduHubDataSetReader<KGST> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 11; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 11; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KGSTKEY
-                        return CurrentItem.KGSTKEY;
+                        return Current.KGSTKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // SALE_PURCH
-                        return CurrentItem.SALE_PURCH;
+                        return Current.SALE_PURCH;
                     case 3: // GST_RATE
-                        return CurrentItem.GST_RATE;
+                        return Current.GST_RATE;
                     case 4: // GST_BOX
-                        return CurrentItem.GST_BOX;
+                        return Current.GST_BOX;
                     case 5: // GLGST_CODE
-                        return CurrentItem.GLGST_CODE;
+                        return Current.GLGST_CODE;
                     case 6: // GST_RECLAIM
-                        return CurrentItem.GST_RECLAIM;
+                        return Current.GST_RECLAIM;
                     case 7: // PRIOR_PERIOD_GST
-                        return CurrentItem.PRIOR_PERIOD_GST;
+                        return Current.PRIOR_PERIOD_GST;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // SALE_PURCH
-                        return CurrentItem.SALE_PURCH == null;
+                        return Current.SALE_PURCH == null;
                     case 3: // GST_RATE
-                        return CurrentItem.GST_RATE == null;
+                        return Current.GST_RATE == null;
                     case 4: // GST_BOX
-                        return CurrentItem.GST_BOX == null;
+                        return Current.GST_BOX == null;
                     case 5: // GLGST_CODE
-                        return CurrentItem.GLGST_CODE == null;
+                        return Current.GLGST_CODE == null;
                     case 6: // GST_RECLAIM
-                        return CurrentItem.GST_RECLAIM == null;
+                        return Current.GST_RECLAIM == null;
                     case 7: // PRIOR_PERIOD_GST
-                        return CurrentItem.PRIOR_PERIOD_GST == null;
+                        return Current.PRIOR_PERIOD_GST == null;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -381,7 +457,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -410,35 +486,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

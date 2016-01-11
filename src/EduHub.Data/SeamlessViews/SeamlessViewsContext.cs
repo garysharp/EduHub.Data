@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace EduHub.Data.SeamlessViews
 {
@@ -151,22 +152,39 @@ namespace EduHub.Data.SeamlessViews
         /// Creates all available views in a SQL Server database, connecting to the SQL Server using Integrated Authentication.
         /// </summary>
         /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the SQL database to add the views to, and which contains the eduHub Datasets</param>
+        public Task CreateInSqlServerAsync(string Server, string Database)
+        {
+            return CreateInSqlServerAsync(Server, Database, Database);
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database, connecting to the SQL Server using Integrated Authentication.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
         /// <param name="Database">The name of the Seamless Views SQL database</param>
         /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
         public void CreateInSqlServer(string Server, string Database, string ParentDatabase)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                IntegratedSecurity = true
-            };
-
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
             {
                 CreateInSqlServer(connection, ParentDatabase);
+            }
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database, connecting to the SQL Server using Integrated Authentication.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the Seamless Views SQL database</param>
+        /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
+        public Task CreateInSqlServerAsync(string Server, string Database, string ParentDatabase)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database).ConnectionString))
+            {
+                return CreateInSqlServerAsync(connection, ParentDatabase);
             }
         }
 
@@ -186,25 +204,45 @@ namespace EduHub.Data.SeamlessViews
         /// Creates all available views in a SQL Server database, connecting to the SQL Server using the provided username and password.
         /// </summary>
         /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the SQL database to add the views to, and which contains the eduHub Datasets</param>
+        /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
+        /// <param name="SqlPassword">The password for the SQL Server account</param>
+        public Task CreateInSqlServerAsync(string Server, string Database, string SqlUsername, string SqlPassword)
+        {
+            return CreateInSqlServerAsync(Server, Database, Database, SqlUsername, SqlPassword);
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database, connecting to the SQL Server using the provided username and password.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
         /// <param name="Database">The name of the Seamless Views SQL database</param>
         /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
         /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
         /// <param name="SqlPassword">The password for the SQL Server account</param>
         public void CreateInSqlServer(string Server, string Database, string ParentDatabase, string SqlUsername, string SqlPassword)
         {
-            var builder = new SqlConnectionStringBuilder()
-            {
-                ApplicationName = "EduHub.Data",
-                DataSource = Server,
-                InitialCatalog = Database,
-                MultipleActiveResultSets = true,
-                UserID = SqlUsername,
-                Password = SqlPassword
-            };
-
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
             {
                 CreateInSqlServer(connection, ParentDatabase);
+            }
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database, connecting to the SQL Server using the provided username and password.
+        /// </summary>
+        /// <param name="Server">The name or network address of the instance of SQL Server to connect to.</param>
+        /// <param name="Database">The name of the Seamless Views SQL database</param>
+        /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
+        /// <param name="SqlUsername">The SQL User ID to be used when connecting to SQL Server</param>
+        /// <param name="SqlPassword">The password for the SQL Server account</param>
+        public Task CreateInSqlServerAsync(string Server, string Database, string ParentDatabase, string SqlUsername, string SqlPassword)
+        {
+            using (var connection = new SqlConnection(
+                SqlHelpers.BuildSqlConnectionString(Server, Database, SqlUsername, SqlPassword).ConnectionString))
+            {
+                return CreateInSqlServerAsync(connection, ParentDatabase);
             }
         }
 
@@ -221,12 +259,34 @@ namespace EduHub.Data.SeamlessViews
         /// Creates all available views in a SQL Server database using the provided SQL Server connection.
         /// </summary>
         /// <param name="Connection">An existing connection to the SQL Server</param>
+        public Task CreateInSqlServerAsync(SqlConnection Connection)
+        {
+            return CreateInSqlServerAsync(Connection, Connection.Database);
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database using the provided SQL Server connection.
+        /// </summary>
+        /// <param name="Connection">An existing connection to the SQL Server</param>
         /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
         public void CreateInSqlServer(SqlConnection Connection, string ParentDatabase)
         {
             foreach (var dataSet in GetAvailableDataSets())
             {
                 dataSet.CreateInSqlServer(Connection, ParentDatabase);
+            }
+        }
+
+        /// <summary>
+        /// Creates all available views in a SQL Server database using the provided SQL Server connection.
+        /// </summary>
+        /// <param name="Connection">An existing connection to the SQL Server</param>
+        /// <param name="ParentDatabase">The name of the SQL database which contains the eduHub Datasets</param>
+        public async Task CreateInSqlServerAsync(SqlConnection Connection, string ParentDatabase)
+        {
+            foreach (var dataSet in GetAvailableDataSets())
+            {
+                await dataSet.CreateInSqlServerAsync(Connection, ParentDatabase);
             }
         }
 

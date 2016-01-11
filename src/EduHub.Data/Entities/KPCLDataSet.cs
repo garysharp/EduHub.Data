@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KPCLDataSet : EduHubDataSet<KPCL>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KPCL"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KPCLDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KPCL" /> fields for each CSV column header</returns>
-        protected override Action<KPCL, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KPCL, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KPCL, string>[Headers.Count];
 
@@ -75,29 +78,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KPCL" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KPCL" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KPCL" /> items to added or update the base <see cref="KPCL" /> items</param>
-        /// <returns>A merged list of <see cref="KPCL" /> items</returns>
-        protected override List<KPCL> ApplyDeltaItems(List<KPCL> Items, List<KPCL> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KPCL" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KPCL" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KPCL}"/> of entities</returns>
+        internal override IEnumerable<KPCL> ApplyDeltaEntities(IEnumerable<KPCL> Entities, List<KPCL> DeltaEntities)
         {
-            Dictionary<int, int> Index_KPCLKEY = Items.ToIndexDictionary(i => i.KPCLKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_KPCLKEY = new HashSet<int>(DeltaEntities.Select(i => i.KPCLKEY));
 
-            foreach (KPCL deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KPCLKEY.TryGetValue(deltaItem.KPCLKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KPCLKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KPCLKEY.Remove(entity.KPCLKEY);
+                            
+                            if (entity.KPCLKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KPCLKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -241,11 +270,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KPCL table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KPCL table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KPCL](
         [KPCLKEY] int IDENTITY NOT NULL,
@@ -269,120 +302,167 @@ BEGIN
     (
             [CONTACT_TYPE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT')
+    ALTER INDEX [Index_CONTACT] ON [dbo].[KPCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT_TYPE')
+    ALTER INDEX [Index_CONTACT_TYPE] ON [dbo].[KPCL] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT')
+    ALTER INDEX [Index_CONTACT] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT_TYPE')
+    ALTER INDEX [Index_CONTACT_TYPE] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KPCL"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KPCL"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KPCL> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_KPCLKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KPCLKEY.Add(entity.KPCLKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KPCL] WHERE");
+
+
+            // Index_KPCLKEY
+            builder.Append("[KPCLKEY] IN (");
+            for (int index = 0; index < Index_KPCLKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KPCLKEY
+                var parameterKPCLKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKPCLKEY);
+                command.Parameters.Add(parameterKPCLKEY, SqlDbType.Int).Value = Index_KPCLKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KPCL data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KPCL data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KPCL> GetDataSetDataReader()
         {
-            return new KPCLDataReader(Items.Value);
+            return new KPCLDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KPCL data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KPCL data set</returns>
+        public override EduHubDataSetDataReader<KPCL> GetDataSetDataReader(List<KPCL> Entities)
+        {
+            return new KPCLDataReader(new EduHubDataSetLoadedReader<KPCL>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KPCLDataReader : IDataReader, IDataRecord
+        private class KPCLDataReader : EduHubDataSetDataReader<KPCL>
         {
-            private List<KPCL> Items;
-            private int CurrentIndex;
-            private KPCL CurrentItem;
-
-            public KPCLDataReader(List<KPCL> Items)
+            public KPCLDataReader(IEduHubDataSetReader<KPCL> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 9; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 9; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KPCLKEY
-                        return CurrentItem.KPCLKEY;
+                        return Current.KPCLKEY;
                     case 1: // LINK
-                        return CurrentItem.LINK;
+                        return Current.LINK;
                     case 2: // SOURCE
-                        return CurrentItem.SOURCE;
+                        return Current.SOURCE;
                     case 3: // CONTACT
-                        return CurrentItem.CONTACT;
+                        return Current.CONTACT;
                     case 4: // CONTACT_TYPE
-                        return CurrentItem.CONTACT_TYPE;
+                        return Current.CONTACT_TYPE;
                     case 5: // CONTACT_PREFERENCE
-                        return CurrentItem.CONTACT_PREFERENCE;
+                        return Current.CONTACT_PREFERENCE;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // LINK
-                        return CurrentItem.LINK == null;
+                        return Current.LINK == null;
                     case 2: // SOURCE
-                        return CurrentItem.SOURCE == null;
+                        return Current.SOURCE == null;
                     case 3: // CONTACT
-                        return CurrentItem.CONTACT == null;
+                        return Current.CONTACT == null;
                     case 4: // CONTACT_TYPE
-                        return CurrentItem.CONTACT_TYPE == null;
+                        return Current.CONTACT_TYPE == null;
                     case 5: // CONTACT_PREFERENCE
-                        return CurrentItem.CONTACT_PREFERENCE == null;
+                        return Current.CONTACT_PREFERENCE == null;
                     case 6: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 7: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 8: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -409,7 +489,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -434,35 +514,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

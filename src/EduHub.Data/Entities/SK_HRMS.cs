@@ -11,6 +11,15 @@ namespace EduHub.Data.Entities
     public sealed partial class SK_HRMS : EduHubEntity
     {
 
+        /// <inheritdoc />
+        public override DateTime? EntityLastModified
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         #region Field Properties
 
         /// <summary>

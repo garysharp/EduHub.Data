@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SMC_TFRDataSet : EduHubDataSet<SMC_TFR>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SMC_TFR"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SMC_TFRDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SMC_TFR" /> fields for each CSV column header</returns>
-        protected override Action<SMC_TFR, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SMC_TFR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SMC_TFR, string>[Headers.Count];
 
@@ -182,29 +185,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SMC_TFR" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SMC_TFR" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SMC_TFR" /> items to added or update the base <see cref="SMC_TFR" /> items</param>
-        /// <returns>A merged list of <see cref="SMC_TFR" /> items</returns>
-        protected override List<SMC_TFR> ApplyDeltaItems(List<SMC_TFR> Items, List<SMC_TFR> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SMC_TFR" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SMC_TFR" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SMC_TFR}"/> of entities</returns>
+        internal override IEnumerable<SMC_TFR> ApplyDeltaEntities(IEnumerable<SMC_TFR> Entities, List<SMC_TFR> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SMC_TFR deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ORIG_SCHOOL;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.ORIG_SCHOOL.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ORIG_SCHOOL)
-                .ToList();
         }
 
         #region Index Fields
@@ -305,11 +334,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SMC_TFR table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SMC_TFR table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SMC_TFR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SMC_TFR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SMC_TFR](
         [TID] int IDENTITY NOT NULL,
@@ -365,262 +398,305 @@ BEGIN
     (
             [ORIG_SCHOOL] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC_TFR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SMC_TFR] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC_TFR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SMC_TFR] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SMC_TFR"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SMC_TFR"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SMC_TFR> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SMC_TFR] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SMC_TFR data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SMC_TFR data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SMC_TFR> GetDataSetDataReader()
         {
-            return new SMC_TFRDataReader(Items.Value);
+            return new SMC_TFRDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SMC_TFR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SMC_TFR data set</returns>
+        public override EduHubDataSetDataReader<SMC_TFR> GetDataSetDataReader(List<SMC_TFR> Entities)
+        {
+            return new SMC_TFRDataReader(new EduHubDataSetLoadedReader<SMC_TFR>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SMC_TFRDataReader : IDataReader, IDataRecord
+        private class SMC_TFRDataReader : EduHubDataSetDataReader<SMC_TFR>
         {
-            private List<SMC_TFR> Items;
-            private int CurrentIndex;
-            private SMC_TFR CurrentItem;
-
-            public SMC_TFRDataReader(List<SMC_TFR> Items)
+            public SMC_TFRDataReader(IEduHubDataSetReader<SMC_TFR> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 45; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 45; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // ORIG_SCHOOL
-                        return CurrentItem.ORIG_SCHOOL;
+                        return Current.ORIG_SCHOOL;
                     case 2: // SMC_TRANS_ID
-                        return CurrentItem.SMC_TRANS_ID;
+                        return Current.SMC_TRANS_ID;
                     case 3: // SMCKEY
-                        return CurrentItem.SMCKEY;
+                        return Current.SMCKEY;
                     case 4: // STUDENT
-                        return CurrentItem.STUDENT;
+                        return Current.STUDENT;
                     case 5: // CONDITION_EXISTS
-                        return CurrentItem.CONDITION_EXISTS;
+                        return Current.CONDITION_EXISTS;
                     case 6: // STUDENT_NEW
-                        return CurrentItem.STUDENT_NEW;
+                        return Current.STUDENT_NEW;
                     case 7: // MED_CONDITION
-                        return CurrentItem.MED_CONDITION;
+                        return Current.MED_CONDITION;
                     case 8: // MED_CONDITION_NEW
-                        return CurrentItem.MED_CONDITION_NEW;
+                        return Current.MED_CONDITION_NEW;
                     case 9: // MED_CONDITION_ACT
-                        return CurrentItem.MED_CONDITION_ACT;
+                        return Current.MED_CONDITION_ACT;
                     case 10: // SYMPTOMS
-                        return CurrentItem.SYMPTOMS;
+                        return Current.SYMPTOMS;
                     case 11: // SMC_COMMENT
-                        return CurrentItem.SMC_COMMENT;
+                        return Current.SMC_COMMENT;
                     case 12: // REGULAR_MEDICATION
-                        return CurrentItem.REGULAR_MEDICATION;
+                        return Current.REGULAR_MEDICATION;
                     case 13: // REGULAR_POISON_RATING
-                        return CurrentItem.REGULAR_POISON_RATING;
+                        return Current.REGULAR_POISON_RATING;
                     case 14: // REGULAR_DOSAGE
-                        return CurrentItem.REGULAR_DOSAGE;
+                        return Current.REGULAR_DOSAGE;
                     case 15: // REGULAR_FREQUENCY
-                        return CurrentItem.REGULAR_FREQUENCY;
+                        return Current.REGULAR_FREQUENCY;
                     case 16: // REGULAR_DOSAGE_TIME
-                        return CurrentItem.REGULAR_DOSAGE_TIME;
+                        return Current.REGULAR_DOSAGE_TIME;
                     case 17: // REGULAR_MEDICATION_LOCAT
-                        return CurrentItem.REGULAR_MEDICATION_LOCAT;
+                        return Current.REGULAR_MEDICATION_LOCAT;
                     case 18: // REGULAR_ADMIN_BY
-                        return CurrentItem.REGULAR_ADMIN_BY;
+                        return Current.REGULAR_ADMIN_BY;
                     case 19: // REMINDER
-                        return CurrentItem.REMINDER;
+                        return Current.REMINDER;
                     case 20: // INFORM_DOCTOR
-                        return CurrentItem.INFORM_DOCTOR;
+                        return Current.INFORM_DOCTOR;
                     case 21: // INFORM_EMERG_CONTACT
-                        return CurrentItem.INFORM_EMERG_CONTACT;
+                        return Current.INFORM_EMERG_CONTACT;
                     case 22: // ADMINISTER_MEDICATION
-                        return CurrentItem.ADMINISTER_MEDICATION;
+                        return Current.ADMINISTER_MEDICATION;
                     case 23: // OTHER_MEDICAL_ACTION
-                        return CurrentItem.OTHER_MEDICAL_ACTION;
+                        return Current.OTHER_MEDICAL_ACTION;
                     case 24: // SMC_ACTION
-                        return CurrentItem.SMC_ACTION;
+                        return Current.SMC_ACTION;
                     case 25: // AD_HOC_MEDICATION
-                        return CurrentItem.AD_HOC_MEDICATION;
+                        return Current.AD_HOC_MEDICATION;
                     case 26: // AD_HOC_POISON_RATING
-                        return CurrentItem.AD_HOC_POISON_RATING;
+                        return Current.AD_HOC_POISON_RATING;
                     case 27: // AD_HOC_DOSAGE
-                        return CurrentItem.AD_HOC_DOSAGE;
+                        return Current.AD_HOC_DOSAGE;
                     case 28: // AD_HOC_FREQUENCY
-                        return CurrentItem.AD_HOC_FREQUENCY;
+                        return Current.AD_HOC_FREQUENCY;
                     case 29: // AD_HOC_MEDICATION_LOCAT
-                        return CurrentItem.AD_HOC_MEDICATION_LOCAT;
+                        return Current.AD_HOC_MEDICATION_LOCAT;
                     case 30: // AD_HOC_ADMIN_BY
-                        return CurrentItem.AD_HOC_ADMIN_BY;
+                        return Current.AD_HOC_ADMIN_BY;
                     case 31: // HOME_MEDICATION
-                        return CurrentItem.HOME_MEDICATION;
+                        return Current.HOME_MEDICATION;
                     case 32: // ASTHMA_WHEEZE
-                        return CurrentItem.ASTHMA_WHEEZE;
+                        return Current.ASTHMA_WHEEZE;
                     case 33: // ASTHMA_COUGH
-                        return CurrentItem.ASTHMA_COUGH;
+                        return Current.ASTHMA_COUGH;
                     case 34: // ASTHMA_DIFFBRE
-                        return CurrentItem.ASTHMA_DIFFBRE;
+                        return Current.ASTHMA_DIFFBRE;
                     case 35: // ASTHMA_TGTCHES
-                        return CurrentItem.ASTHMA_TGTCHES;
+                        return Current.ASTHMA_TGTCHES;
                     case 36: // ASTHMA_SYMTEXE
-                        return CurrentItem.ASTHMA_SYMTEXE;
+                        return Current.ASTHMA_SYMTEXE;
                     case 37: // ASTHMA_MGT_PLAN
-                        return CurrentItem.ASTHMA_MGT_PLAN;
+                        return Current.ASTHMA_MGT_PLAN;
                     case 38: // ST_TRANS_ID
-                        return CurrentItem.ST_TRANS_ID;
+                        return Current.ST_TRANS_ID;
                     case 39: // KCM_TRANS_ID
-                        return CurrentItem.KCM_TRANS_ID;
+                        return Current.KCM_TRANS_ID;
                     case 40: // IMP_STATUS
-                        return CurrentItem.IMP_STATUS;
+                        return Current.IMP_STATUS;
                     case 41: // IMP_DATE
-                        return CurrentItem.IMP_DATE;
+                        return Current.IMP_DATE;
                     case 42: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 43: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 44: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // SMC_TRANS_ID
-                        return CurrentItem.SMC_TRANS_ID == null;
+                        return Current.SMC_TRANS_ID == null;
                     case 3: // SMCKEY
-                        return CurrentItem.SMCKEY == null;
+                        return Current.SMCKEY == null;
                     case 4: // STUDENT
-                        return CurrentItem.STUDENT == null;
+                        return Current.STUDENT == null;
                     case 5: // CONDITION_EXISTS
-                        return CurrentItem.CONDITION_EXISTS == null;
+                        return Current.CONDITION_EXISTS == null;
                     case 6: // STUDENT_NEW
-                        return CurrentItem.STUDENT_NEW == null;
+                        return Current.STUDENT_NEW == null;
                     case 7: // MED_CONDITION
-                        return CurrentItem.MED_CONDITION == null;
+                        return Current.MED_CONDITION == null;
                     case 8: // MED_CONDITION_NEW
-                        return CurrentItem.MED_CONDITION_NEW == null;
+                        return Current.MED_CONDITION_NEW == null;
                     case 9: // MED_CONDITION_ACT
-                        return CurrentItem.MED_CONDITION_ACT == null;
+                        return Current.MED_CONDITION_ACT == null;
                     case 10: // SYMPTOMS
-                        return CurrentItem.SYMPTOMS == null;
+                        return Current.SYMPTOMS == null;
                     case 11: // SMC_COMMENT
-                        return CurrentItem.SMC_COMMENT == null;
+                        return Current.SMC_COMMENT == null;
                     case 12: // REGULAR_MEDICATION
-                        return CurrentItem.REGULAR_MEDICATION == null;
+                        return Current.REGULAR_MEDICATION == null;
                     case 13: // REGULAR_POISON_RATING
-                        return CurrentItem.REGULAR_POISON_RATING == null;
+                        return Current.REGULAR_POISON_RATING == null;
                     case 14: // REGULAR_DOSAGE
-                        return CurrentItem.REGULAR_DOSAGE == null;
+                        return Current.REGULAR_DOSAGE == null;
                     case 15: // REGULAR_FREQUENCY
-                        return CurrentItem.REGULAR_FREQUENCY == null;
+                        return Current.REGULAR_FREQUENCY == null;
                     case 16: // REGULAR_DOSAGE_TIME
-                        return CurrentItem.REGULAR_DOSAGE_TIME == null;
+                        return Current.REGULAR_DOSAGE_TIME == null;
                     case 17: // REGULAR_MEDICATION_LOCAT
-                        return CurrentItem.REGULAR_MEDICATION_LOCAT == null;
+                        return Current.REGULAR_MEDICATION_LOCAT == null;
                     case 18: // REGULAR_ADMIN_BY
-                        return CurrentItem.REGULAR_ADMIN_BY == null;
+                        return Current.REGULAR_ADMIN_BY == null;
                     case 19: // REMINDER
-                        return CurrentItem.REMINDER == null;
+                        return Current.REMINDER == null;
                     case 20: // INFORM_DOCTOR
-                        return CurrentItem.INFORM_DOCTOR == null;
+                        return Current.INFORM_DOCTOR == null;
                     case 21: // INFORM_EMERG_CONTACT
-                        return CurrentItem.INFORM_EMERG_CONTACT == null;
+                        return Current.INFORM_EMERG_CONTACT == null;
                     case 22: // ADMINISTER_MEDICATION
-                        return CurrentItem.ADMINISTER_MEDICATION == null;
+                        return Current.ADMINISTER_MEDICATION == null;
                     case 23: // OTHER_MEDICAL_ACTION
-                        return CurrentItem.OTHER_MEDICAL_ACTION == null;
+                        return Current.OTHER_MEDICAL_ACTION == null;
                     case 24: // SMC_ACTION
-                        return CurrentItem.SMC_ACTION == null;
+                        return Current.SMC_ACTION == null;
                     case 25: // AD_HOC_MEDICATION
-                        return CurrentItem.AD_HOC_MEDICATION == null;
+                        return Current.AD_HOC_MEDICATION == null;
                     case 26: // AD_HOC_POISON_RATING
-                        return CurrentItem.AD_HOC_POISON_RATING == null;
+                        return Current.AD_HOC_POISON_RATING == null;
                     case 27: // AD_HOC_DOSAGE
-                        return CurrentItem.AD_HOC_DOSAGE == null;
+                        return Current.AD_HOC_DOSAGE == null;
                     case 28: // AD_HOC_FREQUENCY
-                        return CurrentItem.AD_HOC_FREQUENCY == null;
+                        return Current.AD_HOC_FREQUENCY == null;
                     case 29: // AD_HOC_MEDICATION_LOCAT
-                        return CurrentItem.AD_HOC_MEDICATION_LOCAT == null;
+                        return Current.AD_HOC_MEDICATION_LOCAT == null;
                     case 30: // AD_HOC_ADMIN_BY
-                        return CurrentItem.AD_HOC_ADMIN_BY == null;
+                        return Current.AD_HOC_ADMIN_BY == null;
                     case 31: // HOME_MEDICATION
-                        return CurrentItem.HOME_MEDICATION == null;
+                        return Current.HOME_MEDICATION == null;
                     case 32: // ASTHMA_WHEEZE
-                        return CurrentItem.ASTHMA_WHEEZE == null;
+                        return Current.ASTHMA_WHEEZE == null;
                     case 33: // ASTHMA_COUGH
-                        return CurrentItem.ASTHMA_COUGH == null;
+                        return Current.ASTHMA_COUGH == null;
                     case 34: // ASTHMA_DIFFBRE
-                        return CurrentItem.ASTHMA_DIFFBRE == null;
+                        return Current.ASTHMA_DIFFBRE == null;
                     case 35: // ASTHMA_TGTCHES
-                        return CurrentItem.ASTHMA_TGTCHES == null;
+                        return Current.ASTHMA_TGTCHES == null;
                     case 36: // ASTHMA_SYMTEXE
-                        return CurrentItem.ASTHMA_SYMTEXE == null;
+                        return Current.ASTHMA_SYMTEXE == null;
                     case 37: // ASTHMA_MGT_PLAN
-                        return CurrentItem.ASTHMA_MGT_PLAN == null;
+                        return Current.ASTHMA_MGT_PLAN == null;
                     case 38: // ST_TRANS_ID
-                        return CurrentItem.ST_TRANS_ID == null;
+                        return Current.ST_TRANS_ID == null;
                     case 39: // KCM_TRANS_ID
-                        return CurrentItem.KCM_TRANS_ID == null;
+                        return Current.KCM_TRANS_ID == null;
                     case 40: // IMP_STATUS
-                        return CurrentItem.IMP_STATUS == null;
+                        return Current.IMP_STATUS == null;
                     case 41: // IMP_DATE
-                        return CurrentItem.IMP_DATE == null;
+                        return Current.IMP_DATE == null;
                     case 42: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 43: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 44: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -719,7 +795,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -816,35 +892,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

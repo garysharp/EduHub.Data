@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class GLBUDGDataSet : EduHubDataSet<GLBUDG>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "GLBUDG"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal GLBUDGDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="GLBUDG" /> fields for each CSV column header</returns>
-        protected override Action<GLBUDG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<GLBUDG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<GLBUDG, string>[Headers.Count];
 
@@ -270,29 +273,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="GLBUDG" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="GLBUDG" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="GLBUDG" /> items to added or update the base <see cref="GLBUDG" /> items</param>
-        /// <returns>A merged list of <see cref="GLBUDG" /> items</returns>
-        protected override List<GLBUDG> ApplyDeltaItems(List<GLBUDG> Items, List<GLBUDG> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="GLBUDG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="GLBUDG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{GLBUDG}"/> of entities</returns>
+        internal override IEnumerable<GLBUDG> ApplyDeltaEntities(IEnumerable<GLBUDG> Entities, List<GLBUDG> DeltaEntities)
         {
-            Dictionary<string, int> Index_BUDGETKEY = Items.ToIndexDictionary(i => i.BUDGETKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_BUDGETKEY = new HashSet<string>(DeltaEntities.Select(i => i.BUDGETKEY));
 
-            foreach (GLBUDG deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_BUDGETKEY.TryGetValue(deltaItem.BUDGETKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.BUDGETKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_BUDGETKEY.Remove(entity.BUDGETKEY);
+                            
+                            if (entity.BUDGETKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.BUDGETKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -436,11 +465,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a GLBUDG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a GLBUDG table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[GLBUDG](
         [BUDGETKEY] varchar(15) NOT NULL,
@@ -529,380 +562,427 @@ BEGIN
     (
             [INITIATIVE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_CODE')
+    ALTER INDEX [Index_CODE] ON [dbo].[GLBUDG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLBUDG] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_CODE')
+    ALTER INDEX [Index_CODE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_INITIATIVE')
+    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="GLBUDG"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="GLBUDG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<GLBUDG> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_BUDGETKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_BUDGETKEY.Add(entity.BUDGETKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[GLBUDG] WHERE");
+
+
+            // Index_BUDGETKEY
+            builder.Append("[BUDGETKEY] IN (");
+            for (int index = 0; index < Index_BUDGETKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // BUDGETKEY
+                var parameterBUDGETKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterBUDGETKEY);
+                command.Parameters.Add(parameterBUDGETKEY, SqlDbType.VarChar, 15).Value = Index_BUDGETKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the GLBUDG data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the GLBUDG data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<GLBUDG> GetDataSetDataReader()
         {
-            return new GLBUDGDataReader(Items.Value);
+            return new GLBUDGDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the GLBUDG data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the GLBUDG data set</returns>
+        public override EduHubDataSetDataReader<GLBUDG> GetDataSetDataReader(List<GLBUDG> Entities)
+        {
+            return new GLBUDGDataReader(new EduHubDataSetLoadedReader<GLBUDG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class GLBUDGDataReader : IDataReader, IDataRecord
+        private class GLBUDGDataReader : EduHubDataSetDataReader<GLBUDG>
         {
-            private List<GLBUDG> Items;
-            private int CurrentIndex;
-            private GLBUDG CurrentItem;
-
-            public GLBUDGDataReader(List<GLBUDG> Items)
+            public GLBUDGDataReader(IEduHubDataSetReader<GLBUDG> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 74; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 74; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // BUDGETKEY
-                        return CurrentItem.BUDGETKEY;
+                        return Current.BUDGETKEY;
                     case 1: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM;
+                        return Current.SUBPROGRAM;
                     case 2: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 3: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 4: // GL_PROGRAM
-                        return CurrentItem.GL_PROGRAM;
+                        return Current.GL_PROGRAM;
                     case 5: // INITIATIVE
-                        return CurrentItem.INITIATIVE;
+                        return Current.INITIATIVE;
                     case 6: // CURR01
-                        return CurrentItem.CURR01;
+                        return Current.CURR01;
                     case 7: // CURR02
-                        return CurrentItem.CURR02;
+                        return Current.CURR02;
                     case 8: // CURR03
-                        return CurrentItem.CURR03;
+                        return Current.CURR03;
                     case 9: // CURR04
-                        return CurrentItem.CURR04;
+                        return Current.CURR04;
                     case 10: // CURR05
-                        return CurrentItem.CURR05;
+                        return Current.CURR05;
                     case 11: // CURR06
-                        return CurrentItem.CURR06;
+                        return Current.CURR06;
                     case 12: // CURR07
-                        return CurrentItem.CURR07;
+                        return Current.CURR07;
                     case 13: // CURR08
-                        return CurrentItem.CURR08;
+                        return Current.CURR08;
                     case 14: // CURR09
-                        return CurrentItem.CURR09;
+                        return Current.CURR09;
                     case 15: // CURR10
-                        return CurrentItem.CURR10;
+                        return Current.CURR10;
                     case 16: // CURR11
-                        return CurrentItem.CURR11;
+                        return Current.CURR11;
                     case 17: // CURR12
-                        return CurrentItem.CURR12;
+                        return Current.CURR12;
                     case 18: // OPBAL
-                        return CurrentItem.OPBAL;
+                        return Current.OPBAL;
                     case 19: // LASTYR01
-                        return CurrentItem.LASTYR01;
+                        return Current.LASTYR01;
                     case 20: // LASTYR02
-                        return CurrentItem.LASTYR02;
+                        return Current.LASTYR02;
                     case 21: // LASTYR03
-                        return CurrentItem.LASTYR03;
+                        return Current.LASTYR03;
                     case 22: // LASTYR04
-                        return CurrentItem.LASTYR04;
+                        return Current.LASTYR04;
                     case 23: // LASTYR05
-                        return CurrentItem.LASTYR05;
+                        return Current.LASTYR05;
                     case 24: // LASTYR06
-                        return CurrentItem.LASTYR06;
+                        return Current.LASTYR06;
                     case 25: // LASTYR07
-                        return CurrentItem.LASTYR07;
+                        return Current.LASTYR07;
                     case 26: // LASTYR08
-                        return CurrentItem.LASTYR08;
+                        return Current.LASTYR08;
                     case 27: // LASTYR09
-                        return CurrentItem.LASTYR09;
+                        return Current.LASTYR09;
                     case 28: // LASTYR10
-                        return CurrentItem.LASTYR10;
+                        return Current.LASTYR10;
                     case 29: // LASTYR11
-                        return CurrentItem.LASTYR11;
+                        return Current.LASTYR11;
                     case 30: // LASTYR12
-                        return CurrentItem.LASTYR12;
+                        return Current.LASTYR12;
                     case 31: // BUDG01
-                        return CurrentItem.BUDG01;
+                        return Current.BUDG01;
                     case 32: // BUDG02
-                        return CurrentItem.BUDG02;
+                        return Current.BUDG02;
                     case 33: // BUDG03
-                        return CurrentItem.BUDG03;
+                        return Current.BUDG03;
                     case 34: // BUDG04
-                        return CurrentItem.BUDG04;
+                        return Current.BUDG04;
                     case 35: // BUDG05
-                        return CurrentItem.BUDG05;
+                        return Current.BUDG05;
                     case 36: // BUDG06
-                        return CurrentItem.BUDG06;
+                        return Current.BUDG06;
                     case 37: // BUDG07
-                        return CurrentItem.BUDG07;
+                        return Current.BUDG07;
                     case 38: // BUDG08
-                        return CurrentItem.BUDG08;
+                        return Current.BUDG08;
                     case 39: // BUDG09
-                        return CurrentItem.BUDG09;
+                        return Current.BUDG09;
                     case 40: // BUDG10
-                        return CurrentItem.BUDG10;
+                        return Current.BUDG10;
                     case 41: // BUDG11
-                        return CurrentItem.BUDG11;
+                        return Current.BUDG11;
                     case 42: // BUDG12
-                        return CurrentItem.BUDG12;
+                        return Current.BUDG12;
                     case 43: // NEXTBUDG01
-                        return CurrentItem.NEXTBUDG01;
+                        return Current.NEXTBUDG01;
                     case 44: // NEXTBUDG02
-                        return CurrentItem.NEXTBUDG02;
+                        return Current.NEXTBUDG02;
                     case 45: // NEXTBUDG03
-                        return CurrentItem.NEXTBUDG03;
+                        return Current.NEXTBUDG03;
                     case 46: // NEXTBUDG04
-                        return CurrentItem.NEXTBUDG04;
+                        return Current.NEXTBUDG04;
                     case 47: // NEXTBUDG05
-                        return CurrentItem.NEXTBUDG05;
+                        return Current.NEXTBUDG05;
                     case 48: // NEXTBUDG06
-                        return CurrentItem.NEXTBUDG06;
+                        return Current.NEXTBUDG06;
                     case 49: // NEXTBUDG07
-                        return CurrentItem.NEXTBUDG07;
+                        return Current.NEXTBUDG07;
                     case 50: // NEXTBUDG08
-                        return CurrentItem.NEXTBUDG08;
+                        return Current.NEXTBUDG08;
                     case 51: // NEXTBUDG09
-                        return CurrentItem.NEXTBUDG09;
+                        return Current.NEXTBUDG09;
                     case 52: // NEXTBUDG10
-                        return CurrentItem.NEXTBUDG10;
+                        return Current.NEXTBUDG10;
                     case 53: // NEXTBUDG11
-                        return CurrentItem.NEXTBUDG11;
+                        return Current.NEXTBUDG11;
                     case 54: // NEXTBUDG12
-                        return CurrentItem.NEXTBUDG12;
+                        return Current.NEXTBUDG12;
                     case 55: // ANNUALBUDG
-                        return CurrentItem.ANNUALBUDG;
+                        return Current.ANNUALBUDG;
                     case 56: // NEXT_ANN_BUDG
-                        return CurrentItem.NEXT_ANN_BUDG;
+                        return Current.NEXT_ANN_BUDG;
                     case 57: // LASTBUDG01
-                        return CurrentItem.LASTBUDG01;
+                        return Current.LASTBUDG01;
                     case 58: // LASTBUDG02
-                        return CurrentItem.LASTBUDG02;
+                        return Current.LASTBUDG02;
                     case 59: // LASTBUDG03
-                        return CurrentItem.LASTBUDG03;
+                        return Current.LASTBUDG03;
                     case 60: // LASTBUDG04
-                        return CurrentItem.LASTBUDG04;
+                        return Current.LASTBUDG04;
                     case 61: // LASTBUDG05
-                        return CurrentItem.LASTBUDG05;
+                        return Current.LASTBUDG05;
                     case 62: // LASTBUDG06
-                        return CurrentItem.LASTBUDG06;
+                        return Current.LASTBUDG06;
                     case 63: // LASTBUDG07
-                        return CurrentItem.LASTBUDG07;
+                        return Current.LASTBUDG07;
                     case 64: // LASTBUDG08
-                        return CurrentItem.LASTBUDG08;
+                        return Current.LASTBUDG08;
                     case 65: // LASTBUDG09
-                        return CurrentItem.LASTBUDG09;
+                        return Current.LASTBUDG09;
                     case 66: // LASTBUDG10
-                        return CurrentItem.LASTBUDG10;
+                        return Current.LASTBUDG10;
                     case 67: // LASTBUDG11
-                        return CurrentItem.LASTBUDG11;
+                        return Current.LASTBUDG11;
                     case 68: // LASTBUDG12
-                        return CurrentItem.LASTBUDG12;
+                        return Current.LASTBUDG12;
                     case 69: // LAST_ANN_BUDG
-                        return CurrentItem.LAST_ANN_BUDG;
+                        return Current.LAST_ANN_BUDG;
                     case 70: // IMPORTED
-                        return CurrentItem.IMPORTED;
+                        return Current.IMPORTED;
                     case 71: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 72: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 73: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // SUBPROGRAM
-                        return CurrentItem.SUBPROGRAM == null;
+                        return Current.SUBPROGRAM == null;
                     case 2: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 3: // CODE
-                        return CurrentItem.CODE == null;
+                        return Current.CODE == null;
                     case 4: // GL_PROGRAM
-                        return CurrentItem.GL_PROGRAM == null;
+                        return Current.GL_PROGRAM == null;
                     case 5: // INITIATIVE
-                        return CurrentItem.INITIATIVE == null;
+                        return Current.INITIATIVE == null;
                     case 6: // CURR01
-                        return CurrentItem.CURR01 == null;
+                        return Current.CURR01 == null;
                     case 7: // CURR02
-                        return CurrentItem.CURR02 == null;
+                        return Current.CURR02 == null;
                     case 8: // CURR03
-                        return CurrentItem.CURR03 == null;
+                        return Current.CURR03 == null;
                     case 9: // CURR04
-                        return CurrentItem.CURR04 == null;
+                        return Current.CURR04 == null;
                     case 10: // CURR05
-                        return CurrentItem.CURR05 == null;
+                        return Current.CURR05 == null;
                     case 11: // CURR06
-                        return CurrentItem.CURR06 == null;
+                        return Current.CURR06 == null;
                     case 12: // CURR07
-                        return CurrentItem.CURR07 == null;
+                        return Current.CURR07 == null;
                     case 13: // CURR08
-                        return CurrentItem.CURR08 == null;
+                        return Current.CURR08 == null;
                     case 14: // CURR09
-                        return CurrentItem.CURR09 == null;
+                        return Current.CURR09 == null;
                     case 15: // CURR10
-                        return CurrentItem.CURR10 == null;
+                        return Current.CURR10 == null;
                     case 16: // CURR11
-                        return CurrentItem.CURR11 == null;
+                        return Current.CURR11 == null;
                     case 17: // CURR12
-                        return CurrentItem.CURR12 == null;
+                        return Current.CURR12 == null;
                     case 18: // OPBAL
-                        return CurrentItem.OPBAL == null;
+                        return Current.OPBAL == null;
                     case 19: // LASTYR01
-                        return CurrentItem.LASTYR01 == null;
+                        return Current.LASTYR01 == null;
                     case 20: // LASTYR02
-                        return CurrentItem.LASTYR02 == null;
+                        return Current.LASTYR02 == null;
                     case 21: // LASTYR03
-                        return CurrentItem.LASTYR03 == null;
+                        return Current.LASTYR03 == null;
                     case 22: // LASTYR04
-                        return CurrentItem.LASTYR04 == null;
+                        return Current.LASTYR04 == null;
                     case 23: // LASTYR05
-                        return CurrentItem.LASTYR05 == null;
+                        return Current.LASTYR05 == null;
                     case 24: // LASTYR06
-                        return CurrentItem.LASTYR06 == null;
+                        return Current.LASTYR06 == null;
                     case 25: // LASTYR07
-                        return CurrentItem.LASTYR07 == null;
+                        return Current.LASTYR07 == null;
                     case 26: // LASTYR08
-                        return CurrentItem.LASTYR08 == null;
+                        return Current.LASTYR08 == null;
                     case 27: // LASTYR09
-                        return CurrentItem.LASTYR09 == null;
+                        return Current.LASTYR09 == null;
                     case 28: // LASTYR10
-                        return CurrentItem.LASTYR10 == null;
+                        return Current.LASTYR10 == null;
                     case 29: // LASTYR11
-                        return CurrentItem.LASTYR11 == null;
+                        return Current.LASTYR11 == null;
                     case 30: // LASTYR12
-                        return CurrentItem.LASTYR12 == null;
+                        return Current.LASTYR12 == null;
                     case 31: // BUDG01
-                        return CurrentItem.BUDG01 == null;
+                        return Current.BUDG01 == null;
                     case 32: // BUDG02
-                        return CurrentItem.BUDG02 == null;
+                        return Current.BUDG02 == null;
                     case 33: // BUDG03
-                        return CurrentItem.BUDG03 == null;
+                        return Current.BUDG03 == null;
                     case 34: // BUDG04
-                        return CurrentItem.BUDG04 == null;
+                        return Current.BUDG04 == null;
                     case 35: // BUDG05
-                        return CurrentItem.BUDG05 == null;
+                        return Current.BUDG05 == null;
                     case 36: // BUDG06
-                        return CurrentItem.BUDG06 == null;
+                        return Current.BUDG06 == null;
                     case 37: // BUDG07
-                        return CurrentItem.BUDG07 == null;
+                        return Current.BUDG07 == null;
                     case 38: // BUDG08
-                        return CurrentItem.BUDG08 == null;
+                        return Current.BUDG08 == null;
                     case 39: // BUDG09
-                        return CurrentItem.BUDG09 == null;
+                        return Current.BUDG09 == null;
                     case 40: // BUDG10
-                        return CurrentItem.BUDG10 == null;
+                        return Current.BUDG10 == null;
                     case 41: // BUDG11
-                        return CurrentItem.BUDG11 == null;
+                        return Current.BUDG11 == null;
                     case 42: // BUDG12
-                        return CurrentItem.BUDG12 == null;
+                        return Current.BUDG12 == null;
                     case 43: // NEXTBUDG01
-                        return CurrentItem.NEXTBUDG01 == null;
+                        return Current.NEXTBUDG01 == null;
                     case 44: // NEXTBUDG02
-                        return CurrentItem.NEXTBUDG02 == null;
+                        return Current.NEXTBUDG02 == null;
                     case 45: // NEXTBUDG03
-                        return CurrentItem.NEXTBUDG03 == null;
+                        return Current.NEXTBUDG03 == null;
                     case 46: // NEXTBUDG04
-                        return CurrentItem.NEXTBUDG04 == null;
+                        return Current.NEXTBUDG04 == null;
                     case 47: // NEXTBUDG05
-                        return CurrentItem.NEXTBUDG05 == null;
+                        return Current.NEXTBUDG05 == null;
                     case 48: // NEXTBUDG06
-                        return CurrentItem.NEXTBUDG06 == null;
+                        return Current.NEXTBUDG06 == null;
                     case 49: // NEXTBUDG07
-                        return CurrentItem.NEXTBUDG07 == null;
+                        return Current.NEXTBUDG07 == null;
                     case 50: // NEXTBUDG08
-                        return CurrentItem.NEXTBUDG08 == null;
+                        return Current.NEXTBUDG08 == null;
                     case 51: // NEXTBUDG09
-                        return CurrentItem.NEXTBUDG09 == null;
+                        return Current.NEXTBUDG09 == null;
                     case 52: // NEXTBUDG10
-                        return CurrentItem.NEXTBUDG10 == null;
+                        return Current.NEXTBUDG10 == null;
                     case 53: // NEXTBUDG11
-                        return CurrentItem.NEXTBUDG11 == null;
+                        return Current.NEXTBUDG11 == null;
                     case 54: // NEXTBUDG12
-                        return CurrentItem.NEXTBUDG12 == null;
+                        return Current.NEXTBUDG12 == null;
                     case 55: // ANNUALBUDG
-                        return CurrentItem.ANNUALBUDG == null;
+                        return Current.ANNUALBUDG == null;
                     case 56: // NEXT_ANN_BUDG
-                        return CurrentItem.NEXT_ANN_BUDG == null;
+                        return Current.NEXT_ANN_BUDG == null;
                     case 57: // LASTBUDG01
-                        return CurrentItem.LASTBUDG01 == null;
+                        return Current.LASTBUDG01 == null;
                     case 58: // LASTBUDG02
-                        return CurrentItem.LASTBUDG02 == null;
+                        return Current.LASTBUDG02 == null;
                     case 59: // LASTBUDG03
-                        return CurrentItem.LASTBUDG03 == null;
+                        return Current.LASTBUDG03 == null;
                     case 60: // LASTBUDG04
-                        return CurrentItem.LASTBUDG04 == null;
+                        return Current.LASTBUDG04 == null;
                     case 61: // LASTBUDG05
-                        return CurrentItem.LASTBUDG05 == null;
+                        return Current.LASTBUDG05 == null;
                     case 62: // LASTBUDG06
-                        return CurrentItem.LASTBUDG06 == null;
+                        return Current.LASTBUDG06 == null;
                     case 63: // LASTBUDG07
-                        return CurrentItem.LASTBUDG07 == null;
+                        return Current.LASTBUDG07 == null;
                     case 64: // LASTBUDG08
-                        return CurrentItem.LASTBUDG08 == null;
+                        return Current.LASTBUDG08 == null;
                     case 65: // LASTBUDG09
-                        return CurrentItem.LASTBUDG09 == null;
+                        return Current.LASTBUDG09 == null;
                     case 66: // LASTBUDG10
-                        return CurrentItem.LASTBUDG10 == null;
+                        return Current.LASTBUDG10 == null;
                     case 67: // LASTBUDG11
-                        return CurrentItem.LASTBUDG11 == null;
+                        return Current.LASTBUDG11 == null;
                     case 68: // LASTBUDG12
-                        return CurrentItem.LASTBUDG12 == null;
+                        return Current.LASTBUDG12 == null;
                     case 69: // LAST_ANN_BUDG
-                        return CurrentItem.LAST_ANN_BUDG == null;
+                        return Current.LAST_ANN_BUDG == null;
                     case 70: // IMPORTED
-                        return CurrentItem.IMPORTED == null;
+                        return Current.IMPORTED == null;
                     case 71: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 72: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 73: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1059,7 +1139,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -1214,35 +1294,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

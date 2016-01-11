@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TCTRDataSet : EduHubDataSet<TCTR>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TCTR"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TCTRDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TCTR" /> fields for each CSV column header</returns>
-        protected override Action<TCTR, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TCTR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TCTR, string>[Headers.Count];
 
@@ -91,29 +94,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TCTR" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TCTR" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TCTR" /> items to added or update the base <see cref="TCTR" /> items</param>
-        /// <returns>A merged list of <see cref="TCTR" /> items</returns>
-        protected override List<TCTR> ApplyDeltaItems(List<TCTR> Items, List<TCTR> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TCTR" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TCTR" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TCTR}"/> of entities</returns>
+        internal override IEnumerable<TCTR> ApplyDeltaEntities(IEnumerable<TCTR> Entities, List<TCTR> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (TCTR deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.TCTRKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.TCTRKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.TCTRKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -300,11 +329,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TCTR table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TCTR table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TCTR](
         [TID] int IDENTITY NOT NULL,
@@ -337,138 +370,189 @@ BEGIN
     (
             [TEACH] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_ROOM')
+    ALTER INDEX [Index_ROOM] ON [dbo].[TCTR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TEACH')
+    ALTER INDEX [Index_TEACH] ON [dbo].[TCTR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TCTR] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_ROOM')
+    ALTER INDEX [Index_ROOM] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TEACH')
+    ALTER INDEX [Index_TEACH] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TCTR"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TCTR"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TCTR> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TCTR] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TCTR data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TCTR data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TCTR> GetDataSetDataReader()
         {
-            return new TCTRDataReader(Items.Value);
+            return new TCTRDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TCTR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TCTR data set</returns>
+        public override EduHubDataSetDataReader<TCTR> GetDataSetDataReader(List<TCTR> Entities)
+        {
+            return new TCTRDataReader(new EduHubDataSetLoadedReader<TCTR>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TCTRDataReader : IDataReader, IDataRecord
+        private class TCTRDataReader : EduHubDataSetDataReader<TCTR>
         {
-            private List<TCTR> Items;
-            private int CurrentIndex;
-            private TCTR CurrentItem;
-
-            public TCTRDataReader(List<TCTR> Items)
+            public TCTRDataReader(IEduHubDataSetReader<TCTR> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 14; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 14; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // TCTRKEY
-                        return CurrentItem.TCTRKEY;
+                        return Current.TCTRKEY;
                     case 2: // TCTQ_TID
-                        return CurrentItem.TCTQ_TID;
+                        return Current.TCTQ_TID;
                     case 3: // TEACH
-                        return CurrentItem.TEACH;
+                        return Current.TEACH;
                     case 4: // ROOM
-                        return CurrentItem.ROOM;
+                        return Current.ROOM;
                     case 5: // COMMENT_R
-                        return CurrentItem.COMMENT_R;
+                        return Current.COMMENT_R;
                     case 6: // COUNT_EXTRAS
-                        return CurrentItem.COUNT_EXTRAS;
+                        return Current.COUNT_EXTRAS;
                     case 7: // EXTRAS_VALUE
-                        return CurrentItem.EXTRAS_VALUE;
+                        return Current.EXTRAS_VALUE;
                     case 8: // ABSENTEE_TID
-                        return CurrentItem.ABSENTEE_TID;
+                        return Current.ABSENTEE_TID;
                     case 9: // TEACHER_CLASH
-                        return CurrentItem.TEACHER_CLASH;
+                        return Current.TEACHER_CLASH;
                     case 10: // ROOM_CLASH
-                        return CurrentItem.ROOM_CLASH;
+                        return Current.ROOM_CLASH;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // TCTQ_TID
-                        return CurrentItem.TCTQ_TID == null;
+                        return Current.TCTQ_TID == null;
                     case 3: // TEACH
-                        return CurrentItem.TEACH == null;
+                        return Current.TEACH == null;
                     case 4: // ROOM
-                        return CurrentItem.ROOM == null;
+                        return Current.ROOM == null;
                     case 5: // COMMENT_R
-                        return CurrentItem.COMMENT_R == null;
+                        return Current.COMMENT_R == null;
                     case 6: // COUNT_EXTRAS
-                        return CurrentItem.COUNT_EXTRAS == null;
+                        return Current.COUNT_EXTRAS == null;
                     case 7: // EXTRAS_VALUE
-                        return CurrentItem.EXTRAS_VALUE == null;
+                        return Current.EXTRAS_VALUE == null;
                     case 8: // ABSENTEE_TID
-                        return CurrentItem.ABSENTEE_TID == null;
+                        return Current.ABSENTEE_TID == null;
                     case 9: // TEACHER_CLASH
-                        return CurrentItem.TEACHER_CLASH == null;
+                        return Current.TEACHER_CLASH == null;
                     case 10: // ROOM_CLASH
-                        return CurrentItem.ROOM_CLASH == null;
+                        return Current.ROOM_CLASH == null;
                     case 11: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 12: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 13: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -505,7 +589,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -540,35 +624,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

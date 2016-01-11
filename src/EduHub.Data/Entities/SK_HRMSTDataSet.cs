@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SK_HRMSTDataSet : EduHubDataSet<SK_HRMST>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SK_HRMST"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return false; } }
 
         internal SK_HRMSTDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SK_HRMST" /> fields for each CSV column header</returns>
-        protected override Action<SK_HRMST, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SK_HRMST, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SK_HRMST, string>[Headers.Count];
 
@@ -139,29 +142,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SK_HRMST" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SK_HRMST" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SK_HRMST" /> items to added or update the base <see cref="SK_HRMST" /> items</param>
-        /// <returns>A merged list of <see cref="SK_HRMST" /> items</returns>
-        protected override List<SK_HRMST> ApplyDeltaItems(List<SK_HRMST> Items, List<SK_HRMST> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SK_HRMST" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SK_HRMST" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SK_HRMST}"/> of entities</returns>
+        internal override IEnumerable<SK_HRMST> ApplyDeltaEntities(IEnumerable<SK_HRMST> Entities, List<SK_HRMST> DeltaEntities)
         {
-            Dictionary<int, int> Index_SEQ = Items.ToIndexDictionary(i => i.SEQ);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_SEQ = new HashSet<int>(DeltaEntities.Select(i => i.SEQ));
 
-            foreach (SK_HRMST deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_SEQ.TryGetValue(deltaItem.SEQ, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SEQ;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_SEQ.Remove(entity.SEQ);
+                            
+                            if (entity.SEQ.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SEQ)
-                .ToList();
         }
 
         #region Index Fields
@@ -219,11 +248,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SK_HRMST table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SK_HRMST table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SK_HRMST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SK_HRMST]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SK_HRMST](
         [SEQ] int IDENTITY NOT NULL,
@@ -261,208 +294,239 @@ BEGIN
             [SEQ] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SK_HRMSTDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="SK_HRMSTDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SK_HRMST"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SK_HRMST"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SK_HRMST> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_SEQ = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SEQ.Add(entity.SEQ);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SK_HRMST] WHERE");
+
+
+            // Index_SEQ
+            builder.Append("[SEQ] IN (");
+            for (int index = 0; index < Index_SEQ.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SEQ
+                var parameterSEQ = $"@p{parameterIndex++}";
+                builder.Append(parameterSEQ);
+                command.Parameters.Add(parameterSEQ, SqlDbType.Int).Value = Index_SEQ[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SK_HRMST data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SK_HRMST data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SK_HRMST> GetDataSetDataReader()
         {
-            return new SK_HRMSTDataReader(Items.Value);
+            return new SK_HRMSTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SK_HRMST data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SK_HRMST data set</returns>
+        public override EduHubDataSetDataReader<SK_HRMST> GetDataSetDataReader(List<SK_HRMST> Entities)
+        {
+            return new SK_HRMSTDataReader(new EduHubDataSetLoadedReader<SK_HRMST>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SK_HRMSTDataReader : IDataReader, IDataRecord
+        private class SK_HRMSTDataReader : EduHubDataSetDataReader<SK_HRMST>
         {
-            private List<SK_HRMST> Items;
-            private int CurrentIndex;
-            private SK_HRMST CurrentItem;
-
-            public SK_HRMSTDataReader(List<SK_HRMST> Items)
+            public SK_HRMSTDataReader(IEduHubDataSetReader<SK_HRMST> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 31; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 31; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SEQ
-                        return CurrentItem.SEQ;
+                        return Current.SEQ;
                     case 1: // DEPTID
-                        return CurrentItem.DEPTID;
+                        return Current.DEPTID;
                     case 2: // EMPLID
-                        return CurrentItem.EMPLID;
+                        return Current.EMPLID;
                     case 3: // JOBCODE
-                        return CurrentItem.JOBCODE;
+                        return Current.JOBCODE;
                     case 4: // LAST_NAME
-                        return CurrentItem.LAST_NAME;
+                        return Current.LAST_NAME;
                     case 5: // PREFIX
-                        return CurrentItem.PREFIX;
+                        return Current.PREFIX;
                     case 6: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME;
+                        return Current.FIRST_NAME;
                     case 7: // MIDDLE_NAME
-                        return CurrentItem.MIDDLE_NAME;
+                        return Current.MIDDLE_NAME;
                     case 8: // PREF_NAME
-                        return CurrentItem.PREF_NAME;
+                        return Current.PREF_NAME;
                     case 9: // PREV_SURNAME
-                        return CurrentItem.PREV_SURNAME;
+                        return Current.PREV_SURNAME;
                     case 10: // GENDER
-                        return CurrentItem.GENDER;
+                        return Current.GENDER;
                     case 11: // BIRTH_DATE
-                        return CurrentItem.BIRTH_DATE;
+                        return Current.BIRTH_DATE;
                     case 12: // H_ADDRESS01
-                        return CurrentItem.H_ADDRESS01;
+                        return Current.H_ADDRESS01;
                     case 13: // H_ADDRESS02
-                        return CurrentItem.H_ADDRESS02;
+                        return Current.H_ADDRESS02;
                     case 14: // H_ADDRESS03
-                        return CurrentItem.H_ADDRESS03;
+                        return Current.H_ADDRESS03;
                     case 15: // H_STATE
-                        return CurrentItem.H_STATE;
+                        return Current.H_STATE;
                     case 16: // H_POST_CODE
-                        return CurrentItem.H_POST_CODE;
+                        return Current.H_POST_CODE;
                     case 17: // P_ADDRESS01
-                        return CurrentItem.P_ADDRESS01;
+                        return Current.P_ADDRESS01;
                     case 18: // P_ADDRESS02
-                        return CurrentItem.P_ADDRESS02;
+                        return Current.P_ADDRESS02;
                     case 19: // P_ADDRESS03
-                        return CurrentItem.P_ADDRESS03;
+                        return Current.P_ADDRESS03;
                     case 20: // P_STATE
-                        return CurrentItem.P_STATE;
+                        return Current.P_STATE;
                     case 21: // P_POST_CODE
-                        return CurrentItem.P_POST_CODE;
+                        return Current.P_POST_CODE;
                     case 22: // HOME_PHONE
-                        return CurrentItem.HOME_PHONE;
+                        return Current.HOME_PHONE;
                     case 23: // MOBILE_PHONE
-                        return CurrentItem.MOBILE_PHONE;
+                        return Current.MOBILE_PHONE;
                     case 24: // WORK_PHONE
-                        return CurrentItem.WORK_PHONE;
+                        return Current.WORK_PHONE;
                     case 25: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS;
+                        return Current.EMAIL_ADDRESS;
                     case 26: // EMERG_CONTACT
-                        return CurrentItem.EMERG_CONTACT;
+                        return Current.EMERG_CONTACT;
                     case 27: // EMERG_RELATE
-                        return CurrentItem.EMERG_RELATE;
+                        return Current.EMERG_RELATE;
                     case 28: // EMERG_PHONE
-                        return CurrentItem.EMERG_PHONE;
+                        return Current.EMERG_PHONE;
                     case 29: // START_DATE
-                        return CurrentItem.START_DATE;
+                        return Current.START_DATE;
                     case 30: // FINISH_DATE
-                        return CurrentItem.FINISH_DATE;
+                        return Current.FINISH_DATE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DEPTID
-                        return CurrentItem.DEPTID == null;
+                        return Current.DEPTID == null;
                     case 2: // EMPLID
-                        return CurrentItem.EMPLID == null;
+                        return Current.EMPLID == null;
                     case 3: // JOBCODE
-                        return CurrentItem.JOBCODE == null;
+                        return Current.JOBCODE == null;
                     case 4: // LAST_NAME
-                        return CurrentItem.LAST_NAME == null;
+                        return Current.LAST_NAME == null;
                     case 5: // PREFIX
-                        return CurrentItem.PREFIX == null;
+                        return Current.PREFIX == null;
                     case 6: // FIRST_NAME
-                        return CurrentItem.FIRST_NAME == null;
+                        return Current.FIRST_NAME == null;
                     case 7: // MIDDLE_NAME
-                        return CurrentItem.MIDDLE_NAME == null;
+                        return Current.MIDDLE_NAME == null;
                     case 8: // PREF_NAME
-                        return CurrentItem.PREF_NAME == null;
+                        return Current.PREF_NAME == null;
                     case 9: // PREV_SURNAME
-                        return CurrentItem.PREV_SURNAME == null;
+                        return Current.PREV_SURNAME == null;
                     case 10: // GENDER
-                        return CurrentItem.GENDER == null;
+                        return Current.GENDER == null;
                     case 11: // BIRTH_DATE
-                        return CurrentItem.BIRTH_DATE == null;
+                        return Current.BIRTH_DATE == null;
                     case 12: // H_ADDRESS01
-                        return CurrentItem.H_ADDRESS01 == null;
+                        return Current.H_ADDRESS01 == null;
                     case 13: // H_ADDRESS02
-                        return CurrentItem.H_ADDRESS02 == null;
+                        return Current.H_ADDRESS02 == null;
                     case 14: // H_ADDRESS03
-                        return CurrentItem.H_ADDRESS03 == null;
+                        return Current.H_ADDRESS03 == null;
                     case 15: // H_STATE
-                        return CurrentItem.H_STATE == null;
+                        return Current.H_STATE == null;
                     case 16: // H_POST_CODE
-                        return CurrentItem.H_POST_CODE == null;
+                        return Current.H_POST_CODE == null;
                     case 17: // P_ADDRESS01
-                        return CurrentItem.P_ADDRESS01 == null;
+                        return Current.P_ADDRESS01 == null;
                     case 18: // P_ADDRESS02
-                        return CurrentItem.P_ADDRESS02 == null;
+                        return Current.P_ADDRESS02 == null;
                     case 19: // P_ADDRESS03
-                        return CurrentItem.P_ADDRESS03 == null;
+                        return Current.P_ADDRESS03 == null;
                     case 20: // P_STATE
-                        return CurrentItem.P_STATE == null;
+                        return Current.P_STATE == null;
                     case 21: // P_POST_CODE
-                        return CurrentItem.P_POST_CODE == null;
+                        return Current.P_POST_CODE == null;
                     case 22: // HOME_PHONE
-                        return CurrentItem.HOME_PHONE == null;
+                        return Current.HOME_PHONE == null;
                     case 23: // MOBILE_PHONE
-                        return CurrentItem.MOBILE_PHONE == null;
+                        return Current.MOBILE_PHONE == null;
                     case 24: // WORK_PHONE
-                        return CurrentItem.WORK_PHONE == null;
+                        return Current.WORK_PHONE == null;
                     case 25: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS == null;
+                        return Current.EMAIL_ADDRESS == null;
                     case 26: // EMERG_CONTACT
-                        return CurrentItem.EMERG_CONTACT == null;
+                        return Current.EMERG_CONTACT == null;
                     case 27: // EMERG_RELATE
-                        return CurrentItem.EMERG_RELATE == null;
+                        return Current.EMERG_RELATE == null;
                     case 28: // EMERG_PHONE
-                        return CurrentItem.EMERG_PHONE == null;
+                        return Current.EMERG_PHONE == null;
                     case 29: // START_DATE
-                        return CurrentItem.START_DATE == null;
+                        return Current.START_DATE == null;
                     case 30: // FINISH_DATE
-                        return CurrentItem.FINISH_DATE == null;
+                        return Current.FINISH_DATE == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -533,7 +597,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -602,35 +666,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class TTEXDataSet : EduHubDataSet<TTEX>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TTEX"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal TTEXDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TTEX" /> fields for each CSV column header</returns>
-        protected override Action<TTEX, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TTEX, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TTEX, string>[Headers.Count];
 
@@ -84,29 +87,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TTEX" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TTEX" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TTEX" /> items to added or update the base <see cref="TTEX" /> items</param>
-        /// <returns>A merged list of <see cref="TTEX" /> items</returns>
-        protected override List<TTEX> ApplyDeltaItems(List<TTEX> Items, List<TTEX> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TTEX" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TTEX" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TTEX}"/> of entities</returns>
+        internal override IEnumerable<TTEX> ApplyDeltaEntities(IEnumerable<TTEX> Entities, List<TTEX> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (TTEX deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.GKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.GKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.GKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -250,11 +279,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TTEX table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TTEX table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TTEX](
         [TID] int IDENTITY NOT NULL,
@@ -281,130 +314,177 @@ BEGIN
     (
             [GKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND name = N'Index_EXAM_ROOM')
+    ALTER INDEX [Index_EXAM_ROOM] ON [dbo].[TTEX] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TTEX] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND name = N'Index_EXAM_ROOM')
+    ALTER INDEX [Index_EXAM_ROOM] ON [dbo].[TTEX] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEX]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[TTEX] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TTEX"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TTEX"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TTEX> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TTEX] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TTEX data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TTEX data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TTEX> GetDataSetDataReader()
         {
-            return new TTEXDataReader(Items.Value);
+            return new TTEXDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TTEX data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TTEX data set</returns>
+        public override EduHubDataSetDataReader<TTEX> GetDataSetDataReader(List<TTEX> Entities)
+        {
+            return new TTEXDataReader(new EduHubDataSetLoadedReader<TTEX>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class TTEXDataReader : IDataReader, IDataRecord
+        private class TTEXDataReader : EduHubDataSetDataReader<TTEX>
         {
-            private List<TTEX> Items;
-            private int CurrentIndex;
-            private TTEX CurrentItem;
-
-            public TTEXDataReader(List<TTEX> Items)
+            public TTEXDataReader(IEduHubDataSetReader<TTEX> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 12; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 12; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // GKEY
-                        return CurrentItem.GKEY;
+                        return Current.GKEY;
                     case 2: // TTES_TID
-                        return CurrentItem.TTES_TID;
+                        return Current.TTES_TID;
                     case 3: // EXAM_ROW
-                        return CurrentItem.EXAM_ROW;
+                        return Current.EXAM_ROW;
                     case 4: // EXAM_COL
-                        return CurrentItem.EXAM_COL;
+                        return Current.EXAM_COL;
                     case 5: // EXAM_FIX_ROW
-                        return CurrentItem.EXAM_FIX_ROW;
+                        return Current.EXAM_FIX_ROW;
                     case 6: // EXAM_FIX_COL
-                        return CurrentItem.EXAM_FIX_COL;
+                        return Current.EXAM_FIX_COL;
                     case 7: // EXAM_ROOM
-                        return CurrentItem.EXAM_ROOM;
+                        return Current.EXAM_ROOM;
                     case 8: // EXAM_DESCRIPTION
-                        return CurrentItem.EXAM_DESCRIPTION;
+                        return Current.EXAM_DESCRIPTION;
                     case 9: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 10: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 11: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // TTES_TID
-                        return CurrentItem.TTES_TID == null;
+                        return Current.TTES_TID == null;
                     case 3: // EXAM_ROW
-                        return CurrentItem.EXAM_ROW == null;
+                        return Current.EXAM_ROW == null;
                     case 4: // EXAM_COL
-                        return CurrentItem.EXAM_COL == null;
+                        return Current.EXAM_COL == null;
                     case 5: // EXAM_FIX_ROW
-                        return CurrentItem.EXAM_FIX_ROW == null;
+                        return Current.EXAM_FIX_ROW == null;
                     case 6: // EXAM_FIX_COL
-                        return CurrentItem.EXAM_FIX_COL == null;
+                        return Current.EXAM_FIX_COL == null;
                     case 7: // EXAM_ROOM
-                        return CurrentItem.EXAM_ROOM == null;
+                        return Current.EXAM_ROOM == null;
                     case 8: // EXAM_DESCRIPTION
-                        return CurrentItem.EXAM_DESCRIPTION == null;
+                        return Current.EXAM_DESCRIPTION == null;
                     case 9: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 10: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 11: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -437,7 +517,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -468,35 +548,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

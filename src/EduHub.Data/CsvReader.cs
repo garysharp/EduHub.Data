@@ -21,6 +21,7 @@ namespace EduHub.Data
         private int charPosition;
         private StringBuilder stringBuilder;
 
+        private int recordsRead;
         private string[] header;
 
         public IReadOnlyList<string> Header { get { return header; } }
@@ -46,6 +47,27 @@ namespace EduHub.Data
             stringBuilder = new StringBuilder(80);
 
             header = ReadRecord().ToArray();
+            recordsRead = 0;
+        }
+
+        public double Progress
+        {
+            get
+            {
+                if (stream.Length > 0)
+                {
+                    return (stream.Position / (double)stream.Length) * 100;
+                }
+                else { return 100; }
+            }
+        }
+
+        public int RecordsRead
+        {
+            get
+            {
+                return recordsRead;
+            }
         }
 
         private int ReadBuffer()
@@ -173,6 +195,7 @@ namespace EduHub.Data
                                     {
                                         // End of Stream
                                         record.Add(stringBuilder.ToString());
+                                        recordsRead++;
                                         return record;
                                     }
                                 }
@@ -211,6 +234,7 @@ namespace EduHub.Data
                                             {
                                                 this.charPosition++;
                                             }
+                                            recordsRead++;
                                             return record;
                                         }
 
@@ -254,6 +278,7 @@ namespace EduHub.Data
                                     this.charPosition++;
                                 }
 
+                                recordsRead++;
                                 return record;
                             }
                             break;
@@ -276,6 +301,7 @@ namespace EduHub.Data
                 stringBuilder.Clear();
             }
 
+            recordsRead++;
             return record;
         }
 

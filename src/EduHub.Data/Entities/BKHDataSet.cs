@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class BKHDataSet : EduHubDataSet<BKH>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "BKH"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal BKHDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="BKH" /> fields for each CSV column header</returns>
-        protected override Action<BKH, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<BKH, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<BKH, string>[Headers.Count];
 
@@ -109,29 +112,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="BKH" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="BKH" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="BKH" /> items to added or update the base <see cref="BKH" /> items</param>
-        /// <returns>A merged list of <see cref="BKH" /> items</returns>
-        protected override List<BKH> ApplyDeltaItems(List<BKH> Items, List<BKH> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="BKH" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="BKH" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{BKH}"/> of entities</returns>
+        internal override IEnumerable<BKH> ApplyDeltaEntities(IEnumerable<BKH> Entities, List<BKH> DeltaEntities)
         {
-            Dictionary<string, int> Index_BKHKEY = Items.ToIndexDictionary(i => i.BKHKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_BKHKEY = new HashSet<string>(DeltaEntities.Select(i => i.BKHKEY));
 
-            foreach (BKH deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_BKHKEY.TryGetValue(deltaItem.BKHKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.BKHKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_BKHKEY.Remove(entity.BKHKEY);
+                            
+                            if (entity.BKHKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.BKHKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -189,11 +218,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a BKH table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a BKH table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[BKH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[BKH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[BKH](
         [BKHKEY] varchar(13) NOT NULL,
@@ -221,168 +254,199 @@ BEGIN
             [BKHKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="BKHDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="BKHDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="BKH"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="BKH"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<BKH> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_BKHKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_BKHKEY.Add(entity.BKHKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[BKH] WHERE");
+
+
+            // Index_BKHKEY
+            builder.Append("[BKHKEY] IN (");
+            for (int index = 0; index < Index_BKHKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // BKHKEY
+                var parameterBKHKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterBKHKEY);
+                command.Parameters.Add(parameterBKHKEY, SqlDbType.VarChar, 13).Value = Index_BKHKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the BKH data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the BKH data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<BKH> GetDataSetDataReader()
         {
-            return new BKHDataReader(Items.Value);
+            return new BKHDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the BKH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the BKH data set</returns>
+        public override EduHubDataSetDataReader<BKH> GetDataSetDataReader(List<BKH> Entities)
+        {
+            return new BKHDataReader(new EduHubDataSetLoadedReader<BKH>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class BKHDataReader : IDataReader, IDataRecord
+        private class BKHDataReader : EduHubDataSetDataReader<BKH>
         {
-            private List<BKH> Items;
-            private int CurrentIndex;
-            private BKH CurrentItem;
-
-            public BKHDataReader(List<BKH> Items)
+            public BKHDataReader(IEduHubDataSetReader<BKH> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 21; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 21; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // BKHKEY
-                        return CurrentItem.BKHKEY;
+                        return Current.BKHKEY;
                     case 1: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 2: // EDITION
-                        return CurrentItem.EDITION;
+                        return Current.EDITION;
                     case 3: // AUTHOR
-                        return CurrentItem.AUTHOR;
+                        return Current.AUTHOR;
                     case 4: // PUBLISHER
-                        return CurrentItem.PUBLISHER;
+                        return Current.PUBLISHER;
                     case 5: // PRICE
-                        return CurrentItem.PRICE;
+                        return Current.PRICE;
                     case 6: // ITEM_TYPE
-                        return CurrentItem.ITEM_TYPE;
+                        return Current.ITEM_TYPE;
                     case 7: // NO_COPIES
-                        return CurrentItem.NO_COPIES;
+                        return Current.NO_COPIES;
                     case 8: // SEEDED_NUM
-                        return CurrentItem.SEEDED_NUM;
+                        return Current.SEEDED_NUM;
                     case 9: // AVAIL_COPIES
-                        return CurrentItem.AVAIL_COPIES;
+                        return Current.AVAIL_COPIES;
                     case 10: // ISBN
-                        return CurrentItem.ISBN;
+                        return Current.ISBN;
                     case 11: // ANNOTATIONS
-                        return CurrentItem.ANNOTATIONS;
+                        return Current.ANNOTATIONS;
                     case 12: // PURCHASE_DATE
-                        return CurrentItem.PURCHASE_DATE;
+                        return Current.PURCHASE_DATE;
                     case 13: // PURCHASE_PRICE
-                        return CurrentItem.PURCHASE_PRICE;
+                        return Current.PURCHASE_PRICE;
                     case 14: // HIRE_FEE
-                        return CurrentItem.HIRE_FEE;
+                        return Current.HIRE_FEE;
                     case 15: // REMOVE
-                        return CurrentItem.REMOVE;
+                        return Current.REMOVE;
                     case 16: // BOOK_MOVIE
-                        return CurrentItem.BOOK_MOVIE;
+                        return Current.BOOK_MOVIE;
                     case 17: // BOOK_SOUND
-                        return CurrentItem.BOOK_SOUND;
+                        return Current.BOOK_SOUND;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 2: // EDITION
-                        return CurrentItem.EDITION == null;
+                        return Current.EDITION == null;
                     case 3: // AUTHOR
-                        return CurrentItem.AUTHOR == null;
+                        return Current.AUTHOR == null;
                     case 4: // PUBLISHER
-                        return CurrentItem.PUBLISHER == null;
+                        return Current.PUBLISHER == null;
                     case 5: // PRICE
-                        return CurrentItem.PRICE == null;
+                        return Current.PRICE == null;
                     case 6: // ITEM_TYPE
-                        return CurrentItem.ITEM_TYPE == null;
+                        return Current.ITEM_TYPE == null;
                     case 7: // NO_COPIES
-                        return CurrentItem.NO_COPIES == null;
+                        return Current.NO_COPIES == null;
                     case 8: // SEEDED_NUM
-                        return CurrentItem.SEEDED_NUM == null;
+                        return Current.SEEDED_NUM == null;
                     case 9: // AVAIL_COPIES
-                        return CurrentItem.AVAIL_COPIES == null;
+                        return Current.AVAIL_COPIES == null;
                     case 10: // ISBN
-                        return CurrentItem.ISBN == null;
+                        return Current.ISBN == null;
                     case 11: // ANNOTATIONS
-                        return CurrentItem.ANNOTATIONS == null;
+                        return Current.ANNOTATIONS == null;
                     case 12: // PURCHASE_DATE
-                        return CurrentItem.PURCHASE_DATE == null;
+                        return Current.PURCHASE_DATE == null;
                     case 13: // PURCHASE_PRICE
-                        return CurrentItem.PURCHASE_PRICE == null;
+                        return Current.PURCHASE_PRICE == null;
                     case 14: // HIRE_FEE
-                        return CurrentItem.HIRE_FEE == null;
+                        return Current.HIRE_FEE == null;
                     case 15: // REMOVE
-                        return CurrentItem.REMOVE == null;
+                        return Current.REMOVE == null;
                     case 16: // BOOK_MOVIE
-                        return CurrentItem.BOOK_MOVIE == null;
+                        return Current.BOOK_MOVIE == null;
                     case 17: // BOOK_SOUND
-                        return CurrentItem.BOOK_SOUND == null;
+                        return Current.BOOK_SOUND == null;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -433,7 +497,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -482,35 +546,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

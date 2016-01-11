@@ -23,7 +23,7 @@ namespace EduHub.Data.Samples
 
             // Data Updated
             ForegroundColor = ConsoleColor.Cyan;
-            WriteLine("eduHub Students Updated: {0:G}", Context.ST.Age);
+            WriteLine("eduHub Students Updated: {0:G}", Context.ST.LastModified);
 
             // Build using Query Syntax
             var activeStudents = (

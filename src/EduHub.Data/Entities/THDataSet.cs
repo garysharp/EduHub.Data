@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class THDataSet : EduHubDataSet<TH>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "TH"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal THDataSet(EduHubContext Context)
             : base(Context)
@@ -42,7 +45,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="TH" /> fields for each CSV column header</returns>
-        protected override Action<TH, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<TH, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<TH, string>[Headers.Count];
 
@@ -414,29 +417,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="TH" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="TH" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="TH" /> items to added or update the base <see cref="TH" /> items</param>
-        /// <returns>A merged list of <see cref="TH" /> items</returns>
-        protected override List<TH> ApplyDeltaItems(List<TH> Items, List<TH> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="TH" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="TH" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{TH}"/> of entities</returns>
+        internal override IEnumerable<TH> ApplyDeltaEntities(IEnumerable<TH> Entities, List<TH> DeltaEntities)
         {
-            Dictionary<string, int> Index_THKEY = Items.ToIndexDictionary(i => i.THKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_THKEY = new HashSet<string>(DeltaEntities.Select(i => i.THKEY));
 
-            foreach (TH deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_THKEY.TryGetValue(deltaItem.THKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.THKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_THKEY.Remove(entity.THKEY);
+                            
+                            if (entity.THKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.THKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -1096,11 +1125,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a TH table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a TH table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[TH]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[TH](
         [THKEY] varchar(8) NOT NULL,
@@ -1281,556 +1314,651 @@ BEGIN
     (
             [TT13KEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT01KEY')
+    ALTER INDEX [Index_TT01KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT02KEY')
+    ALTER INDEX [Index_TT02KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT03KEY')
+    ALTER INDEX [Index_TT03KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT04KEY')
+    ALTER INDEX [Index_TT04KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT05KEY')
+    ALTER INDEX [Index_TT05KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT06KEY')
+    ALTER INDEX [Index_TT06KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT07KEY')
+    ALTER INDEX [Index_TT07KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT08KEY')
+    ALTER INDEX [Index_TT08KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT09KEY')
+    ALTER INDEX [Index_TT09KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT10KEY')
+    ALTER INDEX [Index_TT10KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT11KEY')
+    ALTER INDEX [Index_TT11KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT12KEY')
+    ALTER INDEX [Index_TT12KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT13KEY')
+    ALTER INDEX [Index_TT13KEY] ON [dbo].[TH] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT01KEY')
+    ALTER INDEX [Index_TT01KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT02KEY')
+    ALTER INDEX [Index_TT02KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT03KEY')
+    ALTER INDEX [Index_TT03KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT04KEY')
+    ALTER INDEX [Index_TT04KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT05KEY')
+    ALTER INDEX [Index_TT05KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT06KEY')
+    ALTER INDEX [Index_TT06KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT07KEY')
+    ALTER INDEX [Index_TT07KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT08KEY')
+    ALTER INDEX [Index_TT08KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT09KEY')
+    ALTER INDEX [Index_TT09KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT10KEY')
+    ALTER INDEX [Index_TT10KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT11KEY')
+    ALTER INDEX [Index_TT11KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT12KEY')
+    ALTER INDEX [Index_TT12KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT13KEY')
+    ALTER INDEX [Index_TT13KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="TH"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="TH"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<TH> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_THKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_THKEY.Add(entity.THKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[TH] WHERE");
+
+
+            // Index_THKEY
+            builder.Append("[THKEY] IN (");
+            for (int index = 0; index < Index_THKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // THKEY
+                var parameterTHKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterTHKEY);
+                command.Parameters.Add(parameterTHKEY, SqlDbType.VarChar, 8).Value = Index_THKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the TH data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the TH data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<TH> GetDataSetDataReader()
         {
-            return new THDataReader(Items.Value);
+            return new THDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the TH data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the TH data set</returns>
+        public override EduHubDataSetDataReader<TH> GetDataSetDataReader(List<TH> Entities)
+        {
+            return new THDataReader(new EduHubDataSetLoadedReader<TH>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class THDataReader : IDataReader, IDataRecord
+        private class THDataReader : EduHubDataSetDataReader<TH>
         {
-            private List<TH> Items;
-            private int CurrentIndex;
-            private TH CurrentItem;
-
-            public THDataReader(List<TH> Items)
+            public THDataReader(IEduHubDataSetReader<TH> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 118; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 118; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // THKEY
-                        return CurrentItem.THKEY;
+                        return Current.THKEY;
                     case 1: // TITLE
-                        return CurrentItem.TITLE;
+                        return Current.TITLE;
                     case 2: // SELECTABLE
-                        return CurrentItem.SELECTABLE;
+                        return Current.SELECTABLE;
                     case 3: // THROWS
-                        return CurrentItem.THROWS;
+                        return Current.THROWS;
                     case 4: // THCOLS
-                        return CurrentItem.THCOLS;
+                        return Current.THCOLS;
                     case 5: // TH_RLABEL01
-                        return CurrentItem.TH_RLABEL01;
+                        return Current.TH_RLABEL01;
                     case 6: // TH_RLABEL02
-                        return CurrentItem.TH_RLABEL02;
+                        return Current.TH_RLABEL02;
                     case 7: // TH_RLABEL03
-                        return CurrentItem.TH_RLABEL03;
+                        return Current.TH_RLABEL03;
                     case 8: // TH_RLABEL04
-                        return CurrentItem.TH_RLABEL04;
+                        return Current.TH_RLABEL04;
                     case 9: // TH_RLABEL05
-                        return CurrentItem.TH_RLABEL05;
+                        return Current.TH_RLABEL05;
                     case 10: // TH_RLABEL06
-                        return CurrentItem.TH_RLABEL06;
+                        return Current.TH_RLABEL06;
                     case 11: // TH_RLABEL07
-                        return CurrentItem.TH_RLABEL07;
+                        return Current.TH_RLABEL07;
                     case 12: // TH_RLABEL08
-                        return CurrentItem.TH_RLABEL08;
+                        return Current.TH_RLABEL08;
                     case 13: // TH_RLABEL09
-                        return CurrentItem.TH_RLABEL09;
+                        return Current.TH_RLABEL09;
                     case 14: // TH_RLABEL10
-                        return CurrentItem.TH_RLABEL10;
+                        return Current.TH_RLABEL10;
                     case 15: // TH_RLABEL11
-                        return CurrentItem.TH_RLABEL11;
+                        return Current.TH_RLABEL11;
                     case 16: // TH_RLABEL12
-                        return CurrentItem.TH_RLABEL12;
+                        return Current.TH_RLABEL12;
                     case 17: // TH_CLABEL01
-                        return CurrentItem.TH_CLABEL01;
+                        return Current.TH_CLABEL01;
                     case 18: // TH_CLABEL02
-                        return CurrentItem.TH_CLABEL02;
+                        return Current.TH_CLABEL02;
                     case 19: // TH_CLABEL03
-                        return CurrentItem.TH_CLABEL03;
+                        return Current.TH_CLABEL03;
                     case 20: // TH_CLABEL04
-                        return CurrentItem.TH_CLABEL04;
+                        return Current.TH_CLABEL04;
                     case 21: // TH_CLABEL05
-                        return CurrentItem.TH_CLABEL05;
+                        return Current.TH_CLABEL05;
                     case 22: // TH_CLABEL06
-                        return CurrentItem.TH_CLABEL06;
+                        return Current.TH_CLABEL06;
                     case 23: // TH_CLABEL07
-                        return CurrentItem.TH_CLABEL07;
+                        return Current.TH_CLABEL07;
                     case 24: // TH_CLABEL08
-                        return CurrentItem.TH_CLABEL08;
+                        return Current.TH_CLABEL08;
                     case 25: // TH_CLABEL09
-                        return CurrentItem.TH_CLABEL09;
+                        return Current.TH_CLABEL09;
                     case 26: // TH_CLABEL10
-                        return CurrentItem.TH_CLABEL10;
+                        return Current.TH_CLABEL10;
                     case 27: // TH_CLABEL11
-                        return CurrentItem.TH_CLABEL11;
+                        return Current.TH_CLABEL11;
                     case 28: // TH_CLABEL12
-                        return CurrentItem.TH_CLABEL12;
+                        return Current.TH_CLABEL12;
                     case 29: // TH_CLABEL13
-                        return CurrentItem.TH_CLABEL13;
+                        return Current.TH_CLABEL13;
                     case 30: // TH_CLABEL14
-                        return CurrentItem.TH_CLABEL14;
+                        return Current.TH_CLABEL14;
                     case 31: // TH_CLABEL15
-                        return CurrentItem.TH_CLABEL15;
+                        return Current.TH_CLABEL15;
                     case 32: // TEACHING_PERIOD01
-                        return CurrentItem.TEACHING_PERIOD01;
+                        return Current.TEACHING_PERIOD01;
                     case 33: // TEACHING_PERIOD02
-                        return CurrentItem.TEACHING_PERIOD02;
+                        return Current.TEACHING_PERIOD02;
                     case 34: // TEACHING_PERIOD03
-                        return CurrentItem.TEACHING_PERIOD03;
+                        return Current.TEACHING_PERIOD03;
                     case 35: // TEACHING_PERIOD04
-                        return CurrentItem.TEACHING_PERIOD04;
+                        return Current.TEACHING_PERIOD04;
                     case 36: // TEACHING_PERIOD05
-                        return CurrentItem.TEACHING_PERIOD05;
+                        return Current.TEACHING_PERIOD05;
                     case 37: // TEACHING_PERIOD06
-                        return CurrentItem.TEACHING_PERIOD06;
+                        return Current.TEACHING_PERIOD06;
                     case 38: // TEACHING_PERIOD07
-                        return CurrentItem.TEACHING_PERIOD07;
+                        return Current.TEACHING_PERIOD07;
                     case 39: // TEACHING_PERIOD08
-                        return CurrentItem.TEACHING_PERIOD08;
+                        return Current.TEACHING_PERIOD08;
                     case 40: // TEACHING_PERIOD09
-                        return CurrentItem.TEACHING_PERIOD09;
+                        return Current.TEACHING_PERIOD09;
                     case 41: // TEACHING_PERIOD10
-                        return CurrentItem.TEACHING_PERIOD10;
+                        return Current.TEACHING_PERIOD10;
                     case 42: // TEACHING_PERIOD11
-                        return CurrentItem.TEACHING_PERIOD11;
+                        return Current.TEACHING_PERIOD11;
                     case 43: // TEACHING_PERIOD12
-                        return CurrentItem.TEACHING_PERIOD12;
+                        return Current.TEACHING_PERIOD12;
                     case 44: // TT01KEY
-                        return CurrentItem.TT01KEY;
+                        return Current.TT01KEY;
                     case 45: // TT02KEY
-                        return CurrentItem.TT02KEY;
+                        return Current.TT02KEY;
                     case 46: // TT03KEY
-                        return CurrentItem.TT03KEY;
+                        return Current.TT03KEY;
                     case 47: // TT04KEY
-                        return CurrentItem.TT04KEY;
+                        return Current.TT04KEY;
                     case 48: // TT05KEY
-                        return CurrentItem.TT05KEY;
+                        return Current.TT05KEY;
                     case 49: // TT06KEY
-                        return CurrentItem.TT06KEY;
+                        return Current.TT06KEY;
                     case 50: // TT07KEY
-                        return CurrentItem.TT07KEY;
+                        return Current.TT07KEY;
                     case 51: // TT08KEY
-                        return CurrentItem.TT08KEY;
+                        return Current.TT08KEY;
                     case 52: // TT09KEY
-                        return CurrentItem.TT09KEY;
+                        return Current.TT09KEY;
                     case 53: // TT10KEY
-                        return CurrentItem.TT10KEY;
+                        return Current.TT10KEY;
                     case 54: // TT11KEY
-                        return CurrentItem.TT11KEY;
+                        return Current.TT11KEY;
                     case 55: // TT12KEY
-                        return CurrentItem.TT12KEY;
+                        return Current.TT12KEY;
                     case 56: // TT13KEY
-                        return CurrentItem.TT13KEY;
+                        return Current.TT13KEY;
                     case 57: // THVIEW_QUILT01
-                        return CurrentItem.THVIEW_QUILT01;
+                        return Current.THVIEW_QUILT01;
                     case 58: // THVIEW_QUILT02
-                        return CurrentItem.THVIEW_QUILT02;
+                        return Current.THVIEW_QUILT02;
                     case 59: // THVIEW_QUILT03
-                        return CurrentItem.THVIEW_QUILT03;
+                        return Current.THVIEW_QUILT03;
                     case 60: // THVIEW_QUILT04
-                        return CurrentItem.THVIEW_QUILT04;
+                        return Current.THVIEW_QUILT04;
                     case 61: // THVIEW_QUILT05
-                        return CurrentItem.THVIEW_QUILT05;
+                        return Current.THVIEW_QUILT05;
                     case 62: // THVIEW_QUILT06
-                        return CurrentItem.THVIEW_QUILT06;
+                        return Current.THVIEW_QUILT06;
                     case 63: // THVIEW_QUILT07
-                        return CurrentItem.THVIEW_QUILT07;
+                        return Current.THVIEW_QUILT07;
                     case 64: // THVIEW_QUILT08
-                        return CurrentItem.THVIEW_QUILT08;
+                        return Current.THVIEW_QUILT08;
                     case 65: // THVIEW_QUILT09
-                        return CurrentItem.THVIEW_QUILT09;
+                        return Current.THVIEW_QUILT09;
                     case 66: // THVIEW_QUILT10
-                        return CurrentItem.THVIEW_QUILT10;
+                        return Current.THVIEW_QUILT10;
                     case 67: // THVIEW_QUILT11
-                        return CurrentItem.THVIEW_QUILT11;
+                        return Current.THVIEW_QUILT11;
                     case 68: // THVIEW_QUILT12
-                        return CurrentItem.THVIEW_QUILT12;
+                        return Current.THVIEW_QUILT12;
                     case 69: // THVIEW_QUILT13
-                        return CurrentItem.THVIEW_QUILT13;
+                        return Current.THVIEW_QUILT13;
                     case 70: // THVIEW_EXTRA01
-                        return CurrentItem.THVIEW_EXTRA01;
+                        return Current.THVIEW_EXTRA01;
                     case 71: // THVIEW_EXTRA02
-                        return CurrentItem.THVIEW_EXTRA02;
+                        return Current.THVIEW_EXTRA02;
                     case 72: // THVIEW_EXTRA03
-                        return CurrentItem.THVIEW_EXTRA03;
+                        return Current.THVIEW_EXTRA03;
                     case 73: // THVIEW_EXTRA04
-                        return CurrentItem.THVIEW_EXTRA04;
+                        return Current.THVIEW_EXTRA04;
                     case 74: // THVIEW_EXTRA05
-                        return CurrentItem.THVIEW_EXTRA05;
+                        return Current.THVIEW_EXTRA05;
                     case 75: // THVIEW_EXTRA06
-                        return CurrentItem.THVIEW_EXTRA06;
+                        return Current.THVIEW_EXTRA06;
                     case 76: // THVIEW_EXTRA07
-                        return CurrentItem.THVIEW_EXTRA07;
+                        return Current.THVIEW_EXTRA07;
                     case 77: // THVIEW_EXTRA08
-                        return CurrentItem.THVIEW_EXTRA08;
+                        return Current.THVIEW_EXTRA08;
                     case 78: // THVIEW_EXTRA09
-                        return CurrentItem.THVIEW_EXTRA09;
+                        return Current.THVIEW_EXTRA09;
                     case 79: // THVIEW_EXTRA10
-                        return CurrentItem.THVIEW_EXTRA10;
+                        return Current.THVIEW_EXTRA10;
                     case 80: // THVIEW_EXTRA11
-                        return CurrentItem.THVIEW_EXTRA11;
+                        return Current.THVIEW_EXTRA11;
                     case 81: // THVIEW_EXTRA12
-                        return CurrentItem.THVIEW_EXTRA12;
+                        return Current.THVIEW_EXTRA12;
                     case 82: // THVIEW_EXTRA13
-                        return CurrentItem.THVIEW_EXTRA13;
+                        return Current.THVIEW_EXTRA13;
                     case 83: // THVIEW_EXAM01
-                        return CurrentItem.THVIEW_EXAM01;
+                        return Current.THVIEW_EXAM01;
                     case 84: // THVIEW_EXAM02
-                        return CurrentItem.THVIEW_EXAM02;
+                        return Current.THVIEW_EXAM02;
                     case 85: // THVIEW_EXAM03
-                        return CurrentItem.THVIEW_EXAM03;
+                        return Current.THVIEW_EXAM03;
                     case 86: // THVIEW_EXAM04
-                        return CurrentItem.THVIEW_EXAM04;
+                        return Current.THVIEW_EXAM04;
                     case 87: // THVIEW_EXAM05
-                        return CurrentItem.THVIEW_EXAM05;
+                        return Current.THVIEW_EXAM05;
                     case 88: // THVIEW_EXAM06
-                        return CurrentItem.THVIEW_EXAM06;
+                        return Current.THVIEW_EXAM06;
                     case 89: // THVIEW_EXAM07
-                        return CurrentItem.THVIEW_EXAM07;
+                        return Current.THVIEW_EXAM07;
                     case 90: // THVIEW_EXAM08
-                        return CurrentItem.THVIEW_EXAM08;
+                        return Current.THVIEW_EXAM08;
                     case 91: // THVIEW_EXAM09
-                        return CurrentItem.THVIEW_EXAM09;
+                        return Current.THVIEW_EXAM09;
                     case 92: // THVIEW_EXAM10
-                        return CurrentItem.THVIEW_EXAM10;
+                        return Current.THVIEW_EXAM10;
                     case 93: // THVIEW_EXAM11
-                        return CurrentItem.THVIEW_EXAM11;
+                        return Current.THVIEW_EXAM11;
                     case 94: // THVIEW_EXAM12
-                        return CurrentItem.THVIEW_EXAM12;
+                        return Current.THVIEW_EXAM12;
                     case 95: // THVIEW_EXAM13
-                        return CurrentItem.THVIEW_EXAM13;
+                        return Current.THVIEW_EXAM13;
                     case 96: // CALENDAR_START01
-                        return CurrentItem.CALENDAR_START01;
+                        return Current.CALENDAR_START01;
                     case 97: // CALENDAR_START02
-                        return CurrentItem.CALENDAR_START02;
+                        return Current.CALENDAR_START02;
                     case 98: // CALENDAR_START03
-                        return CurrentItem.CALENDAR_START03;
+                        return Current.CALENDAR_START03;
                     case 99: // CALENDAR_START04
-                        return CurrentItem.CALENDAR_START04;
+                        return Current.CALENDAR_START04;
                     case 100: // CALENDAR_END01
-                        return CurrentItem.CALENDAR_END01;
+                        return Current.CALENDAR_END01;
                     case 101: // CALENDAR_END02
-                        return CurrentItem.CALENDAR_END02;
+                        return Current.CALENDAR_END02;
                     case 102: // CALENDAR_END03
-                        return CurrentItem.CALENDAR_END03;
+                        return Current.CALENDAR_END03;
                     case 103: // CALENDAR_END04
-                        return CurrentItem.CALENDAR_END04;
+                        return Current.CALENDAR_END04;
                     case 104: // CALENDAR_COLOUR
-                        return CurrentItem.CALENDAR_COLOUR;
+                        return Current.CALENDAR_COLOUR;
                     case 105: // CALENDAR_PLACE_METHOD
-                        return CurrentItem.CALENDAR_PLACE_METHOD;
+                        return Current.CALENDAR_PLACE_METHOD;
                     case 106: // CALENDAR_DAYS01
-                        return CurrentItem.CALENDAR_DAYS01;
+                        return Current.CALENDAR_DAYS01;
                     case 107: // CALENDAR_DAYS02
-                        return CurrentItem.CALENDAR_DAYS02;
+                        return Current.CALENDAR_DAYS02;
                     case 108: // CALENDAR_DAYS03
-                        return CurrentItem.CALENDAR_DAYS03;
+                        return Current.CALENDAR_DAYS03;
                     case 109: // CALENDAR_DAYS04
-                        return CurrentItem.CALENDAR_DAYS04;
+                        return Current.CALENDAR_DAYS04;
                     case 110: // CALENDAR_DAYS05
-                        return CurrentItem.CALENDAR_DAYS05;
+                        return Current.CALENDAR_DAYS05;
                     case 111: // CALENDAR_DAYS06
-                        return CurrentItem.CALENDAR_DAYS06;
+                        return Current.CALENDAR_DAYS06;
                     case 112: // CALENDAR_DAYS07
-                        return CurrentItem.CALENDAR_DAYS07;
+                        return Current.CALENDAR_DAYS07;
                     case 113: // CALENDAR_ROW
-                        return CurrentItem.CALENDAR_ROW;
+                        return Current.CALENDAR_ROW;
                     case 114: // CALENDAR_VIEW
-                        return CurrentItem.CALENDAR_VIEW;
+                        return Current.CALENDAR_VIEW;
                     case 115: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 116: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 117: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TITLE
-                        return CurrentItem.TITLE == null;
+                        return Current.TITLE == null;
                     case 2: // SELECTABLE
-                        return CurrentItem.SELECTABLE == null;
+                        return Current.SELECTABLE == null;
                     case 3: // THROWS
-                        return CurrentItem.THROWS == null;
+                        return Current.THROWS == null;
                     case 4: // THCOLS
-                        return CurrentItem.THCOLS == null;
+                        return Current.THCOLS == null;
                     case 5: // TH_RLABEL01
-                        return CurrentItem.TH_RLABEL01 == null;
+                        return Current.TH_RLABEL01 == null;
                     case 6: // TH_RLABEL02
-                        return CurrentItem.TH_RLABEL02 == null;
+                        return Current.TH_RLABEL02 == null;
                     case 7: // TH_RLABEL03
-                        return CurrentItem.TH_RLABEL03 == null;
+                        return Current.TH_RLABEL03 == null;
                     case 8: // TH_RLABEL04
-                        return CurrentItem.TH_RLABEL04 == null;
+                        return Current.TH_RLABEL04 == null;
                     case 9: // TH_RLABEL05
-                        return CurrentItem.TH_RLABEL05 == null;
+                        return Current.TH_RLABEL05 == null;
                     case 10: // TH_RLABEL06
-                        return CurrentItem.TH_RLABEL06 == null;
+                        return Current.TH_RLABEL06 == null;
                     case 11: // TH_RLABEL07
-                        return CurrentItem.TH_RLABEL07 == null;
+                        return Current.TH_RLABEL07 == null;
                     case 12: // TH_RLABEL08
-                        return CurrentItem.TH_RLABEL08 == null;
+                        return Current.TH_RLABEL08 == null;
                     case 13: // TH_RLABEL09
-                        return CurrentItem.TH_RLABEL09 == null;
+                        return Current.TH_RLABEL09 == null;
                     case 14: // TH_RLABEL10
-                        return CurrentItem.TH_RLABEL10 == null;
+                        return Current.TH_RLABEL10 == null;
                     case 15: // TH_RLABEL11
-                        return CurrentItem.TH_RLABEL11 == null;
+                        return Current.TH_RLABEL11 == null;
                     case 16: // TH_RLABEL12
-                        return CurrentItem.TH_RLABEL12 == null;
+                        return Current.TH_RLABEL12 == null;
                     case 17: // TH_CLABEL01
-                        return CurrentItem.TH_CLABEL01 == null;
+                        return Current.TH_CLABEL01 == null;
                     case 18: // TH_CLABEL02
-                        return CurrentItem.TH_CLABEL02 == null;
+                        return Current.TH_CLABEL02 == null;
                     case 19: // TH_CLABEL03
-                        return CurrentItem.TH_CLABEL03 == null;
+                        return Current.TH_CLABEL03 == null;
                     case 20: // TH_CLABEL04
-                        return CurrentItem.TH_CLABEL04 == null;
+                        return Current.TH_CLABEL04 == null;
                     case 21: // TH_CLABEL05
-                        return CurrentItem.TH_CLABEL05 == null;
+                        return Current.TH_CLABEL05 == null;
                     case 22: // TH_CLABEL06
-                        return CurrentItem.TH_CLABEL06 == null;
+                        return Current.TH_CLABEL06 == null;
                     case 23: // TH_CLABEL07
-                        return CurrentItem.TH_CLABEL07 == null;
+                        return Current.TH_CLABEL07 == null;
                     case 24: // TH_CLABEL08
-                        return CurrentItem.TH_CLABEL08 == null;
+                        return Current.TH_CLABEL08 == null;
                     case 25: // TH_CLABEL09
-                        return CurrentItem.TH_CLABEL09 == null;
+                        return Current.TH_CLABEL09 == null;
                     case 26: // TH_CLABEL10
-                        return CurrentItem.TH_CLABEL10 == null;
+                        return Current.TH_CLABEL10 == null;
                     case 27: // TH_CLABEL11
-                        return CurrentItem.TH_CLABEL11 == null;
+                        return Current.TH_CLABEL11 == null;
                     case 28: // TH_CLABEL12
-                        return CurrentItem.TH_CLABEL12 == null;
+                        return Current.TH_CLABEL12 == null;
                     case 29: // TH_CLABEL13
-                        return CurrentItem.TH_CLABEL13 == null;
+                        return Current.TH_CLABEL13 == null;
                     case 30: // TH_CLABEL14
-                        return CurrentItem.TH_CLABEL14 == null;
+                        return Current.TH_CLABEL14 == null;
                     case 31: // TH_CLABEL15
-                        return CurrentItem.TH_CLABEL15 == null;
+                        return Current.TH_CLABEL15 == null;
                     case 32: // TEACHING_PERIOD01
-                        return CurrentItem.TEACHING_PERIOD01 == null;
+                        return Current.TEACHING_PERIOD01 == null;
                     case 33: // TEACHING_PERIOD02
-                        return CurrentItem.TEACHING_PERIOD02 == null;
+                        return Current.TEACHING_PERIOD02 == null;
                     case 34: // TEACHING_PERIOD03
-                        return CurrentItem.TEACHING_PERIOD03 == null;
+                        return Current.TEACHING_PERIOD03 == null;
                     case 35: // TEACHING_PERIOD04
-                        return CurrentItem.TEACHING_PERIOD04 == null;
+                        return Current.TEACHING_PERIOD04 == null;
                     case 36: // TEACHING_PERIOD05
-                        return CurrentItem.TEACHING_PERIOD05 == null;
+                        return Current.TEACHING_PERIOD05 == null;
                     case 37: // TEACHING_PERIOD06
-                        return CurrentItem.TEACHING_PERIOD06 == null;
+                        return Current.TEACHING_PERIOD06 == null;
                     case 38: // TEACHING_PERIOD07
-                        return CurrentItem.TEACHING_PERIOD07 == null;
+                        return Current.TEACHING_PERIOD07 == null;
                     case 39: // TEACHING_PERIOD08
-                        return CurrentItem.TEACHING_PERIOD08 == null;
+                        return Current.TEACHING_PERIOD08 == null;
                     case 40: // TEACHING_PERIOD09
-                        return CurrentItem.TEACHING_PERIOD09 == null;
+                        return Current.TEACHING_PERIOD09 == null;
                     case 41: // TEACHING_PERIOD10
-                        return CurrentItem.TEACHING_PERIOD10 == null;
+                        return Current.TEACHING_PERIOD10 == null;
                     case 42: // TEACHING_PERIOD11
-                        return CurrentItem.TEACHING_PERIOD11 == null;
+                        return Current.TEACHING_PERIOD11 == null;
                     case 43: // TEACHING_PERIOD12
-                        return CurrentItem.TEACHING_PERIOD12 == null;
+                        return Current.TEACHING_PERIOD12 == null;
                     case 44: // TT01KEY
-                        return CurrentItem.TT01KEY == null;
+                        return Current.TT01KEY == null;
                     case 45: // TT02KEY
-                        return CurrentItem.TT02KEY == null;
+                        return Current.TT02KEY == null;
                     case 46: // TT03KEY
-                        return CurrentItem.TT03KEY == null;
+                        return Current.TT03KEY == null;
                     case 47: // TT04KEY
-                        return CurrentItem.TT04KEY == null;
+                        return Current.TT04KEY == null;
                     case 48: // TT05KEY
-                        return CurrentItem.TT05KEY == null;
+                        return Current.TT05KEY == null;
                     case 49: // TT06KEY
-                        return CurrentItem.TT06KEY == null;
+                        return Current.TT06KEY == null;
                     case 50: // TT07KEY
-                        return CurrentItem.TT07KEY == null;
+                        return Current.TT07KEY == null;
                     case 51: // TT08KEY
-                        return CurrentItem.TT08KEY == null;
+                        return Current.TT08KEY == null;
                     case 52: // TT09KEY
-                        return CurrentItem.TT09KEY == null;
+                        return Current.TT09KEY == null;
                     case 53: // TT10KEY
-                        return CurrentItem.TT10KEY == null;
+                        return Current.TT10KEY == null;
                     case 54: // TT11KEY
-                        return CurrentItem.TT11KEY == null;
+                        return Current.TT11KEY == null;
                     case 55: // TT12KEY
-                        return CurrentItem.TT12KEY == null;
+                        return Current.TT12KEY == null;
                     case 56: // TT13KEY
-                        return CurrentItem.TT13KEY == null;
+                        return Current.TT13KEY == null;
                     case 57: // THVIEW_QUILT01
-                        return CurrentItem.THVIEW_QUILT01 == null;
+                        return Current.THVIEW_QUILT01 == null;
                     case 58: // THVIEW_QUILT02
-                        return CurrentItem.THVIEW_QUILT02 == null;
+                        return Current.THVIEW_QUILT02 == null;
                     case 59: // THVIEW_QUILT03
-                        return CurrentItem.THVIEW_QUILT03 == null;
+                        return Current.THVIEW_QUILT03 == null;
                     case 60: // THVIEW_QUILT04
-                        return CurrentItem.THVIEW_QUILT04 == null;
+                        return Current.THVIEW_QUILT04 == null;
                     case 61: // THVIEW_QUILT05
-                        return CurrentItem.THVIEW_QUILT05 == null;
+                        return Current.THVIEW_QUILT05 == null;
                     case 62: // THVIEW_QUILT06
-                        return CurrentItem.THVIEW_QUILT06 == null;
+                        return Current.THVIEW_QUILT06 == null;
                     case 63: // THVIEW_QUILT07
-                        return CurrentItem.THVIEW_QUILT07 == null;
+                        return Current.THVIEW_QUILT07 == null;
                     case 64: // THVIEW_QUILT08
-                        return CurrentItem.THVIEW_QUILT08 == null;
+                        return Current.THVIEW_QUILT08 == null;
                     case 65: // THVIEW_QUILT09
-                        return CurrentItem.THVIEW_QUILT09 == null;
+                        return Current.THVIEW_QUILT09 == null;
                     case 66: // THVIEW_QUILT10
-                        return CurrentItem.THVIEW_QUILT10 == null;
+                        return Current.THVIEW_QUILT10 == null;
                     case 67: // THVIEW_QUILT11
-                        return CurrentItem.THVIEW_QUILT11 == null;
+                        return Current.THVIEW_QUILT11 == null;
                     case 68: // THVIEW_QUILT12
-                        return CurrentItem.THVIEW_QUILT12 == null;
+                        return Current.THVIEW_QUILT12 == null;
                     case 69: // THVIEW_QUILT13
-                        return CurrentItem.THVIEW_QUILT13 == null;
+                        return Current.THVIEW_QUILT13 == null;
                     case 70: // THVIEW_EXTRA01
-                        return CurrentItem.THVIEW_EXTRA01 == null;
+                        return Current.THVIEW_EXTRA01 == null;
                     case 71: // THVIEW_EXTRA02
-                        return CurrentItem.THVIEW_EXTRA02 == null;
+                        return Current.THVIEW_EXTRA02 == null;
                     case 72: // THVIEW_EXTRA03
-                        return CurrentItem.THVIEW_EXTRA03 == null;
+                        return Current.THVIEW_EXTRA03 == null;
                     case 73: // THVIEW_EXTRA04
-                        return CurrentItem.THVIEW_EXTRA04 == null;
+                        return Current.THVIEW_EXTRA04 == null;
                     case 74: // THVIEW_EXTRA05
-                        return CurrentItem.THVIEW_EXTRA05 == null;
+                        return Current.THVIEW_EXTRA05 == null;
                     case 75: // THVIEW_EXTRA06
-                        return CurrentItem.THVIEW_EXTRA06 == null;
+                        return Current.THVIEW_EXTRA06 == null;
                     case 76: // THVIEW_EXTRA07
-                        return CurrentItem.THVIEW_EXTRA07 == null;
+                        return Current.THVIEW_EXTRA07 == null;
                     case 77: // THVIEW_EXTRA08
-                        return CurrentItem.THVIEW_EXTRA08 == null;
+                        return Current.THVIEW_EXTRA08 == null;
                     case 78: // THVIEW_EXTRA09
-                        return CurrentItem.THVIEW_EXTRA09 == null;
+                        return Current.THVIEW_EXTRA09 == null;
                     case 79: // THVIEW_EXTRA10
-                        return CurrentItem.THVIEW_EXTRA10 == null;
+                        return Current.THVIEW_EXTRA10 == null;
                     case 80: // THVIEW_EXTRA11
-                        return CurrentItem.THVIEW_EXTRA11 == null;
+                        return Current.THVIEW_EXTRA11 == null;
                     case 81: // THVIEW_EXTRA12
-                        return CurrentItem.THVIEW_EXTRA12 == null;
+                        return Current.THVIEW_EXTRA12 == null;
                     case 82: // THVIEW_EXTRA13
-                        return CurrentItem.THVIEW_EXTRA13 == null;
+                        return Current.THVIEW_EXTRA13 == null;
                     case 83: // THVIEW_EXAM01
-                        return CurrentItem.THVIEW_EXAM01 == null;
+                        return Current.THVIEW_EXAM01 == null;
                     case 84: // THVIEW_EXAM02
-                        return CurrentItem.THVIEW_EXAM02 == null;
+                        return Current.THVIEW_EXAM02 == null;
                     case 85: // THVIEW_EXAM03
-                        return CurrentItem.THVIEW_EXAM03 == null;
+                        return Current.THVIEW_EXAM03 == null;
                     case 86: // THVIEW_EXAM04
-                        return CurrentItem.THVIEW_EXAM04 == null;
+                        return Current.THVIEW_EXAM04 == null;
                     case 87: // THVIEW_EXAM05
-                        return CurrentItem.THVIEW_EXAM05 == null;
+                        return Current.THVIEW_EXAM05 == null;
                     case 88: // THVIEW_EXAM06
-                        return CurrentItem.THVIEW_EXAM06 == null;
+                        return Current.THVIEW_EXAM06 == null;
                     case 89: // THVIEW_EXAM07
-                        return CurrentItem.THVIEW_EXAM07 == null;
+                        return Current.THVIEW_EXAM07 == null;
                     case 90: // THVIEW_EXAM08
-                        return CurrentItem.THVIEW_EXAM08 == null;
+                        return Current.THVIEW_EXAM08 == null;
                     case 91: // THVIEW_EXAM09
-                        return CurrentItem.THVIEW_EXAM09 == null;
+                        return Current.THVIEW_EXAM09 == null;
                     case 92: // THVIEW_EXAM10
-                        return CurrentItem.THVIEW_EXAM10 == null;
+                        return Current.THVIEW_EXAM10 == null;
                     case 93: // THVIEW_EXAM11
-                        return CurrentItem.THVIEW_EXAM11 == null;
+                        return Current.THVIEW_EXAM11 == null;
                     case 94: // THVIEW_EXAM12
-                        return CurrentItem.THVIEW_EXAM12 == null;
+                        return Current.THVIEW_EXAM12 == null;
                     case 95: // THVIEW_EXAM13
-                        return CurrentItem.THVIEW_EXAM13 == null;
+                        return Current.THVIEW_EXAM13 == null;
                     case 96: // CALENDAR_START01
-                        return CurrentItem.CALENDAR_START01 == null;
+                        return Current.CALENDAR_START01 == null;
                     case 97: // CALENDAR_START02
-                        return CurrentItem.CALENDAR_START02 == null;
+                        return Current.CALENDAR_START02 == null;
                     case 98: // CALENDAR_START03
-                        return CurrentItem.CALENDAR_START03 == null;
+                        return Current.CALENDAR_START03 == null;
                     case 99: // CALENDAR_START04
-                        return CurrentItem.CALENDAR_START04 == null;
+                        return Current.CALENDAR_START04 == null;
                     case 100: // CALENDAR_END01
-                        return CurrentItem.CALENDAR_END01 == null;
+                        return Current.CALENDAR_END01 == null;
                     case 101: // CALENDAR_END02
-                        return CurrentItem.CALENDAR_END02 == null;
+                        return Current.CALENDAR_END02 == null;
                     case 102: // CALENDAR_END03
-                        return CurrentItem.CALENDAR_END03 == null;
+                        return Current.CALENDAR_END03 == null;
                     case 103: // CALENDAR_END04
-                        return CurrentItem.CALENDAR_END04 == null;
+                        return Current.CALENDAR_END04 == null;
                     case 104: // CALENDAR_COLOUR
-                        return CurrentItem.CALENDAR_COLOUR == null;
+                        return Current.CALENDAR_COLOUR == null;
                     case 105: // CALENDAR_PLACE_METHOD
-                        return CurrentItem.CALENDAR_PLACE_METHOD == null;
+                        return Current.CALENDAR_PLACE_METHOD == null;
                     case 106: // CALENDAR_DAYS01
-                        return CurrentItem.CALENDAR_DAYS01 == null;
+                        return Current.CALENDAR_DAYS01 == null;
                     case 107: // CALENDAR_DAYS02
-                        return CurrentItem.CALENDAR_DAYS02 == null;
+                        return Current.CALENDAR_DAYS02 == null;
                     case 108: // CALENDAR_DAYS03
-                        return CurrentItem.CALENDAR_DAYS03 == null;
+                        return Current.CALENDAR_DAYS03 == null;
                     case 109: // CALENDAR_DAYS04
-                        return CurrentItem.CALENDAR_DAYS04 == null;
+                        return Current.CALENDAR_DAYS04 == null;
                     case 110: // CALENDAR_DAYS05
-                        return CurrentItem.CALENDAR_DAYS05 == null;
+                        return Current.CALENDAR_DAYS05 == null;
                     case 111: // CALENDAR_DAYS06
-                        return CurrentItem.CALENDAR_DAYS06 == null;
+                        return Current.CALENDAR_DAYS06 == null;
                     case 112: // CALENDAR_DAYS07
-                        return CurrentItem.CALENDAR_DAYS07 == null;
+                        return Current.CALENDAR_DAYS07 == null;
                     case 113: // CALENDAR_ROW
-                        return CurrentItem.CALENDAR_ROW == null;
+                        return Current.CALENDAR_ROW == null;
                     case 114: // CALENDAR_VIEW
-                        return CurrentItem.CALENDAR_VIEW == null;
+                        return Current.CALENDAR_VIEW == null;
                     case 115: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 116: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 117: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -2075,7 +2203,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -2318,35 +2446,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

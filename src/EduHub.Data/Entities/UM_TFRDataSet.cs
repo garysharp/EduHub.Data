@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class UM_TFRDataSet : EduHubDataSet<UM_TFR>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "UM_TFR"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal UM_TFRDataSet(EduHubContext Context)
             : base(Context)
@@ -30,7 +33,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="UM_TFR" /> fields for each CSV column header</returns>
-        protected override Action<UM_TFR, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<UM_TFR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<UM_TFR, string>[Headers.Count];
 
@@ -117,34 +120,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="UM_TFR" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="UM_TFR" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="UM_TFR" /> items to added or update the base <see cref="UM_TFR" /> items</param>
-        /// <returns>A merged list of <see cref="UM_TFR" /> items</returns>
-        protected override List<UM_TFR> ApplyDeltaItems(List<UM_TFR> Items, List<UM_TFR> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="UM_TFR" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="UM_TFR" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{UM_TFR}"/> of entities</returns>
+        internal override IEnumerable<UM_TFR> ApplyDeltaEntities(IEnumerable<UM_TFR> Entities, List<UM_TFR> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            NullDictionary<string, int> Index_UM_TRANS_ID = Items.ToIndexNullDictionary(i => i.UM_TRANS_ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
+            HashSet<string> Index_UM_TRANS_ID = new HashSet<string>(DeltaEntities.Select(i => i.UM_TRANS_ID));
 
-            foreach (UM_TFR deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.ORIG_SCHOOL;
+                        bool yieldEntity = false;
 
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_UM_TRANS_ID.TryGetValue(deltaItem.UM_TRANS_ID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            overwritten = overwritten || Index_UM_TRANS_ID.Remove(entity.UM_TRANS_ID);
+                            
+                            if (entity.ORIG_SCHOOL.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.ORIG_SCHOOL)
-                .ToList();
         }
 
         #region Index Fields
@@ -288,11 +315,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a UM_TFR table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a UM_TFR table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[UM_TFR](
         [TID] int IDENTITY NOT NULL,
@@ -330,174 +361,237 @@ BEGIN
     (
             [UM_TRANS_ID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[UM_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_UM_TRANS_ID')
+    ALTER INDEX [Index_UM_TRANS_ID] ON [dbo].[UM_TFR] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_UM_TRANS_ID')
+    ALTER INDEX [Index_UM_TRANS_ID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="UM_TFR"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="UM_TFR"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<UM_TFR> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+            List<string> Index_UM_TRANS_ID = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+                Index_UM_TRANS_ID.Add(entity.UM_TRANS_ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[UM_TFR] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.AppendLine(") OR");
+
+            // Index_UM_TRANS_ID
+            builder.Append("[UM_TRANS_ID] IN (");
+            for (int index = 0; index < Index_UM_TRANS_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // UM_TRANS_ID
+                var parameterUM_TRANS_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterUM_TRANS_ID);
+                command.Parameters.Add(parameterUM_TRANS_ID, SqlDbType.VarChar, 30).Value = (object)Index_UM_TRANS_ID[index] ?? DBNull.Value;
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the UM_TFR data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the UM_TFR data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<UM_TFR> GetDataSetDataReader()
         {
-            return new UM_TFRDataReader(Items.Value);
+            return new UM_TFRDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the UM_TFR data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the UM_TFR data set</returns>
+        public override EduHubDataSetDataReader<UM_TFR> GetDataSetDataReader(List<UM_TFR> Entities)
+        {
+            return new UM_TFRDataReader(new EduHubDataSetLoadedReader<UM_TFR>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class UM_TFRDataReader : IDataReader, IDataRecord
+        private class UM_TFRDataReader : EduHubDataSetDataReader<UM_TFR>
         {
-            private List<UM_TFR> Items;
-            private int CurrentIndex;
-            private UM_TFR CurrentItem;
-
-            public UM_TFRDataReader(List<UM_TFR> Items)
+            public UM_TFRDataReader(IEduHubDataSetReader<UM_TFR> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 23; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 23; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // ORIG_SCHOOL
-                        return CurrentItem.ORIG_SCHOOL;
+                        return Current.ORIG_SCHOOL;
                     case 2: // UM_TRANS_ID
-                        return CurrentItem.UM_TRANS_ID;
+                        return Current.UM_TRANS_ID;
                     case 3: // UMKEY
-                        return CurrentItem.UMKEY;
+                        return Current.UMKEY;
                     case 4: // UMKEY_NEW
-                        return CurrentItem.UMKEY_NEW;
+                        return Current.UMKEY_NEW;
                     case 5: // ADDRESS01
-                        return CurrentItem.ADDRESS01;
+                        return Current.ADDRESS01;
                     case 6: // ADDRESS02
-                        return CurrentItem.ADDRESS02;
+                        return Current.ADDRESS02;
                     case 7: // ADDRESS03
-                        return CurrentItem.ADDRESS03;
+                        return Current.ADDRESS03;
                     case 8: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 9: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 10: // TELEPHONE
-                        return CurrentItem.TELEPHONE;
+                        return Current.TELEPHONE;
                     case 11: // MOBILE
-                        return CurrentItem.MOBILE;
+                        return Current.MOBILE;
                     case 12: // SILENT
-                        return CurrentItem.SILENT;
+                        return Current.SILENT;
                     case 13: // FAX
-                        return CurrentItem.FAX;
+                        return Current.FAX;
                     case 14: // KAP_LINK
-                        return CurrentItem.KAP_LINK;
+                        return Current.KAP_LINK;
                     case 15: // COUNTRY
-                        return CurrentItem.COUNTRY;
+                        return Current.COUNTRY;
                     case 16: // DPID
-                        return CurrentItem.DPID;
+                        return Current.DPID;
                     case 17: // BARCODE
-                        return CurrentItem.BARCODE;
+                        return Current.BARCODE;
                     case 18: // IMP_STATUS
-                        return CurrentItem.IMP_STATUS;
+                        return Current.IMP_STATUS;
                     case 19: // IMP_DATE
-                        return CurrentItem.IMP_DATE;
+                        return Current.IMP_DATE;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // UM_TRANS_ID
-                        return CurrentItem.UM_TRANS_ID == null;
+                        return Current.UM_TRANS_ID == null;
                     case 3: // UMKEY
-                        return CurrentItem.UMKEY == null;
+                        return Current.UMKEY == null;
                     case 4: // UMKEY_NEW
-                        return CurrentItem.UMKEY_NEW == null;
+                        return Current.UMKEY_NEW == null;
                     case 5: // ADDRESS01
-                        return CurrentItem.ADDRESS01 == null;
+                        return Current.ADDRESS01 == null;
                     case 6: // ADDRESS02
-                        return CurrentItem.ADDRESS02 == null;
+                        return Current.ADDRESS02 == null;
                     case 7: // ADDRESS03
-                        return CurrentItem.ADDRESS03 == null;
+                        return Current.ADDRESS03 == null;
                     case 8: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 9: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 10: // TELEPHONE
-                        return CurrentItem.TELEPHONE == null;
+                        return Current.TELEPHONE == null;
                     case 11: // MOBILE
-                        return CurrentItem.MOBILE == null;
+                        return Current.MOBILE == null;
                     case 12: // SILENT
-                        return CurrentItem.SILENT == null;
+                        return Current.SILENT == null;
                     case 13: // FAX
-                        return CurrentItem.FAX == null;
+                        return Current.FAX == null;
                     case 14: // KAP_LINK
-                        return CurrentItem.KAP_LINK == null;
+                        return Current.KAP_LINK == null;
                     case 15: // COUNTRY
-                        return CurrentItem.COUNTRY == null;
+                        return Current.COUNTRY == null;
                     case 16: // DPID
-                        return CurrentItem.DPID == null;
+                        return Current.DPID == null;
                     case 17: // BARCODE
-                        return CurrentItem.BARCODE == null;
+                        return Current.BARCODE == null;
                     case 18: // IMP_STATUS
-                        return CurrentItem.IMP_STATUS == null;
+                        return Current.IMP_STATUS == null;
                     case 19: // IMP_DATE
-                        return CurrentItem.IMP_DATE == null;
+                        return Current.IMP_DATE == null;
                     case 20: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 21: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 22: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -552,7 +646,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -605,35 +699,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

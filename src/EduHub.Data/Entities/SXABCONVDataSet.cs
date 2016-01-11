@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SXABCONVDataSet : EduHubDataSet<SXABCONV>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SXABCONV"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SXABCONVDataSet(EduHubContext Context)
             : base(Context)
@@ -34,7 +37,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SXABCONV" /> fields for each CSV column header</returns>
-        protected override Action<SXABCONV, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SXABCONV, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SXABCONV, string>[Headers.Count];
 
@@ -91,34 +94,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SXABCONV" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SXABCONV" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SXABCONV" /> items to added or update the base <see cref="SXABCONV" /> items</param>
-        /// <returns>A merged list of <see cref="SXABCONV" /> items</returns>
-        protected override List<SXABCONV> ApplyDeltaItems(List<SXABCONV> Items, List<SXABCONV> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SXABCONV" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SXABCONV" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SXABCONV}"/> of entities</returns>
+        internal override IEnumerable<SXABCONV> ApplyDeltaEntities(IEnumerable<SXABCONV> Entities, List<SXABCONV> DeltaEntities)
         {
-            Dictionary<Tuple<string, DateTime?>, int> Index_STKEY_ABSENCE_DATE = Items.ToIndexDictionary(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE));
-            Dictionary<int, int> Index_SXABCONV_ID = Items.ToIndexDictionary(i => i.SXABCONV_ID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, DateTime?>> Index_STKEY_ABSENCE_DATE = new HashSet<Tuple<string, DateTime?>>(DeltaEntities.Select(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE)));
+            HashSet<int> Index_SXABCONV_ID = new HashSet<int>(DeltaEntities.Select(i => i.SXABCONV_ID));
 
-            foreach (SXABCONV deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SXABCONV_ID;
+                        bool yieldEntity = false;
 
-                if (Index_STKEY_ABSENCE_DATE.TryGetValue(Tuple.Create(deltaItem.STKEY, deltaItem.ABSENCE_DATE), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_SXABCONV_ID.TryGetValue(deltaItem.SXABCONV_ID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_STKEY_ABSENCE_DATE.Remove(Tuple.Create(entity.STKEY, entity.ABSENCE_DATE));
+                            overwritten = overwritten || Index_SXABCONV_ID.Remove(entity.SXABCONV_ID);
+                            
+                            if (entity.SXABCONV_ID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SXABCONV_ID)
-                .ToList();
         }
 
         #region Index Fields
@@ -437,11 +464,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SXABCONV table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SXABCONV table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SXABCONV](
         [SXABCONV_ID] int IDENTITY NOT NULL,
@@ -486,136 +517,234 @@ BEGIN
             [STKEY] ASC,
             [ABSENCE_DATE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_AM_TYPE')
+    ALTER INDEX [Index_AM_TYPE] ON [dbo].[SXABCONV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXABCONV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_PM_TYPE')
+    ALTER INDEX [Index_PM_TYPE] ON [dbo].[SXABCONV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXABCONV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_STKEY')
+    ALTER INDEX [Index_STKEY] ON [dbo].[SXABCONV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_STKEY_ABSENCE_DATE')
+    ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXABCONV] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_AM_TYPE')
+    ALTER INDEX [Index_AM_TYPE] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_PM_TYPE')
+    ALTER INDEX [Index_PM_TYPE] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_STKEY')
+    ALTER INDEX [Index_STKEY] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXABCONV]') AND name = N'Index_STKEY_ABSENCE_DATE')
+    ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXABCONV] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SXABCONV"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SXABCONV"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SXABCONV> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, DateTime?>> Index_STKEY_ABSENCE_DATE = new List<Tuple<string, DateTime?>>();
+            List<int> Index_SXABCONV_ID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_STKEY_ABSENCE_DATE.Add(Tuple.Create(entity.STKEY, entity.ABSENCE_DATE));
+                Index_SXABCONV_ID.Add(entity.SXABCONV_ID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SXABCONV] WHERE");
+
+
+            // Index_STKEY_ABSENCE_DATE
+            builder.Append("(");
+            for (int index = 0; index < Index_STKEY_ABSENCE_DATE.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // STKEY
+                if (Index_STKEY_ABSENCE_DATE[index].Item1 == null)
+                {
+                    builder.Append("([STKEY] IS NULL");
+                }
+                else
+                {
+                    var parameterSTKEY = $"@p{parameterIndex++}";
+                    builder.Append("([STKEY]=").Append(parameterSTKEY);
+                    command.Parameters.Add(parameterSTKEY, SqlDbType.VarChar, 10).Value = Index_STKEY_ABSENCE_DATE[index].Item1;
+                }
+
+                // ABSENCE_DATE
+                if (Index_STKEY_ABSENCE_DATE[index].Item2 == null)
+                {
+                    builder.Append(" AND [ABSENCE_DATE] IS NULL)");
+                }
+                else
+                {
+                    var parameterABSENCE_DATE = $"@p{parameterIndex++}";
+                    builder.Append(" AND [ABSENCE_DATE]=").Append(parameterABSENCE_DATE).Append(")");
+                    command.Parameters.Add(parameterABSENCE_DATE, SqlDbType.DateTime).Value = Index_STKEY_ABSENCE_DATE[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_SXABCONV_ID
+            builder.Append("[SXABCONV_ID] IN (");
+            for (int index = 0; index < Index_SXABCONV_ID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SXABCONV_ID
+                var parameterSXABCONV_ID = $"@p{parameterIndex++}";
+                builder.Append(parameterSXABCONV_ID);
+                command.Parameters.Add(parameterSXABCONV_ID, SqlDbType.Int).Value = Index_SXABCONV_ID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SXABCONV data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SXABCONV data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SXABCONV> GetDataSetDataReader()
         {
-            return new SXABCONVDataReader(Items.Value);
+            return new SXABCONVDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SXABCONV data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SXABCONV data set</returns>
+        public override EduHubDataSetDataReader<SXABCONV> GetDataSetDataReader(List<SXABCONV> Entities)
+        {
+            return new SXABCONVDataReader(new EduHubDataSetLoadedReader<SXABCONV>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SXABCONVDataReader : IDataReader, IDataRecord
+        private class SXABCONVDataReader : EduHubDataSetDataReader<SXABCONV>
         {
-            private List<SXABCONV> Items;
-            private int CurrentIndex;
-            private SXABCONV CurrentItem;
-
-            public SXABCONVDataReader(List<SXABCONV> Items)
+            public SXABCONVDataReader(IEduHubDataSetReader<SXABCONV> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 13; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 13; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SXABCONV_ID
-                        return CurrentItem.SXABCONV_ID;
+                        return Current.SXABCONV_ID;
                     case 1: // STKEY
-                        return CurrentItem.STKEY;
+                        return Current.STKEY;
                     case 2: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL;
+                        return Current.ST_YEAR_LEVEL;
                     case 3: // ABSENCE_DATE
-                        return CurrentItem.ABSENCE_DATE;
+                        return Current.ABSENCE_DATE;
                     case 4: // AM_TYPE
-                        return CurrentItem.AM_TYPE;
+                        return Current.AM_TYPE;
                     case 5: // AM_ATTENDED
-                        return CurrentItem.AM_ATTENDED;
+                        return Current.AM_ATTENDED;
                     case 6: // AM_APPROVED
-                        return CurrentItem.AM_APPROVED;
+                        return Current.AM_APPROVED;
                     case 7: // PM_TYPE
-                        return CurrentItem.PM_TYPE;
+                        return Current.PM_TYPE;
                     case 8: // PM_ATTENDED
-                        return CurrentItem.PM_ATTENDED;
+                        return Current.PM_ATTENDED;
                     case 9: // PM_APPROVED
-                        return CurrentItem.PM_APPROVED;
+                        return Current.PM_APPROVED;
                     case 10: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 11: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 12: // RECORD_SOURCE
-                        return CurrentItem.RECORD_SOURCE;
+                        return Current.RECORD_SOURCE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // STKEY
-                        return CurrentItem.STKEY == null;
+                        return Current.STKEY == null;
                     case 2: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL == null;
+                        return Current.ST_YEAR_LEVEL == null;
                     case 3: // ABSENCE_DATE
-                        return CurrentItem.ABSENCE_DATE == null;
+                        return Current.ABSENCE_DATE == null;
                     case 4: // AM_TYPE
-                        return CurrentItem.AM_TYPE == null;
+                        return Current.AM_TYPE == null;
                     case 5: // AM_ATTENDED
-                        return CurrentItem.AM_ATTENDED == null;
+                        return Current.AM_ATTENDED == null;
                     case 6: // AM_APPROVED
-                        return CurrentItem.AM_APPROVED == null;
+                        return Current.AM_APPROVED == null;
                     case 7: // PM_TYPE
-                        return CurrentItem.PM_TYPE == null;
+                        return Current.PM_TYPE == null;
                     case 8: // PM_ATTENDED
-                        return CurrentItem.PM_ATTENDED == null;
+                        return Current.PM_ATTENDED == null;
                     case 9: // PM_APPROVED
-                        return CurrentItem.PM_APPROVED == null;
+                        return Current.PM_APPROVED == null;
                     case 10: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 11: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 12: // RECORD_SOURCE
-                        return CurrentItem.RECORD_SOURCE == null;
+                        return Current.RECORD_SOURCE == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -650,7 +779,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -683,35 +812,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

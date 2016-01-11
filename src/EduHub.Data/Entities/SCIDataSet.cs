@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SCIDataSet : EduHubDataSet<SCI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SCI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SCIDataSet(EduHubContext Context)
             : base(Context)
@@ -49,7 +52,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SCI" /> fields for each CSV column header</returns>
-        protected override Action<SCI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SCI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SCI, string>[Headers.Count];
 
@@ -298,34 +301,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SCI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SCI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SCI" /> items to added or update the base <see cref="SCI" /> items</param>
-        /// <returns>A merged list of <see cref="SCI" /> items</returns>
-        protected override List<SCI> ApplyDeltaItems(List<SCI> Items, List<SCI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SCI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SCI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SCI}"/> of entities</returns>
+        internal override IEnumerable<SCI> ApplyDeltaEntities(IEnumerable<SCI> Entities, List<SCI> DeltaEntities)
         {
-            NullDictionary<string, int> Index_SCHOOL_LINK = Items.ToIndexNullDictionary(i => i.SCHOOL_LINK);
-            Dictionary<int, int> Index_SCIKEY = Items.ToIndexDictionary(i => i.SCIKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_SCHOOL_LINK = new HashSet<string>(DeltaEntities.Select(i => i.SCHOOL_LINK));
+            HashSet<int> Index_SCIKEY = new HashSet<int>(DeltaEntities.Select(i => i.SCIKEY));
 
-            foreach (SCI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.SCIKEY;
+                        bool yieldEntity = false;
 
-                if (Index_SCHOOL_LINK.TryGetValue(deltaItem.SCHOOL_LINK, out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_SCIKEY.TryGetValue(deltaItem.SCIKEY, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_SCHOOL_LINK.Remove(entity.SCHOOL_LINK);
+                            overwritten = overwritten || Index_SCIKEY.Remove(entity.SCIKEY);
+                            
+                            if (entity.SCIKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.SCIKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -1286,11 +1313,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SCI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SCI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SCI](
         [SCIKEY] int NOT NULL,
@@ -1458,392 +1489,531 @@ BEGIN
     (
             [SF_VPRIN] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_CURRENT_QUILT')
+    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_DESTINATION_SCHOOL')
+    ALTER INDEX [Index_DESTINATION_SCHOOL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_REL_INSTR')
+    ALTER INDEX [Index_REL_INSTR] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SAM_SCH_COUNCIL')
+    ALTER INDEX [Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_AOIC')
+    ALTER INDEX [Index_SCH_AOIC] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_BMANAGER')
+    ALTER INDEX [Index_SCH_BMANAGER] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_COUNCIL_PRES')
+    ALTER INDEX [Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_EMERG_CONTACT')
+    ALTER INDEX [Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_PRINCIPAL')
+    ALTER INDEX [Index_SCH_PRINCIPAL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VAC_CONTACT')
+    ALTER INDEX [Index_SCH_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VPRIN')
+    ALTER INDEX [Index_SCH_VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCHOOL_LINK')
+    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_2VPRIN')
+    ALTER INDEX [Index_SF_2VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_3VPRIN')
+    ALTER INDEX [Index_SF_3VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_APRIN')
+    ALTER INDEX [Index_SF_APRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_BMANAGER')
+    ALTER INDEX [Index_SF_BMANAGER] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_EMERG_CONTACT')
+    ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
+    ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
+    ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
+    ALTER INDEX [Index_SF_VPRIN] ON [dbo].[SCI] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_CURRENT_QUILT')
+    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_DESTINATION_SCHOOL')
+    ALTER INDEX [Index_DESTINATION_SCHOOL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_REL_INSTR')
+    ALTER INDEX [Index_REL_INSTR] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SAM_SCH_COUNCIL')
+    ALTER INDEX [Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_AOIC')
+    ALTER INDEX [Index_SCH_AOIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_BMANAGER')
+    ALTER INDEX [Index_SCH_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_COUNCIL_PRES')
+    ALTER INDEX [Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_EMERG_CONTACT')
+    ALTER INDEX [Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_PRINCIPAL')
+    ALTER INDEX [Index_SCH_PRINCIPAL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VAC_CONTACT')
+    ALTER INDEX [Index_SCH_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VPRIN')
+    ALTER INDEX [Index_SCH_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCHOOL_LINK')
+    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_2VPRIN')
+    ALTER INDEX [Index_SF_2VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_3VPRIN')
+    ALTER INDEX [Index_SF_3VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_APRIN')
+    ALTER INDEX [Index_SF_APRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_BMANAGER')
+    ALTER INDEX [Index_SF_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_EMERG_CONTACT')
+    ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
+    ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
+    ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
+    ALTER INDEX [Index_SF_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SCI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SCI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SCI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_SCHOOL_LINK = new List<string>();
+            List<int> Index_SCIKEY = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_SCHOOL_LINK.Add(entity.SCHOOL_LINK);
+                Index_SCIKEY.Add(entity.SCIKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SCI] WHERE");
+
+
+            // Index_SCHOOL_LINK
+            builder.Append("[SCHOOL_LINK] IN (");
+            for (int index = 0; index < Index_SCHOOL_LINK.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SCHOOL_LINK
+                var parameterSCHOOL_LINK = $"@p{parameterIndex++}";
+                builder.Append(parameterSCHOOL_LINK);
+                command.Parameters.Add(parameterSCHOOL_LINK, SqlDbType.VarChar, 8).Value = (object)Index_SCHOOL_LINK[index] ?? DBNull.Value;
+            }
+            builder.AppendLine(") OR");
+
+            // Index_SCIKEY
+            builder.Append("[SCIKEY] IN (");
+            for (int index = 0; index < Index_SCIKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // SCIKEY
+                var parameterSCIKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterSCIKEY);
+                command.Parameters.Add(parameterSCIKEY, SqlDbType.Int).Value = Index_SCIKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SCI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SCI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SCI> GetDataSetDataReader()
         {
-            return new SCIDataReader(Items.Value);
+            return new SCIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SCI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SCI data set</returns>
+        public override EduHubDataSetDataReader<SCI> GetDataSetDataReader(List<SCI> Entities)
+        {
+            return new SCIDataReader(new EduHubDataSetLoadedReader<SCI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SCIDataReader : IDataReader, IDataRecord
+        private class SCIDataReader : EduHubDataSetDataReader<SCI>
         {
-            private List<SCI> Items;
-            private int CurrentIndex;
-            private SCI CurrentItem;
-
-            public SCIDataReader(List<SCI> Items)
+            public SCIDataReader(IEduHubDataSetReader<SCI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 77; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 77; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // SCIKEY
-                        return CurrentItem.SCIKEY;
+                        return Current.SCIKEY;
                     case 1: // CAMPUS_NAME
-                        return CurrentItem.CAMPUS_NAME;
+                        return Current.CAMPUS_NAME;
                     case 2: // CAMPUS_TYPE
-                        return CurrentItem.CAMPUS_TYPE;
+                        return Current.CAMPUS_TYPE;
                     case 3: // SCHOOL_LINK
-                        return CurrentItem.SCHOOL_LINK;
+                        return Current.SCHOOL_LINK;
                     case 4: // SCHOOL_TYPE
-                        return CurrentItem.SCHOOL_TYPE;
+                        return Current.SCHOOL_TYPE;
                     case 5: // SCHOOL_NAME
-                        return CurrentItem.SCHOOL_NAME;
+                        return Current.SCHOOL_NAME;
                     case 6: // MASTER_KEY
-                        return CurrentItem.MASTER_KEY;
+                        return Current.MASTER_KEY;
                     case 7: // ADMIN_SITE
-                        return CurrentItem.ADMIN_SITE;
+                        return Current.ADMIN_SITE;
                     case 8: // SCH_PRINCIPAL
-                        return CurrentItem.SCH_PRINCIPAL;
+                        return Current.SCH_PRINCIPAL;
                     case 9: // SF_OIC
-                        return CurrentItem.SF_OIC;
+                        return Current.SF_OIC;
                     case 10: // SF_VPRIN
-                        return CurrentItem.SF_VPRIN;
+                        return Current.SF_VPRIN;
                     case 11: // SF_2VPRIN
-                        return CurrentItem.SF_2VPRIN;
+                        return Current.SF_2VPRIN;
                     case 12: // SF_3VPRIN
-                        return CurrentItem.SF_3VPRIN;
+                        return Current.SF_3VPRIN;
                     case 13: // SF_APRIN
-                        return CurrentItem.SF_APRIN;
+                        return Current.SF_APRIN;
                     case 14: // SF_BMANAGER
-                        return CurrentItem.SF_BMANAGER;
+                        return Current.SF_BMANAGER;
                     case 15: // SF_VAC_CONTACT
-                        return CurrentItem.SF_VAC_CONTACT;
+                        return Current.SF_VAC_CONTACT;
                     case 16: // SF_EMERG_CONTACT
-                        return CurrentItem.SF_EMERG_CONTACT;
+                        return Current.SF_EMERG_CONTACT;
                     case 17: // SAM_SCH_COUNCIL
-                        return CurrentItem.SAM_SCH_COUNCIL;
+                        return Current.SAM_SCH_COUNCIL;
                     case 18: // PLATFORM
-                        return CurrentItem.PLATFORM;
+                        return Current.PLATFORM;
                     case 19: // CURRENT_RELEASE
-                        return CurrentItem.CURRENT_RELEASE;
+                        return Current.CURRENT_RELEASE;
                     case 20: // RELEASE_ACTION
-                        return CurrentItem.RELEASE_ACTION;
+                        return Current.RELEASE_ACTION;
                     case 21: // RELEASE_DATE
-                        return CurrentItem.RELEASE_DATE;
+                        return Current.RELEASE_DATE;
                     case 22: // SCHEMA_VERIFIED
-                        return CurrentItem.SCHEMA_VERIFIED;
+                        return Current.SCHEMA_VERIFIED;
                     case 23: // UPGRADE_VERSION
-                        return CurrentItem.UPGRADE_VERSION;
+                        return Current.UPGRADE_VERSION;
                     case 24: // ECASES21_VERSION
-                        return CurrentItem.ECASES21_VERSION;
+                        return Current.ECASES21_VERSION;
                     case 25: // DMIRROR_VERSION
-                        return CurrentItem.DMIRROR_VERSION;
+                        return Current.DMIRROR_VERSION;
                     case 26: // CURRENT_QUILT
-                        return CurrentItem.CURRENT_QUILT;
+                        return Current.CURRENT_QUILT;
                     case 27: // CURRENT_SEMESTER
-                        return CurrentItem.CURRENT_SEMESTER;
+                        return Current.CURRENT_SEMESTER;
                     case 28: // LAST_PROMOTION_DATE
-                        return CurrentItem.LAST_PROMOTION_DATE;
+                        return Current.LAST_PROMOTION_DATE;
                     case 29: // AGE_CALCULATION_DATE
-                        return CurrentItem.AGE_CALCULATION_DATE;
+                        return Current.AGE_CALCULATION_DATE;
                     case 30: // NEXT_ENROLMENT_DATE
-                        return CurrentItem.NEXT_ENROLMENT_DATE;
+                        return Current.NEXT_ENROLMENT_DATE;
                     case 31: // GENDER_DEFAULT
-                        return CurrentItem.GENDER_DEFAULT;
+                        return Current.GENDER_DEFAULT;
                     case 32: // TELEPHONE_PREFIX
-                        return CurrentItem.TELEPHONE_PREFIX;
+                        return Current.TELEPHONE_PREFIX;
                     case 33: // REL_INSTR
-                        return CurrentItem.REL_INSTR;
+                        return Current.REL_INSTR;
                     case 34: // CONSECUTIVE_DAYS
-                        return CurrentItem.CONSECUTIVE_DAYS;
+                        return Current.CONSECUTIVE_DAYS;
                     case 35: // CUMULATIVE_DAYS
-                        return CurrentItem.CUMULATIVE_DAYS;
+                        return Current.CUMULATIVE_DAYS;
                     case 36: // OVERALL_DAYS
-                        return CurrentItem.OVERALL_DAYS;
+                        return Current.OVERALL_DAYS;
                     case 37: // ADDRESS01
-                        return CurrentItem.ADDRESS01;
+                        return Current.ADDRESS01;
                     case 38: // ADDRESS02
-                        return CurrentItem.ADDRESS02;
+                        return Current.ADDRESS02;
                     case 39: // SUBURB
-                        return CurrentItem.SUBURB;
+                        return Current.SUBURB;
                     case 40: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 41: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 42: // TELEPHONE
-                        return CurrentItem.TELEPHONE;
+                        return Current.TELEPHONE;
                     case 43: // FAX
-                        return CurrentItem.FAX;
+                        return Current.FAX;
                     case 44: // MAILING_ADDRESS01
-                        return CurrentItem.MAILING_ADDRESS01;
+                        return Current.MAILING_ADDRESS01;
                     case 45: // MAILING_ADDRESS02
-                        return CurrentItem.MAILING_ADDRESS02;
+                        return Current.MAILING_ADDRESS02;
                     case 46: // MAILING_SUBURB
-                        return CurrentItem.MAILING_SUBURB;
+                        return Current.MAILING_SUBURB;
                     case 47: // MAILING_STATE
-                        return CurrentItem.MAILING_STATE;
+                        return Current.MAILING_STATE;
                     case 48: // MAILING_POSTCODE
-                        return CurrentItem.MAILING_POSTCODE;
+                        return Current.MAILING_POSTCODE;
                     case 49: // DELIVERY_ADDRESS01
-                        return CurrentItem.DELIVERY_ADDRESS01;
+                        return Current.DELIVERY_ADDRESS01;
                     case 50: // DELIVERY_ADDRESS02
-                        return CurrentItem.DELIVERY_ADDRESS02;
+                        return Current.DELIVERY_ADDRESS02;
                     case 51: // DELIVERY_SUBURB
-                        return CurrentItem.DELIVERY_SUBURB;
+                        return Current.DELIVERY_SUBURB;
                     case 52: // DELIVERY_STATE
-                        return CurrentItem.DELIVERY_STATE;
+                        return Current.DELIVERY_STATE;
                     case 53: // DELIVERY_POSTCODE
-                        return CurrentItem.DELIVERY_POSTCODE;
+                        return Current.DELIVERY_POSTCODE;
                     case 54: // DELIVERY_TELEPHONE
-                        return CurrentItem.DELIVERY_TELEPHONE;
+                        return Current.DELIVERY_TELEPHONE;
                     case 55: // DELIVERY_FAX
-                        return CurrentItem.DELIVERY_FAX;
+                        return Current.DELIVERY_FAX;
                     case 56: // MAP_TYPE
-                        return CurrentItem.MAP_TYPE;
+                        return Current.MAP_TYPE;
                     case 57: // MAP_NUM
-                        return CurrentItem.MAP_NUM;
+                        return Current.MAP_NUM;
                     case 58: // X_AXIS
-                        return CurrentItem.X_AXIS;
+                        return Current.X_AXIS;
                     case 59: // Y_AXIS
-                        return CurrentItem.Y_AXIS;
+                        return Current.Y_AXIS;
                     case 60: // DESTINATION_SCHOOL
-                        return CurrentItem.DESTINATION_SCHOOL;
+                        return Current.DESTINATION_SCHOOL;
                     case 61: // CAMPUS_EMAIL_CONTACT
-                        return CurrentItem.CAMPUS_EMAIL_CONTACT;
+                        return Current.CAMPUS_EMAIL_CONTACT;
                     case 62: // SCH_AOIC
-                        return CurrentItem.SCH_AOIC;
+                        return Current.SCH_AOIC;
                     case 63: // SCH_VPRIN
-                        return CurrentItem.SCH_VPRIN;
+                        return Current.SCH_VPRIN;
                     case 64: // SCH_BMANAGER
-                        return CurrentItem.SCH_BMANAGER;
+                        return Current.SCH_BMANAGER;
                     case 65: // SCH_VAC_CONTACT
-                        return CurrentItem.SCH_VAC_CONTACT;
+                        return Current.SCH_VAC_CONTACT;
                     case 66: // SCH_EMERG_CONTACT
-                        return CurrentItem.SCH_EMERG_CONTACT;
+                        return Current.SCH_EMERG_CONTACT;
                     case 67: // SCH_COUNCIL_PRES
-                        return CurrentItem.SCH_COUNCIL_PRES;
+                        return Current.SCH_COUNCIL_PRES;
                     case 68: // SCH_MASTER_KEY
-                        return CurrentItem.SCH_MASTER_KEY;
+                        return Current.SCH_MASTER_KEY;
                     case 69: // PROFILE_UPDATED
-                        return CurrentItem.PROFILE_UPDATED;
+                        return Current.PROFILE_UPDATED;
                     case 70: // CAMPUS_OPEN_IND
-                        return CurrentItem.CAMPUS_OPEN_IND;
+                        return Current.CAMPUS_OPEN_IND;
                     case 71: // PROFILE_SENT
-                        return CurrentItem.PROFILE_SENT;
+                        return Current.PROFILE_SENT;
                     case 72: // SPEC_CURR_IND
-                        return CurrentItem.SPEC_CURR_IND;
+                        return Current.SPEC_CURR_IND;
                     case 73: // GLOBAL_ID
-                        return CurrentItem.GLOBAL_ID;
+                        return Current.GLOBAL_ID;
                     case 74: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 75: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 76: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // CAMPUS_NAME
-                        return CurrentItem.CAMPUS_NAME == null;
+                        return Current.CAMPUS_NAME == null;
                     case 2: // CAMPUS_TYPE
-                        return CurrentItem.CAMPUS_TYPE == null;
+                        return Current.CAMPUS_TYPE == null;
                     case 3: // SCHOOL_LINK
-                        return CurrentItem.SCHOOL_LINK == null;
+                        return Current.SCHOOL_LINK == null;
                     case 4: // SCHOOL_TYPE
-                        return CurrentItem.SCHOOL_TYPE == null;
+                        return Current.SCHOOL_TYPE == null;
                     case 5: // SCHOOL_NAME
-                        return CurrentItem.SCHOOL_NAME == null;
+                        return Current.SCHOOL_NAME == null;
                     case 6: // MASTER_KEY
-                        return CurrentItem.MASTER_KEY == null;
+                        return Current.MASTER_KEY == null;
                     case 7: // ADMIN_SITE
-                        return CurrentItem.ADMIN_SITE == null;
+                        return Current.ADMIN_SITE == null;
                     case 8: // SCH_PRINCIPAL
-                        return CurrentItem.SCH_PRINCIPAL == null;
+                        return Current.SCH_PRINCIPAL == null;
                     case 9: // SF_OIC
-                        return CurrentItem.SF_OIC == null;
+                        return Current.SF_OIC == null;
                     case 10: // SF_VPRIN
-                        return CurrentItem.SF_VPRIN == null;
+                        return Current.SF_VPRIN == null;
                     case 11: // SF_2VPRIN
-                        return CurrentItem.SF_2VPRIN == null;
+                        return Current.SF_2VPRIN == null;
                     case 12: // SF_3VPRIN
-                        return CurrentItem.SF_3VPRIN == null;
+                        return Current.SF_3VPRIN == null;
                     case 13: // SF_APRIN
-                        return CurrentItem.SF_APRIN == null;
+                        return Current.SF_APRIN == null;
                     case 14: // SF_BMANAGER
-                        return CurrentItem.SF_BMANAGER == null;
+                        return Current.SF_BMANAGER == null;
                     case 15: // SF_VAC_CONTACT
-                        return CurrentItem.SF_VAC_CONTACT == null;
+                        return Current.SF_VAC_CONTACT == null;
                     case 16: // SF_EMERG_CONTACT
-                        return CurrentItem.SF_EMERG_CONTACT == null;
+                        return Current.SF_EMERG_CONTACT == null;
                     case 17: // SAM_SCH_COUNCIL
-                        return CurrentItem.SAM_SCH_COUNCIL == null;
+                        return Current.SAM_SCH_COUNCIL == null;
                     case 18: // PLATFORM
-                        return CurrentItem.PLATFORM == null;
+                        return Current.PLATFORM == null;
                     case 19: // CURRENT_RELEASE
-                        return CurrentItem.CURRENT_RELEASE == null;
+                        return Current.CURRENT_RELEASE == null;
                     case 20: // RELEASE_ACTION
-                        return CurrentItem.RELEASE_ACTION == null;
+                        return Current.RELEASE_ACTION == null;
                     case 21: // RELEASE_DATE
-                        return CurrentItem.RELEASE_DATE == null;
+                        return Current.RELEASE_DATE == null;
                     case 22: // SCHEMA_VERIFIED
-                        return CurrentItem.SCHEMA_VERIFIED == null;
+                        return Current.SCHEMA_VERIFIED == null;
                     case 23: // UPGRADE_VERSION
-                        return CurrentItem.UPGRADE_VERSION == null;
+                        return Current.UPGRADE_VERSION == null;
                     case 24: // ECASES21_VERSION
-                        return CurrentItem.ECASES21_VERSION == null;
+                        return Current.ECASES21_VERSION == null;
                     case 25: // DMIRROR_VERSION
-                        return CurrentItem.DMIRROR_VERSION == null;
+                        return Current.DMIRROR_VERSION == null;
                     case 26: // CURRENT_QUILT
-                        return CurrentItem.CURRENT_QUILT == null;
+                        return Current.CURRENT_QUILT == null;
                     case 27: // CURRENT_SEMESTER
-                        return CurrentItem.CURRENT_SEMESTER == null;
+                        return Current.CURRENT_SEMESTER == null;
                     case 28: // LAST_PROMOTION_DATE
-                        return CurrentItem.LAST_PROMOTION_DATE == null;
+                        return Current.LAST_PROMOTION_DATE == null;
                     case 29: // AGE_CALCULATION_DATE
-                        return CurrentItem.AGE_CALCULATION_DATE == null;
+                        return Current.AGE_CALCULATION_DATE == null;
                     case 30: // NEXT_ENROLMENT_DATE
-                        return CurrentItem.NEXT_ENROLMENT_DATE == null;
+                        return Current.NEXT_ENROLMENT_DATE == null;
                     case 31: // GENDER_DEFAULT
-                        return CurrentItem.GENDER_DEFAULT == null;
+                        return Current.GENDER_DEFAULT == null;
                     case 32: // TELEPHONE_PREFIX
-                        return CurrentItem.TELEPHONE_PREFIX == null;
+                        return Current.TELEPHONE_PREFIX == null;
                     case 33: // REL_INSTR
-                        return CurrentItem.REL_INSTR == null;
+                        return Current.REL_INSTR == null;
                     case 34: // CONSECUTIVE_DAYS
-                        return CurrentItem.CONSECUTIVE_DAYS == null;
+                        return Current.CONSECUTIVE_DAYS == null;
                     case 35: // CUMULATIVE_DAYS
-                        return CurrentItem.CUMULATIVE_DAYS == null;
+                        return Current.CUMULATIVE_DAYS == null;
                     case 36: // OVERALL_DAYS
-                        return CurrentItem.OVERALL_DAYS == null;
+                        return Current.OVERALL_DAYS == null;
                     case 37: // ADDRESS01
-                        return CurrentItem.ADDRESS01 == null;
+                        return Current.ADDRESS01 == null;
                     case 38: // ADDRESS02
-                        return CurrentItem.ADDRESS02 == null;
+                        return Current.ADDRESS02 == null;
                     case 39: // SUBURB
-                        return CurrentItem.SUBURB == null;
+                        return Current.SUBURB == null;
                     case 40: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 41: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 42: // TELEPHONE
-                        return CurrentItem.TELEPHONE == null;
+                        return Current.TELEPHONE == null;
                     case 43: // FAX
-                        return CurrentItem.FAX == null;
+                        return Current.FAX == null;
                     case 44: // MAILING_ADDRESS01
-                        return CurrentItem.MAILING_ADDRESS01 == null;
+                        return Current.MAILING_ADDRESS01 == null;
                     case 45: // MAILING_ADDRESS02
-                        return CurrentItem.MAILING_ADDRESS02 == null;
+                        return Current.MAILING_ADDRESS02 == null;
                     case 46: // MAILING_SUBURB
-                        return CurrentItem.MAILING_SUBURB == null;
+                        return Current.MAILING_SUBURB == null;
                     case 47: // MAILING_STATE
-                        return CurrentItem.MAILING_STATE == null;
+                        return Current.MAILING_STATE == null;
                     case 48: // MAILING_POSTCODE
-                        return CurrentItem.MAILING_POSTCODE == null;
+                        return Current.MAILING_POSTCODE == null;
                     case 49: // DELIVERY_ADDRESS01
-                        return CurrentItem.DELIVERY_ADDRESS01 == null;
+                        return Current.DELIVERY_ADDRESS01 == null;
                     case 50: // DELIVERY_ADDRESS02
-                        return CurrentItem.DELIVERY_ADDRESS02 == null;
+                        return Current.DELIVERY_ADDRESS02 == null;
                     case 51: // DELIVERY_SUBURB
-                        return CurrentItem.DELIVERY_SUBURB == null;
+                        return Current.DELIVERY_SUBURB == null;
                     case 52: // DELIVERY_STATE
-                        return CurrentItem.DELIVERY_STATE == null;
+                        return Current.DELIVERY_STATE == null;
                     case 53: // DELIVERY_POSTCODE
-                        return CurrentItem.DELIVERY_POSTCODE == null;
+                        return Current.DELIVERY_POSTCODE == null;
                     case 54: // DELIVERY_TELEPHONE
-                        return CurrentItem.DELIVERY_TELEPHONE == null;
+                        return Current.DELIVERY_TELEPHONE == null;
                     case 55: // DELIVERY_FAX
-                        return CurrentItem.DELIVERY_FAX == null;
+                        return Current.DELIVERY_FAX == null;
                     case 56: // MAP_TYPE
-                        return CurrentItem.MAP_TYPE == null;
+                        return Current.MAP_TYPE == null;
                     case 57: // MAP_NUM
-                        return CurrentItem.MAP_NUM == null;
+                        return Current.MAP_NUM == null;
                     case 58: // X_AXIS
-                        return CurrentItem.X_AXIS == null;
+                        return Current.X_AXIS == null;
                     case 59: // Y_AXIS
-                        return CurrentItem.Y_AXIS == null;
+                        return Current.Y_AXIS == null;
                     case 60: // DESTINATION_SCHOOL
-                        return CurrentItem.DESTINATION_SCHOOL == null;
+                        return Current.DESTINATION_SCHOOL == null;
                     case 61: // CAMPUS_EMAIL_CONTACT
-                        return CurrentItem.CAMPUS_EMAIL_CONTACT == null;
+                        return Current.CAMPUS_EMAIL_CONTACT == null;
                     case 62: // SCH_AOIC
-                        return CurrentItem.SCH_AOIC == null;
+                        return Current.SCH_AOIC == null;
                     case 63: // SCH_VPRIN
-                        return CurrentItem.SCH_VPRIN == null;
+                        return Current.SCH_VPRIN == null;
                     case 64: // SCH_BMANAGER
-                        return CurrentItem.SCH_BMANAGER == null;
+                        return Current.SCH_BMANAGER == null;
                     case 65: // SCH_VAC_CONTACT
-                        return CurrentItem.SCH_VAC_CONTACT == null;
+                        return Current.SCH_VAC_CONTACT == null;
                     case 66: // SCH_EMERG_CONTACT
-                        return CurrentItem.SCH_EMERG_CONTACT == null;
+                        return Current.SCH_EMERG_CONTACT == null;
                     case 67: // SCH_COUNCIL_PRES
-                        return CurrentItem.SCH_COUNCIL_PRES == null;
+                        return Current.SCH_COUNCIL_PRES == null;
                     case 68: // SCH_MASTER_KEY
-                        return CurrentItem.SCH_MASTER_KEY == null;
+                        return Current.SCH_MASTER_KEY == null;
                     case 69: // PROFILE_UPDATED
-                        return CurrentItem.PROFILE_UPDATED == null;
+                        return Current.PROFILE_UPDATED == null;
                     case 70: // CAMPUS_OPEN_IND
-                        return CurrentItem.CAMPUS_OPEN_IND == null;
+                        return Current.CAMPUS_OPEN_IND == null;
                     case 71: // PROFILE_SENT
-                        return CurrentItem.PROFILE_SENT == null;
+                        return Current.PROFILE_SENT == null;
                     case 72: // SPEC_CURR_IND
-                        return CurrentItem.SPEC_CURR_IND == null;
+                        return Current.SPEC_CURR_IND == null;
                     case 73: // GLOBAL_ID
-                        return CurrentItem.GLOBAL_ID == null;
+                        return Current.GLOBAL_ID == null;
                     case 74: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 75: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 76: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -2006,7 +2176,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -2167,35 +2337,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

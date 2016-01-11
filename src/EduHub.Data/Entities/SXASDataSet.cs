@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SXASDataSet : EduHubDataSet<SXAS>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SXAS"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SXASDataSet(EduHubContext Context)
             : base(Context)
@@ -34,7 +37,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SXAS" /> fields for each CSV column header</returns>
-        protected override Action<SXAS, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SXAS, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SXAS, string>[Headers.Count];
 
@@ -103,29 +106,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SXAS" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SXAS" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SXAS" /> items to added or update the base <see cref="SXAS" /> items</param>
-        /// <returns>A merged list of <see cref="SXAS" /> items</returns>
-        protected override List<SXAS> ApplyDeltaItems(List<SXAS> Items, List<SXAS> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SXAS" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SXAS" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SXAS}"/> of entities</returns>
+        internal override IEnumerable<SXAS> ApplyDeltaEntities(IEnumerable<SXAS> Entities, List<SXAS> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SXAS deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.TID;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.TID.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.TID)
-                .ToList();
         }
 
         #region Index Fields
@@ -441,11 +470,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SXAS table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SXAS table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SXAS](
         [TID] int IDENTITY NOT NULL,
@@ -493,152 +526,215 @@ BEGIN
     (
             [TXAS_ID] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ACT_ABS_TYPE')
+    ALTER INDEX [Index_ACT_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_EXP_ABS_TYPE')
+    ALTER INDEX [Index_EXP_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_STKEY')
+    ALTER INDEX [Index_STKEY] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_TXAS_ID')
+    ALTER INDEX [Index_TXAS_ID] ON [dbo].[SXAS] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ACT_ABS_TYPE')
+    ALTER INDEX [Index_ACT_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_EXP_ABS_TYPE')
+    ALTER INDEX [Index_EXP_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_LW_DATE')
+    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ST_YEAR_LEVEL')
+    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_STKEY')
+    ALTER INDEX [Index_STKEY] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_TXAS_ID')
+    ALTER INDEX [Index_TXAS_ID] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SXAS"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SXAS"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SXAS> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SXAS] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SXAS data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SXAS data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SXAS> GetDataSetDataReader()
         {
-            return new SXASDataReader(Items.Value);
+            return new SXASDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SXAS data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SXAS data set</returns>
+        public override EduHubDataSetDataReader<SXAS> GetDataSetDataReader(List<SXAS> Entities)
+        {
+            return new SXASDataReader(new EduHubDataSetLoadedReader<SXAS>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SXASDataReader : IDataReader, IDataRecord
+        private class SXASDataReader : EduHubDataSetDataReader<SXAS>
         {
-            private List<SXAS> Items;
-            private int CurrentIndex;
-            private SXAS CurrentItem;
-
-            public SXASDataReader(List<SXAS> Items)
+            public SXASDataReader(IEduHubDataSetReader<SXAS> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 17; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 17; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // TXAS_ID
-                        return CurrentItem.TXAS_ID;
+                        return Current.TXAS_ID;
                     case 2: // STKEY
-                        return CurrentItem.STKEY;
+                        return Current.STKEY;
                     case 3: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL;
+                        return Current.ST_YEAR_LEVEL;
                     case 4: // EXP_ABS_TYPE
-                        return CurrentItem.EXP_ABS_TYPE;
+                        return Current.EXP_ABS_TYPE;
                     case 5: // ATTENDED
-                        return CurrentItem.ATTENDED;
+                        return Current.ATTENDED;
                     case 6: // ACT_ABS_TYPE
-                        return CurrentItem.ACT_ABS_TYPE;
+                        return Current.ACT_ABS_TYPE;
                     case 7: // APPROVED
-                        return CurrentItem.APPROVED;
+                        return Current.APPROVED;
                     case 8: // NOTES
-                        return CurrentItem.NOTES;
+                        return Current.NOTES;
                     case 9: // ACTION_TAKEN
-                        return CurrentItem.ACTION_TAKEN;
+                        return Current.ACTION_TAKEN;
                     case 10: // ABSENCE_DATE
-                        return CurrentItem.ABSENCE_DATE;
+                        return Current.ABSENCE_DATE;
                     case 11: // ABSENCE_PERIOD
-                        return CurrentItem.ABSENCE_PERIOD;
+                        return Current.ABSENCE_PERIOD;
                     case 12: // SMS_KEY
-                        return CurrentItem.SMS_KEY;
+                        return Current.SMS_KEY;
                     case 13: // EMAIL_KEY
-                        return CurrentItem.EMAIL_KEY;
+                        return Current.EMAIL_KEY;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // TXAS_ID
-                        return CurrentItem.TXAS_ID == null;
+                        return Current.TXAS_ID == null;
                     case 2: // STKEY
-                        return CurrentItem.STKEY == null;
+                        return Current.STKEY == null;
                     case 3: // ST_YEAR_LEVEL
-                        return CurrentItem.ST_YEAR_LEVEL == null;
+                        return Current.ST_YEAR_LEVEL == null;
                     case 4: // EXP_ABS_TYPE
-                        return CurrentItem.EXP_ABS_TYPE == null;
+                        return Current.EXP_ABS_TYPE == null;
                     case 5: // ATTENDED
-                        return CurrentItem.ATTENDED == null;
+                        return Current.ATTENDED == null;
                     case 6: // ACT_ABS_TYPE
-                        return CurrentItem.ACT_ABS_TYPE == null;
+                        return Current.ACT_ABS_TYPE == null;
                     case 7: // APPROVED
-                        return CurrentItem.APPROVED == null;
+                        return Current.APPROVED == null;
                     case 8: // NOTES
-                        return CurrentItem.NOTES == null;
+                        return Current.NOTES == null;
                     case 9: // ACTION_TAKEN
-                        return CurrentItem.ACTION_TAKEN == null;
+                        return Current.ACTION_TAKEN == null;
                     case 10: // ABSENCE_DATE
-                        return CurrentItem.ABSENCE_DATE == null;
+                        return Current.ABSENCE_DATE == null;
                     case 11: // ABSENCE_PERIOD
-                        return CurrentItem.ABSENCE_PERIOD == null;
+                        return Current.ABSENCE_PERIOD == null;
                     case 12: // SMS_KEY
-                        return CurrentItem.SMS_KEY == null;
+                        return Current.SMS_KEY == null;
                     case 13: // EMAIL_KEY
-                        return CurrentItem.EMAIL_KEY == null;
+                        return Current.EMAIL_KEY == null;
                     case 14: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 15: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 16: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -681,7 +777,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -722,35 +818,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

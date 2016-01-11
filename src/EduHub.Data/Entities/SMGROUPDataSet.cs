@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SMGROUPDataSet : EduHubDataSet<SMGROUP>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SMGROUP"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SMGROUPDataSet(EduHubContext Context)
             : base(Context)
@@ -31,7 +34,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SMGROUP" /> fields for each CSV column header</returns>
-        protected override Action<SMGROUP, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SMGROUP, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SMGROUP, string>[Headers.Count];
 
@@ -67,34 +70,58 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SMGROUP" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SMGROUP" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SMGROUP" /> items to added or update the base <see cref="SMGROUP" /> items</param>
-        /// <returns>A merged list of <see cref="SMGROUP" /> items</returns>
-        protected override List<SMGROUP> ApplyDeltaItems(List<SMGROUP> Items, List<SMGROUP> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SMGROUP" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SMGROUP" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SMGROUP}"/> of entities</returns>
+        internal override IEnumerable<SMGROUP> ApplyDeltaEntities(IEnumerable<SMGROUP> Entities, List<SMGROUP> DeltaEntities)
         {
-            Dictionary<Tuple<string, string>, int> Index_GROUPKEY_ROOM = Items.ToIndexDictionary(i => Tuple.Create(i.GROUPKEY, i.ROOM));
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<Tuple<string, string>> Index_GROUPKEY_ROOM = new HashSet<Tuple<string, string>>(DeltaEntities.Select(i => Tuple.Create(i.GROUPKEY, i.ROOM)));
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SMGROUP deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
+                using (var entityIterator = Entities.GetEnumerator())
+                {
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.GROUPKEY;
+                        bool yieldEntity = false;
 
-                if (Index_GROUPKEY_ROOM.TryGetValue(Tuple.Create(deltaItem.GROUPKEY, deltaItem.ROOM), out index))
-                {
-                    removeIndexes.Add(index);
-                }
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
-                {
-                    removeIndexes.Add(index);
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = false;
+                            overwritten = overwritten || Index_GROUPKEY_ROOM.Remove(Tuple.Create(entity.GROUPKEY, entity.ROOM));
+                            overwritten = overwritten || Index_TID.Remove(entity.TID);
+                            
+                            if (entity.GROUPKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.GROUPKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -284,11 +311,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SMGROUP table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SMGROUP table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SMGROUP](
         [TID] int IDENTITY NOT NULL,
@@ -314,106 +345,185 @@ BEGIN
     (
             [ROOM] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_GROUPKEY_ROOM')
+    ALTER INDEX [Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_ROOM')
+    ALTER INDEX [Index_ROOM] ON [dbo].[SMGROUP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SMGROUP] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_GROUPKEY_ROOM')
+    ALTER INDEX [Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_ROOM')
+    ALTER INDEX [Index_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SMGROUP"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SMGROUP"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SMGROUP> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<Tuple<string, string>> Index_GROUPKEY_ROOM = new List<Tuple<string, string>>();
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_GROUPKEY_ROOM.Add(Tuple.Create(entity.GROUPKEY, entity.ROOM));
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SMGROUP] WHERE");
+
+
+            // Index_GROUPKEY_ROOM
+            builder.Append("(");
+            for (int index = 0; index < Index_GROUPKEY_ROOM.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(" OR ");
+
+                // GROUPKEY
+                var parameterGROUPKEY = $"@p{parameterIndex++}";
+                builder.Append("([GROUPKEY]=").Append(parameterGROUPKEY);
+                command.Parameters.Add(parameterGROUPKEY, SqlDbType.VarChar, 4).Value = Index_GROUPKEY_ROOM[index].Item1;
+
+                // ROOM
+                if (Index_GROUPKEY_ROOM[index].Item2 == null)
+                {
+                    builder.Append(" AND [ROOM] IS NULL)");
+                }
+                else
+                {
+                    var parameterROOM = $"@p{parameterIndex++}";
+                    builder.Append(" AND [ROOM]=").Append(parameterROOM).Append(")");
+                    command.Parameters.Add(parameterROOM, SqlDbType.VarChar, 4).Value = Index_GROUPKEY_ROOM[index].Item2;
+                }
+            }
+            builder.AppendLine(") OR");
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SMGROUP data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SMGROUP data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SMGROUP> GetDataSetDataReader()
         {
-            return new SMGROUPDataReader(Items.Value);
+            return new SMGROUPDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SMGROUP data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SMGROUP data set</returns>
+        public override EduHubDataSetDataReader<SMGROUP> GetDataSetDataReader(List<SMGROUP> Entities)
+        {
+            return new SMGROUPDataReader(new EduHubDataSetLoadedReader<SMGROUP>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SMGROUPDataReader : IDataReader, IDataRecord
+        private class SMGROUPDataReader : EduHubDataSetDataReader<SMGROUP>
         {
-            private List<SMGROUP> Items;
-            private int CurrentIndex;
-            private SMGROUP CurrentItem;
-
-            public SMGROUPDataReader(List<SMGROUP> Items)
+            public SMGROUPDataReader(IEduHubDataSetReader<SMGROUP> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 6; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 6; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // GROUPKEY
-                        return CurrentItem.GROUPKEY;
+                        return Current.GROUPKEY;
                     case 2: // ROOM
-                        return CurrentItem.ROOM;
+                        return Current.ROOM;
                     case 3: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 4: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 5: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // ROOM
-                        return CurrentItem.ROOM == null;
+                        return Current.ROOM == null;
                     case 3: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 4: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 5: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -434,7 +544,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -453,35 +563,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

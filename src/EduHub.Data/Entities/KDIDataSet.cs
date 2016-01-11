@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDIDataSet : EduHubDataSet<KDI>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KDI"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KDIDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KDI" /> fields for each CSV column header</returns>
-        protected override Action<KDI, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KDI, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KDI, string>[Headers.Count];
 
@@ -70,29 +73,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KDI" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KDI" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KDI" /> items to added or update the base <see cref="KDI" /> items</param>
-        /// <returns>A merged list of <see cref="KDI" /> items</returns>
-        protected override List<KDI> ApplyDeltaItems(List<KDI> Items, List<KDI> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KDI" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KDI" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KDI}"/> of entities</returns>
+        internal override IEnumerable<KDI> ApplyDeltaEntities(IEnumerable<KDI> Entities, List<KDI> DeltaEntities)
         {
-            Dictionary<string, int> Index_KDIKEY = Items.ToIndexDictionary(i => i.KDIKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_KDIKEY = new HashSet<string>(DeltaEntities.Select(i => i.KDIKEY));
 
-            foreach (KDI deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_KDIKEY.TryGetValue(deltaItem.KDIKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.KDIKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_KDIKEY.Remove(entity.KDIKEY);
+                            
+                            if (entity.KDIKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.KDIKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -150,11 +179,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KDI table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KDI table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KDI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KDI]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KDI](
         [KDIKEY] varchar(10) NOT NULL,
@@ -169,116 +202,147 @@ BEGIN
             [KDIKEY] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="KDIDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="KDIDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KDI"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KDI"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KDI> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_KDIKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_KDIKEY.Add(entity.KDIKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KDI] WHERE");
+
+
+            // Index_KDIKEY
+            builder.Append("[KDIKEY] IN (");
+            for (int index = 0; index < Index_KDIKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // KDIKEY
+                var parameterKDIKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKDIKEY);
+                command.Parameters.Add(parameterKDIKEY, SqlDbType.VarChar, 10).Value = Index_KDIKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KDI data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KDI data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KDI> GetDataSetDataReader()
         {
-            return new KDIDataReader(Items.Value);
+            return new KDIDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KDI data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KDI data set</returns>
+        public override EduHubDataSetDataReader<KDI> GetDataSetDataReader(List<KDI> Entities)
+        {
+            return new KDIDataReader(new EduHubDataSetLoadedReader<KDI>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KDIDataReader : IDataReader, IDataRecord
+        private class KDIDataReader : EduHubDataSetDataReader<KDI>
         {
-            private List<KDI> Items;
-            private int CurrentIndex;
-            private KDI CurrentItem;
-
-            public KDIDataReader(List<KDI> Items)
+            public KDIDataReader(IEduHubDataSetReader<KDI> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 8; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 8; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // KDIKEY
-                        return CurrentItem.KDIKEY;
+                        return Current.KDIKEY;
                     case 1: // KDOKEY
-                        return CurrentItem.KDOKEY;
+                        return Current.KDOKEY;
                     case 2: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 3: // MIN_SCORE
-                        return CurrentItem.MIN_SCORE;
+                        return Current.MIN_SCORE;
                     case 4: // MAX_SCORE
-                        return CurrentItem.MAX_SCORE;
+                        return Current.MAX_SCORE;
                     case 5: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 6: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 7: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // KDOKEY
-                        return CurrentItem.KDOKEY == null;
+                        return Current.KDOKEY == null;
                     case 2: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 3: // MIN_SCORE
-                        return CurrentItem.MIN_SCORE == null;
+                        return Current.MIN_SCORE == null;
                     case 4: // MAX_SCORE
-                        return CurrentItem.MAX_SCORE == null;
+                        return Current.MAX_SCORE == null;
                     case 5: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 6: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 7: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -303,7 +367,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -326,35 +390,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

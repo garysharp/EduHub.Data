@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class SPEPRINTDataSet : EduHubDataSet<SPEPRINT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "SPEPRINT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal SPEPRINTDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="SPEPRINT" /> fields for each CSV column header</returns>
-        protected override Action<SPEPRINT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<SPEPRINT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<SPEPRINT, string>[Headers.Count];
 
@@ -104,29 +107,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="SPEPRINT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="SPEPRINT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="SPEPRINT" /> items to added or update the base <see cref="SPEPRINT" /> items</param>
-        /// <returns>A merged list of <see cref="SPEPRINT" /> items</returns>
-        protected override List<SPEPRINT> ApplyDeltaItems(List<SPEPRINT> Items, List<SPEPRINT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="SPEPRINT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="SPEPRINT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{SPEPRINT}"/> of entities</returns>
+        internal override IEnumerable<SPEPRINT> ApplyDeltaEntities(IEnumerable<SPEPRINT> Entities, List<SPEPRINT> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (SPEPRINT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.CODE;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.CODE)
-                .ToList();
         }
 
         #region Index Fields
@@ -227,11 +256,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a SPEPRINT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SPEPRINT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[SPEPRINT](
         [TID] int IDENTITY NOT NULL,
@@ -261,158 +294,201 @@ BEGIN
     (
             [CODE] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SPEPRINT] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[SPEPRINT] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SPEPRINT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="SPEPRINT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SPEPRINT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[SPEPRINT] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the SPEPRINT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the SPEPRINT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<SPEPRINT> GetDataSetDataReader()
         {
-            return new SPEPRINTDataReader(Items.Value);
+            return new SPEPRINTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the SPEPRINT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the SPEPRINT data set</returns>
+        public override EduHubDataSetDataReader<SPEPRINT> GetDataSetDataReader(List<SPEPRINT> Entities)
+        {
+            return new SPEPRINTDataReader(new EduHubDataSetLoadedReader<SPEPRINT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SPEPRINTDataReader : IDataReader, IDataRecord
+        private class SPEPRINTDataReader : EduHubDataSetDataReader<SPEPRINT>
         {
-            private List<SPEPRINT> Items;
-            private int CurrentIndex;
-            private SPEPRINT CurrentItem;
-
-            public SPEPRINTDataReader(List<SPEPRINT> Items)
+            public SPEPRINTDataReader(IEduHubDataSetReader<SPEPRINT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 19; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 19; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // CODE
-                        return CurrentItem.CODE;
+                        return Current.CODE;
                     case 2: // PRINT_DATE
-                        return CurrentItem.PRINT_DATE;
+                        return Current.PRINT_DATE;
                     case 3: // PRINT_BY
-                        return CurrentItem.PRINT_BY;
+                        return Current.PRINT_BY;
                     case 4: // SEND_DATE
-                        return CurrentItem.SEND_DATE;
+                        return Current.SEND_DATE;
                     case 5: // SEND_BY
-                        return CurrentItem.SEND_BY;
+                        return Current.SEND_BY;
                     case 6: // ENTITY_TABLE
-                        return CurrentItem.ENTITY_TABLE;
+                        return Current.ENTITY_TABLE;
                     case 7: // ENTITY_KEY
-                        return CurrentItem.ENTITY_KEY;
+                        return Current.ENTITY_KEY;
                     case 8: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS;
+                        return Current.EMAIL_ADDRESS;
                     case 9: // COPY_ADDRESS
-                        return CurrentItem.COPY_ADDRESS;
+                        return Current.COPY_ADDRESS;
                     case 10: // EMAIL_SUBJECT
-                        return CurrentItem.EMAIL_SUBJECT;
+                        return Current.EMAIL_SUBJECT;
                     case 11: // EMAIL_MESSAGE
-                        return CurrentItem.EMAIL_MESSAGE;
+                        return Current.EMAIL_MESSAGE;
                     case 12: // ATTACHMENT_PATH
-                        return CurrentItem.ATTACHMENT_PATH;
+                        return Current.ATTACHMENT_PATH;
                     case 13: // STATUS
-                        return CurrentItem.STATUS;
+                        return Current.STATUS;
                     case 14: // DISPLAY
-                        return CurrentItem.DISPLAY;
+                        return Current.DISPLAY;
                     case 15: // COMMENTS
-                        return CurrentItem.COMMENTS;
+                        return Current.COMMENTS;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // PRINT_DATE
-                        return CurrentItem.PRINT_DATE == null;
+                        return Current.PRINT_DATE == null;
                     case 3: // PRINT_BY
-                        return CurrentItem.PRINT_BY == null;
+                        return Current.PRINT_BY == null;
                     case 4: // SEND_DATE
-                        return CurrentItem.SEND_DATE == null;
+                        return Current.SEND_DATE == null;
                     case 5: // SEND_BY
-                        return CurrentItem.SEND_BY == null;
+                        return Current.SEND_BY == null;
                     case 6: // ENTITY_TABLE
-                        return CurrentItem.ENTITY_TABLE == null;
+                        return Current.ENTITY_TABLE == null;
                     case 7: // ENTITY_KEY
-                        return CurrentItem.ENTITY_KEY == null;
+                        return Current.ENTITY_KEY == null;
                     case 8: // EMAIL_ADDRESS
-                        return CurrentItem.EMAIL_ADDRESS == null;
+                        return Current.EMAIL_ADDRESS == null;
                     case 9: // COPY_ADDRESS
-                        return CurrentItem.COPY_ADDRESS == null;
+                        return Current.COPY_ADDRESS == null;
                     case 10: // EMAIL_SUBJECT
-                        return CurrentItem.EMAIL_SUBJECT == null;
+                        return Current.EMAIL_SUBJECT == null;
                     case 11: // EMAIL_MESSAGE
-                        return CurrentItem.EMAIL_MESSAGE == null;
+                        return Current.EMAIL_MESSAGE == null;
                     case 12: // ATTACHMENT_PATH
-                        return CurrentItem.ATTACHMENT_PATH == null;
+                        return Current.ATTACHMENT_PATH == null;
                     case 13: // STATUS
-                        return CurrentItem.STATUS == null;
+                        return Current.STATUS == null;
                     case 14: // DISPLAY
-                        return CurrentItem.DISPLAY == null;
+                        return Current.DISPLAY == null;
                     case 15: // COMMENTS
-                        return CurrentItem.COMMENTS == null;
+                        return Current.COMMENTS == null;
                     case 16: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 17: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 18: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -459,7 +535,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -504,35 +580,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

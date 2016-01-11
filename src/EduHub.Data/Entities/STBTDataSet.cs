@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class STBTDataSet : EduHubDataSet<STBT>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "STBT"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal STBTDataSet(EduHubContext Context)
             : base(Context)
@@ -50,7 +53,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="STBT" /> fields for each CSV column header</returns>
-        protected override Action<STBT, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<STBT, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<STBT, string>[Headers.Count];
 
@@ -260,29 +263,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="STBT" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="STBT" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="STBT" /> items to added or update the base <see cref="STBT" /> items</param>
-        /// <returns>A merged list of <see cref="STBT" /> items</returns>
-        protected override List<STBT> ApplyDeltaItems(List<STBT> Items, List<STBT> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="STBT" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="STBT" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{STBT}"/> of entities</returns>
+        internal override IEnumerable<STBT> ApplyDeltaEntities(IEnumerable<STBT> Entities, List<STBT> DeltaEntities)
         {
-            Dictionary<int, int> Index_TID = Items.ToIndexDictionary(i => i.TID);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
-            foreach (STBT deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_TID.TryGetValue(deltaItem.TID, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.STBTKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_TID.Remove(entity.TID);
+                            
+                            if (entity.STBTKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.STBTKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -1286,11 +1315,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a STBT table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a STBT table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[STBT](
         [TID] int IDENTITY NOT NULL,
@@ -1449,338 +1482,465 @@ BEGIN
     (
             [STBTKEY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_ROUTE')
+    ALTER INDEX [Index_AM1_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_SD_SITE')
+    ALTER INDEX [Index_AM1_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_ROUTE')
+    ALTER INDEX [Index_AM2_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_SD_SITE')
+    ALTER INDEX [Index_AM2_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_ROUTE')
+    ALTER INDEX [Index_AM3_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_SD_SITE')
+    ALTER INDEX [Index_AM3_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_ROUTE')
+    ALTER INDEX [Index_AM4_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_SD_SITE')
+    ALTER INDEX [Index_AM4_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_ROUTE')
+    ALTER INDEX [Index_AM5_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_SD_SITE')
+    ALTER INDEX [Index_AM5_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_PU_SITE')
+    ALTER INDEX [Index_PM1_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_ROUTE')
+    ALTER INDEX [Index_PM1_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_PU_SITE')
+    ALTER INDEX [Index_PM2_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_ROUTE')
+    ALTER INDEX [Index_PM2_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_PU_SITE')
+    ALTER INDEX [Index_PM3_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_ROUTE')
+    ALTER INDEX [Index_PM3_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_PU_SITE')
+    ALTER INDEX [Index_PM4_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_ROUTE')
+    ALTER INDEX [Index_PM4_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_PU_SITE')
+    ALTER INDEX [Index_PM5_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_ROUTE')
+    ALTER INDEX [Index_PM5_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_ROUTE')
+    ALTER INDEX [Index_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STBT] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_ROUTE')
+    ALTER INDEX [Index_AM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_SD_SITE')
+    ALTER INDEX [Index_AM1_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_ROUTE')
+    ALTER INDEX [Index_AM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_SD_SITE')
+    ALTER INDEX [Index_AM2_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_ROUTE')
+    ALTER INDEX [Index_AM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_SD_SITE')
+    ALTER INDEX [Index_AM3_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_ROUTE')
+    ALTER INDEX [Index_AM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_SD_SITE')
+    ALTER INDEX [Index_AM4_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_ROUTE')
+    ALTER INDEX [Index_AM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_SD_SITE')
+    ALTER INDEX [Index_AM5_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_PU_SITE')
+    ALTER INDEX [Index_PM1_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_ROUTE')
+    ALTER INDEX [Index_PM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_PU_SITE')
+    ALTER INDEX [Index_PM2_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_ROUTE')
+    ALTER INDEX [Index_PM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_PU_SITE')
+    ALTER INDEX [Index_PM3_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_ROUTE')
+    ALTER INDEX [Index_PM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_PU_SITE')
+    ALTER INDEX [Index_PM4_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_ROUTE')
+    ALTER INDEX [Index_PM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_PU_SITE')
+    ALTER INDEX [Index_PM5_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_ROUTE')
+    ALTER INDEX [Index_PM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_ROUTE')
+    ALTER INDEX [Index_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="STBT"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="STBT"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<STBT> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<int> Index_TID = new List<int>();
+
+            foreach (var entity in Entities)
+            {
+                Index_TID.Add(entity.TID);
+            }
+
+            builder.AppendLine("DELETE [dbo].[STBT] WHERE");
+
+
+            // Index_TID
+            builder.Append("[TID] IN (");
+            for (int index = 0; index < Index_TID.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // TID
+                var parameterTID = $"@p{parameterIndex++}";
+                builder.Append(parameterTID);
+                command.Parameters.Add(parameterTID, SqlDbType.Int).Value = Index_TID[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the STBT data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the STBT data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<STBT> GetDataSetDataReader()
         {
-            return new STBTDataReader(Items.Value);
+            return new STBTDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the STBT data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the STBT data set</returns>
+        public override EduHubDataSetDataReader<STBT> GetDataSetDataReader(List<STBT> Entities)
+        {
+            return new STBTDataReader(new EduHubDataSetLoadedReader<STBT>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class STBTDataReader : IDataReader, IDataRecord
+        private class STBTDataReader : EduHubDataSetDataReader<STBT>
         {
-            private List<STBT> Items;
-            private int CurrentIndex;
-            private STBT CurrentItem;
-
-            public STBTDataReader(List<STBT> Items)
+            public STBTDataReader(IEduHubDataSetReader<STBT> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 64; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 64; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // TID
-                        return CurrentItem.TID;
+                        return Current.TID;
                     case 1: // STBTKEY
-                        return CurrentItem.STBTKEY;
+                        return Current.STBTKEY;
                     case 2: // ROUTE
-                        return CurrentItem.ROUTE;
+                        return Current.ROUTE;
                     case 3: // DAYS_USED01
-                        return CurrentItem.DAYS_USED01;
+                        return Current.DAYS_USED01;
                     case 4: // DAYS_USED02
-                        return CurrentItem.DAYS_USED02;
+                        return Current.DAYS_USED02;
                     case 5: // DAYS_USED03
-                        return CurrentItem.DAYS_USED03;
+                        return Current.DAYS_USED03;
                     case 6: // DAYS_USED04
-                        return CurrentItem.DAYS_USED04;
+                        return Current.DAYS_USED04;
                     case 7: // DAYS_USED05
-                        return CurrentItem.DAYS_USED05;
+                        return Current.DAYS_USED05;
                     case 8: // TRANSPORT_NOTES
-                        return CurrentItem.TRANSPORT_NOTES;
+                        return Current.TRANSPORT_NOTES;
                     case 9: // DATE_STARTED
-                        return CurrentItem.DATE_STARTED;
+                        return Current.DATE_STARTED;
                     case 10: // TERMINATED
-                        return CurrentItem.TERMINATED;
+                        return Current.TERMINATED;
                     case 11: // AM1_PICKUP
-                        return CurrentItem.AM1_PICKUP;
+                        return Current.AM1_PICKUP;
                     case 12: // AM1_PU_SITE
-                        return CurrentItem.AM1_PU_SITE;
+                        return Current.AM1_PU_SITE;
                     case 13: // AM1_SETDOWN
-                        return CurrentItem.AM1_SETDOWN;
+                        return Current.AM1_SETDOWN;
                     case 14: // AM1_SD_SITE
-                        return CurrentItem.AM1_SD_SITE;
+                        return Current.AM1_SD_SITE;
                     case 15: // AM1_ROUTE
-                        return CurrentItem.AM1_ROUTE;
+                        return Current.AM1_ROUTE;
                     case 16: // PM1_PICKUP
-                        return CurrentItem.PM1_PICKUP;
+                        return Current.PM1_PICKUP;
                     case 17: // PM1_PU_SITE
-                        return CurrentItem.PM1_PU_SITE;
+                        return Current.PM1_PU_SITE;
                     case 18: // PM1_SETDOWN
-                        return CurrentItem.PM1_SETDOWN;
+                        return Current.PM1_SETDOWN;
                     case 19: // PM1_SD_SITE
-                        return CurrentItem.PM1_SD_SITE;
+                        return Current.PM1_SD_SITE;
                     case 20: // PM1_ROUTE
-                        return CurrentItem.PM1_ROUTE;
+                        return Current.PM1_ROUTE;
                     case 21: // AM2_PICKUP
-                        return CurrentItem.AM2_PICKUP;
+                        return Current.AM2_PICKUP;
                     case 22: // AM2_PU_SITE
-                        return CurrentItem.AM2_PU_SITE;
+                        return Current.AM2_PU_SITE;
                     case 23: // AM2_SETDOWN
-                        return CurrentItem.AM2_SETDOWN;
+                        return Current.AM2_SETDOWN;
                     case 24: // AM2_SD_SITE
-                        return CurrentItem.AM2_SD_SITE;
+                        return Current.AM2_SD_SITE;
                     case 25: // AM2_ROUTE
-                        return CurrentItem.AM2_ROUTE;
+                        return Current.AM2_ROUTE;
                     case 26: // PM2_PICKUP
-                        return CurrentItem.PM2_PICKUP;
+                        return Current.PM2_PICKUP;
                     case 27: // PM2_PU_SITE
-                        return CurrentItem.PM2_PU_SITE;
+                        return Current.PM2_PU_SITE;
                     case 28: // PM2_SETDOWN
-                        return CurrentItem.PM2_SETDOWN;
+                        return Current.PM2_SETDOWN;
                     case 29: // PM2_SD_SITE
-                        return CurrentItem.PM2_SD_SITE;
+                        return Current.PM2_SD_SITE;
                     case 30: // PM2_ROUTE
-                        return CurrentItem.PM2_ROUTE;
+                        return Current.PM2_ROUTE;
                     case 31: // AM3_PICKUP
-                        return CurrentItem.AM3_PICKUP;
+                        return Current.AM3_PICKUP;
                     case 32: // AM3_PU_SITE
-                        return CurrentItem.AM3_PU_SITE;
+                        return Current.AM3_PU_SITE;
                     case 33: // AM3_SETDOWN
-                        return CurrentItem.AM3_SETDOWN;
+                        return Current.AM3_SETDOWN;
                     case 34: // AM3_SD_SITE
-                        return CurrentItem.AM3_SD_SITE;
+                        return Current.AM3_SD_SITE;
                     case 35: // AM3_ROUTE
-                        return CurrentItem.AM3_ROUTE;
+                        return Current.AM3_ROUTE;
                     case 36: // PM3_PICKUP
-                        return CurrentItem.PM3_PICKUP;
+                        return Current.PM3_PICKUP;
                     case 37: // PM3_PU_SITE
-                        return CurrentItem.PM3_PU_SITE;
+                        return Current.PM3_PU_SITE;
                     case 38: // PM3_SETDOWN
-                        return CurrentItem.PM3_SETDOWN;
+                        return Current.PM3_SETDOWN;
                     case 39: // PM3_SD_SITE
-                        return CurrentItem.PM3_SD_SITE;
+                        return Current.PM3_SD_SITE;
                     case 40: // PM3_ROUTE
-                        return CurrentItem.PM3_ROUTE;
+                        return Current.PM3_ROUTE;
                     case 41: // AM4_PICKUP
-                        return CurrentItem.AM4_PICKUP;
+                        return Current.AM4_PICKUP;
                     case 42: // AM4_PU_SITE
-                        return CurrentItem.AM4_PU_SITE;
+                        return Current.AM4_PU_SITE;
                     case 43: // AM4_SETDOWN
-                        return CurrentItem.AM4_SETDOWN;
+                        return Current.AM4_SETDOWN;
                     case 44: // AM4_SD_SITE
-                        return CurrentItem.AM4_SD_SITE;
+                        return Current.AM4_SD_SITE;
                     case 45: // AM4_ROUTE
-                        return CurrentItem.AM4_ROUTE;
+                        return Current.AM4_ROUTE;
                     case 46: // PM4_PICKUP
-                        return CurrentItem.PM4_PICKUP;
+                        return Current.PM4_PICKUP;
                     case 47: // PM4_PU_SITE
-                        return CurrentItem.PM4_PU_SITE;
+                        return Current.PM4_PU_SITE;
                     case 48: // PM4_SETDOWN
-                        return CurrentItem.PM4_SETDOWN;
+                        return Current.PM4_SETDOWN;
                     case 49: // PM4_SD_SITE
-                        return CurrentItem.PM4_SD_SITE;
+                        return Current.PM4_SD_SITE;
                     case 50: // PM4_ROUTE
-                        return CurrentItem.PM4_ROUTE;
+                        return Current.PM4_ROUTE;
                     case 51: // AM5_PICKUP
-                        return CurrentItem.AM5_PICKUP;
+                        return Current.AM5_PICKUP;
                     case 52: // AM5_PU_SITE
-                        return CurrentItem.AM5_PU_SITE;
+                        return Current.AM5_PU_SITE;
                     case 53: // AM5_SETDOWN
-                        return CurrentItem.AM5_SETDOWN;
+                        return Current.AM5_SETDOWN;
                     case 54: // AM5_SD_SITE
-                        return CurrentItem.AM5_SD_SITE;
+                        return Current.AM5_SD_SITE;
                     case 55: // AM5_ROUTE
-                        return CurrentItem.AM5_ROUTE;
+                        return Current.AM5_ROUTE;
                     case 56: // PM5_PICKUP
-                        return CurrentItem.PM5_PICKUP;
+                        return Current.PM5_PICKUP;
                     case 57: // PM5_PU_SITE
-                        return CurrentItem.PM5_PU_SITE;
+                        return Current.PM5_PU_SITE;
                     case 58: // PM5_SETDOWN
-                        return CurrentItem.PM5_SETDOWN;
+                        return Current.PM5_SETDOWN;
                     case 59: // PM5_SD_SITE
-                        return CurrentItem.PM5_SD_SITE;
+                        return Current.PM5_SD_SITE;
                     case 60: // PM5_ROUTE
-                        return CurrentItem.PM5_ROUTE;
+                        return Current.PM5_ROUTE;
                     case 61: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 62: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 63: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 2: // ROUTE
-                        return CurrentItem.ROUTE == null;
+                        return Current.ROUTE == null;
                     case 3: // DAYS_USED01
-                        return CurrentItem.DAYS_USED01 == null;
+                        return Current.DAYS_USED01 == null;
                     case 4: // DAYS_USED02
-                        return CurrentItem.DAYS_USED02 == null;
+                        return Current.DAYS_USED02 == null;
                     case 5: // DAYS_USED03
-                        return CurrentItem.DAYS_USED03 == null;
+                        return Current.DAYS_USED03 == null;
                     case 6: // DAYS_USED04
-                        return CurrentItem.DAYS_USED04 == null;
+                        return Current.DAYS_USED04 == null;
                     case 7: // DAYS_USED05
-                        return CurrentItem.DAYS_USED05 == null;
+                        return Current.DAYS_USED05 == null;
                     case 8: // TRANSPORT_NOTES
-                        return CurrentItem.TRANSPORT_NOTES == null;
+                        return Current.TRANSPORT_NOTES == null;
                     case 9: // DATE_STARTED
-                        return CurrentItem.DATE_STARTED == null;
+                        return Current.DATE_STARTED == null;
                     case 10: // TERMINATED
-                        return CurrentItem.TERMINATED == null;
+                        return Current.TERMINATED == null;
                     case 11: // AM1_PICKUP
-                        return CurrentItem.AM1_PICKUP == null;
+                        return Current.AM1_PICKUP == null;
                     case 12: // AM1_PU_SITE
-                        return CurrentItem.AM1_PU_SITE == null;
+                        return Current.AM1_PU_SITE == null;
                     case 13: // AM1_SETDOWN
-                        return CurrentItem.AM1_SETDOWN == null;
+                        return Current.AM1_SETDOWN == null;
                     case 14: // AM1_SD_SITE
-                        return CurrentItem.AM1_SD_SITE == null;
+                        return Current.AM1_SD_SITE == null;
                     case 15: // AM1_ROUTE
-                        return CurrentItem.AM1_ROUTE == null;
+                        return Current.AM1_ROUTE == null;
                     case 16: // PM1_PICKUP
-                        return CurrentItem.PM1_PICKUP == null;
+                        return Current.PM1_PICKUP == null;
                     case 17: // PM1_PU_SITE
-                        return CurrentItem.PM1_PU_SITE == null;
+                        return Current.PM1_PU_SITE == null;
                     case 18: // PM1_SETDOWN
-                        return CurrentItem.PM1_SETDOWN == null;
+                        return Current.PM1_SETDOWN == null;
                     case 19: // PM1_SD_SITE
-                        return CurrentItem.PM1_SD_SITE == null;
+                        return Current.PM1_SD_SITE == null;
                     case 20: // PM1_ROUTE
-                        return CurrentItem.PM1_ROUTE == null;
+                        return Current.PM1_ROUTE == null;
                     case 21: // AM2_PICKUP
-                        return CurrentItem.AM2_PICKUP == null;
+                        return Current.AM2_PICKUP == null;
                     case 22: // AM2_PU_SITE
-                        return CurrentItem.AM2_PU_SITE == null;
+                        return Current.AM2_PU_SITE == null;
                     case 23: // AM2_SETDOWN
-                        return CurrentItem.AM2_SETDOWN == null;
+                        return Current.AM2_SETDOWN == null;
                     case 24: // AM2_SD_SITE
-                        return CurrentItem.AM2_SD_SITE == null;
+                        return Current.AM2_SD_SITE == null;
                     case 25: // AM2_ROUTE
-                        return CurrentItem.AM2_ROUTE == null;
+                        return Current.AM2_ROUTE == null;
                     case 26: // PM2_PICKUP
-                        return CurrentItem.PM2_PICKUP == null;
+                        return Current.PM2_PICKUP == null;
                     case 27: // PM2_PU_SITE
-                        return CurrentItem.PM2_PU_SITE == null;
+                        return Current.PM2_PU_SITE == null;
                     case 28: // PM2_SETDOWN
-                        return CurrentItem.PM2_SETDOWN == null;
+                        return Current.PM2_SETDOWN == null;
                     case 29: // PM2_SD_SITE
-                        return CurrentItem.PM2_SD_SITE == null;
+                        return Current.PM2_SD_SITE == null;
                     case 30: // PM2_ROUTE
-                        return CurrentItem.PM2_ROUTE == null;
+                        return Current.PM2_ROUTE == null;
                     case 31: // AM3_PICKUP
-                        return CurrentItem.AM3_PICKUP == null;
+                        return Current.AM3_PICKUP == null;
                     case 32: // AM3_PU_SITE
-                        return CurrentItem.AM3_PU_SITE == null;
+                        return Current.AM3_PU_SITE == null;
                     case 33: // AM3_SETDOWN
-                        return CurrentItem.AM3_SETDOWN == null;
+                        return Current.AM3_SETDOWN == null;
                     case 34: // AM3_SD_SITE
-                        return CurrentItem.AM3_SD_SITE == null;
+                        return Current.AM3_SD_SITE == null;
                     case 35: // AM3_ROUTE
-                        return CurrentItem.AM3_ROUTE == null;
+                        return Current.AM3_ROUTE == null;
                     case 36: // PM3_PICKUP
-                        return CurrentItem.PM3_PICKUP == null;
+                        return Current.PM3_PICKUP == null;
                     case 37: // PM3_PU_SITE
-                        return CurrentItem.PM3_PU_SITE == null;
+                        return Current.PM3_PU_SITE == null;
                     case 38: // PM3_SETDOWN
-                        return CurrentItem.PM3_SETDOWN == null;
+                        return Current.PM3_SETDOWN == null;
                     case 39: // PM3_SD_SITE
-                        return CurrentItem.PM3_SD_SITE == null;
+                        return Current.PM3_SD_SITE == null;
                     case 40: // PM3_ROUTE
-                        return CurrentItem.PM3_ROUTE == null;
+                        return Current.PM3_ROUTE == null;
                     case 41: // AM4_PICKUP
-                        return CurrentItem.AM4_PICKUP == null;
+                        return Current.AM4_PICKUP == null;
                     case 42: // AM4_PU_SITE
-                        return CurrentItem.AM4_PU_SITE == null;
+                        return Current.AM4_PU_SITE == null;
                     case 43: // AM4_SETDOWN
-                        return CurrentItem.AM4_SETDOWN == null;
+                        return Current.AM4_SETDOWN == null;
                     case 44: // AM4_SD_SITE
-                        return CurrentItem.AM4_SD_SITE == null;
+                        return Current.AM4_SD_SITE == null;
                     case 45: // AM4_ROUTE
-                        return CurrentItem.AM4_ROUTE == null;
+                        return Current.AM4_ROUTE == null;
                     case 46: // PM4_PICKUP
-                        return CurrentItem.PM4_PICKUP == null;
+                        return Current.PM4_PICKUP == null;
                     case 47: // PM4_PU_SITE
-                        return CurrentItem.PM4_PU_SITE == null;
+                        return Current.PM4_PU_SITE == null;
                     case 48: // PM4_SETDOWN
-                        return CurrentItem.PM4_SETDOWN == null;
+                        return Current.PM4_SETDOWN == null;
                     case 49: // PM4_SD_SITE
-                        return CurrentItem.PM4_SD_SITE == null;
+                        return Current.PM4_SD_SITE == null;
                     case 50: // PM4_ROUTE
-                        return CurrentItem.PM4_ROUTE == null;
+                        return Current.PM4_ROUTE == null;
                     case 51: // AM5_PICKUP
-                        return CurrentItem.AM5_PICKUP == null;
+                        return Current.AM5_PICKUP == null;
                     case 52: // AM5_PU_SITE
-                        return CurrentItem.AM5_PU_SITE == null;
+                        return Current.AM5_PU_SITE == null;
                     case 53: // AM5_SETDOWN
-                        return CurrentItem.AM5_SETDOWN == null;
+                        return Current.AM5_SETDOWN == null;
                     case 54: // AM5_SD_SITE
-                        return CurrentItem.AM5_SD_SITE == null;
+                        return Current.AM5_SD_SITE == null;
                     case 55: // AM5_ROUTE
-                        return CurrentItem.AM5_ROUTE == null;
+                        return Current.AM5_ROUTE == null;
                     case 56: // PM5_PICKUP
-                        return CurrentItem.PM5_PICKUP == null;
+                        return Current.PM5_PICKUP == null;
                     case 57: // PM5_PU_SITE
-                        return CurrentItem.PM5_PU_SITE == null;
+                        return Current.PM5_PU_SITE == null;
                     case 58: // PM5_SETDOWN
-                        return CurrentItem.PM5_SETDOWN == null;
+                        return Current.PM5_SETDOWN == null;
                     case 59: // PM5_SD_SITE
-                        return CurrentItem.PM5_SD_SITE == null;
+                        return Current.PM5_SD_SITE == null;
                     case 60: // PM5_ROUTE
-                        return CurrentItem.PM5_ROUTE == null;
+                        return Current.PM5_ROUTE == null;
                     case 61: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 62: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 63: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -1917,7 +2077,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -2052,35 +2212,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

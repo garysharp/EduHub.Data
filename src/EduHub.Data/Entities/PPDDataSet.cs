@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class PPDDataSet : EduHubDataSet<PPD>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "PPD"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal PPDDataSet(EduHubContext Context)
             : base(Context)
@@ -29,7 +32,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="PPD" /> fields for each CSV column header</returns>
-        protected override Action<PPD, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<PPD, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<PPD, string>[Headers.Count];
 
@@ -110,29 +113,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="PPD" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="PPD" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="PPD" /> items to added or update the base <see cref="PPD" /> items</param>
-        /// <returns>A merged list of <see cref="PPD" /> items</returns>
-        protected override List<PPD> ApplyDeltaItems(List<PPD> Items, List<PPD> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="PPD" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="PPD" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{PPD}"/> of entities</returns>
+        internal override IEnumerable<PPD> ApplyDeltaEntities(IEnumerable<PPD> Entities, List<PPD> DeltaEntities)
         {
-            Dictionary<string, int> Index_PPDKEY = Items.ToIndexDictionary(i => i.PPDKEY);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_PPDKEY = new HashSet<string>(DeltaEntities.Select(i => i.PPDKEY));
 
-            foreach (PPD deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_PPDKEY.TryGetValue(deltaItem.PPDKEY, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.PPDKEY;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_PPDKEY.Remove(entity.PPDKEY);
+                            
+                            if (entity.PPDKEY.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.PPDKEY)
-                .ToList();
         }
 
         #region Index Fields
@@ -233,11 +262,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a PPD table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a PPD table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PPD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[PPD]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[PPD](
         [PPDKEY] varchar(10) NOT NULL,
@@ -269,168 +302,211 @@ BEGIN
     (
             [COUNTRY] ASC
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPD]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPD] DISABLE;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPD]') AND name = N'Index_COUNTRY')
+    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPD] REBUILD PARTITION = ALL;
+");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="PPD"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="PPD"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<PPD> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_PPDKEY = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_PPDKEY.Add(entity.PPDKEY);
+            }
+
+            builder.AppendLine("DELETE [dbo].[PPD] WHERE");
+
+
+            // Index_PPDKEY
+            builder.Append("[PPDKEY] IN (");
+            for (int index = 0; index < Index_PPDKEY.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // PPDKEY
+                var parameterPPDKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterPPDKEY);
+                command.Parameters.Add(parameterPPDKEY, SqlDbType.VarChar, 10).Value = Index_PPDKEY[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the PPD data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the PPD data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<PPD> GetDataSetDataReader()
         {
-            return new PPDDataReader(Items.Value);
+            return new PPDDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the PPD data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the PPD data set</returns>
+        public override EduHubDataSetDataReader<PPD> GetDataSetDataReader(List<PPD> Entities)
+        {
+            return new PPDDataReader(new EduHubDataSetLoadedReader<PPD>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class PPDDataReader : IDataReader, IDataRecord
+        private class PPDDataReader : EduHubDataSetDataReader<PPD>
         {
-            private List<PPD> Items;
-            private int CurrentIndex;
-            private PPD CurrentItem;
-
-            public PPDDataReader(List<PPD> Items)
+            public PPDDataReader(IEduHubDataSetReader<PPD> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 21; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 21; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // PPDKEY
-                        return CurrentItem.PPDKEY;
+                        return Current.PPDKEY;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // ABN_OR_WPN
-                        return CurrentItem.ABN_OR_WPN;
+                        return Current.ABN_OR_WPN;
                     case 3: // NUMBER_TYPE
-                        return CurrentItem.NUMBER_TYPE;
+                        return Current.NUMBER_TYPE;
                     case 4: // BRANCH_NUMBER
-                        return CurrentItem.BRANCH_NUMBER;
+                        return Current.BRANCH_NUMBER;
                     case 5: // FINANCIAL_YEAR
-                        return CurrentItem.FINANCIAL_YEAR;
+                        return Current.FINANCIAL_YEAR;
                     case 6: // NAME
-                        return CurrentItem.NAME;
+                        return Current.NAME;
                     case 7: // TRADING_NAME
-                        return CurrentItem.TRADING_NAME;
+                        return Current.TRADING_NAME;
                     case 8: // L1_ADDRESS
-                        return CurrentItem.L1_ADDRESS;
+                        return Current.L1_ADDRESS;
                     case 9: // L2_ADDRESS
-                        return CurrentItem.L2_ADDRESS;
+                        return Current.L2_ADDRESS;
                     case 10: // SUBURB
-                        return CurrentItem.SUBURB;
+                        return Current.SUBURB;
                     case 11: // STATE
-                        return CurrentItem.STATE;
+                        return Current.STATE;
                     case 12: // POSTCODE
-                        return CurrentItem.POSTCODE;
+                        return Current.POSTCODE;
                     case 13: // COUNTRY
-                        return CurrentItem.COUNTRY;
+                        return Current.COUNTRY;
                     case 14: // CONTACT_NAME
-                        return CurrentItem.CONTACT_NAME;
+                        return Current.CONTACT_NAME;
                     case 15: // PHONE
-                        return CurrentItem.PHONE;
+                        return Current.PHONE;
                     case 16: // FACSIMILE
-                        return CurrentItem.FACSIMILE;
+                        return Current.FACSIMILE;
                     case 17: // SIGNATURE
-                        return CurrentItem.SIGNATURE;
+                        return Current.SIGNATURE;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // ABN_OR_WPN
-                        return CurrentItem.ABN_OR_WPN == null;
+                        return Current.ABN_OR_WPN == null;
                     case 3: // NUMBER_TYPE
-                        return CurrentItem.NUMBER_TYPE == null;
+                        return Current.NUMBER_TYPE == null;
                     case 4: // BRANCH_NUMBER
-                        return CurrentItem.BRANCH_NUMBER == null;
+                        return Current.BRANCH_NUMBER == null;
                     case 5: // FINANCIAL_YEAR
-                        return CurrentItem.FINANCIAL_YEAR == null;
+                        return Current.FINANCIAL_YEAR == null;
                     case 6: // NAME
-                        return CurrentItem.NAME == null;
+                        return Current.NAME == null;
                     case 7: // TRADING_NAME
-                        return CurrentItem.TRADING_NAME == null;
+                        return Current.TRADING_NAME == null;
                     case 8: // L1_ADDRESS
-                        return CurrentItem.L1_ADDRESS == null;
+                        return Current.L1_ADDRESS == null;
                     case 9: // L2_ADDRESS
-                        return CurrentItem.L2_ADDRESS == null;
+                        return Current.L2_ADDRESS == null;
                     case 10: // SUBURB
-                        return CurrentItem.SUBURB == null;
+                        return Current.SUBURB == null;
                     case 11: // STATE
-                        return CurrentItem.STATE == null;
+                        return Current.STATE == null;
                     case 12: // POSTCODE
-                        return CurrentItem.POSTCODE == null;
+                        return Current.POSTCODE == null;
                     case 13: // COUNTRY
-                        return CurrentItem.COUNTRY == null;
+                        return Current.COUNTRY == null;
                     case 14: // CONTACT_NAME
-                        return CurrentItem.CONTACT_NAME == null;
+                        return Current.CONTACT_NAME == null;
                     case 15: // PHONE
-                        return CurrentItem.PHONE == null;
+                        return Current.PHONE == null;
                     case 16: // FACSIMILE
-                        return CurrentItem.FACSIMILE == null;
+                        return Current.FACSIMILE == null;
                     case 17: // SIGNATURE
-                        return CurrentItem.SIGNATURE == null;
+                        return Current.SIGNATURE == null;
                     case 18: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 19: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 20: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -481,7 +557,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -530,35 +606,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

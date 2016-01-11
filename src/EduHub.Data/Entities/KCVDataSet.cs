@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EduHub.Data.Entities
 {
@@ -12,10 +14,11 @@ namespace EduHub.Data.Entities
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KCVDataSet : EduHubDataSet<KCV>
     {
-        /// <summary>
-        /// Data Set Name
-        /// </summary>
+        /// <inheritdoc />
         public override string Name { get { return "KCV"; } }
+
+        /// <inheritdoc />
+        public override bool SupportsEntityLastModified { get { return true; } }
 
         internal KCVDataSet(EduHubContext Context)
             : base(Context)
@@ -28,7 +31,7 @@ namespace EduHub.Data.Entities
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
         /// <returns>An array of actions which deserialize <see cref="KCV" /> fields for each CSV column header</returns>
-        protected override Action<KCV, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        internal override Action<KCV, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
             var mapper = new Action<KCV, string>[Headers.Count];
 
@@ -79,29 +82,55 @@ namespace EduHub.Data.Entities
         /// <summary>
         /// Merges <see cref="KCV" /> delta entities
         /// </summary>
-        /// <param name="Items">Base <see cref="KCV" /> items</param>
-        /// <param name="DeltaItems">Delta <see cref="KCV" /> items to added or update the base <see cref="KCV" /> items</param>
-        /// <returns>A merged list of <see cref="KCV" /> items</returns>
-        protected override List<KCV> ApplyDeltaItems(List<KCV> Items, List<KCV> DeltaItems)
+        /// <param name="Entities">Iterator for base <see cref="KCV" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KCV" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KCV}"/> of entities</returns>
+        internal override IEnumerable<KCV> ApplyDeltaEntities(IEnumerable<KCV> Entities, List<KCV> DeltaEntities)
         {
-            Dictionary<string, int> Index_VISA_SUBCLASS = Items.ToIndexDictionary(i => i.VISA_SUBCLASS);
-            HashSet<int> removeIndexes = new HashSet<int>();
+            HashSet<string> Index_VISA_SUBCLASS = new HashSet<string>(DeltaEntities.Select(i => i.VISA_SUBCLASS));
 
-            foreach (KCV deltaItem in DeltaItems)
+            using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
-                int index;
-
-                if (Index_VISA_SUBCLASS.TryGetValue(deltaItem.VISA_SUBCLASS, out index))
+                using (var entityIterator = Entities.GetEnumerator())
                 {
-                    removeIndexes.Add(index);
+                    while (deltaIterator.MoveNext())
+                    {
+                        var deltaClusteredKey = deltaIterator.Current.VISA_SUBCLASS;
+                        bool yieldEntity = false;
+
+                        while (entityIterator.MoveNext())
+                        {
+                            var entity = entityIterator.Current;
+
+                            bool overwritten = Index_VISA_SUBCLASS.Remove(entity.VISA_SUBCLASS);
+                            
+                            if (entity.VISA_SUBCLASS.CompareTo(deltaClusteredKey) <= 0)
+                            {
+                                if (!overwritten)
+                                {
+                                    yield return entity;
+                                }
+                            }
+                            else
+                            {
+                                yieldEntity = !overwritten;
+                                break;
+                            }
+                        }
+                        
+                        yield return deltaIterator.Current;
+                        if (yieldEntity)
+                        {
+                            yield return entityIterator.Current;
+                        }
+                    }
+
+                    while (entityIterator.MoveNext())
+                    {
+                        yield return entityIterator.Current;
+                    }
                 }
             }
-
-            return Items
-                .Remove(removeIndexes)
-                .Concat(DeltaItems)
-                .OrderBy(i => i.VISA_SUBCLASS)
-                .ToList();
         }
 
         #region Index Fields
@@ -159,11 +188,15 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns SQL which checks for the existence of a KCV table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KCV table, and if not found, creates the table and associated indexes.
         /// </summary>
-        protected override string GetCreateTableSql()
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
         {
-            return @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KCV]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KCV](
         [VISA_SUBCLASS] varchar(3) NOT NULL,
@@ -181,128 +214,159 @@ BEGIN
             [VISA_SUBCLASS] ASC
         )
     );
-END";
+END");
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="KCVDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns null as <see cref="KCVDataSet"/> has no non-clustered indexes.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <returns>null</returns>
+        public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KCV"/> entities passed
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        /// <param name="Entities">The <see cref="KCV"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KCV> Entities)
+        {
+            SqlCommand command = new SqlCommand();
+            int parameterIndex = 0;
+            StringBuilder builder = new StringBuilder();
+
+            List<string> Index_VISA_SUBCLASS = new List<string>();
+
+            foreach (var entity in Entities)
+            {
+                Index_VISA_SUBCLASS.Add(entity.VISA_SUBCLASS);
+            }
+
+            builder.AppendLine("DELETE [dbo].[KCV] WHERE");
+
+
+            // Index_VISA_SUBCLASS
+            builder.Append("[VISA_SUBCLASS] IN (");
+            for (int index = 0; index < Index_VISA_SUBCLASS.Count; index++)
+            {
+                if (index != 0)
+                    builder.Append(", ");
+
+                // VISA_SUBCLASS
+                var parameterVISA_SUBCLASS = $"@p{parameterIndex++}";
+                builder.Append(parameterVISA_SUBCLASS);
+                command.Parameters.Add(parameterVISA_SUBCLASS, SqlDbType.VarChar, 3).Value = Index_VISA_SUBCLASS[index];
+            }
+            builder.Append(");");
+
+            command.Connection = SqlConnection;
+            command.CommandText = builder.ToString();
+
+            return command;
         }
 
         /// <summary>
         /// Provides a <see cref="IDataReader"/> for the KCV data set
         /// </summary>
         /// <returns>A <see cref="IDataReader"/> for the KCV data set</returns>
-        public override IDataReader GetDataReader()
+        public override EduHubDataSetDataReader<KCV> GetDataSetDataReader()
         {
-            return new KCVDataReader(Items.Value);
+            return new KCVDataReader(Load());
+        }
+
+        /// <summary>
+        /// Provides a <see cref="IDataReader"/> for the KCV data set
+        /// </summary>
+        /// <returns>A <see cref="IDataReader"/> for the KCV data set</returns>
+        public override EduHubDataSetDataReader<KCV> GetDataSetDataReader(List<KCV> Entities)
+        {
+            return new KCVDataReader(new EduHubDataSetLoadedReader<KCV>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class KCVDataReader : IDataReader, IDataRecord
+        private class KCVDataReader : EduHubDataSetDataReader<KCV>
         {
-            private List<KCV> Items;
-            private int CurrentIndex;
-            private KCV CurrentItem;
-
-            public KCVDataReader(List<KCV> Items)
+            public KCVDataReader(IEduHubDataSetReader<KCV> Reader)
+                : base (Reader)
             {
-                this.Items = Items;
-
-                CurrentIndex = -1;
-                CurrentItem = null;
             }
 
-            public int FieldCount { get { return 11; } }
-            public bool IsClosed { get { return false; } }
+            public override int FieldCount { get { return 11; } }
 
-            public object this[string name]
-            {
-                get
-                {
-                    return GetValue(GetOrdinal(name));
-                }
-            }
-
-            public object this[int i]
-            {
-                get
-                {
-                    return GetValue(i);
-                }
-            }
-
-            public bool Read()
-            {
-                CurrentIndex++;
-                if (CurrentIndex < Items.Count)
-                {
-                    CurrentItem = Items[CurrentIndex];
-                    return true;
-                }
-                else
-                {
-                    CurrentItem = null;
-                    return false;
-                }
-            }
-
-            public object GetValue(int i)
+            public override object GetValue(int i)
             {
                 switch (i)
                 {
                     case 0: // VISA_SUBCLASS
-                        return CurrentItem.VISA_SUBCLASS;
+                        return Current.VISA_SUBCLASS;
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION;
+                        return Current.DESCRIPTION;
                     case 2: // VISA_RESIDENCY
-                        return CurrentItem.VISA_RESIDENCY;
+                        return Current.VISA_RESIDENCY;
                     case 3: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED;
+                        return Current.SGB_FUNDED;
                     case 4: // CHECK_STAT_CODE
-                        return CurrentItem.CHECK_STAT_CODE;
+                        return Current.CHECK_STAT_CODE;
                     case 5: // CHECK_EXPIRY_DATE
-                        return CurrentItem.CHECK_EXPIRY_DATE;
+                        return Current.CHECK_EXPIRY_DATE;
                     case 6: // CHECK_ISID
-                        return CurrentItem.CHECK_ISID;
+                        return Current.CHECK_ISID;
                     case 7: // REFUGEE
-                        return CurrentItem.REFUGEE;
+                        return Current.REFUGEE;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE;
+                        return Current.LW_DATE;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME;
+                        return Current.LW_TIME;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER;
+                        return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }
 
-            public bool IsDBNull(int i)
+            public override bool IsDBNull(int i)
             {
                 switch (i)
                 {
                     case 1: // DESCRIPTION
-                        return CurrentItem.DESCRIPTION == null;
+                        return Current.DESCRIPTION == null;
                     case 2: // VISA_RESIDENCY
-                        return CurrentItem.VISA_RESIDENCY == null;
+                        return Current.VISA_RESIDENCY == null;
                     case 3: // SGB_FUNDED
-                        return CurrentItem.SGB_FUNDED == null;
+                        return Current.SGB_FUNDED == null;
                     case 4: // CHECK_STAT_CODE
-                        return CurrentItem.CHECK_STAT_CODE == null;
+                        return Current.CHECK_STAT_CODE == null;
                     case 5: // CHECK_EXPIRY_DATE
-                        return CurrentItem.CHECK_EXPIRY_DATE == null;
+                        return Current.CHECK_EXPIRY_DATE == null;
                     case 6: // CHECK_ISID
-                        return CurrentItem.CHECK_ISID == null;
+                        return Current.CHECK_ISID == null;
                     case 7: // REFUGEE
-                        return CurrentItem.REFUGEE == null;
+                        return Current.REFUGEE == null;
                     case 8: // LW_DATE
-                        return CurrentItem.LW_DATE == null;
+                        return Current.LW_DATE == null;
                     case 9: // LW_TIME
-                        return CurrentItem.LW_TIME == null;
+                        return Current.LW_TIME == null;
                     case 10: // LW_USER
-                        return CurrentItem.LW_USER == null;
+                        return Current.LW_USER == null;
                     default:
                         return false;
                 }
             }
 
-            public string GetName(int ordinal)
+            public override string GetName(int ordinal)
             {
                 switch (ordinal)
                 {
@@ -333,7 +397,7 @@ END";
                 }
             }
 
-            public int GetOrdinal(string name)
+            public override int GetOrdinal(string name)
             {
                 switch (name)
                 {
@@ -362,35 +426,6 @@ END";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
-            }
-
-            public int Depth { get { throw new NotImplementedException(); } }
-            public int RecordsAffected { get { throw new NotImplementedException(); } }
-            public void Close() { throw new NotImplementedException(); }
-            public bool GetBoolean(int ordinal) { throw new NotImplementedException(); }
-            public byte GetByte(int ordinal) { throw new NotImplementedException(); }
-            public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public char GetChar(int ordinal) { throw new NotImplementedException(); }
-            public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) { throw new NotImplementedException(); }
-            public IDataReader GetData(int i) { throw new NotImplementedException(); }
-            public string GetDataTypeName(int ordinal) { throw new NotImplementedException(); }
-            public DateTime GetDateTime(int ordinal) { throw new NotImplementedException(); }
-            public decimal GetDecimal(int ordinal) { throw new NotImplementedException(); }
-            public double GetDouble(int ordinal) { throw new NotImplementedException(); }
-            public Type GetFieldType(int ordinal) { throw new NotImplementedException(); }
-            public float GetFloat(int ordinal) { throw new NotImplementedException(); }
-            public Guid GetGuid(int ordinal) { throw new NotImplementedException(); }
-            public short GetInt16(int ordinal) { throw new NotImplementedException(); }
-            public int GetInt32(int ordinal) { throw new NotImplementedException(); }
-            public long GetInt64(int ordinal) { throw new NotImplementedException(); }
-            public string GetString(int ordinal) { throw new NotImplementedException(); }
-            public int GetValues(object[] values) { throw new NotImplementedException(); }
-            public bool NextResult() { throw new NotImplementedException(); }
-            public DataTable GetSchemaTable() { throw new NotImplementedException(); }
-
-            public void Dispose()
-            {
-                return;
             }
         }
 

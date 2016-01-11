@@ -35,6 +35,15 @@ namespace EduHub.Data.Entities
 
         #endregion
 
+        /// <inheritdoc />
+        public override DateTime? EntityLastModified
+        {
+            get
+            {
+                return LW_DATE.Value;
+            }
+        }
+
         #region Field Properties
 
         /// <summary>
