@@ -105,8 +105,9 @@ namespace EduHub.Data.Entities
                 }
 
                 if (lastModifiedSupported &&            // Last modified supported
+                    entity.EntityLastModified != null &&
                     (entityLastModifiedMax == null ||   // Last modified never set
-                    entityLastModifiedMax < entity.EntityLastModified)) // Newer date
+                        entityLastModifiedMax < entity.EntityLastModified)) // Newer date
                 {
                     entityLastModifiedMax = entity.EntityLastModified;
                 }

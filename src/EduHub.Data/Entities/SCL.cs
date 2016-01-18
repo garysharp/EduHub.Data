@@ -34,7 +34,7 @@ namespace EduHub.Data.Entities
         {
             get
             {
-                return LW_DATE.Value;
+                return LW_DATE;
             }
         }
 

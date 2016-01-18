@@ -721,7 +721,7 @@ namespace EduHub.Data.Entities
             if (ProgressNotification == null)
             {
                 entities = LoadDelta()
-                    .Where(e => e.EntityLastModified > EntityLastModified)
+                    .Where(e => e.EntityLastModified == null || e.EntityLastModified > EntityLastModified)
                     .ToList();
             }
             else
@@ -738,7 +738,7 @@ namespace EduHub.Data.Entities
                         while (entityEnumerator.MoveNext())
                         {
                             var entity = entityEnumerator.Current;
-                            if (entity.EntityLastModified > EntityLastModified)
+                            if (entity.EntityLastModified == null || entity.EntityLastModified > EntityLastModified)
                             {
                                 entities.Add(entityEnumerator.Current);
                             }

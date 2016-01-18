@@ -84,8 +84,9 @@ namespace EduHub.Data.Entities
             foreach (var entity in dataSet.ApplyDeltaEntities(baseEntities, deltaEntities))
             {
                 if (lastModifiedSupported &&            // Last modified supported
+                    entity.EntityLastModified != null &&
                     (entityLastModifiedMax == null ||   // Last modified never set
-                    entityLastModifiedMax < entity.EntityLastModified)) // Newer date
+                        entityLastModifiedMax < entity.EntityLastModified)) // Newer date
                 {
                     entityLastModifiedMax = entity.EntityLastModified;
                 }

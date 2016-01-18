@@ -792,7 +792,7 @@ namespace EduHub.Data.Entities
         if (entity.Fields.Any(f => f.Name == "LW_DATE"))
         {
 #>
-                return LW_DATE.Value;
+                return LW_DATE;
 <#
         }
         else
