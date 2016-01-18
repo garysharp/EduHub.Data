@@ -115,25 +115,25 @@ namespace EduHub.Data
 
         public List<string> ReadRecord()
         {
-            // Default record size = 23
-            var record = new List<string>(header == null ? 23 : header.Length);
-
-            if (this.charPosition == charLength && ReadBuffer() == 0)
+            if (charPosition == charLength && ReadBuffer() == 0)
             {
                 return null;
             }
+
+            // Default record size = 23
+            var record = new List<string>(header?.Length ?? 23);
 
             stringBuilder.Clear();
             bool escapedField = false;
 
             do
             {
-                var charPosition = this.charPosition;
-                var fieldPosition = charPosition;
+                var charPositionLocal = charPosition;
+                var fieldPositionLocal = charPositionLocal;
 
                 do
                 {
-                    var c = charBuffer[charPosition];
+                    var c = charBuffer[charPositionLocal];
 
                     switch (c)
                     {
@@ -142,54 +142,54 @@ namespace EduHub.Data
                             {
                                 if (stringBuilder.Length == 0)
                                 {
-                                    if (fieldPosition == charPosition)
+                                    if (fieldPositionLocal == charPositionLocal)
                                     {
                                         record.Add(null);
                                     }
                                     else
                                     {
-                                        record.Add(new string(charBuffer, fieldPosition, charPosition - fieldPosition));
+                                        record.Add(new string(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal));
                                     }
                                 }
                                 else
                                 {
-                                    stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
+                                    stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal);
                                     record.Add(stringBuilder.ToString());
                                     stringBuilder.Clear();
                                 }
 
-                                fieldPosition = charPosition + 1;
+                                fieldPositionLocal = charPositionLocal + 1;
                             }
                             break;
                         case '"':
                             if (!escapedField)
                             {
                                 // Is first character?
-                                if (fieldPosition == charPosition && stringBuilder.Length == 0)
+                                if (fieldPositionLocal == charPositionLocal && stringBuilder.Length == 0)
                                 {
                                     escapedField = true;
-                                    fieldPosition++;
+                                    fieldPositionLocal++;
                                 }
                             }
                             else
                             {
                                 char n;
 
-                                if (++charPosition < charLength)
+                                if (++charPositionLocal < charLength)
                                 {
-                                    n = charBuffer[charPosition];
+                                    n = charBuffer[charPositionLocal];
                                 }
                                 else
                                 {
-                                    if (fieldPosition != --charPosition)
+                                    if (fieldPositionLocal != --charPositionLocal)
                                     {
-                                        stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
+                                        stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal);
                                     }
 
                                     if (ReadBuffer() > 0)
                                     {
-                                        charPosition = fieldPosition = this.charPosition;
-                                        n = charBuffer[charPosition];
+                                        charPositionLocal = fieldPositionLocal = charPosition;
+                                        n = charBuffer[charPositionLocal];
                                     }
                                     else
                                     {
@@ -205,34 +205,34 @@ namespace EduHub.Data
                                     case ',':
                                     case '\r':
                                     case '\n':
-                                        if (stringBuilder.Length == 0 && fieldPosition == charPosition)
+                                        if (stringBuilder.Length == 0 && fieldPositionLocal == charPositionLocal)
                                         {
                                             record.Add(string.Empty);
                                         }
                                         else if (stringBuilder.Length == 0)
                                         {
-                                            record.Add(new string(charBuffer, fieldPosition, charPosition - fieldPosition - 1));
+                                            record.Add(new string(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal - 1));
                                         }
-                                        else if (fieldPosition == charPosition)
+                                        else if (fieldPositionLocal == charPositionLocal)
                                         {
                                             record.Add(stringBuilder.ToString());
                                             stringBuilder.Clear();
                                         }
                                         else
                                         {
-                                            stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition - 1);
+                                            stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal - 1);
                                             record.Add(stringBuilder.ToString());
                                             stringBuilder.Clear();
                                         }
-                                        fieldPosition = charPosition + 1;
+                                        fieldPositionLocal = charPositionLocal + 1;
                                         escapedField = false;
 
                                         if (n != ',')
                                         {
-                                            this.charPosition = ++charPosition;
-                                            if (n == '\r' && (charPosition < charLength || ReadBuffer() > 0) && charBuffer[this.charPosition] == '\n')
+                                            charPosition = ++charPositionLocal;
+                                            if (n == '\r' && (charPositionLocal < charLength || ReadBuffer() > 0) && charBuffer[charPosition] == '\n')
                                             {
-                                                this.charPosition++;
+                                                charPosition++;
                                             }
                                             recordsRead++;
                                             return record;
@@ -241,8 +241,8 @@ namespace EduHub.Data
                                         break;
                                     case '"':
                                         // Escaped " - include
-                                        stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
-                                        fieldPosition = charPosition + 1;
+                                        stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal);
+                                        fieldPositionLocal = charPositionLocal + 1;
                                         break;
                                     default:
                                         throw new InvalidDataException("A CSV field is incorrectly escaped");
@@ -253,29 +253,31 @@ namespace EduHub.Data
                         case '\n':
                             if (!escapedField)
                             {
-                                if (stringBuilder.Length == 0)
+                                if (stringBuilder.Length == 0 && fieldPositionLocal == charPositionLocal)
                                 {
-                                    if (fieldPosition == charPosition)
-                                    {
-                                        record.Add(null);
-                                    }
-                                    else
-                                    {
-                                        record.Add(new string(charBuffer, fieldPosition, charPosition - fieldPosition));
-                                    }
+                                    record.Add(null);
+                                }
+                                else if (stringBuilder.Length == 0)
+                                {
+                                    record.Add(new string(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal));
+                                }
+                                else if (fieldPositionLocal == charPositionLocal)
+                                {
+                                    record.Add(stringBuilder.ToString());
+                                    stringBuilder.Clear();
                                 }
                                 else
                                 {
-                                    stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
+                                    stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal);
                                     record.Add(stringBuilder.ToString());
                                     stringBuilder.Clear();
                                 }
 
-                                this.charPosition = charPosition++;
+                                charPosition = ++charPositionLocal;
 
-                                if (c == '\r' && (charPosition < charLength || ReadBuffer() > 0) && charBuffer[this.charPosition] == '\n')
+                                if (c == '\r' && (charPositionLocal < charLength || ReadBuffer() > 0) && charBuffer[charPosition] == '\n')
                                 {
-                                    this.charPosition++;
+                                    charPosition++;
                                 }
 
                                 recordsRead++;
@@ -284,13 +286,13 @@ namespace EduHub.Data
                             break;
                     }
 
-                    charPosition++;
+                    charPositionLocal++;
 
-                } while (charPosition < charLength);
+                } while (charPositionLocal < charLength);
 
-                if (fieldPosition != charPosition)
+                if (fieldPositionLocal != charPositionLocal)
                 {
-                    stringBuilder.Append(charBuffer, fieldPosition, charPosition - fieldPosition);
+                    stringBuilder.Append(charBuffer, fieldPositionLocal, charPositionLocal - fieldPositionLocal);
                 }
 
             } while (ReadBuffer() > 0);
