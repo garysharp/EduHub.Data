@@ -148,7 +148,7 @@ namespace EduHub.Data
             if (!Directory.Exists(EduHubDirectory))
                 throw new ArgumentException($"EduHub Directory [{EduHubDirectory}] does not exist");
 
-            var testSiteIdentifier = new Regex(@".*_(.+)(?<!_D).csv$", RegexOptions.IgnoreCase);
+            var testSiteIdentifier = new Regex(@".*?_(.+?)(_D)?.csv$", RegexOptions.IgnoreCase);
             var siteIdentifiers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(EduHubDirectory, "*.csv"))
