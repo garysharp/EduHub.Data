@@ -99,6 +99,12 @@ namespace EduHub.Data.Entities
         SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection);
 
         /// <summary>
+        /// Returns a <see cref="SqlCommand"/> which checks whether the database table needs to be recreated (possibly due to schema changes). Returns null if no check is needed.
+        /// </summary>
+        /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
+        SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection);
+
+        /// <summary>
         /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes. Typically called before <see cref="SqlBulkCopy"/> to improve performance.
         /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
         /// </summary>

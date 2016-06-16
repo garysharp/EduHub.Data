@@ -226,6 +226,14 @@ namespace EduHub.Data.Entities
         public abstract SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection);
 
         /// <inheritdoc />
+        public virtual SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Returns null indicating no check is required
+            // Checks are manually added to DataSets based on changes to the database schema over time
+            return null;
+        }
+
+        /// <inheritdoc />
         public abstract SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection);
 
         /// <inheritdoc />
@@ -391,6 +399,46 @@ namespace EduHub.Data.Entities
                     if (ProgressNotification != null)
                     {
                         ProgressNotification(0, $"Database table {Name} created");
+                    }
+                }
+                else
+                {
+                    // Table exists, check it is valid
+                    using (var commandCheck = GetSqlTableIsValidCommand(Connection))
+                    {
+                        if (commandCheck != null)
+                        {
+                            if (ProgressNotification != null)
+                            {
+                                ProgressNotification(0, $"Validating {Name} database table");
+                            }
+                            if ((int)await commandCheck.ExecuteScalarAsync() > 0)
+                            {
+                                if (ProgressNotification != null)
+                                {
+                                    ProgressNotification(0, $"Rebuilding database table {Name}");
+                                }
+                                // Drop Table
+                                using (var commandDrop = new SqlCommand($"DROP TABLE [{Name}];", Connection))
+                                {
+                                    await commandDrop.ExecuteNonQueryAsync();
+                                }
+                                // Recreate Table
+                                using (var commandCreate = GetSqlCreateTableCommand(Connection))
+                                {
+                                    await commandCreate.ExecuteNonQueryAsync();
+
+                                    // Table created, reset last write
+                                    LastFullWrite = null;
+                                    LastDeltaWrite = null;
+                                    EntityLastModified = null;
+                                }
+                                if (ProgressNotification != null)
+                                {
+                                    ProgressNotification(0, $"Database table {Name} rebuilt");
+                                }
+                            }
+                        }
                     }
                 }
             }
