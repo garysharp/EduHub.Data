@@ -153,6 +153,36 @@ namespace EduHub.Data.Entities
                     case "BPAY_REFERENCE":
                         mapper[i] = (e, v) => e.BPAY_REFERENCE = v;
                         break;
+                    case "TRADE_INFO01":
+                        mapper[i] = (e, v) => e.TRADE_INFO01 = v;
+                        break;
+                    case "TRADE_INFO02":
+                        mapper[i] = (e, v) => e.TRADE_INFO02 = v;
+                        break;
+                    case "TRADE_INFO03":
+                        mapper[i] = (e, v) => e.TRADE_INFO03 = v;
+                        break;
+                    case "TRADE_INFO04":
+                        mapper[i] = (e, v) => e.TRADE_INFO04 = v;
+                        break;
+                    case "TRADE_INFO05":
+                        mapper[i] = (e, v) => e.TRADE_INFO05 = v;
+                        break;
+                    case "TRADE_INFO06":
+                        mapper[i] = (e, v) => e.TRADE_INFO06 = v;
+                        break;
+                    case "TRADE_INFO07":
+                        mapper[i] = (e, v) => e.TRADE_INFO07 = v;
+                        break;
+                    case "TRADE_INFO08":
+                        mapper[i] = (e, v) => e.TRADE_INFO08 = v;
+                        break;
+                    case "TRADE_INFO09":
+                        mapper[i] = (e, v) => e.TRADE_INFO09 = v;
+                        break;
+                    case "TRADE_INFO10":
+                        mapper[i] = (e, v) => e.TRADE_INFO10 = v;
+                        break;
                     case "SURNAME":
                         mapper[i] = (e, v) => e.SURNAME = v;
                         break;
@@ -460,6 +490,16 @@ BEGIN
         [LODGE_REF] varchar(18) NULL,
         [BILLER_CODE] varchar(10) NULL,
         [BPAY_REFERENCE] varchar(20) NULL,
+        [TRADE_INFO01] varchar(50) NULL,
+        [TRADE_INFO02] varchar(50) NULL,
+        [TRADE_INFO03] varchar(50) NULL,
+        [TRADE_INFO04] varchar(50) NULL,
+        [TRADE_INFO05] varchar(50) NULL,
+        [TRADE_INFO06] varchar(50) NULL,
+        [TRADE_INFO07] varchar(50) NULL,
+        [TRADE_INFO08] varchar(50) NULL,
+        [TRADE_INFO09] varchar(50) NULL,
+        [TRADE_INFO10] varchar(50) NULL,
         [SURNAME] varchar(30) NULL,
         [FIRST_NAME] varchar(15) NULL,
         [SECOND_NAME] varchar(15) NULL,
@@ -596,7 +636,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 56; } }
+            public override int FieldCount { get { return 66; } }
 
             public override object GetValue(int i)
             {
@@ -678,41 +718,61 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.BILLER_CODE;
                     case 37: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE;
-                    case 38: // SURNAME
+                    case 38: // TRADE_INFO01
+                        return Current.TRADE_INFO01;
+                    case 39: // TRADE_INFO02
+                        return Current.TRADE_INFO02;
+                    case 40: // TRADE_INFO03
+                        return Current.TRADE_INFO03;
+                    case 41: // TRADE_INFO04
+                        return Current.TRADE_INFO04;
+                    case 42: // TRADE_INFO05
+                        return Current.TRADE_INFO05;
+                    case 43: // TRADE_INFO06
+                        return Current.TRADE_INFO06;
+                    case 44: // TRADE_INFO07
+                        return Current.TRADE_INFO07;
+                    case 45: // TRADE_INFO08
+                        return Current.TRADE_INFO08;
+                    case 46: // TRADE_INFO09
+                        return Current.TRADE_INFO09;
+                    case 47: // TRADE_INFO10
+                        return Current.TRADE_INFO10;
+                    case 48: // SURNAME
                         return Current.SURNAME;
-                    case 39: // FIRST_NAME
+                    case 49: // FIRST_NAME
                         return Current.FIRST_NAME;
-                    case 40: // SECOND_NAME
+                    case 50: // SECOND_NAME
                         return Current.SECOND_NAME;
-                    case 41: // PAYG_BIRTHDATE
+                    case 51: // PAYG_BIRTHDATE
                         return Current.PAYG_BIRTHDATE;
-                    case 42: // PAYG_STARTDATE
+                    case 52: // PAYG_STARTDATE
                         return Current.PAYG_STARTDATE;
-                    case 43: // PAYG_TERMDATE
+                    case 53: // PAYG_TERMDATE
                         return Current.PAYG_TERMDATE;
-                    case 44: // PAYG_ADDRESS01
+                    case 54: // PAYG_ADDRESS01
                         return Current.PAYG_ADDRESS01;
-                    case 45: // PAYG_ADDRESS02
+                    case 55: // PAYG_ADDRESS02
                         return Current.PAYG_ADDRESS02;
-                    case 46: // PAYG_SUBURB
+                    case 56: // PAYG_SUBURB
                         return Current.PAYG_SUBURB;
-                    case 47: // PAYG_STATE
+                    case 57: // PAYG_STATE
                         return Current.PAYG_STATE;
-                    case 48: // PAYG_POST
+                    case 58: // PAYG_POST
                         return Current.PAYG_POST;
-                    case 49: // PAYG_COUNTRY
+                    case 59: // PAYG_COUNTRY
                         return Current.PAYG_COUNTRY;
-                    case 50: // PPDKEY
+                    case 60: // PPDKEY
                         return Current.PPDKEY;
-                    case 51: // PRMS_FLAG
+                    case 61: // PRMS_FLAG
                         return Current.PRMS_FLAG;
-                    case 52: // LW_PRMSINFO_DATE
+                    case 62: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE;
-                    case 53: // LW_DATE
+                    case 63: // LW_DATE
                         return Current.LW_DATE;
-                    case 54: // LW_TIME
+                    case 64: // LW_TIME
                         return Current.LW_TIME;
-                    case 55: // LW_USER
+                    case 65: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -797,41 +857,61 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.BILLER_CODE == null;
                     case 37: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE == null;
-                    case 38: // SURNAME
+                    case 38: // TRADE_INFO01
+                        return Current.TRADE_INFO01 == null;
+                    case 39: // TRADE_INFO02
+                        return Current.TRADE_INFO02 == null;
+                    case 40: // TRADE_INFO03
+                        return Current.TRADE_INFO03 == null;
+                    case 41: // TRADE_INFO04
+                        return Current.TRADE_INFO04 == null;
+                    case 42: // TRADE_INFO05
+                        return Current.TRADE_INFO05 == null;
+                    case 43: // TRADE_INFO06
+                        return Current.TRADE_INFO06 == null;
+                    case 44: // TRADE_INFO07
+                        return Current.TRADE_INFO07 == null;
+                    case 45: // TRADE_INFO08
+                        return Current.TRADE_INFO08 == null;
+                    case 46: // TRADE_INFO09
+                        return Current.TRADE_INFO09 == null;
+                    case 47: // TRADE_INFO10
+                        return Current.TRADE_INFO10 == null;
+                    case 48: // SURNAME
                         return Current.SURNAME == null;
-                    case 39: // FIRST_NAME
+                    case 49: // FIRST_NAME
                         return Current.FIRST_NAME == null;
-                    case 40: // SECOND_NAME
+                    case 50: // SECOND_NAME
                         return Current.SECOND_NAME == null;
-                    case 41: // PAYG_BIRTHDATE
+                    case 51: // PAYG_BIRTHDATE
                         return Current.PAYG_BIRTHDATE == null;
-                    case 42: // PAYG_STARTDATE
+                    case 52: // PAYG_STARTDATE
                         return Current.PAYG_STARTDATE == null;
-                    case 43: // PAYG_TERMDATE
+                    case 53: // PAYG_TERMDATE
                         return Current.PAYG_TERMDATE == null;
-                    case 44: // PAYG_ADDRESS01
+                    case 54: // PAYG_ADDRESS01
                         return Current.PAYG_ADDRESS01 == null;
-                    case 45: // PAYG_ADDRESS02
+                    case 55: // PAYG_ADDRESS02
                         return Current.PAYG_ADDRESS02 == null;
-                    case 46: // PAYG_SUBURB
+                    case 56: // PAYG_SUBURB
                         return Current.PAYG_SUBURB == null;
-                    case 47: // PAYG_STATE
+                    case 57: // PAYG_STATE
                         return Current.PAYG_STATE == null;
-                    case 48: // PAYG_POST
+                    case 58: // PAYG_POST
                         return Current.PAYG_POST == null;
-                    case 49: // PAYG_COUNTRY
+                    case 59: // PAYG_COUNTRY
                         return Current.PAYG_COUNTRY == null;
-                    case 50: // PPDKEY
+                    case 60: // PPDKEY
                         return Current.PPDKEY == null;
-                    case 51: // PRMS_FLAG
+                    case 61: // PRMS_FLAG
                         return Current.PRMS_FLAG == null;
-                    case 52: // LW_PRMSINFO_DATE
+                    case 62: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE == null;
-                    case 53: // LW_DATE
+                    case 63: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 54: // LW_TIME
+                    case 64: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 55: // LW_USER
+                    case 65: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -918,41 +998,61 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return "BILLER_CODE";
                     case 37: // BPAY_REFERENCE
                         return "BPAY_REFERENCE";
-                    case 38: // SURNAME
+                    case 38: // TRADE_INFO01
+                        return "TRADE_INFO01";
+                    case 39: // TRADE_INFO02
+                        return "TRADE_INFO02";
+                    case 40: // TRADE_INFO03
+                        return "TRADE_INFO03";
+                    case 41: // TRADE_INFO04
+                        return "TRADE_INFO04";
+                    case 42: // TRADE_INFO05
+                        return "TRADE_INFO05";
+                    case 43: // TRADE_INFO06
+                        return "TRADE_INFO06";
+                    case 44: // TRADE_INFO07
+                        return "TRADE_INFO07";
+                    case 45: // TRADE_INFO08
+                        return "TRADE_INFO08";
+                    case 46: // TRADE_INFO09
+                        return "TRADE_INFO09";
+                    case 47: // TRADE_INFO10
+                        return "TRADE_INFO10";
+                    case 48: // SURNAME
                         return "SURNAME";
-                    case 39: // FIRST_NAME
+                    case 49: // FIRST_NAME
                         return "FIRST_NAME";
-                    case 40: // SECOND_NAME
+                    case 50: // SECOND_NAME
                         return "SECOND_NAME";
-                    case 41: // PAYG_BIRTHDATE
+                    case 51: // PAYG_BIRTHDATE
                         return "PAYG_BIRTHDATE";
-                    case 42: // PAYG_STARTDATE
+                    case 52: // PAYG_STARTDATE
                         return "PAYG_STARTDATE";
-                    case 43: // PAYG_TERMDATE
+                    case 53: // PAYG_TERMDATE
                         return "PAYG_TERMDATE";
-                    case 44: // PAYG_ADDRESS01
+                    case 54: // PAYG_ADDRESS01
                         return "PAYG_ADDRESS01";
-                    case 45: // PAYG_ADDRESS02
+                    case 55: // PAYG_ADDRESS02
                         return "PAYG_ADDRESS02";
-                    case 46: // PAYG_SUBURB
+                    case 56: // PAYG_SUBURB
                         return "PAYG_SUBURB";
-                    case 47: // PAYG_STATE
+                    case 57: // PAYG_STATE
                         return "PAYG_STATE";
-                    case 48: // PAYG_POST
+                    case 58: // PAYG_POST
                         return "PAYG_POST";
-                    case 49: // PAYG_COUNTRY
+                    case 59: // PAYG_COUNTRY
                         return "PAYG_COUNTRY";
-                    case 50: // PPDKEY
+                    case 60: // PPDKEY
                         return "PPDKEY";
-                    case 51: // PRMS_FLAG
+                    case 61: // PRMS_FLAG
                         return "PRMS_FLAG";
-                    case 52: // LW_PRMSINFO_DATE
+                    case 62: // LW_PRMSINFO_DATE
                         return "LW_PRMSINFO_DATE";
-                    case 53: // LW_DATE
+                    case 63: // LW_DATE
                         return "LW_DATE";
-                    case 54: // LW_TIME
+                    case 64: // LW_TIME
                         return "LW_TIME";
-                    case 55: // LW_USER
+                    case 65: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1039,42 +1139,62 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return 36;
                     case "BPAY_REFERENCE":
                         return 37;
-                    case "SURNAME":
+                    case "TRADE_INFO01":
                         return 38;
-                    case "FIRST_NAME":
+                    case "TRADE_INFO02":
                         return 39;
-                    case "SECOND_NAME":
+                    case "TRADE_INFO03":
                         return 40;
-                    case "PAYG_BIRTHDATE":
+                    case "TRADE_INFO04":
                         return 41;
-                    case "PAYG_STARTDATE":
+                    case "TRADE_INFO05":
                         return 42;
-                    case "PAYG_TERMDATE":
+                    case "TRADE_INFO06":
                         return 43;
-                    case "PAYG_ADDRESS01":
+                    case "TRADE_INFO07":
                         return 44;
-                    case "PAYG_ADDRESS02":
+                    case "TRADE_INFO08":
                         return 45;
-                    case "PAYG_SUBURB":
+                    case "TRADE_INFO09":
                         return 46;
-                    case "PAYG_STATE":
+                    case "TRADE_INFO10":
                         return 47;
-                    case "PAYG_POST":
+                    case "SURNAME":
                         return 48;
-                    case "PAYG_COUNTRY":
+                    case "FIRST_NAME":
                         return 49;
-                    case "PPDKEY":
+                    case "SECOND_NAME":
                         return 50;
-                    case "PRMS_FLAG":
+                    case "PAYG_BIRTHDATE":
                         return 51;
-                    case "LW_PRMSINFO_DATE":
+                    case "PAYG_STARTDATE":
                         return 52;
-                    case "LW_DATE":
+                    case "PAYG_TERMDATE":
                         return 53;
-                    case "LW_TIME":
+                    case "PAYG_ADDRESS01":
                         return 54;
-                    case "LW_USER":
+                    case "PAYG_ADDRESS02":
                         return 55;
+                    case "PAYG_SUBURB":
+                        return 56;
+                    case "PAYG_STATE":
+                        return 57;
+                    case "PAYG_POST":
+                        return 58;
+                    case "PAYG_COUNTRY":
+                        return 59;
+                    case "PPDKEY":
+                        return 60;
+                    case "PRMS_FLAG":
+                        return 61;
+                    case "LW_PRMSINFO_DATE":
+                        return 62;
+                    case "LW_DATE":
+                        return 63;
+                    case "LW_TIME":
+                        return 64;
+                    case "LW_USER":
+                        return 65;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

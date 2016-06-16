@@ -215,9 +215,34 @@ namespace EduHub.Data.Entities
         public short? NUMBER_AT30 { get; internal set; }
 
         /// <summary>
+        /// Number of students with each dimension score
+        /// </summary>
+        public short? NUMBER_AT31 { get; internal set; }
+
+        /// <summary>
+        /// Number of students with each dimension score
+        /// </summary>
+        public short? NUMBER_AT32 { get; internal set; }
+
+        /// <summary>
+        /// Number of students with each dimension score
+        /// </summary>
+        public short? NUMBER_AT33 { get; internal set; }
+
+        /// <summary>
+        /// Number of students with each dimension score
+        /// </summary>
+        public short? NUMBER_AT34 { get; internal set; }
+
+        /// <summary>
         /// Number of students that have a dimension score of N/A
         /// </summary>
         public short? NO_NA { get; internal set; }
+
+        /// <summary>
+        /// Number of students that have a dimension score of NT (Not Taught)
+        /// </summary>
+        public short? NO_NT { get; internal set; }
 
         /// <summary>
         /// Number of students in cohort

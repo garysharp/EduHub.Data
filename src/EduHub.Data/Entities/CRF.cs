@@ -484,6 +484,11 @@ namespace EduHub.Data.Entities
         public int? PRMS_TID { get; internal set; }
 
         /// <summary>
+        /// Creditor Purchasing Card TID
+        /// </summary>
+        public int? KCPC_TID { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

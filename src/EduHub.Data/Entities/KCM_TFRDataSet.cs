@@ -57,6 +57,9 @@ namespace EduHub.Data.Entities
                     case "DESCRIPTION":
                         mapper[i] = (e, v) => e.DESCRIPTION = v;
                         break;
+                    case "DISABILITY":
+                        mapper[i] = (e, v) => e.DISABILITY = v;
+                        break;
                     case "IMP_STATUS":
                         mapper[i] = (e, v) => e.IMP_STATUS = v;
                         break;
@@ -296,6 +299,7 @@ BEGIN
         [KCMKEY] varchar(10) NULL,
         [KCMKEY_NEW] varchar(10) NULL,
         [DESCRIPTION] varchar(30) NULL,
+        [DISABILITY] varchar(1) NULL,
         [IMP_STATUS] varchar(15) NULL,
         [IMP_DATE] datetime NULL,
         [LW_DATE] datetime NULL,
@@ -435,7 +439,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
             {
             }
 
-            public override int FieldCount { get { return 11; } }
+            public override int FieldCount { get { return 12; } }
 
             public override object GetValue(int i)
             {
@@ -453,15 +457,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
                         return Current.KCMKEY_NEW;
                     case 5: // DESCRIPTION
                         return Current.DESCRIPTION;
-                    case 6: // IMP_STATUS
+                    case 6: // DISABILITY
+                        return Current.DISABILITY;
+                    case 7: // IMP_STATUS
                         return Current.IMP_STATUS;
-                    case 7: // IMP_DATE
+                    case 8: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 8: // LW_DATE
+                    case 9: // LW_DATE
                         return Current.LW_DATE;
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return Current.LW_TIME;
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -480,15 +486,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
                         return Current.KCMKEY_NEW == null;
                     case 5: // DESCRIPTION
                         return Current.DESCRIPTION == null;
-                    case 6: // IMP_STATUS
+                    case 6: // DISABILITY
+                        return Current.DISABILITY == null;
+                    case 7: // IMP_STATUS
                         return Current.IMP_STATUS == null;
-                    case 7: // IMP_DATE
+                    case 8: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 8: // LW_DATE
+                    case 9: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -511,15 +519,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
                         return "KCMKEY_NEW";
                     case 5: // DESCRIPTION
                         return "DESCRIPTION";
-                    case 6: // IMP_STATUS
+                    case 6: // DISABILITY
+                        return "DISABILITY";
+                    case 7: // IMP_STATUS
                         return "IMP_STATUS";
-                    case 7: // IMP_DATE
+                    case 8: // IMP_DATE
                         return "IMP_DATE";
-                    case 8: // LW_DATE
+                    case 9: // LW_DATE
                         return "LW_DATE";
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return "LW_TIME";
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -542,16 +552,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
                         return 4;
                     case "DESCRIPTION":
                         return 5;
-                    case "IMP_STATUS":
+                    case "DISABILITY":
                         return 6;
-                    case "IMP_DATE":
+                    case "IMP_STATUS":
                         return 7;
-                    case "LW_DATE":
+                    case "IMP_DATE":
                         return 8;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 9;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 10;
+                    case "LW_USER":
+                        return 11;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

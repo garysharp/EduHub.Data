@@ -38,7 +38,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Key of the domain that this dimension is linked to
-        /// [Uppercase Alphanumeric (5)]
+        /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KDOKEY { get; internal set; }
 
@@ -57,6 +57,12 @@ namespace EduHub.Data.Entities
         /// Maximum level of dimension assessment
         /// </summary>
         public double? MAX_SCORE { get; internal set; }
+
+        /// <summary>
+        /// Curriculum
+        /// [Alphanumeric (7)]
+        /// </summary>
+        public string CURRICULUM { get; internal set; }
 
         /// <summary>
         /// Last write date

@@ -18,6 +18,7 @@ namespace EduHub.Data.Entities
         private SCI Cache_CAMPUS_SCI;
         private KDO Cache_VDOMAIN_KDO;
         private KDI Cache_VDIMENSION_KDI;
+        private SKGS Cache_ORIGINAL_SCHOOL_SKGS;
 
         #endregion
 
@@ -62,7 +63,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Link to domain
-        /// [Uppercase Alphanumeric (5)]
+        /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string VDOMAIN { get; internal set; }
 
@@ -77,6 +78,12 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (4)]
         /// </summary>
         public string SCORE { get; internal set; }
+
+        /// <summary>
+        /// Original school
+        /// [Uppercase Alphanumeric (8)]
+        /// </summary>
+        public string ORIGINAL_SCHOOL { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -196,6 +203,27 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_VDIMENSION_KDI;
+            }
+        }
+
+        /// <summary>
+        /// SKGS (Schools) related entity by [STVDO.ORIGINAL_SCHOOL]-&gt;[SKGS.SCHOOL]
+        /// Original school
+        /// </summary>
+        public SKGS ORIGINAL_SCHOOL_SKGS
+        {
+            get
+            {
+                if (ORIGINAL_SCHOOL == null)
+                {
+                    return null;
+                }
+                if (Cache_ORIGINAL_SCHOOL_SKGS == null)
+                {
+                    Cache_ORIGINAL_SCHOOL_SKGS = Context.SKGS.FindBySCHOOL(ORIGINAL_SCHOOL);
+                }
+
+                return Cache_ORIGINAL_SCHOOL_SKGS;
             }
         }
 

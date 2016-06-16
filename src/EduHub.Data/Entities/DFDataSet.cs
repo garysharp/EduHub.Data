@@ -378,6 +378,12 @@ namespace EduHub.Data.Entities
                     case "PREF_EMAIL":
                         mapper[i] = (e, v) => e.PREF_EMAIL = v;
                         break;
+                    case "USER_NAME":
+                        mapper[i] = (e, v) => e.USER_NAME = v;
+                        break;
+                    case "WEB_ENABLED":
+                        mapper[i] = (e, v) => e.WEB_ENABLED = v;
+                        break;
                     case "CASES_KEY":
                         mapper[i] = (e, v) => e.CASES_KEY = v;
                         break;
@@ -1531,6 +1537,8 @@ BEGIN
         [ABN] varchar(15) NULL,
         [BILLING_EMAIL] varchar(60) NULL,
         [PREF_EMAIL] varchar(1) NULL,
+        [USER_NAME] varchar(32) NULL,
+        [WEB_ENABLED] varchar(1) NULL,
         [CASES_KEY] varchar(7) NULL,
         [EMA_APPLY_DATE] datetime NULL,
         [EMA_APPLY] varchar(1) NULL,
@@ -1827,7 +1835,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
             {
             }
 
-            public override int FieldCount { get { return 125; } }
+            public override int FieldCount { get { return 127; } }
 
             public override object GetValue(int i)
             {
@@ -2047,41 +2055,45 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.BILLING_EMAIL;
                     case 106: // PREF_EMAIL
                         return Current.PREF_EMAIL;
-                    case 107: // CASES_KEY
+                    case 107: // USER_NAME
+                        return Current.USER_NAME;
+                    case 108: // WEB_ENABLED
+                        return Current.WEB_ENABLED;
+                    case 109: // CASES_KEY
                         return Current.CASES_KEY;
-                    case 108: // EMA_APPLY_DATE
+                    case 110: // EMA_APPLY_DATE
                         return Current.EMA_APPLY_DATE;
-                    case 109: // EMA_APPLY
+                    case 111: // EMA_APPLY
                         return Current.EMA_APPLY;
-                    case 110: // DSS_SURNAME
+                    case 112: // DSS_SURNAME
                         return Current.DSS_SURNAME;
-                    case 111: // DSS_FIRST_NAME
+                    case 113: // DSS_FIRST_NAME
                         return Current.DSS_FIRST_NAME;
-                    case 112: // SSN_ELIG_CODE
+                    case 114: // SSN_ELIG_CODE
                         return Current.SSN_ELIG_CODE;
-                    case 113: // SSN
+                    case 115: // SSN
                         return Current.SSN;
-                    case 114: // EMA_TOTAL1P
+                    case 116: // EMA_TOTAL1P
                         return Current.EMA_TOTAL1P;
-                    case 115: // EMA_STAT1P
+                    case 117: // EMA_STAT1P
                         return Current.EMA_STAT1P;
-                    case 116: // EMA_TOTAL2P
+                    case 118: // EMA_TOTAL2P
                         return Current.EMA_TOTAL2P;
-                    case 117: // EMA_STAT2P
+                    case 119: // EMA_STAT2P
                         return Current.EMA_STAT2P;
-                    case 118: // EMA_CLAIM_VN
+                    case 120: // EMA_CLAIM_VN
                         return Current.EMA_CLAIM_VN;
-                    case 119: // EMA_SEND
+                    case 121: // EMA_SEND
                         return Current.EMA_SEND;
-                    case 120: // EMA_CLAIM_PD
+                    case 122: // EMA_CLAIM_PD
                         return Current.EMA_CLAIM_PD;
-                    case 121: // CASES_EMA_ID
+                    case 123: // CASES_EMA_ID
                         return Current.CASES_EMA_ID;
-                    case 122: // LW_DATE
+                    case 124: // LW_DATE
                         return Current.LW_DATE;
-                    case 123: // LW_TIME
+                    case 125: // LW_TIME
                         return Current.LW_TIME;
-                    case 124: // LW_USER
+                    case 126: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2304,41 +2316,45 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.BILLING_EMAIL == null;
                     case 106: // PREF_EMAIL
                         return Current.PREF_EMAIL == null;
-                    case 107: // CASES_KEY
+                    case 107: // USER_NAME
+                        return Current.USER_NAME == null;
+                    case 108: // WEB_ENABLED
+                        return Current.WEB_ENABLED == null;
+                    case 109: // CASES_KEY
                         return Current.CASES_KEY == null;
-                    case 108: // EMA_APPLY_DATE
+                    case 110: // EMA_APPLY_DATE
                         return Current.EMA_APPLY_DATE == null;
-                    case 109: // EMA_APPLY
+                    case 111: // EMA_APPLY
                         return Current.EMA_APPLY == null;
-                    case 110: // DSS_SURNAME
+                    case 112: // DSS_SURNAME
                         return Current.DSS_SURNAME == null;
-                    case 111: // DSS_FIRST_NAME
+                    case 113: // DSS_FIRST_NAME
                         return Current.DSS_FIRST_NAME == null;
-                    case 112: // SSN_ELIG_CODE
+                    case 114: // SSN_ELIG_CODE
                         return Current.SSN_ELIG_CODE == null;
-                    case 113: // SSN
+                    case 115: // SSN
                         return Current.SSN == null;
-                    case 114: // EMA_TOTAL1P
+                    case 116: // EMA_TOTAL1P
                         return Current.EMA_TOTAL1P == null;
-                    case 115: // EMA_STAT1P
+                    case 117: // EMA_STAT1P
                         return Current.EMA_STAT1P == null;
-                    case 116: // EMA_TOTAL2P
+                    case 118: // EMA_TOTAL2P
                         return Current.EMA_TOTAL2P == null;
-                    case 117: // EMA_STAT2P
+                    case 119: // EMA_STAT2P
                         return Current.EMA_STAT2P == null;
-                    case 118: // EMA_CLAIM_VN
+                    case 120: // EMA_CLAIM_VN
                         return Current.EMA_CLAIM_VN == null;
-                    case 119: // EMA_SEND
+                    case 121: // EMA_SEND
                         return Current.EMA_SEND == null;
-                    case 120: // EMA_CLAIM_PD
+                    case 122: // EMA_CLAIM_PD
                         return Current.EMA_CLAIM_PD == null;
-                    case 121: // CASES_EMA_ID
+                    case 123: // CASES_EMA_ID
                         return Current.CASES_EMA_ID == null;
-                    case 122: // LW_DATE
+                    case 124: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 123: // LW_TIME
+                    case 125: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 124: // LW_USER
+                    case 126: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2563,41 +2579,45 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return "BILLING_EMAIL";
                     case 106: // PREF_EMAIL
                         return "PREF_EMAIL";
-                    case 107: // CASES_KEY
+                    case 107: // USER_NAME
+                        return "USER_NAME";
+                    case 108: // WEB_ENABLED
+                        return "WEB_ENABLED";
+                    case 109: // CASES_KEY
                         return "CASES_KEY";
-                    case 108: // EMA_APPLY_DATE
+                    case 110: // EMA_APPLY_DATE
                         return "EMA_APPLY_DATE";
-                    case 109: // EMA_APPLY
+                    case 111: // EMA_APPLY
                         return "EMA_APPLY";
-                    case 110: // DSS_SURNAME
+                    case 112: // DSS_SURNAME
                         return "DSS_SURNAME";
-                    case 111: // DSS_FIRST_NAME
+                    case 113: // DSS_FIRST_NAME
                         return "DSS_FIRST_NAME";
-                    case 112: // SSN_ELIG_CODE
+                    case 114: // SSN_ELIG_CODE
                         return "SSN_ELIG_CODE";
-                    case 113: // SSN
+                    case 115: // SSN
                         return "SSN";
-                    case 114: // EMA_TOTAL1P
+                    case 116: // EMA_TOTAL1P
                         return "EMA_TOTAL1P";
-                    case 115: // EMA_STAT1P
+                    case 117: // EMA_STAT1P
                         return "EMA_STAT1P";
-                    case 116: // EMA_TOTAL2P
+                    case 118: // EMA_TOTAL2P
                         return "EMA_TOTAL2P";
-                    case 117: // EMA_STAT2P
+                    case 119: // EMA_STAT2P
                         return "EMA_STAT2P";
-                    case 118: // EMA_CLAIM_VN
+                    case 120: // EMA_CLAIM_VN
                         return "EMA_CLAIM_VN";
-                    case 119: // EMA_SEND
+                    case 121: // EMA_SEND
                         return "EMA_SEND";
-                    case 120: // EMA_CLAIM_PD
+                    case 122: // EMA_CLAIM_PD
                         return "EMA_CLAIM_PD";
-                    case 121: // CASES_EMA_ID
+                    case 123: // CASES_EMA_ID
                         return "CASES_EMA_ID";
-                    case 122: // LW_DATE
+                    case 124: // LW_DATE
                         return "LW_DATE";
-                    case 123: // LW_TIME
+                    case 125: // LW_TIME
                         return "LW_TIME";
-                    case 124: // LW_USER
+                    case 126: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2822,42 +2842,46 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return 105;
                     case "PREF_EMAIL":
                         return 106;
-                    case "CASES_KEY":
+                    case "USER_NAME":
                         return 107;
-                    case "EMA_APPLY_DATE":
+                    case "WEB_ENABLED":
                         return 108;
-                    case "EMA_APPLY":
+                    case "CASES_KEY":
                         return 109;
-                    case "DSS_SURNAME":
+                    case "EMA_APPLY_DATE":
                         return 110;
-                    case "DSS_FIRST_NAME":
+                    case "EMA_APPLY":
                         return 111;
-                    case "SSN_ELIG_CODE":
+                    case "DSS_SURNAME":
                         return 112;
-                    case "SSN":
+                    case "DSS_FIRST_NAME":
                         return 113;
-                    case "EMA_TOTAL1P":
+                    case "SSN_ELIG_CODE":
                         return 114;
-                    case "EMA_STAT1P":
+                    case "SSN":
                         return 115;
-                    case "EMA_TOTAL2P":
+                    case "EMA_TOTAL1P":
                         return 116;
-                    case "EMA_STAT2P":
+                    case "EMA_STAT1P":
                         return 117;
-                    case "EMA_CLAIM_VN":
+                    case "EMA_TOTAL2P":
                         return 118;
-                    case "EMA_SEND":
+                    case "EMA_STAT2P":
                         return 119;
-                    case "EMA_CLAIM_PD":
+                    case "EMA_CLAIM_VN":
                         return 120;
-                    case "CASES_EMA_ID":
+                    case "EMA_SEND":
                         return 121;
-                    case "LW_DATE":
+                    case "EMA_CLAIM_PD":
                         return 122;
-                    case "LW_TIME":
+                    case "CASES_EMA_ID":
                         return 123;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 124;
+                    case "LW_TIME":
+                        return 125;
+                    case "LW_USER":
+                        return 126;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

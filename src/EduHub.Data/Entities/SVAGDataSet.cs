@@ -148,8 +148,23 @@ namespace EduHub.Data.Entities
                     case "NUMBER_AT30":
                         mapper[i] = (e, v) => e.NUMBER_AT30 = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "NUMBER_AT31":
+                        mapper[i] = (e, v) => e.NUMBER_AT31 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "NUMBER_AT32":
+                        mapper[i] = (e, v) => e.NUMBER_AT32 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "NUMBER_AT33":
+                        mapper[i] = (e, v) => e.NUMBER_AT33 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "NUMBER_AT34":
+                        mapper[i] = (e, v) => e.NUMBER_AT34 = v == null ? (short?)null : short.Parse(v);
+                        break;
                     case "NO_NA":
                         mapper[i] = (e, v) => e.NO_NA = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "NO_NT":
+                        mapper[i] = (e, v) => e.NO_NT = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "TOTAL_NUMBER":
                         mapper[i] = (e, v) => e.TOTAL_NUMBER = v == null ? (short?)null : short.Parse(v);
@@ -460,7 +475,12 @@ BEGIN
         [NUMBER_AT28] smallint NULL,
         [NUMBER_AT29] smallint NULL,
         [NUMBER_AT30] smallint NULL,
+        [NUMBER_AT31] smallint NULL,
+        [NUMBER_AT32] smallint NULL,
+        [NUMBER_AT33] smallint NULL,
+        [NUMBER_AT34] smallint NULL,
         [NO_NA] smallint NULL,
+        [NO_NT] smallint NULL,
         [TOTAL_NUMBER] smallint NULL,
         [SENT_TO_DEET] datetime NULL,
         [LW_DATE] datetime NULL,
@@ -592,7 +612,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
             {
             }
 
-            public override int FieldCount { get { return 42; } }
+            public override int FieldCount { get { return 47; } }
 
             public override object GetValue(int i)
             {
@@ -670,17 +690,27 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.NUMBER_AT29;
                     case 35: // NUMBER_AT30
                         return Current.NUMBER_AT30;
-                    case 36: // NO_NA
+                    case 36: // NUMBER_AT31
+                        return Current.NUMBER_AT31;
+                    case 37: // NUMBER_AT32
+                        return Current.NUMBER_AT32;
+                    case 38: // NUMBER_AT33
+                        return Current.NUMBER_AT33;
+                    case 39: // NUMBER_AT34
+                        return Current.NUMBER_AT34;
+                    case 40: // NO_NA
                         return Current.NO_NA;
-                    case 37: // TOTAL_NUMBER
+                    case 41: // NO_NT
+                        return Current.NO_NT;
+                    case 42: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER;
-                    case 38: // SENT_TO_DEET
+                    case 43: // SENT_TO_DEET
                         return Current.SENT_TO_DEET;
-                    case 39: // LW_DATE
+                    case 44: // LW_DATE
                         return Current.LW_DATE;
-                    case 40: // LW_TIME
+                    case 45: // LW_TIME
                         return Current.LW_TIME;
-                    case 41: // LW_USER
+                    case 46: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -761,17 +791,27 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.NUMBER_AT29 == null;
                     case 35: // NUMBER_AT30
                         return Current.NUMBER_AT30 == null;
-                    case 36: // NO_NA
+                    case 36: // NUMBER_AT31
+                        return Current.NUMBER_AT31 == null;
+                    case 37: // NUMBER_AT32
+                        return Current.NUMBER_AT32 == null;
+                    case 38: // NUMBER_AT33
+                        return Current.NUMBER_AT33 == null;
+                    case 39: // NUMBER_AT34
+                        return Current.NUMBER_AT34 == null;
+                    case 40: // NO_NA
                         return Current.NO_NA == null;
-                    case 37: // TOTAL_NUMBER
+                    case 41: // NO_NT
+                        return Current.NO_NT == null;
+                    case 42: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER == null;
-                    case 38: // SENT_TO_DEET
+                    case 43: // SENT_TO_DEET
                         return Current.SENT_TO_DEET == null;
-                    case 39: // LW_DATE
+                    case 44: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 40: // LW_TIME
+                    case 45: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 41: // LW_USER
+                    case 46: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -854,17 +894,27 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return "NUMBER_AT29";
                     case 35: // NUMBER_AT30
                         return "NUMBER_AT30";
-                    case 36: // NO_NA
+                    case 36: // NUMBER_AT31
+                        return "NUMBER_AT31";
+                    case 37: // NUMBER_AT32
+                        return "NUMBER_AT32";
+                    case 38: // NUMBER_AT33
+                        return "NUMBER_AT33";
+                    case 39: // NUMBER_AT34
+                        return "NUMBER_AT34";
+                    case 40: // NO_NA
                         return "NO_NA";
-                    case 37: // TOTAL_NUMBER
+                    case 41: // NO_NT
+                        return "NO_NT";
+                    case 42: // TOTAL_NUMBER
                         return "TOTAL_NUMBER";
-                    case 38: // SENT_TO_DEET
+                    case 43: // SENT_TO_DEET
                         return "SENT_TO_DEET";
-                    case 39: // LW_DATE
+                    case 44: // LW_DATE
                         return "LW_DATE";
-                    case 40: // LW_TIME
+                    case 45: // LW_TIME
                         return "LW_TIME";
-                    case 41: // LW_USER
+                    case 46: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -947,18 +997,28 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return 34;
                     case "NUMBER_AT30":
                         return 35;
-                    case "NO_NA":
+                    case "NUMBER_AT31":
                         return 36;
-                    case "TOTAL_NUMBER":
+                    case "NUMBER_AT32":
                         return 37;
-                    case "SENT_TO_DEET":
+                    case "NUMBER_AT33":
                         return 38;
-                    case "LW_DATE":
+                    case "NUMBER_AT34":
                         return 39;
-                    case "LW_TIME":
+                    case "NO_NA":
                         return 40;
-                    case "LW_USER":
+                    case "NO_NT":
                         return 41;
+                    case "TOTAL_NUMBER":
+                        return 42;
+                    case "SENT_TO_DEET":
+                        return 43;
+                    case "LW_DATE":
+                        return 44;
+                    case "LW_TIME":
+                        return 45;
+                    case "LW_USER":
+                        return 46;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -151,6 +151,9 @@ namespace EduHub.Data.Entities
                     case "NEXT_ENROLMENT_DATE":
                         mapper[i] = (e, v) => e.NEXT_ENROLMENT_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
+                    case "TFR_ENROLMENT_DATE":
+                        mapper[i] = (e, v) => e.TFR_ENROLMENT_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
                     case "GENDER_DEFAULT":
                         mapper[i] = (e, v) => e.GENDER_DEFAULT = v;
                         break;
@@ -1355,6 +1358,7 @@ BEGIN
         [LAST_PROMOTION_DATE] datetime NULL,
         [AGE_CALCULATION_DATE] datetime NULL,
         [NEXT_ENROLMENT_DATE] datetime NULL,
+        [TFR_ENROLMENT_DATE] datetime NULL,
         [GENDER_DEFAULT] varchar(1) NULL,
         [TELEPHONE_PREFIX] varchar(20) NULL,
         [REL_INSTR] varchar(10) NULL,
@@ -1687,7 +1691,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
             {
             }
 
-            public override int FieldCount { get { return 77; } }
+            public override int FieldCount { get { return 78; } }
 
             public override object GetValue(int i)
             {
@@ -1755,97 +1759,99 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.AGE_CALCULATION_DATE;
                     case 30: // NEXT_ENROLMENT_DATE
                         return Current.NEXT_ENROLMENT_DATE;
-                    case 31: // GENDER_DEFAULT
+                    case 31: // TFR_ENROLMENT_DATE
+                        return Current.TFR_ENROLMENT_DATE;
+                    case 32: // GENDER_DEFAULT
                         return Current.GENDER_DEFAULT;
-                    case 32: // TELEPHONE_PREFIX
+                    case 33: // TELEPHONE_PREFIX
                         return Current.TELEPHONE_PREFIX;
-                    case 33: // REL_INSTR
+                    case 34: // REL_INSTR
                         return Current.REL_INSTR;
-                    case 34: // CONSECUTIVE_DAYS
+                    case 35: // CONSECUTIVE_DAYS
                         return Current.CONSECUTIVE_DAYS;
-                    case 35: // CUMULATIVE_DAYS
+                    case 36: // CUMULATIVE_DAYS
                         return Current.CUMULATIVE_DAYS;
-                    case 36: // OVERALL_DAYS
+                    case 37: // OVERALL_DAYS
                         return Current.OVERALL_DAYS;
-                    case 37: // ADDRESS01
+                    case 38: // ADDRESS01
                         return Current.ADDRESS01;
-                    case 38: // ADDRESS02
+                    case 39: // ADDRESS02
                         return Current.ADDRESS02;
-                    case 39: // SUBURB
+                    case 40: // SUBURB
                         return Current.SUBURB;
-                    case 40: // STATE
+                    case 41: // STATE
                         return Current.STATE;
-                    case 41: // POSTCODE
+                    case 42: // POSTCODE
                         return Current.POSTCODE;
-                    case 42: // TELEPHONE
+                    case 43: // TELEPHONE
                         return Current.TELEPHONE;
-                    case 43: // FAX
+                    case 44: // FAX
                         return Current.FAX;
-                    case 44: // MAILING_ADDRESS01
+                    case 45: // MAILING_ADDRESS01
                         return Current.MAILING_ADDRESS01;
-                    case 45: // MAILING_ADDRESS02
+                    case 46: // MAILING_ADDRESS02
                         return Current.MAILING_ADDRESS02;
-                    case 46: // MAILING_SUBURB
+                    case 47: // MAILING_SUBURB
                         return Current.MAILING_SUBURB;
-                    case 47: // MAILING_STATE
+                    case 48: // MAILING_STATE
                         return Current.MAILING_STATE;
-                    case 48: // MAILING_POSTCODE
+                    case 49: // MAILING_POSTCODE
                         return Current.MAILING_POSTCODE;
-                    case 49: // DELIVERY_ADDRESS01
+                    case 50: // DELIVERY_ADDRESS01
                         return Current.DELIVERY_ADDRESS01;
-                    case 50: // DELIVERY_ADDRESS02
+                    case 51: // DELIVERY_ADDRESS02
                         return Current.DELIVERY_ADDRESS02;
-                    case 51: // DELIVERY_SUBURB
+                    case 52: // DELIVERY_SUBURB
                         return Current.DELIVERY_SUBURB;
-                    case 52: // DELIVERY_STATE
+                    case 53: // DELIVERY_STATE
                         return Current.DELIVERY_STATE;
-                    case 53: // DELIVERY_POSTCODE
+                    case 54: // DELIVERY_POSTCODE
                         return Current.DELIVERY_POSTCODE;
-                    case 54: // DELIVERY_TELEPHONE
+                    case 55: // DELIVERY_TELEPHONE
                         return Current.DELIVERY_TELEPHONE;
-                    case 55: // DELIVERY_FAX
+                    case 56: // DELIVERY_FAX
                         return Current.DELIVERY_FAX;
-                    case 56: // MAP_TYPE
+                    case 57: // MAP_TYPE
                         return Current.MAP_TYPE;
-                    case 57: // MAP_NUM
+                    case 58: // MAP_NUM
                         return Current.MAP_NUM;
-                    case 58: // X_AXIS
+                    case 59: // X_AXIS
                         return Current.X_AXIS;
-                    case 59: // Y_AXIS
+                    case 60: // Y_AXIS
                         return Current.Y_AXIS;
-                    case 60: // DESTINATION_SCHOOL
+                    case 61: // DESTINATION_SCHOOL
                         return Current.DESTINATION_SCHOOL;
-                    case 61: // CAMPUS_EMAIL_CONTACT
+                    case 62: // CAMPUS_EMAIL_CONTACT
                         return Current.CAMPUS_EMAIL_CONTACT;
-                    case 62: // SCH_AOIC
+                    case 63: // SCH_AOIC
                         return Current.SCH_AOIC;
-                    case 63: // SCH_VPRIN
+                    case 64: // SCH_VPRIN
                         return Current.SCH_VPRIN;
-                    case 64: // SCH_BMANAGER
+                    case 65: // SCH_BMANAGER
                         return Current.SCH_BMANAGER;
-                    case 65: // SCH_VAC_CONTACT
+                    case 66: // SCH_VAC_CONTACT
                         return Current.SCH_VAC_CONTACT;
-                    case 66: // SCH_EMERG_CONTACT
+                    case 67: // SCH_EMERG_CONTACT
                         return Current.SCH_EMERG_CONTACT;
-                    case 67: // SCH_COUNCIL_PRES
+                    case 68: // SCH_COUNCIL_PRES
                         return Current.SCH_COUNCIL_PRES;
-                    case 68: // SCH_MASTER_KEY
+                    case 69: // SCH_MASTER_KEY
                         return Current.SCH_MASTER_KEY;
-                    case 69: // PROFILE_UPDATED
+                    case 70: // PROFILE_UPDATED
                         return Current.PROFILE_UPDATED;
-                    case 70: // CAMPUS_OPEN_IND
+                    case 71: // CAMPUS_OPEN_IND
                         return Current.CAMPUS_OPEN_IND;
-                    case 71: // PROFILE_SENT
+                    case 72: // PROFILE_SENT
                         return Current.PROFILE_SENT;
-                    case 72: // SPEC_CURR_IND
+                    case 73: // SPEC_CURR_IND
                         return Current.SPEC_CURR_IND;
-                    case 73: // GLOBAL_ID
+                    case 74: // GLOBAL_ID
                         return Current.GLOBAL_ID;
-                    case 74: // LW_DATE
+                    case 75: // LW_DATE
                         return Current.LW_DATE;
-                    case 75: // LW_TIME
+                    case 76: // LW_TIME
                         return Current.LW_TIME;
-                    case 76: // LW_USER
+                    case 77: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1916,97 +1922,99 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.AGE_CALCULATION_DATE == null;
                     case 30: // NEXT_ENROLMENT_DATE
                         return Current.NEXT_ENROLMENT_DATE == null;
-                    case 31: // GENDER_DEFAULT
+                    case 31: // TFR_ENROLMENT_DATE
+                        return Current.TFR_ENROLMENT_DATE == null;
+                    case 32: // GENDER_DEFAULT
                         return Current.GENDER_DEFAULT == null;
-                    case 32: // TELEPHONE_PREFIX
+                    case 33: // TELEPHONE_PREFIX
                         return Current.TELEPHONE_PREFIX == null;
-                    case 33: // REL_INSTR
+                    case 34: // REL_INSTR
                         return Current.REL_INSTR == null;
-                    case 34: // CONSECUTIVE_DAYS
+                    case 35: // CONSECUTIVE_DAYS
                         return Current.CONSECUTIVE_DAYS == null;
-                    case 35: // CUMULATIVE_DAYS
+                    case 36: // CUMULATIVE_DAYS
                         return Current.CUMULATIVE_DAYS == null;
-                    case 36: // OVERALL_DAYS
+                    case 37: // OVERALL_DAYS
                         return Current.OVERALL_DAYS == null;
-                    case 37: // ADDRESS01
+                    case 38: // ADDRESS01
                         return Current.ADDRESS01 == null;
-                    case 38: // ADDRESS02
+                    case 39: // ADDRESS02
                         return Current.ADDRESS02 == null;
-                    case 39: // SUBURB
+                    case 40: // SUBURB
                         return Current.SUBURB == null;
-                    case 40: // STATE
+                    case 41: // STATE
                         return Current.STATE == null;
-                    case 41: // POSTCODE
+                    case 42: // POSTCODE
                         return Current.POSTCODE == null;
-                    case 42: // TELEPHONE
+                    case 43: // TELEPHONE
                         return Current.TELEPHONE == null;
-                    case 43: // FAX
+                    case 44: // FAX
                         return Current.FAX == null;
-                    case 44: // MAILING_ADDRESS01
+                    case 45: // MAILING_ADDRESS01
                         return Current.MAILING_ADDRESS01 == null;
-                    case 45: // MAILING_ADDRESS02
+                    case 46: // MAILING_ADDRESS02
                         return Current.MAILING_ADDRESS02 == null;
-                    case 46: // MAILING_SUBURB
+                    case 47: // MAILING_SUBURB
                         return Current.MAILING_SUBURB == null;
-                    case 47: // MAILING_STATE
+                    case 48: // MAILING_STATE
                         return Current.MAILING_STATE == null;
-                    case 48: // MAILING_POSTCODE
+                    case 49: // MAILING_POSTCODE
                         return Current.MAILING_POSTCODE == null;
-                    case 49: // DELIVERY_ADDRESS01
+                    case 50: // DELIVERY_ADDRESS01
                         return Current.DELIVERY_ADDRESS01 == null;
-                    case 50: // DELIVERY_ADDRESS02
+                    case 51: // DELIVERY_ADDRESS02
                         return Current.DELIVERY_ADDRESS02 == null;
-                    case 51: // DELIVERY_SUBURB
+                    case 52: // DELIVERY_SUBURB
                         return Current.DELIVERY_SUBURB == null;
-                    case 52: // DELIVERY_STATE
+                    case 53: // DELIVERY_STATE
                         return Current.DELIVERY_STATE == null;
-                    case 53: // DELIVERY_POSTCODE
+                    case 54: // DELIVERY_POSTCODE
                         return Current.DELIVERY_POSTCODE == null;
-                    case 54: // DELIVERY_TELEPHONE
+                    case 55: // DELIVERY_TELEPHONE
                         return Current.DELIVERY_TELEPHONE == null;
-                    case 55: // DELIVERY_FAX
+                    case 56: // DELIVERY_FAX
                         return Current.DELIVERY_FAX == null;
-                    case 56: // MAP_TYPE
+                    case 57: // MAP_TYPE
                         return Current.MAP_TYPE == null;
-                    case 57: // MAP_NUM
+                    case 58: // MAP_NUM
                         return Current.MAP_NUM == null;
-                    case 58: // X_AXIS
+                    case 59: // X_AXIS
                         return Current.X_AXIS == null;
-                    case 59: // Y_AXIS
+                    case 60: // Y_AXIS
                         return Current.Y_AXIS == null;
-                    case 60: // DESTINATION_SCHOOL
+                    case 61: // DESTINATION_SCHOOL
                         return Current.DESTINATION_SCHOOL == null;
-                    case 61: // CAMPUS_EMAIL_CONTACT
+                    case 62: // CAMPUS_EMAIL_CONTACT
                         return Current.CAMPUS_EMAIL_CONTACT == null;
-                    case 62: // SCH_AOIC
+                    case 63: // SCH_AOIC
                         return Current.SCH_AOIC == null;
-                    case 63: // SCH_VPRIN
+                    case 64: // SCH_VPRIN
                         return Current.SCH_VPRIN == null;
-                    case 64: // SCH_BMANAGER
+                    case 65: // SCH_BMANAGER
                         return Current.SCH_BMANAGER == null;
-                    case 65: // SCH_VAC_CONTACT
+                    case 66: // SCH_VAC_CONTACT
                         return Current.SCH_VAC_CONTACT == null;
-                    case 66: // SCH_EMERG_CONTACT
+                    case 67: // SCH_EMERG_CONTACT
                         return Current.SCH_EMERG_CONTACT == null;
-                    case 67: // SCH_COUNCIL_PRES
+                    case 68: // SCH_COUNCIL_PRES
                         return Current.SCH_COUNCIL_PRES == null;
-                    case 68: // SCH_MASTER_KEY
+                    case 69: // SCH_MASTER_KEY
                         return Current.SCH_MASTER_KEY == null;
-                    case 69: // PROFILE_UPDATED
+                    case 70: // PROFILE_UPDATED
                         return Current.PROFILE_UPDATED == null;
-                    case 70: // CAMPUS_OPEN_IND
+                    case 71: // CAMPUS_OPEN_IND
                         return Current.CAMPUS_OPEN_IND == null;
-                    case 71: // PROFILE_SENT
+                    case 72: // PROFILE_SENT
                         return Current.PROFILE_SENT == null;
-                    case 72: // SPEC_CURR_IND
+                    case 73: // SPEC_CURR_IND
                         return Current.SPEC_CURR_IND == null;
-                    case 73: // GLOBAL_ID
+                    case 74: // GLOBAL_ID
                         return Current.GLOBAL_ID == null;
-                    case 74: // LW_DATE
+                    case 75: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 75: // LW_TIME
+                    case 76: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 76: // LW_USER
+                    case 77: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2079,97 +2087,99 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return "AGE_CALCULATION_DATE";
                     case 30: // NEXT_ENROLMENT_DATE
                         return "NEXT_ENROLMENT_DATE";
-                    case 31: // GENDER_DEFAULT
+                    case 31: // TFR_ENROLMENT_DATE
+                        return "TFR_ENROLMENT_DATE";
+                    case 32: // GENDER_DEFAULT
                         return "GENDER_DEFAULT";
-                    case 32: // TELEPHONE_PREFIX
+                    case 33: // TELEPHONE_PREFIX
                         return "TELEPHONE_PREFIX";
-                    case 33: // REL_INSTR
+                    case 34: // REL_INSTR
                         return "REL_INSTR";
-                    case 34: // CONSECUTIVE_DAYS
+                    case 35: // CONSECUTIVE_DAYS
                         return "CONSECUTIVE_DAYS";
-                    case 35: // CUMULATIVE_DAYS
+                    case 36: // CUMULATIVE_DAYS
                         return "CUMULATIVE_DAYS";
-                    case 36: // OVERALL_DAYS
+                    case 37: // OVERALL_DAYS
                         return "OVERALL_DAYS";
-                    case 37: // ADDRESS01
+                    case 38: // ADDRESS01
                         return "ADDRESS01";
-                    case 38: // ADDRESS02
+                    case 39: // ADDRESS02
                         return "ADDRESS02";
-                    case 39: // SUBURB
+                    case 40: // SUBURB
                         return "SUBURB";
-                    case 40: // STATE
+                    case 41: // STATE
                         return "STATE";
-                    case 41: // POSTCODE
+                    case 42: // POSTCODE
                         return "POSTCODE";
-                    case 42: // TELEPHONE
+                    case 43: // TELEPHONE
                         return "TELEPHONE";
-                    case 43: // FAX
+                    case 44: // FAX
                         return "FAX";
-                    case 44: // MAILING_ADDRESS01
+                    case 45: // MAILING_ADDRESS01
                         return "MAILING_ADDRESS01";
-                    case 45: // MAILING_ADDRESS02
+                    case 46: // MAILING_ADDRESS02
                         return "MAILING_ADDRESS02";
-                    case 46: // MAILING_SUBURB
+                    case 47: // MAILING_SUBURB
                         return "MAILING_SUBURB";
-                    case 47: // MAILING_STATE
+                    case 48: // MAILING_STATE
                         return "MAILING_STATE";
-                    case 48: // MAILING_POSTCODE
+                    case 49: // MAILING_POSTCODE
                         return "MAILING_POSTCODE";
-                    case 49: // DELIVERY_ADDRESS01
+                    case 50: // DELIVERY_ADDRESS01
                         return "DELIVERY_ADDRESS01";
-                    case 50: // DELIVERY_ADDRESS02
+                    case 51: // DELIVERY_ADDRESS02
                         return "DELIVERY_ADDRESS02";
-                    case 51: // DELIVERY_SUBURB
+                    case 52: // DELIVERY_SUBURB
                         return "DELIVERY_SUBURB";
-                    case 52: // DELIVERY_STATE
+                    case 53: // DELIVERY_STATE
                         return "DELIVERY_STATE";
-                    case 53: // DELIVERY_POSTCODE
+                    case 54: // DELIVERY_POSTCODE
                         return "DELIVERY_POSTCODE";
-                    case 54: // DELIVERY_TELEPHONE
+                    case 55: // DELIVERY_TELEPHONE
                         return "DELIVERY_TELEPHONE";
-                    case 55: // DELIVERY_FAX
+                    case 56: // DELIVERY_FAX
                         return "DELIVERY_FAX";
-                    case 56: // MAP_TYPE
+                    case 57: // MAP_TYPE
                         return "MAP_TYPE";
-                    case 57: // MAP_NUM
+                    case 58: // MAP_NUM
                         return "MAP_NUM";
-                    case 58: // X_AXIS
+                    case 59: // X_AXIS
                         return "X_AXIS";
-                    case 59: // Y_AXIS
+                    case 60: // Y_AXIS
                         return "Y_AXIS";
-                    case 60: // DESTINATION_SCHOOL
+                    case 61: // DESTINATION_SCHOOL
                         return "DESTINATION_SCHOOL";
-                    case 61: // CAMPUS_EMAIL_CONTACT
+                    case 62: // CAMPUS_EMAIL_CONTACT
                         return "CAMPUS_EMAIL_CONTACT";
-                    case 62: // SCH_AOIC
+                    case 63: // SCH_AOIC
                         return "SCH_AOIC";
-                    case 63: // SCH_VPRIN
+                    case 64: // SCH_VPRIN
                         return "SCH_VPRIN";
-                    case 64: // SCH_BMANAGER
+                    case 65: // SCH_BMANAGER
                         return "SCH_BMANAGER";
-                    case 65: // SCH_VAC_CONTACT
+                    case 66: // SCH_VAC_CONTACT
                         return "SCH_VAC_CONTACT";
-                    case 66: // SCH_EMERG_CONTACT
+                    case 67: // SCH_EMERG_CONTACT
                         return "SCH_EMERG_CONTACT";
-                    case 67: // SCH_COUNCIL_PRES
+                    case 68: // SCH_COUNCIL_PRES
                         return "SCH_COUNCIL_PRES";
-                    case 68: // SCH_MASTER_KEY
+                    case 69: // SCH_MASTER_KEY
                         return "SCH_MASTER_KEY";
-                    case 69: // PROFILE_UPDATED
+                    case 70: // PROFILE_UPDATED
                         return "PROFILE_UPDATED";
-                    case 70: // CAMPUS_OPEN_IND
+                    case 71: // CAMPUS_OPEN_IND
                         return "CAMPUS_OPEN_IND";
-                    case 71: // PROFILE_SENT
+                    case 72: // PROFILE_SENT
                         return "PROFILE_SENT";
-                    case 72: // SPEC_CURR_IND
+                    case 73: // SPEC_CURR_IND
                         return "SPEC_CURR_IND";
-                    case 73: // GLOBAL_ID
+                    case 74: // GLOBAL_ID
                         return "GLOBAL_ID";
-                    case 74: // LW_DATE
+                    case 75: // LW_DATE
                         return "LW_DATE";
-                    case 75: // LW_TIME
+                    case 76: // LW_TIME
                         return "LW_TIME";
-                    case 76: // LW_USER
+                    case 77: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2242,98 +2252,100 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return 29;
                     case "NEXT_ENROLMENT_DATE":
                         return 30;
-                    case "GENDER_DEFAULT":
+                    case "TFR_ENROLMENT_DATE":
                         return 31;
-                    case "TELEPHONE_PREFIX":
+                    case "GENDER_DEFAULT":
                         return 32;
-                    case "REL_INSTR":
+                    case "TELEPHONE_PREFIX":
                         return 33;
-                    case "CONSECUTIVE_DAYS":
+                    case "REL_INSTR":
                         return 34;
-                    case "CUMULATIVE_DAYS":
+                    case "CONSECUTIVE_DAYS":
                         return 35;
-                    case "OVERALL_DAYS":
+                    case "CUMULATIVE_DAYS":
                         return 36;
-                    case "ADDRESS01":
+                    case "OVERALL_DAYS":
                         return 37;
-                    case "ADDRESS02":
+                    case "ADDRESS01":
                         return 38;
-                    case "SUBURB":
+                    case "ADDRESS02":
                         return 39;
-                    case "STATE":
+                    case "SUBURB":
                         return 40;
-                    case "POSTCODE":
+                    case "STATE":
                         return 41;
-                    case "TELEPHONE":
+                    case "POSTCODE":
                         return 42;
-                    case "FAX":
+                    case "TELEPHONE":
                         return 43;
-                    case "MAILING_ADDRESS01":
+                    case "FAX":
                         return 44;
-                    case "MAILING_ADDRESS02":
+                    case "MAILING_ADDRESS01":
                         return 45;
-                    case "MAILING_SUBURB":
+                    case "MAILING_ADDRESS02":
                         return 46;
-                    case "MAILING_STATE":
+                    case "MAILING_SUBURB":
                         return 47;
-                    case "MAILING_POSTCODE":
+                    case "MAILING_STATE":
                         return 48;
-                    case "DELIVERY_ADDRESS01":
+                    case "MAILING_POSTCODE":
                         return 49;
-                    case "DELIVERY_ADDRESS02":
+                    case "DELIVERY_ADDRESS01":
                         return 50;
-                    case "DELIVERY_SUBURB":
+                    case "DELIVERY_ADDRESS02":
                         return 51;
-                    case "DELIVERY_STATE":
+                    case "DELIVERY_SUBURB":
                         return 52;
-                    case "DELIVERY_POSTCODE":
+                    case "DELIVERY_STATE":
                         return 53;
-                    case "DELIVERY_TELEPHONE":
+                    case "DELIVERY_POSTCODE":
                         return 54;
-                    case "DELIVERY_FAX":
+                    case "DELIVERY_TELEPHONE":
                         return 55;
-                    case "MAP_TYPE":
+                    case "DELIVERY_FAX":
                         return 56;
-                    case "MAP_NUM":
+                    case "MAP_TYPE":
                         return 57;
-                    case "X_AXIS":
+                    case "MAP_NUM":
                         return 58;
-                    case "Y_AXIS":
+                    case "X_AXIS":
                         return 59;
-                    case "DESTINATION_SCHOOL":
+                    case "Y_AXIS":
                         return 60;
-                    case "CAMPUS_EMAIL_CONTACT":
+                    case "DESTINATION_SCHOOL":
                         return 61;
-                    case "SCH_AOIC":
+                    case "CAMPUS_EMAIL_CONTACT":
                         return 62;
-                    case "SCH_VPRIN":
+                    case "SCH_AOIC":
                         return 63;
-                    case "SCH_BMANAGER":
+                    case "SCH_VPRIN":
                         return 64;
-                    case "SCH_VAC_CONTACT":
+                    case "SCH_BMANAGER":
                         return 65;
-                    case "SCH_EMERG_CONTACT":
+                    case "SCH_VAC_CONTACT":
                         return 66;
-                    case "SCH_COUNCIL_PRES":
+                    case "SCH_EMERG_CONTACT":
                         return 67;
-                    case "SCH_MASTER_KEY":
+                    case "SCH_COUNCIL_PRES":
                         return 68;
-                    case "PROFILE_UPDATED":
+                    case "SCH_MASTER_KEY":
                         return 69;
-                    case "CAMPUS_OPEN_IND":
+                    case "PROFILE_UPDATED":
                         return 70;
-                    case "PROFILE_SENT":
+                    case "CAMPUS_OPEN_IND":
                         return 71;
-                    case "SPEC_CURR_IND":
+                    case "PROFILE_SENT":
                         return 72;
-                    case "GLOBAL_ID":
+                    case "SPEC_CURR_IND":
                         return 73;
-                    case "LW_DATE":
+                    case "GLOBAL_ID":
                         return 74;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 75;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 76;
+                    case "LW_USER":
+                        return 77;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

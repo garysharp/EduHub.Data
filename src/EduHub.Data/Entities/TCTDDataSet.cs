@@ -25,6 +25,7 @@ namespace EduHub.Data.Entities
         {
             Index_QKEY = new Lazy<NullDictionary<string, IReadOnlyList<TCTD>>>(() => this.ToGroupedNullDictionary(i => i.QKEY));
             Index_TCTDKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>>(() => this.ToGroupedDictionary(i => i.TCTDKEY));
+            Index_TCTDKEY_TIME_TYPE_QKEY = new Lazy<Dictionary<Tuple<DateTime, short?, string>, IReadOnlyList<TCTD>>>(() => this.ToGroupedDictionary(i => Tuple.Create(i.TCTDKEY, i.TIME_TYPE, i.QKEY)));
             Index_TID = new Lazy<Dictionary<int, TCTD>>(() => this.ToDictionary(i => i.TID));
         }
 
@@ -139,6 +140,7 @@ namespace EduHub.Data.Entities
 
         private Lazy<NullDictionary<string, IReadOnlyList<TCTD>>> Index_QKEY;
         private Lazy<Dictionary<DateTime, IReadOnlyList<TCTD>>> Index_TCTDKEY;
+        private Lazy<Dictionary<Tuple<DateTime, short?, string>, IReadOnlyList<TCTD>>> Index_TCTDKEY_TIME_TYPE_QKEY;
         private Lazy<Dictionary<int, TCTD>> Index_TID;
 
         #endregion
@@ -230,6 +232,54 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find TCTD by TCTDKEY, TIME_TYPE and QKEY fields
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <param name="TIME_TYPE">TIME_TYPE value used to find TCTD</param>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> FindByTCTDKEY_TIME_TYPE_QKEY(DateTime TCTDKEY, short? TIME_TYPE, string QKEY)
+        {
+            return Index_TCTDKEY_TIME_TYPE_QKEY.Value[Tuple.Create(TCTDKEY, TIME_TYPE, QKEY)];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TCTDKEY, TIME_TYPE and QKEY fields
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <param name="TIME_TYPE">TIME_TYPE value used to find TCTD</param>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <param name="Value">List of related TCTD entities</param>
+        /// <returns>True if the list of related TCTD entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTCTDKEY_TIME_TYPE_QKEY(DateTime TCTDKEY, short? TIME_TYPE, string QKEY, out IReadOnlyList<TCTD> Value)
+        {
+            return Index_TCTDKEY_TIME_TYPE_QKEY.Value.TryGetValue(Tuple.Create(TCTDKEY, TIME_TYPE, QKEY), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTD by TCTDKEY, TIME_TYPE and QKEY fields
+        /// </summary>
+        /// <param name="TCTDKEY">TCTDKEY value used to find TCTD</param>
+        /// <param name="TIME_TYPE">TIME_TYPE value used to find TCTD</param>
+        /// <param name="QKEY">QKEY value used to find TCTD</param>
+        /// <returns>List of related TCTD entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTD> TryFindByTCTDKEY_TIME_TYPE_QKEY(DateTime TCTDKEY, short? TIME_TYPE, string QKEY)
+        {
+            IReadOnlyList<TCTD> value;
+            if (Index_TCTDKEY_TIME_TYPE_QKEY.Value.TryGetValue(Tuple.Create(TCTDKEY, TIME_TYPE, QKEY), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find TCTD by TID field
         /// </summary>
         /// <param name="TID">TID value used to find TCTD</param>
@@ -310,6 +360,12 @@ BEGIN
     (
             [TCTDKEY] ASC
     );
+    CREATE NONCLUSTERED INDEX [TCTD_Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD]
+    (
+            [TCTDKEY] ASC,
+            [TIME_TYPE] ASC,
+            [QKEY] ASC
+    );
 END");
         }
 
@@ -327,6 +383,8 @@ END");
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_QKEY')
     ALTER INDEX [Index_QKEY] ON [dbo].[TCTD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TCTDKEY_TIME_TYPE_QKEY')
+    ALTER INDEX [Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TCTD] DISABLE;
 ");
@@ -344,6 +402,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AN
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_QKEY')
     ALTER INDEX [Index_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TCTDKEY_TIME_TYPE_QKEY')
+    ALTER INDEX [Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
 ");

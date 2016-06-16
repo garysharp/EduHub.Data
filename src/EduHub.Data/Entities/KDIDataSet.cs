@@ -52,6 +52,9 @@ namespace EduHub.Data.Entities
                     case "MAX_SCORE":
                         mapper[i] = (e, v) => e.MAX_SCORE = v == null ? (double?)null : double.Parse(v);
                         break;
+                    case "CURRICULUM":
+                        mapper[i] = (e, v) => e.CURRICULUM = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -191,10 +194,11 @@ namespace EduHub.Data.Entities
 BEGIN
     CREATE TABLE [dbo].[KDI](
         [KDIKEY] varchar(10) NOT NULL,
-        [KDOKEY] varchar(5) NULL,
+        [KDOKEY] varchar(10) NULL,
         [DESCRIPTION] varchar(255) NULL,
         [MIN_SCORE] float NULL,
         [MAX_SCORE] float NULL,
+        [CURRICULUM] varchar(7) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -292,7 +296,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 8; } }
+            public override int FieldCount { get { return 9; } }
 
             public override object GetValue(int i)
             {
@@ -308,11 +312,13 @@ END");
                         return Current.MIN_SCORE;
                     case 4: // MAX_SCORE
                         return Current.MAX_SCORE;
-                    case 5: // LW_DATE
+                    case 5: // CURRICULUM
+                        return Current.CURRICULUM;
+                    case 6: // LW_DATE
                         return Current.LW_DATE;
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return Current.LW_TIME;
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -331,11 +337,13 @@ END");
                         return Current.MIN_SCORE == null;
                     case 4: // MAX_SCORE
                         return Current.MAX_SCORE == null;
-                    case 5: // LW_DATE
+                    case 5: // CURRICULUM
+                        return Current.CURRICULUM == null;
+                    case 6: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -356,11 +364,13 @@ END");
                         return "MIN_SCORE";
                     case 4: // MAX_SCORE
                         return "MAX_SCORE";
-                    case 5: // LW_DATE
+                    case 5: // CURRICULUM
+                        return "CURRICULUM";
+                    case 6: // LW_DATE
                         return "LW_DATE";
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return "LW_TIME";
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -381,12 +391,14 @@ END");
                         return 3;
                     case "MAX_SCORE":
                         return 4;
-                    case "LW_DATE":
+                    case "CURRICULUM":
                         return 5;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 6;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 7;
+                    case "LW_USER":
+                        return 8;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -31,7 +31,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Key of the domain
-        /// [Uppercase Alphanumeric (5)]
+        /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KDOKEY { get; internal set; }
 

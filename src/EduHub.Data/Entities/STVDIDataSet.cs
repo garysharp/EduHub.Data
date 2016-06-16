@@ -25,6 +25,7 @@ namespace EduHub.Data.Entities
         {
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
+            Index_ORIGINAL_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.ORIGINAL_SCHOOL));
             Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
             Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedDictionary(i => i.SKEY));
             Index_TID = new Lazy<Dictionary<int, STVDI>>(() => this.ToDictionary(i => i.TID));
@@ -66,6 +67,9 @@ namespace EduHub.Data.Entities
                         break;
                     case "SCORE":
                         mapper[i] = (e, v) => e.SCORE = v;
+                        break;
+                    case "ORIGINAL_SCHOOL":
+                        mapper[i] = (e, v) => e.ORIGINAL_SCHOOL = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
@@ -143,6 +147,7 @@ namespace EduHub.Data.Entities
 
         private Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>> Index_CAMPUS;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>> Index_LW_DATE;
+        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_ORIGINAL_SCHOOL;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_SCHOOL_YEAR;
         private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> Index_SKEY;
         private Lazy<Dictionary<int, STVDI>> Index_TID;
@@ -228,6 +233,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STVDI> value;
             if (Index_LW_DATE.Value.TryGetValue(LW_DATE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STVDI by ORIGINAL_SCHOOL field
+        /// </summary>
+        /// <param name="ORIGINAL_SCHOOL">ORIGINAL_SCHOOL value used to find STVDI</param>
+        /// <returns>List of related STVDI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDI> FindByORIGINAL_SCHOOL(string ORIGINAL_SCHOOL)
+        {
+            return Index_ORIGINAL_SCHOOL.Value[ORIGINAL_SCHOOL];
+        }
+
+        /// <summary>
+        /// Attempt to find STVDI by ORIGINAL_SCHOOL field
+        /// </summary>
+        /// <param name="ORIGINAL_SCHOOL">ORIGINAL_SCHOOL value used to find STVDI</param>
+        /// <param name="Value">List of related STVDI entities</param>
+        /// <returns>True if the list of related STVDI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByORIGINAL_SCHOOL(string ORIGINAL_SCHOOL, out IReadOnlyList<STVDI> Value)
+        {
+            return Index_ORIGINAL_SCHOOL.Value.TryGetValue(ORIGINAL_SCHOOL, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STVDI by ORIGINAL_SCHOOL field
+        /// </summary>
+        /// <param name="ORIGINAL_SCHOOL">ORIGINAL_SCHOOL value used to find STVDI</param>
+        /// <returns>List of related STVDI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDI> TryFindByORIGINAL_SCHOOL(string ORIGINAL_SCHOOL)
+        {
+            IReadOnlyList<STVDI> value;
+            if (Index_ORIGINAL_SCHOOL.Value.TryGetValue(ORIGINAL_SCHOOL, out value))
             {
                 return value;
             }
@@ -468,9 +515,10 @@ BEGIN
         [SCHOOL_YEAR] varchar(4) NULL,
         [CAMPUS] int NULL,
         [YEAR_SEMESTER] varchar(6) NULL,
-        [VDOMAIN] varchar(5) NULL,
+        [VDOMAIN] varchar(10) NULL,
         [VDIMENSION] varchar(10) NULL,
         [SCORE] varchar(4) NULL,
+        [ORIGINAL_SCHOOL] varchar(8) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -485,6 +533,10 @@ BEGIN
     CREATE NONCLUSTERED INDEX [STVDI_Index_LW_DATE] ON [dbo].[STVDI]
     (
             [LW_DATE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [STVDI_Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI]
+    (
+            [ORIGINAL_SCHOOL] ASC
     );
     CREATE NONCLUSTERED INDEX [STVDI_Index_SCHOOL_YEAR] ON [dbo].[STVDI]
     (
@@ -521,6 +573,8 @@ END");
     ALTER INDEX [Index_CAMPUS] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_LW_DATE')
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_ORIGINAL_SCHOOL')
+    ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_SCHOOL_YEAR')
     ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_TID')
@@ -546,6 +600,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
     ALTER INDEX [Index_CAMPUS] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_LW_DATE')
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_ORIGINAL_SCHOOL')
+    ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_SCHOOL_YEAR')
     ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_TID')
@@ -624,7 +680,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
             {
             }
 
-            public override int FieldCount { get { return 11; } }
+            public override int FieldCount { get { return 12; } }
 
             public override object GetValue(int i)
             {
@@ -646,11 +702,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
                         return Current.VDIMENSION;
                     case 7: // SCORE
                         return Current.SCORE;
-                    case 8: // LW_DATE
+                    case 8: // ORIGINAL_SCHOOL
+                        return Current.ORIGINAL_SCHOOL;
+                    case 9: // LW_DATE
                         return Current.LW_DATE;
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return Current.LW_TIME;
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -673,11 +731,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
                         return Current.VDIMENSION == null;
                     case 7: // SCORE
                         return Current.SCORE == null;
-                    case 8: // LW_DATE
+                    case 8: // ORIGINAL_SCHOOL
+                        return Current.ORIGINAL_SCHOOL == null;
+                    case 9: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -704,11 +764,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
                         return "VDIMENSION";
                     case 7: // SCORE
                         return "SCORE";
-                    case 8: // LW_DATE
+                    case 8: // ORIGINAL_SCHOOL
+                        return "ORIGINAL_SCHOOL";
+                    case 9: // LW_DATE
                         return "LW_DATE";
-                    case 9: // LW_TIME
+                    case 10: // LW_TIME
                         return "LW_TIME";
-                    case 10: // LW_USER
+                    case 11: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -735,12 +797,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
                         return 6;
                     case "SCORE":
                         return 7;
-                    case "LW_DATE":
+                    case "ORIGINAL_SCHOOL":
                         return 8;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 9;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 10;
+                    case "LW_USER":
+                        return 11;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

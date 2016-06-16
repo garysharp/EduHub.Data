@@ -73,6 +73,12 @@ namespace EduHub.Data.Entities
                     case "PERIOD_ABS":
                         mapper[i] = (e, v) => e.PERIOD_ABS = v;
                         break;
+                    case "BIRTHDATE_FROM":
+                        mapper[i] = (e, v) => e.BIRTHDATE_FROM = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "BIRTHDATE_TO":
+                        mapper[i] = (e, v) => e.BIRTHDATE_TO = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -351,6 +357,8 @@ BEGIN
         [CSF_REQUIRED] varchar(1) NULL,
         [HALF_DAY_ABS] varchar(1) NULL,
         [PERIOD_ABS] varchar(1) NULL,
+        [BIRTHDATE_FROM] datetime NULL,
+        [BIRTHDATE_TO] datetime NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -480,7 +488,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
             {
             }
 
-            public override int FieldCount { get { return 14; } }
+            public override int FieldCount { get { return 16; } }
 
             public override object GetValue(int i)
             {
@@ -508,11 +516,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
                         return Current.HALF_DAY_ABS;
                     case 10: // PERIOD_ABS
                         return Current.PERIOD_ABS;
-                    case 11: // LW_DATE
+                    case 11: // BIRTHDATE_FROM
+                        return Current.BIRTHDATE_FROM;
+                    case 12: // BIRTHDATE_TO
+                        return Current.BIRTHDATE_TO;
+                    case 13: // LW_DATE
                         return Current.LW_DATE;
-                    case 12: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME;
-                    case 13: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -543,11 +555,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
                         return Current.HALF_DAY_ABS == null;
                     case 10: // PERIOD_ABS
                         return Current.PERIOD_ABS == null;
-                    case 11: // LW_DATE
+                    case 11: // BIRTHDATE_FROM
+                        return Current.BIRTHDATE_FROM == null;
+                    case 12: // BIRTHDATE_TO
+                        return Current.BIRTHDATE_TO == null;
+                    case 13: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 12: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 13: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -580,11 +596,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
                         return "HALF_DAY_ABS";
                     case 10: // PERIOD_ABS
                         return "PERIOD_ABS";
-                    case 11: // LW_DATE
+                    case 11: // BIRTHDATE_FROM
+                        return "BIRTHDATE_FROM";
+                    case 12: // BIRTHDATE_TO
+                        return "BIRTHDATE_TO";
+                    case 13: // LW_DATE
                         return "LW_DATE";
-                    case 12: // LW_TIME
+                    case 14: // LW_TIME
                         return "LW_TIME";
-                    case 13: // LW_USER
+                    case 15: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -617,12 +637,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
                         return 9;
                     case "PERIOD_ABS":
                         return 10;
-                    case "LW_DATE":
+                    case "BIRTHDATE_FROM":
                         return 11;
-                    case "LW_TIME":
+                    case "BIRTHDATE_TO":
                         return 12;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 13;
+                    case "LW_TIME":
+                        return 14;
+                    case "LW_USER":
+                        return 15;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

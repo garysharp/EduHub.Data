@@ -23,6 +23,7 @@ namespace EduHub.Data.Entities
         internal TETNDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_TETELINK_ATTENDEE_TYPE = new Lazy<Dictionary<Tuple<int?, string>, IReadOnlyList<TETN>>>(() => this.ToGroupedDictionary(i => Tuple.Create(i.TETELINK, i.ATTENDEE_TYPE)));
             Index_TETNKEY = new Lazy<Dictionary<int, IReadOnlyList<TETN>>>(() => this.ToGroupedDictionary(i => i.TETNKEY));
             Index_TID = new Lazy<Dictionary<int, TETN>>(() => this.ToDictionary(i => i.TID));
         }
@@ -130,12 +131,58 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
+        private Lazy<Dictionary<Tuple<int?, string>, IReadOnlyList<TETN>>> Index_TETELINK_ATTENDEE_TYPE;
         private Lazy<Dictionary<int, IReadOnlyList<TETN>>> Index_TETNKEY;
         private Lazy<Dictionary<int, TETN>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find TETN by TETELINK and ATTENDEE_TYPE fields
+        /// </summary>
+        /// <param name="TETELINK">TETELINK value used to find TETN</param>
+        /// <param name="ATTENDEE_TYPE">ATTENDEE_TYPE value used to find TETN</param>
+        /// <returns>List of related TETN entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TETN> FindByTETELINK_ATTENDEE_TYPE(int? TETELINK, string ATTENDEE_TYPE)
+        {
+            return Index_TETELINK_ATTENDEE_TYPE.Value[Tuple.Create(TETELINK, ATTENDEE_TYPE)];
+        }
+
+        /// <summary>
+        /// Attempt to find TETN by TETELINK and ATTENDEE_TYPE fields
+        /// </summary>
+        /// <param name="TETELINK">TETELINK value used to find TETN</param>
+        /// <param name="ATTENDEE_TYPE">ATTENDEE_TYPE value used to find TETN</param>
+        /// <param name="Value">List of related TETN entities</param>
+        /// <returns>True if the list of related TETN entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTETELINK_ATTENDEE_TYPE(int? TETELINK, string ATTENDEE_TYPE, out IReadOnlyList<TETN> Value)
+        {
+            return Index_TETELINK_ATTENDEE_TYPE.Value.TryGetValue(Tuple.Create(TETELINK, ATTENDEE_TYPE), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TETN by TETELINK and ATTENDEE_TYPE fields
+        /// </summary>
+        /// <param name="TETELINK">TETELINK value used to find TETN</param>
+        /// <param name="ATTENDEE_TYPE">ATTENDEE_TYPE value used to find TETN</param>
+        /// <returns>List of related TETN entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TETN> TryFindByTETELINK_ATTENDEE_TYPE(int? TETELINK, string ATTENDEE_TYPE)
+        {
+            IReadOnlyList<TETN> value;
+            if (Index_TETELINK_ATTENDEE_TYPE.Value.TryGetValue(Tuple.Create(TETELINK, ATTENDEE_TYPE), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find TETN by TETNKEY field
@@ -250,6 +297,11 @@ BEGIN
             [TID] ASC
         )
     );
+    CREATE NONCLUSTERED INDEX [TETN_Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN]
+    (
+            [TETELINK] ASC,
+            [ATTENDEE_TYPE] ASC
+    );
     CREATE CLUSTERED INDEX [TETN_Index_TETNKEY] ON [dbo].[TETN]
     (
             [TETNKEY] ASC
@@ -269,7 +321,9 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TETELINK_ATTENDEE_TYPE')
+    ALTER INDEX [Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TETN] DISABLE;
 ");
         }
@@ -284,7 +338,9 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TETELINK_ATTENDEE_TYPE')
+    ALTER INDEX [Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TETN] REBUILD PARTITION = ALL;
 ");
         }

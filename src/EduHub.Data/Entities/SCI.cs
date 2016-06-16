@@ -39,6 +39,7 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<AR> Cache_SCIKEY_AR_CAMPUS;
+        private IReadOnlyList<KCPC> Cache_SCIKEY_KCPC_CAMPUS;
         private IReadOnlyList<KGC> Cache_SCIKEY_KGC_CAMPUS;
         private IReadOnlyList<KGH> Cache_SCIKEY_KGH_CAMPUS;
         private IReadOnlyList<SAD> Cache_SCIKEY_SAD_CAMPUS;
@@ -260,6 +261,11 @@ namespace EduHub.Data.Entities
         /// Next school enrolment date
         /// </summary>
         public DateTime? NEXT_ENROLMENT_DATE { get; internal set; }
+
+        /// <summary>
+        /// Enrolment date for newly transferred students
+        /// </summary>
+        public DateTime? TFR_ENROLMENT_DATE { get; internal set; }
 
         /// <summary>
         /// Gender default
@@ -972,6 +978,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SCIKEY_AR_CAMPUS;
+            }
+        }
+
+        /// <summary>
+        /// KCPC (Creditor Purchasing Card) related entities by [SCI.SCIKEY]-&gt;[KCPC.CAMPUS]
+        /// Sequence no
+        /// </summary>
+        public IReadOnlyList<KCPC> SCIKEY_KCPC_CAMPUS
+        {
+            get
+            {
+                if (Cache_SCIKEY_KCPC_CAMPUS == null &&
+                    !Context.KCPC.TryFindByCAMPUS(SCIKEY, out Cache_SCIKEY_KCPC_CAMPUS))
+                {
+                    Cache_SCIKEY_KCPC_CAMPUS = new List<KCPC>().AsReadOnly();
+                }
+
+                return Cache_SCIKEY_KCPC_CAMPUS;
             }
         }
 

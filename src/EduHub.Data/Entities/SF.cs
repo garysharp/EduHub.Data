@@ -52,11 +52,13 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<AKK> Cache_SFKEY_AKK_STAFF;
         private IReadOnlyList<BKHR> Cache_SFKEY_BKHR_STAFF;
+        private IReadOnlyList<KCPC> Cache_SFKEY_KCPC_STAFF;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER_B;
         private IReadOnlyList<KGC> Cache_SFKEY_KGC_TEACHER;
         private IReadOnlyList<KGC> Cache_SFKEY_KGC_TEACHER_B;
         private IReadOnlyList<KSF> Cache_SFKEY_KSF_COORDINATOR;
+        private IReadOnlyList<PGID> Cache_SFKEY_PGID_IMPORTED_BY;
         private IReadOnlyList<SAD> Cache_SFKEY_SAD_AREA_DUTY_TEACHER;
         private IReadOnlyList<SAIM> Cache_SFKEY_SAIM_STAFF;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_PRINCIPAL;
@@ -1342,6 +1344,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// KCPC (Creditor Purchasing Card) related entities by [SF.SFKEY]-&gt;[KCPC.STAFF]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<KCPC> SFKEY_KCPC_STAFF
+        {
+            get
+            {
+                if (Cache_SFKEY_KCPC_STAFF == null &&
+                    !Context.KCPC.TryFindBySTAFF(SFKEY, out Cache_SFKEY_KCPC_STAFF))
+                {
+                    Cache_SFKEY_KCPC_STAFF = new List<KCPC>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_KCPC_STAFF;
+            }
+        }
+
+        /// <summary>
         /// KCY (Year Levels) related entities by [SF.SFKEY]-&gt;[KCY.TEACHER]
         /// Staff member code
         /// </summary>
@@ -1428,6 +1448,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SFKEY_KSF_COORDINATOR;
+            }
+        }
+
+        /// <summary>
+        /// PGID (General Ledger Import Details) related entities by [SF.SFKEY]-&gt;[PGID.IMPORTED_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<PGID> SFKEY_PGID_IMPORTED_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_PGID_IMPORTED_BY == null &&
+                    !Context.PGID.TryFindByIMPORTED_BY(SFKEY, out Cache_SFKEY_PGID_IMPORTED_BY))
+                {
+                    Cache_SFKEY_PGID_IMPORTED_BY = new List<PGID>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_PGID_IMPORTED_BY;
             }
         }
 

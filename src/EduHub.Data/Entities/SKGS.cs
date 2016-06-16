@@ -18,6 +18,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<FER_FDT> Cache_SCHOOL_FER_FDT_SOURCE;
         private IReadOnlyList<KCD_TFR> Cache_SCHOOL_KCD_TFR_ORIG_SCHOOL;
         private IReadOnlyList<KCM_TFR> Cache_SCHOOL_KCM_TFR_ORIG_SCHOOL;
+        private IReadOnlyList<KGO_TFR> Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL;
         private SCI Cache_SCHOOL_SCI_SCHOOL_LINK;
         private IReadOnlyList<SCI> Cache_SCHOOL_SCI_DESTINATION_SCHOOL;
         private IReadOnlyList<SMC_TFR> Cache_SCHOOL_SMC_TFR_ORIG_SCHOOL;
@@ -25,6 +26,10 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<ST> Cache_SCHOOL_ST_NEXT_SCHOOL;
         private IReadOnlyList<ST_TFR> Cache_SCHOOL_ST_TFR_ORIG_SCHOOL;
         private IReadOnlyList<ST_TFRIO> Cache_SCHOOL_ST_TFRIO_DEST_SCHOOL;
+        private IReadOnlyList<STAR_TFR> Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL;
+        private IReadOnlyList<STNAT_TR> Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL;
+        private IReadOnlyList<STPS> Cache_SCHOOL_STPS_SCHOOL;
+        private IReadOnlyList<STPS_TFR> Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL;
         private IReadOnlyList<STPT> Cache_SCHOOL_STPT_SCHL_NUM;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_ST_PREVIOUS_SCHOOL;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_STPT_SCHL_NUM01;
@@ -32,6 +37,11 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_STPT_SCHL_NUM03;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_STPT_SCHL_NUM04;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_ST_NEXT_SCHOOL;
+        private IReadOnlyList<STSUP_TR> Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL;
+        private IReadOnlyList<STVDI> Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL;
+        private IReadOnlyList<STVDI_TR> Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL;
+        private IReadOnlyList<STVDO> Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL;
+        private IReadOnlyList<STVDO_TR> Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL;
         private IReadOnlyList<UM_TFR> Cache_SCHOOL_UM_TFR_ORIG_SCHOOL;
 
         #endregion
@@ -421,6 +431,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// KGO_TFR (KGO Transfer) related entities by [SKGS.SCHOOL]-&gt;[KGO_TFR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<KGO_TFR> SCHOOL_KGO_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL == null &&
+                    !Context.KGO_TFR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL = new List<KGO_TFR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
         /// SCI (School Information) related entity by [SKGS.SCHOOL]-&gt;[SCI.SCHOOL_LINK]
         /// School ID
         /// </summary>
@@ -547,6 +575,78 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// STAR_TFR (STAR Transfer) related entities by [SKGS.SCHOOL]-&gt;[STAR_TFR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STAR_TFR> SCHOOL_STAR_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL == null &&
+                    !Context.STAR_TFR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL = new List<STAR_TFR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STNAT_TR (STNAT Transfer) related entities by [SKGS.SCHOOL]-&gt;[STNAT_TR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STNAT_TR> SCHOOL_STNAT_TR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL == null &&
+                    !Context.STNAT_TR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL = new List<STNAT_TR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STPS (Student Previous School) related entities by [SKGS.SCHOOL]-&gt;[STPS.SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STPS> SCHOOL_STPS_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STPS_SCHOOL == null &&
+                    !Context.STPS.TryFindBySCHOOL(SCHOOL, out Cache_SCHOOL_STPS_SCHOOL))
+                {
+                    Cache_SCHOOL_STPS_SCHOOL = new List<STPS>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STPS_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STPS_TFR (STPS Transfer) related entities by [SKGS.SCHOOL]-&gt;[STPS_TFR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STPS_TFR> SCHOOL_STPS_TFR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL == null &&
+                    !Context.STPS_TFR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL = new List<STPS_TFR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
         /// STPT (Student Part-Time Enrolments) related entities by [SKGS.SCHOOL]-&gt;[STPT.SCHL_NUM]
         /// School ID
         /// </summary>
@@ -669,6 +769,96 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SCHOOL_STRE_ST_NEXT_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STSUP_TR (STSUP Transfer) related entities by [SKGS.SCHOOL]-&gt;[STSUP_TR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STSUP_TR> SCHOOL_STSUP_TR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL == null &&
+                    !Context.STSUP_TR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL = new List<STSUP_TR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STVDI (VELS Dimension Results) related entities by [SKGS.SCHOOL]-&gt;[STVDI.ORIGINAL_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STVDI> SCHOOL_STVDI_ORIGINAL_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL == null &&
+                    !Context.STVDI.TryFindByORIGINAL_SCHOOL(SCHOOL, out Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL))
+                {
+                    Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL = new List<STVDI>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STVDI_TR (STVDI Transfer) related entities by [SKGS.SCHOOL]-&gt;[STVDI_TR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STVDI_TR> SCHOOL_STVDI_TR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL == null &&
+                    !Context.STVDI_TR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL = new List<STVDI_TR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STVDO (VELS Domain Results) related entities by [SKGS.SCHOOL]-&gt;[STVDO.ORIGINAL_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STVDO> SCHOOL_STVDO_ORIGINAL_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL == null &&
+                    !Context.STVDO.TryFindByORIGINAL_SCHOOL(SCHOOL, out Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL))
+                {
+                    Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL = new List<STVDO>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// STVDO_TR (STVDO Transfer) related entities by [SKGS.SCHOOL]-&gt;[STVDO_TR.ORIG_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<STVDO_TR> SCHOOL_STVDO_TR_ORIG_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL == null &&
+                    !Context.STVDO_TR.TryFindByORIG_SCHOOL(SCHOOL, out Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL))
+                {
+                    Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL = new List<STVDO_TR>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL;
             }
         }
 

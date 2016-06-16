@@ -34,6 +34,7 @@ namespace EduHub.Data.Entities
             Index_T1TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.T1TEACH));
             Index_T2TEACH = new Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>>(() => this.ToGroupedNullDictionary(i => i.T2TEACH));
             Index_TCTQKEY = new Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>>(() => this.ToGroupedDictionary(i => i.TCTQKEY));
+            Index_TCTQKEY_QROW_QKEY = new Lazy<Dictionary<Tuple<DateTime, short?, string>, IReadOnlyList<TCTQ>>>(() => this.ToGroupedDictionary(i => Tuple.Create(i.TCTQKEY, i.QROW, i.QKEY)));
             Index_TID = new Lazy<Dictionary<int, TCTQ>>(() => this.ToDictionary(i => i.TID));
         }
 
@@ -223,6 +224,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_T1TEACH;
         private Lazy<NullDictionary<string, IReadOnlyList<TCTQ>>> Index_T2TEACH;
         private Lazy<Dictionary<DateTime, IReadOnlyList<TCTQ>>> Index_TCTQKEY;
+        private Lazy<Dictionary<Tuple<DateTime, short?, string>, IReadOnlyList<TCTQ>>> Index_TCTQKEY_QROW_QKEY;
         private Lazy<Dictionary<int, TCTQ>> Index_TID;
 
         #endregion
@@ -692,6 +694,54 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find TCTQ by TCTQKEY, QROW and QKEY fields
+        /// </summary>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="QROW">QROW value used to find TCTQ</param>
+        /// <param name="QKEY">QKEY value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> FindByTCTQKEY_QROW_QKEY(DateTime TCTQKEY, short? QROW, string QKEY)
+        {
+            return Index_TCTQKEY_QROW_QKEY.Value[Tuple.Create(TCTQKEY, QROW, QKEY)];
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by TCTQKEY, QROW and QKEY fields
+        /// </summary>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="QROW">QROW value used to find TCTQ</param>
+        /// <param name="QKEY">QKEY value used to find TCTQ</param>
+        /// <param name="Value">List of related TCTQ entities</param>
+        /// <returns>True if the list of related TCTQ entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByTCTQKEY_QROW_QKEY(DateTime TCTQKEY, short? QROW, string QKEY, out IReadOnlyList<TCTQ> Value)
+        {
+            return Index_TCTQKEY_QROW_QKEY.Value.TryGetValue(Tuple.Create(TCTQKEY, QROW, QKEY), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find TCTQ by TCTQKEY, QROW and QKEY fields
+        /// </summary>
+        /// <param name="TCTQKEY">TCTQKEY value used to find TCTQ</param>
+        /// <param name="QROW">QROW value used to find TCTQ</param>
+        /// <param name="QKEY">QKEY value used to find TCTQ</param>
+        /// <returns>List of related TCTQ entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<TCTQ> TryFindByTCTQKEY_QROW_QKEY(DateTime TCTQKEY, short? QROW, string QKEY)
+        {
+            IReadOnlyList<TCTQ> value;
+            if (Index_TCTQKEY_QROW_QKEY.Value.TryGetValue(Tuple.Create(TCTQKEY, QROW, QKEY), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find TCTQ by TID field
         /// </summary>
         /// <param name="TID">TID value used to find TCTQ</param>
@@ -830,6 +880,12 @@ BEGIN
     (
             [TCTQKEY] ASC
     );
+    CREATE NONCLUSTERED INDEX [TCTQ_Index_TCTQKEY_QROW_QKEY] ON [dbo].[TCTQ]
+    (
+            [TCTQKEY] ASC,
+            [QROW] ASC,
+            [QKEY] ASC
+    );
 END");
         }
 
@@ -865,6 +921,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AN
     ALTER INDEX [Index_T1TEACH] ON [dbo].[TCTQ] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_T2TEACH')
     ALTER INDEX [Index_T2TEACH] ON [dbo].[TCTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_TCTQKEY_QROW_QKEY')
+    ALTER INDEX [Index_TCTQKEY_QROW_QKEY] ON [dbo].[TCTQ] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TCTQ] DISABLE;
 ");
@@ -900,6 +958,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AN
     ALTER INDEX [Index_T1TEACH] ON [dbo].[TCTQ] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_T2TEACH')
     ALTER INDEX [Index_T2TEACH] ON [dbo].[TCTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_TCTQKEY_QROW_QKEY')
+    ALTER INDEX [Index_TCTQKEY_QROW_QKEY] ON [dbo].[TCTQ] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTQ]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[TCTQ] REBUILD PARTITION = ALL;
 ");

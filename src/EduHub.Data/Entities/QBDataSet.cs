@@ -73,6 +73,9 @@ namespace EduHub.Data.Entities
                     case "BATCHCLASS":
                         mapper[i] = (e, v) => e.BATCHCLASS = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "EDUPAY":
+                        mapper[i] = (e, v) => e.EDUPAY = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -223,6 +226,7 @@ BEGIN
         [BANKPRINTED] varchar(1) NULL,
         [BATCHTRACE] varchar(1) NULL,
         [BATCHCLASS] smallint NULL,
+        [EDUPAY] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -320,7 +324,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 15; } }
+            public override int FieldCount { get { return 16; } }
 
             public override object GetValue(int i)
             {
@@ -350,11 +354,13 @@ END");
                         return Current.BATCHTRACE;
                     case 11: // BATCHCLASS
                         return Current.BATCHCLASS;
-                    case 12: // LW_DATE
+                    case 12: // EDUPAY
+                        return Current.EDUPAY;
+                    case 13: // LW_DATE
                         return Current.LW_DATE;
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME;
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -387,11 +393,13 @@ END");
                         return Current.BATCHTRACE == null;
                     case 11: // BATCHCLASS
                         return Current.BATCHCLASS == null;
-                    case 12: // LW_DATE
+                    case 12: // EDUPAY
+                        return Current.EDUPAY == null;
+                    case 13: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -426,11 +434,13 @@ END");
                         return "BATCHTRACE";
                     case 11: // BATCHCLASS
                         return "BATCHCLASS";
-                    case 12: // LW_DATE
+                    case 12: // EDUPAY
+                        return "EDUPAY";
+                    case 13: // LW_DATE
                         return "LW_DATE";
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return "LW_TIME";
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -465,12 +475,14 @@ END");
                         return 10;
                     case "BATCHCLASS":
                         return 11;
-                    case "LW_DATE":
+                    case "EDUPAY":
                         return 12;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 13;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 14;
+                    case "LW_USER":
+                        return 15;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

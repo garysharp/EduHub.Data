@@ -33,11 +33,13 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<GLCF> Cache_CODE_GLCF_CODE;
         private IReadOnlyList<GLF> Cache_CODE_GLF_CODE;
         private IReadOnlyList<KGST> Cache_CODE_KGST_GLGST_CODE;
+        private IReadOnlyList<KUPC> Cache_CODE_KUPC_GL_CODE;
         private IReadOnlyList<PC> Cache_CODE_PC_GLCODE;
         private IReadOnlyList<PD> Cache_CODE_PD_GLCODE;
         private IReadOnlyList<PD> Cache_CODE_PD_GLBANK;
         private IReadOnlyList<PD> Cache_CODE_PD_GLTAX;
         private IReadOnlyList<PF> Cache_CODE_PF_GLCODE;
+        private IReadOnlyList<PGLI> Cache_CODE_PGLI_CODE;
         private IReadOnlyList<PI> Cache_CODE_PI_CLR_GLCODE;
         private IReadOnlyList<PN> Cache_CODE_PN_GLCODE;
         private IReadOnlyList<PN> Cache_CODE_PN_GLBANK;
@@ -847,6 +849,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// KUPC (User Program Codes) related entities by [GL.CODE]-&gt;[KUPC.GL_CODE]
+        /// General Ledger code (Prime Key)
+        /// </summary>
+        public IReadOnlyList<KUPC> CODE_KUPC_GL_CODE
+        {
+            get
+            {
+                if (Cache_CODE_KUPC_GL_CODE == null &&
+                    !Context.KUPC.TryFindByGL_CODE(CODE, out Cache_CODE_KUPC_GL_CODE))
+                {
+                    Cache_CODE_KUPC_GL_CODE = new List<KUPC>().AsReadOnly();
+                }
+
+                return Cache_CODE_KUPC_GL_CODE;
+            }
+        }
+
+        /// <summary>
         /// PC (Cost Centres) related entities by [GL.CODE]-&gt;[PC.GLCODE]
         /// General Ledger code (Prime Key)
         /// </summary>
@@ -933,6 +953,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CODE_PF_GLCODE;
+            }
+        }
+
+        /// <summary>
+        /// PGLI (General Ledger Import) related entities by [GL.CODE]-&gt;[PGLI.CODE]
+        /// General Ledger code (Prime Key)
+        /// </summary>
+        public IReadOnlyList<PGLI> CODE_PGLI_CODE
+        {
+            get
+            {
+                if (Cache_CODE_PGLI_CODE == null &&
+                    !Context.PGLI.TryFindByCODE(CODE, out Cache_CODE_PGLI_CODE))
+                {
+                    Cache_CODE_PGLI_CODE = new List<PGLI>().AsReadOnly();
+                }
+
+                return Cache_CODE_PGLI_CODE;
             }
         }
 

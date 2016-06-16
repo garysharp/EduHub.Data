@@ -149,6 +149,9 @@ namespace EduHub.Data.Entities
                     case "GROUP_INDICATOR":
                         mapper[i] = (e, v) => e.GROUP_INDICATOR = v;
                         break;
+                    case "DISABILITY_ADJUSTMENT":
+                        mapper[i] = (e, v) => e.DISABILITY_ADJUSTMENT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -495,6 +498,7 @@ BEGIN
         [ROOM_TYPE] varchar(1) NULL,
         [NORMAL_ALLOTMENT] smallint NULL,
         [GROUP_INDICATOR] varchar(1) NULL,
+        [DISABILITY_ADJUSTMENT] text NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -632,7 +636,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
             {
             }
 
-            public override int FieldCount { get { return 39; } }
+            public override int FieldCount { get { return 40; } }
 
             public override object GetValue(int i)
             {
@@ -710,11 +714,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.NORMAL_ALLOTMENT;
                     case 35: // GROUP_INDICATOR
                         return Current.GROUP_INDICATOR;
-                    case 36: // LW_DATE
+                    case 36: // DISABILITY_ADJUSTMENT
+                        return Current.DISABILITY_ADJUSTMENT;
+                    case 37: // LW_DATE
                         return Current.LW_DATE;
-                    case 37: // LW_TIME
+                    case 38: // LW_TIME
                         return Current.LW_TIME;
-                    case 38: // LW_USER
+                    case 39: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -795,11 +801,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.NORMAL_ALLOTMENT == null;
                     case 35: // GROUP_INDICATOR
                         return Current.GROUP_INDICATOR == null;
-                    case 36: // LW_DATE
+                    case 36: // DISABILITY_ADJUSTMENT
+                        return Current.DISABILITY_ADJUSTMENT == null;
+                    case 37: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 37: // LW_TIME
+                    case 38: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 38: // LW_USER
+                    case 39: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -882,11 +890,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return "NORMAL_ALLOTMENT";
                     case 35: // GROUP_INDICATOR
                         return "GROUP_INDICATOR";
-                    case 36: // LW_DATE
+                    case 36: // DISABILITY_ADJUSTMENT
+                        return "DISABILITY_ADJUSTMENT";
+                    case 37: // LW_DATE
                         return "LW_DATE";
-                    case 37: // LW_TIME
+                    case 38: // LW_TIME
                         return "LW_TIME";
-                    case 38: // LW_USER
+                    case 39: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -969,12 +979,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return 34;
                     case "GROUP_INDICATOR":
                         return 35;
-                    case "LW_DATE":
+                    case "DISABILITY_ADJUSTMENT":
                         return 36;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 37;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 38;
+                    case "LW_USER":
+                        return 39;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

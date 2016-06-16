@@ -358,6 +358,11 @@ namespace EduHub.Data.Entities
         public string TRMETHOD { get; internal set; }
 
         /// <summary>
+        /// The number of months deleteable
+        /// </summary>
+        public short? TRDEL_MONTHS { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

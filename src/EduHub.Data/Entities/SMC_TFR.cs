@@ -255,6 +255,12 @@ namespace EduHub.Data.Entities
         public string ASTHMA_MGT_PLAN { get; internal set; }
 
         /// <summary>
+        /// Adjustment details
+        /// [Memo]
+        /// </summary>
+        public string DISABILITY_ADJUSTMENT { get; internal set; }
+
+        /// <summary>
         /// Unique DF Transfer ID
         /// [Uppercase Alphanumeric (30)]
         /// </summary>

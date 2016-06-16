@@ -152,6 +152,9 @@ namespace EduHub.Data.Entities
                     case "ASTHMA_MGT_PLAN":
                         mapper[i] = (e, v) => e.ASTHMA_MGT_PLAN = v;
                         break;
+                    case "DISABILITY_ADJUSTMENT":
+                        mapper[i] = (e, v) => e.DISABILITY_ADJUSTMENT = v;
+                        break;
                     case "ST_TRANS_ID":
                         mapper[i] = (e, v) => e.ST_TRANS_ID = v;
                         break;
@@ -383,6 +386,7 @@ BEGIN
         [ASTHMA_TGTCHES] varchar(1) NULL,
         [ASTHMA_SYMTEXE] varchar(1) NULL,
         [ASTHMA_MGT_PLAN] text NULL,
+        [DISABILITY_ADJUSTMENT] text NULL,
         [ST_TRANS_ID] varchar(30) NULL,
         [KCM_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
@@ -500,7 +504,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 45; } }
+            public override int FieldCount { get { return 46; } }
 
             public override object GetValue(int i)
             {
@@ -582,19 +586,21 @@ END");
                         return Current.ASTHMA_SYMTEXE;
                     case 37: // ASTHMA_MGT_PLAN
                         return Current.ASTHMA_MGT_PLAN;
-                    case 38: // ST_TRANS_ID
+                    case 38: // DISABILITY_ADJUSTMENT
+                        return Current.DISABILITY_ADJUSTMENT;
+                    case 39: // ST_TRANS_ID
                         return Current.ST_TRANS_ID;
-                    case 39: // KCM_TRANS_ID
+                    case 40: // KCM_TRANS_ID
                         return Current.KCM_TRANS_ID;
-                    case 40: // IMP_STATUS
+                    case 41: // IMP_STATUS
                         return Current.IMP_STATUS;
-                    case 41: // IMP_DATE
+                    case 42: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 42: // LW_DATE
+                    case 43: // LW_DATE
                         return Current.LW_DATE;
-                    case 43: // LW_TIME
+                    case 44: // LW_TIME
                         return Current.LW_TIME;
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -677,19 +683,21 @@ END");
                         return Current.ASTHMA_SYMTEXE == null;
                     case 37: // ASTHMA_MGT_PLAN
                         return Current.ASTHMA_MGT_PLAN == null;
-                    case 38: // ST_TRANS_ID
+                    case 38: // DISABILITY_ADJUSTMENT
+                        return Current.DISABILITY_ADJUSTMENT == null;
+                    case 39: // ST_TRANS_ID
                         return Current.ST_TRANS_ID == null;
-                    case 39: // KCM_TRANS_ID
+                    case 40: // KCM_TRANS_ID
                         return Current.KCM_TRANS_ID == null;
-                    case 40: // IMP_STATUS
+                    case 41: // IMP_STATUS
                         return Current.IMP_STATUS == null;
-                    case 41: // IMP_DATE
+                    case 42: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 42: // LW_DATE
+                    case 43: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 43: // LW_TIME
+                    case 44: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -776,19 +784,21 @@ END");
                         return "ASTHMA_SYMTEXE";
                     case 37: // ASTHMA_MGT_PLAN
                         return "ASTHMA_MGT_PLAN";
-                    case 38: // ST_TRANS_ID
+                    case 38: // DISABILITY_ADJUSTMENT
+                        return "DISABILITY_ADJUSTMENT";
+                    case 39: // ST_TRANS_ID
                         return "ST_TRANS_ID";
-                    case 39: // KCM_TRANS_ID
+                    case 40: // KCM_TRANS_ID
                         return "KCM_TRANS_ID";
-                    case 40: // IMP_STATUS
+                    case 41: // IMP_STATUS
                         return "IMP_STATUS";
-                    case 41: // IMP_DATE
+                    case 42: // IMP_DATE
                         return "IMP_DATE";
-                    case 42: // LW_DATE
+                    case 43: // LW_DATE
                         return "LW_DATE";
-                    case 43: // LW_TIME
+                    case 44: // LW_TIME
                         return "LW_TIME";
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -875,20 +885,22 @@ END");
                         return 36;
                     case "ASTHMA_MGT_PLAN":
                         return 37;
-                    case "ST_TRANS_ID":
+                    case "DISABILITY_ADJUSTMENT":
                         return 38;
-                    case "KCM_TRANS_ID":
+                    case "ST_TRANS_ID":
                         return 39;
-                    case "IMP_STATUS":
+                    case "KCM_TRANS_ID":
                         return 40;
-                    case "IMP_DATE":
+                    case "IMP_STATUS":
                         return 41;
-                    case "LW_DATE":
+                    case "IMP_DATE":
                         return 42;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 43;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 44;
+                    case "LW_USER":
+                        return 45;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

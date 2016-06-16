@@ -16,6 +16,8 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<GLF> Cache_GLPROGRAM_GLF_GLPROGRAM;
         private IReadOnlyList<GLFPREV> Cache_GLPROGRAM_GLFPREV_GLPROGRAM;
         private IReadOnlyList<KGLSUB> Cache_GLPROGRAM_KGLSUB_GL_PROGRAM;
+        private IReadOnlyList<KUPC> Cache_GLPROGRAM_KUPC_GLPROGRAM01;
+        private IReadOnlyList<KUPC> Cache_GLPROGRAM_KUPC_GLPROGRAM02;
 
         #endregion
 
@@ -119,6 +121,42 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_GLPROGRAM_KGLSUB_GL_PROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// KUPC (User Program Codes) related entities by [KGLPROG.GLPROGRAM]-&gt;[KUPC.GLPROGRAM01]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<KUPC> GLPROGRAM_KUPC_GLPROGRAM01
+        {
+            get
+            {
+                if (Cache_GLPROGRAM_KUPC_GLPROGRAM01 == null &&
+                    !Context.KUPC.TryFindByGLPROGRAM01(GLPROGRAM, out Cache_GLPROGRAM_KUPC_GLPROGRAM01))
+                {
+                    Cache_GLPROGRAM_KUPC_GLPROGRAM01 = new List<KUPC>().AsReadOnly();
+                }
+
+                return Cache_GLPROGRAM_KUPC_GLPROGRAM01;
+            }
+        }
+
+        /// <summary>
+        /// KUPC (User Program Codes) related entities by [KGLPROG.GLPROGRAM]-&gt;[KUPC.GLPROGRAM02]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<KUPC> GLPROGRAM_KUPC_GLPROGRAM02
+        {
+            get
+            {
+                if (Cache_GLPROGRAM_KUPC_GLPROGRAM02 == null &&
+                    !Context.KUPC.TryFindByGLPROGRAM02(GLPROGRAM, out Cache_GLPROGRAM_KUPC_GLPROGRAM02))
+                {
+                    Cache_GLPROGRAM_KUPC_GLPROGRAM02 = new List<KUPC>().AsReadOnly();
+                }
+
+                return Cache_GLPROGRAM_KUPC_GLPROGRAM02;
             }
         }
 

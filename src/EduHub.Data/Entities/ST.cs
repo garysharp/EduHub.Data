@@ -49,15 +49,19 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SDP> Cache_STKEY_SDP_STUDENT_KEY;
         private IReadOnlyList<SMC> Cache_STKEY_SMC_STUDENT;
         private IReadOnlyList<SSHG> Cache_STKEY_SSHG_STUDENT;
+        private IReadOnlyList<STAR> Cache_STKEY_STAR_SKEY;
         private IReadOnlyList<STBT> Cache_STKEY_STBT_STBTKEY;
         private IReadOnlyList<STMA> Cache_STKEY_STMA_SKEY;
         private IReadOnlyList<STMB> Cache_STKEY_STMB_SKEY;
+        private IReadOnlyList<STNAT> Cache_STKEY_STNAT_SKEY;
         private IReadOnlyList<STPO> Cache_STKEY_STPO_STPOKEY;
+        private IReadOnlyList<STPS> Cache_STKEY_STPS_SKEY;
         private IReadOnlyList<STPT> Cache_STKEY_STPT_STPTKEY;
         private IReadOnlyList<STRA> Cache_STKEY_STRA_STKEY;
         private IReadOnlyList<STRE> Cache_STKEY_STRE_SKEY;
         private IReadOnlyList<STSB> Cache_STKEY_STSB_SKEY;
         private IReadOnlyList<STSP> Cache_STKEY_STSP_SPKEY;
+        private IReadOnlyList<STSUP> Cache_STKEY_STSUP_SKEY;
         private IReadOnlyList<STTRIPS> Cache_STKEY_STTRIPS_STUDENT_ID;
         private IReadOnlyList<STVDI> Cache_STKEY_STVDI_SKEY;
         private IReadOnlyList<STVDO> Cache_STKEY_STVDO_SKEY;
@@ -1050,6 +1054,132 @@ namespace EduHub.Data.Entities
         public string TFR_PERMISSION { get; internal set; }
 
         /// <summary>
+        /// Legal limitations on decision-making responsibilities for student (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string LEGAL_LIMIT_DECISION { get; internal set; }
+
+        /// <summary>
+        /// Legal limitations on contact with student (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string LEGAL_LIMIT_CONTACT { get; internal set; }
+
+        /// <summary>
+        /// Describe limitations
+        /// [Memo]
+        /// </summary>
+        public string LEGAL_LIMITATION { get; internal set; }
+
+        /// <summary>
+        /// Copies of documentation provided to school (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DOC_COPIES { get; internal set; }
+
+        /// <summary>
+        /// Listed in Student Online Case System (SOCS) (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string LISTED_IN_SOCS { get; internal set; }
+
+        /// <summary>
+        /// Student received Student Support Services (SSS) (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SUPPORT_SERVICES { get; internal set; }
+
+        /// <summary>
+        /// Student received other school-based or departmental student support (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string STUDENT_SUPPORT { get; internal set; }
+
+        /// <summary>
+        /// Student received non-school-based/non-departmental support over the last two years (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string STUDENT_OTHER_SUPPORT { get; internal set; }
+
+        /// <summary>
+        /// Has a Student Support Group been formed for this student? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SUPPORT_GROUP { get; internal set; }
+
+        /// <summary>
+        /// Is the Department of Health and Human Services currently involved with the child and their family? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CHILD_PROTECTION { get; internal set; }
+
+        /// <summary>
+        /// Are there any concerns regarding the student’s attendance, including truancy? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string ATTENDANCE_CONCERNS { get; internal set; }
+
+        /// <summary>
+        /// Has the student been subject to any disciplinary action in the past 12 months? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DISCIPLINARY_ACTION { get; internal set; }
+
+        /// <summary>
+        /// Are there any foreseeable risks of harm to the student, or to others? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string WELFARE_RISKS { get; internal set; }
+
+        /// <summary>
+        /// Student Effort
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string EFFORT { get; internal set; }
+
+        /// <summary>
+        /// Student Class Behaviour
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string CLASS_BEHAVIOUR { get; internal set; }
+
+        /// <summary>
+        /// Student Organisation
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string ORGANISATION { get; internal set; }
+
+        /// <summary>
+        /// Student Social Behaviour
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string SOCIAL_BEHAVIOUR { get; internal set; }
+
+        /// <summary>
+        /// Additional Learning Support (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string LEARNING_SUPPORT { get; internal set; }
+
+        /// <summary>
+        /// Enrolled in, or has received English as an Additional Language New Arrivals Program (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string NEW_ARRIVALS_PROGRAM { get; internal set; }
+
+        /// <summary>
+        /// Likely Refugee Background (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string REFUGEE_BACKGROUND { get; internal set; }
+
+        /// <summary>
+        /// Copies of documents sent to receiving school (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string TRANSFER_DOCS_SENT { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -1707,6 +1837,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// STAR (Student Access Restrictions) related entities by [ST.STKEY]-&gt;[STAR.SKEY]
+        /// Student ID
+        /// </summary>
+        public IReadOnlyList<STAR> STKEY_STAR_SKEY
+        {
+            get
+            {
+                if (Cache_STKEY_STAR_SKEY == null &&
+                    !Context.STAR.TryFindBySKEY(STKEY, out Cache_STKEY_STAR_SKEY))
+                {
+                    Cache_STKEY_STAR_SKEY = new List<STAR>().AsReadOnly();
+                }
+
+                return Cache_STKEY_STAR_SKEY;
+            }
+        }
+
+        /// <summary>
         /// STBT (Student Transport Usage) related entities by [ST.STKEY]-&gt;[STBT.STBTKEY]
         /// Student ID
         /// </summary>
@@ -1761,6 +1909,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// STNAT (Student Notes and Attachments) related entities by [ST.STKEY]-&gt;[STNAT.SKEY]
+        /// Student ID
+        /// </summary>
+        public IReadOnlyList<STNAT> STKEY_STNAT_SKEY
+        {
+            get
+            {
+                if (Cache_STKEY_STNAT_SKEY == null &&
+                    !Context.STNAT.TryFindBySKEY(STKEY, out Cache_STKEY_STNAT_SKEY))
+                {
+                    Cache_STKEY_STNAT_SKEY = new List<STNAT>().AsReadOnly();
+                }
+
+                return Cache_STKEY_STNAT_SKEY;
+            }
+        }
+
+        /// <summary>
         /// STPO (Position or Group Memberships) related entities by [ST.STKEY]-&gt;[STPO.STPOKEY]
         /// Student ID
         /// </summary>
@@ -1775,6 +1941,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_STKEY_STPO_STPOKEY;
+            }
+        }
+
+        /// <summary>
+        /// STPS (Student Previous School) related entities by [ST.STKEY]-&gt;[STPS.SKEY]
+        /// Student ID
+        /// </summary>
+        public IReadOnlyList<STPS> STKEY_STPS_SKEY
+        {
+            get
+            {
+                if (Cache_STKEY_STPS_SKEY == null &&
+                    !Context.STPS.TryFindBySKEY(STKEY, out Cache_STKEY_STPS_SKEY))
+                {
+                    Cache_STKEY_STPS_SKEY = new List<STPS>().AsReadOnly();
+                }
+
+                return Cache_STKEY_STPS_SKEY;
             }
         }
 
@@ -1865,6 +2049,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_STKEY_STSP_SPKEY;
+            }
+        }
+
+        /// <summary>
+        /// STSUP (Support Persons) related entities by [ST.STKEY]-&gt;[STSUP.SKEY]
+        /// Student ID
+        /// </summary>
+        public IReadOnlyList<STSUP> STKEY_STSUP_SKEY
+        {
+            get
+            {
+                if (Cache_STKEY_STSUP_SKEY == null &&
+                    !Context.STSUP.TryFindBySKEY(STKEY, out Cache_STKEY_STSUP_SKEY))
+                {
+                    Cache_STKEY_STSUP_SKEY = new List<STSUP>().AsReadOnly();
+                }
+
+                return Cache_STKEY_STSUP_SKEY;
             }
         }
 

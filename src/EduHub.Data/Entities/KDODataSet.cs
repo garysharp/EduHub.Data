@@ -184,7 +184,7 @@ namespace EduHub.Data.Entities
 @"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KDO]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
     CREATE TABLE [dbo].[KDO](
-        [KDOKEY] varchar(5) NOT NULL,
+        [KDOKEY] varchar(10) NOT NULL,
         [DESCRIPTION] varchar(255) NULL,
         [AUSVELS_START] varchar(6) NULL,
         [LW_DATE] datetime NULL,
@@ -248,7 +248,7 @@ END");
                 // KDOKEY
                 var parameterKDOKEY = $"@p{parameterIndex++}";
                 builder.Append(parameterKDOKEY);
-                command.Parameters.Add(parameterKDOKEY, SqlDbType.VarChar, 5).Value = Index_KDOKEY[index];
+                command.Parameters.Add(parameterKDOKEY, SqlDbType.VarChar, 10).Value = Index_KDOKEY[index];
             }
             builder.Append(");");
 

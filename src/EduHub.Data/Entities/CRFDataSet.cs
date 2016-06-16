@@ -274,6 +274,9 @@ namespace EduHub.Data.Entities
                     case "PRMS_TID":
                         mapper[i] = (e, v) => e.PRMS_TID = v == null ? (int?)null : int.Parse(v);
                         break;
+                    case "KCPC_TID":
+                        mapper[i] = (e, v) => e.KCPC_TID = v == null ? (int?)null : int.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -875,6 +878,7 @@ BEGIN
         [INITIATIVE] varchar(3) NULL,
         [CANCELLED] varchar(3) NULL,
         [PRMS_TID] int NULL,
+        [KCPC_TID] int NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1052,7 +1056,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
             {
             }
 
-            public override int FieldCount { get { return 79; } }
+            public override int FieldCount { get { return 80; } }
 
             public override object GetValue(int i)
             {
@@ -1210,11 +1214,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return Current.CANCELLED;
                     case 75: // PRMS_TID
                         return Current.PRMS_TID;
-                    case 76: // LW_DATE
+                    case 76: // KCPC_TID
+                        return Current.KCPC_TID;
+                    case 77: // LW_DATE
                         return Current.LW_DATE;
-                    case 77: // LW_TIME
+                    case 78: // LW_TIME
                         return Current.LW_TIME;
-                    case 78: // LW_USER
+                    case 79: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1373,11 +1379,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return Current.CANCELLED == null;
                     case 75: // PRMS_TID
                         return Current.PRMS_TID == null;
-                    case 76: // LW_DATE
+                    case 76: // KCPC_TID
+                        return Current.KCPC_TID == null;
+                    case 77: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 77: // LW_TIME
+                    case 78: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 78: // LW_USER
+                    case 79: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1540,11 +1548,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return "CANCELLED";
                     case 75: // PRMS_TID
                         return "PRMS_TID";
-                    case 76: // LW_DATE
+                    case 76: // KCPC_TID
+                        return "KCPC_TID";
+                    case 77: // LW_DATE
                         return "LW_DATE";
-                    case 77: // LW_TIME
+                    case 78: // LW_TIME
                         return "LW_TIME";
-                    case 78: // LW_USER
+                    case 79: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1707,12 +1717,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return 74;
                     case "PRMS_TID":
                         return 75;
-                    case "LW_DATE":
+                    case "KCPC_TID":
                         return 76;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 77;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 78;
+                    case "LW_USER":
+                        return 79;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

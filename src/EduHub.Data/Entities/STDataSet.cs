@@ -566,6 +566,69 @@ namespace EduHub.Data.Entities
                     case "TFR_PERMISSION":
                         mapper[i] = (e, v) => e.TFR_PERMISSION = v;
                         break;
+                    case "LEGAL_LIMIT_DECISION":
+                        mapper[i] = (e, v) => e.LEGAL_LIMIT_DECISION = v;
+                        break;
+                    case "LEGAL_LIMIT_CONTACT":
+                        mapper[i] = (e, v) => e.LEGAL_LIMIT_CONTACT = v;
+                        break;
+                    case "LEGAL_LIMITATION":
+                        mapper[i] = (e, v) => e.LEGAL_LIMITATION = v;
+                        break;
+                    case "DOC_COPIES":
+                        mapper[i] = (e, v) => e.DOC_COPIES = v;
+                        break;
+                    case "LISTED_IN_SOCS":
+                        mapper[i] = (e, v) => e.LISTED_IN_SOCS = v;
+                        break;
+                    case "SUPPORT_SERVICES":
+                        mapper[i] = (e, v) => e.SUPPORT_SERVICES = v;
+                        break;
+                    case "STUDENT_SUPPORT":
+                        mapper[i] = (e, v) => e.STUDENT_SUPPORT = v;
+                        break;
+                    case "STUDENT_OTHER_SUPPORT":
+                        mapper[i] = (e, v) => e.STUDENT_OTHER_SUPPORT = v;
+                        break;
+                    case "SUPPORT_GROUP":
+                        mapper[i] = (e, v) => e.SUPPORT_GROUP = v;
+                        break;
+                    case "CHILD_PROTECTION":
+                        mapper[i] = (e, v) => e.CHILD_PROTECTION = v;
+                        break;
+                    case "ATTENDANCE_CONCERNS":
+                        mapper[i] = (e, v) => e.ATTENDANCE_CONCERNS = v;
+                        break;
+                    case "DISCIPLINARY_ACTION":
+                        mapper[i] = (e, v) => e.DISCIPLINARY_ACTION = v;
+                        break;
+                    case "WELFARE_RISKS":
+                        mapper[i] = (e, v) => e.WELFARE_RISKS = v;
+                        break;
+                    case "EFFORT":
+                        mapper[i] = (e, v) => e.EFFORT = v;
+                        break;
+                    case "CLASS_BEHAVIOUR":
+                        mapper[i] = (e, v) => e.CLASS_BEHAVIOUR = v;
+                        break;
+                    case "ORGANISATION":
+                        mapper[i] = (e, v) => e.ORGANISATION = v;
+                        break;
+                    case "SOCIAL_BEHAVIOUR":
+                        mapper[i] = (e, v) => e.SOCIAL_BEHAVIOUR = v;
+                        break;
+                    case "LEARNING_SUPPORT":
+                        mapper[i] = (e, v) => e.LEARNING_SUPPORT = v;
+                        break;
+                    case "NEW_ARRIVALS_PROGRAM":
+                        mapper[i] = (e, v) => e.NEW_ARRIVALS_PROGRAM = v;
+                        break;
+                    case "REFUGEE_BACKGROUND":
+                        mapper[i] = (e, v) => e.REFUGEE_BACKGROUND = v;
+                        break;
+                    case "TRANSFER_DOCS_SENT":
+                        mapper[i] = (e, v) => e.TRANSFER_DOCS_SENT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -2078,6 +2141,27 @@ BEGIN
         [SPEC_CURR] varchar(2) NULL,
         [TRANSITION_STATEMENT] varchar(1) NULL,
         [TFR_PERMISSION] varchar(1) NULL,
+        [LEGAL_LIMIT_DECISION] varchar(1) NULL,
+        [LEGAL_LIMIT_CONTACT] varchar(1) NULL,
+        [LEGAL_LIMITATION] text NULL,
+        [DOC_COPIES] varchar(1) NULL,
+        [LISTED_IN_SOCS] varchar(1) NULL,
+        [SUPPORT_SERVICES] varchar(1) NULL,
+        [STUDENT_SUPPORT] varchar(1) NULL,
+        [STUDENT_OTHER_SUPPORT] varchar(1) NULL,
+        [SUPPORT_GROUP] varchar(1) NULL,
+        [CHILD_PROTECTION] varchar(1) NULL,
+        [ATTENDANCE_CONCERNS] varchar(1) NULL,
+        [DISCIPLINARY_ACTION] varchar(1) NULL,
+        [WELFARE_RISKS] varchar(1) NULL,
+        [EFFORT] varchar(15) NULL,
+        [CLASS_BEHAVIOUR] varchar(15) NULL,
+        [ORGANISATION] varchar(15) NULL,
+        [SOCIAL_BEHAVIOUR] varchar(15) NULL,
+        [LEARNING_SUPPORT] varchar(1) NULL,
+        [NEW_ARRIVALS_PROGRAM] varchar(1) NULL,
+        [REFUGEE_BACKGROUND] varchar(1) NULL,
+        [TRANSFER_DOCS_SENT] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -2423,7 +2507,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
             {
             }
 
-            public override int FieldCount { get { return 170; } }
+            public override int FieldCount { get { return 191; } }
 
             public override object GetValue(int i)
             {
@@ -2763,11 +2847,53 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.TRANSITION_STATEMENT;
                     case 166: // TFR_PERMISSION
                         return Current.TFR_PERMISSION;
-                    case 167: // LW_DATE
+                    case 167: // LEGAL_LIMIT_DECISION
+                        return Current.LEGAL_LIMIT_DECISION;
+                    case 168: // LEGAL_LIMIT_CONTACT
+                        return Current.LEGAL_LIMIT_CONTACT;
+                    case 169: // LEGAL_LIMITATION
+                        return Current.LEGAL_LIMITATION;
+                    case 170: // DOC_COPIES
+                        return Current.DOC_COPIES;
+                    case 171: // LISTED_IN_SOCS
+                        return Current.LISTED_IN_SOCS;
+                    case 172: // SUPPORT_SERVICES
+                        return Current.SUPPORT_SERVICES;
+                    case 173: // STUDENT_SUPPORT
+                        return Current.STUDENT_SUPPORT;
+                    case 174: // STUDENT_OTHER_SUPPORT
+                        return Current.STUDENT_OTHER_SUPPORT;
+                    case 175: // SUPPORT_GROUP
+                        return Current.SUPPORT_GROUP;
+                    case 176: // CHILD_PROTECTION
+                        return Current.CHILD_PROTECTION;
+                    case 177: // ATTENDANCE_CONCERNS
+                        return Current.ATTENDANCE_CONCERNS;
+                    case 178: // DISCIPLINARY_ACTION
+                        return Current.DISCIPLINARY_ACTION;
+                    case 179: // WELFARE_RISKS
+                        return Current.WELFARE_RISKS;
+                    case 180: // EFFORT
+                        return Current.EFFORT;
+                    case 181: // CLASS_BEHAVIOUR
+                        return Current.CLASS_BEHAVIOUR;
+                    case 182: // ORGANISATION
+                        return Current.ORGANISATION;
+                    case 183: // SOCIAL_BEHAVIOUR
+                        return Current.SOCIAL_BEHAVIOUR;
+                    case 184: // LEARNING_SUPPORT
+                        return Current.LEARNING_SUPPORT;
+                    case 185: // NEW_ARRIVALS_PROGRAM
+                        return Current.NEW_ARRIVALS_PROGRAM;
+                    case 186: // REFUGEE_BACKGROUND
+                        return Current.REFUGEE_BACKGROUND;
+                    case 187: // TRANSFER_DOCS_SENT
+                        return Current.TRANSFER_DOCS_SENT;
+                    case 188: // LW_DATE
                         return Current.LW_DATE;
-                    case 168: // LW_TIME
+                    case 189: // LW_TIME
                         return Current.LW_TIME;
-                    case 169: // LW_USER
+                    case 190: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -3108,11 +3234,53 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.TRANSITION_STATEMENT == null;
                     case 166: // TFR_PERMISSION
                         return Current.TFR_PERMISSION == null;
-                    case 167: // LW_DATE
+                    case 167: // LEGAL_LIMIT_DECISION
+                        return Current.LEGAL_LIMIT_DECISION == null;
+                    case 168: // LEGAL_LIMIT_CONTACT
+                        return Current.LEGAL_LIMIT_CONTACT == null;
+                    case 169: // LEGAL_LIMITATION
+                        return Current.LEGAL_LIMITATION == null;
+                    case 170: // DOC_COPIES
+                        return Current.DOC_COPIES == null;
+                    case 171: // LISTED_IN_SOCS
+                        return Current.LISTED_IN_SOCS == null;
+                    case 172: // SUPPORT_SERVICES
+                        return Current.SUPPORT_SERVICES == null;
+                    case 173: // STUDENT_SUPPORT
+                        return Current.STUDENT_SUPPORT == null;
+                    case 174: // STUDENT_OTHER_SUPPORT
+                        return Current.STUDENT_OTHER_SUPPORT == null;
+                    case 175: // SUPPORT_GROUP
+                        return Current.SUPPORT_GROUP == null;
+                    case 176: // CHILD_PROTECTION
+                        return Current.CHILD_PROTECTION == null;
+                    case 177: // ATTENDANCE_CONCERNS
+                        return Current.ATTENDANCE_CONCERNS == null;
+                    case 178: // DISCIPLINARY_ACTION
+                        return Current.DISCIPLINARY_ACTION == null;
+                    case 179: // WELFARE_RISKS
+                        return Current.WELFARE_RISKS == null;
+                    case 180: // EFFORT
+                        return Current.EFFORT == null;
+                    case 181: // CLASS_BEHAVIOUR
+                        return Current.CLASS_BEHAVIOUR == null;
+                    case 182: // ORGANISATION
+                        return Current.ORGANISATION == null;
+                    case 183: // SOCIAL_BEHAVIOUR
+                        return Current.SOCIAL_BEHAVIOUR == null;
+                    case 184: // LEARNING_SUPPORT
+                        return Current.LEARNING_SUPPORT == null;
+                    case 185: // NEW_ARRIVALS_PROGRAM
+                        return Current.NEW_ARRIVALS_PROGRAM == null;
+                    case 186: // REFUGEE_BACKGROUND
+                        return Current.REFUGEE_BACKGROUND == null;
+                    case 187: // TRANSFER_DOCS_SENT
+                        return Current.TRANSFER_DOCS_SENT == null;
+                    case 188: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 168: // LW_TIME
+                    case 189: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 169: // LW_USER
+                    case 190: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -3457,11 +3625,53 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return "TRANSITION_STATEMENT";
                     case 166: // TFR_PERMISSION
                         return "TFR_PERMISSION";
-                    case 167: // LW_DATE
+                    case 167: // LEGAL_LIMIT_DECISION
+                        return "LEGAL_LIMIT_DECISION";
+                    case 168: // LEGAL_LIMIT_CONTACT
+                        return "LEGAL_LIMIT_CONTACT";
+                    case 169: // LEGAL_LIMITATION
+                        return "LEGAL_LIMITATION";
+                    case 170: // DOC_COPIES
+                        return "DOC_COPIES";
+                    case 171: // LISTED_IN_SOCS
+                        return "LISTED_IN_SOCS";
+                    case 172: // SUPPORT_SERVICES
+                        return "SUPPORT_SERVICES";
+                    case 173: // STUDENT_SUPPORT
+                        return "STUDENT_SUPPORT";
+                    case 174: // STUDENT_OTHER_SUPPORT
+                        return "STUDENT_OTHER_SUPPORT";
+                    case 175: // SUPPORT_GROUP
+                        return "SUPPORT_GROUP";
+                    case 176: // CHILD_PROTECTION
+                        return "CHILD_PROTECTION";
+                    case 177: // ATTENDANCE_CONCERNS
+                        return "ATTENDANCE_CONCERNS";
+                    case 178: // DISCIPLINARY_ACTION
+                        return "DISCIPLINARY_ACTION";
+                    case 179: // WELFARE_RISKS
+                        return "WELFARE_RISKS";
+                    case 180: // EFFORT
+                        return "EFFORT";
+                    case 181: // CLASS_BEHAVIOUR
+                        return "CLASS_BEHAVIOUR";
+                    case 182: // ORGANISATION
+                        return "ORGANISATION";
+                    case 183: // SOCIAL_BEHAVIOUR
+                        return "SOCIAL_BEHAVIOUR";
+                    case 184: // LEARNING_SUPPORT
+                        return "LEARNING_SUPPORT";
+                    case 185: // NEW_ARRIVALS_PROGRAM
+                        return "NEW_ARRIVALS_PROGRAM";
+                    case 186: // REFUGEE_BACKGROUND
+                        return "REFUGEE_BACKGROUND";
+                    case 187: // TRANSFER_DOCS_SENT
+                        return "TRANSFER_DOCS_SENT";
+                    case 188: // LW_DATE
                         return "LW_DATE";
-                    case 168: // LW_TIME
+                    case 189: // LW_TIME
                         return "LW_TIME";
-                    case 169: // LW_USER
+                    case 190: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -3806,12 +4016,54 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return 165;
                     case "TFR_PERMISSION":
                         return 166;
-                    case "LW_DATE":
+                    case "LEGAL_LIMIT_DECISION":
                         return 167;
-                    case "LW_TIME":
+                    case "LEGAL_LIMIT_CONTACT":
                         return 168;
-                    case "LW_USER":
+                    case "LEGAL_LIMITATION":
                         return 169;
+                    case "DOC_COPIES":
+                        return 170;
+                    case "LISTED_IN_SOCS":
+                        return 171;
+                    case "SUPPORT_SERVICES":
+                        return 172;
+                    case "STUDENT_SUPPORT":
+                        return 173;
+                    case "STUDENT_OTHER_SUPPORT":
+                        return 174;
+                    case "SUPPORT_GROUP":
+                        return 175;
+                    case "CHILD_PROTECTION":
+                        return 176;
+                    case "ATTENDANCE_CONCERNS":
+                        return 177;
+                    case "DISCIPLINARY_ACTION":
+                        return 178;
+                    case "WELFARE_RISKS":
+                        return 179;
+                    case "EFFORT":
+                        return 180;
+                    case "CLASS_BEHAVIOUR":
+                        return 181;
+                    case "ORGANISATION":
+                        return 182;
+                    case "SOCIAL_BEHAVIOUR":
+                        return 183;
+                    case "LEARNING_SUPPORT":
+                        return 184;
+                    case "NEW_ARRIVALS_PROGRAM":
+                        return 185;
+                    case "REFUGEE_BACKGROUND":
+                        return 186;
+                    case "TRANSFER_DOCS_SENT":
+                        return 187;
+                    case "LW_DATE":
+                        return 188;
+                    case "LW_TIME":
+                        return 189;
+                    case "LW_USER":
+                        return 190;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

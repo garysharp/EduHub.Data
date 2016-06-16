@@ -681,6 +681,18 @@ namespace EduHub.Data.Entities
         public string PREF_EMAIL { get; internal set; }
 
         /// <summary>
+        /// User Id for eMaze
+        /// [Alphanumeric (32)]
+        /// </summary>
+        public string USER_NAME { get; internal set; }
+
+        /// <summary>
+        /// Access from web allowed using USER_NAME
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string WEB_ENABLED { get; internal set; }
+
+        /// <summary>
         /// ID of the record of this family in the CASES system
         /// [Uppercase Alphanumeric (7)]
         /// </summary>

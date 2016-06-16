@@ -252,6 +252,66 @@ namespace EduHub.Data.Entities
         public string BPAY_REFERENCE { get; internal set; }
 
         /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO01 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO02 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO03 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO04 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO05 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO06 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO07 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO08 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO09 { get; internal set; }
+
+        /// <summary>
+        /// Trade related information
+        /// [Uppercase Alphanumeric (50)]
+        /// </summary>
+        public string TRADE_INFO10 { get; internal set; }
+
+        /// <summary>
         /// Surname
         /// [Uppercase Alphanumeric (30)]
         /// </summary>

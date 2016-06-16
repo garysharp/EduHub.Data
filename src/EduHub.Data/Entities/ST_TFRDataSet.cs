@@ -332,6 +332,72 @@ namespace EduHub.Data.Entities
                     case "SPEC_CURR":
                         mapper[i] = (e, v) => e.SPEC_CURR = v;
                         break;
+                    case "LEGAL_LIMIT_DECISION":
+                        mapper[i] = (e, v) => e.LEGAL_LIMIT_DECISION = v;
+                        break;
+                    case "LEGAL_LIMIT_CONTACT":
+                        mapper[i] = (e, v) => e.LEGAL_LIMIT_CONTACT = v;
+                        break;
+                    case "LEGAL_LIMITATION":
+                        mapper[i] = (e, v) => e.LEGAL_LIMITATION = v;
+                        break;
+                    case "DOC_COPIES":
+                        mapper[i] = (e, v) => e.DOC_COPIES = v;
+                        break;
+                    case "LISTED_IN_SOCS":
+                        mapper[i] = (e, v) => e.LISTED_IN_SOCS = v;
+                        break;
+                    case "SUPPORT_SERVICES":
+                        mapper[i] = (e, v) => e.SUPPORT_SERVICES = v;
+                        break;
+                    case "STUDENT_SUPPORT":
+                        mapper[i] = (e, v) => e.STUDENT_SUPPORT = v;
+                        break;
+                    case "STUDENT_OTHER_SUPPORT":
+                        mapper[i] = (e, v) => e.STUDENT_OTHER_SUPPORT = v;
+                        break;
+                    case "SUPPORT_GROUP":
+                        mapper[i] = (e, v) => e.SUPPORT_GROUP = v;
+                        break;
+                    case "CHILD_PROTECTION":
+                        mapper[i] = (e, v) => e.CHILD_PROTECTION = v;
+                        break;
+                    case "ATTENDANCE_CONCERNS":
+                        mapper[i] = (e, v) => e.ATTENDANCE_CONCERNS = v;
+                        break;
+                    case "DISCIPLINARY_ACTION":
+                        mapper[i] = (e, v) => e.DISCIPLINARY_ACTION = v;
+                        break;
+                    case "WELFARE_RISKS":
+                        mapper[i] = (e, v) => e.WELFARE_RISKS = v;
+                        break;
+                    case "EFFORT":
+                        mapper[i] = (e, v) => e.EFFORT = v;
+                        break;
+                    case "CLASS_BEHAVIOUR":
+                        mapper[i] = (e, v) => e.CLASS_BEHAVIOUR = v;
+                        break;
+                    case "ORGANISATION":
+                        mapper[i] = (e, v) => e.ORGANISATION = v;
+                        break;
+                    case "SOCIAL_BEHAVIOUR":
+                        mapper[i] = (e, v) => e.SOCIAL_BEHAVIOUR = v;
+                        break;
+                    case "LEARNING_SUPPORT":
+                        mapper[i] = (e, v) => e.LEARNING_SUPPORT = v;
+                        break;
+                    case "NEW_ARRIVALS_PROGRAM":
+                        mapper[i] = (e, v) => e.NEW_ARRIVALS_PROGRAM = v;
+                        break;
+                    case "REFUGEE_BACKGROUND":
+                        mapper[i] = (e, v) => e.REFUGEE_BACKGROUND = v;
+                        break;
+                    case "TRANSFER_DOCS_SENT":
+                        mapper[i] = (e, v) => e.TRANSFER_DOCS_SENT = v;
+                        break;
+                    case "ENTRY":
+                        mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
                     case "DFA_TRANS_ID":
                         mapper[i] = (e, v) => e.DFA_TRANS_ID = v;
                         break;
@@ -760,6 +826,28 @@ BEGIN
         [LOTE_HOME_CODE] varchar(7) NULL,
         [VSN] varchar(12) NULL,
         [SPEC_CURR] varchar(2) NULL,
+        [LEGAL_LIMIT_DECISION] varchar(1) NULL,
+        [LEGAL_LIMIT_CONTACT] varchar(1) NULL,
+        [LEGAL_LIMITATION] text NULL,
+        [DOC_COPIES] varchar(1) NULL,
+        [LISTED_IN_SOCS] varchar(1) NULL,
+        [SUPPORT_SERVICES] varchar(1) NULL,
+        [STUDENT_SUPPORT] varchar(1) NULL,
+        [STUDENT_OTHER_SUPPORT] varchar(1) NULL,
+        [SUPPORT_GROUP] varchar(1) NULL,
+        [CHILD_PROTECTION] varchar(1) NULL,
+        [ATTENDANCE_CONCERNS] varchar(1) NULL,
+        [DISCIPLINARY_ACTION] varchar(1) NULL,
+        [WELFARE_RISKS] varchar(1) NULL,
+        [EFFORT] varchar(15) NULL,
+        [CLASS_BEHAVIOUR] varchar(15) NULL,
+        [ORGANISATION] varchar(15) NULL,
+        [SOCIAL_BEHAVIOUR] varchar(15) NULL,
+        [LEARNING_SUPPORT] varchar(1) NULL,
+        [NEW_ARRIVALS_PROGRAM] varchar(1) NULL,
+        [REFUGEE_BACKGROUND] varchar(1) NULL,
+        [TRANSFER_DOCS_SENT] varchar(1) NULL,
+        [ENTRY] datetime NULL,
         [DFA_TRANS_ID] varchar(30) NULL,
         [DFB_TRANS_ID] varchar(30) NULL,
         [DFC_TRANS_ID] varchar(30) NULL,
@@ -919,7 +1007,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
             {
             }
 
-            public override int FieldCount { get { return 106; } }
+            public override int FieldCount { get { return 128; } }
 
             public override object GetValue(int i)
             {
@@ -1119,23 +1207,67 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return Current.VSN;
                     case 96: // SPEC_CURR
                         return Current.SPEC_CURR;
-                    case 97: // DFA_TRANS_ID
+                    case 97: // LEGAL_LIMIT_DECISION
+                        return Current.LEGAL_LIMIT_DECISION;
+                    case 98: // LEGAL_LIMIT_CONTACT
+                        return Current.LEGAL_LIMIT_CONTACT;
+                    case 99: // LEGAL_LIMITATION
+                        return Current.LEGAL_LIMITATION;
+                    case 100: // DOC_COPIES
+                        return Current.DOC_COPIES;
+                    case 101: // LISTED_IN_SOCS
+                        return Current.LISTED_IN_SOCS;
+                    case 102: // SUPPORT_SERVICES
+                        return Current.SUPPORT_SERVICES;
+                    case 103: // STUDENT_SUPPORT
+                        return Current.STUDENT_SUPPORT;
+                    case 104: // STUDENT_OTHER_SUPPORT
+                        return Current.STUDENT_OTHER_SUPPORT;
+                    case 105: // SUPPORT_GROUP
+                        return Current.SUPPORT_GROUP;
+                    case 106: // CHILD_PROTECTION
+                        return Current.CHILD_PROTECTION;
+                    case 107: // ATTENDANCE_CONCERNS
+                        return Current.ATTENDANCE_CONCERNS;
+                    case 108: // DISCIPLINARY_ACTION
+                        return Current.DISCIPLINARY_ACTION;
+                    case 109: // WELFARE_RISKS
+                        return Current.WELFARE_RISKS;
+                    case 110: // EFFORT
+                        return Current.EFFORT;
+                    case 111: // CLASS_BEHAVIOUR
+                        return Current.CLASS_BEHAVIOUR;
+                    case 112: // ORGANISATION
+                        return Current.ORGANISATION;
+                    case 113: // SOCIAL_BEHAVIOUR
+                        return Current.SOCIAL_BEHAVIOUR;
+                    case 114: // LEARNING_SUPPORT
+                        return Current.LEARNING_SUPPORT;
+                    case 115: // NEW_ARRIVALS_PROGRAM
+                        return Current.NEW_ARRIVALS_PROGRAM;
+                    case 116: // REFUGEE_BACKGROUND
+                        return Current.REFUGEE_BACKGROUND;
+                    case 117: // TRANSFER_DOCS_SENT
+                        return Current.TRANSFER_DOCS_SENT;
+                    case 118: // ENTRY
+                        return Current.ENTRY;
+                    case 119: // DFA_TRANS_ID
                         return Current.DFA_TRANS_ID;
-                    case 98: // DFB_TRANS_ID
+                    case 120: // DFB_TRANS_ID
                         return Current.DFB_TRANS_ID;
-                    case 99: // DFC_TRANS_ID
+                    case 121: // DFC_TRANS_ID
                         return Current.DFC_TRANS_ID;
-                    case 100: // KCD_TRANS_ID
+                    case 122: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID;
-                    case 101: // IMP_STATUS
+                    case 123: // IMP_STATUS
                         return Current.IMP_STATUS;
-                    case 102: // IMP_DATE
+                    case 124: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 103: // LW_DATE
+                    case 125: // LW_DATE
                         return Current.LW_DATE;
-                    case 104: // LW_TIME
+                    case 126: // LW_TIME
                         return Current.LW_TIME;
-                    case 105: // LW_USER
+                    case 127: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1336,23 +1468,67 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return Current.VSN == null;
                     case 96: // SPEC_CURR
                         return Current.SPEC_CURR == null;
-                    case 97: // DFA_TRANS_ID
+                    case 97: // LEGAL_LIMIT_DECISION
+                        return Current.LEGAL_LIMIT_DECISION == null;
+                    case 98: // LEGAL_LIMIT_CONTACT
+                        return Current.LEGAL_LIMIT_CONTACT == null;
+                    case 99: // LEGAL_LIMITATION
+                        return Current.LEGAL_LIMITATION == null;
+                    case 100: // DOC_COPIES
+                        return Current.DOC_COPIES == null;
+                    case 101: // LISTED_IN_SOCS
+                        return Current.LISTED_IN_SOCS == null;
+                    case 102: // SUPPORT_SERVICES
+                        return Current.SUPPORT_SERVICES == null;
+                    case 103: // STUDENT_SUPPORT
+                        return Current.STUDENT_SUPPORT == null;
+                    case 104: // STUDENT_OTHER_SUPPORT
+                        return Current.STUDENT_OTHER_SUPPORT == null;
+                    case 105: // SUPPORT_GROUP
+                        return Current.SUPPORT_GROUP == null;
+                    case 106: // CHILD_PROTECTION
+                        return Current.CHILD_PROTECTION == null;
+                    case 107: // ATTENDANCE_CONCERNS
+                        return Current.ATTENDANCE_CONCERNS == null;
+                    case 108: // DISCIPLINARY_ACTION
+                        return Current.DISCIPLINARY_ACTION == null;
+                    case 109: // WELFARE_RISKS
+                        return Current.WELFARE_RISKS == null;
+                    case 110: // EFFORT
+                        return Current.EFFORT == null;
+                    case 111: // CLASS_BEHAVIOUR
+                        return Current.CLASS_BEHAVIOUR == null;
+                    case 112: // ORGANISATION
+                        return Current.ORGANISATION == null;
+                    case 113: // SOCIAL_BEHAVIOUR
+                        return Current.SOCIAL_BEHAVIOUR == null;
+                    case 114: // LEARNING_SUPPORT
+                        return Current.LEARNING_SUPPORT == null;
+                    case 115: // NEW_ARRIVALS_PROGRAM
+                        return Current.NEW_ARRIVALS_PROGRAM == null;
+                    case 116: // REFUGEE_BACKGROUND
+                        return Current.REFUGEE_BACKGROUND == null;
+                    case 117: // TRANSFER_DOCS_SENT
+                        return Current.TRANSFER_DOCS_SENT == null;
+                    case 118: // ENTRY
+                        return Current.ENTRY == null;
+                    case 119: // DFA_TRANS_ID
                         return Current.DFA_TRANS_ID == null;
-                    case 98: // DFB_TRANS_ID
+                    case 120: // DFB_TRANS_ID
                         return Current.DFB_TRANS_ID == null;
-                    case 99: // DFC_TRANS_ID
+                    case 121: // DFC_TRANS_ID
                         return Current.DFC_TRANS_ID == null;
-                    case 100: // KCD_TRANS_ID
+                    case 122: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID == null;
-                    case 101: // IMP_STATUS
+                    case 123: // IMP_STATUS
                         return Current.IMP_STATUS == null;
-                    case 102: // IMP_DATE
+                    case 124: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 103: // LW_DATE
+                    case 125: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 104: // LW_TIME
+                    case 126: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 105: // LW_USER
+                    case 127: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1557,23 +1733,67 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return "VSN";
                     case 96: // SPEC_CURR
                         return "SPEC_CURR";
-                    case 97: // DFA_TRANS_ID
+                    case 97: // LEGAL_LIMIT_DECISION
+                        return "LEGAL_LIMIT_DECISION";
+                    case 98: // LEGAL_LIMIT_CONTACT
+                        return "LEGAL_LIMIT_CONTACT";
+                    case 99: // LEGAL_LIMITATION
+                        return "LEGAL_LIMITATION";
+                    case 100: // DOC_COPIES
+                        return "DOC_COPIES";
+                    case 101: // LISTED_IN_SOCS
+                        return "LISTED_IN_SOCS";
+                    case 102: // SUPPORT_SERVICES
+                        return "SUPPORT_SERVICES";
+                    case 103: // STUDENT_SUPPORT
+                        return "STUDENT_SUPPORT";
+                    case 104: // STUDENT_OTHER_SUPPORT
+                        return "STUDENT_OTHER_SUPPORT";
+                    case 105: // SUPPORT_GROUP
+                        return "SUPPORT_GROUP";
+                    case 106: // CHILD_PROTECTION
+                        return "CHILD_PROTECTION";
+                    case 107: // ATTENDANCE_CONCERNS
+                        return "ATTENDANCE_CONCERNS";
+                    case 108: // DISCIPLINARY_ACTION
+                        return "DISCIPLINARY_ACTION";
+                    case 109: // WELFARE_RISKS
+                        return "WELFARE_RISKS";
+                    case 110: // EFFORT
+                        return "EFFORT";
+                    case 111: // CLASS_BEHAVIOUR
+                        return "CLASS_BEHAVIOUR";
+                    case 112: // ORGANISATION
+                        return "ORGANISATION";
+                    case 113: // SOCIAL_BEHAVIOUR
+                        return "SOCIAL_BEHAVIOUR";
+                    case 114: // LEARNING_SUPPORT
+                        return "LEARNING_SUPPORT";
+                    case 115: // NEW_ARRIVALS_PROGRAM
+                        return "NEW_ARRIVALS_PROGRAM";
+                    case 116: // REFUGEE_BACKGROUND
+                        return "REFUGEE_BACKGROUND";
+                    case 117: // TRANSFER_DOCS_SENT
+                        return "TRANSFER_DOCS_SENT";
+                    case 118: // ENTRY
+                        return "ENTRY";
+                    case 119: // DFA_TRANS_ID
                         return "DFA_TRANS_ID";
-                    case 98: // DFB_TRANS_ID
+                    case 120: // DFB_TRANS_ID
                         return "DFB_TRANS_ID";
-                    case 99: // DFC_TRANS_ID
+                    case 121: // DFC_TRANS_ID
                         return "DFC_TRANS_ID";
-                    case 100: // KCD_TRANS_ID
+                    case 122: // KCD_TRANS_ID
                         return "KCD_TRANS_ID";
-                    case 101: // IMP_STATUS
+                    case 123: // IMP_STATUS
                         return "IMP_STATUS";
-                    case 102: // IMP_DATE
+                    case 124: // IMP_DATE
                         return "IMP_DATE";
-                    case 103: // LW_DATE
+                    case 125: // LW_DATE
                         return "LW_DATE";
-                    case 104: // LW_TIME
+                    case 126: // LW_TIME
                         return "LW_TIME";
-                    case 105: // LW_USER
+                    case 127: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1778,24 +1998,68 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return 95;
                     case "SPEC_CURR":
                         return 96;
-                    case "DFA_TRANS_ID":
+                    case "LEGAL_LIMIT_DECISION":
                         return 97;
-                    case "DFB_TRANS_ID":
+                    case "LEGAL_LIMIT_CONTACT":
                         return 98;
-                    case "DFC_TRANS_ID":
+                    case "LEGAL_LIMITATION":
                         return 99;
-                    case "KCD_TRANS_ID":
+                    case "DOC_COPIES":
                         return 100;
-                    case "IMP_STATUS":
+                    case "LISTED_IN_SOCS":
                         return 101;
-                    case "IMP_DATE":
+                    case "SUPPORT_SERVICES":
                         return 102;
-                    case "LW_DATE":
+                    case "STUDENT_SUPPORT":
                         return 103;
-                    case "LW_TIME":
+                    case "STUDENT_OTHER_SUPPORT":
                         return 104;
-                    case "LW_USER":
+                    case "SUPPORT_GROUP":
                         return 105;
+                    case "CHILD_PROTECTION":
+                        return 106;
+                    case "ATTENDANCE_CONCERNS":
+                        return 107;
+                    case "DISCIPLINARY_ACTION":
+                        return 108;
+                    case "WELFARE_RISKS":
+                        return 109;
+                    case "EFFORT":
+                        return 110;
+                    case "CLASS_BEHAVIOUR":
+                        return 111;
+                    case "ORGANISATION":
+                        return 112;
+                    case "SOCIAL_BEHAVIOUR":
+                        return 113;
+                    case "LEARNING_SUPPORT":
+                        return 114;
+                    case "NEW_ARRIVALS_PROGRAM":
+                        return 115;
+                    case "REFUGEE_BACKGROUND":
+                        return 116;
+                    case "TRANSFER_DOCS_SENT":
+                        return 117;
+                    case "ENTRY":
+                        return 118;
+                    case "DFA_TRANS_ID":
+                        return 119;
+                    case "DFB_TRANS_ID":
+                        return 120;
+                    case "DFC_TRANS_ID":
+                        return 121;
+                    case "KCD_TRANS_ID":
+                        return 122;
+                    case "IMP_STATUS":
+                        return 123;
+                    case "IMP_DATE":
+                        return 124;
+                    case "LW_DATE":
+                        return 125;
+                    case "LW_TIME":
+                        return 126;
+                    case "LW_USER":
+                        return 127;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

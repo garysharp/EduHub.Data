@@ -318,6 +318,12 @@
     <Compile Include="Entities\KABDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KABN.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KABNDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\KAD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -408,6 +414,12 @@
     <Compile Include="Entities\KCOHORTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KCPC.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KCPCDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\KCR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -482,6 +494,12 @@
     <Compile Include="Entities\KGCHIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KGCV.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KGCVDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\KGD.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -535,6 +553,18 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KGLTHelpers.cs" />
+    <Compile Include="Entities\KGO.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KGODataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KGO_TFR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KGO_TFRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\KGR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -568,6 +598,12 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KN.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNATT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNATTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KNDataSet.cs">
@@ -667,6 +703,12 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KTRCMPDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KUPC.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KUPCDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\OSCS.cs">
@@ -781,6 +823,18 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\PGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PGID.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PGIDDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PGLI.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\PGLIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\PI.cs">
@@ -1340,6 +1394,18 @@
     <Compile Include="Entities\SPEPRINTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SPFSHARE.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPFSHAREDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPFSTORE.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPFSTOREDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\SPOUT.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1370,6 +1436,12 @@
     <Compile Include="Entities\SPUDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SPWWW.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPWWWDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\SRAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1389,6 +1461,18 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\ST.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STAR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STARDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STAR_TFR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STAR_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\STBT.cs">
@@ -1413,10 +1497,34 @@
     <Compile Include="Entities\STMBDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\STNAT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STNATDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STNAT_TR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STNAT_TRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\STPO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\STPODataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STPS.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STPSDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STPS_TFR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STPS_TFRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\STPT.cs">
@@ -1449,6 +1557,18 @@
     <Compile Include="Entities\STSPDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\STSUP.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STSUPDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STSUP_TR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STSUP_TRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\STTRIPS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1461,10 +1581,22 @@
     <Compile Include="Entities\STVDIDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\STVDI_TR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STVDI_TRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\STVDO.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\STVDODataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STVDO_TR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\STVDO_TRDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\ST_TFR.cs">

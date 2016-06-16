@@ -216,6 +216,9 @@ namespace EduHub.Data.Entities
                     case "TRMETHOD":
                         mapper[i] = (e, v) => e.TRMETHOD = v;
                         break;
+                    case "TRDEL_MONTHS":
+                        mapper[i] = (e, v) => e.TRDEL_MONTHS = v == null ? (short?)null : short.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -755,6 +758,7 @@ BEGIN
         [BPAY_REFERENCE] varchar(20) NULL,
         [REFERENCE_NO] varchar(21) NULL,
         [TRMETHOD] varchar(1) NULL,
+        [TRDEL_MONTHS] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -924,7 +928,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
             {
             }
 
-            public override int FieldCount { get { return 60; } }
+            public override int FieldCount { get { return 61; } }
 
             public override object GetValue(int i)
             {
@@ -1044,11 +1048,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
                         return Current.REFERENCE_NO;
                     case 56: // TRMETHOD
                         return Current.TRMETHOD;
-                    case 57: // LW_DATE
+                    case 57: // TRDEL_MONTHS
+                        return Current.TRDEL_MONTHS;
+                    case 58: // LW_DATE
                         return Current.LW_DATE;
-                    case 58: // LW_TIME
+                    case 59: // LW_TIME
                         return Current.LW_TIME;
-                    case 59: // LW_USER
+                    case 60: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1169,11 +1175,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
                         return Current.REFERENCE_NO == null;
                     case 56: // TRMETHOD
                         return Current.TRMETHOD == null;
-                    case 57: // LW_DATE
+                    case 57: // TRDEL_MONTHS
+                        return Current.TRDEL_MONTHS == null;
+                    case 58: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 58: // LW_TIME
+                    case 59: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 59: // LW_USER
+                    case 60: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1298,11 +1306,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
                         return "REFERENCE_NO";
                     case 56: // TRMETHOD
                         return "TRMETHOD";
-                    case 57: // LW_DATE
+                    case 57: // TRDEL_MONTHS
+                        return "TRDEL_MONTHS";
+                    case 58: // LW_DATE
                         return "LW_DATE";
-                    case 58: // LW_TIME
+                    case 59: // LW_TIME
                         return "LW_TIME";
-                    case 59: // LW_USER
+                    case 60: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1427,12 +1437,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
                         return 55;
                     case "TRMETHOD":
                         return 56;
-                    case "LW_DATE":
+                    case "TRDEL_MONTHS":
                         return 57;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 58;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 59;
+                    case "LW_USER":
+                        return 60;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

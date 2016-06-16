@@ -41,6 +41,12 @@ namespace EduHub.Data.Entities
         public string DESCRIPTION { get; internal set; }
 
         /// <summary>
+        /// Disability flag
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DISABILITY { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

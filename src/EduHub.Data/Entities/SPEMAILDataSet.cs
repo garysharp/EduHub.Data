@@ -253,7 +253,7 @@ namespace EduHub.Data.Entities
 BEGIN
     CREATE TABLE [dbo].[SPEMAIL](
         [SPEMAILKEY] varchar(15) NOT NULL,
-        [DESCRIPTION] varchar(40) NULL,
+        [DESCRIPTION] varchar(50) NULL,
         [REPORT] varchar(10) NULL,
         [PRINT_PATH] varchar(128) NULL,
         [IMPORTANCE] varchar(6) NULL,

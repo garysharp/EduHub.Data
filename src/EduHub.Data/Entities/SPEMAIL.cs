@@ -42,7 +42,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Description
-        /// [Alphanumeric (40)]
+        /// [Alphanumeric (50)]
         /// </summary>
         public string DESCRIPTION { get; internal set; }
 

@@ -53,6 +53,7 @@ namespace EduHub.Data
         private readonly GLFPREVDataSet _GLFPREV;
         private readonly GLPREVDataSet _GLPREV;
         private readonly KABDataSet _KAB;
+        private readonly KABNDataSet _KABN;
         private readonly KADDataSet _KAD;
         private readonly KADMDataSet _KADM;
         private readonly KAMDataSet _KAM;
@@ -68,6 +69,7 @@ namespace EduHub.Data
         private readonly KCMDataSet _KCM;
         private readonly KCM_TFRDataSet _KCM_TFR;
         private readonly KCOHORTDataSet _KCOHORT;
+        private readonly KCPCDataSet _KCPC;
         private readonly KCRDataSet _KCR;
         private readonly KCTDataSet _KCT;
         private readonly KCVDataSet _KCV;
@@ -80,6 +82,7 @@ namespace EduHub.Data
         private readonly KFTCDataSet _KFTC;
         private readonly KGCDataSet _KGC;
         private readonly KGCHIDataSet _KGCHI;
+        private readonly KGCVDataSet _KGCV;
         private readonly KGDDataSet _KGD;
         private readonly KGGDataSet _KGG;
         private readonly KGHDataSet _KGH;
@@ -88,12 +91,15 @@ namespace EduHub.Data
         private readonly KGLPROGDataSet _KGLPROG;
         private readonly KGLSUBDataSet _KGLSUB;
         private readonly KGLTDataSet _KGLT;
+        private readonly KGODataSet _KGO;
+        private readonly KGO_TFRDataSet _KGO_TFR;
         private readonly KGRDataSet _KGR;
         private readonly KGSTDataSet _KGST;
         private readonly KGTDataSet _KGT;
         private readonly KGWDataSet _KGW;
         private readonly KLOGDataSet _KLOG;
         private readonly KNDataSet _KN;
+        private readonly KNATTDataSet _KNATT;
         private readonly KNFSDataSet _KNFS;
         private readonly KPCDataSet _KPC;
         private readonly KPCLDataSet _KPCL;
@@ -110,6 +116,7 @@ namespace EduHub.Data
         private readonly KTIEDataSet _KTIE;
         private readonly KTMDataSet _KTM;
         private readonly KTRCMPDataSet _KTRCMP;
+        private readonly KUPCDataSet _KUPC;
         private readonly OSCSDataSet _OSCS;
         private readonly PCDataSet _PC;
         private readonly PDDataSet _PD;
@@ -129,6 +136,8 @@ namespace EduHub.Data
         private readonly PETPDataSet _PETP;
         private readonly PFDataSet _PF;
         private readonly PGDataSet _PG;
+        private readonly PGIDDataSet _PGID;
+        private readonly PGLIDataSet _PGLI;
         private readonly PIDataSet _PI;
         private readonly PILIDataSet _PILI;
         private readonly PLCDataSet _PLC;
@@ -221,29 +230,42 @@ namespace EduHub.Data
         private readonly SMGROUPDataSet _SMGROUP;
         private readonly SPEMAILDataSet _SPEMAIL;
         private readonly SPEPRINTDataSet _SPEPRINT;
+        private readonly SPFSHAREDataSet _SPFSHARE;
+        private readonly SPFSTOREDataSet _SPFSTORE;
         private readonly SPOUTDataSet _SPOUT;
         private readonly SPRECIPDataSet _SPRECIP;
         private readonly SPREPLYDataSet _SPREPLY;
         private readonly SPSMSDataSet _SPSMS;
         private readonly SPUDataSet _SPU;
+        private readonly SPWWWDataSet _SPWWW;
         private readonly SRAGDataSet _SRAG;
         private readonly SSDataSet _SS;
         private readonly SSHGDataSet _SSHG;
         private readonly STDataSet _ST;
         private readonly ST_TFRDataSet _ST_TFR;
         private readonly ST_TFRIODataSet _ST_TFRIO;
+        private readonly STARDataSet _STAR;
+        private readonly STAR_TFRDataSet _STAR_TFR;
         private readonly STBTDataSet _STBT;
         private readonly STMADataSet _STMA;
         private readonly STMBDataSet _STMB;
+        private readonly STNATDataSet _STNAT;
+        private readonly STNAT_TRDataSet _STNAT_TR;
         private readonly STPODataSet _STPO;
+        private readonly STPSDataSet _STPS;
+        private readonly STPS_TFRDataSet _STPS_TFR;
         private readonly STPTDataSet _STPT;
         private readonly STRADataSet _STRA;
         private readonly STREDataSet _STRE;
         private readonly STSBDataSet _STSB;
         private readonly STSPDataSet _STSP;
+        private readonly STSUPDataSet _STSUP;
+        private readonly STSUP_TRDataSet _STSUP_TR;
         private readonly STTRIPSDataSet _STTRIPS;
         private readonly STVDIDataSet _STVDI;
+        private readonly STVDI_TRDataSet _STVDI_TR;
         private readonly STVDODataSet _STVDO;
+        private readonly STVDO_TRDataSet _STVDO_TR;
         private readonly SUDataSet _SU;
         private readonly SUBLDataSet _SUBL;
         private readonly SUPRDataSet _SUPR;
@@ -353,6 +375,7 @@ namespace EduHub.Data
             _GLFPREV = new GLFPREVDataSet(this);
             _GLPREV = new GLPREVDataSet(this);
             _KAB = new KABDataSet(this);
+            _KABN = new KABNDataSet(this);
             _KAD = new KADDataSet(this);
             _KADM = new KADMDataSet(this);
             _KAM = new KAMDataSet(this);
@@ -368,6 +391,7 @@ namespace EduHub.Data
             _KCM = new KCMDataSet(this);
             _KCM_TFR = new KCM_TFRDataSet(this);
             _KCOHORT = new KCOHORTDataSet(this);
+            _KCPC = new KCPCDataSet(this);
             _KCR = new KCRDataSet(this);
             _KCT = new KCTDataSet(this);
             _KCV = new KCVDataSet(this);
@@ -380,6 +404,7 @@ namespace EduHub.Data
             _KFTC = new KFTCDataSet(this);
             _KGC = new KGCDataSet(this);
             _KGCHI = new KGCHIDataSet(this);
+            _KGCV = new KGCVDataSet(this);
             _KGD = new KGDDataSet(this);
             _KGG = new KGGDataSet(this);
             _KGH = new KGHDataSet(this);
@@ -388,12 +413,15 @@ namespace EduHub.Data
             _KGLPROG = new KGLPROGDataSet(this);
             _KGLSUB = new KGLSUBDataSet(this);
             _KGLT = new KGLTDataSet(this);
+            _KGO = new KGODataSet(this);
+            _KGO_TFR = new KGO_TFRDataSet(this);
             _KGR = new KGRDataSet(this);
             _KGST = new KGSTDataSet(this);
             _KGT = new KGTDataSet(this);
             _KGW = new KGWDataSet(this);
             _KLOG = new KLOGDataSet(this);
             _KN = new KNDataSet(this);
+            _KNATT = new KNATTDataSet(this);
             _KNFS = new KNFSDataSet(this);
             _KPC = new KPCDataSet(this);
             _KPCL = new KPCLDataSet(this);
@@ -410,6 +438,7 @@ namespace EduHub.Data
             _KTIE = new KTIEDataSet(this);
             _KTM = new KTMDataSet(this);
             _KTRCMP = new KTRCMPDataSet(this);
+            _KUPC = new KUPCDataSet(this);
             _OSCS = new OSCSDataSet(this);
             _PC = new PCDataSet(this);
             _PD = new PDDataSet(this);
@@ -429,6 +458,8 @@ namespace EduHub.Data
             _PETP = new PETPDataSet(this);
             _PF = new PFDataSet(this);
             _PG = new PGDataSet(this);
+            _PGID = new PGIDDataSet(this);
+            _PGLI = new PGLIDataSet(this);
             _PI = new PIDataSet(this);
             _PILI = new PILIDataSet(this);
             _PLC = new PLCDataSet(this);
@@ -521,29 +552,42 @@ namespace EduHub.Data
             _SMGROUP = new SMGROUPDataSet(this);
             _SPEMAIL = new SPEMAILDataSet(this);
             _SPEPRINT = new SPEPRINTDataSet(this);
+            _SPFSHARE = new SPFSHAREDataSet(this);
+            _SPFSTORE = new SPFSTOREDataSet(this);
             _SPOUT = new SPOUTDataSet(this);
             _SPRECIP = new SPRECIPDataSet(this);
             _SPREPLY = new SPREPLYDataSet(this);
             _SPSMS = new SPSMSDataSet(this);
             _SPU = new SPUDataSet(this);
+            _SPWWW = new SPWWWDataSet(this);
             _SRAG = new SRAGDataSet(this);
             _SS = new SSDataSet(this);
             _SSHG = new SSHGDataSet(this);
             _ST = new STDataSet(this);
             _ST_TFR = new ST_TFRDataSet(this);
             _ST_TFRIO = new ST_TFRIODataSet(this);
+            _STAR = new STARDataSet(this);
+            _STAR_TFR = new STAR_TFRDataSet(this);
             _STBT = new STBTDataSet(this);
             _STMA = new STMADataSet(this);
             _STMB = new STMBDataSet(this);
+            _STNAT = new STNATDataSet(this);
+            _STNAT_TR = new STNAT_TRDataSet(this);
             _STPO = new STPODataSet(this);
+            _STPS = new STPSDataSet(this);
+            _STPS_TFR = new STPS_TFRDataSet(this);
             _STPT = new STPTDataSet(this);
             _STRA = new STRADataSet(this);
             _STRE = new STREDataSet(this);
             _STSB = new STSBDataSet(this);
             _STSP = new STSPDataSet(this);
+            _STSUP = new STSUPDataSet(this);
+            _STSUP_TR = new STSUP_TRDataSet(this);
             _STTRIPS = new STTRIPSDataSet(this);
             _STVDI = new STVDIDataSet(this);
+            _STVDI_TR = new STVDI_TRDataSet(this);
             _STVDO = new STVDODataSet(this);
+            _STVDO_TR = new STVDO_TRDataSet(this);
             _SU = new SUDataSet(this);
             _SUBL = new SUBLDataSet(this);
             _SUPR = new SUPRDataSet(this);
@@ -629,6 +673,7 @@ namespace EduHub.Data
             yield return GLFPREV;
             yield return GLPREV;
             yield return KAB;
+            yield return KABN;
             yield return KAD;
             yield return KADM;
             yield return KAM;
@@ -644,6 +689,7 @@ namespace EduHub.Data
             yield return KCM;
             yield return KCM_TFR;
             yield return KCOHORT;
+            yield return KCPC;
             yield return KCR;
             yield return KCT;
             yield return KCV;
@@ -656,6 +702,7 @@ namespace EduHub.Data
             yield return KFTC;
             yield return KGC;
             yield return KGCHI;
+            yield return KGCV;
             yield return KGD;
             yield return KGG;
             yield return KGH;
@@ -664,12 +711,15 @@ namespace EduHub.Data
             yield return KGLPROG;
             yield return KGLSUB;
             yield return KGLT;
+            yield return KGO;
+            yield return KGO_TFR;
             yield return KGR;
             yield return KGST;
             yield return KGT;
             yield return KGW;
             yield return KLOG;
             yield return KN;
+            yield return KNATT;
             yield return KNFS;
             yield return KPC;
             yield return KPCL;
@@ -686,6 +736,7 @@ namespace EduHub.Data
             yield return KTIE;
             yield return KTM;
             yield return KTRCMP;
+            yield return KUPC;
             yield return OSCS;
             yield return PC;
             yield return PD;
@@ -705,6 +756,8 @@ namespace EduHub.Data
             yield return PETP;
             yield return PF;
             yield return PG;
+            yield return PGID;
+            yield return PGLI;
             yield return PI;
             yield return PILI;
             yield return PLC;
@@ -797,29 +850,42 @@ namespace EduHub.Data
             yield return SMGROUP;
             yield return SPEMAIL;
             yield return SPEPRINT;
+            yield return SPFSHARE;
+            yield return SPFSTORE;
             yield return SPOUT;
             yield return SPRECIP;
             yield return SPREPLY;
             yield return SPSMS;
             yield return SPU;
+            yield return SPWWW;
             yield return SRAG;
             yield return SS;
             yield return SSHG;
             yield return ST;
             yield return ST_TFR;
             yield return ST_TFRIO;
+            yield return STAR;
+            yield return STAR_TFR;
             yield return STBT;
             yield return STMA;
             yield return STMB;
+            yield return STNAT;
+            yield return STNAT_TR;
             yield return STPO;
+            yield return STPS;
+            yield return STPS_TFR;
             yield return STPT;
             yield return STRA;
             yield return STRE;
             yield return STSB;
             yield return STSP;
+            yield return STSUP;
+            yield return STSUP_TR;
             yield return STTRIPS;
             yield return STVDI;
+            yield return STVDI_TR;
             yield return STVDO;
+            yield return STVDO_TR;
             yield return SU;
             yield return SUBL;
             yield return SUPR;
@@ -1063,6 +1129,11 @@ namespace EduHub.Data
         public KABDataSet KAB { get { return _KAB; } }
 
         /// <summary>
+        /// Restricted ABN Numbers
+        /// </summary>
+        public KABNDataSet KABN { get { return _KABN; } }
+
+        /// <summary>
         /// Delivery Addresses
         /// </summary>
         public KADDataSet KAD { get { return _KAD; } }
@@ -1138,6 +1209,11 @@ namespace EduHub.Data
         public KCOHORTDataSet KCOHORT { get { return _KCOHORT; } }
 
         /// <summary>
+        /// Creditor Purchasing Card
+        /// </summary>
+        public KCPCDataSet KCPC { get { return _KCPC; } }
+
+        /// <summary>
         /// Transport Routes/Stops
         /// </summary>
         public KCRDataSet KCR { get { return _KCR; } }
@@ -1198,6 +1274,11 @@ namespace EduHub.Data
         public KGCHIDataSet KGCHI { get { return _KGCHI; } }
 
         /// <summary>
+        /// eMaze Calendar Framework
+        /// </summary>
+        public KGCVDataSet KGCV { get { return _KGCV; } }
+
+        /// <summary>
         /// Year 9-12 Exit Destinations
         /// </summary>
         public KGDDataSet KGD { get { return _KGD; } }
@@ -1238,6 +1319,16 @@ namespace EduHub.Data
         public KGLTDataSet KGLT { get { return _KGLT; } }
 
         /// <summary>
+        /// Occupations
+        /// </summary>
+        public KGODataSet KGO { get { return _KGO; } }
+
+        /// <summary>
+        /// KGO Transfer
+        /// </summary>
+        public KGO_TFRDataSet KGO_TFR { get { return _KGO_TFR; } }
+
+        /// <summary>
         /// Religions
         /// </summary>
         public KGRDataSet KGR { get { return _KGR; } }
@@ -1266,6 +1357,11 @@ namespace EduHub.Data
         /// General Ledger Notes
         /// </summary>
         public KNDataSet KN { get { return _KN; } }
+
+        /// <summary>
+        /// Notes and Attachment Type
+        /// </summary>
+        public KNATTDataSet KNATT { get { return _KNATT; } }
 
         /// <summary>
         /// Family/Student ID Sequence Numbers
@@ -1346,6 +1442,11 @@ namespace EduHub.Data
         /// Student Transport Company
         /// </summary>
         public KTRCMPDataSet KTRCMP { get { return _KTRCMP; } }
+
+        /// <summary>
+        /// User Program Codes
+        /// </summary>
+        public KUPCDataSet KUPC { get { return _KUPC; } }
 
         /// <summary>
         /// CASES Past Students
@@ -1441,6 +1542,16 @@ namespace EduHub.Data
         /// PAYG Payment Summary Box
         /// </summary>
         public PGDataSet PG { get { return _PG; } }
+
+        /// <summary>
+        /// General Ledger Import Details
+        /// </summary>
+        public PGIDDataSet PGID { get { return _PGID; } }
+
+        /// <summary>
+        /// General Ledger Import
+        /// </summary>
+        public PGLIDataSet PGLI { get { return _PGLI; } }
 
         /// <summary>
         /// Pay Items
@@ -1903,6 +2014,16 @@ namespace EduHub.Data
         public SPEPRINTDataSet SPEPRINT { get { return _SPEPRINT; } }
 
         /// <summary>
+        /// File Sharing
+        /// </summary>
+        public SPFSHAREDataSet SPFSHARE { get { return _SPFSHARE; } }
+
+        /// <summary>
+        /// File Store for streaming files to eMaze
+        /// </summary>
+        public SPFSTOREDataSet SPFSTORE { get { return _SPFSTORE; } }
+
+        /// <summary>
         /// Stored Procedure Return Values
         /// </summary>
         public SPOUTDataSet SPOUT { get { return _SPOUT; } }
@@ -1926,6 +2047,11 @@ namespace EduHub.Data
         /// Publications
         /// </summary>
         public SPUDataSet SPU { get { return _SPU; } }
+
+        /// <summary>
+        /// Report WWW templates
+        /// </summary>
+        public SPWWWDataSet SPWWW { get { return _SPWWW; } }
 
         /// <summary>
         /// FTE Student Retentions
@@ -1958,6 +2084,16 @@ namespace EduHub.Data
         public ST_TFRIODataSet ST_TFRIO { get { return _ST_TFRIO; } }
 
         /// <summary>
+        /// Student Access Restrictions
+        /// </summary>
+        public STARDataSet STAR { get { return _STAR; } }
+
+        /// <summary>
+        /// STAR Transfer
+        /// </summary>
+        public STAR_TFRDataSet STAR_TFR { get { return _STAR_TFR; } }
+
+        /// <summary>
         /// Student Transport Usage
         /// </summary>
         public STBTDataSet STBT { get { return _STBT; } }
@@ -1973,9 +2109,29 @@ namespace EduHub.Data
         public STMBDataSet STMB { get { return _STMB; } }
 
         /// <summary>
+        /// Student Notes and Attachments
+        /// </summary>
+        public STNATDataSet STNAT { get { return _STNAT; } }
+
+        /// <summary>
+        /// STNAT Transfer
+        /// </summary>
+        public STNAT_TRDataSet STNAT_TR { get { return _STNAT_TR; } }
+
+        /// <summary>
         /// Position or Group Memberships
         /// </summary>
         public STPODataSet STPO { get { return _STPO; } }
+
+        /// <summary>
+        /// Student Previous School
+        /// </summary>
+        public STPSDataSet STPS { get { return _STPS; } }
+
+        /// <summary>
+        /// STPS Transfer
+        /// </summary>
+        public STPS_TFRDataSet STPS_TFR { get { return _STPS_TFR; } }
 
         /// <summary>
         /// Student Part-Time Enrolments
@@ -2003,6 +2159,16 @@ namespace EduHub.Data
         public STSPDataSet STSP { get { return _STSP; } }
 
         /// <summary>
+        /// Support Persons
+        /// </summary>
+        public STSUPDataSet STSUP { get { return _STSUP; } }
+
+        /// <summary>
+        /// STSUP Transfer
+        /// </summary>
+        public STSUP_TRDataSet STSUP_TR { get { return _STSUP_TR; } }
+
+        /// <summary>
         /// Student Trips
         /// </summary>
         public STTRIPSDataSet STTRIPS { get { return _STTRIPS; } }
@@ -2013,9 +2179,19 @@ namespace EduHub.Data
         public STVDIDataSet STVDI { get { return _STVDI; } }
 
         /// <summary>
+        /// STVDI Transfer
+        /// </summary>
+        public STVDI_TRDataSet STVDI_TR { get { return _STVDI_TR; } }
+
+        /// <summary>
         /// VELS Domain Results
         /// </summary>
         public STVDODataSet STVDO { get { return _STVDO; } }
+
+        /// <summary>
+        /// STVDO Transfer
+        /// </summary>
+        public STVDO_TRDataSet STVDO_TR { get { return _STVDO_TR; } }
 
         /// <summary>
         /// Subjects

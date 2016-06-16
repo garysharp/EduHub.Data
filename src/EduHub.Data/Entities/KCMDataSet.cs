@@ -44,6 +44,9 @@ namespace EduHub.Data.Entities
                     case "DESCRIPTION":
                         mapper[i] = (e, v) => e.DESCRIPTION = v;
                         break;
+                    case "DISABILITY":
+                        mapper[i] = (e, v) => e.DISABILITY = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -227,6 +230,7 @@ BEGIN
     CREATE TABLE [dbo].[KCM](
         [KCMKEY] varchar(10) NOT NULL,
         [DESCRIPTION] varchar(30) NULL,
+        [DISABILITY] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -340,7 +344,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 5; } }
+            public override int FieldCount { get { return 6; } }
 
             public override object GetValue(int i)
             {
@@ -350,11 +354,13 @@ END");
                         return Current.KCMKEY;
                     case 1: // DESCRIPTION
                         return Current.DESCRIPTION;
-                    case 2: // LW_DATE
+                    case 2: // DISABILITY
+                        return Current.DISABILITY;
+                    case 3: // LW_DATE
                         return Current.LW_DATE;
-                    case 3: // LW_TIME
+                    case 4: // LW_TIME
                         return Current.LW_TIME;
-                    case 4: // LW_USER
+                    case 5: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -367,11 +373,13 @@ END");
                 {
                     case 1: // DESCRIPTION
                         return Current.DESCRIPTION == null;
-                    case 2: // LW_DATE
+                    case 2: // DISABILITY
+                        return Current.DISABILITY == null;
+                    case 3: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 3: // LW_TIME
+                    case 4: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 4: // LW_USER
+                    case 5: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -386,11 +394,13 @@ END");
                         return "KCMKEY";
                     case 1: // DESCRIPTION
                         return "DESCRIPTION";
-                    case 2: // LW_DATE
+                    case 2: // DISABILITY
+                        return "DISABILITY";
+                    case 3: // LW_DATE
                         return "LW_DATE";
-                    case 3: // LW_TIME
+                    case 4: // LW_TIME
                         return "LW_TIME";
-                    case 4: // LW_USER
+                    case 5: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -405,12 +415,14 @@ END");
                         return 0;
                     case "DESCRIPTION":
                         return 1;
-                    case "LW_DATE":
+                    case "DISABILITY":
                         return 2;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 3;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 4;
+                    case "LW_USER":
+                        return 5;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

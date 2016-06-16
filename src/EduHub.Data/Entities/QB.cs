@@ -96,6 +96,12 @@ namespace EduHub.Data.Entities
         public short? BATCHCLASS { get; internal set; }
 
         /// <summary>
+        /// Batch has been imported directly by EDUPAY integration code.
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string EDUPAY { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

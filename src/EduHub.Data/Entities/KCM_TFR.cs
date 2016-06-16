@@ -64,6 +64,12 @@ namespace EduHub.Data.Entities
         public string DESCRIPTION { get; internal set; }
 
         /// <summary>
+        /// Disability flag
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DISABILITY { get; internal set; }
+
+        /// <summary>
         /// Current Status of Import
         /// [Uppercase Alphanumeric (15)]
         /// </summary>

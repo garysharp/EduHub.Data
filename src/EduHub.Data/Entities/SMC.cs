@@ -250,6 +250,12 @@ namespace EduHub.Data.Entities
         public string GROUP_INDICATOR { get; internal set; }
 
         /// <summary>
+        /// Adjustment details
+        /// [Memo]
+        /// </summary>
+        public string DISABILITY_ADJUSTMENT { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
