@@ -44,8 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\EduHub.Data\CsvReader.cs">
+      <Link>CsvReader.cs</Link>
+    </Compile>
     <Compile Include="C7\C7Parser.cs" />
     <Compile Include="Db\DbParser.cs" />
+    <Compile Include="Db\SysBuilder.cs" />
+    <Compile Include="Db\SysColumn.cs" />
+    <Compile Include="Db\SysIndex.cs" />
+    <Compile Include="Db\SysIndexColumn.cs" />
+    <Compile Include="Db\SysTable.cs" />
+    <Compile Include="Db\SysType.cs" />
     <Compile Include="Models\EduHubEntity.cs" />
     <Compile Include="Models\EduHubField.cs" />
     <Compile Include="Models\EduHubIndex.cs" />

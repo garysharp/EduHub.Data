@@ -10,14 +10,14 @@ namespace EduHub.Data.SchemaParser
         static void Main(string[] args)
         {
             var c7SchemaFilename = args[0];
-            var dbConnectionString = args[1];
+            var csvDirectory = args[1];
             var output = args[2];
 
             // Parse C7 Schema File
             var schema = C7Parser.Parse(c7SchemaFilename);
 
             // Augment with Database Information
-            DbParser.AugmentSchema(dbConnectionString, schema);
+            DbParser.AugmentSchemaFromCsv(csvDirectory, schema);
 
             // Validate schema
             SchemaTests.TestForeignKeys(schema);

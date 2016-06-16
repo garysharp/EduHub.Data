@@ -11,7 +11,7 @@ namespace EduHub.Data.SchemaParser.Models
         public string Name { get; private set; }
         public string Description { get; private set; }
 
-        public string Type { get; private set; }
+        public string Type { get; internal set; }
         public string TypeDescription { get; private set; }
         public int TypeMaxLength { get; internal set; }
         public string SqlType { get; internal set; }

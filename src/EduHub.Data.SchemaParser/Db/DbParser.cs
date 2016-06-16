@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 
 namespace EduHub.Data.SchemaParser.Db
@@ -10,163 +11,322 @@ namespace EduHub.Data.SchemaParser.Db
     public static class DbParser
     {
 
-        public static void AugmentSchema(string ConnectionString, EduHubSchema Schema)
+        public static void AugmentSchemaFromCsv(string CsvDirectory, EduHubSchema Schema)
         {
-            const string sqlColumns = @"SELECT c.name, c.max_length, c.is_nullable, c.is_identity, st.name
-FROM sys.tables t
-JOIN sys.columns c on c.object_id=t.object_id
-JOIN sys.systypes st ON c.system_type_id=st.xtype
-WHERE t.name=@TableName
-ORDER BY c.column_id";
-            const string sqlIndexes = @"SELECT t.object_id, i.index_id, i.name, i.is_primary_key, i.is_unique, i.type
-FROM sys.tables t
-JOIN sys.indexes i ON i.object_id=t.object_id
-WHERE t.name=@TableName";
-            const string sqlIndex = @"SELECT c.name
-FROM sys.indexes i
-JOIN sys.index_columns ic ON ic.object_id=i.object_id AND ic.index_id=i.index_id
-JOIN sys.columns c ON c.object_id=ic.object_id AND c.column_id=ic.column_id
-WHERE i.object_id=@ObjectId AND i.index_id=@IndexId
-ORDER BY ic.key_ordinal;";
+            var tables = new List<SysTable>();
+            using (var stream = new FileStream(Path.Combine(CsvDirectory, "SQL_Schema_Tables.csv"), FileMode.Open))
+            {
+                using (var reader = new CsvReader(stream))
+                {
+                    tables = SysBuilder.ImportCsv(reader,
+                        Tuple.Create("SYSSCHOBJS.NAME", (Action<SysTable, string>)((t, v) => t.name = v)),
+                        Tuple.Create("OBJECT_ID", (Action<SysTable, string>)((t, v) => t.object_id = int.Parse(v)))
+                        );
+                }
+            }
+
+            var types = new List<SysType>();
+            using (var stream = new FileStream(Path.Combine(CsvDirectory, "SQL_Schema_Types.csv"), FileMode.Open))
+            {
+                using (var reader = new CsvReader(stream))
+                {
+                    types = SysBuilder.ImportCsv(reader,
+                        Tuple.Create("SYSSCALARTYPES.NAME", (Action<SysType, string>)((t, v) => t.name = v)),
+                        Tuple.Create("USER_TYPE_ID", (Action<SysType, string>)((t, v) => t.user_type_id = int.Parse(v)))
+                        );
+                }
+            }
+
+            var columns = new List<SysColumn>();
+            using (var stream = new FileStream(Path.Combine(CsvDirectory, "SQL_Schema_Columns.csv"), FileMode.Open))
+            {
+                using (var reader = new CsvReader(stream))
+                {
+                    columns = SysBuilder.ImportCsv(reader,
+                        Tuple.Create("OBJECT_ID", (Action<SysColumn, string>)((t, v) => t.object_id = int.Parse(v))),
+                        Tuple.Create("SYSCOLPARS.NAME", (Action<SysColumn, string>)((t, v) => t.name = v)),
+                        Tuple.Create("COLUMN_ID", (Action<SysColumn, string>)((t, v) => t.column_id = int.Parse(v))),
+                        Tuple.Create("USER_TYPE_ID", (Action<SysColumn, string>)((t, v) => t.user_type_id = int.Parse(v))),
+                        Tuple.Create("MAX_LENGTH", (Action<SysColumn, string>)((t, v) => t.max_length = int.Parse(v))),
+                        Tuple.Create("IS_NULLABLE", (Action<SysColumn, string>)((t, v) => t.is_nullable = bool.Parse(v))),
+                        Tuple.Create("IS_IDENTITY", (Action<SysColumn, string>)((t, v) => t.is_identity = bool.Parse(v)))
+                        );
+                }
+            }
+
+            var indexes = new List<SysIndex>();
+            using (var stream = new FileStream(Path.Combine(CsvDirectory, "SQL_Schema_Indexes.csv"), FileMode.Open))
+            {
+                using (var reader = new CsvReader(stream))
+                {
+                    indexes = SysBuilder.ImportCsv(reader,
+                        Tuple.Create("OBJECT_ID", (Action<SysIndex, string>)((t, v) => t.object_id = int.Parse(v))),
+                        Tuple.Create("SYSIDXSTATS.NAME", (Action<SysIndex, string>)((t, v) => t.name = v)),
+                        Tuple.Create("INDEX_ID", (Action<SysIndex, string>)((t, v) => t.index_id = int.Parse(v))),
+                        Tuple.Create("SYSIDXSTATS.TYPE", (Action<SysIndex, string>)((t, v) => t.type = int.Parse(v))),
+                        Tuple.Create("IS_UNIQUE", (Action<SysIndex, string>)((t, v) => t.is_unique = bool.Parse(v))),
+                        Tuple.Create("IS_PRIMARY_KEY", (Action<SysIndex, string>)((t, v) => t.is_primary_key = bool.Parse(v)))
+                        );
+                }
+            }
+
+            var indexColumns = new List<SysIndexColumn>();
+            using (var stream = new FileStream(Path.Combine(CsvDirectory, "SQL_Schema_IndexColumns.csv"), FileMode.Open))
+            {
+                using (var reader = new CsvReader(stream))
+                {
+                    indexColumns = SysBuilder.ImportCsv(reader,
+                        Tuple.Create("OBJECT_ID", (Action<SysIndexColumn, string>)((t, v) => t.object_id = int.Parse(v))),
+                        Tuple.Create("INDEX_ID", (Action<SysIndexColumn, string>)((t, v) => t.index_id = int.Parse(v))),
+                        Tuple.Create("COLUMN_ID", (Action<SysIndexColumn, string>)((t, v) => t.column_id = int.Parse(v))),
+                        Tuple.Create("KEY_ORDINAL", (Action<SysIndexColumn, string>)((t, v) => t.key_ordinal = byte.Parse(v)))
+                        );
+                }
+            }
+
+            AugmentSchema(Schema, tables, types, columns, indexes, indexColumns);
+        }
+
+        public static void AugmentSchemaFromSql(string ConnectionString, EduHubSchema Schema)
+        {
+            var tables = new List<SysTable>();
+            var types = new List<SysType>();
+            var columns = new List<SysColumn>();
+            var indexes = new List<SysIndex>();
+            var indexColumns = new List<SysIndexColumn>();
 
             using (SqlConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 dbConnection.Open();
 
-                foreach (var entity in Schema.Entities)
+                // Tables
+                const string sqlTables = @"SELECT name, object_id FROM sys.tables";
+                using (var dbCommand = new SqlCommand(sqlTables, dbConnection))
                 {
-                    // Validate schema conformance; determine nullable and identity columns
-                    using (SqlCommand dbColumnsCommand = new SqlCommand(sqlColumns, dbConnection))
+                    using (var dbReader = dbCommand.ExecuteReader())
                     {
-                        var dbColumnsTableParam = dbColumnsCommand.Parameters.Add("@TableName", SqlDbType.NVarChar, 128);
-                        dbColumnsTableParam.Value = entity.Name;
-
-                        using (var dbColumnsReader = dbColumnsCommand.ExecuteReader())
+                        while (dbReader.Read())
                         {
-                            while (dbColumnsReader.Read())
+                            tables.Add(new SysTable()
                             {
-                                var fieldName = dbColumnsReader.GetString(0);
-                                var maxLength = dbColumnsReader.GetInt16(1);
-                                var isNullable = dbColumnsReader.GetBoolean(2);
-                                var isIdentity = dbColumnsReader.GetBoolean(3);
-                                var fieldType = dbColumnsReader.GetString(4);
-                                var frameworkType = DetermineFrameworkType(fieldType);
-
-                                var field = entity.Fields.First(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
-
-                                field.SqlType = fieldType;
-
-                                // Check Framework Type
-                                if (field.Type != frameworkType)
-                                {
-                                    throw new InvalidOperationException("Entity field type didn't match database schema");
-                                }
-                                if ((field.TypeMaxLength != 0 || field.Type == "string") && field.TypeMaxLength != maxLength && fieldType != "text")
-                                {
-                                    // Overrides
-                                    if (field.Entity.Name == "KERROR" && field.Name == "SPOUTKEY" && field.TypeMaxLength == 100 && maxLength == 40)
-                                    {
-                                        field.TypeMaxLength = maxLength;
-                                    }
-                                    else if (field.Entity.Name == "SPOUT" && field.Name == "SPOUTKEY" && field.TypeMaxLength == 100 && maxLength == 40)
-                                    {
-                                        field.TypeMaxLength = maxLength;
-                                    }
-                                    else
-                                    {
-                                        throw new InvalidOperationException("Entity field max length didn't match database schema");
-                                    }
-                                }
-                                if (!field.IsNullable && isNullable)
-                                {
-                                    throw new InvalidOperationException("Entity field nullable didn't match database schema");
-                                }
-
-                                if (field.IsNullable && !isNullable)
-                                {
-                                    field.IsNullable = false;
-                                }
-
-                                if (field.IsIdentity && !isIdentity)
-                                {
-                                    throw new InvalidOperationException("Entity field identity didn't match database schema");
-                                }
-
-                                if (!field.IsIdentity && isIdentity)
-                                {
-                                    field.IsIdentity = true;
-                                }
-                            }
+                                name = dbReader.GetString(0),
+                                object_id = dbReader.GetInt32(1)
+                            });
                         }
-
                     }
+                }
 
-                    // Determine Indexes
-                    using (SqlCommand dbIndexesCommand = new SqlCommand(sqlIndexes, dbConnection))
+                // Types
+                const string sqlTypes = @"SELECT name, user_type_id FROM sys.types";
+                using (var dbCommand = new SqlCommand(sqlTypes, dbConnection))
+                {
+                    using (var dbReader = dbCommand.ExecuteReader())
                     {
-                        var dbIndexesTableParam = dbIndexesCommand.Parameters.Add("@TableName", SqlDbType.NVarChar, 128);
-                        dbIndexesTableParam.Value = entity.Name;
-
-                        using (var dbIndexesReader = dbIndexesCommand.ExecuteReader())
+                        while (dbReader.Read())
                         {
-                            while (dbIndexesReader.Read())
+                            types.Add(new SysType()
                             {
-                                var objectId = dbIndexesReader.GetInt32(0);
-                                var indexId = dbIndexesReader.GetInt32(1);
-                                var name = dbIndexesReader.GetString(2);
-                                var isPrimary = dbIndexesReader.GetBoolean(3);
-                                var isUnique = dbIndexesReader.GetBoolean(4);
-                                var isClustered = dbIndexesReader.GetByte(5) == 1; // 1 = Clustered, 2 = Non Clustered
-                                List<EduHubField> fields = new List<EduHubField>();
+                                name = dbReader.GetString(0),
+                                user_type_id = dbReader.GetInt32(1)
+                            });
+                        }
+                    }
+                }
 
-                                using (SqlCommand dbIndexCommand = new SqlCommand(sqlIndex, dbConnection))
+                // Columns
+                const string sqlColumns = @"SELECT object_id, name, column_id, user_type_id, max_length, is_nullable, is_identity FROM sys.columns";
+                using (var dbCommand = new SqlCommand(sqlColumns, dbConnection))
+                {
+                    using (var dbReader = dbCommand.ExecuteReader())
+                    {
+                        while (dbReader.Read())
+                        {
+                            columns.Add(new SysColumn()
+                            {
+                                object_id = dbReader.GetInt32(0),
+                                name = dbReader.GetString(1),
+                                column_id = dbReader.GetInt32(2),
+                                user_type_id = dbReader.GetInt32(3),
+                                max_length = dbReader.GetInt16(4),
+                                is_nullable = dbReader.GetBoolean(5),
+                                is_identity = dbReader.GetBoolean(6)
+                            });
+                        }
+                    }
+                }
+
+                // Indexes
+                const string sqlIndexes = @"SELECT object_id, name, index_id, type, is_unique, is_primary_key FROM sys.indexes";
+                using (var dbCommand = new SqlCommand(sqlIndexes, dbConnection))
+                {
+                    using (var dbReader = dbCommand.ExecuteReader())
+                    {
+                        while (dbReader.Read())
+                        {
+                            indexes.Add(new SysIndex()
+                            {
+                                object_id = dbReader.GetInt32(0),
+                                name = dbReader.IsDBNull(1) ? null : dbReader.GetString(1),
+                                index_id = dbReader.GetInt32(2),
+                                type = dbReader.GetByte(3),
+                                is_unique = dbReader.GetBoolean(4),
+                                is_primary_key = dbReader.GetBoolean(5)
+                            });
+                        }
+                    }
+                }
+
+                // Index Columns
+                const string sqlIndexColumns = @"SELECT object_id, index_id, column_id, key_ordinal FROM sys.index_columns";
+                using (var dbCommand = new SqlCommand(sqlIndexColumns, dbConnection))
+                {
+                    using (var dbReader = dbCommand.ExecuteReader())
+                    {
+                        while (dbReader.Read())
+                        {
+                            indexColumns.Add(new SysIndexColumn()
+                            {
+                                object_id = dbReader.GetInt32(0),
+                                index_id = dbReader.GetInt32(1),
+                                column_id = dbReader.GetInt32(2),
+                                key_ordinal = dbReader.GetByte(3)
+                            });
+                        }
+                    }
+                }
+
+                dbConnection.Close();
+            }
+
+            AugmentSchema(Schema, tables, types, columns, indexes, indexColumns);
+        }
+
+        private static void AugmentSchema(EduHubSchema Schema, List<SysTable> Tables, List<SysType> Types, List<SysColumn> Columns, List<SysIndex> Indexes, List<SysIndexColumn> IndexColumns)
+        {
+            var tableLookup = Tables.ToDictionary(t => t.name, t => t.object_id, StringComparer.OrdinalIgnoreCase);
+            var typeLookup = Types.ToDictionary(t => t.user_type_id, t => t.name);
+            var columnsLookup = Columns
+                .GroupBy(c => c.object_id)
+                .ToDictionary(g => g.Key, g => g.OrderBy(c => c.column_id).ToList());
+            var indexLookup = Indexes
+                .GroupBy(i => i.object_id)
+                .ToDictionary(g => g.Key, g => g.OrderBy(i => i.index_id).ToList());
+            var indexColumnLookup = IndexColumns
+                .GroupBy(ic => ic.object_id)
+                .ToDictionary(g => g.Key, g => g.GroupBy(ic => ic.index_id).ToDictionary(g2 => g2.Key, g2 => g2.OrderBy(ic => ic.key_ordinal).ToList()));
+
+            foreach (var entity in Schema.Entities)
+            {
+                // Table ID
+                int tableObjectId;
+
+                if (!tableLookup.TryGetValue(entity.Name, out tableObjectId))
+                {
+                    throw new InvalidOperationException($"Unknown Entity: {entity.Name}");
+                }
+                else
+                {
+                    // COLUMNS
+                    // Validate schema conformance; determine nullable and identity columns
+                    List<SysColumn> entityColumns;
+                    if (columnsLookup.TryGetValue(tableObjectId, out entityColumns))
+                    {
+                        foreach (var column in entityColumns)
+                        {
+                            var field = entity.Fields.First(f => f.Name.Equals(column.name, StringComparison.OrdinalIgnoreCase));
+
+                            field.SqlType = typeLookup[column.user_type_id];
+
+                            // Check Framework Type
+                            if (field.Type != GetFrameworkType(field.SqlType))
+                            {
+                                // Overrides
+                                if (field.Entity.Name == "SPFSTORE" && field.Name == "ASSOCIATION_TYPE" && field.Type == "short" && field.SqlType == "int")
                                 {
-                                    var dbIndexObjectIdParam = dbIndexCommand.Parameters.Add("@ObjectId", SqlDbType.Int);
-                                    var dbIndexIdParam = dbIndexCommand.Parameters.Add("@IndexId", SqlDbType.Int);
-                                    dbIndexObjectIdParam.Value = objectId;
-                                    dbIndexIdParam.Value = indexId;
-
-                                    using (var dbIndexReader = dbIndexCommand.ExecuteReader())
-                                    {
-                                        while (dbIndexReader.Read())
-                                        {
-                                            var fieldName = dbIndexReader.GetString(0);
-                                            fields.Add(entity.Fields.First(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase)));
-                                        }
-                                    }
-                                }
-
-                                if (fields.Count == 0)
-                                    throw new InvalidOperationException("Unexpected index with no columns");
-
-                                name = $"Index_{string.Join("_", fields.Select(f => f.Name))}";
-
-                                var index = new EduHubIndex(
-                                    Entity: entity,
-                                    Name: name,
-                                    Fields: fields.AsReadOnly(),
-                                    IsPrimary: isPrimary,
-                                    IsUnique: isUnique,
-                                    IsClustered: isClustered);
-
-                                // Check for existing Index with matching Fields; if matched, add unique or shortest name;
-                                var matchingIndex = entity.Indexes.FirstOrDefault(ei => ei.Fields.Count == index.Fields.Count && ei.Fields.All(f => index.Fields.Contains(f)));
-                                if (matchingIndex != null)
-                                {
-                                    if ((!matchingIndex.IsUnique && index.IsUnique) || // New Index is unique
-                                        (!matchingIndex.IsPrimary && index.IsPrimary) || // New Index is primary
-                                        (!matchingIndex.IsClustered && index.IsClustered) || // New Index is clustered
-                                        (index.Name.Length < matchingIndex.Name.Length)) // New Index has shorter name
-                                    {
-                                        // Remove existing, add new
-                                        entity.RemoveIndex(matchingIndex);
-                                        entity.AddIndex(index);
-                                    }
+                                    field.Type = "int";
                                 }
                                 else
                                 {
+                                    throw new InvalidOperationException("Entity field type didn't match database schema");
+                                }
+                            }
+                            if ((field.TypeMaxLength != 0 || field.Type == "string") && field.TypeMaxLength != column.max_length && field.SqlType != "text")
+                            {
+                                // Overrides
+                                if (field.Entity.Name == "SPFSTORE" && field.Name == "PHYSICAL_LOCATION" && field.TypeMaxLength == 255 && column.max_length == 500)
+                                {
+                                    field.TypeMaxLength = column.max_length;
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException("Entity field max length didn't match database schema");
+                                }
+                            }
+                            if (!field.IsNullable && column.is_nullable)
+                            {
+                                throw new InvalidOperationException("Entity field nullable didn't match database schema");
+                            }
+
+                            if (field.IsNullable && !column.is_nullable)
+                            {
+                                field.IsNullable = false;
+                            }
+
+                            if (field.IsIdentity && !column.is_identity)
+                            {
+                                throw new InvalidOperationException("Entity field identity didn't match database schema");
+                            }
+
+                            if (!field.IsIdentity && column.is_identity)
+                            {
+                                field.IsIdentity = true;
+                            }
+                        }
+                    }
+
+                    // INDEXES
+                    // Determine Indexes
+                    List<SysIndex> entityIndexes;
+                    if (indexLookup.TryGetValue(tableObjectId, out entityIndexes))
+                    {
+                        foreach (var entityIndex in entityIndexes)
+                        {
+                            List<SysIndexColumn> indexColumns = indexColumnLookup[entityIndex.object_id][entityIndex.index_id];
+
+                            List<EduHubField> fields = indexColumns
+                                .Select(ic => entity.Fields.First(f => f.Name.Equals(entityColumns.First(c => c.column_id == ic.column_id).name, StringComparison.OrdinalIgnoreCase)))
+                                .ToList();
+
+                            if (fields.Count == 0)
+                                throw new InvalidOperationException("Unexpected index with no columns");
+
+                            var indexName = $"Index_{string.Join("_", fields.Select(f => f.Name))}";
+
+                            var index = new EduHubIndex(
+                                Entity: entity,
+                                Name: indexName,
+                                Fields: fields.AsReadOnly(),
+                                IsPrimary: entityIndex.is_primary_key,
+                                IsUnique: entityIndex.is_unique,
+                                IsClustered: entityIndex.type == 1);  // 1 = Clustered, 2 = Non Clustered
+
+                            // Check for existing Index with matching Fields; if matched, add unique or shortest name;
+                            var matchingIndex = entity.Indexes.FirstOrDefault(ei => ei.Fields.Count == index.Fields.Count && ei.Fields.All(f => index.Fields.Contains(f)));
+                            if (matchingIndex != null)
+                            {
+                                if ((!matchingIndex.IsUnique && index.IsUnique) || // New Index is unique
+                                    (!matchingIndex.IsPrimary && index.IsPrimary) || // New Index is primary
+                                    (!matchingIndex.IsClustered && index.IsClustered) || // New Index is clustered
+                                    (index.Name.Length < matchingIndex.Name.Length)) // New Index has shorter name
+                                {
+                                    // Remove existing, add new
+                                    entity.RemoveIndex(matchingIndex);
                                     entity.AddIndex(index);
                                 }
+                            }
+                            else
+                            {
+                                entity.AddIndex(index);
                             }
                         }
                     }
@@ -210,26 +370,16 @@ ORDER BY ic.key_ordinal;";
                             entity.AddIndex(index);
                         }
                     }
+
                 }
-                dbConnection.Close();
+
+
             }
         }
 
-        public static string DetermineSqlType(string SqlType, int MaxLength)
+        public static string GetFrameworkType(string FieldType)
         {
-            if (SqlType.Equals("varchar", StringComparison.OrdinalIgnoreCase))
-            {
-                return $"{SqlType}({MaxLength})";
-            }
-            else
-            {
-                return SqlType;
-            }
-        }
-
-        public static string DetermineFrameworkType(string SqlType)
-        {
-            switch (SqlType.ToLowerInvariant())
+            switch (FieldType.ToLowerInvariant())
             {
                 case "varchar":
                     return "string";
