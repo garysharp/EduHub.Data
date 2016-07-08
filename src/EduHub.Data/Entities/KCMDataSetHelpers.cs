@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class KCMDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the DISABILITY column. New to C21v57.

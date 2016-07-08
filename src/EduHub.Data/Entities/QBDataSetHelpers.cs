@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class QBDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the EDUPAY column. New to C21v57.

@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class STVDIDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the correct VDOMAIN and existance of the ORIGINAL_SCHOOL column. Updated/New to C21v57.

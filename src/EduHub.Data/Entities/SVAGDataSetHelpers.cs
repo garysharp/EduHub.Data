@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class SVAGDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the NUMBER_AT31-34 and NO_NT columns. New to C21v57.

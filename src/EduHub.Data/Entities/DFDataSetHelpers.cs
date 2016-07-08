@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class DFDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the USER_NAME and WEB_ENABLED columns. New to C21v57.

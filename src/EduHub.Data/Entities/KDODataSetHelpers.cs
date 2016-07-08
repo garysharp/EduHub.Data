@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class KDODataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the correct KDOKEY column. Updated in C21v57.

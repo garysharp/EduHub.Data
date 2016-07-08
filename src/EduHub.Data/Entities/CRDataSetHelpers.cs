@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class CRDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the TRADE_INFO01-10 columns. New to C21v57.

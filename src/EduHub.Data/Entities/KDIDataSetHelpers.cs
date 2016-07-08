@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class KDIDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the correct KDOKEY and existance of the CURRICULUM column. Updated/New to C21v57.

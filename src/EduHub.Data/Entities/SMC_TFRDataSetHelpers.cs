@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class SMC_TFRDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the DISABILITY_ADJUSTMENT column. New to C21v57.

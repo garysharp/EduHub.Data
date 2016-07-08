@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class STDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the LEGAL_LIMIT_DECISION, LEGAL_LIMIT_CONTACT, LEGAL_LIMITATION,

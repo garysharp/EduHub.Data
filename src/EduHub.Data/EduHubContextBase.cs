@@ -12,12 +12,31 @@ namespace EduHub.Data
 {
     public partial class EduHubContext
     {
+        private static string defaultEduHubDirectory;
         private readonly SeamlessViewsContext seamlessViews;
 
         /// <summary>
         /// Default directory used when creating a context if none is provided to the constructor
         /// </summary>
-        public static string DefaultEduHubDirectory { get; set; } = @"D:\eduHub";
+        public static string DefaultEduHubDirectory
+        {
+            get
+            {
+                if (defaultEduHubDirectory == null)
+                {
+                    defaultEduHubDirectory = DiscoverEduHubDirectory();
+                }
+
+                return defaultEduHubDirectory;
+            }
+            set
+            {
+                if (Directory.Exists(value))
+                {
+                    defaultEduHubDirectory = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Default site identifier used when creating a context if none is provided to the constructor
@@ -132,6 +151,38 @@ namespace EduHub.Data
             {
                 yield return GetDataSet(name);
             }
+        }
+
+        /// <summary>
+        /// Uses default and standard operating environment locations (D:\eduHub; \\%CASESHV%\eduHub) to discover the EduHub Directory
+        /// </summary>
+        /// <returns>The filesystem location for the discovered EduHub Directory</returns>
+        /// <exception cref="NotSupportedException">The EduHub Directory location could not be automatically discovered</exception>
+        public static string DiscoverEduHubDirectory()
+        {
+            // Try well-known local directory location
+            const string defaultDirectory = @"D:\eduHub";
+
+            if (Directory.Exists(defaultDirectory))
+            {
+                return defaultDirectory;
+            }
+
+            // Try SOE Environment Location (Network Share)
+            var casesHvServer = Environment.GetEnvironmentVariable("CASESHV");
+
+            if (casesHvServer != null)
+            {
+                var soeDirectory = $@"\\{casesHvServer}\eduHub";
+
+                if (Directory.Exists(soeDirectory))
+                {
+                    return soeDirectory;
+                }
+            }
+
+            // Unable to determine
+            throw new NotSupportedException("The EduHub Directory location could not be automatically discovered");
         }
 
         /// <summary>

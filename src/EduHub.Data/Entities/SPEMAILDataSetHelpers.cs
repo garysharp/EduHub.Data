@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class SPEMAILDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the correct DESCRIPTION column. Updated in C21v57.

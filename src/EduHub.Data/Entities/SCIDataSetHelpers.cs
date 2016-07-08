@@ -23,6 +23,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the TFR_ENROLMENT_DATE column. New to C21v57.

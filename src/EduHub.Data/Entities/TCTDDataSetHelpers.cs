@@ -4,6 +4,7 @@ namespace EduHub.Data.Entities
 {
     partial class TCTDDataSet
     {
+        /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
             // Check for the existance of the TCTD_Index_TCTDKEY_TIME_TYPE_QKEY index. New to C21v57.
