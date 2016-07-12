@@ -78,8 +78,8 @@ namespace EduHub.Data
         {
             get
             {
-                return GetAvailableDataSetFiles()
-                    .Max(f => (DateTime?)File.GetLastWriteTime(f));
+                return GetAvailableDataSets()
+                    .Max(ds => (DateTime?)ds.LastModified);
             }
         }
 
