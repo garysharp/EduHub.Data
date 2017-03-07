@@ -154,7 +154,7 @@ namespace EduHub.Data
         }
 
         /// <summary>
-        /// Uses default and standard operating environment locations (D:\eduHub; \\%CASESHV%\eduHub) to discover the EduHub Directory
+        /// Uses default and standard operating environment locations (D:\eduHub; \\%SN%AFS%CN%\eduHub; \\%CASESHV%\eduHub) to discover the EduHub Directory
         /// </summary>
         /// <returns>The filesystem location for the discovered EduHub Directory</returns>
         /// <exception cref="NotSupportedException">The EduHub Directory location could not be automatically discovered</exception>
@@ -168,7 +168,21 @@ namespace EduHub.Data
                 return defaultDirectory;
             }
 
-            // Try SOE Environment Location (Network Share)
+            // Try 2017 SOE Environment Location (\\%SN%AFS%CN%\eduHub)
+            var environmentVarSN = Environment.GetEnvironmentVariable("SN");
+            var environmentVarCN = Environment.GetEnvironmentVariable("CN");
+
+            if (environmentVarSN != null && environmentVarCN != null)
+            {
+                var soeDirectory = $@"\\{environmentVarSN}AFS{environmentVarCN}\eduHub";
+
+                if (Directory.Exists(soeDirectory))
+                {
+                    return soeDirectory;
+                }
+            }
+
+            // Try SOE Environment Location (\\%CASESHV%\eduHub)
             var casesHvServer = Environment.GetEnvironmentVariable("CASESHV");
 
             if (casesHvServer != null)
