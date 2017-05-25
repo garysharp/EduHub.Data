@@ -18,9 +18,9 @@ namespace EduHub.Data.SchemaParser.Db
             {
                 using (var reader = new CsvReader(stream))
                 {
-                    tables = SysBuilder.ImportCsv(reader,
-                        Tuple.Create("SYSSCHOBJS.NAME", (Action<SysTable, string>)((t, v) => t.name = v)),
-                        Tuple.Create("OBJECT_ID", (Action<SysTable, string>)((t, v) => t.object_id = int.Parse(v)))
+                    tables = SysBuilder.ImportCsv<SysTable>(reader,
+                        (ColumnName: "SYSSCHOBJS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "OBJECT_ID", Mapper: (t, v) => t.object_id = int.Parse(v))
                         );
                 }
             }
@@ -30,9 +30,9 @@ namespace EduHub.Data.SchemaParser.Db
             {
                 using (var reader = new CsvReader(stream))
                 {
-                    types = SysBuilder.ImportCsv(reader,
-                        Tuple.Create("SYSSCALARTYPES.NAME", (Action<SysType, string>)((t, v) => t.name = v)),
-                        Tuple.Create("USER_TYPE_ID", (Action<SysType, string>)((t, v) => t.user_type_id = int.Parse(v)))
+                    types = SysBuilder.ImportCsv<SysType>(reader,
+                        (ColumnName: "SYSSCALARTYPES.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "USER_TYPE_ID", Mapper: (t, v) => t.user_type_id = int.Parse(v))
                         );
                 }
             }
@@ -42,14 +42,14 @@ namespace EduHub.Data.SchemaParser.Db
             {
                 using (var reader = new CsvReader(stream))
                 {
-                    columns = SysBuilder.ImportCsv(reader,
-                        Tuple.Create("OBJECT_ID", (Action<SysColumn, string>)((t, v) => t.object_id = int.Parse(v))),
-                        Tuple.Create("SYSCOLPARS.NAME", (Action<SysColumn, string>)((t, v) => t.name = v)),
-                        Tuple.Create("COLUMN_ID", (Action<SysColumn, string>)((t, v) => t.column_id = int.Parse(v))),
-                        Tuple.Create("USER_TYPE_ID", (Action<SysColumn, string>)((t, v) => t.user_type_id = int.Parse(v))),
-                        Tuple.Create("MAX_LENGTH", (Action<SysColumn, string>)((t, v) => t.max_length = int.Parse(v))),
-                        Tuple.Create("IS_NULLABLE", (Action<SysColumn, string>)((t, v) => t.is_nullable = bool.Parse(v))),
-                        Tuple.Create("IS_IDENTITY", (Action<SysColumn, string>)((t, v) => t.is_identity = bool.Parse(v)))
+                    columns = SysBuilder.ImportCsv<SysColumn>(reader,
+                        (ColumnName: "OBJECT_ID",       Mapper: (t, v) => t.object_id = int.Parse(v)),
+                        (ColumnName: "SYSCOLPARS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "COLUMN_ID",       Mapper: (t, v) => t.column_id = int.Parse(v)),
+                        (ColumnName: "USER_TYPE_ID",    Mapper: (t, v) => t.user_type_id = int.Parse(v)),
+                        (ColumnName: "MAX_LENGTH",      Mapper: (t, v) => t.max_length = int.Parse(v)),
+                        (ColumnName: "IS_NULLABLE",     Mapper: (t, v) => t.is_nullable = v == "1"),
+                        (ColumnName: "IS_IDENTITY",     Mapper: (t, v) => t.is_identity = v == "1")
                         );
                 }
             }
@@ -59,13 +59,13 @@ namespace EduHub.Data.SchemaParser.Db
             {
                 using (var reader = new CsvReader(stream))
                 {
-                    indexes = SysBuilder.ImportCsv(reader,
-                        Tuple.Create("OBJECT_ID", (Action<SysIndex, string>)((t, v) => t.object_id = int.Parse(v))),
-                        Tuple.Create("SYSIDXSTATS.NAME", (Action<SysIndex, string>)((t, v) => t.name = v)),
-                        Tuple.Create("INDEX_ID", (Action<SysIndex, string>)((t, v) => t.index_id = int.Parse(v))),
-                        Tuple.Create("SYSIDXSTATS.TYPE", (Action<SysIndex, string>)((t, v) => t.type = int.Parse(v))),
-                        Tuple.Create("IS_UNIQUE", (Action<SysIndex, string>)((t, v) => t.is_unique = bool.Parse(v))),
-                        Tuple.Create("IS_PRIMARY_KEY", (Action<SysIndex, string>)((t, v) => t.is_primary_key = bool.Parse(v)))
+                    indexes = SysBuilder.ImportCsv<SysIndex>(reader,
+                        (ColumnName: "OBJECT_ID",        Mapper: (t, v) => t.object_id = int.Parse(v)),
+                        (ColumnName: "SYSIDXSTATS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "INDEX_ID",         Mapper: (t, v) => t.index_id = int.Parse(v)),
+                        (ColumnName: "SYSIDXSTATS.TYPE", Mapper: (t, v) => t.type = int.Parse(v)),
+                        (ColumnName: "IS_UNIQUE",        Mapper: (t, v) => t.is_unique = v == "1"),
+                        (ColumnName: "IS_PRIMARY_KEY",   Mapper: (t, v) => t.is_primary_key = v == "1")
                         );
                 }
             }
@@ -75,11 +75,11 @@ namespace EduHub.Data.SchemaParser.Db
             {
                 using (var reader = new CsvReader(stream))
                 {
-                    indexColumns = SysBuilder.ImportCsv(reader,
-                        Tuple.Create("OBJECT_ID", (Action<SysIndexColumn, string>)((t, v) => t.object_id = int.Parse(v))),
-                        Tuple.Create("INDEX_ID", (Action<SysIndexColumn, string>)((t, v) => t.index_id = int.Parse(v))),
-                        Tuple.Create("COLUMN_ID", (Action<SysIndexColumn, string>)((t, v) => t.column_id = int.Parse(v))),
-                        Tuple.Create("KEY_ORDINAL", (Action<SysIndexColumn, string>)((t, v) => t.key_ordinal = byte.Parse(v)))
+                    indexColumns = SysBuilder.ImportCsv<SysIndexColumn>(reader,
+                        (ColumnName: "OBJECT_ID",   Mapper: (t, v) => t.object_id = int.Parse(v)),
+                        (ColumnName: "INDEX_ID",    Mapper: (t, v) => t.index_id = int.Parse(v)),
+                        (ColumnName: "COLUMN_ID",   Mapper: (t, v) => t.column_id = int.Parse(v)),
+                        (ColumnName: "KEY_ORDINAL", Mapper: (t, v) => t.key_ordinal = byte.Parse(v))
                         );
                 }
             }
@@ -218,9 +218,8 @@ namespace EduHub.Data.SchemaParser.Db
             foreach (var entity in Schema.Entities)
             {
                 // Table ID
-                int tableObjectId;
 
-                if (!tableLookup.TryGetValue(entity.Name, out tableObjectId))
+                if (!tableLookup.TryGetValue(entity.Name, out int tableObjectId))
                 {
                     throw new InvalidOperationException($"Unknown Entity: {entity.Name}");
                 }
@@ -228,8 +227,7 @@ namespace EduHub.Data.SchemaParser.Db
                 {
                     // COLUMNS
                     // Validate schema conformance; determine nullable and identity columns
-                    List<SysColumn> entityColumns;
-                    if (columnsLookup.TryGetValue(tableObjectId, out entityColumns))
+                    if (columnsLookup.TryGetValue(tableObjectId, out List<SysColumn> entityColumns))
                     {
                         foreach (var column in entityColumns)
                         {
@@ -250,18 +248,30 @@ namespace EduHub.Data.SchemaParser.Db
                                     throw new InvalidOperationException("Entity field type didn't match database schema");
                                 }
                             }
-                            if ((field.TypeMaxLength != 0 || field.Type == "string") && field.TypeMaxLength != column.max_length && field.SqlType != "text")
+
+                            switch (field.SqlType)
                             {
-                                // Overrides
-                                if (field.Entity.Name == "SPFSTORE" && field.Name == "PHYSICAL_LOCATION" && field.TypeMaxLength == 255 && column.max_length == 500)
-                                {
-                                    field.TypeMaxLength = column.max_length;
-                                }
-                                else
-                                {
-                                    throw new InvalidOperationException("Entity field max length didn't match database schema");
-                                }
+                                case "varchar":
+                                case "varbinary":
+                                    if (field.TypeMaxLength == 0)
+                                    {
+                                        field.TypeMaxLength = column.max_length;
+                                    }
+
+                                    // Overrides
+                                    if (field.Entity.Name == "SPFSTORE" && field.Name == "PHYSICAL_LOCATION" && field.TypeMaxLength == 255 && column.max_length == 500)
+                                    {
+                                        field.TypeMaxLength = column.max_length;
+                                        break;
+                                    }
+
+                                    if (field.TypeMaxLength != column.max_length)
+                                    {
+                                        throw new InvalidOperationException("Entity field max length didn't match database schema");
+                                    }
+                                    break;
                             }
+
                             if (!field.IsNullable && column.is_nullable)
                             {
                                 throw new InvalidOperationException("Entity field nullable didn't match database schema");
@@ -286,8 +296,7 @@ namespace EduHub.Data.SchemaParser.Db
 
                     // INDEXES
                     // Determine Indexes
-                    List<SysIndex> entityIndexes;
-                    if (indexLookup.TryGetValue(tableObjectId, out entityIndexes))
+                    if (indexLookup.TryGetValue(tableObjectId, out List<SysIndex> entityIndexes))
                     {
                         foreach (var entityIndex in entityIndexes)
                         {
@@ -395,6 +404,7 @@ namespace EduHub.Data.SchemaParser.Db
                     return "string";
                 case "money":
                     return "decimal";
+                case "varbinary":
                 case "image":
                     return "byte[]";
                 default:

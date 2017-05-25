@@ -19,9 +19,9 @@ namespace EduHub.Data.SchemaParser.Models
         public bool IsNullable { get; internal set; }
         public bool IsIdentity { get; internal set; }
 
-        public Tuple<string, string> ForeignParentKey { get; private set; }
+        public (string EntityName, string FieldName) ForeignParentKey { get; internal set; }
 
-        internal EduHubField(EduHubEntity Entity, string Name, string Description, string Type, string TypeDescription, int TypeMaxLength, bool IsNullable, bool IsIdentity, Tuple<string, string> ForeignParentKey)
+        internal EduHubField(EduHubEntity Entity, string Name, string Description, string Type, string TypeDescription, int TypeMaxLength, bool IsKey, bool IsNullable, bool IsIdentity, (string EntityName, string FieldName) ForeignParentKey)
         {
             this.Entity = Entity;
             this.Name = Name;
@@ -29,6 +29,7 @@ namespace EduHub.Data.SchemaParser.Models
             this.Type = Type;
             this.TypeDescription = TypeDescription;
             this.TypeMaxLength = TypeMaxLength;
+            this.IsKey = IsKey;
             this.IsNullable = IsNullable;
             this.IsIdentity = IsIdentity;
             this.ForeignParentKey = ForeignParentKey;
@@ -36,12 +37,12 @@ namespace EduHub.Data.SchemaParser.Models
 
         public EduHubField GetForeignParent()
         {
-            if (ForeignParentKey == null)
+            if (ForeignParentKey.EntityName == null)
                 return null;
 
             return Entity.Schema.Entities
-                .First(e => e.Name == ForeignParentKey.Item1)
-                .Fields.First(f => f.Name == ForeignParentKey.Item2);
+                .First(e => e.Name == ForeignParentKey.EntityName)
+                .Fields.First(f => f.Name == ForeignParentKey.FieldName);
         }
 
         public EduHubIndex GetIndex()
@@ -56,12 +57,12 @@ namespace EduHub.Data.SchemaParser.Models
 
         public IEnumerable<EduHubField> GetForeignChildren()
         {
-            var key = Tuple.Create(Entity.Name, Name);
+            var key = (EntityName: Entity.Name, FieldName: Name);
 
             return Entity.Schema.Entities
                 .Where(e => e != Entity)
                 .SelectMany(e => e.Fields)
-                .Where(f => f.ForeignParentKey == key);
+                .Where(f => f.ForeignParentKey.Equals(key));
         }
 
         internal void AppendDescription(string Description)
@@ -81,24 +82,28 @@ namespace EduHub.Data.SchemaParser.Models
 
         public XElement ToXElement()
         {
-            List<object> contents = new List<object>();
-
-            contents.Add(new XAttribute(nameof(Name), Name));
-            contents.Add(new XAttribute(nameof(IsKey), IsKey));
-            contents.Add(new XAttribute(nameof(IsNullable), IsNullable));
-            contents.Add(new XAttribute(nameof(IsIdentity), IsIdentity));
-            contents.Add(new XAttribute(nameof(Type), Type));
-            contents.Add(new XAttribute(nameof(TypeDescription), TypeDescription));
+            List<object> contents = new List<object>
+            {
+                new XAttribute(nameof(Name), Name),
+                new XAttribute(nameof(IsKey), IsKey),
+                new XAttribute(nameof(IsNullable), IsNullable),
+                new XAttribute(nameof(IsIdentity), IsIdentity),
+                new XAttribute(nameof(Type), Type),
+                new XAttribute(nameof(TypeDescription), TypeDescription)
+            };
             if (TypeMaxLength != 0)
             {
                 contents.Add(new XAttribute(nameof(TypeMaxLength), TypeMaxLength));
             }
             contents.Add(new XAttribute(nameof(SqlType), SqlType));
-            if (ForeignParentKey != null)
+            if (ForeignParentKey.EntityName != null)
             {
                 contents.Add(new XAttribute("ForeignParent", $"{ForeignParentKey.Item1}:{ForeignParentKey.Item2}"));
             }
-            contents.Add(new XCData(Description));
+            if (!string.IsNullOrWhiteSpace(Description) && Description != "*")
+            {
+                contents.Add(new XCData(Description));
+            }
 
             return new XElement("Field", contents.ToArray());
         }

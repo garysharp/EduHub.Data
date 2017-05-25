@@ -7,10 +7,10 @@ namespace EduHub.Data.SchemaParser.Db
     internal static class SysBuilder
     {
 
-        internal static List<T> ImportCsv<T>(CsvReader Reader, params Tuple<string, Action<T, string>>[] Actions) where T : new()
+        internal static List<T> ImportCsv<T>(CsvReader Reader, params (string ColumnName, Action<T, string> Mapper)[] Actions) where T : new()
         {
             var headers = Reader.Header.ToArray();
-            var mapper = Actions.Select(a => Tuple.Create(Array.IndexOf(headers, a.Item1), a.Item2)).ToArray();
+            var mapper = Actions.Select(a => (ColumnIndex: Array.IndexOf(headers, a.ColumnName), Mapper: a.Mapper)).ToArray();
             var results = new List<T>();
 
             while (true)
@@ -25,7 +25,7 @@ namespace EduHub.Data.SchemaParser.Db
                 for (int i = 0; i < mapper.Length; i++)
                 {
                     var map = mapper[i];
-                    map.Item2(result, record[map.Item1]);
+                    map.Mapper(result, record[map.ColumnIndex]);
                 }
 
                 results.Add(result);

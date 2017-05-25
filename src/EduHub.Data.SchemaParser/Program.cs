@@ -1,6 +1,6 @@
 ﻿using EduHub.Data.SchemaParser.C7;
 using EduHub.Data.SchemaParser.Db;
-using System;
+using EduHub.Data.SchemaParser.Models;
 using System.Linq;
 
 namespace EduHub.Data.SchemaParser
@@ -14,7 +14,19 @@ namespace EduHub.Data.SchemaParser
             var output = args[2];
 
             // Parse C7 Schema File
-            var schema = C7Parser.Parse(c7SchemaFilename);
+            var c7Elements = C7Parser.ParseSchemaFile(c7SchemaFilename);
+
+            var schema = EduHubSchema.FromC7Schema(c7Elements);
+
+            // TODO: Update SQL Schema with SGFC
+            schema.RemoveEntity("SGFC");
+            foreach (var field in schema.Entities.SelectMany(e => e.Fields))
+            {
+                if (field.ForeignParentKey.EntityName == "SGFC")
+                {
+                    field.ForeignParentKey = default((string, string));
+                }
+            }
 
             // Augment with Database Information
             DbParser.AugmentSchemaFromCsv(csvDirectory, schema);

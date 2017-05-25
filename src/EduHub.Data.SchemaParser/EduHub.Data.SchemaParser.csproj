@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EduHub.Data.SchemaParser</RootNamespace>
     <AssemblyName>EduHub.Data.SchemaParser</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -34,8 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Sprache, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sprache.2.1.0\lib\net40\Sprache.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,7 +53,26 @@
     <Compile Include="..\EduHub.Data\CsvReader.cs">
       <Link>CsvReader.cs</Link>
     </Compile>
+    <Compile Include="C7\C7Account.cs" />
+    <Compile Include="C7\C7CazSignature.cs" />
+    <Compile Include="C7\C7Comment.cs" />
+    <Compile Include="C7\C7DatabaseProperties.cs" />
+    <Compile Include="C7\C7DDef.cs" />
+    <Compile Include="C7\C7Def.cs" />
+    <Compile Include="C7\IC7Element.cs" />
+    <Compile Include="C7\C7ExecuteProcedure.cs" />
+    <Compile Include="C7\C7Field.cs" />
+    <Compile Include="C7\C7NDef.cs" />
     <Compile Include="C7\C7Parser.cs" />
+    <Compile Include="C7\C7Procedure.cs" />
+    <Compile Include="C7\C7Replace.cs" />
+    <Compile Include="C7\C7Role.cs" />
+    <Compile Include="C7\C7SqlProcedure.cs" />
+    <Compile Include="C7\C7SqlTrigger.cs" />
+    <Compile Include="C7\C7SqlView.cs" />
+    <Compile Include="C7\C7Task.cs" />
+    <Compile Include="C7\C7Trans.cs" />
+    <Compile Include="C7\IC7Entity.cs" />
     <Compile Include="Db\DbParser.cs" />
     <Compile Include="Db\SysBuilder.cs" />
     <Compile Include="Db\SysColumn.cs" />
@@ -59,12 +84,14 @@
     <Compile Include="Models\EduHubField.cs" />
     <Compile Include="Models\EduHubIndex.cs" />
     <Compile Include="Models\EduHubSchema.cs" />
+    <Compile Include="Models\EduHubSchemaExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
