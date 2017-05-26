@@ -26,7 +26,6 @@ namespace EduHub.Data.Entities
             Index_CAMPUS = new Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.CAMPUS));
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_ORIGINAL_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.ORIGINAL_SCHOOL));
-            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
             Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedDictionary(i => i.SKEY));
             Index_TID = new Lazy<Dictionary<int, STVDI>>(() => this.ToDictionary(i => i.TID));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<STVDI>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
@@ -148,7 +147,6 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<int?, IReadOnlyList<STVDI>>> Index_CAMPUS;
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDI>>> Index_LW_DATE;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_ORIGINAL_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_SCHOOL_YEAR;
         private Lazy<Dictionary<string, IReadOnlyList<STVDI>>> Index_SKEY;
         private Lazy<Dictionary<int, STVDI>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDI>>> Index_VDIMENSION;
@@ -275,48 +273,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STVDI> value;
             if (Index_ORIGINAL_SCHOOL.Value.TryGetValue(ORIGINAL_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STVDI by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDI</param>
-        /// <returns>List of related STVDI entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
-        }
-
-        /// <summary>
-        /// Attempt to find STVDI by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDI</param>
-        /// <param name="Value">List of related STVDI entities</param>
-        /// <returns>True if the list of related STVDI entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<STVDI> Value)
-        {
-            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STVDI by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDI</param>
-        /// <returns>List of related STVDI entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDI> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            IReadOnlyList<STVDI> value;
-            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
             {
                 return value;
             }
@@ -517,7 +473,7 @@ BEGIN
         [YEAR_SEMESTER] varchar(6) NULL,
         [VDOMAIN] varchar(10) NULL,
         [VDIMENSION] varchar(10) NULL,
-        [SCORE] varchar(4) NULL,
+        [SCORE] varchar(6) NULL,
         [ORIGINAL_SCHOOL] varchar(8) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
@@ -537,10 +493,6 @@ BEGIN
     CREATE NONCLUSTERED INDEX [STVDI_Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI]
     (
             [ORIGINAL_SCHOOL] ASC
-    );
-    CREATE NONCLUSTERED INDEX [STVDI_Index_SCHOOL_YEAR] ON [dbo].[STVDI]
-    (
-            [SCHOOL_YEAR] ASC
     );
     CREATE CLUSTERED INDEX [STVDI_Index_SKEY] ON [dbo].[STVDI]
     (
@@ -575,8 +527,6 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_ORIGINAL_SCHOOL')
     ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_VDIMENSION')
@@ -602,8 +552,6 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') A
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_ORIGINAL_SCHOOL')
     ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDI]') AND name = N'Index_VDIMENSION')

@@ -45,6 +45,7 @@ namespace EduHub.Data.Entities
         private KGL Cache_EMERG_LANG01_KGL;
         private KGL Cache_EMERG_LANG02_KGL;
         private DR Cache_DEBTOR_ID_DR;
+        private SP_REPLY Cache_SMS_REPLY_SP_REPLY;
 
         #endregion
 
@@ -52,6 +53,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<AKK> Cache_SFKEY_AKK_STAFF;
         private IReadOnlyList<BKHR> Cache_SFKEY_BKHR_STAFF;
+        private IReadOnlyList<CRTT> Cache_SFKEY_CRTT_STAFF;
         private IReadOnlyList<KCPC> Cache_SFKEY_KCPC_STAFF;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER_B;
@@ -83,6 +85,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SFQA> Cache_SFKEY_SFQA_TEACH;
         private IReadOnlyList<SM> Cache_SFKEY_SM_STAFF_CODE;
         private IReadOnlyList<SMCD> Cache_SFKEY_SMCD_STAFF;
+        private IReadOnlyList<SP_RECIP> Cache_SFKEY_SP_RECIP_SFKEY;
         private IReadOnlyList<SS> Cache_SFKEY_SS_DEFAULT_TEACHER;
         private IReadOnlyList<SSHG> Cache_SFKEY_SSHG_TEACHER;
         private IReadOnlyList<STSP> Cache_SFKEY_STSP_REF_TEACHERA;
@@ -610,6 +613,45 @@ namespace EduHub.Data.Entities
         /// [Memo]
         /// </summary>
         public string NOTES { get; internal set; }
+
+        /// <summary>
+        /// Driver's licence number
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string DRIVERS_LIC_NO { get; internal set; }
+
+        /// <summary>
+        /// Driver's licence expiry date
+        /// </summary>
+        public DateTime? DRIVERS_LIC_EXPIRY { get; internal set; }
+
+        /// <summary>
+        /// VIT expiry date
+        /// </summary>
+        public DateTime? VIT_EXPIRY { get; internal set; }
+
+        /// <summary>
+        /// Working With Children Check card number
+        /// [Uppercase Alphanumeric (11)]
+        /// </summary>
+        public string WWCC_NUMBER { get; internal set; }
+
+        /// <summary>
+        /// WWCC expiry date
+        /// </summary>
+        public DateTime? WWCC_EXPIRY { get; internal set; }
+
+        /// <summary>
+        /// WWCC card Type E=Employee, V=Volunteer
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string WWCC_TYPE { get; internal set; }
+
+        /// <summary>
+        /// SMS Reply Recipient Group key
+        /// [Uppercase Alphanumeric (15)]
+        /// </summary>
+        public string SMS_REPLY { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -1303,6 +1345,27 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <summary>
+        /// SP_REPLY (SMS Reply Recipient Groups) related entity by [SF.SMS_REPLY]-&gt;[SP_REPLY.CODE]
+        /// SMS Reply Recipient Group key
+        /// </summary>
+        public SP_REPLY SMS_REPLY_SP_REPLY
+        {
+            get
+            {
+                if (SMS_REPLY == null)
+                {
+                    return null;
+                }
+                if (Cache_SMS_REPLY_SP_REPLY == null)
+                {
+                    Cache_SMS_REPLY_SP_REPLY = Context.SP_REPLY.FindByCODE(SMS_REPLY);
+                }
+
+                return Cache_SMS_REPLY_SP_REPLY;
+            }
+        }
+
         #endregion
 
         #region Foreign Navigation Properties
@@ -1340,6 +1403,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SFKEY_BKHR_STAFF;
+            }
+        }
+
+        /// <summary>
+        /// CRTT (Creditor Trade Types) related entities by [SF.SFKEY]-&gt;[CRTT.STAFF]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<CRTT> SFKEY_CRTT_STAFF
+        {
+            get
+            {
+                if (Cache_SFKEY_CRTT_STAFF == null &&
+                    !Context.CRTT.TryFindBySTAFF(SFKEY, out Cache_SFKEY_CRTT_STAFF))
+                {
+                    Cache_SFKEY_CRTT_STAFF = new List<CRTT>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_CRTT_STAFF;
             }
         }
 
@@ -1898,6 +1979,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SFKEY_SMCD_STAFF;
+            }
+        }
+
+        /// <summary>
+        /// SP_RECIP (SMS Reply Recipients) related entities by [SF.SFKEY]-&gt;[SP_RECIP.SFKEY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<SP_RECIP> SFKEY_SP_RECIP_SFKEY
+        {
+            get
+            {
+                if (Cache_SFKEY_SP_RECIP_SFKEY == null &&
+                    !Context.SP_RECIP.TryFindBySFKEY(SFKEY, out Cache_SFKEY_SP_RECIP_SFKEY))
+                {
+                    Cache_SFKEY_SP_RECIP_SFKEY = new List<SP_RECIP>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_SP_RECIP_SFKEY;
             }
         }
 

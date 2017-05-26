@@ -357,7 +357,7 @@ BEGIN
         [SGB_TIME_FRACTION] float NULL,
         [ACTUAL_TIME_FRACTION] float NULL,
         [ACCESS_ALERT] varchar(1) NULL,
-        [ACCESS] text NULL,
+        [ACCESS] varchar(MAX) NULL,
         [ACCESS_TYPE] varchar(20) NULL,
         [NEXT_SCHOOL] varchar(50) NULL,
         [ENTRY] datetime NULL,

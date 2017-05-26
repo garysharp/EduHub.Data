@@ -31,6 +31,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<GLFPREV> Cache_KGSTKEY_GLFPREV_GST_TYPE;
         private IReadOnlyList<SA> Cache_KGSTKEY_SA_GST_TYPE;
         private IReadOnlyList<SDFC> Cache_KGSTKEY_SDFC_GST_TYPE;
+        private IReadOnlyList<SGFC> Cache_KGSTKEY_SGFC_GST_TYPE;
 
         #endregion
 
@@ -350,6 +351,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_KGSTKEY_SDFC_GST_TYPE;
+            }
+        }
+
+        /// <summary>
+        /// SGFC (General Ledger Fees) related entities by [KGST.KGSTKEY]-&gt;[SGFC.GST_TYPE]
+        /// Key
+        /// </summary>
+        public IReadOnlyList<SGFC> KGSTKEY_SGFC_GST_TYPE
+        {
+            get
+            {
+                if (Cache_KGSTKEY_SGFC_GST_TYPE == null &&
+                    !Context.SGFC.TryFindByGST_TYPE(KGSTKEY, out Cache_KGSTKEY_SGFC_GST_TYPE))
+                {
+                    Cache_KGSTKEY_SGFC_GST_TYPE = new List<SGFC>().AsReadOnly();
+                }
+
+                return Cache_KGSTKEY_SGFC_GST_TYPE;
             }
         }
 

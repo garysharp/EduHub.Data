@@ -230,7 +230,7 @@ BEGIN
         [BUS_PHONE] varchar(15) NULL,
         [HOME_PHONE] varchar(15) NULL,
         [MOBILE] varchar(15) NULL,
-        [EMAIL] text NULL,
+        [EMAIL] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

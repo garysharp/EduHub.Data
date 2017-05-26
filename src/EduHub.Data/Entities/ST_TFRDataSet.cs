@@ -56,6 +56,12 @@ namespace EduHub.Data.Entities
                     case "STKEY_NEW":
                         mapper[i] = (e, v) => e.STKEY_NEW = v;
                         break;
+                    case "STKEY_DUP":
+                        mapper[i] = (e, v) => e.STKEY_DUP = v;
+                        break;
+                    case "STKEY_DUP_ACT":
+                        mapper[i] = (e, v) => e.STKEY_DUP_ACT = v;
+                        break;
                     case "DUP_FAMILY":
                         mapper[i] = (e, v) => e.DUP_FAMILY = v;
                         break;
@@ -398,6 +404,27 @@ namespace EduHub.Data.Entities
                     case "ENTRY":
                         mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
+                    case "VET":
+                        mapper[i] = (e, v) => e.VET = v;
+                        break;
+                    case "USI":
+                        mapper[i] = (e, v) => e.USI = v;
+                        break;
+                    case "TEACHER_RECOMMENDATION":
+                        mapper[i] = (e, v) => e.TEACHER_RECOMMENDATION = v;
+                        break;
+                    case "TRANSITION_STATEMENT":
+                        mapper[i] = (e, v) => e.TRANSITION_STATEMENT = v;
+                        break;
+                    case "FIRST_REG_NO":
+                        mapper[i] = (e, v) => e.FIRST_REG_NO = v;
+                        break;
+                    case "DISABILITY":
+                        mapper[i] = (e, v) => e.DISABILITY = v;
+                        break;
+                    case "DISABILITY_ID":
+                        mapper[i] = (e, v) => e.DISABILITY_ID = v;
+                        break;
                     case "DFA_TRANS_ID":
                         mapper[i] = (e, v) => e.DFA_TRANS_ID = v;
                         break;
@@ -734,6 +761,8 @@ BEGIN
         [ORIG_SCHOOL] varchar(8) NOT NULL,
         [STKEY] varchar(10) NULL,
         [STKEY_NEW] varchar(10) NULL,
+        [STKEY_DUP] varchar(10) NULL,
+        [STKEY_DUP_ACT] varchar(1) NULL,
         [DUP_FAMILY] varchar(1) NULL,
         [SURNAME] varchar(30) NULL,
         [FIRST_NAME] varchar(20) NULL,
@@ -793,11 +822,11 @@ BEGIN
         [HOME_LANG] varchar(7) NULL,
         [OVERSEAS] varchar(1) NULL,
         [KOORIE] varchar(1) NULL,
-        [ACCESS] text NULL,
+        [ACCESS] varchar(MAX) NULL,
         [ACCESS_TYPE] varchar(20) NULL,
         [ACCESS_ALERT] varchar(1) NULL,
         [RISK_ALERT] varchar(1) NULL,
-        [RISK_MEMO] text NULL,
+        [RISK_MEMO] varchar(MAX) NULL,
         [DOCTOR] varchar(10) NULL,
         [EMERG_NAME01] varchar(30) NULL,
         [EMERG_NAME02] varchar(30) NULL,
@@ -812,7 +841,7 @@ BEGIN
         [INTERNATIONAL_ST_ID] varchar(7) NULL,
         [MEDICAL_ALERT] varchar(1) NULL,
         [MEDICAL_CONDITION] varchar(1) NULL,
-        [ACTIVITY_RESTRICTION] text NULL,
+        [ACTIVITY_RESTRICTION] varchar(MAX) NULL,
         [IMMUNISE_CERT_STATUS] varchar(1) NULL,
         [IMMUN_CERT_SIGHTED] varchar(1) NULL,
         [IMMUNISE_PERMISSION] varchar(1) NULL,
@@ -828,7 +857,7 @@ BEGIN
         [SPEC_CURR] varchar(2) NULL,
         [LEGAL_LIMIT_DECISION] varchar(1) NULL,
         [LEGAL_LIMIT_CONTACT] varchar(1) NULL,
-        [LEGAL_LIMITATION] text NULL,
+        [LEGAL_LIMITATION] varchar(MAX) NULL,
         [DOC_COPIES] varchar(1) NULL,
         [LISTED_IN_SOCS] varchar(1) NULL,
         [SUPPORT_SERVICES] varchar(1) NULL,
@@ -848,6 +877,13 @@ BEGIN
         [REFUGEE_BACKGROUND] varchar(1) NULL,
         [TRANSFER_DOCS_SENT] varchar(1) NULL,
         [ENTRY] datetime NULL,
+        [VET] varchar(1) NULL,
+        [USI] varchar(10) NULL,
+        [TEACHER_RECOMMENDATION] varchar(1) NULL,
+        [TRANSITION_STATEMENT] varchar(1) NULL,
+        [FIRST_REG_NO] varchar(15) NULL,
+        [DISABILITY] varchar(1) NULL,
+        [DISABILITY_ID] varchar(6) NULL,
         [DFA_TRANS_ID] varchar(30) NULL,
         [DFB_TRANS_ID] varchar(30) NULL,
         [DFC_TRANS_ID] varchar(30) NULL,
@@ -1007,7 +1043,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
             {
             }
 
-            public override int FieldCount { get { return 128; } }
+            public override int FieldCount { get { return 137; } }
 
             public override object GetValue(int i)
             {
@@ -1023,251 +1059,269 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return Current.STKEY;
                     case 4: // STKEY_NEW
                         return Current.STKEY_NEW;
-                    case 5: // DUP_FAMILY
+                    case 5: // STKEY_DUP
+                        return Current.STKEY_DUP;
+                    case 6: // STKEY_DUP_ACT
+                        return Current.STKEY_DUP_ACT;
+                    case 7: // DUP_FAMILY
                         return Current.DUP_FAMILY;
-                    case 6: // SURNAME
+                    case 8: // SURNAME
                         return Current.SURNAME;
-                    case 7: // FIRST_NAME
+                    case 9: // FIRST_NAME
                         return Current.FIRST_NAME;
-                    case 8: // SECOND_NAME
+                    case 10: // SECOND_NAME
                         return Current.SECOND_NAME;
-                    case 9: // PREF_NAME
+                    case 11: // PREF_NAME
                         return Current.PREF_NAME;
-                    case 10: // TITLE
+                    case 12: // TITLE
                         return Current.TITLE;
-                    case 11: // FAMILY
+                    case 13: // FAMILY
                         return Current.FAMILY;
-                    case 12: // FAMILY_DUP
+                    case 14: // FAMILY_DUP
                         return Current.FAMILY_DUP;
-                    case 13: // FAMILY_DUP_ACT
+                    case 15: // FAMILY_DUP_ACT
                         return Current.FAMILY_DUP_ACT;
-                    case 14: // ACADEMIC_A
+                    case 16: // ACADEMIC_A
                         return Current.ACADEMIC_A;
-                    case 15: // LIVING_A
+                    case 17: // LIVING_A
                         return Current.LIVING_A;
-                    case 16: // RELATION_A01
+                    case 18: // RELATION_A01
                         return Current.RELATION_A01;
-                    case 17: // RELATION_A02
+                    case 19: // RELATION_A02
                         return Current.RELATION_A02;
-                    case 18: // CONTACT_A
+                    case 20: // CONTACT_A
                         return Current.CONTACT_A;
-                    case 19: // FAMB
+                    case 21: // FAMB
                         return Current.FAMB;
-                    case 20: // FAMB_DUP
+                    case 22: // FAMB_DUP
                         return Current.FAMB_DUP;
-                    case 21: // FAMB_DUP_ACT
+                    case 23: // FAMB_DUP_ACT
                         return Current.FAMB_DUP_ACT;
-                    case 22: // ACADEMIC_B
+                    case 24: // ACADEMIC_B
                         return Current.ACADEMIC_B;
-                    case 23: // LIVING_B
+                    case 25: // LIVING_B
                         return Current.LIVING_B;
-                    case 24: // RELATION_B01
+                    case 26: // RELATION_B01
                         return Current.RELATION_B01;
-                    case 25: // RELATION_B02
+                    case 27: // RELATION_B02
                         return Current.RELATION_B02;
-                    case 26: // CONTACT_B
+                    case 28: // CONTACT_B
                         return Current.CONTACT_B;
-                    case 27: // FAMC
+                    case 29: // FAMC
                         return Current.FAMC;
-                    case 28: // FAMC_DUP
+                    case 30: // FAMC_DUP
                         return Current.FAMC_DUP;
-                    case 29: // FAMC_DUP_ACT
+                    case 31: // FAMC_DUP_ACT
                         return Current.FAMC_DUP_ACT;
-                    case 30: // ACADEMIC_C
+                    case 32: // ACADEMIC_C
                         return Current.ACADEMIC_C;
-                    case 31: // LIVING_C
+                    case 33: // LIVING_C
                         return Current.LIVING_C;
-                    case 32: // RELATION_C01
+                    case 34: // RELATION_C01
                         return Current.RELATION_C01;
-                    case 33: // RELATION_C02
+                    case 35: // RELATION_C02
                         return Current.RELATION_C02;
-                    case 34: // CONTACT_C
+                    case 36: // CONTACT_C
                         return Current.CONTACT_C;
-                    case 35: // LIVING_ARR
+                    case 37: // LIVING_ARR
                         return Current.LIVING_ARR;
-                    case 36: // E_MAIL
+                    case 38: // E_MAIL
                         return Current.E_MAIL;
-                    case 37: // MOBILE
+                    case 39: // MOBILE
                         return Current.MOBILE;
-                    case 38: // MAP_TYPE
+                    case 40: // MAP_TYPE
                         return Current.MAP_TYPE;
-                    case 39: // MAP_NUM
+                    case 41: // MAP_NUM
                         return Current.MAP_NUM;
-                    case 40: // X_AXIS
+                    case 42: // X_AXIS
                         return Current.X_AXIS;
-                    case 41: // Y_AXIS
+                    case 43: // Y_AXIS
                         return Current.Y_AXIS;
-                    case 42: // GENDER
+                    case 44: // GENDER
                         return Current.GENDER;
-                    case 43: // BIRTHDATE
+                    case 45: // BIRTHDATE
                         return Current.BIRTHDATE;
-                    case 44: // PROOF_DOB
+                    case 46: // PROOF_DOB
                         return Current.PROOF_DOB;
-                    case 45: // RESIDENT_STATUS
+                    case 47: // RESIDENT_STATUS
                         return Current.RESIDENT_STATUS;
-                    case 46: // PERMANENT_BASIS
+                    case 48: // PERMANENT_BASIS
                         return Current.PERMANENT_BASIS;
-                    case 47: // ARRIVAL
+                    case 49: // ARRIVAL
                         return Current.ARRIVAL;
-                    case 48: // AUSSIE_SCHOOL
+                    case 50: // AUSSIE_SCHOOL
                         return Current.AUSSIE_SCHOOL;
-                    case 49: // INTEGRATION
+                    case 51: // INTEGRATION
                         return Current.INTEGRATION;
-                    case 50: // FAM_ORDER
+                    case 52: // FAM_ORDER
                         return Current.FAM_ORDER;
-                    case 51: // SGB_FUNDED
+                    case 53: // SGB_FUNDED
                         return Current.SGB_FUNDED;
-                    case 52: // SCHOOL_YEAR
+                    case 54: // SCHOOL_YEAR
                         return Current.SCHOOL_YEAR;
-                    case 53: // SCHOOL_YEAR_NEW
+                    case 55: // SCHOOL_YEAR_NEW
                         return Current.SCHOOL_YEAR_NEW;
-                    case 54: // HOME_GROUP_NEW
+                    case 56: // HOME_GROUP_NEW
                         return Current.HOME_GROUP_NEW;
-                    case 55: // RELIGION
+                    case 57: // RELIGION
                         return Current.RELIGION;
-                    case 56: // VISA_SUBCLASS
+                    case 58: // VISA_SUBCLASS
                         return Current.VISA_SUBCLASS;
-                    case 57: // VISA_STAT_CODE
+                    case 59: // VISA_STAT_CODE
                         return Current.VISA_STAT_CODE;
-                    case 58: // VISA_EXPIRY
+                    case 60: // VISA_EXPIRY
                         return Current.VISA_EXPIRY;
-                    case 59: // BIRTH_COUNTRY
+                    case 61: // BIRTH_COUNTRY
                         return Current.BIRTH_COUNTRY;
-                    case 60: // ENG_SPEAK
+                    case 62: // ENG_SPEAK
                         return Current.ENG_SPEAK;
-                    case 61: // HOME_LANG
+                    case 63: // HOME_LANG
                         return Current.HOME_LANG;
-                    case 62: // OVERSEAS
+                    case 64: // OVERSEAS
                         return Current.OVERSEAS;
-                    case 63: // KOORIE
+                    case 65: // KOORIE
                         return Current.KOORIE;
-                    case 64: // ACCESS
+                    case 66: // ACCESS
                         return Current.ACCESS;
-                    case 65: // ACCESS_TYPE
+                    case 67: // ACCESS_TYPE
                         return Current.ACCESS_TYPE;
-                    case 66: // ACCESS_ALERT
+                    case 68: // ACCESS_ALERT
                         return Current.ACCESS_ALERT;
-                    case 67: // RISK_ALERT
+                    case 69: // RISK_ALERT
                         return Current.RISK_ALERT;
-                    case 68: // RISK_MEMO
+                    case 70: // RISK_MEMO
                         return Current.RISK_MEMO;
-                    case 69: // DOCTOR
+                    case 71: // DOCTOR
                         return Current.DOCTOR;
-                    case 70: // EMERG_NAME01
+                    case 72: // EMERG_NAME01
                         return Current.EMERG_NAME01;
-                    case 71: // EMERG_NAME02
+                    case 73: // EMERG_NAME02
                         return Current.EMERG_NAME02;
-                    case 72: // EMERG_LANG01
+                    case 74: // EMERG_LANG01
                         return Current.EMERG_LANG01;
-                    case 73: // EMERG_LANG02
+                    case 75: // EMERG_LANG02
                         return Current.EMERG_LANG02;
-                    case 74: // EMERG_RELATION01
+                    case 76: // EMERG_RELATION01
                         return Current.EMERG_RELATION01;
-                    case 75: // EMERG_RELATION02
+                    case 77: // EMERG_RELATION02
                         return Current.EMERG_RELATION02;
-                    case 76: // EMERG_CONTACT01
+                    case 78: // EMERG_CONTACT01
                         return Current.EMERG_CONTACT01;
-                    case 77: // EMERG_CONTACT02
+                    case 79: // EMERG_CONTACT02
                         return Current.EMERG_CONTACT02;
-                    case 78: // ACC_DECLARATION
+                    case 80: // ACC_DECLARATION
                         return Current.ACC_DECLARATION;
-                    case 79: // MEDICARE_NO
+                    case 81: // MEDICARE_NO
                         return Current.MEDICARE_NO;
-                    case 80: // INTERNATIONAL_ST_ID
+                    case 82: // INTERNATIONAL_ST_ID
                         return Current.INTERNATIONAL_ST_ID;
-                    case 81: // MEDICAL_ALERT
+                    case 83: // MEDICAL_ALERT
                         return Current.MEDICAL_ALERT;
-                    case 82: // MEDICAL_CONDITION
+                    case 84: // MEDICAL_CONDITION
                         return Current.MEDICAL_CONDITION;
-                    case 83: // ACTIVITY_RESTRICTION
+                    case 85: // ACTIVITY_RESTRICTION
                         return Current.ACTIVITY_RESTRICTION;
-                    case 84: // IMMUNISE_CERT_STATUS
+                    case 86: // IMMUNISE_CERT_STATUS
                         return Current.IMMUNISE_CERT_STATUS;
-                    case 85: // IMMUN_CERT_SIGHTED
+                    case 87: // IMMUN_CERT_SIGHTED
                         return Current.IMMUN_CERT_SIGHTED;
-                    case 86: // IMMUNISE_PERMISSION
+                    case 88: // IMMUNISE_PERMISSION
                         return Current.IMMUNISE_PERMISSION;
-                    case 87: // IMMUNIZE
+                    case 89: // IMMUNIZE
                         return Current.IMMUNIZE;
-                    case 88: // OK_TO_PUBLISH
+                    case 90: // OK_TO_PUBLISH
                         return Current.OK_TO_PUBLISH;
-                    case 89: // PIC_LW_DATE
+                    case 91: // PIC_LW_DATE
                         return Current.PIC_LW_DATE;
-                    case 90: // PIC_STATUS
+                    case 92: // PIC_STATUS
                         return Current.PIC_STATUS;
-                    case 91: // YEARS_PREVIOUS_EDUCATION
+                    case 93: // YEARS_PREVIOUS_EDUCATION
                         return Current.YEARS_PREVIOUS_EDUCATION;
-                    case 92: // YEARS_INTERRUPTION_EDUCATION
+                    case 94: // YEARS_INTERRUPTION_EDUCATION
                         return Current.YEARS_INTERRUPTION_EDUCATION;
-                    case 93: // LANGUAGE_PREVIOUS_SCHOOLING
+                    case 95: // LANGUAGE_PREVIOUS_SCHOOLING
                         return Current.LANGUAGE_PREVIOUS_SCHOOLING;
-                    case 94: // LOTE_HOME_CODE
+                    case 96: // LOTE_HOME_CODE
                         return Current.LOTE_HOME_CODE;
-                    case 95: // VSN
+                    case 97: // VSN
                         return Current.VSN;
-                    case 96: // SPEC_CURR
+                    case 98: // SPEC_CURR
                         return Current.SPEC_CURR;
-                    case 97: // LEGAL_LIMIT_DECISION
+                    case 99: // LEGAL_LIMIT_DECISION
                         return Current.LEGAL_LIMIT_DECISION;
-                    case 98: // LEGAL_LIMIT_CONTACT
+                    case 100: // LEGAL_LIMIT_CONTACT
                         return Current.LEGAL_LIMIT_CONTACT;
-                    case 99: // LEGAL_LIMITATION
+                    case 101: // LEGAL_LIMITATION
                         return Current.LEGAL_LIMITATION;
-                    case 100: // DOC_COPIES
+                    case 102: // DOC_COPIES
                         return Current.DOC_COPIES;
-                    case 101: // LISTED_IN_SOCS
+                    case 103: // LISTED_IN_SOCS
                         return Current.LISTED_IN_SOCS;
-                    case 102: // SUPPORT_SERVICES
+                    case 104: // SUPPORT_SERVICES
                         return Current.SUPPORT_SERVICES;
-                    case 103: // STUDENT_SUPPORT
+                    case 105: // STUDENT_SUPPORT
                         return Current.STUDENT_SUPPORT;
-                    case 104: // STUDENT_OTHER_SUPPORT
+                    case 106: // STUDENT_OTHER_SUPPORT
                         return Current.STUDENT_OTHER_SUPPORT;
-                    case 105: // SUPPORT_GROUP
+                    case 107: // SUPPORT_GROUP
                         return Current.SUPPORT_GROUP;
-                    case 106: // CHILD_PROTECTION
+                    case 108: // CHILD_PROTECTION
                         return Current.CHILD_PROTECTION;
-                    case 107: // ATTENDANCE_CONCERNS
+                    case 109: // ATTENDANCE_CONCERNS
                         return Current.ATTENDANCE_CONCERNS;
-                    case 108: // DISCIPLINARY_ACTION
+                    case 110: // DISCIPLINARY_ACTION
                         return Current.DISCIPLINARY_ACTION;
-                    case 109: // WELFARE_RISKS
+                    case 111: // WELFARE_RISKS
                         return Current.WELFARE_RISKS;
-                    case 110: // EFFORT
+                    case 112: // EFFORT
                         return Current.EFFORT;
-                    case 111: // CLASS_BEHAVIOUR
+                    case 113: // CLASS_BEHAVIOUR
                         return Current.CLASS_BEHAVIOUR;
-                    case 112: // ORGANISATION
+                    case 114: // ORGANISATION
                         return Current.ORGANISATION;
-                    case 113: // SOCIAL_BEHAVIOUR
+                    case 115: // SOCIAL_BEHAVIOUR
                         return Current.SOCIAL_BEHAVIOUR;
-                    case 114: // LEARNING_SUPPORT
+                    case 116: // LEARNING_SUPPORT
                         return Current.LEARNING_SUPPORT;
-                    case 115: // NEW_ARRIVALS_PROGRAM
+                    case 117: // NEW_ARRIVALS_PROGRAM
                         return Current.NEW_ARRIVALS_PROGRAM;
-                    case 116: // REFUGEE_BACKGROUND
+                    case 118: // REFUGEE_BACKGROUND
                         return Current.REFUGEE_BACKGROUND;
-                    case 117: // TRANSFER_DOCS_SENT
+                    case 119: // TRANSFER_DOCS_SENT
                         return Current.TRANSFER_DOCS_SENT;
-                    case 118: // ENTRY
+                    case 120: // ENTRY
                         return Current.ENTRY;
-                    case 119: // DFA_TRANS_ID
+                    case 121: // VET
+                        return Current.VET;
+                    case 122: // USI
+                        return Current.USI;
+                    case 123: // TEACHER_RECOMMENDATION
+                        return Current.TEACHER_RECOMMENDATION;
+                    case 124: // TRANSITION_STATEMENT
+                        return Current.TRANSITION_STATEMENT;
+                    case 125: // FIRST_REG_NO
+                        return Current.FIRST_REG_NO;
+                    case 126: // DISABILITY
+                        return Current.DISABILITY;
+                    case 127: // DISABILITY_ID
+                        return Current.DISABILITY_ID;
+                    case 128: // DFA_TRANS_ID
                         return Current.DFA_TRANS_ID;
-                    case 120: // DFB_TRANS_ID
+                    case 129: // DFB_TRANS_ID
                         return Current.DFB_TRANS_ID;
-                    case 121: // DFC_TRANS_ID
+                    case 130: // DFC_TRANS_ID
                         return Current.DFC_TRANS_ID;
-                    case 122: // KCD_TRANS_ID
+                    case 131: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID;
-                    case 123: // IMP_STATUS
+                    case 132: // IMP_STATUS
                         return Current.IMP_STATUS;
-                    case 124: // IMP_DATE
+                    case 133: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 125: // LW_DATE
+                    case 134: // LW_DATE
                         return Current.LW_DATE;
-                    case 126: // LW_TIME
+                    case 135: // LW_TIME
                         return Current.LW_TIME;
-                    case 127: // LW_USER
+                    case 136: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1284,251 +1338,269 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return Current.STKEY == null;
                     case 4: // STKEY_NEW
                         return Current.STKEY_NEW == null;
-                    case 5: // DUP_FAMILY
+                    case 5: // STKEY_DUP
+                        return Current.STKEY_DUP == null;
+                    case 6: // STKEY_DUP_ACT
+                        return Current.STKEY_DUP_ACT == null;
+                    case 7: // DUP_FAMILY
                         return Current.DUP_FAMILY == null;
-                    case 6: // SURNAME
+                    case 8: // SURNAME
                         return Current.SURNAME == null;
-                    case 7: // FIRST_NAME
+                    case 9: // FIRST_NAME
                         return Current.FIRST_NAME == null;
-                    case 8: // SECOND_NAME
+                    case 10: // SECOND_NAME
                         return Current.SECOND_NAME == null;
-                    case 9: // PREF_NAME
+                    case 11: // PREF_NAME
                         return Current.PREF_NAME == null;
-                    case 10: // TITLE
+                    case 12: // TITLE
                         return Current.TITLE == null;
-                    case 11: // FAMILY
+                    case 13: // FAMILY
                         return Current.FAMILY == null;
-                    case 12: // FAMILY_DUP
+                    case 14: // FAMILY_DUP
                         return Current.FAMILY_DUP == null;
-                    case 13: // FAMILY_DUP_ACT
+                    case 15: // FAMILY_DUP_ACT
                         return Current.FAMILY_DUP_ACT == null;
-                    case 14: // ACADEMIC_A
+                    case 16: // ACADEMIC_A
                         return Current.ACADEMIC_A == null;
-                    case 15: // LIVING_A
+                    case 17: // LIVING_A
                         return Current.LIVING_A == null;
-                    case 16: // RELATION_A01
+                    case 18: // RELATION_A01
                         return Current.RELATION_A01 == null;
-                    case 17: // RELATION_A02
+                    case 19: // RELATION_A02
                         return Current.RELATION_A02 == null;
-                    case 18: // CONTACT_A
+                    case 20: // CONTACT_A
                         return Current.CONTACT_A == null;
-                    case 19: // FAMB
+                    case 21: // FAMB
                         return Current.FAMB == null;
-                    case 20: // FAMB_DUP
+                    case 22: // FAMB_DUP
                         return Current.FAMB_DUP == null;
-                    case 21: // FAMB_DUP_ACT
+                    case 23: // FAMB_DUP_ACT
                         return Current.FAMB_DUP_ACT == null;
-                    case 22: // ACADEMIC_B
+                    case 24: // ACADEMIC_B
                         return Current.ACADEMIC_B == null;
-                    case 23: // LIVING_B
+                    case 25: // LIVING_B
                         return Current.LIVING_B == null;
-                    case 24: // RELATION_B01
+                    case 26: // RELATION_B01
                         return Current.RELATION_B01 == null;
-                    case 25: // RELATION_B02
+                    case 27: // RELATION_B02
                         return Current.RELATION_B02 == null;
-                    case 26: // CONTACT_B
+                    case 28: // CONTACT_B
                         return Current.CONTACT_B == null;
-                    case 27: // FAMC
+                    case 29: // FAMC
                         return Current.FAMC == null;
-                    case 28: // FAMC_DUP
+                    case 30: // FAMC_DUP
                         return Current.FAMC_DUP == null;
-                    case 29: // FAMC_DUP_ACT
+                    case 31: // FAMC_DUP_ACT
                         return Current.FAMC_DUP_ACT == null;
-                    case 30: // ACADEMIC_C
+                    case 32: // ACADEMIC_C
                         return Current.ACADEMIC_C == null;
-                    case 31: // LIVING_C
+                    case 33: // LIVING_C
                         return Current.LIVING_C == null;
-                    case 32: // RELATION_C01
+                    case 34: // RELATION_C01
                         return Current.RELATION_C01 == null;
-                    case 33: // RELATION_C02
+                    case 35: // RELATION_C02
                         return Current.RELATION_C02 == null;
-                    case 34: // CONTACT_C
+                    case 36: // CONTACT_C
                         return Current.CONTACT_C == null;
-                    case 35: // LIVING_ARR
+                    case 37: // LIVING_ARR
                         return Current.LIVING_ARR == null;
-                    case 36: // E_MAIL
+                    case 38: // E_MAIL
                         return Current.E_MAIL == null;
-                    case 37: // MOBILE
+                    case 39: // MOBILE
                         return Current.MOBILE == null;
-                    case 38: // MAP_TYPE
+                    case 40: // MAP_TYPE
                         return Current.MAP_TYPE == null;
-                    case 39: // MAP_NUM
+                    case 41: // MAP_NUM
                         return Current.MAP_NUM == null;
-                    case 40: // X_AXIS
+                    case 42: // X_AXIS
                         return Current.X_AXIS == null;
-                    case 41: // Y_AXIS
+                    case 43: // Y_AXIS
                         return Current.Y_AXIS == null;
-                    case 42: // GENDER
+                    case 44: // GENDER
                         return Current.GENDER == null;
-                    case 43: // BIRTHDATE
+                    case 45: // BIRTHDATE
                         return Current.BIRTHDATE == null;
-                    case 44: // PROOF_DOB
+                    case 46: // PROOF_DOB
                         return Current.PROOF_DOB == null;
-                    case 45: // RESIDENT_STATUS
+                    case 47: // RESIDENT_STATUS
                         return Current.RESIDENT_STATUS == null;
-                    case 46: // PERMANENT_BASIS
+                    case 48: // PERMANENT_BASIS
                         return Current.PERMANENT_BASIS == null;
-                    case 47: // ARRIVAL
+                    case 49: // ARRIVAL
                         return Current.ARRIVAL == null;
-                    case 48: // AUSSIE_SCHOOL
+                    case 50: // AUSSIE_SCHOOL
                         return Current.AUSSIE_SCHOOL == null;
-                    case 49: // INTEGRATION
+                    case 51: // INTEGRATION
                         return Current.INTEGRATION == null;
-                    case 50: // FAM_ORDER
+                    case 52: // FAM_ORDER
                         return Current.FAM_ORDER == null;
-                    case 51: // SGB_FUNDED
+                    case 53: // SGB_FUNDED
                         return Current.SGB_FUNDED == null;
-                    case 52: // SCHOOL_YEAR
+                    case 54: // SCHOOL_YEAR
                         return Current.SCHOOL_YEAR == null;
-                    case 53: // SCHOOL_YEAR_NEW
+                    case 55: // SCHOOL_YEAR_NEW
                         return Current.SCHOOL_YEAR_NEW == null;
-                    case 54: // HOME_GROUP_NEW
+                    case 56: // HOME_GROUP_NEW
                         return Current.HOME_GROUP_NEW == null;
-                    case 55: // RELIGION
+                    case 57: // RELIGION
                         return Current.RELIGION == null;
-                    case 56: // VISA_SUBCLASS
+                    case 58: // VISA_SUBCLASS
                         return Current.VISA_SUBCLASS == null;
-                    case 57: // VISA_STAT_CODE
+                    case 59: // VISA_STAT_CODE
                         return Current.VISA_STAT_CODE == null;
-                    case 58: // VISA_EXPIRY
+                    case 60: // VISA_EXPIRY
                         return Current.VISA_EXPIRY == null;
-                    case 59: // BIRTH_COUNTRY
+                    case 61: // BIRTH_COUNTRY
                         return Current.BIRTH_COUNTRY == null;
-                    case 60: // ENG_SPEAK
+                    case 62: // ENG_SPEAK
                         return Current.ENG_SPEAK == null;
-                    case 61: // HOME_LANG
+                    case 63: // HOME_LANG
                         return Current.HOME_LANG == null;
-                    case 62: // OVERSEAS
+                    case 64: // OVERSEAS
                         return Current.OVERSEAS == null;
-                    case 63: // KOORIE
+                    case 65: // KOORIE
                         return Current.KOORIE == null;
-                    case 64: // ACCESS
+                    case 66: // ACCESS
                         return Current.ACCESS == null;
-                    case 65: // ACCESS_TYPE
+                    case 67: // ACCESS_TYPE
                         return Current.ACCESS_TYPE == null;
-                    case 66: // ACCESS_ALERT
+                    case 68: // ACCESS_ALERT
                         return Current.ACCESS_ALERT == null;
-                    case 67: // RISK_ALERT
+                    case 69: // RISK_ALERT
                         return Current.RISK_ALERT == null;
-                    case 68: // RISK_MEMO
+                    case 70: // RISK_MEMO
                         return Current.RISK_MEMO == null;
-                    case 69: // DOCTOR
+                    case 71: // DOCTOR
                         return Current.DOCTOR == null;
-                    case 70: // EMERG_NAME01
+                    case 72: // EMERG_NAME01
                         return Current.EMERG_NAME01 == null;
-                    case 71: // EMERG_NAME02
+                    case 73: // EMERG_NAME02
                         return Current.EMERG_NAME02 == null;
-                    case 72: // EMERG_LANG01
+                    case 74: // EMERG_LANG01
                         return Current.EMERG_LANG01 == null;
-                    case 73: // EMERG_LANG02
+                    case 75: // EMERG_LANG02
                         return Current.EMERG_LANG02 == null;
-                    case 74: // EMERG_RELATION01
+                    case 76: // EMERG_RELATION01
                         return Current.EMERG_RELATION01 == null;
-                    case 75: // EMERG_RELATION02
+                    case 77: // EMERG_RELATION02
                         return Current.EMERG_RELATION02 == null;
-                    case 76: // EMERG_CONTACT01
+                    case 78: // EMERG_CONTACT01
                         return Current.EMERG_CONTACT01 == null;
-                    case 77: // EMERG_CONTACT02
+                    case 79: // EMERG_CONTACT02
                         return Current.EMERG_CONTACT02 == null;
-                    case 78: // ACC_DECLARATION
+                    case 80: // ACC_DECLARATION
                         return Current.ACC_DECLARATION == null;
-                    case 79: // MEDICARE_NO
+                    case 81: // MEDICARE_NO
                         return Current.MEDICARE_NO == null;
-                    case 80: // INTERNATIONAL_ST_ID
+                    case 82: // INTERNATIONAL_ST_ID
                         return Current.INTERNATIONAL_ST_ID == null;
-                    case 81: // MEDICAL_ALERT
+                    case 83: // MEDICAL_ALERT
                         return Current.MEDICAL_ALERT == null;
-                    case 82: // MEDICAL_CONDITION
+                    case 84: // MEDICAL_CONDITION
                         return Current.MEDICAL_CONDITION == null;
-                    case 83: // ACTIVITY_RESTRICTION
+                    case 85: // ACTIVITY_RESTRICTION
                         return Current.ACTIVITY_RESTRICTION == null;
-                    case 84: // IMMUNISE_CERT_STATUS
+                    case 86: // IMMUNISE_CERT_STATUS
                         return Current.IMMUNISE_CERT_STATUS == null;
-                    case 85: // IMMUN_CERT_SIGHTED
+                    case 87: // IMMUN_CERT_SIGHTED
                         return Current.IMMUN_CERT_SIGHTED == null;
-                    case 86: // IMMUNISE_PERMISSION
+                    case 88: // IMMUNISE_PERMISSION
                         return Current.IMMUNISE_PERMISSION == null;
-                    case 87: // IMMUNIZE
+                    case 89: // IMMUNIZE
                         return Current.IMMUNIZE == null;
-                    case 88: // OK_TO_PUBLISH
+                    case 90: // OK_TO_PUBLISH
                         return Current.OK_TO_PUBLISH == null;
-                    case 89: // PIC_LW_DATE
+                    case 91: // PIC_LW_DATE
                         return Current.PIC_LW_DATE == null;
-                    case 90: // PIC_STATUS
+                    case 92: // PIC_STATUS
                         return Current.PIC_STATUS == null;
-                    case 91: // YEARS_PREVIOUS_EDUCATION
+                    case 93: // YEARS_PREVIOUS_EDUCATION
                         return Current.YEARS_PREVIOUS_EDUCATION == null;
-                    case 92: // YEARS_INTERRUPTION_EDUCATION
+                    case 94: // YEARS_INTERRUPTION_EDUCATION
                         return Current.YEARS_INTERRUPTION_EDUCATION == null;
-                    case 93: // LANGUAGE_PREVIOUS_SCHOOLING
+                    case 95: // LANGUAGE_PREVIOUS_SCHOOLING
                         return Current.LANGUAGE_PREVIOUS_SCHOOLING == null;
-                    case 94: // LOTE_HOME_CODE
+                    case 96: // LOTE_HOME_CODE
                         return Current.LOTE_HOME_CODE == null;
-                    case 95: // VSN
+                    case 97: // VSN
                         return Current.VSN == null;
-                    case 96: // SPEC_CURR
+                    case 98: // SPEC_CURR
                         return Current.SPEC_CURR == null;
-                    case 97: // LEGAL_LIMIT_DECISION
+                    case 99: // LEGAL_LIMIT_DECISION
                         return Current.LEGAL_LIMIT_DECISION == null;
-                    case 98: // LEGAL_LIMIT_CONTACT
+                    case 100: // LEGAL_LIMIT_CONTACT
                         return Current.LEGAL_LIMIT_CONTACT == null;
-                    case 99: // LEGAL_LIMITATION
+                    case 101: // LEGAL_LIMITATION
                         return Current.LEGAL_LIMITATION == null;
-                    case 100: // DOC_COPIES
+                    case 102: // DOC_COPIES
                         return Current.DOC_COPIES == null;
-                    case 101: // LISTED_IN_SOCS
+                    case 103: // LISTED_IN_SOCS
                         return Current.LISTED_IN_SOCS == null;
-                    case 102: // SUPPORT_SERVICES
+                    case 104: // SUPPORT_SERVICES
                         return Current.SUPPORT_SERVICES == null;
-                    case 103: // STUDENT_SUPPORT
+                    case 105: // STUDENT_SUPPORT
                         return Current.STUDENT_SUPPORT == null;
-                    case 104: // STUDENT_OTHER_SUPPORT
+                    case 106: // STUDENT_OTHER_SUPPORT
                         return Current.STUDENT_OTHER_SUPPORT == null;
-                    case 105: // SUPPORT_GROUP
+                    case 107: // SUPPORT_GROUP
                         return Current.SUPPORT_GROUP == null;
-                    case 106: // CHILD_PROTECTION
+                    case 108: // CHILD_PROTECTION
                         return Current.CHILD_PROTECTION == null;
-                    case 107: // ATTENDANCE_CONCERNS
+                    case 109: // ATTENDANCE_CONCERNS
                         return Current.ATTENDANCE_CONCERNS == null;
-                    case 108: // DISCIPLINARY_ACTION
+                    case 110: // DISCIPLINARY_ACTION
                         return Current.DISCIPLINARY_ACTION == null;
-                    case 109: // WELFARE_RISKS
+                    case 111: // WELFARE_RISKS
                         return Current.WELFARE_RISKS == null;
-                    case 110: // EFFORT
+                    case 112: // EFFORT
                         return Current.EFFORT == null;
-                    case 111: // CLASS_BEHAVIOUR
+                    case 113: // CLASS_BEHAVIOUR
                         return Current.CLASS_BEHAVIOUR == null;
-                    case 112: // ORGANISATION
+                    case 114: // ORGANISATION
                         return Current.ORGANISATION == null;
-                    case 113: // SOCIAL_BEHAVIOUR
+                    case 115: // SOCIAL_BEHAVIOUR
                         return Current.SOCIAL_BEHAVIOUR == null;
-                    case 114: // LEARNING_SUPPORT
+                    case 116: // LEARNING_SUPPORT
                         return Current.LEARNING_SUPPORT == null;
-                    case 115: // NEW_ARRIVALS_PROGRAM
+                    case 117: // NEW_ARRIVALS_PROGRAM
                         return Current.NEW_ARRIVALS_PROGRAM == null;
-                    case 116: // REFUGEE_BACKGROUND
+                    case 118: // REFUGEE_BACKGROUND
                         return Current.REFUGEE_BACKGROUND == null;
-                    case 117: // TRANSFER_DOCS_SENT
+                    case 119: // TRANSFER_DOCS_SENT
                         return Current.TRANSFER_DOCS_SENT == null;
-                    case 118: // ENTRY
+                    case 120: // ENTRY
                         return Current.ENTRY == null;
-                    case 119: // DFA_TRANS_ID
+                    case 121: // VET
+                        return Current.VET == null;
+                    case 122: // USI
+                        return Current.USI == null;
+                    case 123: // TEACHER_RECOMMENDATION
+                        return Current.TEACHER_RECOMMENDATION == null;
+                    case 124: // TRANSITION_STATEMENT
+                        return Current.TRANSITION_STATEMENT == null;
+                    case 125: // FIRST_REG_NO
+                        return Current.FIRST_REG_NO == null;
+                    case 126: // DISABILITY
+                        return Current.DISABILITY == null;
+                    case 127: // DISABILITY_ID
+                        return Current.DISABILITY_ID == null;
+                    case 128: // DFA_TRANS_ID
                         return Current.DFA_TRANS_ID == null;
-                    case 120: // DFB_TRANS_ID
+                    case 129: // DFB_TRANS_ID
                         return Current.DFB_TRANS_ID == null;
-                    case 121: // DFC_TRANS_ID
+                    case 130: // DFC_TRANS_ID
                         return Current.DFC_TRANS_ID == null;
-                    case 122: // KCD_TRANS_ID
+                    case 131: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID == null;
-                    case 123: // IMP_STATUS
+                    case 132: // IMP_STATUS
                         return Current.IMP_STATUS == null;
-                    case 124: // IMP_DATE
+                    case 133: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 125: // LW_DATE
+                    case 134: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 126: // LW_TIME
+                    case 135: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 127: // LW_USER
+                    case 136: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1549,251 +1621,269 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return "STKEY";
                     case 4: // STKEY_NEW
                         return "STKEY_NEW";
-                    case 5: // DUP_FAMILY
+                    case 5: // STKEY_DUP
+                        return "STKEY_DUP";
+                    case 6: // STKEY_DUP_ACT
+                        return "STKEY_DUP_ACT";
+                    case 7: // DUP_FAMILY
                         return "DUP_FAMILY";
-                    case 6: // SURNAME
+                    case 8: // SURNAME
                         return "SURNAME";
-                    case 7: // FIRST_NAME
+                    case 9: // FIRST_NAME
                         return "FIRST_NAME";
-                    case 8: // SECOND_NAME
+                    case 10: // SECOND_NAME
                         return "SECOND_NAME";
-                    case 9: // PREF_NAME
+                    case 11: // PREF_NAME
                         return "PREF_NAME";
-                    case 10: // TITLE
+                    case 12: // TITLE
                         return "TITLE";
-                    case 11: // FAMILY
+                    case 13: // FAMILY
                         return "FAMILY";
-                    case 12: // FAMILY_DUP
+                    case 14: // FAMILY_DUP
                         return "FAMILY_DUP";
-                    case 13: // FAMILY_DUP_ACT
+                    case 15: // FAMILY_DUP_ACT
                         return "FAMILY_DUP_ACT";
-                    case 14: // ACADEMIC_A
+                    case 16: // ACADEMIC_A
                         return "ACADEMIC_A";
-                    case 15: // LIVING_A
+                    case 17: // LIVING_A
                         return "LIVING_A";
-                    case 16: // RELATION_A01
+                    case 18: // RELATION_A01
                         return "RELATION_A01";
-                    case 17: // RELATION_A02
+                    case 19: // RELATION_A02
                         return "RELATION_A02";
-                    case 18: // CONTACT_A
+                    case 20: // CONTACT_A
                         return "CONTACT_A";
-                    case 19: // FAMB
+                    case 21: // FAMB
                         return "FAMB";
-                    case 20: // FAMB_DUP
+                    case 22: // FAMB_DUP
                         return "FAMB_DUP";
-                    case 21: // FAMB_DUP_ACT
+                    case 23: // FAMB_DUP_ACT
                         return "FAMB_DUP_ACT";
-                    case 22: // ACADEMIC_B
+                    case 24: // ACADEMIC_B
                         return "ACADEMIC_B";
-                    case 23: // LIVING_B
+                    case 25: // LIVING_B
                         return "LIVING_B";
-                    case 24: // RELATION_B01
+                    case 26: // RELATION_B01
                         return "RELATION_B01";
-                    case 25: // RELATION_B02
+                    case 27: // RELATION_B02
                         return "RELATION_B02";
-                    case 26: // CONTACT_B
+                    case 28: // CONTACT_B
                         return "CONTACT_B";
-                    case 27: // FAMC
+                    case 29: // FAMC
                         return "FAMC";
-                    case 28: // FAMC_DUP
+                    case 30: // FAMC_DUP
                         return "FAMC_DUP";
-                    case 29: // FAMC_DUP_ACT
+                    case 31: // FAMC_DUP_ACT
                         return "FAMC_DUP_ACT";
-                    case 30: // ACADEMIC_C
+                    case 32: // ACADEMIC_C
                         return "ACADEMIC_C";
-                    case 31: // LIVING_C
+                    case 33: // LIVING_C
                         return "LIVING_C";
-                    case 32: // RELATION_C01
+                    case 34: // RELATION_C01
                         return "RELATION_C01";
-                    case 33: // RELATION_C02
+                    case 35: // RELATION_C02
                         return "RELATION_C02";
-                    case 34: // CONTACT_C
+                    case 36: // CONTACT_C
                         return "CONTACT_C";
-                    case 35: // LIVING_ARR
+                    case 37: // LIVING_ARR
                         return "LIVING_ARR";
-                    case 36: // E_MAIL
+                    case 38: // E_MAIL
                         return "E_MAIL";
-                    case 37: // MOBILE
+                    case 39: // MOBILE
                         return "MOBILE";
-                    case 38: // MAP_TYPE
+                    case 40: // MAP_TYPE
                         return "MAP_TYPE";
-                    case 39: // MAP_NUM
+                    case 41: // MAP_NUM
                         return "MAP_NUM";
-                    case 40: // X_AXIS
+                    case 42: // X_AXIS
                         return "X_AXIS";
-                    case 41: // Y_AXIS
+                    case 43: // Y_AXIS
                         return "Y_AXIS";
-                    case 42: // GENDER
+                    case 44: // GENDER
                         return "GENDER";
-                    case 43: // BIRTHDATE
+                    case 45: // BIRTHDATE
                         return "BIRTHDATE";
-                    case 44: // PROOF_DOB
+                    case 46: // PROOF_DOB
                         return "PROOF_DOB";
-                    case 45: // RESIDENT_STATUS
+                    case 47: // RESIDENT_STATUS
                         return "RESIDENT_STATUS";
-                    case 46: // PERMANENT_BASIS
+                    case 48: // PERMANENT_BASIS
                         return "PERMANENT_BASIS";
-                    case 47: // ARRIVAL
+                    case 49: // ARRIVAL
                         return "ARRIVAL";
-                    case 48: // AUSSIE_SCHOOL
+                    case 50: // AUSSIE_SCHOOL
                         return "AUSSIE_SCHOOL";
-                    case 49: // INTEGRATION
+                    case 51: // INTEGRATION
                         return "INTEGRATION";
-                    case 50: // FAM_ORDER
+                    case 52: // FAM_ORDER
                         return "FAM_ORDER";
-                    case 51: // SGB_FUNDED
+                    case 53: // SGB_FUNDED
                         return "SGB_FUNDED";
-                    case 52: // SCHOOL_YEAR
+                    case 54: // SCHOOL_YEAR
                         return "SCHOOL_YEAR";
-                    case 53: // SCHOOL_YEAR_NEW
+                    case 55: // SCHOOL_YEAR_NEW
                         return "SCHOOL_YEAR_NEW";
-                    case 54: // HOME_GROUP_NEW
+                    case 56: // HOME_GROUP_NEW
                         return "HOME_GROUP_NEW";
-                    case 55: // RELIGION
+                    case 57: // RELIGION
                         return "RELIGION";
-                    case 56: // VISA_SUBCLASS
+                    case 58: // VISA_SUBCLASS
                         return "VISA_SUBCLASS";
-                    case 57: // VISA_STAT_CODE
+                    case 59: // VISA_STAT_CODE
                         return "VISA_STAT_CODE";
-                    case 58: // VISA_EXPIRY
+                    case 60: // VISA_EXPIRY
                         return "VISA_EXPIRY";
-                    case 59: // BIRTH_COUNTRY
+                    case 61: // BIRTH_COUNTRY
                         return "BIRTH_COUNTRY";
-                    case 60: // ENG_SPEAK
+                    case 62: // ENG_SPEAK
                         return "ENG_SPEAK";
-                    case 61: // HOME_LANG
+                    case 63: // HOME_LANG
                         return "HOME_LANG";
-                    case 62: // OVERSEAS
+                    case 64: // OVERSEAS
                         return "OVERSEAS";
-                    case 63: // KOORIE
+                    case 65: // KOORIE
                         return "KOORIE";
-                    case 64: // ACCESS
+                    case 66: // ACCESS
                         return "ACCESS";
-                    case 65: // ACCESS_TYPE
+                    case 67: // ACCESS_TYPE
                         return "ACCESS_TYPE";
-                    case 66: // ACCESS_ALERT
+                    case 68: // ACCESS_ALERT
                         return "ACCESS_ALERT";
-                    case 67: // RISK_ALERT
+                    case 69: // RISK_ALERT
                         return "RISK_ALERT";
-                    case 68: // RISK_MEMO
+                    case 70: // RISK_MEMO
                         return "RISK_MEMO";
-                    case 69: // DOCTOR
+                    case 71: // DOCTOR
                         return "DOCTOR";
-                    case 70: // EMERG_NAME01
+                    case 72: // EMERG_NAME01
                         return "EMERG_NAME01";
-                    case 71: // EMERG_NAME02
+                    case 73: // EMERG_NAME02
                         return "EMERG_NAME02";
-                    case 72: // EMERG_LANG01
+                    case 74: // EMERG_LANG01
                         return "EMERG_LANG01";
-                    case 73: // EMERG_LANG02
+                    case 75: // EMERG_LANG02
                         return "EMERG_LANG02";
-                    case 74: // EMERG_RELATION01
+                    case 76: // EMERG_RELATION01
                         return "EMERG_RELATION01";
-                    case 75: // EMERG_RELATION02
+                    case 77: // EMERG_RELATION02
                         return "EMERG_RELATION02";
-                    case 76: // EMERG_CONTACT01
+                    case 78: // EMERG_CONTACT01
                         return "EMERG_CONTACT01";
-                    case 77: // EMERG_CONTACT02
+                    case 79: // EMERG_CONTACT02
                         return "EMERG_CONTACT02";
-                    case 78: // ACC_DECLARATION
+                    case 80: // ACC_DECLARATION
                         return "ACC_DECLARATION";
-                    case 79: // MEDICARE_NO
+                    case 81: // MEDICARE_NO
                         return "MEDICARE_NO";
-                    case 80: // INTERNATIONAL_ST_ID
+                    case 82: // INTERNATIONAL_ST_ID
                         return "INTERNATIONAL_ST_ID";
-                    case 81: // MEDICAL_ALERT
+                    case 83: // MEDICAL_ALERT
                         return "MEDICAL_ALERT";
-                    case 82: // MEDICAL_CONDITION
+                    case 84: // MEDICAL_CONDITION
                         return "MEDICAL_CONDITION";
-                    case 83: // ACTIVITY_RESTRICTION
+                    case 85: // ACTIVITY_RESTRICTION
                         return "ACTIVITY_RESTRICTION";
-                    case 84: // IMMUNISE_CERT_STATUS
+                    case 86: // IMMUNISE_CERT_STATUS
                         return "IMMUNISE_CERT_STATUS";
-                    case 85: // IMMUN_CERT_SIGHTED
+                    case 87: // IMMUN_CERT_SIGHTED
                         return "IMMUN_CERT_SIGHTED";
-                    case 86: // IMMUNISE_PERMISSION
+                    case 88: // IMMUNISE_PERMISSION
                         return "IMMUNISE_PERMISSION";
-                    case 87: // IMMUNIZE
+                    case 89: // IMMUNIZE
                         return "IMMUNIZE";
-                    case 88: // OK_TO_PUBLISH
+                    case 90: // OK_TO_PUBLISH
                         return "OK_TO_PUBLISH";
-                    case 89: // PIC_LW_DATE
+                    case 91: // PIC_LW_DATE
                         return "PIC_LW_DATE";
-                    case 90: // PIC_STATUS
+                    case 92: // PIC_STATUS
                         return "PIC_STATUS";
-                    case 91: // YEARS_PREVIOUS_EDUCATION
+                    case 93: // YEARS_PREVIOUS_EDUCATION
                         return "YEARS_PREVIOUS_EDUCATION";
-                    case 92: // YEARS_INTERRUPTION_EDUCATION
+                    case 94: // YEARS_INTERRUPTION_EDUCATION
                         return "YEARS_INTERRUPTION_EDUCATION";
-                    case 93: // LANGUAGE_PREVIOUS_SCHOOLING
+                    case 95: // LANGUAGE_PREVIOUS_SCHOOLING
                         return "LANGUAGE_PREVIOUS_SCHOOLING";
-                    case 94: // LOTE_HOME_CODE
+                    case 96: // LOTE_HOME_CODE
                         return "LOTE_HOME_CODE";
-                    case 95: // VSN
+                    case 97: // VSN
                         return "VSN";
-                    case 96: // SPEC_CURR
+                    case 98: // SPEC_CURR
                         return "SPEC_CURR";
-                    case 97: // LEGAL_LIMIT_DECISION
+                    case 99: // LEGAL_LIMIT_DECISION
                         return "LEGAL_LIMIT_DECISION";
-                    case 98: // LEGAL_LIMIT_CONTACT
+                    case 100: // LEGAL_LIMIT_CONTACT
                         return "LEGAL_LIMIT_CONTACT";
-                    case 99: // LEGAL_LIMITATION
+                    case 101: // LEGAL_LIMITATION
                         return "LEGAL_LIMITATION";
-                    case 100: // DOC_COPIES
+                    case 102: // DOC_COPIES
                         return "DOC_COPIES";
-                    case 101: // LISTED_IN_SOCS
+                    case 103: // LISTED_IN_SOCS
                         return "LISTED_IN_SOCS";
-                    case 102: // SUPPORT_SERVICES
+                    case 104: // SUPPORT_SERVICES
                         return "SUPPORT_SERVICES";
-                    case 103: // STUDENT_SUPPORT
+                    case 105: // STUDENT_SUPPORT
                         return "STUDENT_SUPPORT";
-                    case 104: // STUDENT_OTHER_SUPPORT
+                    case 106: // STUDENT_OTHER_SUPPORT
                         return "STUDENT_OTHER_SUPPORT";
-                    case 105: // SUPPORT_GROUP
+                    case 107: // SUPPORT_GROUP
                         return "SUPPORT_GROUP";
-                    case 106: // CHILD_PROTECTION
+                    case 108: // CHILD_PROTECTION
                         return "CHILD_PROTECTION";
-                    case 107: // ATTENDANCE_CONCERNS
+                    case 109: // ATTENDANCE_CONCERNS
                         return "ATTENDANCE_CONCERNS";
-                    case 108: // DISCIPLINARY_ACTION
+                    case 110: // DISCIPLINARY_ACTION
                         return "DISCIPLINARY_ACTION";
-                    case 109: // WELFARE_RISKS
+                    case 111: // WELFARE_RISKS
                         return "WELFARE_RISKS";
-                    case 110: // EFFORT
+                    case 112: // EFFORT
                         return "EFFORT";
-                    case 111: // CLASS_BEHAVIOUR
+                    case 113: // CLASS_BEHAVIOUR
                         return "CLASS_BEHAVIOUR";
-                    case 112: // ORGANISATION
+                    case 114: // ORGANISATION
                         return "ORGANISATION";
-                    case 113: // SOCIAL_BEHAVIOUR
+                    case 115: // SOCIAL_BEHAVIOUR
                         return "SOCIAL_BEHAVIOUR";
-                    case 114: // LEARNING_SUPPORT
+                    case 116: // LEARNING_SUPPORT
                         return "LEARNING_SUPPORT";
-                    case 115: // NEW_ARRIVALS_PROGRAM
+                    case 117: // NEW_ARRIVALS_PROGRAM
                         return "NEW_ARRIVALS_PROGRAM";
-                    case 116: // REFUGEE_BACKGROUND
+                    case 118: // REFUGEE_BACKGROUND
                         return "REFUGEE_BACKGROUND";
-                    case 117: // TRANSFER_DOCS_SENT
+                    case 119: // TRANSFER_DOCS_SENT
                         return "TRANSFER_DOCS_SENT";
-                    case 118: // ENTRY
+                    case 120: // ENTRY
                         return "ENTRY";
-                    case 119: // DFA_TRANS_ID
+                    case 121: // VET
+                        return "VET";
+                    case 122: // USI
+                        return "USI";
+                    case 123: // TEACHER_RECOMMENDATION
+                        return "TEACHER_RECOMMENDATION";
+                    case 124: // TRANSITION_STATEMENT
+                        return "TRANSITION_STATEMENT";
+                    case 125: // FIRST_REG_NO
+                        return "FIRST_REG_NO";
+                    case 126: // DISABILITY
+                        return "DISABILITY";
+                    case 127: // DISABILITY_ID
+                        return "DISABILITY_ID";
+                    case 128: // DFA_TRANS_ID
                         return "DFA_TRANS_ID";
-                    case 120: // DFB_TRANS_ID
+                    case 129: // DFB_TRANS_ID
                         return "DFB_TRANS_ID";
-                    case 121: // DFC_TRANS_ID
+                    case 130: // DFC_TRANS_ID
                         return "DFC_TRANS_ID";
-                    case 122: // KCD_TRANS_ID
+                    case 131: // KCD_TRANS_ID
                         return "KCD_TRANS_ID";
-                    case 123: // IMP_STATUS
+                    case 132: // IMP_STATUS
                         return "IMP_STATUS";
-                    case 124: // IMP_DATE
+                    case 133: // IMP_DATE
                         return "IMP_DATE";
-                    case 125: // LW_DATE
+                    case 134: // LW_DATE
                         return "LW_DATE";
-                    case 126: // LW_TIME
+                    case 135: // LW_TIME
                         return "LW_TIME";
-                    case 127: // LW_USER
+                    case 136: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1814,252 +1904,270 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
                         return 3;
                     case "STKEY_NEW":
                         return 4;
-                    case "DUP_FAMILY":
+                    case "STKEY_DUP":
                         return 5;
-                    case "SURNAME":
+                    case "STKEY_DUP_ACT":
                         return 6;
-                    case "FIRST_NAME":
+                    case "DUP_FAMILY":
                         return 7;
-                    case "SECOND_NAME":
+                    case "SURNAME":
                         return 8;
-                    case "PREF_NAME":
+                    case "FIRST_NAME":
                         return 9;
-                    case "TITLE":
+                    case "SECOND_NAME":
                         return 10;
-                    case "FAMILY":
+                    case "PREF_NAME":
                         return 11;
-                    case "FAMILY_DUP":
+                    case "TITLE":
                         return 12;
-                    case "FAMILY_DUP_ACT":
+                    case "FAMILY":
                         return 13;
-                    case "ACADEMIC_A":
+                    case "FAMILY_DUP":
                         return 14;
-                    case "LIVING_A":
+                    case "FAMILY_DUP_ACT":
                         return 15;
-                    case "RELATION_A01":
+                    case "ACADEMIC_A":
                         return 16;
-                    case "RELATION_A02":
+                    case "LIVING_A":
                         return 17;
-                    case "CONTACT_A":
+                    case "RELATION_A01":
                         return 18;
-                    case "FAMB":
+                    case "RELATION_A02":
                         return 19;
-                    case "FAMB_DUP":
+                    case "CONTACT_A":
                         return 20;
-                    case "FAMB_DUP_ACT":
+                    case "FAMB":
                         return 21;
-                    case "ACADEMIC_B":
+                    case "FAMB_DUP":
                         return 22;
-                    case "LIVING_B":
+                    case "FAMB_DUP_ACT":
                         return 23;
-                    case "RELATION_B01":
+                    case "ACADEMIC_B":
                         return 24;
-                    case "RELATION_B02":
+                    case "LIVING_B":
                         return 25;
-                    case "CONTACT_B":
+                    case "RELATION_B01":
                         return 26;
-                    case "FAMC":
+                    case "RELATION_B02":
                         return 27;
-                    case "FAMC_DUP":
+                    case "CONTACT_B":
                         return 28;
-                    case "FAMC_DUP_ACT":
+                    case "FAMC":
                         return 29;
-                    case "ACADEMIC_C":
+                    case "FAMC_DUP":
                         return 30;
-                    case "LIVING_C":
+                    case "FAMC_DUP_ACT":
                         return 31;
-                    case "RELATION_C01":
+                    case "ACADEMIC_C":
                         return 32;
-                    case "RELATION_C02":
+                    case "LIVING_C":
                         return 33;
-                    case "CONTACT_C":
+                    case "RELATION_C01":
                         return 34;
-                    case "LIVING_ARR":
+                    case "RELATION_C02":
                         return 35;
-                    case "E_MAIL":
+                    case "CONTACT_C":
                         return 36;
-                    case "MOBILE":
+                    case "LIVING_ARR":
                         return 37;
-                    case "MAP_TYPE":
+                    case "E_MAIL":
                         return 38;
-                    case "MAP_NUM":
+                    case "MOBILE":
                         return 39;
-                    case "X_AXIS":
+                    case "MAP_TYPE":
                         return 40;
-                    case "Y_AXIS":
+                    case "MAP_NUM":
                         return 41;
-                    case "GENDER":
+                    case "X_AXIS":
                         return 42;
-                    case "BIRTHDATE":
+                    case "Y_AXIS":
                         return 43;
-                    case "PROOF_DOB":
+                    case "GENDER":
                         return 44;
-                    case "RESIDENT_STATUS":
+                    case "BIRTHDATE":
                         return 45;
-                    case "PERMANENT_BASIS":
+                    case "PROOF_DOB":
                         return 46;
-                    case "ARRIVAL":
+                    case "RESIDENT_STATUS":
                         return 47;
-                    case "AUSSIE_SCHOOL":
+                    case "PERMANENT_BASIS":
                         return 48;
-                    case "INTEGRATION":
+                    case "ARRIVAL":
                         return 49;
-                    case "FAM_ORDER":
+                    case "AUSSIE_SCHOOL":
                         return 50;
-                    case "SGB_FUNDED":
+                    case "INTEGRATION":
                         return 51;
-                    case "SCHOOL_YEAR":
+                    case "FAM_ORDER":
                         return 52;
-                    case "SCHOOL_YEAR_NEW":
+                    case "SGB_FUNDED":
                         return 53;
-                    case "HOME_GROUP_NEW":
+                    case "SCHOOL_YEAR":
                         return 54;
-                    case "RELIGION":
+                    case "SCHOOL_YEAR_NEW":
                         return 55;
-                    case "VISA_SUBCLASS":
+                    case "HOME_GROUP_NEW":
                         return 56;
-                    case "VISA_STAT_CODE":
+                    case "RELIGION":
                         return 57;
-                    case "VISA_EXPIRY":
+                    case "VISA_SUBCLASS":
                         return 58;
-                    case "BIRTH_COUNTRY":
+                    case "VISA_STAT_CODE":
                         return 59;
-                    case "ENG_SPEAK":
+                    case "VISA_EXPIRY":
                         return 60;
-                    case "HOME_LANG":
+                    case "BIRTH_COUNTRY":
                         return 61;
-                    case "OVERSEAS":
+                    case "ENG_SPEAK":
                         return 62;
-                    case "KOORIE":
+                    case "HOME_LANG":
                         return 63;
-                    case "ACCESS":
+                    case "OVERSEAS":
                         return 64;
-                    case "ACCESS_TYPE":
+                    case "KOORIE":
                         return 65;
-                    case "ACCESS_ALERT":
+                    case "ACCESS":
                         return 66;
-                    case "RISK_ALERT":
+                    case "ACCESS_TYPE":
                         return 67;
-                    case "RISK_MEMO":
+                    case "ACCESS_ALERT":
                         return 68;
-                    case "DOCTOR":
+                    case "RISK_ALERT":
                         return 69;
-                    case "EMERG_NAME01":
+                    case "RISK_MEMO":
                         return 70;
-                    case "EMERG_NAME02":
+                    case "DOCTOR":
                         return 71;
-                    case "EMERG_LANG01":
+                    case "EMERG_NAME01":
                         return 72;
-                    case "EMERG_LANG02":
+                    case "EMERG_NAME02":
                         return 73;
-                    case "EMERG_RELATION01":
+                    case "EMERG_LANG01":
                         return 74;
-                    case "EMERG_RELATION02":
+                    case "EMERG_LANG02":
                         return 75;
-                    case "EMERG_CONTACT01":
+                    case "EMERG_RELATION01":
                         return 76;
-                    case "EMERG_CONTACT02":
+                    case "EMERG_RELATION02":
                         return 77;
-                    case "ACC_DECLARATION":
+                    case "EMERG_CONTACT01":
                         return 78;
-                    case "MEDICARE_NO":
+                    case "EMERG_CONTACT02":
                         return 79;
-                    case "INTERNATIONAL_ST_ID":
+                    case "ACC_DECLARATION":
                         return 80;
-                    case "MEDICAL_ALERT":
+                    case "MEDICARE_NO":
                         return 81;
-                    case "MEDICAL_CONDITION":
+                    case "INTERNATIONAL_ST_ID":
                         return 82;
-                    case "ACTIVITY_RESTRICTION":
+                    case "MEDICAL_ALERT":
                         return 83;
-                    case "IMMUNISE_CERT_STATUS":
+                    case "MEDICAL_CONDITION":
                         return 84;
-                    case "IMMUN_CERT_SIGHTED":
+                    case "ACTIVITY_RESTRICTION":
                         return 85;
-                    case "IMMUNISE_PERMISSION":
+                    case "IMMUNISE_CERT_STATUS":
                         return 86;
-                    case "IMMUNIZE":
+                    case "IMMUN_CERT_SIGHTED":
                         return 87;
-                    case "OK_TO_PUBLISH":
+                    case "IMMUNISE_PERMISSION":
                         return 88;
-                    case "PIC_LW_DATE":
+                    case "IMMUNIZE":
                         return 89;
-                    case "PIC_STATUS":
+                    case "OK_TO_PUBLISH":
                         return 90;
-                    case "YEARS_PREVIOUS_EDUCATION":
+                    case "PIC_LW_DATE":
                         return 91;
-                    case "YEARS_INTERRUPTION_EDUCATION":
+                    case "PIC_STATUS":
                         return 92;
-                    case "LANGUAGE_PREVIOUS_SCHOOLING":
+                    case "YEARS_PREVIOUS_EDUCATION":
                         return 93;
-                    case "LOTE_HOME_CODE":
+                    case "YEARS_INTERRUPTION_EDUCATION":
                         return 94;
-                    case "VSN":
+                    case "LANGUAGE_PREVIOUS_SCHOOLING":
                         return 95;
-                    case "SPEC_CURR":
+                    case "LOTE_HOME_CODE":
                         return 96;
-                    case "LEGAL_LIMIT_DECISION":
+                    case "VSN":
                         return 97;
-                    case "LEGAL_LIMIT_CONTACT":
+                    case "SPEC_CURR":
                         return 98;
-                    case "LEGAL_LIMITATION":
+                    case "LEGAL_LIMIT_DECISION":
                         return 99;
-                    case "DOC_COPIES":
+                    case "LEGAL_LIMIT_CONTACT":
                         return 100;
-                    case "LISTED_IN_SOCS":
+                    case "LEGAL_LIMITATION":
                         return 101;
-                    case "SUPPORT_SERVICES":
+                    case "DOC_COPIES":
                         return 102;
-                    case "STUDENT_SUPPORT":
+                    case "LISTED_IN_SOCS":
                         return 103;
-                    case "STUDENT_OTHER_SUPPORT":
+                    case "SUPPORT_SERVICES":
                         return 104;
-                    case "SUPPORT_GROUP":
+                    case "STUDENT_SUPPORT":
                         return 105;
-                    case "CHILD_PROTECTION":
+                    case "STUDENT_OTHER_SUPPORT":
                         return 106;
-                    case "ATTENDANCE_CONCERNS":
+                    case "SUPPORT_GROUP":
                         return 107;
-                    case "DISCIPLINARY_ACTION":
+                    case "CHILD_PROTECTION":
                         return 108;
-                    case "WELFARE_RISKS":
+                    case "ATTENDANCE_CONCERNS":
                         return 109;
-                    case "EFFORT":
+                    case "DISCIPLINARY_ACTION":
                         return 110;
-                    case "CLASS_BEHAVIOUR":
+                    case "WELFARE_RISKS":
                         return 111;
-                    case "ORGANISATION":
+                    case "EFFORT":
                         return 112;
-                    case "SOCIAL_BEHAVIOUR":
+                    case "CLASS_BEHAVIOUR":
                         return 113;
-                    case "LEARNING_SUPPORT":
+                    case "ORGANISATION":
                         return 114;
-                    case "NEW_ARRIVALS_PROGRAM":
+                    case "SOCIAL_BEHAVIOUR":
                         return 115;
-                    case "REFUGEE_BACKGROUND":
+                    case "LEARNING_SUPPORT":
                         return 116;
-                    case "TRANSFER_DOCS_SENT":
+                    case "NEW_ARRIVALS_PROGRAM":
                         return 117;
-                    case "ENTRY":
+                    case "REFUGEE_BACKGROUND":
                         return 118;
-                    case "DFA_TRANS_ID":
+                    case "TRANSFER_DOCS_SENT":
                         return 119;
-                    case "DFB_TRANS_ID":
+                    case "ENTRY":
                         return 120;
-                    case "DFC_TRANS_ID":
+                    case "VET":
                         return 121;
-                    case "KCD_TRANS_ID":
+                    case "USI":
                         return 122;
-                    case "IMP_STATUS":
+                    case "TEACHER_RECOMMENDATION":
                         return 123;
-                    case "IMP_DATE":
+                    case "TRANSITION_STATEMENT":
                         return 124;
-                    case "LW_DATE":
+                    case "FIRST_REG_NO":
                         return 125;
-                    case "LW_TIME":
+                    case "DISABILITY":
                         return 126;
-                    case "LW_USER":
+                    case "DISABILITY_ID":
                         return 127;
+                    case "DFA_TRANS_ID":
+                        return 128;
+                    case "DFB_TRANS_ID":
+                        return 129;
+                    case "DFC_TRANS_ID":
+                        return 130;
+                    case "KCD_TRANS_ID":
+                        return 131;
+                    case "IMP_STATUS":
+                        return 132;
+                    case "IMP_DATE":
+                        return 133;
+                    case "LW_DATE":
+                        return 134;
+                    case "LW_TIME":
+                        return 135;
+                    case "LW_USER":
+                        return 136;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

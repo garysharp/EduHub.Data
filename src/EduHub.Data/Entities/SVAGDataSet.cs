@@ -24,7 +24,6 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_COHORT = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.COHORT));
-            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
             Index_SVAGKEY = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(i => i.SVAGKEY));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
         }
@@ -166,6 +165,9 @@ namespace EduHub.Data.Entities
                     case "NO_NT":
                         mapper[i] = (e, v) => e.NO_NT = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "NO_DNP":
+                        mapper[i] = (e, v) => e.NO_DNP = v == null ? (short?)null : short.Parse(v);
+                        break;
                     case "TOTAL_NUMBER":
                         mapper[i] = (e, v) => e.TOTAL_NUMBER = v == null ? (short?)null : short.Parse(v);
                         break;
@@ -247,7 +249,6 @@ namespace EduHub.Data.Entities
         #region Index Fields
 
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_COHORT;
-        private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_SCHOOL_YEAR;
         private Lazy<Dictionary<int, SVAG>> Index_SVAGKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_VDIMENSION;
 
@@ -288,48 +289,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<SVAG> value;
             if (Index_COHORT.Value.TryGetValue(COHORT, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find SVAG by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
-        /// <returns>List of related SVAG entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SVAG> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
-        }
-
-        /// <summary>
-        /// Attempt to find SVAG by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
-        /// <param name="Value">List of related SVAG entities</param>
-        /// <returns>True if the list of related SVAG entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<SVAG> Value)
-        {
-            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find SVAG by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find SVAG</param>
-        /// <returns>List of related SVAG entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SVAG> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            IReadOnlyList<SVAG> value;
-            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
             {
                 return value;
             }
@@ -481,6 +440,7 @@ BEGIN
         [NUMBER_AT34] smallint NULL,
         [NO_NA] smallint NULL,
         [NO_NT] smallint NULL,
+        [NO_DNP] smallint NULL,
         [TOTAL_NUMBER] smallint NULL,
         [SENT_TO_DEET] datetime NULL,
         [LW_DATE] datetime NULL,
@@ -493,10 +453,6 @@ BEGIN
     CREATE NONCLUSTERED INDEX [SVAG_Index_COHORT] ON [dbo].[SVAG]
     (
             [COHORT] ASC
-    );
-    CREATE NONCLUSTERED INDEX [SVAG_Index_SCHOOL_YEAR] ON [dbo].[SVAG]
-    (
-            [SCHOOL_YEAR] ASC
     );
     CREATE NONCLUSTERED INDEX [SVAG_Index_VDIMENSION] ON [dbo].[SVAG]
     (
@@ -519,8 +475,6 @@ END");
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
     ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[SVAG] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
     ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] DISABLE;
 ");
@@ -538,8 +492,6 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
     ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
     ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
 ");
@@ -612,7 +564,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
             {
             }
 
-            public override int FieldCount { get { return 47; } }
+            public override int FieldCount { get { return 48; } }
 
             public override object GetValue(int i)
             {
@@ -702,15 +654,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.NO_NA;
                     case 41: // NO_NT
                         return Current.NO_NT;
-                    case 42: // TOTAL_NUMBER
+                    case 42: // NO_DNP
+                        return Current.NO_DNP;
+                    case 43: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER;
-                    case 43: // SENT_TO_DEET
+                    case 44: // SENT_TO_DEET
                         return Current.SENT_TO_DEET;
-                    case 44: // LW_DATE
+                    case 45: // LW_DATE
                         return Current.LW_DATE;
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME;
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -803,15 +757,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.NO_NA == null;
                     case 41: // NO_NT
                         return Current.NO_NT == null;
-                    case 42: // TOTAL_NUMBER
+                    case 42: // NO_DNP
+                        return Current.NO_DNP == null;
+                    case 43: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER == null;
-                    case 43: // SENT_TO_DEET
+                    case 44: // SENT_TO_DEET
                         return Current.SENT_TO_DEET == null;
-                    case 44: // LW_DATE
+                    case 45: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -906,15 +862,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return "NO_NA";
                     case 41: // NO_NT
                         return "NO_NT";
-                    case 42: // TOTAL_NUMBER
+                    case 42: // NO_DNP
+                        return "NO_DNP";
+                    case 43: // TOTAL_NUMBER
                         return "TOTAL_NUMBER";
-                    case 43: // SENT_TO_DEET
+                    case 44: // SENT_TO_DEET
                         return "SENT_TO_DEET";
-                    case 44: // LW_DATE
+                    case 45: // LW_DATE
                         return "LW_DATE";
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return "LW_TIME";
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1009,16 +967,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return 40;
                     case "NO_NT":
                         return 41;
-                    case "TOTAL_NUMBER":
+                    case "NO_DNP":
                         return 42;
-                    case "SENT_TO_DEET":
+                    case "TOTAL_NUMBER":
                         return 43;
-                    case "LW_DATE":
+                    case "SENT_TO_DEET":
                         return 44;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 45;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 46;
+                    case "LW_USER":
+                        return 47;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

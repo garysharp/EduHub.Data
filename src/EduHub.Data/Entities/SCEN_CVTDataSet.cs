@@ -195,10 +195,10 @@ BEGIN
     CREATE TABLE [dbo].[SCEN_CVT](
         [ID] int IDENTITY NOT NULL,
         [VCODE] varchar(15) NULL,
-        [VALIDATIONMESSAGE] text NULL,
+        [VALIDATIONMESSAGE] varchar(MAX) NULL,
         [WARNING] varchar(1) NULL,
         [PERIOD] varchar(1) NULL,
-        [DETAILEDMESSAGE] text NULL,
+        [DETAILEDMESSAGE] varchar(MAX) NULL,
         [CVT_TYPE] varchar(3) NULL,
         [COMMANDNAME] varchar(255) NULL,
         [ISENABLED] varchar(1) NULL,

@@ -23,6 +23,7 @@ namespace EduHub.Data.Entities
         internal SPSMSDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_REPLY_CODE = new Lazy<NullDictionary<string, IReadOnlyList<SPSMS>>>(() => this.ToGroupedNullDictionary(i => i.REPLY_CODE));
             Index_SPSMSKEY = new Lazy<Dictionary<int, SPSMS>>(() => this.ToDictionary(i => i.SPSMSKEY));
         }
 
@@ -54,6 +55,12 @@ namespace EduHub.Data.Entities
                         break;
                     case "AUTO_MESSAGE":
                         mapper[i] = (e, v) => e.AUTO_MESSAGE = v;
+                        break;
+                    case "EMERGENCY":
+                        mapper[i] = (e, v) => e.EMERGENCY = v;
+                        break;
+                    case "REPLY_CODE":
+                        mapper[i] = (e, v) => e.REPLY_CODE = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
@@ -129,11 +136,54 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<SPSMS>>> Index_REPLY_CODE;
         private Lazy<Dictionary<int, SPSMS>> Index_SPSMSKEY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find SPSMS by REPLY_CODE field
+        /// </summary>
+        /// <param name="REPLY_CODE">REPLY_CODE value used to find SPSMS</param>
+        /// <returns>List of related SPSMS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPSMS> FindByREPLY_CODE(string REPLY_CODE)
+        {
+            return Index_REPLY_CODE.Value[REPLY_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find SPSMS by REPLY_CODE field
+        /// </summary>
+        /// <param name="REPLY_CODE">REPLY_CODE value used to find SPSMS</param>
+        /// <param name="Value">List of related SPSMS entities</param>
+        /// <returns>True if the list of related SPSMS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByREPLY_CODE(string REPLY_CODE, out IReadOnlyList<SPSMS> Value)
+        {
+            return Index_REPLY_CODE.Value.TryGetValue(REPLY_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SPSMS by REPLY_CODE field
+        /// </summary>
+        /// <param name="REPLY_CODE">REPLY_CODE value used to find SPSMS</param>
+        /// <returns>List of related SPSMS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SPSMS> TryFindByREPLY_CODE(string REPLY_CODE)
+        {
+            IReadOnlyList<SPSMS> value;
+            if (Index_REPLY_CODE.Value.TryGetValue(REPLY_CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find SPSMS by SPSMSKEY field
@@ -199,6 +249,8 @@ BEGIN
         [CREATED_BY] varchar(128) NULL,
         [NOTIFY_REPLIES] varchar(1) NULL,
         [AUTO_MESSAGE] varchar(1) NULL,
+        [EMERGENCY] varchar(1) NULL,
+        [REPLY_CODE] varchar(15) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -206,27 +258,43 @@ BEGIN
             [SPSMSKEY] ASC
         )
     );
+    CREATE NONCLUSTERED INDEX [SPSMS_Index_REPLY_CODE] ON [dbo].[SPSMS]
+    (
+            [REPLY_CODE] ASC
+    );
 END");
         }
 
         /// <summary>
-        /// Returns null as <see cref="SPSMSDataSet"/> has no non-clustered indexes.
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <returns>null</returns>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
         public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
         {
-            return null;
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'Index_REPLY_CODE')
+    ALTER INDEX [Index_REPLY_CODE] ON [dbo].[SPSMS] DISABLE;
+");
         }
 
         /// <summary>
-        /// Returns null as <see cref="SPSMSDataSet"/> has no non-clustered indexes.
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <returns>null</returns>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
         public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
         {
-            return null;
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'Index_REPLY_CODE')
+    ALTER INDEX [Index_REPLY_CODE] ON [dbo].[SPSMS] REBUILD PARTITION = ALL;
+");
         }
 
         /// <summary>
@@ -296,7 +364,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 9; } }
+            public override int FieldCount { get { return 11; } }
 
             public override object GetValue(int i)
             {
@@ -314,11 +382,15 @@ END");
                         return Current.NOTIFY_REPLIES;
                     case 5: // AUTO_MESSAGE
                         return Current.AUTO_MESSAGE;
-                    case 6: // LW_DATE
+                    case 6: // EMERGENCY
+                        return Current.EMERGENCY;
+                    case 7: // REPLY_CODE
+                        return Current.REPLY_CODE;
+                    case 8: // LW_DATE
                         return Current.LW_DATE;
-                    case 7: // LW_TIME
+                    case 9: // LW_TIME
                         return Current.LW_TIME;
-                    case 8: // LW_USER
+                    case 10: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -339,11 +411,15 @@ END");
                         return Current.NOTIFY_REPLIES == null;
                     case 5: // AUTO_MESSAGE
                         return Current.AUTO_MESSAGE == null;
-                    case 6: // LW_DATE
+                    case 6: // EMERGENCY
+                        return Current.EMERGENCY == null;
+                    case 7: // REPLY_CODE
+                        return Current.REPLY_CODE == null;
+                    case 8: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 7: // LW_TIME
+                    case 9: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 8: // LW_USER
+                    case 10: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -366,11 +442,15 @@ END");
                         return "NOTIFY_REPLIES";
                     case 5: // AUTO_MESSAGE
                         return "AUTO_MESSAGE";
-                    case 6: // LW_DATE
+                    case 6: // EMERGENCY
+                        return "EMERGENCY";
+                    case 7: // REPLY_CODE
+                        return "REPLY_CODE";
+                    case 8: // LW_DATE
                         return "LW_DATE";
-                    case 7: // LW_TIME
+                    case 9: // LW_TIME
                         return "LW_TIME";
-                    case 8: // LW_USER
+                    case 10: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -393,12 +473,16 @@ END");
                         return 4;
                     case "AUTO_MESSAGE":
                         return 5;
-                    case "LW_DATE":
+                    case "EMERGENCY":
                         return 6;
-                    case "LW_TIME":
+                    case "REPLY_CODE":
                         return 7;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 8;
+                    case "LW_TIME":
+                        return 9;
+                    case "LW_USER":
+                        return 10;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

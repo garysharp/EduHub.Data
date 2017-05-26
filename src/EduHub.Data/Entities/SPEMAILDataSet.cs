@@ -259,7 +259,7 @@ BEGIN
         [IMPORTANCE] varchar(6) NULL,
         [SEND_OPTION] varchar(15) NULL,
         [EMAIL_SUBJECT] varchar(70) NULL,
-        [EMAIL_MESSAGE] text NULL,
+        [EMAIL_MESSAGE] varchar(MAX) NULL,
         [EMAIL_HTML] varchar(128) NULL,
         [HTML_MESSAGE] varchar(1) NULL,
         [FROM_ADDRESS] varchar(128) NULL,

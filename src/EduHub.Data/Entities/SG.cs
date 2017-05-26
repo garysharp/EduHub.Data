@@ -365,6 +365,12 @@ namespace EduHub.Data.Entities
         public string RESP_PARENT_GENDER { get; internal set; }
 
         /// <summary>
+        /// Enrolled in VET (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string VET { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

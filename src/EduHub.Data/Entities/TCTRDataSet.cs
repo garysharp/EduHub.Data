@@ -345,7 +345,7 @@ BEGIN
         [TCTQ_TID] int NULL,
         [TEACH] varchar(4) NULL,
         [ROOM] varchar(4) NULL,
-        [COMMENT_R] text NULL,
+        [COMMENT_R] varchar(MAX) NULL,
         [COUNT_EXTRAS] varchar(1) NULL,
         [EXTRAS_VALUE] float NULL,
         [ABSENTEE_TID] int NULL,

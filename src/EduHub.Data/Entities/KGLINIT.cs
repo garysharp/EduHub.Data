@@ -33,6 +33,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_INITIATIVE_PN_INITIATIVE;
         private IReadOnlyList<SA> Cache_INITIATIVE_SA_INITIATIVE;
         private IReadOnlyList<SDFC> Cache_INITIATIVE_SDFC_INITIATIVE;
+        private IReadOnlyList<SGFC> Cache_INITIATIVE_SGFC_INITIATIVE;
 
         #endregion
 
@@ -442,6 +443,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_INITIATIVE_SDFC_INITIATIVE;
+            }
+        }
+
+        /// <summary>
+        /// SGFC (General Ledger Fees) related entities by [KGLINIT.INITIATIVE]-&gt;[SGFC.INITIATIVE]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<SGFC> INITIATIVE_SGFC_INITIATIVE
+        {
+            get
+            {
+                if (Cache_INITIATIVE_SGFC_INITIATIVE == null &&
+                    !Context.SGFC.TryFindByINITIATIVE(INITIATIVE, out Cache_INITIATIVE_SGFC_INITIATIVE))
+                {
+                    Cache_INITIATIVE_SGFC_INITIATIVE = new List<SGFC>().AsReadOnly();
+                }
+
+                return Cache_INITIATIVE_SGFC_INITIATIVE;
             }
         }
 

@@ -18,16 +18,6 @@ namespace EduHub.Data.SchemaParser
 
             var schema = EduHubSchema.FromC7Schema(c7Elements);
 
-            // TODO: Update SQL Schema with SGFC
-            schema.RemoveEntity("SGFC");
-            foreach (var field in schema.Entities.SelectMany(e => e.Fields))
-            {
-                if (field.ForeignParentKey.EntityName == "SGFC")
-                {
-                    field.ForeignParentKey = default((string, string));
-                }
-            }
-
             // Augment with Database Information
             DbParser.AugmentSchemaFromCsv(csvDirectory, schema);
 

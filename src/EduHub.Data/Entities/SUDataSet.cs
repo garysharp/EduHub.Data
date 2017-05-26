@@ -401,7 +401,7 @@ BEGIN
         [SHORTNAME] varchar(10) NULL,
         [FACULTY] varchar(10) NULL,
         [PROMOTE] varchar(5) NULL,
-        [OVERVIEW] text NULL,
+        [OVERVIEW] varchar(MAX) NULL,
         [PRIORITY] smallint NULL,
         [SUBJECT_ACADEMIC_YEAR] varchar(4) NULL,
         [SEMESTER] smallint NULL,

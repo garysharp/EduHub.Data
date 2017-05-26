@@ -198,7 +198,7 @@ BEGIN
         [VALIDATIONMESSAGE] varchar(255) NULL,
         [WARNING] varchar(1) NULL,
         [PERIOD] varchar(1) NULL,
-        [DETAILEDMESSAGE] text NULL,
+        [DETAILEDMESSAGE] varchar(MAX) NULL,
         [FIELDS] varchar(255) NULL,
         [COMMANDNAME] varchar(255) NULL,
         [ISENABLED] varchar(1) NULL,

@@ -310,7 +310,7 @@ BEGIN
         [SCHOOL] varchar(8) NULL,
         [ENROL_DATE] datetime NULL,
         [DEPART_DATE] datetime NULL,
-        [REASON_LEFT] text NULL,
+        [REASON_LEFT] varchar(MAX) NULL,
         [ST_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
         [IMP_DATE] datetime NULL,

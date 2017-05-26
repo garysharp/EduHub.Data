@@ -194,7 +194,7 @@ BEGIN
         [DESCRIPTION] varchar(30) NULL,
         [FIRST_DATE] datetime NULL,
         [LAST_DATE] datetime NULL,
-        [SCA_MEMO] text NULL,
+        [SCA_MEMO] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

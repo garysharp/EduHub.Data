@@ -9,7 +9,7 @@ using System.Text;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// VELS Domains Data Set
+    /// Curriculum Area Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDODataSet : EduHubDataSet<KDO>
@@ -45,6 +45,9 @@ namespace EduHub.Data.Entities
                         break;
                     case "AUSVELS_START":
                         mapper[i] = (e, v) => e.AUSVELS_START = v;
+                        break;
+                    case "DATA_ENTRY":
+                        mapper[i] = (e, v) => e.DATA_ENTRY = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
@@ -187,6 +190,7 @@ BEGIN
         [KDOKEY] varchar(10) NOT NULL,
         [DESCRIPTION] varchar(255) NULL,
         [AUSVELS_START] varchar(6) NULL,
+        [DATA_ENTRY] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -284,7 +288,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 6; } }
+            public override int FieldCount { get { return 7; } }
 
             public override object GetValue(int i)
             {
@@ -296,11 +300,13 @@ END");
                         return Current.DESCRIPTION;
                     case 2: // AUSVELS_START
                         return Current.AUSVELS_START;
-                    case 3: // LW_DATE
+                    case 3: // DATA_ENTRY
+                        return Current.DATA_ENTRY;
+                    case 4: // LW_DATE
                         return Current.LW_DATE;
-                    case 4: // LW_TIME
+                    case 5: // LW_TIME
                         return Current.LW_TIME;
-                    case 5: // LW_USER
+                    case 6: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -315,11 +321,13 @@ END");
                         return Current.DESCRIPTION == null;
                     case 2: // AUSVELS_START
                         return Current.AUSVELS_START == null;
-                    case 3: // LW_DATE
+                    case 3: // DATA_ENTRY
+                        return Current.DATA_ENTRY == null;
+                    case 4: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 4: // LW_TIME
+                    case 5: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 5: // LW_USER
+                    case 6: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -336,11 +344,13 @@ END");
                         return "DESCRIPTION";
                     case 2: // AUSVELS_START
                         return "AUSVELS_START";
-                    case 3: // LW_DATE
+                    case 3: // DATA_ENTRY
+                        return "DATA_ENTRY";
+                    case 4: // LW_DATE
                         return "LW_DATE";
-                    case 4: // LW_TIME
+                    case 5: // LW_TIME
                         return "LW_TIME";
-                    case 5: // LW_USER
+                    case 6: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -357,12 +367,14 @@ END");
                         return 1;
                     case "AUSVELS_START":
                         return 2;
-                    case "LW_DATE":
+                    case "DATA_ENTRY":
                         return 3;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 4;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 5;
+                    case "LW_USER":
+                        return 6;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

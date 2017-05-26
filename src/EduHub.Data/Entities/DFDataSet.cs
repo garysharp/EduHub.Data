@@ -429,6 +429,33 @@ namespace EduHub.Data.Entities
                     case "CASES_EMA_ID":
                         mapper[i] = (e, v) => e.CASES_EMA_ID = v;
                         break;
+                    case "SCH_ED_A_LU":
+                        mapper[i] = (e, v) => e.SCH_ED_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "NON_SCH_ED_A_LU":
+                        mapper[i] = (e, v) => e.NON_SCH_ED_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "OCCUP_STATUS_A_LU":
+                        mapper[i] = (e, v) => e.OCCUP_STATUS_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "SCH_ED_B_LU":
+                        mapper[i] = (e, v) => e.SCH_ED_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "NON_SCH_ED_B_LU":
+                        mapper[i] = (e, v) => e.NON_SCH_ED_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "OCCUP_STATUS_B_LU":
+                        mapper[i] = (e, v) => e.OCCUP_STATUS_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "CNSE":
+                        mapper[i] = (e, v) => e.CNSE = v;
+                        break;
+                    case "CSE":
+                        mapper[i] = (e, v) => e.CSE = v;
+                        break;
+                    case "FSE":
+                        mapper[i] = (e, v) => e.FSE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -1442,9 +1469,9 @@ BEGIN
         [INTERPRETER_A] varchar(1) NULL,
         [BIRTH_COUNTRY_A] varchar(6) NULL,
         [BH_AT_HOME_A] varchar(1) NULL,
-        [BH_CONTACT_A] text NULL,
+        [BH_CONTACT_A] varchar(MAX) NULL,
         [AH_AT_HOME_A] varchar(1) NULL,
-        [AH_CONTACT_A] text NULL,
+        [AH_CONTACT_A] varchar(MAX) NULL,
         [E_MAIL_A] varchar(60) NULL,
         [PREF_MAIL_MECH_A] varchar(1) NULL,
         [FAX_A] varchar(20) NULL,
@@ -1467,9 +1494,9 @@ BEGIN
         [INTERPRETER_B] varchar(1) NULL,
         [BIRTH_COUNTRY_B] varchar(6) NULL,
         [BH_AT_HOME_B] varchar(1) NULL,
-        [BH_CONTACT_B] text NULL,
+        [BH_CONTACT_B] varchar(MAX) NULL,
         [AH_AT_HOME_B] varchar(1) NULL,
-        [AH_CONTACT_B] text NULL,
+        [AH_CONTACT_B] varchar(MAX) NULL,
         [E_MAIL_B] varchar(60) NULL,
         [PREF_MAIL_MECH_B] varchar(1) NULL,
         [FAX_B] varchar(20) NULL,
@@ -1490,7 +1517,7 @@ BEGIN
         [MAILKEY] int NULL,
         [BILLINGTITLE] varchar(40) NULL,
         [BILLINGKEY] int NULL,
-        [BILLING_MEMO] text NULL,
+        [BILLING_MEMO] varchar(MAX) NULL,
         [ACCTYPE] smallint NULL,
         [AGED01] money NULL,
         [AGED02] money NULL,
@@ -1554,6 +1581,15 @@ BEGIN
         [EMA_SEND] varchar(1) NULL,
         [EMA_CLAIM_PD] varchar(1) NULL,
         [CASES_EMA_ID] varchar(10) NULL,
+        [SCH_ED_A_LU] datetime NULL,
+        [NON_SCH_ED_A_LU] datetime NULL,
+        [OCCUP_STATUS_A_LU] datetime NULL,
+        [SCH_ED_B_LU] datetime NULL,
+        [NON_SCH_ED_B_LU] datetime NULL,
+        [OCCUP_STATUS_B_LU] datetime NULL,
+        [CNSE] varchar(1) NULL,
+        [CSE] varchar(1) NULL,
+        [FSE] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1835,7 +1871,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
             {
             }
 
-            public override int FieldCount { get { return 127; } }
+            public override int FieldCount { get { return 136; } }
 
             public override object GetValue(int i)
             {
@@ -2089,11 +2125,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.EMA_CLAIM_PD;
                     case 123: // CASES_EMA_ID
                         return Current.CASES_EMA_ID;
-                    case 124: // LW_DATE
+                    case 124: // SCH_ED_A_LU
+                        return Current.SCH_ED_A_LU;
+                    case 125: // NON_SCH_ED_A_LU
+                        return Current.NON_SCH_ED_A_LU;
+                    case 126: // OCCUP_STATUS_A_LU
+                        return Current.OCCUP_STATUS_A_LU;
+                    case 127: // SCH_ED_B_LU
+                        return Current.SCH_ED_B_LU;
+                    case 128: // NON_SCH_ED_B_LU
+                        return Current.NON_SCH_ED_B_LU;
+                    case 129: // OCCUP_STATUS_B_LU
+                        return Current.OCCUP_STATUS_B_LU;
+                    case 130: // CNSE
+                        return Current.CNSE;
+                    case 131: // CSE
+                        return Current.CSE;
+                    case 132: // FSE
+                        return Current.FSE;
+                    case 133: // LW_DATE
                         return Current.LW_DATE;
-                    case 125: // LW_TIME
+                    case 134: // LW_TIME
                         return Current.LW_TIME;
-                    case 126: // LW_USER
+                    case 135: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2350,11 +2404,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.EMA_CLAIM_PD == null;
                     case 123: // CASES_EMA_ID
                         return Current.CASES_EMA_ID == null;
-                    case 124: // LW_DATE
+                    case 124: // SCH_ED_A_LU
+                        return Current.SCH_ED_A_LU == null;
+                    case 125: // NON_SCH_ED_A_LU
+                        return Current.NON_SCH_ED_A_LU == null;
+                    case 126: // OCCUP_STATUS_A_LU
+                        return Current.OCCUP_STATUS_A_LU == null;
+                    case 127: // SCH_ED_B_LU
+                        return Current.SCH_ED_B_LU == null;
+                    case 128: // NON_SCH_ED_B_LU
+                        return Current.NON_SCH_ED_B_LU == null;
+                    case 129: // OCCUP_STATUS_B_LU
+                        return Current.OCCUP_STATUS_B_LU == null;
+                    case 130: // CNSE
+                        return Current.CNSE == null;
+                    case 131: // CSE
+                        return Current.CSE == null;
+                    case 132: // FSE
+                        return Current.FSE == null;
+                    case 133: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 125: // LW_TIME
+                    case 134: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 126: // LW_USER
+                    case 135: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2613,11 +2685,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return "EMA_CLAIM_PD";
                     case 123: // CASES_EMA_ID
                         return "CASES_EMA_ID";
-                    case 124: // LW_DATE
+                    case 124: // SCH_ED_A_LU
+                        return "SCH_ED_A_LU";
+                    case 125: // NON_SCH_ED_A_LU
+                        return "NON_SCH_ED_A_LU";
+                    case 126: // OCCUP_STATUS_A_LU
+                        return "OCCUP_STATUS_A_LU";
+                    case 127: // SCH_ED_B_LU
+                        return "SCH_ED_B_LU";
+                    case 128: // NON_SCH_ED_B_LU
+                        return "NON_SCH_ED_B_LU";
+                    case 129: // OCCUP_STATUS_B_LU
+                        return "OCCUP_STATUS_B_LU";
+                    case 130: // CNSE
+                        return "CNSE";
+                    case 131: // CSE
+                        return "CSE";
+                    case 132: // FSE
+                        return "FSE";
+                    case 133: // LW_DATE
                         return "LW_DATE";
-                    case 125: // LW_TIME
+                    case 134: // LW_TIME
                         return "LW_TIME";
-                    case 126: // LW_USER
+                    case 135: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2876,12 +2966,30 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return 122;
                     case "CASES_EMA_ID":
                         return 123;
-                    case "LW_DATE":
+                    case "SCH_ED_A_LU":
                         return 124;
-                    case "LW_TIME":
+                    case "NON_SCH_ED_A_LU":
                         return 125;
-                    case "LW_USER":
+                    case "OCCUP_STATUS_A_LU":
                         return 126;
+                    case "SCH_ED_B_LU":
+                        return 127;
+                    case "NON_SCH_ED_B_LU":
+                        return 128;
+                    case "OCCUP_STATUS_B_LU":
+                        return 129;
+                    case "CNSE":
+                        return 130;
+                    case "CSE":
+                        return 131;
+                    case "FSE":
+                        return 132;
+                    case "LW_DATE":
+                        return 133;
+                    case "LW_TIME":
+                        return 134;
+                    case "LW_USER":
+                        return 135;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

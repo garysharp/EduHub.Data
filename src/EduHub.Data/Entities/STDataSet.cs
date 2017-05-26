@@ -629,6 +629,21 @@ namespace EduHub.Data.Entities
                     case "TRANSFER_DOCS_SENT":
                         mapper[i] = (e, v) => e.TRANSFER_DOCS_SENT = v;
                         break;
+                    case "VET":
+                        mapper[i] = (e, v) => e.VET = v;
+                        break;
+                    case "USI":
+                        mapper[i] = (e, v) => e.USI = v;
+                        break;
+                    case "SCH_DEFINED01":
+                        mapper[i] = (e, v) => e.SCH_DEFINED01 = v;
+                        break;
+                    case "SCH_DEFINED02":
+                        mapper[i] = (e, v) => e.SCH_DEFINED02 = v;
+                        break;
+                    case "TEACHER_RECOMMENDATION":
+                        mapper[i] = (e, v) => e.TEACHER_RECOMMENDATION = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -2025,7 +2040,7 @@ BEGIN
         [ID_CARD_VALID] varchar(1) NULL,
         [PREVIOUS_SCHOOL] varchar(8) NULL,
         [FAM_ORDER] smallint NULL,
-        [NOTES] text NULL,
+        [NOTES] varchar(MAX) NULL,
         [SGB_FUNDED] varchar(1) NULL,
         [ED_ALLOW] varchar(1) NULL,
         [EMA_AMT1P] money NULL,
@@ -2055,11 +2070,11 @@ BEGIN
         [KOORIE] varchar(1) NULL,
         [YOUTH_ALLOW] varchar(1) NULL,
         [AB_STUDY] varchar(1) NULL,
-        [ACCESS] text NULL,
+        [ACCESS] varchar(MAX) NULL,
         [ACCESS_TYPE] varchar(20) NULL,
         [ACCESS_ALERT] varchar(1) NULL,
         [RISK_ALERT] varchar(1) NULL,
-        [RISK_MEMO] text NULL,
+        [RISK_MEMO] varchar(MAX) NULL,
         [DOCTOR] varchar(10) NULL,
         [EMERG_NAME01] varchar(30) NULL,
         [EMERG_NAME02] varchar(30) NULL,
@@ -2082,7 +2097,7 @@ BEGIN
         [PHYSICAL_IMPAIR] varchar(1) NULL,
         [MEDICAL_ALERT] varchar(1) NULL,
         [MEDICAL_CONDITION] varchar(1) NULL,
-        [ACTIVITY_RESTRICTION] text NULL,
+        [ACTIVITY_RESTRICTION] varchar(MAX) NULL,
         [IMMUNISE_CERT_STATUS] varchar(1) NULL,
         [IMMUN_CERT_SIGHTED] varchar(1) NULL,
         [IMMUNISE_PERMISSION] varchar(1) NULL,
@@ -2094,7 +2109,7 @@ BEGIN
         [DISABILITY_ADJUSTMENT_LW_DATE] datetime NULL,
         [HEAD_LICE_CHECK] varchar(1) NULL,
         [ANNUAL_TOT] float NULL,
-        [STUDENT_PIC] image NULL,
+        [STUDENT_PIC] varbinary(MAX) NULL,
         [PUBLISH_PHOTO_MEDIA] varchar(1) NULL,
         [OK_TO_PUBLISH] varchar(1) NULL,
         [PIC_LW_DATE] datetime NULL,
@@ -2129,9 +2144,9 @@ BEGIN
         [EXIT_FORM] varchar(1) NULL,
         [TRANSFER_FORM] varchar(1) NULL,
         [PARENTAL_APPROVAL_DATE] datetime NULL,
-        [PARENTAL_APPROVAL_NOTE] text NULL,
+        [PARENTAL_APPROVAL_NOTE] varchar(MAX) NULL,
         [DISASTER_EXIT_REASON] varchar(1) NULL,
-        [ATTENDANCE_MEMO] text NULL,
+        [ATTENDANCE_MEMO] varchar(MAX) NULL,
         [ABS_HDAY_PERIOD] varchar(1) NULL,
         [STRE_FLAG] varchar(1) NULL,
         [PROMOTED] varchar(1) NULL,
@@ -2143,7 +2158,7 @@ BEGIN
         [TFR_PERMISSION] varchar(1) NULL,
         [LEGAL_LIMIT_DECISION] varchar(1) NULL,
         [LEGAL_LIMIT_CONTACT] varchar(1) NULL,
-        [LEGAL_LIMITATION] text NULL,
+        [LEGAL_LIMITATION] varchar(MAX) NULL,
         [DOC_COPIES] varchar(1) NULL,
         [LISTED_IN_SOCS] varchar(1) NULL,
         [SUPPORT_SERVICES] varchar(1) NULL,
@@ -2162,6 +2177,11 @@ BEGIN
         [NEW_ARRIVALS_PROGRAM] varchar(1) NULL,
         [REFUGEE_BACKGROUND] varchar(1) NULL,
         [TRANSFER_DOCS_SENT] varchar(1) NULL,
+        [VET] varchar(1) NULL,
+        [USI] varchar(10) NULL,
+        [SCH_DEFINED01] varchar(1) NULL,
+        [SCH_DEFINED02] varchar(1) NULL,
+        [TEACHER_RECOMMENDATION] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -2507,7 +2527,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
             {
             }
 
-            public override int FieldCount { get { return 191; } }
+            public override int FieldCount { get { return 196; } }
 
             public override object GetValue(int i)
             {
@@ -2889,11 +2909,21 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.REFUGEE_BACKGROUND;
                     case 187: // TRANSFER_DOCS_SENT
                         return Current.TRANSFER_DOCS_SENT;
-                    case 188: // LW_DATE
+                    case 188: // VET
+                        return Current.VET;
+                    case 189: // USI
+                        return Current.USI;
+                    case 190: // SCH_DEFINED01
+                        return Current.SCH_DEFINED01;
+                    case 191: // SCH_DEFINED02
+                        return Current.SCH_DEFINED02;
+                    case 192: // TEACHER_RECOMMENDATION
+                        return Current.TEACHER_RECOMMENDATION;
+                    case 193: // LW_DATE
                         return Current.LW_DATE;
-                    case 189: // LW_TIME
+                    case 194: // LW_TIME
                         return Current.LW_TIME;
-                    case 190: // LW_USER
+                    case 195: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -3276,11 +3306,21 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.REFUGEE_BACKGROUND == null;
                     case 187: // TRANSFER_DOCS_SENT
                         return Current.TRANSFER_DOCS_SENT == null;
-                    case 188: // LW_DATE
+                    case 188: // VET
+                        return Current.VET == null;
+                    case 189: // USI
+                        return Current.USI == null;
+                    case 190: // SCH_DEFINED01
+                        return Current.SCH_DEFINED01 == null;
+                    case 191: // SCH_DEFINED02
+                        return Current.SCH_DEFINED02 == null;
+                    case 192: // TEACHER_RECOMMENDATION
+                        return Current.TEACHER_RECOMMENDATION == null;
+                    case 193: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 189: // LW_TIME
+                    case 194: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 190: // LW_USER
+                    case 195: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -3667,11 +3707,21 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return "REFUGEE_BACKGROUND";
                     case 187: // TRANSFER_DOCS_SENT
                         return "TRANSFER_DOCS_SENT";
-                    case 188: // LW_DATE
+                    case 188: // VET
+                        return "VET";
+                    case 189: // USI
+                        return "USI";
+                    case 190: // SCH_DEFINED01
+                        return "SCH_DEFINED01";
+                    case 191: // SCH_DEFINED02
+                        return "SCH_DEFINED02";
+                    case 192: // TEACHER_RECOMMENDATION
+                        return "TEACHER_RECOMMENDATION";
+                    case 193: // LW_DATE
                         return "LW_DATE";
-                    case 189: // LW_TIME
+                    case 194: // LW_TIME
                         return "LW_TIME";
-                    case 190: // LW_USER
+                    case 195: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -4058,12 +4108,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return 186;
                     case "TRANSFER_DOCS_SENT":
                         return 187;
-                    case "LW_DATE":
+                    case "VET":
                         return 188;
-                    case "LW_TIME":
+                    case "USI":
                         return 189;
-                    case "LW_USER":
+                    case "SCH_DEFINED01":
                         return 190;
+                    case "SCH_DEFINED02":
+                        return 191;
+                    case "TEACHER_RECOMMENDATION":
+                        return 192;
+                    case "LW_DATE":
+                        return 193;
+                    case "LW_TIME":
+                        return 194;
+                    case "LW_USER":
+                        return 195;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

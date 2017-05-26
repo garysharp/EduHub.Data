@@ -332,7 +332,7 @@ BEGIN
         [SDP_STUDENT] int NOT NULL,
         [TAKEN_BY] varchar(4) NULL,
         [ACTION_TAKEN] varchar(5) NULL,
-        [OTHER_ACTION] text NULL,
+        [OTHER_ACTION] varchar(MAX) NULL,
         [COMPLIED] varchar(1) NULL,
         [PARENT_INFORMED] varchar(1) NULL,
         [LW_DATE] datetime NULL,

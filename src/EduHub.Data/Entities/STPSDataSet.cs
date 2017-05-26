@@ -286,7 +286,7 @@ BEGIN
         [SCHOOL] varchar(8) NULL,
         [ENROL_DATE] datetime NULL,
         [DEPART_DATE] datetime NULL,
-        [REASON_LEFT] text NULL,
+        [REASON_LEFT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

@@ -263,7 +263,7 @@ BEGIN
         [RESPONSIBLE] varchar(1) NULL,
         [START_DATE] datetime NULL,
         [END_DATE] datetime NULL,
-        [OTHER_COMMENTS] text NULL,
+        [OTHER_COMMENTS] varchar(MAX) NULL,
         [GROUP_ROLE] varchar(30) NULL,
         [SG_TYPE] varchar(1) NULL,
         [HOUSE_HG] varchar(10) NULL,

@@ -824,7 +824,7 @@ BEGIN
         [SHARE] varchar(1) NULL,
         [SHUFFLE] varchar(1) NULL,
         [UUNITS] varchar(1) NULL,
-        [GSOLS] image NULL,
+        [GSOLS] varbinary(MAX) NULL,
         [HOMEGRID] varchar(1) NULL,
         [TEACHER_CLASH_FACTOR] smallint NULL,
         [ROOM_CLASH_FACTOR] smallint NULL,

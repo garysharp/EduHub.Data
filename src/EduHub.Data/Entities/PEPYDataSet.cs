@@ -286,7 +286,7 @@ BEGIN
         [TRANSDATE] datetime NULL,
         [STAFF] varchar(10) NULL,
         [PURPOSE] varchar(6) NULL,
-        [NOTES] text NULL,
+        [NOTES] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

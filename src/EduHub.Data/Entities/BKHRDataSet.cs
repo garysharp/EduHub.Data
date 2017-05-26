@@ -342,7 +342,7 @@ BEGIN
         [ISSUE_DATE] datetime NULL,
         [DUE_DATE] datetime NULL,
         [RETURNED_DATE] datetime NULL,
-        [CONDITION] text NULL,
+        [CONDITION] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

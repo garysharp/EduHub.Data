@@ -286,7 +286,7 @@ BEGIN
         [PERSON_LINK] varchar(10) NULL,
         [START_DATE] datetime NULL,
         [END_DATE] datetime NULL,
-        [OTHER_COMMENTS] text NULL,
+        [OTHER_COMMENTS] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

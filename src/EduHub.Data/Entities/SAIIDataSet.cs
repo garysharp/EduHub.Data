@@ -245,7 +245,7 @@ BEGIN
         [SEVERITY] smallint NULL,
         [SRI_TYPE] smallint NULL,
         [NATURE] smallint NULL,
-        [OTHER_INFO] text NULL,
+        [OTHER_INFO] varchar(MAX) NULL,
         [LOCATION] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,

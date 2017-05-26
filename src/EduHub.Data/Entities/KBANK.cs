@@ -126,6 +126,37 @@ namespace EduHub.Data.Entities
         public string ACTIVE { get; internal set; }
 
         /// <summary>
+        /// Bank Account Types - Inlisted
+        /// </summary>
+        public short? ACCOUNT_TYPE { get; internal set; }
+
+        /// <summary>
+        /// Account interest rate
+        /// </summary>
+        public double? INTEREST_RATE { get; internal set; }
+
+        /// <summary>
+        /// Account investment date
+        /// </summary>
+        public DateTime? INVESTMENT_DATE { get; internal set; }
+
+        /// <summary>
+        /// Account maturity date (if applicable)
+        /// </summary>
+        public DateTime? MATURITY_DATE { get; internal set; }
+
+        /// <summary>
+        /// Account interest earned for the School Year
+        /// </summary>
+        public decimal? INTEREST_EARNED { get; internal set; }
+
+        /// <summary>
+        /// Optional comments
+        /// [Alphanumeric (200)]
+        /// </summary>
+        public string COMMENTS { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

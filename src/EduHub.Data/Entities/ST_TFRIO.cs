@@ -98,6 +98,18 @@ namespace EduHub.Data.Entities
         public string TFR_COMMENT { get; internal set; }
 
         /// <summary>
+        /// YYYY.S eg 2017.1
+        /// [Alphanumeric (6)]
+        /// </summary>
+        public string YEAR_SEMESTER { get; internal set; }
+
+        /// <summary>
+        /// Transfer type AD - Achievement Data
+        /// [Uppercase Alphanumeric (2)]
+        /// </summary>
+        public string TFR_TYPE { get; internal set; }
+
+        /// <summary>
         /// Last Write Date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

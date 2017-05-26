@@ -254,7 +254,7 @@ BEGIN
         [FULL_NAME] varchar(64) NULL,
         [ADDRESS] varchar(120) NULL,
         [TELEPHONE] varchar(20) NULL,
-        [STATEMENT] text NULL,
+        [STATEMENT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

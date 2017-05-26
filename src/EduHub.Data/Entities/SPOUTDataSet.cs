@@ -238,7 +238,7 @@ BEGIN
         [NUM02] int NULL,
         [NUM03] int NULL,
         [NUM04] int NULL,
-        [NOTES] text NULL,
+        [NOTES] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

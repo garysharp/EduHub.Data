@@ -11,6 +11,12 @@ namespace EduHub.Data.Entities
     public sealed partial class SPSMS : EduHubEntity
     {
 
+        #region Navigation Property Cache
+
+        private SP_REPLY Cache_REPLY_CODE_SP_REPLY;
+
+        #endregion
+
         #region Foreign Navigation Properties
 
         private IReadOnlyList<SPRECIP> Cache_SPSMSKEY_SPRECIP_CODE;
@@ -64,6 +70,18 @@ namespace EduHub.Data.Entities
         public string AUTO_MESSAGE { get; internal set; }
 
         /// <summary>
+        /// Emergency SMS Flag
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string EMERGENCY { get; internal set; }
+
+        /// <summary>
+        /// SMS Reply Recipient Group key
+        /// [Uppercase Alphanumeric (15)]
+        /// </summary>
+        public string REPLY_CODE { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -78,6 +96,31 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
+
+        #endregion
+
+        #region Navigation Properties
+
+        /// <summary>
+        /// SP_REPLY (SMS Reply Recipient Groups) related entity by [SPSMS.REPLY_CODE]-&gt;[SP_REPLY.CODE]
+        /// SMS Reply Recipient Group key
+        /// </summary>
+        public SP_REPLY REPLY_CODE_SP_REPLY
+        {
+            get
+            {
+                if (REPLY_CODE == null)
+                {
+                    return null;
+                }
+                if (Cache_REPLY_CODE_SP_REPLY == null)
+                {
+                    Cache_REPLY_CODE_SP_REPLY = Context.SP_REPLY.FindByCODE(REPLY_CODE);
+                }
+
+                return Cache_REPLY_CODE_SP_REPLY;
+            }
+        }
 
         #endregion
 

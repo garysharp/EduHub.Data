@@ -302,7 +302,7 @@ BEGIN
         [SKEY] varchar(10) NULL,
         [SKEY_NEW] varchar(10) NULL,
         [ACCESS_TYPE] varchar(30) NULL,
-        [RESTRICTION] text NULL,
+        [RESTRICTION] varchar(MAX) NULL,
         [ST_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
         [IMP_DATE] datetime NULL,

@@ -602,7 +602,7 @@ BEGIN
         [TEKEY] int IDENTITY NOT NULL,
         [TITLE] varchar(30) NULL,
         [CAMPUS] int NULL,
-        [COMMENTS] text NULL,
+        [COMMENTS] varchar(MAX) NULL,
         [START_DATE] datetime NULL,
         [END_DATE] datetime NULL,
         [RECURRENCE] varchar(1) NULL,

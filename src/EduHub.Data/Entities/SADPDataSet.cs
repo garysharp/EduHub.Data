@@ -284,7 +284,7 @@ BEGIN
         [TID] int IDENTITY NOT NULL,
         [ACCIDENTID] int NOT NULL,
         [PREVENTION] smallint NULL,
-        [OTHER_PREV_INFO] text NULL,
+        [OTHER_PREV_INFO] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

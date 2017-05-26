@@ -75,6 +75,12 @@ namespace EduHub.Data.Entities
                     case "TFR_COMMENT":
                         mapper[i] = (e, v) => e.TFR_COMMENT = v;
                         break;
+                    case "YEAR_SEMESTER":
+                        mapper[i] = (e, v) => e.YEAR_SEMESTER = v;
+                        break;
+                    case "TFR_TYPE":
+                        mapper[i] = (e, v) => e.TFR_TYPE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -314,6 +320,8 @@ BEGIN
         [TFR_STATUS] varchar(10) NULL,
         [TFR_DATE] datetime NULL,
         [TFR_COMMENT] varchar(250) NULL,
+        [YEAR_SEMESTER] varchar(6) NULL,
+        [TFR_TYPE] varchar(2) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -451,7 +459,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
             {
             }
 
-            public override int FieldCount { get { return 15; } }
+            public override int FieldCount { get { return 17; } }
 
             public override object GetValue(int i)
             {
@@ -481,11 +489,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return Current.TFR_DATE;
                     case 11: // TFR_COMMENT
                         return Current.TFR_COMMENT;
-                    case 12: // LW_DATE
+                    case 12: // YEAR_SEMESTER
+                        return Current.YEAR_SEMESTER;
+                    case 13: // TFR_TYPE
+                        return Current.TFR_TYPE;
+                    case 14: // LW_DATE
                         return Current.LW_DATE;
-                    case 13: // LW_TIME
+                    case 15: // LW_TIME
                         return Current.LW_TIME;
-                    case 14: // LW_USER
+                    case 16: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -516,11 +528,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return Current.TFR_DATE == null;
                     case 11: // TFR_COMMENT
                         return Current.TFR_COMMENT == null;
-                    case 12: // LW_DATE
+                    case 12: // YEAR_SEMESTER
+                        return Current.YEAR_SEMESTER == null;
+                    case 13: // TFR_TYPE
+                        return Current.TFR_TYPE == null;
+                    case 14: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 13: // LW_TIME
+                    case 15: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 14: // LW_USER
+                    case 16: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -555,11 +571,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return "TFR_DATE";
                     case 11: // TFR_COMMENT
                         return "TFR_COMMENT";
-                    case 12: // LW_DATE
+                    case 12: // YEAR_SEMESTER
+                        return "YEAR_SEMESTER";
+                    case 13: // TFR_TYPE
+                        return "TFR_TYPE";
+                    case 14: // LW_DATE
                         return "LW_DATE";
-                    case 13: // LW_TIME
+                    case 15: // LW_TIME
                         return "LW_TIME";
-                    case 14: // LW_USER
+                    case 16: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -594,12 +614,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return 10;
                     case "TFR_COMMENT":
                         return 11;
-                    case "LW_DATE":
+                    case "YEAR_SEMESTER":
                         return 12;
-                    case "LW_TIME":
+                    case "TFR_TYPE":
                         return 13;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 14;
+                    case "LW_TIME":
+                        return 15;
+                    case "LW_USER":
+                        return 16;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

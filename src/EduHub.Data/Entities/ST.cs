@@ -538,7 +538,7 @@ namespace EduHub.Data.Entities
         public string OVERSEAS { get; internal set; }
 
         /// <summary>
-        /// Indigenous background: K=Aboriginal, T=Torres Strait Islander, B=Both Aboriginal and Torres Strait Islander, N=No indigenous background, X=Declined to Respond
+        /// Aboriginal/Torres Strait Islander: N=None, K=Aboriginal, T=Torres Strait Islander, B=Both Aboriginal and TSI, U=Unknown/Not Stated
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string KOORIE { get; internal set; }
@@ -1178,6 +1178,36 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string TRANSFER_DOCS_SENT { get; internal set; }
+
+        /// <summary>
+        /// Enrolled in VET (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string VET { get; internal set; }
+
+        /// <summary>
+        /// Unique Student Identifier
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string USI { get; internal set; }
+
+        /// <summary>
+        /// School defined field inlist
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SCH_DEFINED01 { get; internal set; }
+
+        /// <summary>
+        /// School defined field inlist
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SCH_DEFINED02 { get; internal set; }
+
+        /// <summary>
+        /// Teacher Recommendation (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string TEACHER_RECOMMENDATION { get; internal set; }
 
         /// <summary>
         /// Last write date

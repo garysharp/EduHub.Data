@@ -621,6 +621,11 @@ namespace EduHub.Data.Entities
         public int? CAMPUS { get; internal set; }
 
         /// <summary>
+        /// Fair market value for donated assets
+        /// </summary>
+        public decimal? FAIR_MARKET { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

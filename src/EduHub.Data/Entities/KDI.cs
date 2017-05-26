@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// VELS Dimensions
+    /// Victorian Curriculum Strands
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDI : EduHubEntity
@@ -31,7 +31,7 @@ namespace EduHub.Data.Entities
         #region Field Properties
 
         /// <summary>
-        /// Key of the dimension
+        /// Key of Victorian Curriculum Strand
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string KDIKEY { get; internal set; }
@@ -50,13 +50,15 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Minimum level of dimension assessment
+        /// [Alphanumeric (6)]
         /// </summary>
-        public double? MIN_SCORE { get; internal set; }
+        public string MIN_SCORE { get; internal set; }
 
         /// <summary>
         /// Maximum level of dimension assessment
+        /// [Alphanumeric (6)]
         /// </summary>
-        public double? MAX_SCORE { get; internal set; }
+        public string MAX_SCORE { get; internal set; }
 
         /// <summary>
         /// Curriculum
@@ -86,7 +88,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// STVDI (VELS Dimension Results) related entities by [KDI.KDIKEY]-&gt;[STVDI.VDIMENSION]
-        /// Key of the dimension
+        /// Key of Victorian Curriculum Strand
         /// </summary>
         public IReadOnlyList<STVDI> KDIKEY_STVDI_VDIMENSION
         {
@@ -104,7 +106,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// STVDO (VELS Domain Results) related entities by [KDI.KDIKEY]-&gt;[STVDO.VDIMENSION]
-        /// Key of the dimension
+        /// Key of Victorian Curriculum Strand
         /// </summary>
         public IReadOnlyList<STVDO> KDIKEY_STVDO_VDIMENSION
         {
@@ -122,7 +124,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// SVAG (VELS Aggregated Dimensions) related entities by [KDI.KDIKEY]-&gt;[SVAG.VDIMENSION]
-        /// Key of the dimension
+        /// Key of Victorian Curriculum Strand
         /// </summary>
         public IReadOnlyList<SVAG> KDIKEY_SVAG_VDIMENSION
         {

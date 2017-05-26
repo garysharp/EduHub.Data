@@ -9,7 +9,7 @@ using System.Text;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// VELS Dimensions Data Set
+    /// Victorian Curriculum Strands Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDIDataSet : EduHubDataSet<KDI>
@@ -47,10 +47,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.DESCRIPTION = v;
                         break;
                     case "MIN_SCORE":
-                        mapper[i] = (e, v) => e.MIN_SCORE = v == null ? (double?)null : double.Parse(v);
+                        mapper[i] = (e, v) => e.MIN_SCORE = v;
                         break;
                     case "MAX_SCORE":
-                        mapper[i] = (e, v) => e.MAX_SCORE = v == null ? (double?)null : double.Parse(v);
+                        mapper[i] = (e, v) => e.MAX_SCORE = v;
                         break;
                     case "CURRICULUM":
                         mapper[i] = (e, v) => e.CURRICULUM = v;
@@ -196,8 +196,8 @@ BEGIN
         [KDIKEY] varchar(10) NOT NULL,
         [KDOKEY] varchar(10) NULL,
         [DESCRIPTION] varchar(255) NULL,
-        [MIN_SCORE] float NULL,
-        [MAX_SCORE] float NULL,
+        [MIN_SCORE] varchar(6) NULL,
+        [MAX_SCORE] varchar(6) NULL,
         [CURRICULUM] varchar(7) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,

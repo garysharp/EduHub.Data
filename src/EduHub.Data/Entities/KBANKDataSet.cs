@@ -85,6 +85,24 @@ namespace EduHub.Data.Entities
                     case "ACTIVE":
                         mapper[i] = (e, v) => e.ACTIVE = v;
                         break;
+                    case "ACCOUNT_TYPE":
+                        mapper[i] = (e, v) => e.ACCOUNT_TYPE = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "INTEREST_RATE":
+                        mapper[i] = (e, v) => e.INTEREST_RATE = v == null ? (double?)null : double.Parse(v);
+                        break;
+                    case "INVESTMENT_DATE":
+                        mapper[i] = (e, v) => e.INVESTMENT_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "MATURITY_DATE":
+                        mapper[i] = (e, v) => e.MATURITY_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "INTEREST_EARNED":
+                        mapper[i] = (e, v) => e.INTEREST_EARNED = v == null ? (decimal?)null : decimal.Parse(v);
+                        break;
+                    case "COMMENTS":
+                        mapper[i] = (e, v) => e.COMMENTS = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -239,6 +257,12 @@ BEGIN
         [LAST_RECONCILE_DATE] datetime NULL,
         [LAST_RECONCILE_DIFF] money NULL,
         [ACTIVE] varchar(1) NULL,
+        [ACCOUNT_TYPE] smallint NULL,
+        [INTEREST_RATE] float NULL,
+        [INVESTMENT_DATE] datetime NULL,
+        [MATURITY_DATE] datetime NULL,
+        [INTEREST_EARNED] money NULL,
+        [COMMENTS] varchar(200) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -336,7 +360,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 19; } }
+            public override int FieldCount { get { return 25; } }
 
             public override object GetValue(int i)
             {
@@ -374,11 +398,23 @@ END");
                         return Current.LAST_RECONCILE_DIFF;
                     case 15: // ACTIVE
                         return Current.ACTIVE;
-                    case 16: // LW_DATE
+                    case 16: // ACCOUNT_TYPE
+                        return Current.ACCOUNT_TYPE;
+                    case 17: // INTEREST_RATE
+                        return Current.INTEREST_RATE;
+                    case 18: // INVESTMENT_DATE
+                        return Current.INVESTMENT_DATE;
+                    case 19: // MATURITY_DATE
+                        return Current.MATURITY_DATE;
+                    case 20: // INTEREST_EARNED
+                        return Current.INTEREST_EARNED;
+                    case 21: // COMMENTS
+                        return Current.COMMENTS;
+                    case 22: // LW_DATE
                         return Current.LW_DATE;
-                    case 17: // LW_TIME
+                    case 23: // LW_TIME
                         return Current.LW_TIME;
-                    case 18: // LW_USER
+                    case 24: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -419,11 +455,23 @@ END");
                         return Current.LAST_RECONCILE_DIFF == null;
                     case 15: // ACTIVE
                         return Current.ACTIVE == null;
-                    case 16: // LW_DATE
+                    case 16: // ACCOUNT_TYPE
+                        return Current.ACCOUNT_TYPE == null;
+                    case 17: // INTEREST_RATE
+                        return Current.INTEREST_RATE == null;
+                    case 18: // INVESTMENT_DATE
+                        return Current.INVESTMENT_DATE == null;
+                    case 19: // MATURITY_DATE
+                        return Current.MATURITY_DATE == null;
+                    case 20: // INTEREST_EARNED
+                        return Current.INTEREST_EARNED == null;
+                    case 21: // COMMENTS
+                        return Current.COMMENTS == null;
+                    case 22: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 17: // LW_TIME
+                    case 23: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 18: // LW_USER
+                    case 24: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -466,11 +514,23 @@ END");
                         return "LAST_RECONCILE_DIFF";
                     case 15: // ACTIVE
                         return "ACTIVE";
-                    case 16: // LW_DATE
+                    case 16: // ACCOUNT_TYPE
+                        return "ACCOUNT_TYPE";
+                    case 17: // INTEREST_RATE
+                        return "INTEREST_RATE";
+                    case 18: // INVESTMENT_DATE
+                        return "INVESTMENT_DATE";
+                    case 19: // MATURITY_DATE
+                        return "MATURITY_DATE";
+                    case 20: // INTEREST_EARNED
+                        return "INTEREST_EARNED";
+                    case 21: // COMMENTS
+                        return "COMMENTS";
+                    case 22: // LW_DATE
                         return "LW_DATE";
-                    case 17: // LW_TIME
+                    case 23: // LW_TIME
                         return "LW_TIME";
-                    case 18: // LW_USER
+                    case 24: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -513,12 +573,24 @@ END");
                         return 14;
                     case "ACTIVE":
                         return 15;
-                    case "LW_DATE":
+                    case "ACCOUNT_TYPE":
                         return 16;
-                    case "LW_TIME":
+                    case "INTEREST_RATE":
                         return 17;
-                    case "LW_USER":
+                    case "INVESTMENT_DATE":
                         return 18;
+                    case "MATURITY_DATE":
+                        return 19;
+                    case "INTEREST_EARNED":
+                        return 20;
+                    case "COMMENTS":
+                        return 21;
+                    case "LW_DATE":
+                        return 22;
+                    case "LW_TIME":
+                        return 23;
+                    case "LW_USER":
+                        return 24;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

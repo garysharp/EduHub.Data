@@ -186,7 +186,7 @@ BEGIN
     CREATE TABLE [dbo].[KAM](
         [KAMKEY] varchar(5) NOT NULL,
         [BRIEF] varchar(40) NULL,
-        [DETAIL] text NULL,
+        [DETAIL] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

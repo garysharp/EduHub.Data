@@ -858,7 +858,7 @@ BEGIN
         [RTYPE] varchar(2) NULL,
         [TRQTY] smallint NULL,
         [ST_QTY] smallint NULL,
-        [AMEMO] text NULL,
+        [AMEMO] varchar(MAX) NULL,
         [AMEMO_COPY] varchar(1) NULL,
         [NEXT_SVC_DATE] datetime NULL,
         [TRCOST] money NULL,

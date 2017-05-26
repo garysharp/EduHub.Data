@@ -520,6 +520,24 @@ namespace EduHub.Data.Entities
         public int? GLOBAL_ID { get; internal set; }
 
         /// <summary>
+        /// School defined field titles
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string SCH_DEFINED01 { get; internal set; }
+
+        /// <summary>
+        /// School defined field titles
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string SCH_DEFINED02 { get; internal set; }
+
+        /// <summary>
+        /// Preferred Contact Method
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string PREF_MAIL_MECH { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

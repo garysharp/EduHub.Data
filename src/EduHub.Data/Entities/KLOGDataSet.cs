@@ -186,7 +186,7 @@ BEGIN
     CREATE TABLE [dbo].[KLOG](
         [TID] int IDENTITY NOT NULL,
         [SEVERITY] int NULL,
-        [MESSAGE] text NULL,
+        [MESSAGE] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

@@ -293,7 +293,7 @@ BEGIN
         [TID] int IDENTITY NOT NULL,
         [TETEKEY] int NOT NULL,
         [EVENT_DATE] datetime NULL,
-        [COMMENTS] text NULL,
+        [COMMENTS] varchar(MAX) NULL,
         [TIME_FROM] datetime NULL,
         [TIME_TO] datetime NULL,
         [CONVENOR] varchar(10) NULL,

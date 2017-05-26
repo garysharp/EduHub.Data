@@ -272,7 +272,7 @@ BEGIN
         [VALIDATION] smallint NULL,
         [PROCESSED] datetime NULL,
         [STATUS] varchar(3) NULL,
-        [ERROR_TEXT] text NULL,
+        [ERROR_TEXT] varchar(MAX) NULL,
         [SPOUTKEY] varchar(100) NULL,
         CONSTRAINT [KERROR_Index_KERROR_ID] PRIMARY KEY CLUSTERED (
             [KERROR_ID] ASC

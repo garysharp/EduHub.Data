@@ -179,7 +179,7 @@ namespace EduHub.Data.Entities
 BEGIN
     CREATE TABLE [dbo].[SEC_MSG](
         [SCHOOLMSGID] int IDENTITY NOT NULL,
-        [MSGTEXT] text NULL,
+        [MSGTEXT] varchar(MAX) NULL,
         [EDITBYUSERID] varchar(10) NULL,
         [EDITDATE] datetime NULL,
         CONSTRAINT [SEC_MSG_Index_SCHOOLMSGID] PRIMARY KEY CLUSTERED (

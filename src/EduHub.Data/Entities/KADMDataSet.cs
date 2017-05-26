@@ -192,7 +192,7 @@ BEGIN
     CREATE TABLE [dbo].[KADM](
         [KADMKEY] varchar(1) NOT NULL,
         [DESCRIPTION] varchar(30) NULL,
-        [DETAIL] text NULL,
+        [DETAIL] varchar(MAX) NULL,
         [DATE_BASED] varchar(1) NULL,
         [TAX] varchar(1) NULL,
         [LW_DATE] datetime NULL,

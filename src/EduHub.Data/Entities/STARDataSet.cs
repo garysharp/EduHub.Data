@@ -234,7 +234,7 @@ BEGIN
         [TID] int IDENTITY NOT NULL,
         [SKEY] varchar(10) NOT NULL,
         [ACCESS_TYPE] varchar(30) NULL,
-        [RESTRICTION] text NULL,
+        [RESTRICTION] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

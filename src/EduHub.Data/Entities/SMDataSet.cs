@@ -358,7 +358,7 @@ BEGIN
         [AREA_CODE] varchar(4) NULL,
         [CAMPUS] int NULL,
         [STAFF_CODE] varchar(4) NULL,
-        [COMMENTA] text NULL,
+        [COMMENTA] varchar(MAX) NULL,
         [BOARD] varchar(4) NULL,
         [BLACKOUT] varchar(1) NULL,
         [NORMAL_ALLOTMENT] smallint NULL,

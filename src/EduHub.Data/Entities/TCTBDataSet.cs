@@ -441,7 +441,7 @@ BEGIN
         [ROOM_AVAILABLE] varchar(1) NULL,
         [TIME_FROM] datetime NULL,
         [TIME_TO] datetime NULL,
-        [COMMENT_A] text NULL,
+        [COMMENT_A] varchar(MAX) NULL,
         [ABSENCE_TYPE] varchar(10) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,

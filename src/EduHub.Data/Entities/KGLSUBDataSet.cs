@@ -56,6 +56,9 @@ namespace EduHub.Data.Entities
                     case "RESERVED":
                         mapper[i] = (e, v) => e.RESERVED = v;
                         break;
+                    case "BATCHABLE":
+                        mapper[i] = (e, v) => e.BATCHABLE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -243,6 +246,7 @@ BEGIN
         [ACTIVE] varchar(1) NULL,
         [USER_DEFINABLE] varchar(1) NULL,
         [RESERVED] varchar(1) NULL,
+        [BATCHABLE] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -356,7 +360,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 9; } }
+            public override int FieldCount { get { return 10; } }
 
             public override object GetValue(int i)
             {
@@ -374,11 +378,13 @@ END");
                         return Current.USER_DEFINABLE;
                     case 5: // RESERVED
                         return Current.RESERVED;
-                    case 6: // LW_DATE
+                    case 6: // BATCHABLE
+                        return Current.BATCHABLE;
+                    case 7: // LW_DATE
                         return Current.LW_DATE;
-                    case 7: // LW_TIME
+                    case 8: // LW_TIME
                         return Current.LW_TIME;
-                    case 8: // LW_USER
+                    case 9: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -399,11 +405,13 @@ END");
                         return Current.USER_DEFINABLE == null;
                     case 5: // RESERVED
                         return Current.RESERVED == null;
-                    case 6: // LW_DATE
+                    case 6: // BATCHABLE
+                        return Current.BATCHABLE == null;
+                    case 7: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 7: // LW_TIME
+                    case 8: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 8: // LW_USER
+                    case 9: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -426,11 +434,13 @@ END");
                         return "USER_DEFINABLE";
                     case 5: // RESERVED
                         return "RESERVED";
-                    case 6: // LW_DATE
+                    case 6: // BATCHABLE
+                        return "BATCHABLE";
+                    case 7: // LW_DATE
                         return "LW_DATE";
-                    case 7: // LW_TIME
+                    case 8: // LW_TIME
                         return "LW_TIME";
-                    case 8: // LW_USER
+                    case 9: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -453,12 +463,14 @@ END");
                         return 4;
                     case "RESERVED":
                         return 5;
-                    case "LW_DATE":
+                    case "BATCHABLE":
                         return 6;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 7;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 8;
+                    case "LW_USER":
+                        return 9;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

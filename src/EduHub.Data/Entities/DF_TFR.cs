@@ -606,6 +606,54 @@ namespace EduHub.Data.Entities
         public string PREF_EMAIL { get; internal set; }
 
         /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? SCH_ED_A_LU { get; internal set; }
+
+        /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? NON_SCH_ED_A_LU { get; internal set; }
+
+        /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? OCCUP_STATUS_A_LU { get; internal set; }
+
+        /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? SCH_ED_B_LU { get; internal set; }
+
+        /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? NON_SCH_ED_B_LU { get; internal set; }
+
+        /// <summary>
+        /// Date last udpated
+        /// </summary>
+        public DateTime? OCCUP_STATUS_B_LU { get; internal set; }
+
+        /// <summary>
+        /// Calculated Non School Education
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CNSE { get; internal set; }
+
+        /// <summary>
+        /// Calculated School Education
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CSE { get; internal set; }
+
+        /// <summary>
+        /// Final Education Value
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string FSE { get; internal set; }
+
+        /// <summary>
         /// Unique Home UM Transfer ID
         /// [Uppercase Alphanumeric (30)]
         /// </summary>

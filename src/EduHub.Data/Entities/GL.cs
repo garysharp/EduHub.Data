@@ -46,6 +46,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_CODE_PN_GLTAX;
         private IReadOnlyList<SA> Cache_CODE_SA_GLCODE;
         private IReadOnlyList<SDFC> Cache_CODE_SDFC_GLCODE;
+        private IReadOnlyList<SGFC> Cache_CODE_SGFC_GLCODE;
 
         #endregion
 
@@ -550,6 +551,12 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string FBT { get; internal set; }
+
+        /// <summary>
+        /// Allow account to be processed (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string BATCHABLE { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -1079,6 +1086,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CODE_SDFC_GLCODE;
+            }
+        }
+
+        /// <summary>
+        /// SGFC (General Ledger Fees) related entities by [GL.CODE]-&gt;[SGFC.GLCODE]
+        /// General Ledger code (Prime Key)
+        /// </summary>
+        public IReadOnlyList<SGFC> CODE_SGFC_GLCODE
+        {
+            get
+            {
+                if (Cache_CODE_SGFC_GLCODE == null &&
+                    !Context.SGFC.TryFindByGLCODE(CODE, out Cache_CODE_SGFC_GLCODE))
+                {
+                    Cache_CODE_SGFC_GLCODE = new List<SGFC>().AsReadOnly();
+                }
+
+                return Cache_CODE_SGFC_GLCODE;
             }
         }
 

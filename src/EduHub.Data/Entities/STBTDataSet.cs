@@ -1334,7 +1334,7 @@ BEGIN
         [DAYS_USED03] varchar(1) NULL,
         [DAYS_USED04] varchar(1) NULL,
         [DAYS_USED05] varchar(1) NULL,
-        [TRANSPORT_NOTES] text NULL,
+        [TRANSPORT_NOTES] varchar(MAX) NULL,
         [DATE_STARTED] datetime NULL,
         [TERMINATED] datetime NULL,
         [AM1_PICKUP] smallint NULL,

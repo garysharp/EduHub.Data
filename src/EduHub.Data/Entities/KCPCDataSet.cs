@@ -319,7 +319,7 @@ BEGIN
         [CAMPUS] int NULL,
         [UNDERTAKING_CARDHOLDER] varchar(3) NULL,
         [CARD_LIMIT] money NULL,
-        [CHANGE_LIMIT] text NULL,
+        [CHANGE_LIMIT] varchar(MAX) NULL,
         [CANCELLATION_DATE] datetime NULL,
         [ACTIVE] varchar(1) NULL,
         [PROCESSED] varchar(1) NULL,

@@ -13,6 +13,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+        private IReadOnlyList<BANKSIG> Cache_GLCODE_BANKSIG_GLCODE;
         private IReadOnlyList<GLFBANK> Cache_GLCODE_GLFBANK_CODE;
 
         #endregion
@@ -244,6 +245,24 @@ namespace EduHub.Data.Entities
         #endregion
 
         #region Foreign Navigation Properties
+
+        /// <summary>
+        /// BANKSIG (Bank Signatories) related entities by [GLBANK.GLCODE]-&gt;[BANKSIG.GLCODE]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<BANKSIG> GLCODE_BANKSIG_GLCODE
+        {
+            get
+            {
+                if (Cache_GLCODE_BANKSIG_GLCODE == null &&
+                    !Context.BANKSIG.TryFindByGLCODE(GLCODE, out Cache_GLCODE_BANKSIG_GLCODE))
+                {
+                    Cache_GLCODE_BANKSIG_GLCODE = new List<BANKSIG>().AsReadOnly();
+                }
+
+                return Cache_GLCODE_BANKSIG_GLCODE;
+            }
+        }
 
         /// <summary>
         /// GLFBANK (Financial Commitments) related entities by [GLBANK.GLCODE]-&gt;[GLFBANK.CODE]

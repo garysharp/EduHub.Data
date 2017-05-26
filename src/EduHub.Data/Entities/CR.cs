@@ -24,6 +24,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<AR> Cache_CRKEY_AR_CURR_SUPPLIER;
         private IReadOnlyList<CRF> Cache_CRKEY_CRF_CODE;
         private IReadOnlyList<CRFTC> Cache_CRKEY_CRFTC_CODE;
+        private IReadOnlyList<CRTT> Cache_CRKEY_CRTT_CRKEY;
 
         #endregion
 
@@ -532,6 +533,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CRKEY_CRFTC_CODE;
+            }
+        }
+
+        /// <summary>
+        /// CRTT (Creditor Trade Types) related entities by [CR.CRKEY]-&gt;[CRTT.CRKEY]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<CRTT> CRKEY_CRTT_CRKEY
+        {
+            get
+            {
+                if (Cache_CRKEY_CRTT_CRKEY == null &&
+                    !Context.CRTT.TryFindByCRKEY(CRKEY, out Cache_CRKEY_CRTT_CRKEY))
+                {
+                    Cache_CRKEY_CRTT_CRKEY = new List<CRTT>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_CRTT_CRKEY;
             }
         }
 

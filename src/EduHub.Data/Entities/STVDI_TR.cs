@@ -14,7 +14,6 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private SKGS Cache_ORIG_SCHOOL_SKGS;
-        private KCY Cache_SCHOOL_YEAR_KCY;
 
         #endregion
 
@@ -89,7 +88,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Numerical assessment for the dimension - could be NA
-        /// [Alphanumeric (4)]
+        /// [Alphanumeric (6)]
         /// </summary>
         public string SCORE { get; internal set; }
 
@@ -150,27 +149,6 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_ORIG_SCHOOL_SKGS;
-            }
-        }
-
-        /// <summary>
-        /// KCY (Year Levels) related entity by [STVDI_TR.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
-        /// Year level at the time of result
-        /// </summary>
-        public KCY SCHOOL_YEAR_KCY
-        {
-            get
-            {
-                if (SCHOOL_YEAR == null)
-                {
-                    return null;
-                }
-                if (Cache_SCHOOL_YEAR_KCY == null)
-                {
-                    Cache_SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
-                }
-
-                return Cache_SCHOOL_YEAR_KCY;
             }
         }
 

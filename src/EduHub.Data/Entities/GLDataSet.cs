@@ -329,6 +329,9 @@ namespace EduHub.Data.Entities
                     case "FBT":
                         mapper[i] = (e, v) => e.FBT = v;
                         break;
+                    case "BATCHABLE":
+                        mapper[i] = (e, v) => e.BATCHABLE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -607,6 +610,7 @@ BEGIN
         [ACTIVE] varchar(1) NULL,
         [USER_DEFINABLE] varchar(1) NULL,
         [FBT] varchar(1) NULL,
+        [BATCHABLE] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -720,7 +724,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 100; } }
+            public override int FieldCount { get { return 101; } }
 
             public override object GetValue(int i)
             {
@@ -920,11 +924,13 @@ END");
                         return Current.USER_DEFINABLE;
                     case 96: // FBT
                         return Current.FBT;
-                    case 97: // LW_DATE
+                    case 97: // BATCHABLE
+                        return Current.BATCHABLE;
+                    case 98: // LW_DATE
                         return Current.LW_DATE;
-                    case 98: // LW_TIME
+                    case 99: // LW_TIME
                         return Current.LW_TIME;
-                    case 99: // LW_USER
+                    case 100: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1127,11 +1133,13 @@ END");
                         return Current.USER_DEFINABLE == null;
                     case 96: // FBT
                         return Current.FBT == null;
-                    case 97: // LW_DATE
+                    case 97: // BATCHABLE
+                        return Current.BATCHABLE == null;
+                    case 98: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 98: // LW_TIME
+                    case 99: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 99: // LW_USER
+                    case 100: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1336,11 +1344,13 @@ END");
                         return "USER_DEFINABLE";
                     case 96: // FBT
                         return "FBT";
-                    case 97: // LW_DATE
+                    case 97: // BATCHABLE
+                        return "BATCHABLE";
+                    case 98: // LW_DATE
                         return "LW_DATE";
-                    case 98: // LW_TIME
+                    case 99: // LW_TIME
                         return "LW_TIME";
-                    case 99: // LW_USER
+                    case 100: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1545,12 +1555,14 @@ END");
                         return 95;
                     case "FBT":
                         return 96;
-                    case "LW_DATE":
+                    case "BATCHABLE":
                         return 97;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 98;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 99;
+                    case "LW_USER":
+                        return 100;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

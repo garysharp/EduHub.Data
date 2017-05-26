@@ -24,7 +24,6 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_ORIG_SCHOOL = new Lazy<Dictionary<string, IReadOnlyList<STVDO_TR>>>(() => this.ToGroupedDictionary(i => i.ORIG_SCHOOL));
-            Index_SCHOOL_YEAR = new Lazy<NullDictionary<string, IReadOnlyList<STVDO_TR>>>(() => this.ToGroupedNullDictionary(i => i.SCHOOL_YEAR));
             Index_STVDO_TRANS_ID = new Lazy<NullDictionary<string, STVDO_TR>>(() => this.ToNullDictionary(i => i.STVDO_TRANS_ID));
             Index_TID = new Lazy<Dictionary<int, STVDO_TR>>(() => this.ToDictionary(i => i.TID));
         }
@@ -163,7 +162,6 @@ namespace EduHub.Data.Entities
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<STVDO_TR>>> Index_ORIG_SCHOOL;
-        private Lazy<NullDictionary<string, IReadOnlyList<STVDO_TR>>> Index_SCHOOL_YEAR;
         private Lazy<NullDictionary<string, STVDO_TR>> Index_STVDO_TRANS_ID;
         private Lazy<Dictionary<int, STVDO_TR>> Index_TID;
 
@@ -204,48 +202,6 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STVDO_TR> value;
             if (Index_ORIG_SCHOOL.Value.TryGetValue(ORIG_SCHOOL, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Find STVDO_TR by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDO_TR</param>
-        /// <returns>List of related STVDO_TR entities</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDO_TR> FindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            return Index_SCHOOL_YEAR.Value[SCHOOL_YEAR];
-        }
-
-        /// <summary>
-        /// Attempt to find STVDO_TR by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDO_TR</param>
-        /// <param name="Value">List of related STVDO_TR entities</param>
-        /// <returns>True if the list of related STVDO_TR entities is found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindBySCHOOL_YEAR(string SCHOOL_YEAR, out IReadOnlyList<STVDO_TR> Value)
-        {
-            return Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out Value);
-        }
-
-        /// <summary>
-        /// Attempt to find STVDO_TR by SCHOOL_YEAR field
-        /// </summary>
-        /// <param name="SCHOOL_YEAR">SCHOOL_YEAR value used to find STVDO_TR</param>
-        /// <returns>List of related STVDO_TR entities, or null if not found</returns>
-        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<STVDO_TR> TryFindBySCHOOL_YEAR(string SCHOOL_YEAR)
-        {
-            IReadOnlyList<STVDO_TR> value;
-            if (Index_SCHOOL_YEAR.Value.TryGetValue(SCHOOL_YEAR, out value))
             {
                 return value;
             }
@@ -365,7 +321,7 @@ BEGIN
         [YEAR_SEMESTER] varchar(6) NULL,
         [VDOMAIN] varchar(10) NULL,
         [VDIMENSION] varchar(10) NULL,
-        [SCORE] varchar(4) NULL,
+        [SCORE] varchar(6) NULL,
         [ORIGINAL_SCHOOL] varchar(8) NULL,
         [ST_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
@@ -380,10 +336,6 @@ BEGIN
     CREATE CLUSTERED INDEX [STVDO_TR_Index_ORIG_SCHOOL] ON [dbo].[STVDO_TR]
     (
             [ORIG_SCHOOL] ASC
-    );
-    CREATE NONCLUSTERED INDEX [STVDO_TR_Index_SCHOOL_YEAR] ON [dbo].[STVDO_TR]
-    (
-            [SCHOOL_YEAR] ASC
     );
     CREATE NONCLUSTERED INDEX [STVDO_TR_Index_STVDO_TRANS_ID] ON [dbo].[STVDO_TR]
     (
@@ -404,9 +356,7 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDO_TR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_STVDO_TRANS_ID')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_STVDO_TRANS_ID')
     ALTER INDEX [Index_STVDO_TRANS_ID] ON [dbo].[STVDO_TR] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDO_TR] DISABLE;
@@ -423,9 +373,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STVDO_TR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_STVDO_TRANS_ID')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_STVDO_TRANS_ID')
     ALTER INDEX [Index_STVDO_TRANS_ID] ON [dbo].[STVDO_TR] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO_TR]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDO_TR] REBUILD PARTITION = ALL;

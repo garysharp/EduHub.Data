@@ -242,7 +242,7 @@ BEGIN
         [TRANSPORT_TYPE] varchar(1) NULL,
         [DESCRIPTION] varchar(40) NULL,
         [ROUTE_CODE] varchar(5) NULL,
-        [STOP_DESCRIP] text NULL,
+        [STOP_DESCRIP] varchar(MAX) NULL,
         [DAYOFWK01] varchar(1) NULL,
         [DAYOFWK02] varchar(1) NULL,
         [DAYOFWK03] varchar(1) NULL,

@@ -283,6 +283,15 @@ namespace EduHub.Data.Entities
                     case "GLOBAL_ID":
                         mapper[i] = (e, v) => e.GLOBAL_ID = v == null ? (int?)null : int.Parse(v);
                         break;
+                    case "SCH_DEFINED01":
+                        mapper[i] = (e, v) => e.SCH_DEFINED01 = v;
+                        break;
+                    case "SCH_DEFINED02":
+                        mapper[i] = (e, v) => e.SCH_DEFINED02 = v;
+                        break;
+                    case "PREF_MAIL_MECH":
+                        mapper[i] = (e, v) => e.PREF_MAIL_MECH = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -1402,6 +1411,9 @@ BEGIN
         [PROFILE_SENT] datetime NULL,
         [SPEC_CURR_IND] varchar(1) NULL,
         [GLOBAL_ID] int NULL,
+        [SCH_DEFINED01] varchar(20) NULL,
+        [SCH_DEFINED02] varchar(20) NULL,
+        [PREF_MAIL_MECH] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1691,7 +1703,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
             {
             }
 
-            public override int FieldCount { get { return 78; } }
+            public override int FieldCount { get { return 81; } }
 
             public override object GetValue(int i)
             {
@@ -1847,11 +1859,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SPEC_CURR_IND;
                     case 74: // GLOBAL_ID
                         return Current.GLOBAL_ID;
-                    case 75: // LW_DATE
+                    case 75: // SCH_DEFINED01
+                        return Current.SCH_DEFINED01;
+                    case 76: // SCH_DEFINED02
+                        return Current.SCH_DEFINED02;
+                    case 77: // PREF_MAIL_MECH
+                        return Current.PREF_MAIL_MECH;
+                    case 78: // LW_DATE
                         return Current.LW_DATE;
-                    case 76: // LW_TIME
+                    case 79: // LW_TIME
                         return Current.LW_TIME;
-                    case 77: // LW_USER
+                    case 80: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2010,11 +2028,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SPEC_CURR_IND == null;
                     case 74: // GLOBAL_ID
                         return Current.GLOBAL_ID == null;
-                    case 75: // LW_DATE
+                    case 75: // SCH_DEFINED01
+                        return Current.SCH_DEFINED01 == null;
+                    case 76: // SCH_DEFINED02
+                        return Current.SCH_DEFINED02 == null;
+                    case 77: // PREF_MAIL_MECH
+                        return Current.PREF_MAIL_MECH == null;
+                    case 78: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 76: // LW_TIME
+                    case 79: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 77: // LW_USER
+                    case 80: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2175,11 +2199,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return "SPEC_CURR_IND";
                     case 74: // GLOBAL_ID
                         return "GLOBAL_ID";
-                    case 75: // LW_DATE
+                    case 75: // SCH_DEFINED01
+                        return "SCH_DEFINED01";
+                    case 76: // SCH_DEFINED02
+                        return "SCH_DEFINED02";
+                    case 77: // PREF_MAIL_MECH
+                        return "PREF_MAIL_MECH";
+                    case 78: // LW_DATE
                         return "LW_DATE";
-                    case 76: // LW_TIME
+                    case 79: // LW_TIME
                         return "LW_TIME";
-                    case 77: // LW_USER
+                    case 80: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2340,12 +2370,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return 73;
                     case "GLOBAL_ID":
                         return 74;
-                    case "LW_DATE":
+                    case "SCH_DEFINED01":
                         return 75;
-                    case "LW_TIME":
+                    case "SCH_DEFINED02":
                         return 76;
-                    case "LW_USER":
+                    case "PREF_MAIL_MECH":
                         return 77;
+                    case "LW_DATE":
+                        return 78;
+                    case "LW_TIME":
+                        return 79;
+                    case "LW_USER":
+                        return 80;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

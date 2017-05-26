@@ -290,7 +290,7 @@ BEGIN
         [RECEIPT_TIME] smallint NULL,
         [NEW_TRREF] varchar(10) NULL,
         [ERROR_FLAG] varchar(1) NULL,
-        [ERROR_COMMENT] text NULL,
+        [ERROR_COMMENT] varchar(MAX) NULL,
         [ERROR_USER] varchar(128) NULL,
         [FORMAT_ID] varchar(7) NULL,
         [PRINT_ID] int IDENTITY NOT NULL,

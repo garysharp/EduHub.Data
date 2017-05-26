@@ -52,27 +52,73 @@
     <Compile Include="EduHubContextBase.cs" />
     <Compile Include="EduHubDataSetNotFoundException.cs" />
     <Compile Include="EduHubSqlServerWriteMode.cs" />
-    <Compile Include="Entities\TETNDataSetHelpers.cs" />
-    <Compile Include="Entities\TCTQDataSetHelpers.cs" />
-    <Compile Include="Entities\TCTDDataSetHelpers.cs" />
-    <Compile Include="Entities\SVAGDataSetHelpers.cs" />
-    <Compile Include="Entities\STVDODataSetHelpers.cs" />
-    <Compile Include="Entities\STVDIDataSetHelpers.cs" />
-    <Compile Include="Entities\ST_TFRDataSetHelpers.cs" />
-    <Compile Include="Entities\STDataSetHelpers.cs" />
-    <Compile Include="Entities\SPEMAILDataSetHelpers.cs" />
-    <Compile Include="Entities\SMC_TFRDataSetHelpers.cs" />
-    <Compile Include="Entities\SMCDataSetHelpers.cs" />
-    <Compile Include="Entities\QBDataSetHelpers.cs" />
-    <Compile Include="Entities\KDODataSetHelpers.cs" />
-    <Compile Include="Entities\KDIDataSetHelpers.cs" />
-    <Compile Include="Entities\KCYDataSetHelpers.cs" />
-    <Compile Include="Entities\KCM_TFRDataSetHelpers.cs" />
-    <Compile Include="Entities\KCMDataSetHelpers.cs" />
-    <Compile Include="Entities\DRFDataSetHelpers.cs" />
-    <Compile Include="Entities\DFDataSetHelpers.cs" />
-    <Compile Include="Entities\CRFDataSetHelpers.cs" />
-    <Compile Include="Entities\CRDataSetHelpers.cs" />
+    <Compile Include="Entities\EduHubDataSetSqlValidation.cs" />
+    <Compile Include="Entities\BANKSIG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\BANKSIGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CRTT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CRTTDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSCORE.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSCOREDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSTREET.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSTREETDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KTT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KTTDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSAC.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSACDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSAD.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSADDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSAG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSAGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSAT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\QSATDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SGFC.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SGFCDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPEMRG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPEMRGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\EduHubDataSetDataReader.cs" />
     <Compile Include="Entities\EduHubDataSetDeltaReader.cs" />
     <Compile Include="Entities\EduHubDataSetLoadedReader.cs" />
@@ -1463,6 +1509,18 @@
     <Compile Include="Entities\SPWWWDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SP_RECIP.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SP_RECIPDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SP_REPLY.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SP_REPLYDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\SRAG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1901,7 +1959,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CASES21v55 Schema.xml" />
     <None Include="EduHubContext.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>EduHubContext.cs</LastGenOutput>
@@ -1912,10 +1969,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CASES21v56 Schema.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CASES21v56 Schema v2.xml" />
+    <Content Include="CASES21v58 Schema.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -47,6 +47,7 @@ namespace EduHub.Data.Entities
             Index_RELIGION = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.RELIGION));
             Index_ROOM = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.ROOM));
             Index_SFKEY = new Lazy<Dictionary<string, SF>>(() => this.ToDictionary(i => i.SFKEY));
+            Index_SMS_REPLY = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SMS_REPLY));
             Index_SUBJECT01 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT01));
             Index_SUBJECT02 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT02));
             Index_SUBJECT03 = new Lazy<NullDictionary<string, IReadOnlyList<SF>>>(() => this.ToGroupedNullDictionary(i => i.SUBJECT03));
@@ -328,6 +329,27 @@ namespace EduHub.Data.Entities
                     case "NOTES":
                         mapper[i] = (e, v) => e.NOTES = v;
                         break;
+                    case "DRIVERS_LIC_NO":
+                        mapper[i] = (e, v) => e.DRIVERS_LIC_NO = v;
+                        break;
+                    case "DRIVERS_LIC_EXPIRY":
+                        mapper[i] = (e, v) => e.DRIVERS_LIC_EXPIRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "VIT_EXPIRY":
+                        mapper[i] = (e, v) => e.VIT_EXPIRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "WWCC_NUMBER":
+                        mapper[i] = (e, v) => e.WWCC_NUMBER = v;
+                        break;
+                    case "WWCC_EXPIRY":
+                        mapper[i] = (e, v) => e.WWCC_EXPIRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "WWCC_TYPE":
+                        mapper[i] = (e, v) => e.WWCC_TYPE = v;
+                        break;
+                    case "SMS_REPLY":
+                        mapper[i] = (e, v) => e.SMS_REPLY = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -426,6 +448,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_RELIGION;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_ROOM;
         private Lazy<Dictionary<string, SF>> Index_SFKEY;
+        private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SMS_REPLY;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT01;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT02;
         private Lazy<NullDictionary<string, IReadOnlyList<SF>>> Index_SUBJECT03;
@@ -1450,6 +1473,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find SF by SMS_REPLY field
+        /// </summary>
+        /// <param name="SMS_REPLY">SMS_REPLY value used to find SF</param>
+        /// <returns>List of related SF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> FindBySMS_REPLY(string SMS_REPLY)
+        {
+            return Index_SMS_REPLY.Value[SMS_REPLY];
+        }
+
+        /// <summary>
+        /// Attempt to find SF by SMS_REPLY field
+        /// </summary>
+        /// <param name="SMS_REPLY">SMS_REPLY value used to find SF</param>
+        /// <param name="Value">List of related SF entities</param>
+        /// <returns>True if the list of related SF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySMS_REPLY(string SMS_REPLY, out IReadOnlyList<SF> Value)
+        {
+            return Index_SMS_REPLY.Value.TryGetValue(SMS_REPLY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SF by SMS_REPLY field
+        /// </summary>
+        /// <param name="SMS_REPLY">SMS_REPLY value used to find SF</param>
+        /// <returns>List of related SF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SF> TryFindBySMS_REPLY(string SMS_REPLY)
+        {
+            IReadOnlyList<SF> value;
+            if (Index_SMS_REPLY.Value.TryGetValue(SMS_REPLY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find SF by SUBJECT01 field
         /// </summary>
         /// <param name="SUBJECT01">SUBJECT01 value used to find SF</param>
@@ -1936,18 +2001,18 @@ BEGIN
         [MAJORA] varchar(4) NULL,
         [MAJORB] varchar(4) NULL,
         [MAJORC] varchar(4) NULL,
-        [SKILL_QUALIFICATION] text NULL,
+        [SKILL_QUALIFICATION] varchar(MAX) NULL,
         [PAYROLL_REC_NO] varchar(9) NULL,
         [PAYROLL_CLASS] varchar(20) NULL,
         [RELIGION] varchar(12) NULL,
         [REPORT_NAME] varchar(30) NULL,
         [POLICE_CLEARANCE] varchar(1) NULL,
         [CLEARANCE_DATE] datetime NULL,
-        [STAFF_PIC] image NULL,
+        [STAFF_PIC] varbinary(MAX) NULL,
         [OK_TO_PUBLISH] varchar(1) NULL,
         [PIC_LW_DATE] datetime NULL,
         [PIC_STATUS] varchar(1) NULL,
-        [AVAILABLE] image NULL,
+        [AVAILABLE] varbinary(MAX) NULL,
         [MAX_EXTRAS] smallint NULL,
         [ACC_EXTRAS] smallint NULL,
         [WEEK_EXTRAS] smallint NULL,
@@ -1970,7 +2035,14 @@ BEGIN
         [HRMS_UPDATE] varchar(1) NULL,
         [HRMS_DATETIME] datetime NULL,
         [DEBTOR_ID] varchar(10) NULL,
-        [NOTES] text NULL,
+        [NOTES] varchar(MAX) NULL,
+        [DRIVERS_LIC_NO] varchar(15) NULL,
+        [DRIVERS_LIC_EXPIRY] datetime NULL,
+        [VIT_EXPIRY] datetime NULL,
+        [WWCC_NUMBER] varchar(11) NULL,
+        [WWCC_EXPIRY] datetime NULL,
+        [WWCC_TYPE] varchar(1) NULL,
+        [SMS_REPLY] varchar(15) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -2069,6 +2141,10 @@ BEGIN
     CREATE NONCLUSTERED INDEX [SF_Index_ROOM] ON [dbo].[SF]
     (
             [ROOM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [SF_Index_SMS_REPLY] ON [dbo].[SF]
+    (
+            [SMS_REPLY] ASC
     );
     CREATE NONCLUSTERED INDEX [SF_Index_SUBJECT01] ON [dbo].[SF]
     (
@@ -2171,6 +2247,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
     ALTER INDEX [Index_RELIGION] ON [dbo].[SF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_ROOM')
     ALTER INDEX [Index_ROOM] ON [dbo].[SF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SMS_REPLY')
+    ALTER INDEX [Index_SMS_REPLY] ON [dbo].[SF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SUBJECT01')
     ALTER INDEX [Index_SUBJECT01] ON [dbo].[SF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SUBJECT02')
@@ -2250,6 +2328,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
     ALTER INDEX [Index_RELIGION] ON [dbo].[SF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_ROOM')
     ALTER INDEX [Index_ROOM] ON [dbo].[SF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SMS_REPLY')
+    ALTER INDEX [Index_SMS_REPLY] ON [dbo].[SF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SUBJECT01')
     ALTER INDEX [Index_SUBJECT01] ON [dbo].[SF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND name = N'Index_SUBJECT02')
@@ -2340,7 +2420,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
             {
             }
 
-            public override int FieldCount { get { return 89; } }
+            public override int FieldCount { get { return 96; } }
 
             public override object GetValue(int i)
             {
@@ -2518,11 +2598,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return Current.DEBTOR_ID;
                     case 85: // NOTES
                         return Current.NOTES;
-                    case 86: // LW_DATE
+                    case 86: // DRIVERS_LIC_NO
+                        return Current.DRIVERS_LIC_NO;
+                    case 87: // DRIVERS_LIC_EXPIRY
+                        return Current.DRIVERS_LIC_EXPIRY;
+                    case 88: // VIT_EXPIRY
+                        return Current.VIT_EXPIRY;
+                    case 89: // WWCC_NUMBER
+                        return Current.WWCC_NUMBER;
+                    case 90: // WWCC_EXPIRY
+                        return Current.WWCC_EXPIRY;
+                    case 91: // WWCC_TYPE
+                        return Current.WWCC_TYPE;
+                    case 92: // SMS_REPLY
+                        return Current.SMS_REPLY;
+                    case 93: // LW_DATE
                         return Current.LW_DATE;
-                    case 87: // LW_TIME
+                    case 94: // LW_TIME
                         return Current.LW_TIME;
-                    case 88: // LW_USER
+                    case 95: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2703,11 +2797,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return Current.DEBTOR_ID == null;
                     case 85: // NOTES
                         return Current.NOTES == null;
-                    case 86: // LW_DATE
+                    case 86: // DRIVERS_LIC_NO
+                        return Current.DRIVERS_LIC_NO == null;
+                    case 87: // DRIVERS_LIC_EXPIRY
+                        return Current.DRIVERS_LIC_EXPIRY == null;
+                    case 88: // VIT_EXPIRY
+                        return Current.VIT_EXPIRY == null;
+                    case 89: // WWCC_NUMBER
+                        return Current.WWCC_NUMBER == null;
+                    case 90: // WWCC_EXPIRY
+                        return Current.WWCC_EXPIRY == null;
+                    case 91: // WWCC_TYPE
+                        return Current.WWCC_TYPE == null;
+                    case 92: // SMS_REPLY
+                        return Current.SMS_REPLY == null;
+                    case 93: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 87: // LW_TIME
+                    case 94: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 88: // LW_USER
+                    case 95: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2890,11 +2998,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return "DEBTOR_ID";
                     case 85: // NOTES
                         return "NOTES";
-                    case 86: // LW_DATE
+                    case 86: // DRIVERS_LIC_NO
+                        return "DRIVERS_LIC_NO";
+                    case 87: // DRIVERS_LIC_EXPIRY
+                        return "DRIVERS_LIC_EXPIRY";
+                    case 88: // VIT_EXPIRY
+                        return "VIT_EXPIRY";
+                    case 89: // WWCC_NUMBER
+                        return "WWCC_NUMBER";
+                    case 90: // WWCC_EXPIRY
+                        return "WWCC_EXPIRY";
+                    case 91: // WWCC_TYPE
+                        return "WWCC_TYPE";
+                    case 92: // SMS_REPLY
+                        return "SMS_REPLY";
+                    case 93: // LW_DATE
                         return "LW_DATE";
-                    case 87: // LW_TIME
+                    case 94: // LW_TIME
                         return "LW_TIME";
-                    case 88: // LW_USER
+                    case 95: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -3077,12 +3199,26 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return 84;
                     case "NOTES":
                         return 85;
-                    case "LW_DATE":
+                    case "DRIVERS_LIC_NO":
                         return 86;
-                    case "LW_TIME":
+                    case "DRIVERS_LIC_EXPIRY":
                         return 87;
-                    case "LW_USER":
+                    case "VIT_EXPIRY":
                         return 88;
+                    case "WWCC_NUMBER":
+                        return 89;
+                    case "WWCC_EXPIRY":
+                        return 90;
+                    case "WWCC_TYPE":
+                        return 91;
+                    case "SMS_REPLY":
+                        return 92;
+                    case "LW_DATE":
+                        return 93;
+                    case "LW_TIME":
+                        return 94;
+                    case "LW_USER":
+                        return 95;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

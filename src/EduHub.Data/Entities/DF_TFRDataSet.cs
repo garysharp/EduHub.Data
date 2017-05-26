@@ -333,6 +333,33 @@ namespace EduHub.Data.Entities
                     case "PREF_EMAIL":
                         mapper[i] = (e, v) => e.PREF_EMAIL = v;
                         break;
+                    case "SCH_ED_A_LU":
+                        mapper[i] = (e, v) => e.SCH_ED_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "NON_SCH_ED_A_LU":
+                        mapper[i] = (e, v) => e.NON_SCH_ED_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "OCCUP_STATUS_A_LU":
+                        mapper[i] = (e, v) => e.OCCUP_STATUS_A_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "SCH_ED_B_LU":
+                        mapper[i] = (e, v) => e.SCH_ED_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "NON_SCH_ED_B_LU":
+                        mapper[i] = (e, v) => e.NON_SCH_ED_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "OCCUP_STATUS_B_LU":
+                        mapper[i] = (e, v) => e.OCCUP_STATUS_B_LU = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "CNSE":
+                        mapper[i] = (e, v) => e.CNSE = v;
+                        break;
+                    case "CSE":
+                        mapper[i] = (e, v) => e.CSE = v;
+                        break;
+                    case "FSE":
+                        mapper[i] = (e, v) => e.FSE = v;
+                        break;
                     case "UMH_TRANS_ID":
                         mapper[i] = (e, v) => e.UMH_TRANS_ID = v;
                         break;
@@ -594,9 +621,9 @@ BEGIN
         [INTERPRETER_A] varchar(1) NULL,
         [BIRTH_COUNTRY_A] varchar(6) NULL,
         [BH_AT_HOME_A] varchar(1) NULL,
-        [BH_CONTACT_A] text NULL,
+        [BH_CONTACT_A] varchar(MAX) NULL,
         [AH_AT_HOME_A] varchar(1) NULL,
-        [AH_CONTACT_A] text NULL,
+        [AH_CONTACT_A] varchar(MAX) NULL,
         [E_MAIL_A] varchar(60) NULL,
         [PREF_MAIL_MECH_A] varchar(1) NULL,
         [FAX_A] varchar(20) NULL,
@@ -619,9 +646,9 @@ BEGIN
         [INTERPRETER_B] varchar(1) NULL,
         [BIRTH_COUNTRY_B] varchar(6) NULL,
         [BH_AT_HOME_B] varchar(1) NULL,
-        [BH_CONTACT_B] text NULL,
+        [BH_CONTACT_B] varchar(MAX) NULL,
         [AH_AT_HOME_B] varchar(1) NULL,
-        [AH_CONTACT_B] text NULL,
+        [AH_CONTACT_B] varchar(MAX) NULL,
         [E_MAIL_B] varchar(60) NULL,
         [PREF_MAIL_MECH_B] varchar(1) NULL,
         [FAX_B] varchar(20) NULL,
@@ -645,7 +672,7 @@ BEGIN
         [BILLINGTITLE] varchar(40) NULL,
         [BILLINGKEY] int NULL,
         [BILLINGKEY_NEW] int NULL,
-        [BILLING_MEMO] text NULL,
+        [BILLING_MEMO] varchar(MAX) NULL,
         [ACCTYPE] smallint NULL,
         [PRICELEVEL] smallint NULL,
         [BPAY_SEQUENCE] int NULL,
@@ -676,6 +703,15 @@ BEGIN
         [ABN] varchar(15) NULL,
         [BILLING_EMAIL] varchar(60) NULL,
         [PREF_EMAIL] varchar(1) NULL,
+        [SCH_ED_A_LU] datetime NULL,
+        [NON_SCH_ED_A_LU] datetime NULL,
+        [OCCUP_STATUS_A_LU] datetime NULL,
+        [SCH_ED_B_LU] datetime NULL,
+        [NON_SCH_ED_B_LU] datetime NULL,
+        [OCCUP_STATUS_B_LU] datetime NULL,
+        [CNSE] varchar(1) NULL,
+        [CSE] varchar(1) NULL,
+        [FSE] varchar(1) NULL,
         [UMH_TRANS_ID] varchar(30) NULL,
         [UMM_TRANS_ID] varchar(30) NULL,
         [UMB_TRANS_ID] varchar(30) NULL,
@@ -819,7 +855,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
             {
             }
 
-            public override int FieldCount { get { return 107; } }
+            public override int FieldCount { get { return 116; } }
 
             public override object GetValue(int i)
             {
@@ -1021,23 +1057,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return Current.BILLING_EMAIL;
                     case 97: // PREF_EMAIL
                         return Current.PREF_EMAIL;
-                    case 98: // UMH_TRANS_ID
+                    case 98: // SCH_ED_A_LU
+                        return Current.SCH_ED_A_LU;
+                    case 99: // NON_SCH_ED_A_LU
+                        return Current.NON_SCH_ED_A_LU;
+                    case 100: // OCCUP_STATUS_A_LU
+                        return Current.OCCUP_STATUS_A_LU;
+                    case 101: // SCH_ED_B_LU
+                        return Current.SCH_ED_B_LU;
+                    case 102: // NON_SCH_ED_B_LU
+                        return Current.NON_SCH_ED_B_LU;
+                    case 103: // OCCUP_STATUS_B_LU
+                        return Current.OCCUP_STATUS_B_LU;
+                    case 104: // CNSE
+                        return Current.CNSE;
+                    case 105: // CSE
+                        return Current.CSE;
+                    case 106: // FSE
+                        return Current.FSE;
+                    case 107: // UMH_TRANS_ID
                         return Current.UMH_TRANS_ID;
-                    case 99: // UMM_TRANS_ID
+                    case 108: // UMM_TRANS_ID
                         return Current.UMM_TRANS_ID;
-                    case 100: // UMB_TRANS_ID
+                    case 109: // UMB_TRANS_ID
                         return Current.UMB_TRANS_ID;
-                    case 101: // KCD_TRANS_ID
+                    case 110: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID;
-                    case 102: // IMP_STATUS
+                    case 111: // IMP_STATUS
                         return Current.IMP_STATUS;
-                    case 103: // IMP_DATE
+                    case 112: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 104: // LW_DATE
+                    case 113: // LW_DATE
                         return Current.LW_DATE;
-                    case 105: // LW_TIME
+                    case 114: // LW_TIME
                         return Current.LW_TIME;
-                    case 106: // LW_USER
+                    case 115: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1240,23 +1294,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return Current.BILLING_EMAIL == null;
                     case 97: // PREF_EMAIL
                         return Current.PREF_EMAIL == null;
-                    case 98: // UMH_TRANS_ID
+                    case 98: // SCH_ED_A_LU
+                        return Current.SCH_ED_A_LU == null;
+                    case 99: // NON_SCH_ED_A_LU
+                        return Current.NON_SCH_ED_A_LU == null;
+                    case 100: // OCCUP_STATUS_A_LU
+                        return Current.OCCUP_STATUS_A_LU == null;
+                    case 101: // SCH_ED_B_LU
+                        return Current.SCH_ED_B_LU == null;
+                    case 102: // NON_SCH_ED_B_LU
+                        return Current.NON_SCH_ED_B_LU == null;
+                    case 103: // OCCUP_STATUS_B_LU
+                        return Current.OCCUP_STATUS_B_LU == null;
+                    case 104: // CNSE
+                        return Current.CNSE == null;
+                    case 105: // CSE
+                        return Current.CSE == null;
+                    case 106: // FSE
+                        return Current.FSE == null;
+                    case 107: // UMH_TRANS_ID
                         return Current.UMH_TRANS_ID == null;
-                    case 99: // UMM_TRANS_ID
+                    case 108: // UMM_TRANS_ID
                         return Current.UMM_TRANS_ID == null;
-                    case 100: // UMB_TRANS_ID
+                    case 109: // UMB_TRANS_ID
                         return Current.UMB_TRANS_ID == null;
-                    case 101: // KCD_TRANS_ID
+                    case 110: // KCD_TRANS_ID
                         return Current.KCD_TRANS_ID == null;
-                    case 102: // IMP_STATUS
+                    case 111: // IMP_STATUS
                         return Current.IMP_STATUS == null;
-                    case 103: // IMP_DATE
+                    case 112: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 104: // LW_DATE
+                    case 113: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 105: // LW_TIME
+                    case 114: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 106: // LW_USER
+                    case 115: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1463,23 +1535,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return "BILLING_EMAIL";
                     case 97: // PREF_EMAIL
                         return "PREF_EMAIL";
-                    case 98: // UMH_TRANS_ID
+                    case 98: // SCH_ED_A_LU
+                        return "SCH_ED_A_LU";
+                    case 99: // NON_SCH_ED_A_LU
+                        return "NON_SCH_ED_A_LU";
+                    case 100: // OCCUP_STATUS_A_LU
+                        return "OCCUP_STATUS_A_LU";
+                    case 101: // SCH_ED_B_LU
+                        return "SCH_ED_B_LU";
+                    case 102: // NON_SCH_ED_B_LU
+                        return "NON_SCH_ED_B_LU";
+                    case 103: // OCCUP_STATUS_B_LU
+                        return "OCCUP_STATUS_B_LU";
+                    case 104: // CNSE
+                        return "CNSE";
+                    case 105: // CSE
+                        return "CSE";
+                    case 106: // FSE
+                        return "FSE";
+                    case 107: // UMH_TRANS_ID
                         return "UMH_TRANS_ID";
-                    case 99: // UMM_TRANS_ID
+                    case 108: // UMM_TRANS_ID
                         return "UMM_TRANS_ID";
-                    case 100: // UMB_TRANS_ID
+                    case 109: // UMB_TRANS_ID
                         return "UMB_TRANS_ID";
-                    case 101: // KCD_TRANS_ID
+                    case 110: // KCD_TRANS_ID
                         return "KCD_TRANS_ID";
-                    case 102: // IMP_STATUS
+                    case 111: // IMP_STATUS
                         return "IMP_STATUS";
-                    case 103: // IMP_DATE
+                    case 112: // IMP_DATE
                         return "IMP_DATE";
-                    case 104: // LW_DATE
+                    case 113: // LW_DATE
                         return "LW_DATE";
-                    case 105: // LW_TIME
+                    case 114: // LW_TIME
                         return "LW_TIME";
-                    case 106: // LW_USER
+                    case 115: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1686,24 +1776,42 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return 96;
                     case "PREF_EMAIL":
                         return 97;
-                    case "UMH_TRANS_ID":
+                    case "SCH_ED_A_LU":
                         return 98;
-                    case "UMM_TRANS_ID":
+                    case "NON_SCH_ED_A_LU":
                         return 99;
-                    case "UMB_TRANS_ID":
+                    case "OCCUP_STATUS_A_LU":
                         return 100;
-                    case "KCD_TRANS_ID":
+                    case "SCH_ED_B_LU":
                         return 101;
-                    case "IMP_STATUS":
+                    case "NON_SCH_ED_B_LU":
                         return 102;
-                    case "IMP_DATE":
+                    case "OCCUP_STATUS_B_LU":
                         return 103;
-                    case "LW_DATE":
+                    case "CNSE":
                         return 104;
-                    case "LW_TIME":
+                    case "CSE":
                         return 105;
-                    case "LW_USER":
+                    case "FSE":
                         return 106;
+                    case "UMH_TRANS_ID":
+                        return 107;
+                    case "UMM_TRANS_ID":
+                        return 108;
+                    case "UMB_TRANS_ID":
+                        return 109;
+                    case "KCD_TRANS_ID":
+                        return 110;
+                    case "IMP_STATUS":
+                        return 111;
+                    case "IMP_DATE":
+                        return 112;
+                    case "LW_DATE":
+                        return 113;
+                    case "LW_TIME":
+                        return 114;
+                    case "LW_USER":
+                        return 115;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

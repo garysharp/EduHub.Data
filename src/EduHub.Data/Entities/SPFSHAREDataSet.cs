@@ -206,7 +206,7 @@ BEGIN
         [CATEGORY] varchar(3) NULL,
         [CREATED_DATE] datetime NULL,
         [EXPIRY_DATE] datetime NULL,
-        [SUMMARY] text NULL,
+        [SUMMARY] varchar(MAX) NULL,
         [LW_TIME] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_USER] varchar(128) NULL,

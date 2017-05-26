@@ -188,7 +188,7 @@ namespace EduHub.Data.Entities
 BEGIN
     CREATE TABLE [dbo].[KN](
         [NOTE_ID] varchar(4) NOT NULL,
-        [CONTENTS] text NULL,
+        [CONTENTS] varchar(MAX) NULL,
         [ACTIVE] varchar(1) NULL,
         [SCOPE] varchar(1) NULL,
         [LW_DATE] datetime NULL,

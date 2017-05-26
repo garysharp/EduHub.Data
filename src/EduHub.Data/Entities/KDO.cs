@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// VELS Domains
+    /// Curriculum Area
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
     public sealed partial class KDO : EduHubEntity
@@ -46,6 +46,12 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (6)]
         /// </summary>
         public string AUSVELS_START { get; internal set; }
+
+        /// <summary>
+        /// Inlisted Y/N
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DATA_ENTRY { get; internal set; }
 
         /// <summary>
         /// Last write date

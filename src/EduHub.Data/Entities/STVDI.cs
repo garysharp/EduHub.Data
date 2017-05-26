@@ -14,7 +14,6 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private ST Cache_SKEY_ST;
-        private KCY Cache_SCHOOL_YEAR_KCY;
         private SCI Cache_CAMPUS_SCI;
         private KDO Cache_VDOMAIN_KDO;
         private KDI Cache_VDIMENSION_KDI;
@@ -75,7 +74,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Numerical assessment for the dimension - could be NA
-        /// [Alphanumeric (4)]
+        /// [Alphanumeric (6)]
         /// </summary>
         public string SCORE { get; internal set; }
 
@@ -123,27 +122,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// KCY (Year Levels) related entity by [STVDI.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
-        /// Year level at the time of result
-        /// </summary>
-        public KCY SCHOOL_YEAR_KCY
-        {
-            get
-            {
-                if (SCHOOL_YEAR == null)
-                {
-                    return null;
-                }
-                if (Cache_SCHOOL_YEAR_KCY == null)
-                {
-                    Cache_SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
-                }
-
-                return Cache_SCHOOL_YEAR_KCY;
-            }
-        }
-
-        /// <summary>
         /// SCI (School Information) related entity by [STVDI.CAMPUS]-&gt;[SCI.SCIKEY]
         /// Campus at the time of the result
         /// </summary>
@@ -165,7 +143,7 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// KDO (VELS Domains) related entity by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// KDO (Curriculum Area) related entity by [STVDI.VDOMAIN]-&gt;[KDO.KDOKEY]
         /// Link to domain
         /// </summary>
         public KDO VDOMAIN_KDO
@@ -186,7 +164,7 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// KDI (VELS Dimensions) related entity by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// KDI (Victorian Curriculum Strands) related entity by [STVDI.VDIMENSION]-&gt;[KDI.KDIKEY]
         /// Link to dimension
         /// </summary>
         public KDI VDIMENSION_KDI

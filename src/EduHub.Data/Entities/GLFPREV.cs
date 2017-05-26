@@ -18,6 +18,7 @@ namespace EduHub.Data.Entities
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLPROG Cache_GLPROGRAM_KGLPROG;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
+        private SGFC Cache_FEE_CODE_SGFC;
 
         #endregion
 
@@ -363,6 +364,12 @@ namespace EduHub.Data.Entities
         public string CANCELLED { get; internal set; }
 
         /// <summary>
+        /// Fee code
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string FEE_CODE { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -480,6 +487,27 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_INITIATIVE_KGLINIT;
+            }
+        }
+
+        /// <summary>
+        /// SGFC (General Ledger Fees) related entity by [GLFPREV.FEE_CODE]-&gt;[SGFC.SGFCKEY]
+        /// Fee code
+        /// </summary>
+        public SGFC FEE_CODE_SGFC
+        {
+            get
+            {
+                if (FEE_CODE == null)
+                {
+                    return null;
+                }
+                if (Cache_FEE_CODE_SGFC == null)
+                {
+                    Cache_FEE_CODE_SGFC = Context.SGFC.FindBySGFCKEY(FEE_CODE);
+                }
+
+                return Cache_FEE_CODE_SGFC;
             }
         }
 

@@ -38,6 +38,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_SUBPROGRAM_PN_SUBPROGRAM;
         private IReadOnlyList<SA> Cache_SUBPROGRAM_SA_SUBPROGRAM;
         private IReadOnlyList<SDFC> Cache_SUBPROGRAM_SDFC_SUBPROGRAM;
+        private IReadOnlyList<SGFC> Cache_SUBPROGRAM_SGFC_SUBPROGRAM;
 
         #endregion
 
@@ -87,6 +88,12 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string RESERVED { get; internal set; }
+
+        /// <summary>
+        /// Allow account to be processed (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string BATCHABLE { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -472,6 +479,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SUBPROGRAM_SDFC_SUBPROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// SGFC (General Ledger Fees) related entities by [KGLSUB.SUBPROGRAM]-&gt;[SGFC.SUBPROGRAM]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<SGFC> SUBPROGRAM_SGFC_SUBPROGRAM
+        {
+            get
+            {
+                if (Cache_SUBPROGRAM_SGFC_SUBPROGRAM == null &&
+                    !Context.SGFC.TryFindBySUBPROGRAM(SUBPROGRAM, out Cache_SUBPROGRAM_SGFC_SUBPROGRAM))
+                {
+                    Cache_SUBPROGRAM_SGFC_SUBPROGRAM = new List<SGFC>().AsReadOnly();
+                }
+
+                return Cache_SUBPROGRAM_SGFC_SUBPROGRAM;
             }
         }
 

@@ -373,6 +373,9 @@ namespace EduHub.Data.Entities
                     case "CAMPUS":
                         mapper[i] = (e, v) => e.CAMPUS = v == null ? (int?)null : int.Parse(v);
                         break;
+                    case "FAIR_MARKET":
+                        mapper[i] = (e, v) => e.FAIR_MARKET = v == null ? (decimal?)null : decimal.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -1253,19 +1256,20 @@ BEGIN
         [LAST_ST_DATE] datetime NULL,
         [LAST_SVC_DATE] datetime NULL,
         [NEXT_SVC_DATE] datetime NULL,
-        [LAST_SVC_DETAILS] text NULL,
+        [LAST_SVC_DETAILS] varchar(MAX) NULL,
         [OWNER] varchar(30) NULL,
         [EXPECTED_LIFE] smallint NULL,
         [WARRANTY] smallint NULL,
         [WARRANTYEXP] datetime NULL,
         [SERIAL] varchar(20) NULL,
-        [CLEANING] text NULL,
-        [HAZARD] text NULL,
+        [CLEANING] varchar(MAX) NULL,
+        [HAZARD] varchar(MAX) NULL,
         [SITE_REFERENCE] varchar(20) NULL,
-        [EXTRA_DETAILS] text NULL,
+        [EXTRA_DETAILS] varchar(MAX) NULL,
         [COMPONENT_OF] varchar(10) NULL,
-        [ASSET_PIC] image NULL,
+        [ASSET_PIC] varbinary(MAX) NULL,
         [CAMPUS] int NULL,
+        [FAIR_MARKET] money NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1507,7 +1511,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 110; } }
+            public override int FieldCount { get { return 111; } }
 
             public override object GetValue(int i)
             {
@@ -1727,11 +1731,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return Current.ASSET_PIC;
                     case 106: // CAMPUS
                         return Current.CAMPUS;
-                    case 107: // LW_DATE
+                    case 107: // FAIR_MARKET
+                        return Current.FAIR_MARKET;
+                    case 108: // LW_DATE
                         return Current.LW_DATE;
-                    case 108: // LW_TIME
+                    case 109: // LW_TIME
                         return Current.LW_TIME;
-                    case 109: // LW_USER
+                    case 110: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1952,11 +1958,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return Current.ASSET_PIC == null;
                     case 106: // CAMPUS
                         return Current.CAMPUS == null;
-                    case 107: // LW_DATE
+                    case 107: // FAIR_MARKET
+                        return Current.FAIR_MARKET == null;
+                    case 108: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 108: // LW_TIME
+                    case 109: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 109: // LW_USER
+                    case 110: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2181,11 +2189,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return "ASSET_PIC";
                     case 106: // CAMPUS
                         return "CAMPUS";
-                    case 107: // LW_DATE
+                    case 107: // FAIR_MARKET
+                        return "FAIR_MARKET";
+                    case 108: // LW_DATE
                         return "LW_DATE";
-                    case 108: // LW_TIME
+                    case 109: // LW_TIME
                         return "LW_TIME";
-                    case 109: // LW_USER
+                    case 110: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2410,12 +2420,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return 105;
                     case "CAMPUS":
                         return 106;
-                    case "LW_DATE":
+                    case "FAIR_MARKET":
                         return 107;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 108;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 109;
+                    case "LW_USER":
+                        return 110;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

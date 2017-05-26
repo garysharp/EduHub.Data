@@ -248,7 +248,7 @@ BEGIN
         [DEST_ID] varchar(8) NULL,
         [SOURCE] varchar(5) NULL,
         [SOURCE_KEY] varchar(15) NULL,
-        [NOTES] text NULL,
+        [NOTES] varchar(MAX) NULL,
         [EXP_DATE] datetime NULL,
         [EXP_TIME] smallint NULL,
         [LW_DATE] datetime NULL,

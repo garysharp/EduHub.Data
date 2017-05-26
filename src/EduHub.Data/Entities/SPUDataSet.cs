@@ -304,7 +304,7 @@ BEGIN
     CREATE TABLE [dbo].[SPU](
         [SPUKEY] varchar(10) NOT NULL,
         [TITLE] varchar(30) NULL,
-        [DESCRIPTION] text NULL,
+        [DESCRIPTION] varchar(MAX) NULL,
         [TARGET] varchar(1) NULL,
         [LANGUAGE_INDICATOR] varchar(1) NULL,
         [MAILING_MECHANISM] varchar(1) NULL,

@@ -60,6 +60,18 @@ namespace EduHub.Data.Entities
         public string STKEY_NEW { get; internal set; }
 
         /// <summary>
+        /// Existing student key from CASES21
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string STKEY_DUP { get; internal set; }
+
+        /// <summary>
+        /// Processing action
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string STKEY_DUP_ACT { get; internal set; }
+
+        /// <summary>
         /// Y if duplicate family exists
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
@@ -403,7 +415,7 @@ namespace EduHub.Data.Entities
         public string OVERSEAS { get; internal set; }
 
         /// <summary>
-        /// Indigenous background: K=Aboriginal, T=Torres Strait Islander, B=Both Aboriginal and Torres Strait Islander, N=No indigenous background, X=Declined to Respond
+        /// Aboriginal/Torres Strait Islander: N=None, K=Aboriginal, T=Torres Strait Islander, B=Both Aboriginal and TSI, U=Unknown/Not Stated
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string KOORIE { get; internal set; }
@@ -733,6 +745,48 @@ namespace EduHub.Data.Entities
         /// Date of entry to school
         /// </summary>
         public DateTime? ENTRY { get; internal set; }
+
+        /// <summary>
+        /// Enrolled in VET (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string VET { get; internal set; }
+
+        /// <summary>
+        /// Unique Student Identifier
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string USI { get; internal set; }
+
+        /// <summary>
+        /// Teacher Recommendation (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string TEACHER_RECOMMENDATION { get; internal set; }
+
+        /// <summary>
+        /// Has transition to prep statement been sighted Y=Yes, N=No, U=Unspecified
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string TRANSITION_STATEMENT { get; internal set; }
+
+        /// <summary>
+        /// Unique ID across state (School ID+REGISTRATION)
+        /// [Uppercase Alphanumeric (15)]
+        /// </summary>
+        public string FIRST_REG_NO { get; internal set; }
+
+        /// <summary>
+        /// Student has disability? (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DISABILITY { get; internal set; }
+
+        /// <summary>
+        /// &lt;No documentation available&gt;
+        /// [Uppercase Alphanumeric (6)]
+        /// </summary>
+        public string DISABILITY_ID { get; internal set; }
 
         /// <summary>
         /// Unique Contact A DF Transfer ID

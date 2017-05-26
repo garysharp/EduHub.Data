@@ -294,7 +294,7 @@ BEGIN
         [ADMIN_TIME] smallint NULL,
         [DOSE] varchar(30) NULL,
         [ADMIN_BY_OTHER] varchar(30) NULL,
-        [ADMIN_NOTES] text NULL,
+        [ADMIN_NOTES] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

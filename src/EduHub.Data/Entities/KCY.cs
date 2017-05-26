@@ -34,12 +34,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<ST_TFR> Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW;
         private IReadOnlyList<STMA> Cache_KCYKEY_STMA_SCHOOL_YEAR;
         private IReadOnlyList<STRE> Cache_KCYKEY_STRE_ST_SCHOOL_YEAR;
-        private IReadOnlyList<STVDI> Cache_KCYKEY_STVDI_SCHOOL_YEAR;
-        private IReadOnlyList<STVDI_TR> Cache_KCYKEY_STVDI_TR_SCHOOL_YEAR;
-        private IReadOnlyList<STVDO> Cache_KCYKEY_STVDO_SCHOOL_YEAR;
-        private IReadOnlyList<STVDO_TR> Cache_KCYKEY_STVDO_TR_SCHOOL_YEAR;
         private IReadOnlyList<SU> Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR;
-        private IReadOnlyList<SVAG> Cache_KCYKEY_SVAG_SCHOOL_YEAR;
         private IReadOnlyList<SXAB> Cache_KCYKEY_SXAB_ST_YEAR_LEVEL;
         private IReadOnlyList<SXABCONV> Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL;
         private IReadOnlyList<SXAS> Cache_KCYKEY_SXAS_ST_YEAR_LEVEL;
@@ -465,78 +460,6 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// STVDI (VELS Dimension Results) related entities by [KCY.KCYKEY]-&gt;[STVDI.SCHOOL_YEAR]
-        /// Year level code
-        /// </summary>
-        public IReadOnlyList<STVDI> KCYKEY_STVDI_SCHOOL_YEAR
-        {
-            get
-            {
-                if (Cache_KCYKEY_STVDI_SCHOOL_YEAR == null &&
-                    !Context.STVDI.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDI_SCHOOL_YEAR))
-                {
-                    Cache_KCYKEY_STVDI_SCHOOL_YEAR = new List<STVDI>().AsReadOnly();
-                }
-
-                return Cache_KCYKEY_STVDI_SCHOOL_YEAR;
-            }
-        }
-
-        /// <summary>
-        /// STVDI_TR (STVDI Transfer) related entities by [KCY.KCYKEY]-&gt;[STVDI_TR.SCHOOL_YEAR]
-        /// Year level code
-        /// </summary>
-        public IReadOnlyList<STVDI_TR> KCYKEY_STVDI_TR_SCHOOL_YEAR
-        {
-            get
-            {
-                if (Cache_KCYKEY_STVDI_TR_SCHOOL_YEAR == null &&
-                    !Context.STVDI_TR.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDI_TR_SCHOOL_YEAR))
-                {
-                    Cache_KCYKEY_STVDI_TR_SCHOOL_YEAR = new List<STVDI_TR>().AsReadOnly();
-                }
-
-                return Cache_KCYKEY_STVDI_TR_SCHOOL_YEAR;
-            }
-        }
-
-        /// <summary>
-        /// STVDO (VELS Domain Results) related entities by [KCY.KCYKEY]-&gt;[STVDO.SCHOOL_YEAR]
-        /// Year level code
-        /// </summary>
-        public IReadOnlyList<STVDO> KCYKEY_STVDO_SCHOOL_YEAR
-        {
-            get
-            {
-                if (Cache_KCYKEY_STVDO_SCHOOL_YEAR == null &&
-                    !Context.STVDO.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDO_SCHOOL_YEAR))
-                {
-                    Cache_KCYKEY_STVDO_SCHOOL_YEAR = new List<STVDO>().AsReadOnly();
-                }
-
-                return Cache_KCYKEY_STVDO_SCHOOL_YEAR;
-            }
-        }
-
-        /// <summary>
-        /// STVDO_TR (STVDO Transfer) related entities by [KCY.KCYKEY]-&gt;[STVDO_TR.SCHOOL_YEAR]
-        /// Year level code
-        /// </summary>
-        public IReadOnlyList<STVDO_TR> KCYKEY_STVDO_TR_SCHOOL_YEAR
-        {
-            get
-            {
-                if (Cache_KCYKEY_STVDO_TR_SCHOOL_YEAR == null &&
-                    !Context.STVDO_TR.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_STVDO_TR_SCHOOL_YEAR))
-                {
-                    Cache_KCYKEY_STVDO_TR_SCHOOL_YEAR = new List<STVDO_TR>().AsReadOnly();
-                }
-
-                return Cache_KCYKEY_STVDO_TR_SCHOOL_YEAR;
-            }
-        }
-
-        /// <summary>
         /// SU (Subjects) related entities by [KCY.KCYKEY]-&gt;[SU.SUBJECT_ACADEMIC_YEAR]
         /// Year level code
         /// </summary>
@@ -551,24 +474,6 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR;
-            }
-        }
-
-        /// <summary>
-        /// SVAG (VELS Aggregated Dimensions) related entities by [KCY.KCYKEY]-&gt;[SVAG.SCHOOL_YEAR]
-        /// Year level code
-        /// </summary>
-        public IReadOnlyList<SVAG> KCYKEY_SVAG_SCHOOL_YEAR
-        {
-            get
-            {
-                if (Cache_KCYKEY_SVAG_SCHOOL_YEAR == null &&
-                    !Context.SVAG.TryFindBySCHOOL_YEAR(KCYKEY, out Cache_KCYKEY_SVAG_SCHOOL_YEAR))
-                {
-                    Cache_KCYKEY_SVAG_SCHOOL_YEAR = new List<SVAG>().AsReadOnly();
-                }
-
-                return Cache_KCYKEY_SVAG_SCHOOL_YEAR;
             }
         }
 

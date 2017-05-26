@@ -23,12 +23,14 @@ namespace EduHub.Data
         private readonly AKTDataSet _AKT;
         private readonly ARDataSet _AR;
         private readonly ARFDataSet _ARF;
+        private readonly BANKSIGDataSet _BANKSIG;
         private readonly BKHDataSet _BKH;
         private readonly BKHRDataSet _BKHR;
         private readonly BPAY_DATDataSet _BPAY_DAT;
         private readonly CRDataSet _CR;
         private readonly CRFDataSet _CRF;
         private readonly CRFTCDataSet _CRFTC;
+        private readonly CRTTDataSet _CRTT;
         private readonly DFDataSet _DF;
         private readonly DF_TFRDataSet _DF_TFR;
         private readonly DFBDataSet _DFB;
@@ -111,11 +113,14 @@ namespace EduHub.Data
         private readonly KROLEDataSet _KROLE;
         private readonly KSADataSet _KSA;
         private readonly KSCDataSet _KSC;
+        private readonly KSCOREDataSet _KSCORE;
         private readonly KSFDataSet _KSF;
         private readonly KSQDataSet _KSQ;
+        private readonly KSTREETDataSet _KSTREET;
         private readonly KTIEDataSet _KTIE;
         private readonly KTMDataSet _KTM;
         private readonly KTRCMPDataSet _KTRCMP;
+        private readonly KTTDataSet _KTT;
         private readonly KUPCDataSet _KUPC;
         private readonly OSCSDataSet _OSCS;
         private readonly PCDataSet _PC;
@@ -155,6 +160,10 @@ namespace EduHub.Data
         private readonly PX_NEWDataSet _PX_NEW;
         private readonly QBDataSet _QB;
         private readonly QSDataSet _QS;
+        private readonly QSACDataSet _QSAC;
+        private readonly QSADDataSet _QSAD;
+        private readonly QSAGDataSet _QSAG;
+        private readonly QSATDataSet _QSAT;
         private readonly SADataSet _SA;
         private readonly SABDataSet _SAB;
         private readonly SABTDataSet _SABT;
@@ -209,6 +218,7 @@ namespace EduHub.Data
         private readonly SFQADataSet _SFQA;
         private readonly SGDataSet _SG;
         private readonly SGAMDataSet _SGAM;
+        private readonly SGFCDataSet _SGFC;
         private readonly SGHGDataSet _SGHG;
         private readonly SGMDataSet _SGM;
         private readonly SGMADataSet _SGMA;
@@ -228,7 +238,10 @@ namespace EduHub.Data
         private readonly SMC_TFRDataSet _SMC_TFR;
         private readonly SMCDDataSet _SMCD;
         private readonly SMGROUPDataSet _SMGROUP;
+        private readonly SP_RECIPDataSet _SP_RECIP;
+        private readonly SP_REPLYDataSet _SP_REPLY;
         private readonly SPEMAILDataSet _SPEMAIL;
+        private readonly SPEMRGDataSet _SPEMRG;
         private readonly SPEPRINTDataSet _SPEPRINT;
         private readonly SPFSHAREDataSet _SPFSHARE;
         private readonly SPFSTOREDataSet _SPFSTORE;
@@ -345,12 +358,14 @@ namespace EduHub.Data
             _AKT = new AKTDataSet(this);
             _AR = new ARDataSet(this);
             _ARF = new ARFDataSet(this);
+            _BANKSIG = new BANKSIGDataSet(this);
             _BKH = new BKHDataSet(this);
             _BKHR = new BKHRDataSet(this);
             _BPAY_DAT = new BPAY_DATDataSet(this);
             _CR = new CRDataSet(this);
             _CRF = new CRFDataSet(this);
             _CRFTC = new CRFTCDataSet(this);
+            _CRTT = new CRTTDataSet(this);
             _DF = new DFDataSet(this);
             _DF_TFR = new DF_TFRDataSet(this);
             _DFB = new DFBDataSet(this);
@@ -433,11 +448,14 @@ namespace EduHub.Data
             _KROLE = new KROLEDataSet(this);
             _KSA = new KSADataSet(this);
             _KSC = new KSCDataSet(this);
+            _KSCORE = new KSCOREDataSet(this);
             _KSF = new KSFDataSet(this);
             _KSQ = new KSQDataSet(this);
+            _KSTREET = new KSTREETDataSet(this);
             _KTIE = new KTIEDataSet(this);
             _KTM = new KTMDataSet(this);
             _KTRCMP = new KTRCMPDataSet(this);
+            _KTT = new KTTDataSet(this);
             _KUPC = new KUPCDataSet(this);
             _OSCS = new OSCSDataSet(this);
             _PC = new PCDataSet(this);
@@ -477,6 +495,10 @@ namespace EduHub.Data
             _PX_NEW = new PX_NEWDataSet(this);
             _QB = new QBDataSet(this);
             _QS = new QSDataSet(this);
+            _QSAC = new QSACDataSet(this);
+            _QSAD = new QSADDataSet(this);
+            _QSAG = new QSAGDataSet(this);
+            _QSAT = new QSATDataSet(this);
             _SA = new SADataSet(this);
             _SAB = new SABDataSet(this);
             _SABT = new SABTDataSet(this);
@@ -531,6 +553,7 @@ namespace EduHub.Data
             _SFQA = new SFQADataSet(this);
             _SG = new SGDataSet(this);
             _SGAM = new SGAMDataSet(this);
+            _SGFC = new SGFCDataSet(this);
             _SGHG = new SGHGDataSet(this);
             _SGM = new SGMDataSet(this);
             _SGMA = new SGMADataSet(this);
@@ -550,7 +573,10 @@ namespace EduHub.Data
             _SMC_TFR = new SMC_TFRDataSet(this);
             _SMCD = new SMCDDataSet(this);
             _SMGROUP = new SMGROUPDataSet(this);
+            _SP_RECIP = new SP_RECIPDataSet(this);
+            _SP_REPLY = new SP_REPLYDataSet(this);
             _SPEMAIL = new SPEMAILDataSet(this);
+            _SPEMRG = new SPEMRGDataSet(this);
             _SPEPRINT = new SPEPRINTDataSet(this);
             _SPFSHARE = new SPFSHAREDataSet(this);
             _SPFSTORE = new SPFSTOREDataSet(this);
@@ -643,12 +669,14 @@ namespace EduHub.Data
             yield return AKT;
             yield return AR;
             yield return ARF;
+            yield return BANKSIG;
             yield return BKH;
             yield return BKHR;
             yield return BPAY_DAT;
             yield return CR;
             yield return CRF;
             yield return CRFTC;
+            yield return CRTT;
             yield return DF;
             yield return DF_TFR;
             yield return DFB;
@@ -731,11 +759,14 @@ namespace EduHub.Data
             yield return KROLE;
             yield return KSA;
             yield return KSC;
+            yield return KSCORE;
             yield return KSF;
             yield return KSQ;
+            yield return KSTREET;
             yield return KTIE;
             yield return KTM;
             yield return KTRCMP;
+            yield return KTT;
             yield return KUPC;
             yield return OSCS;
             yield return PC;
@@ -775,6 +806,10 @@ namespace EduHub.Data
             yield return PX_NEW;
             yield return QB;
             yield return QS;
+            yield return QSAC;
+            yield return QSAD;
+            yield return QSAG;
+            yield return QSAT;
             yield return SA;
             yield return SAB;
             yield return SABT;
@@ -829,6 +864,7 @@ namespace EduHub.Data
             yield return SFQA;
             yield return SG;
             yield return SGAM;
+            yield return SGFC;
             yield return SGHG;
             yield return SGM;
             yield return SGMA;
@@ -848,7 +884,10 @@ namespace EduHub.Data
             yield return SMC_TFR;
             yield return SMCD;
             yield return SMGROUP;
+            yield return SP_RECIP;
+            yield return SP_REPLY;
             yield return SPEMAIL;
+            yield return SPEMRG;
             yield return SPEPRINT;
             yield return SPFSHARE;
             yield return SPFSTORE;
@@ -979,6 +1018,11 @@ namespace EduHub.Data
         public ARFDataSet ARF { get { return _ARF; } }
 
         /// <summary>
+        /// Bank Signatories
+        /// </summary>
+        public BANKSIGDataSet BANKSIG { get { return _BANKSIG; } }
+
+        /// <summary>
         /// Books for Hire
         /// </summary>
         public BKHDataSet BKH { get { return _BKH; } }
@@ -1007,6 +1051,11 @@ namespace EduHub.Data
         /// Creditor Fuel Tax Credits
         /// </summary>
         public CRFTCDataSet CRFTC { get { return _CRFTC; } }
+
+        /// <summary>
+        /// Creditor Trade Types
+        /// </summary>
+        public CRTTDataSet CRTT { get { return _CRTT; } }
 
         /// <summary>
         /// Families
@@ -1239,12 +1288,12 @@ namespace EduHub.Data
         public KDELETEDataSet KDELETE { get { return _KDELETE; } }
 
         /// <summary>
-        /// VELS Dimensions
+        /// Victorian Curriculum Strands
         /// </summary>
         public KDIDataSet KDI { get { return _KDI; } }
 
         /// <summary>
-        /// VELS Domains
+        /// Curriculum Area
         /// </summary>
         public KDODataSet KDO { get { return _KDO; } }
 
@@ -1419,6 +1468,11 @@ namespace EduHub.Data
         public KSCDataSet KSC { get { return _KSC; } }
 
         /// <summary>
+        /// Scores
+        /// </summary>
+        public KSCOREDataSet KSCORE { get { return _KSCORE; } }
+
+        /// <summary>
         /// Faculties
         /// </summary>
         public KSFDataSet KSF { get { return _KSF; } }
@@ -1427,6 +1481,11 @@ namespace EduHub.Data
         /// Available Qualifications
         /// </summary>
         public KSQDataSet KSQ { get { return _KSQ; } }
+
+        /// <summary>
+        /// Street Types
+        /// </summary>
+        public KSTREETDataSet KSTREET { get { return _KSTREET; } }
 
         /// <summary>
         /// Timetable Import Errors
@@ -1442,6 +1501,11 @@ namespace EduHub.Data
         /// Student Transport Company
         /// </summary>
         public KTRCMPDataSet KTRCMP { get { return _KTRCMP; } }
+
+        /// <summary>
+        /// Trade Type
+        /// </summary>
+        public KTTDataSet KTT { get { return _KTT; } }
 
         /// <summary>
         /// User Program Codes
@@ -1637,6 +1701,26 @@ namespace EduHub.Data
         /// Stored SQL
         /// </summary>
         public QSDataSet QS { get { return _QS; } }
+
+        /// <summary>
+        /// Audit Control
+        /// </summary>
+        public QSACDataSet QSAC { get { return _QSAC; } }
+
+        /// <summary>
+        /// Audit Data Changes
+        /// </summary>
+        public QSADDataSet QSAD { get { return _QSAD; } }
+
+        /// <summary>
+        /// Audit Group Tables
+        /// </summary>
+        public QSAGDataSet QSAG { get { return _QSAG; } }
+
+        /// <summary>
+        /// Auditable Tables
+        /// </summary>
+        public QSATDataSet QSAT { get { return _QSAT; } }
 
         /// <summary>
         /// Fees
@@ -1909,6 +1993,11 @@ namespace EduHub.Data
         public SGAMDataSet SGAM { get { return _SGAM; } }
 
         /// <summary>
+        /// General Ledger Fees
+        /// </summary>
+        public SGFCDataSet SGFC { get { return _SGFC; } }
+
+        /// <summary>
         /// Home Group Eligibility Criteria
         /// </summary>
         public SGHGDataSet SGHG { get { return _SGHG; } }
@@ -2004,9 +2093,24 @@ namespace EduHub.Data
         public SMGROUPDataSet SMGROUP { get { return _SMGROUP; } }
 
         /// <summary>
+        /// SMS Reply Recipients
+        /// </summary>
+        public SP_RECIPDataSet SP_RECIP { get { return _SP_RECIP; } }
+
+        /// <summary>
+        /// SMS Reply Recipient Groups
+        /// </summary>
+        public SP_REPLYDataSet SP_REPLY { get { return _SP_REPLY; } }
+
+        /// <summary>
         /// Report email templates
         /// </summary>
         public SPEMAILDataSet SPEMAIL { get { return _SPEMAIL; } }
+
+        /// <summary>
+        /// SMS Emergency Templates
+        /// </summary>
+        public SPEMRGDataSet SPEMRG { get { return _SPEMRG; } }
 
         /// <summary>
         /// Report file audit

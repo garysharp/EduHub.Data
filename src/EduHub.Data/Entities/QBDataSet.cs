@@ -221,7 +221,7 @@ BEGIN
         [QUANTITY] int NULL,
         [BATCHTYPE] varchar(1) NULL,
         [TRANSTYPE] varchar(1) NULL,
-        [BATCHDATA] image NULL,
+        [BATCHDATA] varbinary(MAX) NULL,
         [BATCHPRINTED] varchar(1) NULL,
         [BANKPRINTED] varchar(1) NULL,
         [BATCHTRACE] varchar(1) NULL,

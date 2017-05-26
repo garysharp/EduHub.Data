@@ -862,7 +862,7 @@ BEGIN
         [TTRNETT] money NULL,
         [TTRAMT] money NULL,
         [TGST_AMOUNT] money NULL,
-        [AMEMO] text NULL,
+        [AMEMO] varchar(MAX) NULL,
         [AMEMO_COPY] varchar(1) NULL,
         [NEXT_SVC_DATE] datetime NULL,
         [MASTERTID] int NULL,

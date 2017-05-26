@@ -186,7 +186,7 @@ BEGIN
     CREATE TABLE [dbo].[QS](
         [QSKEY] varchar(10) NOT NULL,
         [TITLE] varchar(30) NULL,
-        [SQLTEXT] text NULL,
+        [SQLTEXT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

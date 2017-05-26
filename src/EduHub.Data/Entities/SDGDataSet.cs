@@ -190,7 +190,7 @@ BEGIN
         [SDGKEY] varchar(12) NOT NULL,
         [DESCRIPTION] varchar(30) NULL,
         [MEMBER_TYPE] varchar(1) NULL,
-        [SDG_MEMO] text NULL,
+        [SDG_MEMO] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

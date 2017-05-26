@@ -18,7 +18,7 @@
 #>
 <#
     // Load Schema
-    var schema = LoadSchema(this.Host.ResolvePath(@"..\CASES21v57 Schema.xml"));
+    var schema = LoadSchema(this.Host.ResolvePath(@"..\CASES21v58 Schema.xml"));
 #>
 <#
     // Iterate Entities
@@ -85,7 +85,7 @@ namespace EduHub.Data.Entities
         {
 #>
                     case "<#= field.Name #>":
-                        mapper[i] = (e, v) => e.<#= field.Name #> = <#= field.MapperConverter #>
+                        mapper[i] = (e, v) => e.<#= field.FrameworkName #> = <#= field.MapperConverter #>
                         break;
 <#
         }
@@ -651,8 +651,8 @@ END");
         foreach (EduHubField field in entity.Fields)
         {
 #>
-                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
-                        return Current.<#= field.Name #>;
+                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.FrameworkName #>
+                        return Current.<#= field.FrameworkName #>;
 <#
         }
 #>
@@ -669,8 +669,8 @@ END");
         foreach (EduHubField field in entity.Fields.Where(f => f.IsNullable))
         {
 #>
-                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.Name #>
-                        return Current.<#= field.Name #> == null;
+                    case <#= entity.Fields.IndexOf(field) #>: // <#= field.FrameworkName #>
+                        return Current.<#= field.FrameworkName #> == null;
 <#
         }
 #>
@@ -814,7 +814,7 @@ namespace EduHub.Data.Entities
         /// <summary>
 <#= field.CommentSummaryWithType #>
         /// </summary>
-        public <#=field.FrameworkType#> <#=field.Name#> { get; internal set; }
+        public <#=field.FrameworkType#> <#=field.FrameworkName#> { get; internal set; }
 <#
         }
 #>
@@ -1052,6 +1052,21 @@ namespace EduHub.Data.Entities
             }
         }
 
+		public string FrameworkName
+		{
+			get
+			{
+				if (Name == Entity.Name)
+				{
+					return "_" + Name;
+				}
+				else
+				{
+					return Name;
+				}
+			}
+		}
+
         public EduHubField ForeignParent
         {
             get
@@ -1123,7 +1138,7 @@ namespace EduHub.Data.Entities
                 }
                 if (Type == "string")
                 {
-                    if (TypeMaxLength == 0)
+                    if (TypeMaxLength <= 0)
                     {
                         builder.Append("        /// [").Append(TypeDescription).Append("]");
                     }
@@ -1167,6 +1182,10 @@ namespace EduHub.Data.Entities
                 {
                     builder.Append("(").Append(TypeMaxLength).Append(")");
                 }
+				else if (TypeMaxLength < 0)
+				{
+					builder.Append("(MAX)");
+				}
                 if (IsIdentity)
                 {
                     builder.Append(" IDENTITY");
@@ -1311,11 +1330,11 @@ namespace EduHub.Data.Entities
             {
                 if (Fields.Count == 1)
                 {
-                    return string.Format("i => i.{0}", Fields[0].Name);
+                    return string.Format("i => i.{0}", Fields[0].FrameworkName);
                 }
                 else
                 {
-                    return string.Format("i => Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("i.{0}", f.Name))));
+                    return string.Format("i => Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("i.{0}", f.FrameworkName))));
                 }
             }
         }
@@ -1324,11 +1343,11 @@ namespace EduHub.Data.Entities
         {
             if (Fields.Count == 1)
             {
-                return string.Format("{0}.{1}", VariableName, Fields[0].Name);
+                return string.Format("{0}.{1}", VariableName, Fields[0].FrameworkName);
             }
             else
             {
-                return string.Format("Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("{0}.{1}", VariableName, f.Name))));
+                return string.Format("Tuple.Create({0})", string.Join(", ", Fields.Select(f => string.Format("{0}.{1}", VariableName, f.FrameworkName))));
             }
         }
 

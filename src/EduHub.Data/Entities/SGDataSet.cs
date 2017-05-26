@@ -213,6 +213,9 @@ namespace EduHub.Data.Entities
                     case "RESP_PARENT_GENDER":
                         mapper[i] = (e, v) => e.RESP_PARENT_GENDER = v;
                         break;
+                    case "VET":
+                        mapper[i] = (e, v) => e.VET = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -702,7 +705,7 @@ BEGIN
         [SOURCE_SG] varchar(12) NULL,
         [STRICT_CRITERIA] varchar(1) NULL,
         [MAX_NUMBER_STUD] smallint NULL,
-        [STRUCTURE] text NULL,
+        [STRUCTURE] varchar(MAX) NULL,
         [START_DATE] datetime NULL,
         [END_DATE] datetime NULL,
         [CESSATION_DATE] datetime NULL,
@@ -734,8 +737,8 @@ BEGIN
         [DESTINATION] varchar(40) NULL,
         [VENUE_ADDRESS] varchar(40) NULL,
         [EXC_GLCODE] varchar(10) NULL,
-        [FEEDBACK] text NULL,
-        [SPECIAL_NEEDS] text NULL,
+        [FEEDBACK] varchar(MAX) NULL,
+        [SPECIAL_NEEDS] varchar(MAX) NULL,
         [EXC_PURPOSE] varchar(80) NULL,
         [EXC_SERVICE_PROVIDER] varchar(80) NULL,
         [TRANSPORT_METHOD] varchar(1) NULL,
@@ -744,13 +747,14 @@ BEGIN
         [PER_ST_TRANS_COST] money NULL,
         [FIXED_VENUE_COST] money NULL,
         [PER_ST_VENUE_COST] money NULL,
-        [OTHER_COSTS] text NULL,
+        [OTHER_COSTS] varchar(MAX) NULL,
         [EXC_AMOUNT] money NULL,
         [STAFF_MEMBERS] varchar(1) NULL,
         [PARENT_MEMBERS] varchar(1) NULL,
         [RESP_PERSON_TYPE] varchar(2) NULL,
         [ADULT_RESPONSIBLE] varchar(10) NULL,
         [RESP_PARENT_GENDER] varchar(1) NULL,
+        [VET] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -920,7 +924,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
             {
             }
 
-            public override int FieldCount { get { return 59; } }
+            public override int FieldCount { get { return 60; } }
 
             public override object GetValue(int i)
             {
@@ -1038,11 +1042,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return Current.ADULT_RESPONSIBLE;
                     case 55: // RESP_PARENT_GENDER
                         return Current.RESP_PARENT_GENDER;
-                    case 56: // LW_DATE
+                    case 56: // VET
+                        return Current.VET;
+                    case 57: // LW_DATE
                         return Current.LW_DATE;
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return Current.LW_TIME;
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1163,11 +1169,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return Current.ADULT_RESPONSIBLE == null;
                     case 55: // RESP_PARENT_GENDER
                         return Current.RESP_PARENT_GENDER == null;
-                    case 56: // LW_DATE
+                    case 56: // VET
+                        return Current.VET == null;
+                    case 57: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1290,11 +1298,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return "ADULT_RESPONSIBLE";
                     case 55: // RESP_PARENT_GENDER
                         return "RESP_PARENT_GENDER";
-                    case 56: // LW_DATE
+                    case 56: // VET
+                        return "VET";
+                    case 57: // LW_DATE
                         return "LW_DATE";
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return "LW_TIME";
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1417,12 +1427,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return 54;
                     case "RESP_PARENT_GENDER":
                         return 55;
-                    case "LW_DATE":
+                    case "VET":
                         return 56;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 57;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 58;
+                    case "LW_USER":
+                        return 59;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -456,7 +456,7 @@ BEGIN
         [TITLE] varchar(4) NULL,
         [MOBILE_PHONE] varchar(20) NULL,
         [SIGNATORY] varchar(1) NULL,
-        [SAM_COMMENT] text NULL,
+        [SAM_COMMENT] varchar(MAX) NULL,
         [START_DATE] datetime NULL,
         [END_DATE] datetime NULL,
         [LW_DATE] datetime NULL,

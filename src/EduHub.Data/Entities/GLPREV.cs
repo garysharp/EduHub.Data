@@ -527,6 +527,12 @@ namespace EduHub.Data.Entities
         public string FBT { get; internal set; }
 
         /// <summary>
+        /// Allow account to be processed (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string BATCHABLE { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

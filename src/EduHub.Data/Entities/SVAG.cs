@@ -14,7 +14,6 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private KCOHORT Cache_COHORT_KCOHORT;
-        private KCY Cache_SCHOOL_YEAR_KCY;
         private KDI Cache_VDIMENSION_KDI;
 
         #endregion
@@ -245,6 +244,11 @@ namespace EduHub.Data.Entities
         public short? NO_NT { get; internal set; }
 
         /// <summary>
+        /// Number of students that have a score of DNP (Did not participate)
+        /// </summary>
+        public short? NO_DNP { get; internal set; }
+
+        /// <summary>
         /// Number of students in cohort
         /// </summary>
         public short? TOTAL_NUMBER { get; internal set; }
@@ -296,28 +300,7 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// KCY (Year Levels) related entity by [SVAG.SCHOOL_YEAR]-&gt;[KCY.KCYKEY]
-        /// Year level of cohort
-        /// </summary>
-        public KCY SCHOOL_YEAR_KCY
-        {
-            get
-            {
-                if (SCHOOL_YEAR == null)
-                {
-                    return null;
-                }
-                if (Cache_SCHOOL_YEAR_KCY == null)
-                {
-                    Cache_SCHOOL_YEAR_KCY = Context.KCY.FindByKCYKEY(SCHOOL_YEAR);
-                }
-
-                return Cache_SCHOOL_YEAR_KCY;
-            }
-        }
-
-        /// <summary>
-        /// KDI (VELS Dimensions) related entity by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
+        /// KDI (Victorian Curriculum Strands) related entity by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
         /// Link to dimension
         /// </summary>
         public KDI VDIMENSION_KDI

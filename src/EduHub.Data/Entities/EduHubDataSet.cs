@@ -366,26 +366,17 @@ namespace EduHub.Data.Entities
             // Ensure the SQL Connection is open
             if (Connection.State != ConnectionState.Open)
             {
-                if (ProgressNotification != null)
-                {
-                    ProgressNotification(0, "Opening database connection");
-                }
+                ProgressNotification?.Invoke(0, "Opening database connection");
                 await Connection.OpenAsync();
             }
 
             // Ensure Table Exists
-            if (ProgressNotification != null)
-            {
-                ProgressNotification(0, "Validating database table");
-            }
+            ProgressNotification?.Invoke(0, "Validating database table");
             using (var commandQuery = new SqlCommand($"SELECT COUNT(1) FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{Name}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1", Connection))
             {
                 if ((int)await commandQuery.ExecuteScalarAsync() == 0)
                 {
-                    if (ProgressNotification != null)
-                    {
-                        ProgressNotification(0, $"Creating {Name} database table");
-                    }
+                    ProgressNotification?.Invoke(0, $"Creating {Name} database table");
                     // Table doesn't exist. Create
                     using (var commandCreate = GetSqlCreateTableCommand(Connection))
                     {
@@ -396,10 +387,7 @@ namespace EduHub.Data.Entities
                         LastDeltaWrite = null;
                         EntityLastModified = null;
                     }
-                    if (ProgressNotification != null)
-                    {
-                        ProgressNotification(0, $"Database table {Name} created");
-                    }
+                    ProgressNotification?.Invoke(0, $"Database table {Name} created");
                 }
                 else
                 {
@@ -408,16 +396,10 @@ namespace EduHub.Data.Entities
                     {
                         if (commandCheck != null)
                         {
-                            if (ProgressNotification != null)
-                            {
-                                ProgressNotification(0, $"Validating {Name} database table");
-                            }
+                            ProgressNotification?.Invoke(0, $"Validating {Name} database table");
                             if ((int)await commandCheck.ExecuteScalarAsync() > 0)
                             {
-                                if (ProgressNotification != null)
-                                {
-                                    ProgressNotification(0, $"Rebuilding database table {Name}");
-                                }
+                                ProgressNotification?.Invoke(0, $"Rebuilding database table {Name}");
                                 // Drop Table
                                 using (var commandDrop = new SqlCommand($"DROP TABLE [{Name}];", Connection))
                                 {
@@ -433,10 +415,7 @@ namespace EduHub.Data.Entities
                                     LastDeltaWrite = null;
                                     EntityLastModified = null;
                                 }
-                                if (ProgressNotification != null)
-                                {
-                                    ProgressNotification(0, $"Database table {Name} rebuilt");
-                                }
+                                ProgressNotification?.Invoke(0, $"Database table {Name} rebuilt");
                             }
                         }
                     }
@@ -449,10 +428,7 @@ namespace EduHub.Data.Entities
             // Write not required based on specified parameters
             if (mode == EduHubSqlServerWriteMode.Skipped)
             {
-                if (ProgressNotification != null)
-                {
-                    ProgressNotification(0, $"Writing the data set is not required");
-                }
+                ProgressNotification?.Invoke(0, $"Writing the data set is not required");
                 return new EduHubSqlServerWriteResult(
                     DataSet: this,
                     Mode: mode,
@@ -460,10 +436,7 @@ namespace EduHub.Data.Entities
                     LastModified: LastModified);
             }
 
-            if (ProgressNotification != null)
-            {
-                ProgressNotification(0, $"Writing the data set in {mode} mode");
-            }
+            ProgressNotification?.Invoke(0, $"Writing the data set in {mode} mode");
 
             switch (mode)
             {
@@ -500,10 +473,7 @@ namespace EduHub.Data.Entities
                 {
                     if (sqlCommandDisableIndexes != null)
                     {
-                        if (ProgressNotification != null)
-                        {
-                            ProgressNotification(5, "Disabling database table indexes");
-                        }
+                        ProgressNotification?.Invoke(5, "Disabling database table indexes");
 
                         sqlCommandDisableIndexes.Transaction = sqlTransaction;
                         await sqlCommandDisableIndexes.ExecuteNonQueryAsync();
@@ -513,10 +483,7 @@ namespace EduHub.Data.Entities
                 // Drop records
                 using (var sqlCommandTruncate = new SqlCommand($"TRUNCATE TABLE {Name}", Connection, sqlTransaction))
                 {
-                    if (ProgressNotification != null)
-                    {
-                        ProgressNotification(10, "Truncating the database table");
-                    }
+                    ProgressNotification?.Invoke(10, "Truncating the database table");
                     entitiesDeleted = await sqlCommandTruncate.ExecuteNonQueryAsync();
                 }
 
@@ -524,10 +491,7 @@ namespace EduHub.Data.Entities
                 {
                     if (!dataReader.HasEntities)
                     {
-                        if (ProgressNotification != null)
-                        {
-                            ProgressNotification(95, $"Skipped writing to the database table, the data set is empty");
-                        }
+                        ProgressNotification?.Invoke(95, $"Skipped writing to the database table, the data set is empty");
                         return new EduHubSqlServerWriteResult(
                             DataSet: this,
                             Mode: EduHubSqlServerWriteMode.Full,
@@ -564,10 +528,7 @@ namespace EduHub.Data.Entities
 
                             await sqlBulkCopy.WriteToServerAsync(dataReader);
 
-                            if (ProgressNotification != null)
-                            {
-                                ProgressNotification(95, $"Wrote {dataReader.EntitiesRead} records to the database table");
-                            }
+                            ProgressNotification?.Invoke(95, $"Wrote {dataReader.EntitiesRead} records to the database table");
 
                             entitiesAdded = dataReader.EntitiesRead;
                             entityLastModifiedMax = dataReader.EntityLastModifiedMax;
@@ -580,10 +541,7 @@ namespace EduHub.Data.Entities
                 {
                     if (sqlCommandEnableIndexes != null)
                     {
-                        if (ProgressNotification != null)
-                        {
-                            ProgressNotification(95, $"Rebuilding and enabling database table indexes");
-                        }
+                        ProgressNotification?.Invoke(95, $"Rebuilding and enabling database table indexes");
                         sqlCommandEnableIndexes.Transaction = sqlTransaction;
                         await sqlCommandEnableIndexes.ExecuteNonQueryAsync();
                     }
@@ -592,10 +550,7 @@ namespace EduHub.Data.Entities
                 sqlTransaction.Commit();
             }
 
-            if (ProgressNotification != null)
-            {
-                ProgressNotification(100, $"Successfully wrote the data set to the database table");
-            }
+            ProgressNotification?.Invoke(100, $"Successfully wrote the data set to the database table");
 
             return new EduHubSqlServerWriteResult(
                 DataSet: this,
@@ -619,10 +574,7 @@ namespace EduHub.Data.Entities
             // Create transaction
             using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
-                if (ProgressNotification != null)
-                {
-                    ProgressNotification(30, "Removing updated records from the database table");
-                }
+                ProgressNotification?.Invoke(30, "Removing updated records from the database table");
                 // Delete Entities (based on Unique fields)
                 //  Batches of 100
                 var batchCount = Math.Ceiling(Entities.Count / 100d);
@@ -635,10 +587,7 @@ namespace EduHub.Data.Entities
 
                         entitiesUpdated += await deleteCommand.ExecuteNonQueryAsync();
                     }
-                    if (ProgressNotification != null)
-                    {
-                        ProgressNotification(30 + ((batch / batchCount) * 0.3), $"Removed {entitiesUpdated} updated records from the database table"); // 30% + 30% Weight
-                    }
+                    ProgressNotification?.Invoke(30 + ((batch / batchCount) * 0.3), $"Removed {entitiesUpdated} updated records from the database table"); // 30% + 30% Weight
                 }
 
                 // Bulk Copy Delta Entities
@@ -666,10 +615,7 @@ namespace EduHub.Data.Entities
 
                         await bulkCopy.WriteToServerAsync(dataReader);
 
-                        if (ProgressNotification != null)
-                        {
-                            ProgressNotification(95, $"Wrote {dataReader.EntitiesRead} delta records to the database table");
-                        }
+                        ProgressNotification?.Invoke(95, $"Wrote {dataReader.EntitiesRead} delta records to the database table");
 
                         entitiesAdded = dataReader.EntitiesRead;
                         entityLastModifiedMax = dataReader.EntityLastModifiedMax;
@@ -679,10 +625,7 @@ namespace EduHub.Data.Entities
                 transaction.Commit();
             }
 
-            if (ProgressNotification != null)
-            {
-                ProgressNotification(100, $"Successfully wrote the delta data set to the database table");
-            }
+            ProgressNotification?.Invoke(100, $"Successfully wrote the delta data set to the database table");
 
             return new EduHubSqlServerWriteResult(
                 DataSet: this,
@@ -742,10 +685,7 @@ namespace EduHub.Data.Entities
             }
             else
             {
-                if (ProgressNotification != null)
-                {
-                    ProgressNotification(100, $"Skipped writing the delta data set to the database table, no new records");
-                }
+                ProgressNotification?.Invoke(100, $"Skipped writing the delta data set to the database table, no new records");
                 return new EduHubSqlServerWriteResult(
                     DataSet: this,
                     Mode: EduHubSqlServerWriteMode.Delta,
@@ -808,10 +748,7 @@ namespace EduHub.Data.Entities
             }
             else
             {
-                if (ProgressNotification != null)
-                {
-                    ProgressNotification(100, $"Skipped writing the delta data set to the database table, no new records");
-                }
+                ProgressNotification?.Invoke(100, $"Skipped writing the delta data set to the database table, no new records");
                 return new EduHubSqlServerWriteResult(
                     DataSet: this,
                     Mode: EduHubSqlServerWriteMode.DeltaPartial,

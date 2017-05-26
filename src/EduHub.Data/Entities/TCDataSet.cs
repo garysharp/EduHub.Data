@@ -186,7 +186,7 @@ BEGIN
     CREATE TABLE [dbo].[TC](
         [TCKEY] datetime NOT NULL,
         [TITLE] varchar(30) NULL,
-        [DAY_COMMENT] text NULL,
+        [DAY_COMMENT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

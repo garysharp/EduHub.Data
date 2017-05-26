@@ -25,6 +25,7 @@ namespace EduHub.Data.Entities
         {
             Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_FEE_CODE = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.FEE_CODE));
             Index_GLPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GLPROGRAM));
             Index_GST_BOX = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GST_BOX));
             Index_GST_SALE_PURCH = new Lazy<NullDictionary<string, IReadOnlyList<GLF>>>(() => this.ToGroupedNullDictionary(i => i.GST_SALE_PURCH));
@@ -214,6 +215,9 @@ namespace EduHub.Data.Entities
                     case "CANCELLED":
                         mapper[i] = (e, v) => e.CANCELLED = v;
                         break;
+                    case "FEE_CODE":
+                        mapper[i] = (e, v) => e.FEE_CODE = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -290,6 +294,7 @@ namespace EduHub.Data.Entities
 
         private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_BSB;
         private Lazy<Dictionary<string, IReadOnlyList<GLF>>> Index_CODE;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_FEE_CODE;
         private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GLPROGRAM;
         private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GST_BOX;
         private Lazy<NullDictionary<string, IReadOnlyList<GLF>>> Index_GST_SALE_PURCH;
@@ -378,6 +383,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<GLF> value;
             if (Index_CODE.Value.TryGetValue(CODE, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find GLF</param>
+        /// <returns>List of related GLF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> FindByFEE_CODE(string FEE_CODE)
+        {
+            return Index_FEE_CODE.Value[FEE_CODE];
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find GLF</param>
+        /// <param name="Value">List of related GLF entities</param>
+        /// <returns>True if the list of related GLF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFEE_CODE(string FEE_CODE, out IReadOnlyList<GLF> Value)
+        {
+            return Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLF by FEE_CODE field
+        /// </summary>
+        /// <param name="FEE_CODE">FEE_CODE value used to find GLF</param>
+        /// <returns>List of related GLF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLF> TryFindByFEE_CODE(string FEE_CODE)
+        {
+            IReadOnlyList<GLF> value;
+            if (Index_FEE_CODE.Value.TryGetValue(FEE_CODE, out value))
             {
                 return value;
             }
@@ -795,6 +842,7 @@ BEGIN
         [DEBIT] money NULL,
         [CREDIT] money NULL,
         [CANCELLED] varchar(3) NULL,
+        [FEE_CODE] varchar(10) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -809,6 +857,10 @@ BEGIN
     CREATE CLUSTERED INDEX [GLF_Index_CODE] ON [dbo].[GLF]
     (
             [CODE] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLF_Index_FEE_CODE] ON [dbo].[GLF]
+    (
+            [FEE_CODE] ASC
     );
     CREATE NONCLUSTERED INDEX [GLF_Index_GLPROGRAM] ON [dbo].[GLF]
     (
@@ -855,6 +907,8 @@ END");
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_BSB')
     ALTER INDEX [Index_BSB] ON [dbo].[GLF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_FEE_CODE')
+    ALTER INDEX [Index_FEE_CODE] ON [dbo].[GLF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_GLPROGRAM')
     ALTER INDEX [Index_GLPROGRAM] ON [dbo].[GLF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_GST_BOX')
@@ -886,6 +940,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_BSB')
     ALTER INDEX [Index_BSB] ON [dbo].[GLF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_FEE_CODE')
+    ALTER INDEX [Index_FEE_CODE] ON [dbo].[GLF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_GLPROGRAM')
     ALTER INDEX [Index_GLPROGRAM] ON [dbo].[GLF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND name = N'Index_GST_BOX')
@@ -972,7 +1028,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
             {
             }
 
-            public override int FieldCount { get { return 59; } }
+            public override int FieldCount { get { return 60; } }
 
             public override object GetValue(int i)
             {
@@ -1090,11 +1146,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
                         return Current.CREDIT;
                     case 55: // CANCELLED
                         return Current.CANCELLED;
-                    case 56: // LW_DATE
+                    case 56: // FEE_CODE
+                        return Current.FEE_CODE;
+                    case 57: // LW_DATE
                         return Current.LW_DATE;
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return Current.LW_TIME;
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1213,11 +1271,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
                         return Current.CREDIT == null;
                     case 55: // CANCELLED
                         return Current.CANCELLED == null;
-                    case 56: // LW_DATE
+                    case 56: // FEE_CODE
+                        return Current.FEE_CODE == null;
+                    case 57: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1340,11 +1400,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
                         return "CREDIT";
                     case 55: // CANCELLED
                         return "CANCELLED";
-                    case 56: // LW_DATE
+                    case 56: // FEE_CODE
+                        return "FEE_CODE";
+                    case 57: // LW_DATE
                         return "LW_DATE";
-                    case 57: // LW_TIME
+                    case 58: // LW_TIME
                         return "LW_TIME";
-                    case 58: // LW_USER
+                    case 59: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1467,12 +1529,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLF]') AND
                         return 54;
                     case "CANCELLED":
                         return 55;
-                    case "LW_DATE":
+                    case "FEE_CODE":
                         return 56;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 57;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 58;
+                    case "LW_USER":
+                        return 59;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
