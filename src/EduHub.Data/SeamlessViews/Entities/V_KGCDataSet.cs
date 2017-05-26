@@ -44,7 +44,7 @@ SELECT
     KGC.KGCKEY,
     KGC.ROOM,
     KGC.TEACHER
-FROM {ParentDatabaseName}..KGC KGC';";
+FROM [{ParentDatabaseName}]..KGC KGC';";
         }
 
         /// <inheritdoc />

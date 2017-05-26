@@ -46,7 +46,7 @@ SELECT
     SM.DESCRIPTION,
     SM.SEATING,
     SM.FACULTY
-FROM {ParentDatabaseName}..SM SM';";
+FROM [{ParentDatabaseName}]..SM SM';";
         }
 
         /// <inheritdoc />

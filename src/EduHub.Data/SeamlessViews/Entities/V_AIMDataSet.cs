@@ -71,8 +71,8 @@ SELECT
     (CASE WHEN ST.ENG_SPEAK = ''N'' THEN 1 ELSE 0 END) ESL,
     (CASE WHEN ST.HOME_GROUP IS NULL THEN '''' ELSE ST.HOME_GROUP END) home_group,
     (CASE WHEN ST.SCHOOL_YEAR = ''00'' THEN ''P'' ELSE ST.SCHOOL_YEAR END) year_level
-FROM {ParentDatabaseName}..ST ST
-LEFT JOIN {ParentDatabaseName}..DF DF ON ST.FAMILY = DF.DFKEY
+FROM [{ParentDatabaseName}]..ST ST
+LEFT JOIN [{ParentDatabaseName}]..DF DF ON ST.FAMILY = DF.DFKEY
 WHERE ST.STATUS in (''ACTV'',''INAC'', ''LVNG'')';";
         }
 

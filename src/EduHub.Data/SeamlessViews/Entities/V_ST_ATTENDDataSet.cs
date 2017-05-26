@@ -64,9 +64,9 @@ SELECT
     ST.FAMB,
     ST.CAMPUS,
     ST.MEDICAL_ALERT
-FROM {ParentDatabaseName}..ST ST
-LEFT JOIN {ParentDatabaseName}..KCY AS KCY ON KCY.KCYKEY = ST.SCHOOL_YEAR 
-LEFT JOIN {ParentDatabaseName}..KGC AS KGC ON KGC.KGCKEY = ST.HOME_GROUP
+FROM [{ParentDatabaseName}]..ST ST
+LEFT JOIN [{ParentDatabaseName}]..KCY AS KCY ON KCY.KCYKEY = ST.SCHOOL_YEAR 
+LEFT JOIN [{ParentDatabaseName}]..KGC AS KGC ON KGC.KGCKEY = ST.HOME_GROUP
 WHERE (ST.STATUS IN (''ACTV'', ''LVNG''))';";
         }
 

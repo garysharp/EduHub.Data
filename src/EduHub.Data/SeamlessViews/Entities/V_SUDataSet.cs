@@ -51,8 +51,8 @@ SELECT
     SU.SEMESTER,
     SU.SUBJECT_ACADEMIC_YEAR,
     KCY.DESCRIPTION
-FROM {ParentDatabaseName}..SU SU
-JOIN {ParentDatabaseName}..KCY KCY ON SU.SUBJECT_ACADEMIC_YEAR = KCY.KCYKEY';";
+FROM [{ParentDatabaseName}]..SU SU
+JOIN [{ParentDatabaseName}]..KCY KCY ON SU.SUBJECT_ACADEMIC_YEAR = KCY.KCYKEY';";
         }
 
         /// <inheritdoc />

@@ -43,7 +43,7 @@ AS
 SELECT
     KGH.KGHKEY,
     KGH.DESCRIPTION
-FROM {ParentDatabaseName}..KGH KGH';";
+FROM [{ParentDatabaseName}]..KGH KGH';";
         }
 
         /// <inheritdoc />

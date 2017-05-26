@@ -67,7 +67,7 @@ SELECT
     SF.MAJORC,
     SF.PAYROLL_CLASS,
     SF.PAYROLL_REC_NO
-FROM {ParentDatabaseName}..SF SF';";
+FROM [{ParentDatabaseName}]..SF SF';";
         }
 
         /// <inheritdoc />

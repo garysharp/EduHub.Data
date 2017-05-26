@@ -129,9 +129,9 @@ SELECT
         WHEN ST.STATUS = ''LEFT'' THEN
             ISNULL(CASE
                 WHEN ST.SCHOOL_YEAR < ''09'' OR ST.SCHOOL_YEAR = ''UG'' THEN
-                    (SELECT SKGS.NAME FROM {ParentDatabaseName}..SKGS SKGS WHERE SCHOOL = ST.NEXT_SCHOOL)
+                    (SELECT SKGS.NAME FROM [{ParentDatabaseName}]..SKGS SKGS WHERE SCHOOL = ST.NEXT_SCHOOL)
                 ELSE
-                    (SELECT KGD.DESCRIPTION FROM {ParentDatabaseName}..KGD KGD WHERE KGDKEY = ST.EXIT_DEST01)
+                    (SELECT KGD.DESCRIPTION FROM [{ParentDatabaseName}]..KGD KGD WHERE KGDKEY = ST.EXIT_DEST01)
             END,'''')
         ELSE ''''
     END EXIT_0,");
@@ -141,7 +141,7 @@ SELECT
                 builder.Append($@"
     CASE
         WHEN ST.STATUS = ''LEFT'' THEN
-            ISNULL((SELECT SKGS.NAME FROM {ParentDatabaseName}..SKGS SKGS WHERE SCHOOL = ST.NEXT_SCHOOL), '''')
+            ISNULL((SELECT SKGS.NAME FROM [{ParentDatabaseName}]..SKGS SKGS WHERE SCHOOL = ST.NEXT_SCHOOL), '''')
         ELSE ''''
     END EXIT_0,");
             }
@@ -163,7 +163,7 @@ FROM (
         (
             (
                 (
-                    ({ParentDatabaseName}..ST AS ST
+                    ([{ParentDatabaseName}]..ST AS ST
                     LEFT JOIN (
                         SELECT
                             SXAB.STKEY,
@@ -204,7 +204,7 @@ FROM (
                                                 SXAB.AM_ACT_TYPE,
                                                 SXAB.PM_ACT_TYPE,
                                                 ''sxab'' source
-                                            FROM {ParentDatabaseName}..SXAB SXAB
+                                            FROM [{ParentDatabaseName}]..SXAB SXAB
                                             WHERE YEAR(SXAB.ABSENCE_DATE) = YEAR(GETDATE()) 
                                             UNION ALL
                                             SELECT
@@ -213,14 +213,14 @@ FROM (
                                                 SXABCONV.AM_TYPE,
                                                 SXABCONV.PM_TYPE,
                                                 ''conv'' source
-                                            FROM {ParentDatabaseName}..SXABCONV SXABCONV
+                                            FROM [{ParentDatabaseName}]..SXABCONV SXABCONV
                                             WHERE YEAR(SXABCONV.ABSENCE_DATE) = YEAR(GETDATE())) as rs0
                                         GROUP BY STKEY, ABSENCE_DATE) rs98
                                     ) rs99
                                 ) SXAB
-                            LEFT JOIN {ParentDatabaseName}..KCT as KCTAM ON SXAB.AM_ACT_TYPE = KCTAM.KCTKEY
+                            LEFT JOIN [{ParentDatabaseName}]..KCT as KCTAM ON SXAB.AM_ACT_TYPE = KCTAM.KCTKEY
                             )
-                        LEFT JOIN {ParentDatabaseName}..KCT as KCTPM ON SXAB.PM_ACT_TYPE = KCTPM.KCTKEY
+                        LEFT JOIN [{ParentDatabaseName}]..KCT as KCTPM ON SXAB.PM_ACT_TYPE = KCTPM.KCTKEY
                         GROUP BY SXAB.STKEY) RS1 ON ST.STKEY = RS1.STKEY
                     )
                     LEFT JOIN (
@@ -233,7 +233,7 @@ FROM (
                                     WHEN ''NA'' THEN ''0''
                                     ELSE SCORE
                                 END SCORE
-                            FROM {ParentDatabaseName}..STVDI
+                            FROM [{ParentDatabaseName}]..STVDI
                             WHERE VDIMENSION = ''ENGREA'') RS1
                         JOIN (
                             SELECT
@@ -243,7 +243,7 @@ FROM (
                                 SELECT
                                     SKEY,
                                     MAX(YEAR_SEMESTER) YEAR_SEMESTER
-                                FROM {ParentDatabaseName}..STVDI
+                                FROM [{ParentDatabaseName}]..STVDI
                                 WHERE VDIMENSION = ''ENGREA'' AND SCORE <> ''NA''
                                 GROUP BY SKEY) as RS
                             GROUP BY SKEY
@@ -262,7 +262,7 @@ FROM (
                                 WHEN ''NA'' THEN ''0''
                                 ELSE SCORE
                             END SCORE
-                        FROM {ParentDatabaseName}..STVDI
+                        FROM [{ParentDatabaseName}]..STVDI
                         WHERE VDIMENSION = ''ENGWRI'') as RS1
                     JOIN (
                         SELECT
@@ -272,7 +272,7 @@ FROM (
                             SELECT
                                 SKEY,
                                 MAX(YEAR_SEMESTER) YEAR_SEMESTER
-                            FROM {ParentDatabaseName}..STVDI
+                            FROM [{ParentDatabaseName}]..STVDI
                             WHERE VDIMENSION = ''ENGWRI'' AND SCORE <> ''NA''
                             GROUP BY SKEY) as RS
                         GROUP BY SKEY
@@ -291,7 +291,7 @@ FROM (
                             WHEN ''NA'' THEN ''0''
                             ELSE SCORE
                         END SCORE
-                    FROM {ParentDatabaseName}..STVDI
+                    FROM [{ParentDatabaseName}]..STVDI
                     WHERE VDIMENSION = ''MATNUM'') RS1
                 JOIN (
                     SELECT
@@ -301,7 +301,7 @@ FROM (
                         SELECT
                             SKEY,
                             MAX(YEAR_SEMESTER) YEAR_SEMESTER
-                        FROM {ParentDatabaseName}..STVDI
+                        FROM [{ParentDatabaseName}]..STVDI
                         WHERE VDIMENSION = ''MATNUM'' AND SCORE <> ''NA''
                         GROUP BY SKEY) RS
                     GROUP BY SKEY
@@ -320,7 +320,7 @@ FROM (
                         WHEN ''NA'' THEN ''0''
                         ELSE SCORE
                     END SCORE
-                FROM {ParentDatabaseName}..STVDI
+                FROM [{ParentDatabaseName}]..STVDI
                 WHERE VDIMENSION = ''MATSTR'') as RS1
             JOIN (
                 SELECT
@@ -330,20 +330,20 @@ FROM (
                     SELECT
                         SKEY,
                         MAX(YEAR_SEMESTER) YEAR_SEMESTER
-                    FROM {ParentDatabaseName}..STVDI
+                    FROM [{ParentDatabaseName}]..STVDI
                     WHERE VDIMENSION = ''MATSTR'' AND SCORE <> ''NA''
                     GROUP BY SKEY) RS
                 GROUP BY SKEY
             ) RS2 ON RS1.SKEY = RS2.SKEY AND RS1.YEAR_SEMESTER = RS2.YEAR_SEMESTER
         ) AS RS6 ON ST.STKEY = RS6.SKEY
     )
-LEFT JOIN {ParentDatabaseName}..DF as df ON ST.FAMILY = DF.DFKEY");
+LEFT JOIN [{ParentDatabaseName}]..DF as df ON ST.FAMILY = DF.DFKEY");
 
             // KGG isn't currently included in any typical eduHub services
             if (Context.EduHubContext.KGG.IsAvailable)
             {
                 builder.Append($@"
-LEFT JOIN {ParentDatabaseName}..KGG KGG ON KGGKEY = ST.EXIT_CAT01");
+LEFT JOIN [{ParentDatabaseName}]..KGG KGG ON KGGKEY = ST.EXIT_CAT01");
             }
 
             builder.Append(@"

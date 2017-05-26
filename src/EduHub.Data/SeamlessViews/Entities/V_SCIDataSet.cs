@@ -46,7 +46,7 @@ SELECT
     SCI.CAMPUS_TYPE,
     SCI.SCHOOL_NAME,
     SCI.SCHOOL_TYPE
-FROM {ParentDatabaseName}..SCI SCI';";
+FROM [{ParentDatabaseName}]..SCI SCI';";
         }
 
         /// <inheritdoc />

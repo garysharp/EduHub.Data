@@ -43,7 +43,7 @@ AS
 SELECT
     STPO.STPOKEY,
     STPO.SGLINK
-FROM {ParentDatabaseName}..STPO STPO';";
+FROM [{ParentDatabaseName}]..STPO STPO';";
         }
 
         /// <inheritdoc />

@@ -43,7 +43,7 @@ AS
 SELECT
     KGL.KGLKEY,
     KGL.DESCRIPTION
-FROM {ParentDatabaseName}..KGL KGL';";
+FROM [{ParentDatabaseName}]..KGL KGL';";
         }
 
         /// <inheritdoc />

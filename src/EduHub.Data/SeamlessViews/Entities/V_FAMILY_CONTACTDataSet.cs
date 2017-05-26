@@ -50,8 +50,8 @@ SELECT
     DF.SURNAME_A,
     DF.NAME_B,
     DF.SURNAME_B
-FROM {ParentDatabaseName}..DF AS DF
-LEFT JOIN {ParentDatabaseName}..UM UM ON UM.UMKEY = DF.HOMEKEY';";
+FROM [{ParentDatabaseName}]..DF AS DF
+LEFT JOIN [{ParentDatabaseName}]..UM UM ON UM.UMKEY = DF.HOMEKEY';";
         }
 
         /// <inheritdoc />

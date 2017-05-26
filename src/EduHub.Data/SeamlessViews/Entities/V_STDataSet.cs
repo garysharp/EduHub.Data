@@ -182,10 +182,10 @@ SELECT
     UM.STATE,
     UM.TELEPHONE,
     UM.FAX
-FROM {ParentDatabaseName}..ST ST
-JOIN {ParentDatabaseName}..KCY KCY ON ST.SCHOOL_YEAR = KCY.KCYKEY
-JOIN {ParentDatabaseName}..DF DF ON DF.DFKEY = ST.FAMILY 
-JOIN {ParentDatabaseName}..UM UM ON DF.MAILKEY = UM.UMKEY
+FROM [{ParentDatabaseName}]..ST ST
+JOIN [{ParentDatabaseName}]..KCY KCY ON ST.SCHOOL_YEAR = KCY.KCYKEY
+JOIN [{ParentDatabaseName}]..DF DF ON DF.DFKEY = ST.FAMILY 
+JOIN [{ParentDatabaseName}]..UM UM ON DF.MAILKEY = UM.UMKEY
 WHERE ST.STATUS <> ''LEFT''';";
         }
 

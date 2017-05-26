@@ -46,7 +46,7 @@ SELECT
     SCL.CLASS,
     SCL.TEACHER01,
     SCL.ROOM01
-FROM {ParentDatabaseName}..SCL SCL';";
+FROM [{ParentDatabaseName}]..SCL SCL';";
         }
 
         /// <inheritdoc />

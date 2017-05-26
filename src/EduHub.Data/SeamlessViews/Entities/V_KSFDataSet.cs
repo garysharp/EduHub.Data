@@ -43,7 +43,7 @@ AS
 SELECT
     KSF.KSFKEY,
     KSF.DESCRIPTION
-FROM {ParentDatabaseName}..KSF KSF';";
+FROM [{ParentDatabaseName}]..KSF KSF';";
         }
 
         /// <inheritdoc />

@@ -46,7 +46,7 @@ SELECT
     SXAB.STKEY,
     SXAB.AM_ACT_TYPE,
     SXAB.PM_ACT_TYPE
-FROM {ParentDatabaseName}..SXAB SXAB';";
+FROM [{ParentDatabaseName}]..SXAB SXAB';";
         }
 
         /// <inheritdoc />

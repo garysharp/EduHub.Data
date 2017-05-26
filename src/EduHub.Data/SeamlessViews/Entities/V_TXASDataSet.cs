@@ -48,7 +48,7 @@ SELECT
     TXAS.SESSION_DATE,
     TXAS.SUBJECT,
     TXAS.TEACHER
-FROM {ParentDatabaseName}..TXAS TXAS';";
+FROM [{ParentDatabaseName}]..TXAS TXAS';";
         }
 
         /// <inheritdoc />

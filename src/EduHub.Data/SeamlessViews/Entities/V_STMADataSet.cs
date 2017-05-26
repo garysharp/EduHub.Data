@@ -47,7 +47,7 @@ SELECT
     STMA.FULLNAME,
     STMA.TEACHER_NAME,
     STMA.TTPERIOD
-FROM {ParentDatabaseName}..STMA STMA';";
+FROM [{ParentDatabaseName}]..STMA STMA';";
         }
 
         /// <inheritdoc />

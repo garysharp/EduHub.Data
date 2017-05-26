@@ -44,7 +44,7 @@ SELECT
     SG.SGKEY,
     SG.TITLE,
     SG.ADULT_RESPONSIBLE
-FROM {ParentDatabaseName}..SG SG';";
+FROM [{ParentDatabaseName}]..SG SG';";
         }
 
         /// <inheritdoc />
