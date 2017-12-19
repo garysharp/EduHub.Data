@@ -24,7 +24,9 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<AR> Cache_CRKEY_AR_CURR_SUPPLIER;
         private IReadOnlyList<CRF> Cache_CRKEY_CRF_CODE;
         private IReadOnlyList<CRFTC> Cache_CRKEY_CRFTC_CODE;
+        private IReadOnlyList<CRPR> Cache_CRKEY_CRPR_CODE;
         private IReadOnlyList<CRTT> Cache_CRKEY_CRTT_CRKEY;
+        private IReadOnlyList<RQ> Cache_CRKEY_RQ_CODE;
 
         #endregion
 
@@ -388,6 +390,12 @@ namespace EduHub.Data.Entities
         public string PPDKEY { get; internal set; }
 
         /// <summary>
+        /// PR needs to be approved by purchasing manager
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string PR_APPROVE { get; internal set; }
+
+        /// <summary>
         /// Is this a PRMS creditor
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
@@ -537,6 +545,24 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// CRPR (Creditor Purchase Requisitions) related entities by [CR.CRKEY]-&gt;[CRPR.CODE]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<CRPR> CRKEY_CRPR_CODE
+        {
+            get
+            {
+                if (Cache_CRKEY_CRPR_CODE == null &&
+                    !Context.CRPR.TryFindByCODE(CRKEY, out Cache_CRKEY_CRPR_CODE))
+                {
+                    Cache_CRKEY_CRPR_CODE = new List<CRPR>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_CRPR_CODE;
+            }
+        }
+
+        /// <summary>
         /// CRTT (Creditor Trade Types) related entities by [CR.CRKEY]-&gt;[CRTT.CRKEY]
         /// Prime Key
         /// </summary>
@@ -551,6 +577,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CRKEY_CRTT_CRKEY;
+            }
+        }
+
+        /// <summary>
+        /// RQ (Purchase Requisition) related entities by [CR.CRKEY]-&gt;[RQ.CODE]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<RQ> CRKEY_RQ_CODE
+        {
+            get
+            {
+                if (Cache_CRKEY_RQ_CODE == null &&
+                    !Context.RQ.TryFindByCODE(CRKEY, out Cache_CRKEY_RQ_CODE))
+                {
+                    Cache_CRKEY_RQ_CODE = new List<RQ>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_RQ_CODE;
             }
         }
 

@@ -133,6 +133,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\SPUDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPSMS.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPSMSDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPRETRY.cs
+// EduHub.Data\src\EduHub.Data\Entities\SPRETRYDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPREPLY.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPREPLYDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SPRECIP.cs
@@ -205,6 +207,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\SFAQDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SF.cs
 // EduHub.Data\src\EduHub.Data\Entities\SFDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\SECMSG.cs
+// EduHub.Data\src\EduHub.Data\Entities\SECMSGDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SEC_USR.cs
 // EduHub.Data\src\EduHub.Data\Entities\SEC_USRDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SEC_URL.cs
@@ -301,6 +305,16 @@
 // EduHub.Data\src\EduHub.Data\Entities\SABDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\SA.cs
 // EduHub.Data\src\EduHub.Data\Entities\SADataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQT.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQTDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQREL.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQRELDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQPG.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQPGDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQGL.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQGLDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQ.cs
+// EduHub.Data\src\EduHub.Data\Entities\RQDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\QSAT.cs
 // EduHub.Data\src\EduHub.Data\Entities\QSATDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\QSAG.cs
@@ -569,6 +583,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\DFDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\CRTT.cs
 // EduHub.Data\src\EduHub.Data\Entities\CRTTDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\CRPR.cs
+// EduHub.Data\src\EduHub.Data\Entities\CRPRDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\CRFTC.cs
 // EduHub.Data\src\EduHub.Data\Entities\CRFTCDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\CRF.cs

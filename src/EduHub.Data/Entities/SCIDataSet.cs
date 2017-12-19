@@ -43,6 +43,7 @@ namespace EduHub.Data.Entities
             Index_SF_BMANAGER = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_BMANAGER));
             Index_SF_EMERG_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_EMERG_CONTACT));
             Index_SF_OIC = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_OIC));
+            Index_SF_PURCH_MANAGER = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_PURCH_MANAGER));
             Index_SF_VAC_CONTACT = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VAC_CONTACT));
             Index_SF_VPRIN = new Lazy<NullDictionary<string, IReadOnlyList<SCI>>>(() => this.ToGroupedNullDictionary(i => i.SF_VPRIN));
         }
@@ -262,6 +263,9 @@ namespace EduHub.Data.Entities
                     case "SCH_EMERG_CONTACT":
                         mapper[i] = (e, v) => e.SCH_EMERG_CONTACT = v;
                         break;
+                    case "SF_PURCH_MANAGER":
+                        mapper[i] = (e, v) => e.SF_PURCH_MANAGER = v;
+                        break;
                     case "SCH_COUNCIL_PRES":
                         mapper[i] = (e, v) => e.SCH_COUNCIL_PRES = v == null ? (int?)null : int.Parse(v);
                         break;
@@ -389,6 +393,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_BMANAGER;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_EMERG_CONTACT;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_OIC;
+        private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_PURCH_MANAGER;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VAC_CONTACT;
         private Lazy<NullDictionary<string, IReadOnlyList<SCI>>> Index_SF_VPRIN;
 
@@ -1237,6 +1242,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find SCI by SF_PURCH_MANAGER field
+        /// </summary>
+        /// <param name="SF_PURCH_MANAGER">SF_PURCH_MANAGER value used to find SCI</param>
+        /// <returns>List of related SCI entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> FindBySF_PURCH_MANAGER(string SF_PURCH_MANAGER)
+        {
+            return Index_SF_PURCH_MANAGER.Value[SF_PURCH_MANAGER];
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SF_PURCH_MANAGER field
+        /// </summary>
+        /// <param name="SF_PURCH_MANAGER">SF_PURCH_MANAGER value used to find SCI</param>
+        /// <param name="Value">List of related SCI entities</param>
+        /// <returns>True if the list of related SCI entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySF_PURCH_MANAGER(string SF_PURCH_MANAGER, out IReadOnlyList<SCI> Value)
+        {
+            return Index_SF_PURCH_MANAGER.Value.TryGetValue(SF_PURCH_MANAGER, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SCI by SF_PURCH_MANAGER field
+        /// </summary>
+        /// <param name="SF_PURCH_MANAGER">SF_PURCH_MANAGER value used to find SCI</param>
+        /// <returns>List of related SCI entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SCI> TryFindBySF_PURCH_MANAGER(string SF_PURCH_MANAGER)
+        {
+            IReadOnlyList<SCI> value;
+            if (Index_SF_PURCH_MANAGER.Value.TryGetValue(SF_PURCH_MANAGER, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find SCI by SF_VAC_CONTACT field
         /// </summary>
         /// <param name="SF_VAC_CONTACT">SF_VAC_CONTACT value used to find SCI</param>
@@ -1404,6 +1451,7 @@ BEGIN
         [SCH_BMANAGER] varchar(4) NULL,
         [SCH_VAC_CONTACT] varchar(4) NULL,
         [SCH_EMERG_CONTACT] varchar(4) NULL,
+        [SF_PURCH_MANAGER] varchar(4) NULL,
         [SCH_COUNCIL_PRES] int NULL,
         [SCH_MASTER_KEY] varchar(6) NULL,
         [PROFILE_UPDATED] varchar(1) NULL,
@@ -1497,6 +1545,10 @@ BEGIN
     (
             [SF_OIC] ASC
     );
+    CREATE NONCLUSTERED INDEX [SCI_Index_SF_PURCH_MANAGER] ON [dbo].[SCI]
+    (
+            [SF_PURCH_MANAGER] ASC
+    );
     CREATE NONCLUSTERED INDEX [SCI_Index_SF_VAC_CONTACT] ON [dbo].[SCI]
     (
             [SF_VAC_CONTACT] ASC
@@ -1558,6 +1610,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
     ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
     ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_PURCH_MANAGER')
+    ALTER INDEX [Index_SF_PURCH_MANAGER] ON [dbo].[SCI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
     ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
@@ -1613,6 +1667,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
     ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
     ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_PURCH_MANAGER')
+    ALTER INDEX [Index_SF_PURCH_MANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
     ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
@@ -1703,7 +1759,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
             {
             }
 
-            public override int FieldCount { get { return 81; } }
+            public override int FieldCount { get { return 82; } }
 
             public override object GetValue(int i)
             {
@@ -1845,31 +1901,33 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SCH_VAC_CONTACT;
                     case 67: // SCH_EMERG_CONTACT
                         return Current.SCH_EMERG_CONTACT;
-                    case 68: // SCH_COUNCIL_PRES
+                    case 68: // SF_PURCH_MANAGER
+                        return Current.SF_PURCH_MANAGER;
+                    case 69: // SCH_COUNCIL_PRES
                         return Current.SCH_COUNCIL_PRES;
-                    case 69: // SCH_MASTER_KEY
+                    case 70: // SCH_MASTER_KEY
                         return Current.SCH_MASTER_KEY;
-                    case 70: // PROFILE_UPDATED
+                    case 71: // PROFILE_UPDATED
                         return Current.PROFILE_UPDATED;
-                    case 71: // CAMPUS_OPEN_IND
+                    case 72: // CAMPUS_OPEN_IND
                         return Current.CAMPUS_OPEN_IND;
-                    case 72: // PROFILE_SENT
+                    case 73: // PROFILE_SENT
                         return Current.PROFILE_SENT;
-                    case 73: // SPEC_CURR_IND
+                    case 74: // SPEC_CURR_IND
                         return Current.SPEC_CURR_IND;
-                    case 74: // GLOBAL_ID
+                    case 75: // GLOBAL_ID
                         return Current.GLOBAL_ID;
-                    case 75: // SCH_DEFINED01
+                    case 76: // SCH_DEFINED01
                         return Current.SCH_DEFINED01;
-                    case 76: // SCH_DEFINED02
+                    case 77: // SCH_DEFINED02
                         return Current.SCH_DEFINED02;
-                    case 77: // PREF_MAIL_MECH
+                    case 78: // PREF_MAIL_MECH
                         return Current.PREF_MAIL_MECH;
-                    case 78: // LW_DATE
+                    case 79: // LW_DATE
                         return Current.LW_DATE;
-                    case 79: // LW_TIME
+                    case 80: // LW_TIME
                         return Current.LW_TIME;
-                    case 80: // LW_USER
+                    case 81: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2014,31 +2072,33 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SCH_VAC_CONTACT == null;
                     case 67: // SCH_EMERG_CONTACT
                         return Current.SCH_EMERG_CONTACT == null;
-                    case 68: // SCH_COUNCIL_PRES
+                    case 68: // SF_PURCH_MANAGER
+                        return Current.SF_PURCH_MANAGER == null;
+                    case 69: // SCH_COUNCIL_PRES
                         return Current.SCH_COUNCIL_PRES == null;
-                    case 69: // SCH_MASTER_KEY
+                    case 70: // SCH_MASTER_KEY
                         return Current.SCH_MASTER_KEY == null;
-                    case 70: // PROFILE_UPDATED
+                    case 71: // PROFILE_UPDATED
                         return Current.PROFILE_UPDATED == null;
-                    case 71: // CAMPUS_OPEN_IND
+                    case 72: // CAMPUS_OPEN_IND
                         return Current.CAMPUS_OPEN_IND == null;
-                    case 72: // PROFILE_SENT
+                    case 73: // PROFILE_SENT
                         return Current.PROFILE_SENT == null;
-                    case 73: // SPEC_CURR_IND
+                    case 74: // SPEC_CURR_IND
                         return Current.SPEC_CURR_IND == null;
-                    case 74: // GLOBAL_ID
+                    case 75: // GLOBAL_ID
                         return Current.GLOBAL_ID == null;
-                    case 75: // SCH_DEFINED01
+                    case 76: // SCH_DEFINED01
                         return Current.SCH_DEFINED01 == null;
-                    case 76: // SCH_DEFINED02
+                    case 77: // SCH_DEFINED02
                         return Current.SCH_DEFINED02 == null;
-                    case 77: // PREF_MAIL_MECH
+                    case 78: // PREF_MAIL_MECH
                         return Current.PREF_MAIL_MECH == null;
-                    case 78: // LW_DATE
+                    case 79: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 79: // LW_TIME
+                    case 80: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 80: // LW_USER
+                    case 81: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2185,31 +2245,33 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return "SCH_VAC_CONTACT";
                     case 67: // SCH_EMERG_CONTACT
                         return "SCH_EMERG_CONTACT";
-                    case 68: // SCH_COUNCIL_PRES
+                    case 68: // SF_PURCH_MANAGER
+                        return "SF_PURCH_MANAGER";
+                    case 69: // SCH_COUNCIL_PRES
                         return "SCH_COUNCIL_PRES";
-                    case 69: // SCH_MASTER_KEY
+                    case 70: // SCH_MASTER_KEY
                         return "SCH_MASTER_KEY";
-                    case 70: // PROFILE_UPDATED
+                    case 71: // PROFILE_UPDATED
                         return "PROFILE_UPDATED";
-                    case 71: // CAMPUS_OPEN_IND
+                    case 72: // CAMPUS_OPEN_IND
                         return "CAMPUS_OPEN_IND";
-                    case 72: // PROFILE_SENT
+                    case 73: // PROFILE_SENT
                         return "PROFILE_SENT";
-                    case 73: // SPEC_CURR_IND
+                    case 74: // SPEC_CURR_IND
                         return "SPEC_CURR_IND";
-                    case 74: // GLOBAL_ID
+                    case 75: // GLOBAL_ID
                         return "GLOBAL_ID";
-                    case 75: // SCH_DEFINED01
+                    case 76: // SCH_DEFINED01
                         return "SCH_DEFINED01";
-                    case 76: // SCH_DEFINED02
+                    case 77: // SCH_DEFINED02
                         return "SCH_DEFINED02";
-                    case 77: // PREF_MAIL_MECH
+                    case 78: // PREF_MAIL_MECH
                         return "PREF_MAIL_MECH";
-                    case 78: // LW_DATE
+                    case 79: // LW_DATE
                         return "LW_DATE";
-                    case 79: // LW_TIME
+                    case 80: // LW_TIME
                         return "LW_TIME";
-                    case 80: // LW_USER
+                    case 81: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2356,32 +2418,34 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return 66;
                     case "SCH_EMERG_CONTACT":
                         return 67;
-                    case "SCH_COUNCIL_PRES":
+                    case "SF_PURCH_MANAGER":
                         return 68;
-                    case "SCH_MASTER_KEY":
+                    case "SCH_COUNCIL_PRES":
                         return 69;
-                    case "PROFILE_UPDATED":
+                    case "SCH_MASTER_KEY":
                         return 70;
-                    case "CAMPUS_OPEN_IND":
+                    case "PROFILE_UPDATED":
                         return 71;
-                    case "PROFILE_SENT":
+                    case "CAMPUS_OPEN_IND":
                         return 72;
-                    case "SPEC_CURR_IND":
+                    case "PROFILE_SENT":
                         return 73;
-                    case "GLOBAL_ID":
+                    case "SPEC_CURR_IND":
                         return 74;
-                    case "SCH_DEFINED01":
+                    case "GLOBAL_ID":
                         return 75;
-                    case "SCH_DEFINED02":
+                    case "SCH_DEFINED01":
                         return 76;
-                    case "PREF_MAIL_MECH":
+                    case "SCH_DEFINED02":
                         return 77;
-                    case "LW_DATE":
+                    case "PREF_MAIL_MECH":
                         return 78;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 79;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 80;
+                    case "LW_USER":
+                        return 81;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

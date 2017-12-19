@@ -222,6 +222,9 @@ namespace EduHub.Data.Entities
                     case "PPDKEY":
                         mapper[i] = (e, v) => e.PPDKEY = v;
                         break;
+                    case "PR_APPROVE":
+                        mapper[i] = (e, v) => e.PR_APPROVE = v;
+                        break;
                     case "PRMS_FLAG":
                         mapper[i] = (e, v) => e.PRMS_FLAG = v;
                         break;
@@ -513,6 +516,7 @@ BEGIN
         [PAYG_POST] varchar(4) NULL,
         [PAYG_COUNTRY] varchar(20) NULL,
         [PPDKEY] varchar(10) NULL,
+        [PR_APPROVE] varchar(1) NULL,
         [PRMS_FLAG] varchar(1) NULL,
         [LW_PRMSINFO_DATE] datetime NULL,
         [LW_DATE] datetime NULL,
@@ -636,7 +640,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 66; } }
+            public override int FieldCount { get { return 67; } }
 
             public override object GetValue(int i)
             {
@@ -764,15 +768,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.PAYG_COUNTRY;
                     case 60: // PPDKEY
                         return Current.PPDKEY;
-                    case 61: // PRMS_FLAG
+                    case 61: // PR_APPROVE
+                        return Current.PR_APPROVE;
+                    case 62: // PRMS_FLAG
                         return Current.PRMS_FLAG;
-                    case 62: // LW_PRMSINFO_DATE
+                    case 63: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE;
-                    case 63: // LW_DATE
+                    case 64: // LW_DATE
                         return Current.LW_DATE;
-                    case 64: // LW_TIME
+                    case 65: // LW_TIME
                         return Current.LW_TIME;
-                    case 65: // LW_USER
+                    case 66: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -903,15 +909,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.PAYG_COUNTRY == null;
                     case 60: // PPDKEY
                         return Current.PPDKEY == null;
-                    case 61: // PRMS_FLAG
+                    case 61: // PR_APPROVE
+                        return Current.PR_APPROVE == null;
+                    case 62: // PRMS_FLAG
                         return Current.PRMS_FLAG == null;
-                    case 62: // LW_PRMSINFO_DATE
+                    case 63: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE == null;
-                    case 63: // LW_DATE
+                    case 64: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 64: // LW_TIME
+                    case 65: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 65: // LW_USER
+                    case 66: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1044,15 +1052,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return "PAYG_COUNTRY";
                     case 60: // PPDKEY
                         return "PPDKEY";
-                    case 61: // PRMS_FLAG
+                    case 61: // PR_APPROVE
+                        return "PR_APPROVE";
+                    case 62: // PRMS_FLAG
                         return "PRMS_FLAG";
-                    case 62: // LW_PRMSINFO_DATE
+                    case 63: // LW_PRMSINFO_DATE
                         return "LW_PRMSINFO_DATE";
-                    case 63: // LW_DATE
+                    case 64: // LW_DATE
                         return "LW_DATE";
-                    case 64: // LW_TIME
+                    case 65: // LW_TIME
                         return "LW_TIME";
-                    case 65: // LW_USER
+                    case 66: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1185,16 +1195,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return 59;
                     case "PPDKEY":
                         return 60;
-                    case "PRMS_FLAG":
+                    case "PR_APPROVE":
                         return 61;
-                    case "LW_PRMSINFO_DATE":
+                    case "PRMS_FLAG":
                         return 62;
-                    case "LW_DATE":
+                    case "LW_PRMSINFO_DATE":
                         return 63;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 64;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 65;
+                    case "LW_USER":
+                        return 66;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

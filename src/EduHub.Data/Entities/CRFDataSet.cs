@@ -23,6 +23,7 @@ namespace EduHub.Data.Entities
         internal CRFDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_APPROVED_BY = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.APPROVED_BY));
             Index_ATKEY = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.ATKEY));
             Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedDictionary(i => i.CODE));
@@ -30,6 +31,7 @@ namespace EduHub.Data.Entities
             Index_GST_TYPE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.GST_TYPE));
             Index_INITIATIVE = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.INITIATIVE));
             Index_INVOICEGST = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.INVOICEGST));
+            Index_STAFF_ORDER_BY = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.STAFF_ORDER_BY));
             Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_TID = new Lazy<Dictionary<int, CRF>>(() => this.ToDictionary(i => i.TID));
             Index_TRREF = new Lazy<NullDictionary<string, IReadOnlyList<CRF>>>(() => this.ToGroupedNullDictionary(i => i.TRREF));
@@ -126,6 +128,18 @@ namespace EduHub.Data.Entities
                         break;
                     case "TRORDER":
                         mapper[i] = (e, v) => e.TRORDER = v;
+                        break;
+                    case "PO_PRINTED":
+                        mapper[i] = (e, v) => e.PO_PRINTED = v;
+                        break;
+                    case "APPROVED_BY":
+                        mapper[i] = (e, v) => e.APPROVED_BY = v;
+                        break;
+                    case "STAFF_ORDER_BY":
+                        mapper[i] = (e, v) => e.STAFF_ORDER_BY = v;
+                        break;
+                    case "CRPRTID":
+                        mapper[i] = (e, v) => e.CRPRTID = v == null ? (int?)null : int.Parse(v);
                         break;
                     case "TRBANK":
                         mapper[i] = (e, v) => e.TRBANK = v;
@@ -351,6 +365,7 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_APPROVED_BY;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_ATKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_BSB;
         private Lazy<Dictionary<string, IReadOnlyList<CRF>>> Index_CODE;
@@ -358,6 +373,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_GST_TYPE;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_INITIATIVE;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_INVOICEGST;
+        private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_STAFF_ORDER_BY;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_SUBPROGRAM;
         private Lazy<Dictionary<int, CRF>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<CRF>>> Index_TRREF;
@@ -365,6 +381,48 @@ namespace EduHub.Data.Entities
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find CRF by APPROVED_BY field
+        /// </summary>
+        /// <param name="APPROVED_BY">APPROVED_BY value used to find CRF</param>
+        /// <returns>List of related CRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> FindByAPPROVED_BY(string APPROVED_BY)
+        {
+            return Index_APPROVED_BY.Value[APPROVED_BY];
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by APPROVED_BY field
+        /// </summary>
+        /// <param name="APPROVED_BY">APPROVED_BY value used to find CRF</param>
+        /// <param name="Value">List of related CRF entities</param>
+        /// <returns>True if the list of related CRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAPPROVED_BY(string APPROVED_BY, out IReadOnlyList<CRF> Value)
+        {
+            return Index_APPROVED_BY.Value.TryGetValue(APPROVED_BY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by APPROVED_BY field
+        /// </summary>
+        /// <param name="APPROVED_BY">APPROVED_BY value used to find CRF</param>
+        /// <returns>List of related CRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> TryFindByAPPROVED_BY(string APPROVED_BY)
+        {
+            IReadOnlyList<CRF> value;
+            if (Index_APPROVED_BY.Value.TryGetValue(APPROVED_BY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find CRF by ATKEY field
@@ -661,6 +719,48 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find CRF by STAFF_ORDER_BY field
+        /// </summary>
+        /// <param name="STAFF_ORDER_BY">STAFF_ORDER_BY value used to find CRF</param>
+        /// <returns>List of related CRF entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> FindBySTAFF_ORDER_BY(string STAFF_ORDER_BY)
+        {
+            return Index_STAFF_ORDER_BY.Value[STAFF_ORDER_BY];
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by STAFF_ORDER_BY field
+        /// </summary>
+        /// <param name="STAFF_ORDER_BY">STAFF_ORDER_BY value used to find CRF</param>
+        /// <param name="Value">List of related CRF entities</param>
+        /// <returns>True if the list of related CRF entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTAFF_ORDER_BY(string STAFF_ORDER_BY, out IReadOnlyList<CRF> Value)
+        {
+            return Index_STAFF_ORDER_BY.Value.TryGetValue(STAFF_ORDER_BY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CRF by STAFF_ORDER_BY field
+        /// </summary>
+        /// <param name="STAFF_ORDER_BY">STAFF_ORDER_BY value used to find CRF</param>
+        /// <returns>List of related CRF entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CRF> TryFindBySTAFF_ORDER_BY(string STAFF_ORDER_BY)
+        {
+            IReadOnlyList<CRF> value;
+            if (Index_STAFF_ORDER_BY.Value.TryGetValue(STAFF_ORDER_BY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find CRF by SUBPROGRAM field
         /// </summary>
         /// <param name="SUBPROGRAM">SUBPROGRAM value used to find CRF</param>
@@ -829,6 +929,10 @@ BEGIN
         [TRDET] varchar(30) NULL,
         [TRHOLD] varchar(1) NULL,
         [TRORDER] varchar(10) NULL,
+        [PO_PRINTED] varchar(1) NULL,
+        [APPROVED_BY] varchar(4) NULL,
+        [STAFF_ORDER_BY] varchar(4) NULL,
+        [CRPRTID] int NULL,
         [TRBANK] varchar(10) NULL,
         [CHQ_NO] varchar(10) NULL,
         [ORDER_BY] varchar(5) NULL,
@@ -886,6 +990,10 @@ BEGIN
             [TID] ASC
         )
     );
+    CREATE NONCLUSTERED INDEX [CRF_Index_APPROVED_BY] ON [dbo].[CRF]
+    (
+            [APPROVED_BY] ASC
+    );
     CREATE NONCLUSTERED INDEX [CRF_Index_ATKEY] ON [dbo].[CRF]
     (
             [ATKEY] ASC
@@ -914,6 +1022,10 @@ BEGIN
     (
             [INVOICEGST] ASC
     );
+    CREATE NONCLUSTERED INDEX [CRF_Index_STAFF_ORDER_BY] ON [dbo].[CRF]
+    (
+            [STAFF_ORDER_BY] ASC
+    );
     CREATE NONCLUSTERED INDEX [CRF_Index_SUBPROGRAM] ON [dbo].[CRF]
     (
             [SUBPROGRAM] ASC
@@ -937,7 +1049,9 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_APPROVED_BY')
+    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
     ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
     ALTER INDEX [Index_BSB] ON [dbo].[CRF] DISABLE;
@@ -949,6 +1063,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
     ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
     ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_STAFF_ORDER_BY')
+    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
     ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
@@ -968,7 +1084,9 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_APPROVED_BY')
+    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
     ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
     ALTER INDEX [Index_BSB] ON [dbo].[CRF] REBUILD PARTITION = ALL;
@@ -980,6 +1098,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
     ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
     ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_STAFF_ORDER_BY')
+    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
     ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
@@ -1056,7 +1176,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
             {
             }
 
-            public override int FieldCount { get { return 80; } }
+            public override int FieldCount { get { return 84; } }
 
             public override object GetValue(int i)
             {
@@ -1116,111 +1236,119 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return Current.TRHOLD;
                     case 26: // TRORDER
                         return Current.TRORDER;
-                    case 27: // TRBANK
+                    case 27: // PO_PRINTED
+                        return Current.PO_PRINTED;
+                    case 28: // APPROVED_BY
+                        return Current.APPROVED_BY;
+                    case 29: // STAFF_ORDER_BY
+                        return Current.STAFF_ORDER_BY;
+                    case 30: // CRPRTID
+                        return Current.CRPRTID;
+                    case 31: // TRBANK
                         return Current.TRBANK;
-                    case 28: // CHQ_NO
+                    case 32: // CHQ_NO
                         return Current.CHQ_NO;
-                    case 29: // ORDER_BY
+                    case 33: // ORDER_BY
                         return Current.ORDER_BY;
-                    case 30: // COMPLETED
+                    case 34: // COMPLETED
                         return Current.COMPLETED;
-                    case 31: // TRUNIT
+                    case 35: // TRUNIT
                         return Current.TRUNIT;
-                    case 32: // REQ_DATE
+                    case 36: // REQ_DATE
                         return Current.REQ_DATE;
-                    case 33: // CATALOGUE
+                    case 37: // CATALOGUE
                         return Current.CATALOGUE;
-                    case 34: // DELIVERY
+                    case 38: // DELIVERY
                         return Current.DELIVERY;
-                    case 35: // PRINT_CHEQUE
+                    case 39: // PRINT_CHEQUE
                         return Current.PRINT_CHEQUE;
-                    case 36: // TAX
+                    case 40: // TAX
                         return Current.TAX;
-                    case 37: // TRNETT
+                    case 41: // TRNETT
                         return Current.TRNETT;
-                    case 38: // TRGROSS
+                    case 42: // TRGROSS
                         return Current.TRGROSS;
-                    case 39: // GST_AMOUNT
+                    case 43: // GST_AMOUNT
                         return Current.GST_AMOUNT;
-                    case 40: // GST_TYPE
+                    case 44: // GST_TYPE
                         return Current.GST_TYPE;
-                    case 41: // GST_RATE
+                    case 45: // GST_RATE
                         return Current.GST_RATE;
-                    case 42: // GST_RECLAIM
+                    case 46: // GST_RECLAIM
                         return Current.GST_RECLAIM;
-                    case 43: // WITHHOLD_AMOUNT
+                    case 47: // WITHHOLD_AMOUNT
                         return Current.WITHHOLD_AMOUNT;
-                    case 44: // INV_DATE
+                    case 48: // INV_DATE
                         return Current.INV_DATE;
-                    case 45: // DUE_DATE
+                    case 49: // DUE_DATE
                         return Current.DUE_DATE;
-                    case 46: // RTYPE
+                    case 50: // RTYPE
                         return Current.RTYPE;
-                    case 47: // DRAWER
+                    case 51: // DRAWER
                         return Current.DRAWER;
-                    case 48: // BSB
+                    case 52: // BSB
                         return Current.BSB;
-                    case 49: // BANK
+                    case 53: // BANK
                         return Current.BANK;
-                    case 50: // BRANCH
+                    case 54: // BRANCH
                         return Current.BRANCH;
-                    case 51: // ACCOUNT_NUMBER
+                    case 55: // ACCOUNT_NUMBER
                         return Current.ACCOUNT_NUMBER;
-                    case 52: // EXPECTED_DATE
+                    case 56: // EXPECTED_DATE
                         return Current.EXPECTED_DATE;
-                    case 53: // DEL_CODE
+                    case 57: // DEL_CODE
                         return Current.DEL_CODE;
-                    case 54: // DEL_DOCKET_NO
+                    case 58: // DEL_DOCKET_NO
                         return Current.DEL_DOCKET_NO;
-                    case 55: // ATKEY
+                    case 59: // ATKEY
                         return Current.ATKEY;
-                    case 56: // TINCLUDE
+                    case 60: // TINCLUDE
                         return Current.TINCLUDE;
-                    case 57: // TTRNETT
+                    case 61: // TTRNETT
                         return Current.TTRNETT;
-                    case 58: // TTRAMT
+                    case 62: // TTRAMT
                         return Current.TTRAMT;
-                    case 59: // TGST_AMOUNT
+                    case 63: // TGST_AMOUNT
                         return Current.TGST_AMOUNT;
-                    case 60: // AMEMO
+                    case 64: // AMEMO
                         return Current.AMEMO;
-                    case 61: // AMEMO_COPY
+                    case 65: // AMEMO_COPY
                         return Current.AMEMO_COPY;
-                    case 62: // NEXT_SVC_DATE
+                    case 66: // NEXT_SVC_DATE
                         return Current.NEXT_SVC_DATE;
-                    case 63: // MASTERTID
+                    case 67: // MASTERTID
                         return Current.MASTERTID;
-                    case 64: // ALLOCTID
+                    case 68: // ALLOCTID
                         return Current.ALLOCTID;
-                    case 65: // PAY_METHOD
+                    case 69: // PAY_METHOD
                         return Current.PAY_METHOD;
-                    case 66: // WITHHOLD_RATE
+                    case 70: // WITHHOLD_RATE
                         return Current.WITHHOLD_RATE;
-                    case 67: // TRDEL_MONTHS
+                    case 71: // TRDEL_MONTHS
                         return Current.TRDEL_MONTHS;
-                    case 68: // LINE_NO
+                    case 72: // LINE_NO
                         return Current.LINE_NO;
-                    case 69: // FLAG
+                    case 73: // FLAG
                         return Current.FLAG;
-                    case 70: // INVOICEGST
+                    case 74: // INVOICEGST
                         return Current.INVOICEGST;
-                    case 71: // SUBPROGRAM
+                    case 75: // SUBPROGRAM
                         return Current.SUBPROGRAM;
-                    case 72: // GLPROGRAM
+                    case 76: // GLPROGRAM
                         return Current.GLPROGRAM;
-                    case 73: // INITIATIVE
+                    case 77: // INITIATIVE
                         return Current.INITIATIVE;
-                    case 74: // CANCELLED
+                    case 78: // CANCELLED
                         return Current.CANCELLED;
-                    case 75: // PRMS_TID
+                    case 79: // PRMS_TID
                         return Current.PRMS_TID;
-                    case 76: // KCPC_TID
+                    case 80: // KCPC_TID
                         return Current.KCPC_TID;
-                    case 77: // LW_DATE
+                    case 81: // LW_DATE
                         return Current.LW_DATE;
-                    case 78: // LW_TIME
+                    case 82: // LW_TIME
                         return Current.LW_TIME;
-                    case 79: // LW_USER
+                    case 83: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1281,111 +1409,119 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return Current.TRHOLD == null;
                     case 26: // TRORDER
                         return Current.TRORDER == null;
-                    case 27: // TRBANK
+                    case 27: // PO_PRINTED
+                        return Current.PO_PRINTED == null;
+                    case 28: // APPROVED_BY
+                        return Current.APPROVED_BY == null;
+                    case 29: // STAFF_ORDER_BY
+                        return Current.STAFF_ORDER_BY == null;
+                    case 30: // CRPRTID
+                        return Current.CRPRTID == null;
+                    case 31: // TRBANK
                         return Current.TRBANK == null;
-                    case 28: // CHQ_NO
+                    case 32: // CHQ_NO
                         return Current.CHQ_NO == null;
-                    case 29: // ORDER_BY
+                    case 33: // ORDER_BY
                         return Current.ORDER_BY == null;
-                    case 30: // COMPLETED
+                    case 34: // COMPLETED
                         return Current.COMPLETED == null;
-                    case 31: // TRUNIT
+                    case 35: // TRUNIT
                         return Current.TRUNIT == null;
-                    case 32: // REQ_DATE
+                    case 36: // REQ_DATE
                         return Current.REQ_DATE == null;
-                    case 33: // CATALOGUE
+                    case 37: // CATALOGUE
                         return Current.CATALOGUE == null;
-                    case 34: // DELIVERY
+                    case 38: // DELIVERY
                         return Current.DELIVERY == null;
-                    case 35: // PRINT_CHEQUE
+                    case 39: // PRINT_CHEQUE
                         return Current.PRINT_CHEQUE == null;
-                    case 36: // TAX
+                    case 40: // TAX
                         return Current.TAX == null;
-                    case 37: // TRNETT
+                    case 41: // TRNETT
                         return Current.TRNETT == null;
-                    case 38: // TRGROSS
+                    case 42: // TRGROSS
                         return Current.TRGROSS == null;
-                    case 39: // GST_AMOUNT
+                    case 43: // GST_AMOUNT
                         return Current.GST_AMOUNT == null;
-                    case 40: // GST_TYPE
+                    case 44: // GST_TYPE
                         return Current.GST_TYPE == null;
-                    case 41: // GST_RATE
+                    case 45: // GST_RATE
                         return Current.GST_RATE == null;
-                    case 42: // GST_RECLAIM
+                    case 46: // GST_RECLAIM
                         return Current.GST_RECLAIM == null;
-                    case 43: // WITHHOLD_AMOUNT
+                    case 47: // WITHHOLD_AMOUNT
                         return Current.WITHHOLD_AMOUNT == null;
-                    case 44: // INV_DATE
+                    case 48: // INV_DATE
                         return Current.INV_DATE == null;
-                    case 45: // DUE_DATE
+                    case 49: // DUE_DATE
                         return Current.DUE_DATE == null;
-                    case 46: // RTYPE
+                    case 50: // RTYPE
                         return Current.RTYPE == null;
-                    case 47: // DRAWER
+                    case 51: // DRAWER
                         return Current.DRAWER == null;
-                    case 48: // BSB
+                    case 52: // BSB
                         return Current.BSB == null;
-                    case 49: // BANK
+                    case 53: // BANK
                         return Current.BANK == null;
-                    case 50: // BRANCH
+                    case 54: // BRANCH
                         return Current.BRANCH == null;
-                    case 51: // ACCOUNT_NUMBER
+                    case 55: // ACCOUNT_NUMBER
                         return Current.ACCOUNT_NUMBER == null;
-                    case 52: // EXPECTED_DATE
+                    case 56: // EXPECTED_DATE
                         return Current.EXPECTED_DATE == null;
-                    case 53: // DEL_CODE
+                    case 57: // DEL_CODE
                         return Current.DEL_CODE == null;
-                    case 54: // DEL_DOCKET_NO
+                    case 58: // DEL_DOCKET_NO
                         return Current.DEL_DOCKET_NO == null;
-                    case 55: // ATKEY
+                    case 59: // ATKEY
                         return Current.ATKEY == null;
-                    case 56: // TINCLUDE
+                    case 60: // TINCLUDE
                         return Current.TINCLUDE == null;
-                    case 57: // TTRNETT
+                    case 61: // TTRNETT
                         return Current.TTRNETT == null;
-                    case 58: // TTRAMT
+                    case 62: // TTRAMT
                         return Current.TTRAMT == null;
-                    case 59: // TGST_AMOUNT
+                    case 63: // TGST_AMOUNT
                         return Current.TGST_AMOUNT == null;
-                    case 60: // AMEMO
+                    case 64: // AMEMO
                         return Current.AMEMO == null;
-                    case 61: // AMEMO_COPY
+                    case 65: // AMEMO_COPY
                         return Current.AMEMO_COPY == null;
-                    case 62: // NEXT_SVC_DATE
+                    case 66: // NEXT_SVC_DATE
                         return Current.NEXT_SVC_DATE == null;
-                    case 63: // MASTERTID
+                    case 67: // MASTERTID
                         return Current.MASTERTID == null;
-                    case 64: // ALLOCTID
+                    case 68: // ALLOCTID
                         return Current.ALLOCTID == null;
-                    case 65: // PAY_METHOD
+                    case 69: // PAY_METHOD
                         return Current.PAY_METHOD == null;
-                    case 66: // WITHHOLD_RATE
+                    case 70: // WITHHOLD_RATE
                         return Current.WITHHOLD_RATE == null;
-                    case 67: // TRDEL_MONTHS
+                    case 71: // TRDEL_MONTHS
                         return Current.TRDEL_MONTHS == null;
-                    case 68: // LINE_NO
+                    case 72: // LINE_NO
                         return Current.LINE_NO == null;
-                    case 69: // FLAG
+                    case 73: // FLAG
                         return Current.FLAG == null;
-                    case 70: // INVOICEGST
+                    case 74: // INVOICEGST
                         return Current.INVOICEGST == null;
-                    case 71: // SUBPROGRAM
+                    case 75: // SUBPROGRAM
                         return Current.SUBPROGRAM == null;
-                    case 72: // GLPROGRAM
+                    case 76: // GLPROGRAM
                         return Current.GLPROGRAM == null;
-                    case 73: // INITIATIVE
+                    case 77: // INITIATIVE
                         return Current.INITIATIVE == null;
-                    case 74: // CANCELLED
+                    case 78: // CANCELLED
                         return Current.CANCELLED == null;
-                    case 75: // PRMS_TID
+                    case 79: // PRMS_TID
                         return Current.PRMS_TID == null;
-                    case 76: // KCPC_TID
+                    case 80: // KCPC_TID
                         return Current.KCPC_TID == null;
-                    case 77: // LW_DATE
+                    case 81: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 78: // LW_TIME
+                    case 82: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 79: // LW_USER
+                    case 83: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1450,111 +1586,119 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return "TRHOLD";
                     case 26: // TRORDER
                         return "TRORDER";
-                    case 27: // TRBANK
+                    case 27: // PO_PRINTED
+                        return "PO_PRINTED";
+                    case 28: // APPROVED_BY
+                        return "APPROVED_BY";
+                    case 29: // STAFF_ORDER_BY
+                        return "STAFF_ORDER_BY";
+                    case 30: // CRPRTID
+                        return "CRPRTID";
+                    case 31: // TRBANK
                         return "TRBANK";
-                    case 28: // CHQ_NO
+                    case 32: // CHQ_NO
                         return "CHQ_NO";
-                    case 29: // ORDER_BY
+                    case 33: // ORDER_BY
                         return "ORDER_BY";
-                    case 30: // COMPLETED
+                    case 34: // COMPLETED
                         return "COMPLETED";
-                    case 31: // TRUNIT
+                    case 35: // TRUNIT
                         return "TRUNIT";
-                    case 32: // REQ_DATE
+                    case 36: // REQ_DATE
                         return "REQ_DATE";
-                    case 33: // CATALOGUE
+                    case 37: // CATALOGUE
                         return "CATALOGUE";
-                    case 34: // DELIVERY
+                    case 38: // DELIVERY
                         return "DELIVERY";
-                    case 35: // PRINT_CHEQUE
+                    case 39: // PRINT_CHEQUE
                         return "PRINT_CHEQUE";
-                    case 36: // TAX
+                    case 40: // TAX
                         return "TAX";
-                    case 37: // TRNETT
+                    case 41: // TRNETT
                         return "TRNETT";
-                    case 38: // TRGROSS
+                    case 42: // TRGROSS
                         return "TRGROSS";
-                    case 39: // GST_AMOUNT
+                    case 43: // GST_AMOUNT
                         return "GST_AMOUNT";
-                    case 40: // GST_TYPE
+                    case 44: // GST_TYPE
                         return "GST_TYPE";
-                    case 41: // GST_RATE
+                    case 45: // GST_RATE
                         return "GST_RATE";
-                    case 42: // GST_RECLAIM
+                    case 46: // GST_RECLAIM
                         return "GST_RECLAIM";
-                    case 43: // WITHHOLD_AMOUNT
+                    case 47: // WITHHOLD_AMOUNT
                         return "WITHHOLD_AMOUNT";
-                    case 44: // INV_DATE
+                    case 48: // INV_DATE
                         return "INV_DATE";
-                    case 45: // DUE_DATE
+                    case 49: // DUE_DATE
                         return "DUE_DATE";
-                    case 46: // RTYPE
+                    case 50: // RTYPE
                         return "RTYPE";
-                    case 47: // DRAWER
+                    case 51: // DRAWER
                         return "DRAWER";
-                    case 48: // BSB
+                    case 52: // BSB
                         return "BSB";
-                    case 49: // BANK
+                    case 53: // BANK
                         return "BANK";
-                    case 50: // BRANCH
+                    case 54: // BRANCH
                         return "BRANCH";
-                    case 51: // ACCOUNT_NUMBER
+                    case 55: // ACCOUNT_NUMBER
                         return "ACCOUNT_NUMBER";
-                    case 52: // EXPECTED_DATE
+                    case 56: // EXPECTED_DATE
                         return "EXPECTED_DATE";
-                    case 53: // DEL_CODE
+                    case 57: // DEL_CODE
                         return "DEL_CODE";
-                    case 54: // DEL_DOCKET_NO
+                    case 58: // DEL_DOCKET_NO
                         return "DEL_DOCKET_NO";
-                    case 55: // ATKEY
+                    case 59: // ATKEY
                         return "ATKEY";
-                    case 56: // TINCLUDE
+                    case 60: // TINCLUDE
                         return "TINCLUDE";
-                    case 57: // TTRNETT
+                    case 61: // TTRNETT
                         return "TTRNETT";
-                    case 58: // TTRAMT
+                    case 62: // TTRAMT
                         return "TTRAMT";
-                    case 59: // TGST_AMOUNT
+                    case 63: // TGST_AMOUNT
                         return "TGST_AMOUNT";
-                    case 60: // AMEMO
+                    case 64: // AMEMO
                         return "AMEMO";
-                    case 61: // AMEMO_COPY
+                    case 65: // AMEMO_COPY
                         return "AMEMO_COPY";
-                    case 62: // NEXT_SVC_DATE
+                    case 66: // NEXT_SVC_DATE
                         return "NEXT_SVC_DATE";
-                    case 63: // MASTERTID
+                    case 67: // MASTERTID
                         return "MASTERTID";
-                    case 64: // ALLOCTID
+                    case 68: // ALLOCTID
                         return "ALLOCTID";
-                    case 65: // PAY_METHOD
+                    case 69: // PAY_METHOD
                         return "PAY_METHOD";
-                    case 66: // WITHHOLD_RATE
+                    case 70: // WITHHOLD_RATE
                         return "WITHHOLD_RATE";
-                    case 67: // TRDEL_MONTHS
+                    case 71: // TRDEL_MONTHS
                         return "TRDEL_MONTHS";
-                    case 68: // LINE_NO
+                    case 72: // LINE_NO
                         return "LINE_NO";
-                    case 69: // FLAG
+                    case 73: // FLAG
                         return "FLAG";
-                    case 70: // INVOICEGST
+                    case 74: // INVOICEGST
                         return "INVOICEGST";
-                    case 71: // SUBPROGRAM
+                    case 75: // SUBPROGRAM
                         return "SUBPROGRAM";
-                    case 72: // GLPROGRAM
+                    case 76: // GLPROGRAM
                         return "GLPROGRAM";
-                    case 73: // INITIATIVE
+                    case 77: // INITIATIVE
                         return "INITIATIVE";
-                    case 74: // CANCELLED
+                    case 78: // CANCELLED
                         return "CANCELLED";
-                    case 75: // PRMS_TID
+                    case 79: // PRMS_TID
                         return "PRMS_TID";
-                    case 76: // KCPC_TID
+                    case 80: // KCPC_TID
                         return "KCPC_TID";
-                    case 77: // LW_DATE
+                    case 81: // LW_DATE
                         return "LW_DATE";
-                    case 78: // LW_TIME
+                    case 82: // LW_TIME
                         return "LW_TIME";
-                    case 79: // LW_USER
+                    case 83: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1619,112 +1763,120 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
                         return 25;
                     case "TRORDER":
                         return 26;
-                    case "TRBANK":
+                    case "PO_PRINTED":
                         return 27;
-                    case "CHQ_NO":
+                    case "APPROVED_BY":
                         return 28;
-                    case "ORDER_BY":
+                    case "STAFF_ORDER_BY":
                         return 29;
-                    case "COMPLETED":
+                    case "CRPRTID":
                         return 30;
-                    case "TRUNIT":
+                    case "TRBANK":
                         return 31;
-                    case "REQ_DATE":
+                    case "CHQ_NO":
                         return 32;
-                    case "CATALOGUE":
+                    case "ORDER_BY":
                         return 33;
-                    case "DELIVERY":
+                    case "COMPLETED":
                         return 34;
-                    case "PRINT_CHEQUE":
+                    case "TRUNIT":
                         return 35;
-                    case "TAX":
+                    case "REQ_DATE":
                         return 36;
-                    case "TRNETT":
+                    case "CATALOGUE":
                         return 37;
-                    case "TRGROSS":
+                    case "DELIVERY":
                         return 38;
-                    case "GST_AMOUNT":
+                    case "PRINT_CHEQUE":
                         return 39;
-                    case "GST_TYPE":
+                    case "TAX":
                         return 40;
-                    case "GST_RATE":
+                    case "TRNETT":
                         return 41;
-                    case "GST_RECLAIM":
+                    case "TRGROSS":
                         return 42;
-                    case "WITHHOLD_AMOUNT":
+                    case "GST_AMOUNT":
                         return 43;
-                    case "INV_DATE":
+                    case "GST_TYPE":
                         return 44;
-                    case "DUE_DATE":
+                    case "GST_RATE":
                         return 45;
-                    case "RTYPE":
+                    case "GST_RECLAIM":
                         return 46;
-                    case "DRAWER":
+                    case "WITHHOLD_AMOUNT":
                         return 47;
-                    case "BSB":
+                    case "INV_DATE":
                         return 48;
-                    case "BANK":
+                    case "DUE_DATE":
                         return 49;
-                    case "BRANCH":
+                    case "RTYPE":
                         return 50;
-                    case "ACCOUNT_NUMBER":
+                    case "DRAWER":
                         return 51;
-                    case "EXPECTED_DATE":
+                    case "BSB":
                         return 52;
-                    case "DEL_CODE":
+                    case "BANK":
                         return 53;
-                    case "DEL_DOCKET_NO":
+                    case "BRANCH":
                         return 54;
-                    case "ATKEY":
+                    case "ACCOUNT_NUMBER":
                         return 55;
-                    case "TINCLUDE":
+                    case "EXPECTED_DATE":
                         return 56;
-                    case "TTRNETT":
+                    case "DEL_CODE":
                         return 57;
-                    case "TTRAMT":
+                    case "DEL_DOCKET_NO":
                         return 58;
-                    case "TGST_AMOUNT":
+                    case "ATKEY":
                         return 59;
-                    case "AMEMO":
+                    case "TINCLUDE":
                         return 60;
-                    case "AMEMO_COPY":
+                    case "TTRNETT":
                         return 61;
-                    case "NEXT_SVC_DATE":
+                    case "TTRAMT":
                         return 62;
-                    case "MASTERTID":
+                    case "TGST_AMOUNT":
                         return 63;
-                    case "ALLOCTID":
+                    case "AMEMO":
                         return 64;
-                    case "PAY_METHOD":
+                    case "AMEMO_COPY":
                         return 65;
-                    case "WITHHOLD_RATE":
+                    case "NEXT_SVC_DATE":
                         return 66;
-                    case "TRDEL_MONTHS":
+                    case "MASTERTID":
                         return 67;
-                    case "LINE_NO":
+                    case "ALLOCTID":
                         return 68;
-                    case "FLAG":
+                    case "PAY_METHOD":
                         return 69;
-                    case "INVOICEGST":
+                    case "WITHHOLD_RATE":
                         return 70;
-                    case "SUBPROGRAM":
+                    case "TRDEL_MONTHS":
                         return 71;
-                    case "GLPROGRAM":
+                    case "LINE_NO":
                         return 72;
-                    case "INITIATIVE":
+                    case "FLAG":
                         return 73;
-                    case "CANCELLED":
+                    case "INVOICEGST":
                         return 74;
-                    case "PRMS_TID":
+                    case "SUBPROGRAM":
                         return 75;
-                    case "KCPC_TID":
+                    case "GLPROGRAM":
                         return 76;
-                    case "LW_DATE":
+                    case "INITIATIVE":
                         return 77;
-                    case "LW_TIME":
+                    case "CANCELLED":
                         return 78;
-                    case "LW_USER":
+                    case "PRMS_TID":
                         return 79;
+                    case "KCPC_TID":
+                        return 80;
+                    case "LW_DATE":
+                        return 81;
+                    case "LW_TIME":
+                        return 82;
+                    case "LW_USER":
+                        return 83;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

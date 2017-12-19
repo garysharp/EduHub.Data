@@ -21,6 +21,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<SPRECIP> Cache_SPSMSKEY_SPRECIP_CODE;
         private IReadOnlyList<SPREPLY> Cache_SPSMSKEY_SPREPLY_CODE;
+        private IReadOnlyList<SPRETRY> Cache_SPSMSKEY_SPRETRY_CODE;
 
         #endregion
 
@@ -159,6 +160,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SPSMSKEY_SPREPLY_CODE;
+            }
+        }
+
+        /// <summary>
+        /// SPRETRY (SMS Retries) related entities by [SPSMS.SPSMSKEY]-&gt;[SPRETRY.CODE]
+        /// Key
+        /// </summary>
+        public IReadOnlyList<SPRETRY> SPSMSKEY_SPRETRY_CODE
+        {
+            get
+            {
+                if (Cache_SPSMSKEY_SPRETRY_CODE == null &&
+                    !Context.SPRETRY.TryFindByCODE(SPSMSKEY, out Cache_SPSMSKEY_SPRETRY_CODE))
+                {
+                    Cache_SPSMSKEY_SPRETRY_CODE = new List<SPRETRY>().AsReadOnly();
+                }
+
+                return Cache_SPSMSKEY_SPRETRY_CODE;
             }
         }
 

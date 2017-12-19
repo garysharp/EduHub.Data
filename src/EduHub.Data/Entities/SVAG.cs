@@ -15,6 +15,7 @@ namespace EduHub.Data.Entities
 
         private KCOHORT Cache_COHORT_KCOHORT;
         private KDI Cache_VDIMENSION_KDI;
+        private KDO Cache_VDOMAIN_KDO;
 
         #endregion
 
@@ -62,6 +63,12 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
         public string VDIMENSION { get; internal set; }
+
+        /// <summary>
+        /// Link to domain
+        /// [Uppercase Alphanumeric (10)]
+        /// </summary>
+        public string VDOMAIN { get; internal set; }
 
         /// <summary>
         /// Number of students with each dimension score
@@ -317,6 +324,27 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_VDIMENSION_KDI;
+            }
+        }
+
+        /// <summary>
+        /// KDO (Curriculum Area) related entity by [SVAG.VDOMAIN]-&gt;[KDO.KDOKEY]
+        /// Link to domain
+        /// </summary>
+        public KDO VDOMAIN_KDO
+        {
+            get
+            {
+                if (VDOMAIN == null)
+                {
+                    return null;
+                }
+                if (Cache_VDOMAIN_KDO == null)
+                {
+                    Cache_VDOMAIN_KDO = Context.KDO.FindByKDOKEY(VDOMAIN);
+                }
+
+                return Cache_VDOMAIN_KDO;
             }
         }
 

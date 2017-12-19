@@ -14,6 +14,8 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private CR Cache_CODE_CR;
+        private SF Cache_APPROVED_BY_SF;
+        private SF Cache_STAFF_ORDER_BY_SF;
         private KGST Cache_GST_TYPE_KGST;
         private KAB Cache_BSB_KAB;
         private KAD Cache_DEL_CODE_KAD;
@@ -201,6 +203,29 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (10)]
         /// </summary>
         public string TRORDER { get; internal set; }
+
+        /// <summary>
+        /// Has the order been printed
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string PO_PRINTED { get; internal set; }
+
+        /// <summary>
+        /// Order has been approved by
+        /// [Uppercase Alphanumeric (4)]
+        /// </summary>
+        public string APPROVED_BY { get; internal set; }
+
+        /// <summary>
+        /// Staff key for user placing order
+        /// [Uppercase Alphanumeric (4)]
+        /// </summary>
+        public string STAFF_ORDER_BY { get; internal set; }
+
+        /// <summary>
+        /// TID of CRPR
+        /// </summary>
+        public int? CRPRTID { get; internal set; }
 
         /// <summary>
         /// Bank account in the GL
@@ -522,6 +547,48 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CODE_CR;
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entity by [CRF.APPROVED_BY]-&gt;[SF.SFKEY]
+        /// Order has been approved by
+        /// </summary>
+        public SF APPROVED_BY_SF
+        {
+            get
+            {
+                if (APPROVED_BY == null)
+                {
+                    return null;
+                }
+                if (Cache_APPROVED_BY_SF == null)
+                {
+                    Cache_APPROVED_BY_SF = Context.SF.FindBySFKEY(APPROVED_BY);
+                }
+
+                return Cache_APPROVED_BY_SF;
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entity by [CRF.STAFF_ORDER_BY]-&gt;[SF.SFKEY]
+        /// Staff key for user placing order
+        /// </summary>
+        public SF STAFF_ORDER_BY_SF
+        {
+            get
+            {
+                if (STAFF_ORDER_BY == null)
+                {
+                    return null;
+                }
+                if (Cache_STAFF_ORDER_BY_SF == null)
+                {
+                    Cache_STAFF_ORDER_BY_SF = Context.SF.FindBySFKEY(STAFF_ORDER_BY);
+                }
+
+                return Cache_STAFF_ORDER_BY_SF;
             }
         }
 

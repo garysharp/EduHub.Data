@@ -44,6 +44,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_CODE_PN_GLCODE;
         private IReadOnlyList<PN> Cache_CODE_PN_GLBANK;
         private IReadOnlyList<PN> Cache_CODE_PN_GLTAX;
+        private IReadOnlyList<RQGL> Cache_CODE_RQGL_GLCODE;
         private IReadOnlyList<SA> Cache_CODE_SA_GLCODE;
         private IReadOnlyList<SDFC> Cache_CODE_SDFC_GLCODE;
         private IReadOnlyList<SGFC> Cache_CODE_SGFC_GLCODE;
@@ -1050,6 +1051,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CODE_PN_GLTAX;
+            }
+        }
+
+        /// <summary>
+        /// RQGL (Purchasing Group GL Codes) related entities by [GL.CODE]-&gt;[RQGL.GLCODE]
+        /// General Ledger code (Prime Key)
+        /// </summary>
+        public IReadOnlyList<RQGL> CODE_RQGL_GLCODE
+        {
+            get
+            {
+                if (Cache_CODE_RQGL_GLCODE == null &&
+                    !Context.RQGL.TryFindByGLCODE(CODE, out Cache_CODE_RQGL_GLCODE))
+                {
+                    Cache_CODE_RQGL_GLCODE = new List<RQGL>().AsReadOnly();
+                }
+
+                return Cache_CODE_RQGL_GLCODE;
             }
         }
 

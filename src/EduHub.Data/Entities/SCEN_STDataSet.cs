@@ -430,6 +430,15 @@ namespace EduHub.Data.Entities
                     case "ADDRESS_C":
                         mapper[i] = (e, v) => e.ADDRESS_C = v;
                         break;
+                    case "CNSE":
+                        mapper[i] = (e, v) => e.CNSE = v;
+                        break;
+                    case "CSE":
+                        mapper[i] = (e, v) => e.CSE = v;
+                        break;
+                    case "FSE":
+                        mapper[i] = (e, v) => e.FSE = v;
+                        break;
                     default:
                         mapper[i] = MapperNoOp;
                         break;
@@ -690,6 +699,9 @@ BEGIN
         [DF_NON_SCH_ED_B] varchar(1) NULL,
         [ADDRESS_B] varchar(30) NULL,
         [ADDRESS_C] varchar(30) NULL,
+        [CNSE] varchar(1) NULL,
+        [CSE] varchar(1) NULL,
+        [FSE] varchar(1) NULL,
         CONSTRAINT [SCEN_ST_Index_ID] PRIMARY KEY CLUSTERED (
             [ID] ASC
         )
@@ -784,7 +796,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 131; } }
+            public override int FieldCount { get { return 134; } }
 
             public override object GetValue(int i)
             {
@@ -1052,6 +1064,12 @@ END");
                         return Current.ADDRESS_B;
                     case 130: // ADDRESS_C
                         return Current.ADDRESS_C;
+                    case 131: // CNSE
+                        return Current.CNSE;
+                    case 132: // CSE
+                        return Current.CSE;
+                    case 133: // FSE
+                        return Current.FSE;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
@@ -1321,6 +1339,12 @@ END");
                         return Current.ADDRESS_B == null;
                     case 130: // ADDRESS_C
                         return Current.ADDRESS_C == null;
+                    case 131: // CNSE
+                        return Current.CNSE == null;
+                    case 132: // CSE
+                        return Current.CSE == null;
+                    case 133: // FSE
+                        return Current.FSE == null;
                     default:
                         return false;
                 }
@@ -1592,6 +1616,12 @@ END");
                         return "ADDRESS_B";
                     case 130: // ADDRESS_C
                         return "ADDRESS_C";
+                    case 131: // CNSE
+                        return "CNSE";
+                    case 132: // CSE
+                        return "CSE";
+                    case 133: // FSE
+                        return "FSE";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
                 }
@@ -1863,6 +1893,12 @@ END");
                         return 129;
                     case "ADDRESS_C":
                         return 130;
+                    case "CNSE":
+                        return 131;
+                    case "CSE":
+                        return 132;
+                    case "FSE":
+                        return 133;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

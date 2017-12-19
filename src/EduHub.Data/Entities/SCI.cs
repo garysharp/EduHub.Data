@@ -32,6 +32,7 @@ namespace EduHub.Data.Entities
         private SF Cache_SCH_BMANAGER_SF;
         private SF Cache_SCH_VAC_CONTACT_SF;
         private SF Cache_SCH_EMERG_CONTACT_SF;
+        private SF Cache_SF_PURCH_MANAGER_SF;
         private SAM Cache_SCH_COUNCIL_PRES_SAM;
 
         #endregion
@@ -479,6 +480,12 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (4)]
         /// </summary>
         public string SCH_EMERG_CONTACT { get; internal set; }
+
+        /// <summary>
+        /// Staff code for Purchasing Manager
+        /// [Uppercase Alphanumeric (4)]
+        /// </summary>
+        public string SF_PURCH_MANAGER { get; internal set; }
 
         /// <summary>
         /// Link to the school council representative for the school
@@ -953,6 +960,27 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SCH_EMERG_CONTACT_SF;
+            }
+        }
+
+        /// <summary>
+        /// SF (Staff) related entity by [SCI.SF_PURCH_MANAGER]-&gt;[SF.SFKEY]
+        /// Staff code for Purchasing Manager
+        /// </summary>
+        public SF SF_PURCH_MANAGER_SF
+        {
+            get
+            {
+                if (SF_PURCH_MANAGER == null)
+                {
+                    return null;
+                }
+                if (Cache_SF_PURCH_MANAGER_SF == null)
+                {
+                    Cache_SF_PURCH_MANAGER_SF = Context.SF.FindBySFKEY(SF_PURCH_MANAGER);
+                }
+
+                return Cache_SF_PURCH_MANAGER_SF;
             }
         }
 

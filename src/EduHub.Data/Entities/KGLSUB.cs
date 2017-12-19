@@ -21,6 +21,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<ARF> Cache_SUBPROGRAM_ARF_SUBPROGRAM;
         private IReadOnlyList<CRF> Cache_SUBPROGRAM_CRF_SUBPROGRAM;
+        private IReadOnlyList<CRPR> Cache_SUBPROGRAM_CRPR_SUBPROGRAM;
         private IReadOnlyList<DFF> Cache_SUBPROGRAM_DFF_SUBPROGRAM;
         private IReadOnlyList<DRF> Cache_SUBPROGRAM_DRF_SUBPROGRAM;
         private IReadOnlyList<GLCF> Cache_SUBPROGRAM_GLCF_SUBPROGRAM;
@@ -36,6 +37,8 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PEPUH> Cache_SUBPROGRAM_PEPUH_SUBPROGRAM;
         private IReadOnlyList<PI> Cache_SUBPROGRAM_PI_SUBPROGRAM;
         private IReadOnlyList<PN> Cache_SUBPROGRAM_PN_SUBPROGRAM;
+        private IReadOnlyList<RQGL> Cache_SUBPROGRAM_RQGL_SUBPROGRAM;
+        private IReadOnlyList<RQT> Cache_SUBPROGRAM_RQT_SUBPROGRAM;
         private IReadOnlyList<SA> Cache_SUBPROGRAM_SA_SUBPROGRAM;
         private IReadOnlyList<SDFC> Cache_SUBPROGRAM_SDFC_SUBPROGRAM;
         private IReadOnlyList<SGFC> Cache_SUBPROGRAM_SGFC_SUBPROGRAM;
@@ -173,6 +176,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SUBPROGRAM_CRF_SUBPROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// CRPR (Creditor Purchase Requisitions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[CRPR.SUBPROGRAM]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<CRPR> SUBPROGRAM_CRPR_SUBPROGRAM
+        {
+            get
+            {
+                if (Cache_SUBPROGRAM_CRPR_SUBPROGRAM == null &&
+                    !Context.CRPR.TryFindBySUBPROGRAM(SUBPROGRAM, out Cache_SUBPROGRAM_CRPR_SUBPROGRAM))
+                {
+                    Cache_SUBPROGRAM_CRPR_SUBPROGRAM = new List<CRPR>().AsReadOnly();
+                }
+
+                return Cache_SUBPROGRAM_CRPR_SUBPROGRAM;
             }
         }
 
@@ -443,6 +464,42 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SUBPROGRAM_PN_SUBPROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// RQGL (Purchasing Group GL Codes) related entities by [KGLSUB.SUBPROGRAM]-&gt;[RQGL.SUBPROGRAM]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<RQGL> SUBPROGRAM_RQGL_SUBPROGRAM
+        {
+            get
+            {
+                if (Cache_SUBPROGRAM_RQGL_SUBPROGRAM == null &&
+                    !Context.RQGL.TryFindBySUBPROGRAM(SUBPROGRAM, out Cache_SUBPROGRAM_RQGL_SUBPROGRAM))
+                {
+                    Cache_SUBPROGRAM_RQGL_SUBPROGRAM = new List<RQGL>().AsReadOnly();
+                }
+
+                return Cache_SUBPROGRAM_RQGL_SUBPROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// RQT (Purchase Requisition Transaction) related entities by [KGLSUB.SUBPROGRAM]-&gt;[RQT.SUBPROGRAM]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<RQT> SUBPROGRAM_RQT_SUBPROGRAM
+        {
+            get
+            {
+                if (Cache_SUBPROGRAM_RQT_SUBPROGRAM == null &&
+                    !Context.RQT.TryFindBySUBPROGRAM(SUBPROGRAM, out Cache_SUBPROGRAM_RQT_SUBPROGRAM))
+                {
+                    Cache_SUBPROGRAM_RQT_SUBPROGRAM = new List<RQT>().AsReadOnly();
+                }
+
+                return Cache_SUBPROGRAM_RQT_SUBPROGRAM;
             }
         }
 

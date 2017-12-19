@@ -14,7 +14,7 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Xml.Linq" #>
 <#
-    var schema = LoadSchema(this.Host.ResolvePath(@"CASES21v58 Schema.xml"));
+    var schema = LoadSchema(this.Host.ResolvePath(@"CASES21v59 Schema.xml"));
 #>
 using EduHub.Data.SeamlessViews;
 using System;

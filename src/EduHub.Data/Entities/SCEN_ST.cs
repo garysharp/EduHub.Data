@@ -789,6 +789,24 @@ namespace EduHub.Data.Entities
         /// </summary>
         public string ADDRESS_C { get; internal set; }
 
+        /// <summary>
+        /// Calculated Non School Education
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CNSE { get; internal set; }
+
+        /// <summary>
+        /// Calculated School Education
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CSE { get; internal set; }
+
+        /// <summary>
+        /// Final Education Value
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string FSE { get; internal set; }
+
         #endregion
 
     }

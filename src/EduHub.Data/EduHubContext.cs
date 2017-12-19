@@ -30,6 +30,7 @@ namespace EduHub.Data
         private readonly CRDataSet _CR;
         private readonly CRFDataSet _CRF;
         private readonly CRFTCDataSet _CRFTC;
+        private readonly CRPRDataSet _CRPR;
         private readonly CRTTDataSet _CRTT;
         private readonly DFDataSet _DF;
         private readonly DF_TFRDataSet _DF_TFR;
@@ -164,6 +165,11 @@ namespace EduHub.Data
         private readonly QSADDataSet _QSAD;
         private readonly QSAGDataSet _QSAG;
         private readonly QSATDataSet _QSAT;
+        private readonly RQDataSet _RQ;
+        private readonly RQGLDataSet _RQGL;
+        private readonly RQPGDataSet _RQPG;
+        private readonly RQRELDataSet _RQREL;
+        private readonly RQTDataSet _RQT;
         private readonly SADataSet _SA;
         private readonly SABDataSet _SAB;
         private readonly SABTDataSet _SABT;
@@ -212,6 +218,7 @@ namespace EduHub.Data
         private readonly SEC_MSGDataSet _SEC_MSG;
         private readonly SEC_URLDataSet _SEC_URL;
         private readonly SEC_USRDataSet _SEC_USR;
+        private readonly SECMSGDataSet _SECMSG;
         private readonly SFDataSet _SF;
         private readonly SFAQDataSet _SFAQ;
         private readonly SFAVDataSet _SFAV;
@@ -248,6 +255,7 @@ namespace EduHub.Data
         private readonly SPOUTDataSet _SPOUT;
         private readonly SPRECIPDataSet _SPRECIP;
         private readonly SPREPLYDataSet _SPREPLY;
+        private readonly SPRETRYDataSet _SPRETRY;
         private readonly SPSMSDataSet _SPSMS;
         private readonly SPUDataSet _SPU;
         private readonly SPWWWDataSet _SPWWW;
@@ -365,6 +373,7 @@ namespace EduHub.Data
             _CR = new CRDataSet(this);
             _CRF = new CRFDataSet(this);
             _CRFTC = new CRFTCDataSet(this);
+            _CRPR = new CRPRDataSet(this);
             _CRTT = new CRTTDataSet(this);
             _DF = new DFDataSet(this);
             _DF_TFR = new DF_TFRDataSet(this);
@@ -499,6 +508,11 @@ namespace EduHub.Data
             _QSAD = new QSADDataSet(this);
             _QSAG = new QSAGDataSet(this);
             _QSAT = new QSATDataSet(this);
+            _RQ = new RQDataSet(this);
+            _RQGL = new RQGLDataSet(this);
+            _RQPG = new RQPGDataSet(this);
+            _RQREL = new RQRELDataSet(this);
+            _RQT = new RQTDataSet(this);
             _SA = new SADataSet(this);
             _SAB = new SABDataSet(this);
             _SABT = new SABTDataSet(this);
@@ -547,6 +561,7 @@ namespace EduHub.Data
             _SEC_MSG = new SEC_MSGDataSet(this);
             _SEC_URL = new SEC_URLDataSet(this);
             _SEC_USR = new SEC_USRDataSet(this);
+            _SECMSG = new SECMSGDataSet(this);
             _SF = new SFDataSet(this);
             _SFAQ = new SFAQDataSet(this);
             _SFAV = new SFAVDataSet(this);
@@ -583,6 +598,7 @@ namespace EduHub.Data
             _SPOUT = new SPOUTDataSet(this);
             _SPRECIP = new SPRECIPDataSet(this);
             _SPREPLY = new SPREPLYDataSet(this);
+            _SPRETRY = new SPRETRYDataSet(this);
             _SPSMS = new SPSMSDataSet(this);
             _SPU = new SPUDataSet(this);
             _SPWWW = new SPWWWDataSet(this);
@@ -676,6 +692,7 @@ namespace EduHub.Data
             yield return CR;
             yield return CRF;
             yield return CRFTC;
+            yield return CRPR;
             yield return CRTT;
             yield return DF;
             yield return DF_TFR;
@@ -810,6 +827,11 @@ namespace EduHub.Data
             yield return QSAD;
             yield return QSAG;
             yield return QSAT;
+            yield return RQ;
+            yield return RQGL;
+            yield return RQPG;
+            yield return RQREL;
+            yield return RQT;
             yield return SA;
             yield return SAB;
             yield return SABT;
@@ -858,6 +880,7 @@ namespace EduHub.Data
             yield return SEC_MSG;
             yield return SEC_URL;
             yield return SEC_USR;
+            yield return SECMSG;
             yield return SF;
             yield return SFAQ;
             yield return SFAV;
@@ -894,6 +917,7 @@ namespace EduHub.Data
             yield return SPOUT;
             yield return SPRECIP;
             yield return SPREPLY;
+            yield return SPRETRY;
             yield return SPSMS;
             yield return SPU;
             yield return SPWWW;
@@ -1051,6 +1075,11 @@ namespace EduHub.Data
         /// Creditor Fuel Tax Credits
         /// </summary>
         public CRFTCDataSet CRFTC { get { return _CRFTC; } }
+
+        /// <summary>
+        /// Creditor Purchase Requisitions
+        /// </summary>
+        public CRPRDataSet CRPR { get { return _CRPR; } }
 
         /// <summary>
         /// Creditor Trade Types
@@ -1723,6 +1752,31 @@ namespace EduHub.Data
         public QSATDataSet QSAT { get { return _QSAT; } }
 
         /// <summary>
+        /// Purchase Requisition
+        /// </summary>
+        public RQDataSet RQ { get { return _RQ; } }
+
+        /// <summary>
+        /// Purchasing Group GL Codes
+        /// </summary>
+        public RQGLDataSet RQGL { get { return _RQGL; } }
+
+        /// <summary>
+        /// Purchasing Group
+        /// </summary>
+        public RQPGDataSet RQPG { get { return _RQPG; } }
+
+        /// <summary>
+        /// Staff Purchasing Group Link
+        /// </summary>
+        public RQRELDataSet RQREL { get { return _RQREL; } }
+
+        /// <summary>
+        /// Purchase Requisition Transaction
+        /// </summary>
+        public RQTDataSet RQT { get { return _RQT; } }
+
+        /// <summary>
         /// Fees
         /// </summary>
         public SADataSet SA { get { return _SA; } }
@@ -1963,6 +2017,11 @@ namespace EduHub.Data
         public SEC_USRDataSet SEC_USR { get { return _SEC_USR; } }
 
         /// <summary>
+        /// eCases Messages
+        /// </summary>
+        public SECMSGDataSet SECMSG { get { return _SECMSG; } }
+
+        /// <summary>
         /// Staff
         /// </summary>
         public SFDataSet SF { get { return _SF; } }
@@ -2141,6 +2200,11 @@ namespace EduHub.Data
         /// SMS Recipients
         /// </summary>
         public SPREPLYDataSet SPREPLY { get { return _SPREPLY; } }
+
+        /// <summary>
+        /// SMS Retries
+        /// </summary>
+        public SPRETRYDataSet SPRETRY { get { return _SPRETRY; } }
 
         /// <summary>
         /// SMS messages

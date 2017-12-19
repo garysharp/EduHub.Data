@@ -26,6 +26,7 @@ namespace EduHub.Data.Entities
             Index_COHORT = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.COHORT));
             Index_SVAGKEY = new Lazy<Dictionary<int, SVAG>>(() => this.ToDictionary(i => i.SVAGKEY));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
+            Index_VDOMAIN = new Lazy<NullDictionary<string, IReadOnlyList<SVAG>>>(() => this.ToGroupedNullDictionary(i => i.VDOMAIN));
         }
 
         /// <summary>
@@ -56,6 +57,9 @@ namespace EduHub.Data.Entities
                         break;
                     case "VDIMENSION":
                         mapper[i] = (e, v) => e.VDIMENSION = v;
+                        break;
+                    case "VDOMAIN":
+                        mapper[i] = (e, v) => e.VDOMAIN = v;
                         break;
                     case "NUMBER_AT01":
                         mapper[i] = (e, v) => e.NUMBER_AT01 = v == null ? (short?)null : short.Parse(v);
@@ -251,6 +255,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_COHORT;
         private Lazy<Dictionary<int, SVAG>> Index_SVAGKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_VDIMENSION;
+        private Lazy<NullDictionary<string, IReadOnlyList<SVAG>>> Index_VDOMAIN;
 
         #endregion
 
@@ -382,6 +387,48 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <summary>
+        /// Find SVAG by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find SVAG</param>
+        /// <returns>List of related SVAG entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> FindByVDOMAIN(string VDOMAIN)
+        {
+            return Index_VDOMAIN.Value[VDOMAIN];
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find SVAG</param>
+        /// <param name="Value">List of related SVAG entities</param>
+        /// <returns>True if the list of related SVAG entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByVDOMAIN(string VDOMAIN, out IReadOnlyList<SVAG> Value)
+        {
+            return Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SVAG by VDOMAIN field
+        /// </summary>
+        /// <param name="VDOMAIN">VDOMAIN value used to find SVAG</param>
+        /// <returns>List of related SVAG entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SVAG> TryFindByVDOMAIN(string VDOMAIN)
+        {
+            IReadOnlyList<SVAG> value;
+            if (Index_VDOMAIN.Value.TryGetValue(VDOMAIN, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region SQL Integration
@@ -404,6 +451,7 @@ BEGIN
         [CAMPUS] int NULL,
         [YEAR_SEMESTER] varchar(6) NULL,
         [VDIMENSION] varchar(10) NULL,
+        [VDOMAIN] varchar(10) NULL,
         [NUMBER_AT01] smallint NULL,
         [NUMBER_AT02] smallint NULL,
         [NUMBER_AT03] smallint NULL,
@@ -458,6 +506,10 @@ BEGIN
     (
             [VDIMENSION] ASC
     );
+    CREATE NONCLUSTERED INDEX [SVAG_Index_VDOMAIN] ON [dbo].[SVAG]
+    (
+            [VDOMAIN] ASC
+    );
 END");
         }
 
@@ -477,6 +529,8 @@ END");
     ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
     ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDOMAIN')
+    ALTER INDEX [Index_VDOMAIN] ON [dbo].[SVAG] DISABLE;
 ");
         }
 
@@ -494,6 +548,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
     ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
     ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDOMAIN')
+    ALTER INDEX [Index_VDOMAIN] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
 ");
         }
 
@@ -564,7 +620,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
             {
             }
 
-            public override int FieldCount { get { return 48; } }
+            public override int FieldCount { get { return 49; } }
 
             public override object GetValue(int i)
             {
@@ -582,89 +638,91 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.YEAR_SEMESTER;
                     case 5: // VDIMENSION
                         return Current.VDIMENSION;
-                    case 6: // NUMBER_AT01
+                    case 6: // VDOMAIN
+                        return Current.VDOMAIN;
+                    case 7: // NUMBER_AT01
                         return Current.NUMBER_AT01;
-                    case 7: // NUMBER_AT02
+                    case 8: // NUMBER_AT02
                         return Current.NUMBER_AT02;
-                    case 8: // NUMBER_AT03
+                    case 9: // NUMBER_AT03
                         return Current.NUMBER_AT03;
-                    case 9: // NUMBER_AT04
+                    case 10: // NUMBER_AT04
                         return Current.NUMBER_AT04;
-                    case 10: // NUMBER_AT05
+                    case 11: // NUMBER_AT05
                         return Current.NUMBER_AT05;
-                    case 11: // NUMBER_AT06
+                    case 12: // NUMBER_AT06
                         return Current.NUMBER_AT06;
-                    case 12: // NUMBER_AT07
+                    case 13: // NUMBER_AT07
                         return Current.NUMBER_AT07;
-                    case 13: // NUMBER_AT08
+                    case 14: // NUMBER_AT08
                         return Current.NUMBER_AT08;
-                    case 14: // NUMBER_AT09
+                    case 15: // NUMBER_AT09
                         return Current.NUMBER_AT09;
-                    case 15: // NUMBER_AT10
+                    case 16: // NUMBER_AT10
                         return Current.NUMBER_AT10;
-                    case 16: // NUMBER_AT11
+                    case 17: // NUMBER_AT11
                         return Current.NUMBER_AT11;
-                    case 17: // NUMBER_AT12
+                    case 18: // NUMBER_AT12
                         return Current.NUMBER_AT12;
-                    case 18: // NUMBER_AT13
+                    case 19: // NUMBER_AT13
                         return Current.NUMBER_AT13;
-                    case 19: // NUMBER_AT14
+                    case 20: // NUMBER_AT14
                         return Current.NUMBER_AT14;
-                    case 20: // NUMBER_AT15
+                    case 21: // NUMBER_AT15
                         return Current.NUMBER_AT15;
-                    case 21: // NUMBER_AT16
+                    case 22: // NUMBER_AT16
                         return Current.NUMBER_AT16;
-                    case 22: // NUMBER_AT17
+                    case 23: // NUMBER_AT17
                         return Current.NUMBER_AT17;
-                    case 23: // NUMBER_AT18
+                    case 24: // NUMBER_AT18
                         return Current.NUMBER_AT18;
-                    case 24: // NUMBER_AT19
+                    case 25: // NUMBER_AT19
                         return Current.NUMBER_AT19;
-                    case 25: // NUMBER_AT20
+                    case 26: // NUMBER_AT20
                         return Current.NUMBER_AT20;
-                    case 26: // NUMBER_AT21
+                    case 27: // NUMBER_AT21
                         return Current.NUMBER_AT21;
-                    case 27: // NUMBER_AT22
+                    case 28: // NUMBER_AT22
                         return Current.NUMBER_AT22;
-                    case 28: // NUMBER_AT23
+                    case 29: // NUMBER_AT23
                         return Current.NUMBER_AT23;
-                    case 29: // NUMBER_AT24
+                    case 30: // NUMBER_AT24
                         return Current.NUMBER_AT24;
-                    case 30: // NUMBER_AT25
+                    case 31: // NUMBER_AT25
                         return Current.NUMBER_AT25;
-                    case 31: // NUMBER_AT26
+                    case 32: // NUMBER_AT26
                         return Current.NUMBER_AT26;
-                    case 32: // NUMBER_AT27
+                    case 33: // NUMBER_AT27
                         return Current.NUMBER_AT27;
-                    case 33: // NUMBER_AT28
+                    case 34: // NUMBER_AT28
                         return Current.NUMBER_AT28;
-                    case 34: // NUMBER_AT29
+                    case 35: // NUMBER_AT29
                         return Current.NUMBER_AT29;
-                    case 35: // NUMBER_AT30
+                    case 36: // NUMBER_AT30
                         return Current.NUMBER_AT30;
-                    case 36: // NUMBER_AT31
+                    case 37: // NUMBER_AT31
                         return Current.NUMBER_AT31;
-                    case 37: // NUMBER_AT32
+                    case 38: // NUMBER_AT32
                         return Current.NUMBER_AT32;
-                    case 38: // NUMBER_AT33
+                    case 39: // NUMBER_AT33
                         return Current.NUMBER_AT33;
-                    case 39: // NUMBER_AT34
+                    case 40: // NUMBER_AT34
                         return Current.NUMBER_AT34;
-                    case 40: // NO_NA
+                    case 41: // NO_NA
                         return Current.NO_NA;
-                    case 41: // NO_NT
+                    case 42: // NO_NT
                         return Current.NO_NT;
-                    case 42: // NO_DNP
+                    case 43: // NO_DNP
                         return Current.NO_DNP;
-                    case 43: // TOTAL_NUMBER
+                    case 44: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER;
-                    case 44: // SENT_TO_DEET
+                    case 45: // SENT_TO_DEET
                         return Current.SENT_TO_DEET;
-                    case 45: // LW_DATE
+                    case 46: // LW_DATE
                         return Current.LW_DATE;
-                    case 46: // LW_TIME
+                    case 47: // LW_TIME
                         return Current.LW_TIME;
-                    case 47: // LW_USER
+                    case 48: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -685,89 +743,91 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return Current.YEAR_SEMESTER == null;
                     case 5: // VDIMENSION
                         return Current.VDIMENSION == null;
-                    case 6: // NUMBER_AT01
+                    case 6: // VDOMAIN
+                        return Current.VDOMAIN == null;
+                    case 7: // NUMBER_AT01
                         return Current.NUMBER_AT01 == null;
-                    case 7: // NUMBER_AT02
+                    case 8: // NUMBER_AT02
                         return Current.NUMBER_AT02 == null;
-                    case 8: // NUMBER_AT03
+                    case 9: // NUMBER_AT03
                         return Current.NUMBER_AT03 == null;
-                    case 9: // NUMBER_AT04
+                    case 10: // NUMBER_AT04
                         return Current.NUMBER_AT04 == null;
-                    case 10: // NUMBER_AT05
+                    case 11: // NUMBER_AT05
                         return Current.NUMBER_AT05 == null;
-                    case 11: // NUMBER_AT06
+                    case 12: // NUMBER_AT06
                         return Current.NUMBER_AT06 == null;
-                    case 12: // NUMBER_AT07
+                    case 13: // NUMBER_AT07
                         return Current.NUMBER_AT07 == null;
-                    case 13: // NUMBER_AT08
+                    case 14: // NUMBER_AT08
                         return Current.NUMBER_AT08 == null;
-                    case 14: // NUMBER_AT09
+                    case 15: // NUMBER_AT09
                         return Current.NUMBER_AT09 == null;
-                    case 15: // NUMBER_AT10
+                    case 16: // NUMBER_AT10
                         return Current.NUMBER_AT10 == null;
-                    case 16: // NUMBER_AT11
+                    case 17: // NUMBER_AT11
                         return Current.NUMBER_AT11 == null;
-                    case 17: // NUMBER_AT12
+                    case 18: // NUMBER_AT12
                         return Current.NUMBER_AT12 == null;
-                    case 18: // NUMBER_AT13
+                    case 19: // NUMBER_AT13
                         return Current.NUMBER_AT13 == null;
-                    case 19: // NUMBER_AT14
+                    case 20: // NUMBER_AT14
                         return Current.NUMBER_AT14 == null;
-                    case 20: // NUMBER_AT15
+                    case 21: // NUMBER_AT15
                         return Current.NUMBER_AT15 == null;
-                    case 21: // NUMBER_AT16
+                    case 22: // NUMBER_AT16
                         return Current.NUMBER_AT16 == null;
-                    case 22: // NUMBER_AT17
+                    case 23: // NUMBER_AT17
                         return Current.NUMBER_AT17 == null;
-                    case 23: // NUMBER_AT18
+                    case 24: // NUMBER_AT18
                         return Current.NUMBER_AT18 == null;
-                    case 24: // NUMBER_AT19
+                    case 25: // NUMBER_AT19
                         return Current.NUMBER_AT19 == null;
-                    case 25: // NUMBER_AT20
+                    case 26: // NUMBER_AT20
                         return Current.NUMBER_AT20 == null;
-                    case 26: // NUMBER_AT21
+                    case 27: // NUMBER_AT21
                         return Current.NUMBER_AT21 == null;
-                    case 27: // NUMBER_AT22
+                    case 28: // NUMBER_AT22
                         return Current.NUMBER_AT22 == null;
-                    case 28: // NUMBER_AT23
+                    case 29: // NUMBER_AT23
                         return Current.NUMBER_AT23 == null;
-                    case 29: // NUMBER_AT24
+                    case 30: // NUMBER_AT24
                         return Current.NUMBER_AT24 == null;
-                    case 30: // NUMBER_AT25
+                    case 31: // NUMBER_AT25
                         return Current.NUMBER_AT25 == null;
-                    case 31: // NUMBER_AT26
+                    case 32: // NUMBER_AT26
                         return Current.NUMBER_AT26 == null;
-                    case 32: // NUMBER_AT27
+                    case 33: // NUMBER_AT27
                         return Current.NUMBER_AT27 == null;
-                    case 33: // NUMBER_AT28
+                    case 34: // NUMBER_AT28
                         return Current.NUMBER_AT28 == null;
-                    case 34: // NUMBER_AT29
+                    case 35: // NUMBER_AT29
                         return Current.NUMBER_AT29 == null;
-                    case 35: // NUMBER_AT30
+                    case 36: // NUMBER_AT30
                         return Current.NUMBER_AT30 == null;
-                    case 36: // NUMBER_AT31
+                    case 37: // NUMBER_AT31
                         return Current.NUMBER_AT31 == null;
-                    case 37: // NUMBER_AT32
+                    case 38: // NUMBER_AT32
                         return Current.NUMBER_AT32 == null;
-                    case 38: // NUMBER_AT33
+                    case 39: // NUMBER_AT33
                         return Current.NUMBER_AT33 == null;
-                    case 39: // NUMBER_AT34
+                    case 40: // NUMBER_AT34
                         return Current.NUMBER_AT34 == null;
-                    case 40: // NO_NA
+                    case 41: // NO_NA
                         return Current.NO_NA == null;
-                    case 41: // NO_NT
+                    case 42: // NO_NT
                         return Current.NO_NT == null;
-                    case 42: // NO_DNP
+                    case 43: // NO_DNP
                         return Current.NO_DNP == null;
-                    case 43: // TOTAL_NUMBER
+                    case 44: // TOTAL_NUMBER
                         return Current.TOTAL_NUMBER == null;
-                    case 44: // SENT_TO_DEET
+                    case 45: // SENT_TO_DEET
                         return Current.SENT_TO_DEET == null;
-                    case 45: // LW_DATE
+                    case 46: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 46: // LW_TIME
+                    case 47: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 47: // LW_USER
+                    case 48: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -790,89 +850,91 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return "YEAR_SEMESTER";
                     case 5: // VDIMENSION
                         return "VDIMENSION";
-                    case 6: // NUMBER_AT01
+                    case 6: // VDOMAIN
+                        return "VDOMAIN";
+                    case 7: // NUMBER_AT01
                         return "NUMBER_AT01";
-                    case 7: // NUMBER_AT02
+                    case 8: // NUMBER_AT02
                         return "NUMBER_AT02";
-                    case 8: // NUMBER_AT03
+                    case 9: // NUMBER_AT03
                         return "NUMBER_AT03";
-                    case 9: // NUMBER_AT04
+                    case 10: // NUMBER_AT04
                         return "NUMBER_AT04";
-                    case 10: // NUMBER_AT05
+                    case 11: // NUMBER_AT05
                         return "NUMBER_AT05";
-                    case 11: // NUMBER_AT06
+                    case 12: // NUMBER_AT06
                         return "NUMBER_AT06";
-                    case 12: // NUMBER_AT07
+                    case 13: // NUMBER_AT07
                         return "NUMBER_AT07";
-                    case 13: // NUMBER_AT08
+                    case 14: // NUMBER_AT08
                         return "NUMBER_AT08";
-                    case 14: // NUMBER_AT09
+                    case 15: // NUMBER_AT09
                         return "NUMBER_AT09";
-                    case 15: // NUMBER_AT10
+                    case 16: // NUMBER_AT10
                         return "NUMBER_AT10";
-                    case 16: // NUMBER_AT11
+                    case 17: // NUMBER_AT11
                         return "NUMBER_AT11";
-                    case 17: // NUMBER_AT12
+                    case 18: // NUMBER_AT12
                         return "NUMBER_AT12";
-                    case 18: // NUMBER_AT13
+                    case 19: // NUMBER_AT13
                         return "NUMBER_AT13";
-                    case 19: // NUMBER_AT14
+                    case 20: // NUMBER_AT14
                         return "NUMBER_AT14";
-                    case 20: // NUMBER_AT15
+                    case 21: // NUMBER_AT15
                         return "NUMBER_AT15";
-                    case 21: // NUMBER_AT16
+                    case 22: // NUMBER_AT16
                         return "NUMBER_AT16";
-                    case 22: // NUMBER_AT17
+                    case 23: // NUMBER_AT17
                         return "NUMBER_AT17";
-                    case 23: // NUMBER_AT18
+                    case 24: // NUMBER_AT18
                         return "NUMBER_AT18";
-                    case 24: // NUMBER_AT19
+                    case 25: // NUMBER_AT19
                         return "NUMBER_AT19";
-                    case 25: // NUMBER_AT20
+                    case 26: // NUMBER_AT20
                         return "NUMBER_AT20";
-                    case 26: // NUMBER_AT21
+                    case 27: // NUMBER_AT21
                         return "NUMBER_AT21";
-                    case 27: // NUMBER_AT22
+                    case 28: // NUMBER_AT22
                         return "NUMBER_AT22";
-                    case 28: // NUMBER_AT23
+                    case 29: // NUMBER_AT23
                         return "NUMBER_AT23";
-                    case 29: // NUMBER_AT24
+                    case 30: // NUMBER_AT24
                         return "NUMBER_AT24";
-                    case 30: // NUMBER_AT25
+                    case 31: // NUMBER_AT25
                         return "NUMBER_AT25";
-                    case 31: // NUMBER_AT26
+                    case 32: // NUMBER_AT26
                         return "NUMBER_AT26";
-                    case 32: // NUMBER_AT27
+                    case 33: // NUMBER_AT27
                         return "NUMBER_AT27";
-                    case 33: // NUMBER_AT28
+                    case 34: // NUMBER_AT28
                         return "NUMBER_AT28";
-                    case 34: // NUMBER_AT29
+                    case 35: // NUMBER_AT29
                         return "NUMBER_AT29";
-                    case 35: // NUMBER_AT30
+                    case 36: // NUMBER_AT30
                         return "NUMBER_AT30";
-                    case 36: // NUMBER_AT31
+                    case 37: // NUMBER_AT31
                         return "NUMBER_AT31";
-                    case 37: // NUMBER_AT32
+                    case 38: // NUMBER_AT32
                         return "NUMBER_AT32";
-                    case 38: // NUMBER_AT33
+                    case 39: // NUMBER_AT33
                         return "NUMBER_AT33";
-                    case 39: // NUMBER_AT34
+                    case 40: // NUMBER_AT34
                         return "NUMBER_AT34";
-                    case 40: // NO_NA
+                    case 41: // NO_NA
                         return "NO_NA";
-                    case 41: // NO_NT
+                    case 42: // NO_NT
                         return "NO_NT";
-                    case 42: // NO_DNP
+                    case 43: // NO_DNP
                         return "NO_DNP";
-                    case 43: // TOTAL_NUMBER
+                    case 44: // TOTAL_NUMBER
                         return "TOTAL_NUMBER";
-                    case 44: // SENT_TO_DEET
+                    case 45: // SENT_TO_DEET
                         return "SENT_TO_DEET";
-                    case 45: // LW_DATE
+                    case 46: // LW_DATE
                         return "LW_DATE";
-                    case 46: // LW_TIME
+                    case 47: // LW_TIME
                         return "LW_TIME";
-                    case 47: // LW_USER
+                    case 48: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -895,90 +957,92 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
                         return 4;
                     case "VDIMENSION":
                         return 5;
-                    case "NUMBER_AT01":
+                    case "VDOMAIN":
                         return 6;
-                    case "NUMBER_AT02":
+                    case "NUMBER_AT01":
                         return 7;
-                    case "NUMBER_AT03":
+                    case "NUMBER_AT02":
                         return 8;
-                    case "NUMBER_AT04":
+                    case "NUMBER_AT03":
                         return 9;
-                    case "NUMBER_AT05":
+                    case "NUMBER_AT04":
                         return 10;
-                    case "NUMBER_AT06":
+                    case "NUMBER_AT05":
                         return 11;
-                    case "NUMBER_AT07":
+                    case "NUMBER_AT06":
                         return 12;
-                    case "NUMBER_AT08":
+                    case "NUMBER_AT07":
                         return 13;
-                    case "NUMBER_AT09":
+                    case "NUMBER_AT08":
                         return 14;
-                    case "NUMBER_AT10":
+                    case "NUMBER_AT09":
                         return 15;
-                    case "NUMBER_AT11":
+                    case "NUMBER_AT10":
                         return 16;
-                    case "NUMBER_AT12":
+                    case "NUMBER_AT11":
                         return 17;
-                    case "NUMBER_AT13":
+                    case "NUMBER_AT12":
                         return 18;
-                    case "NUMBER_AT14":
+                    case "NUMBER_AT13":
                         return 19;
-                    case "NUMBER_AT15":
+                    case "NUMBER_AT14":
                         return 20;
-                    case "NUMBER_AT16":
+                    case "NUMBER_AT15":
                         return 21;
-                    case "NUMBER_AT17":
+                    case "NUMBER_AT16":
                         return 22;
-                    case "NUMBER_AT18":
+                    case "NUMBER_AT17":
                         return 23;
-                    case "NUMBER_AT19":
+                    case "NUMBER_AT18":
                         return 24;
-                    case "NUMBER_AT20":
+                    case "NUMBER_AT19":
                         return 25;
-                    case "NUMBER_AT21":
+                    case "NUMBER_AT20":
                         return 26;
-                    case "NUMBER_AT22":
+                    case "NUMBER_AT21":
                         return 27;
-                    case "NUMBER_AT23":
+                    case "NUMBER_AT22":
                         return 28;
-                    case "NUMBER_AT24":
+                    case "NUMBER_AT23":
                         return 29;
-                    case "NUMBER_AT25":
+                    case "NUMBER_AT24":
                         return 30;
-                    case "NUMBER_AT26":
+                    case "NUMBER_AT25":
                         return 31;
-                    case "NUMBER_AT27":
+                    case "NUMBER_AT26":
                         return 32;
-                    case "NUMBER_AT28":
+                    case "NUMBER_AT27":
                         return 33;
-                    case "NUMBER_AT29":
+                    case "NUMBER_AT28":
                         return 34;
-                    case "NUMBER_AT30":
+                    case "NUMBER_AT29":
                         return 35;
-                    case "NUMBER_AT31":
+                    case "NUMBER_AT30":
                         return 36;
-                    case "NUMBER_AT32":
+                    case "NUMBER_AT31":
                         return 37;
-                    case "NUMBER_AT33":
+                    case "NUMBER_AT32":
                         return 38;
-                    case "NUMBER_AT34":
+                    case "NUMBER_AT33":
                         return 39;
-                    case "NO_NA":
+                    case "NUMBER_AT34":
                         return 40;
-                    case "NO_NT":
+                    case "NO_NA":
                         return 41;
-                    case "NO_DNP":
+                    case "NO_NT":
                         return 42;
-                    case "TOTAL_NUMBER":
+                    case "NO_DNP":
                         return 43;
-                    case "SENT_TO_DEET":
+                    case "TOTAL_NUMBER":
                         return 44;
-                    case "LW_DATE":
+                    case "SENT_TO_DEET":
                         return 45;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 46;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 47;
+                    case "LW_USER":
+                        return 48;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

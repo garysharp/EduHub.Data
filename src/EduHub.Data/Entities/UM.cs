@@ -128,6 +128,16 @@ namespace EduHub.Data.Entities
         public string BARCODE { get; internal set; }
 
         /// <summary>
+        /// Latitude of address for Geospatial referencing
+        /// </summary>
+        public double? LATITUDE { get; internal set; }
+
+        /// <summary>
+        /// Longitude of address for Geospatial referencing
+        /// </summary>
+        public double? LONGITUDE { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

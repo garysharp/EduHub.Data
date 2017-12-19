@@ -81,6 +81,12 @@ namespace EduHub.Data.Entities
                     case "BARCODE":
                         mapper[i] = (e, v) => e.BARCODE = v;
                         break;
+                    case "LATITUDE":
+                        mapper[i] = (e, v) => e.LATITUDE = v == null ? (double?)null : double.Parse(v);
+                        break;
+                    case "LONGITUDE":
+                        mapper[i] = (e, v) => e.LONGITUDE = v == null ? (double?)null : double.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -319,6 +325,8 @@ BEGIN
         [COUNTRY] varchar(6) NULL,
         [DPID] int NULL,
         [BARCODE] varchar(37) NULL,
+        [LATITUDE] float NULL,
+        [LONGITUDE] float NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -440,7 +448,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
             {
             }
 
-            public override int FieldCount { get { return 17; } }
+            public override int FieldCount { get { return 19; } }
 
             public override object GetValue(int i)
             {
@@ -474,11 +482,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return Current.DPID;
                     case 13: // BARCODE
                         return Current.BARCODE;
-                    case 14: // LW_DATE
+                    case 14: // LATITUDE
+                        return Current.LATITUDE;
+                    case 15: // LONGITUDE
+                        return Current.LONGITUDE;
+                    case 16: // LW_DATE
                         return Current.LW_DATE;
-                    case 15: // LW_TIME
+                    case 17: // LW_TIME
                         return Current.LW_TIME;
-                    case 16: // LW_USER
+                    case 18: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -515,11 +527,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return Current.DPID == null;
                     case 13: // BARCODE
                         return Current.BARCODE == null;
-                    case 14: // LW_DATE
+                    case 14: // LATITUDE
+                        return Current.LATITUDE == null;
+                    case 15: // LONGITUDE
+                        return Current.LONGITUDE == null;
+                    case 16: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 15: // LW_TIME
+                    case 17: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 16: // LW_USER
+                    case 18: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -558,11 +574,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return "DPID";
                     case 13: // BARCODE
                         return "BARCODE";
-                    case 14: // LW_DATE
+                    case 14: // LATITUDE
+                        return "LATITUDE";
+                    case 15: // LONGITUDE
+                        return "LONGITUDE";
+                    case 16: // LW_DATE
                         return "LW_DATE";
-                    case 15: // LW_TIME
+                    case 17: // LW_TIME
                         return "LW_TIME";
-                    case 16: // LW_USER
+                    case 18: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -601,12 +621,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return 12;
                     case "BARCODE":
                         return 13;
-                    case "LW_DATE":
+                    case "LATITUDE":
                         return 14;
-                    case "LW_TIME":
+                    case "LONGITUDE":
                         return 15;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 16;
+                    case "LW_TIME":
+                        return 17;
+                    case "LW_USER":
+                        return 18;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

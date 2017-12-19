@@ -52,6 +52,12 @@
     <Compile Include="EduHubContextBase.cs" />
     <Compile Include="EduHubDataSetNotFoundException.cs" />
     <Compile Include="EduHubSqlServerWriteMode.cs" />
+    <Compile Include="Entities\CRPR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\CRPRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\EduHubDataSetSqlValidation.cs" />
     <Compile Include="Entities\BANKSIG.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
@@ -105,6 +111,42 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\QSATDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQ.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQGL.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQGLDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQPG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQPGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQREL.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQRELDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQT.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\RQTDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SECMSG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SECMSGDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\SGFC.cs">
@@ -1491,6 +1533,12 @@
     <Compile Include="Entities\SPREPLYDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SPRETRY.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SPRETRYDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\SPSMS.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1969,7 +2017,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CASES21v58 Schema.xml" />
+    <None Include="CASES21v59 Schema.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,7 +7,7 @@ namespace EduHub.Data.Entities
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the FAIR_MARKET column. New to C21v58.
+            // Check for the existence of the FAIR_MARKET column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -24,14 +24,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the TRADE_INFO01-10 columns. New to C21v57.
+            // Check for the existence of the PR_APPROVE column. New to C21v59.
             const string sql = @"SELECT
-	10 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[CR]') AND
-	name IN ('TRADE_INFO01', 'TRADE_INFO02', 'TRADE_INFO03', 'TRADE_INFO04', 'TRADE_INFO05',
-             'TRADE_INFO06', 'TRADE_INFO07', 'TRADE_INFO08', 'TRADE_INFO09', 'TRADE_INFO10')";
+	name = 'PR_APPROVE'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -42,13 +41,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the AMEMO column has the right type. Modified to C21v58.
+            // Check for the existence of the PO_PRINTED, APPROVED_BY, STAFF_ORDER_BY, CRPRTID columns. New to C21v59.
             const string sql = @"SELECT
-	1 - COUNT(*)
+	4 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[CRF]') AND
-	name = 'AMEMO' AND max_length = -1";
+	name IN ('PO_PRINTED', 'APPROVED_BY', 'STAFF_ORDER_BY', 'CRPRTID')";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -59,7 +58,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the SCH_ED_A_LU, NON_SCH_ED_A_LU, OCCUP_STATUS_A_LU, SCH_ED_B_LU, NON_SCH_ED_B_LU,
+            // Check for the existence of the SCH_ED_A_LU, NON_SCH_ED_A_LU, OCCUP_STATUS_A_LU, SCH_ED_B_LU, NON_SCH_ED_B_LU,
             //  OCCUP_STATUS_B_LU, CNSE, CSE, and FSE columns. New to C21v58.
             const string sql = @"SELECT
 	9 - COUNT(*)
@@ -95,7 +94,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the TRDEL_MONTHS column. New to C21v57.
+            // Check for the existence of the TRDEL_MONTHS column. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -112,7 +111,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the BATCHABLE column. New to C21v58.
+            // Check for the existence of the BATCHABLE column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -129,7 +128,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the FEE_CODE column. New to C21v58.
+            // Check for the existence of the FEE_CODE column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -146,7 +145,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the DISABILITY column. New to C21v57.
+            // Check for the existence of the DISABILITY column. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -163,7 +162,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the DISABILITY column. New to C21v57.
+            // Check for the existence of the DISABILITY column. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -180,7 +179,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the BIRTHDATE_FROM and BIRTHDATE_TO columns. New to C21v57.
+            // Check for the existence of the BIRTHDATE_FROM and BIRTHDATE_TO columns. New to C21v57.
             const string sql = @"SELECT
 	2 - COUNT(*)
 FROM sys.columns
@@ -215,7 +214,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the DATA_ENTRY column. New to C21v58.
+            // Check for the existence of the DATA_ENTRY column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -232,7 +231,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the BATCHABLE column. New to C21v58.
+            // Check for the existence of the BATCHABLE column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -249,7 +248,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the EDUPAY column. New to C21v57.
+            // Check for the existence of the EDUPAY column. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -261,18 +260,35 @@ WHERE
         }
     }
 
+    partial class SCEN_STDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the CNSE, CSE and FSE columns. New to C21v59.
+            const string sql = @"SELECT
+	3 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[SCEN_ST]') AND
+	name IN ('CNSE', 'CSE', 'FSE')";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class SCIDataSet
     {
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the SCH_DEFINED01, SCH_DEFINED02 and PREF_MAIL_MECH columns. New to C21v58.
+            // Check for the existence of the SF_PURCH_MANAGER column. New to C21v59.
             const string sql = @"SELECT
-	3 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SCI]') AND
-	name IN ('SCH_DEFINED01', 'SCH_DEFINED02', 'PREF_MAIL_MECH')";
+	name = 'SF_PURCH_MANAGER'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -283,9 +299,9 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the SF_Index_SMS_REPLY index. New to C21v58.
+            // Check for the existence of the SF_Index_SMS_REPLY index. New to C21v58.
 
-            // Check for the existance of the DRIVERS_LIC_NO, DRIVERS_LIC_EXPIRY, VIT_EXPIRY,
+            // Check for the existence of the DRIVERS_LIC_NO, DRIVERS_LIC_EXPIRY, VIT_EXPIRY,
             //   WWCC_NUMBER, WWCC_EXPIRY and WWCC_TYPE columns. New to C21v58.
             const string sql = @"SELECT
 	(SELECT
@@ -311,7 +327,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the VET column. New to C21v58.
+            // Check for the existence of the VET column. New to C21v58.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
@@ -364,7 +380,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the VET, USI, SCH_DEFINED01, SCH_DEFINED02 and TEACHER_RECOMMENDATION columns. New to C21v58.
+            // Check for the existence of the VET, USI, SCH_DEFINED01, SCH_DEFINED02 and TEACHER_RECOMMENDATION columns. New to C21v58.
             const string sql = @"SELECT
 	5 - COUNT(*)
 FROM sys.columns
@@ -406,6 +422,23 @@ FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[STMA]') AND
 	name IN ('COMMENTA', 'COMMENTB') AND max_length = -1";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class STMBDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the CREATOR column. New to C21v59.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[STMB]') AND
+	name = 'CREATOR'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -513,6 +546,23 @@ WHERE
         }
     }
 
+    partial class SVAGDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the VDOMAIN column. New to C21v59.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[SVAG]') AND
+	name = 'VDOMAIN'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class TCDataSet
     {
         /// <inheritdoc />
@@ -552,7 +602,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the TCTD_Index_TCTDKEY_TIME_TYPE_QKEY index. New to C21v57.
+            // Check for the existence of the TCTD_Index_TCTDKEY_TIME_TYPE_QKEY index. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.indexes
@@ -569,7 +619,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the TCTQ_Index_TCTQKEY_QROW_QKEY index. New to C21v57.
+            // Check for the existence of the TCTQ_Index_TCTQKEY_QROW_QKEY index. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.indexes
@@ -620,7 +670,7 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existance of the TETN_Index_TETELINK_ATTENDEE_TYPE index. New to C21v57.
+            // Check for the existence of the TETN_Index_TETELINK_ATTENDEE_TYPE index. New to C21v57.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.indexes
@@ -644,6 +694,23 @@ FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[TT]') AND
 	name = 'GSOLS' AND max_length = -1";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class UMDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the LATITUDE and LONGITUDE columns. New to C21v59.
+            const string sql = @"SELECT
+	2 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[SVAG]') AND
+	name IN ('LATITUDE', 'LONGITUDE')";
 
             return new SqlCommand(sql, SqlConnection);
         }

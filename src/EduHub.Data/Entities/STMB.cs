@@ -100,6 +100,12 @@ namespace EduHub.Data.Entities
         public string STMB_COMMENT { get; internal set; }
 
         /// <summary>
+        /// Last write operator
+        /// [Uppercase Alphanumeric (128)]
+        /// </summary>
+        public string CREATOR { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

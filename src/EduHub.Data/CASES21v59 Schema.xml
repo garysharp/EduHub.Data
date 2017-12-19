@@ -675,6 +675,7 @@ eg. DF, DR]]></Field>
       <Field Name="PAYG_POST" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Postcode]]></Field>
       <Field Name="PAYG_COUNTRY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="20" SqlType="varchar"><![CDATA[Country]]></Field>
       <Field Name="PPDKEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="PPD:PPDKEY"><![CDATA[Payer code in PPD]]></Field>
+      <Field Name="PR_APPROVE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[PR needs to be approved by purchasing manager]]></Field>
       <Field Name="PRMS_FLAG" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Is this a PRMS creditor]]></Field>
       <Field Name="LW_PRMSINFO_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date for PRMS fields]]></Field>
       <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
@@ -743,6 +744,10 @@ or amount allocated (credits)]]></Field>
       <Field Name="TRDET" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Transaction description]]></Field>
       <Field Name="TRHOLD" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Transaction hold or pay flag]]></Field>
       <Field Name="TRORDER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Order number being satisfied]]></Field>
+      <Field Name="PO_PRINTED" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Has the order been printed]]></Field>
+      <Field Name="APPROVED_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Order has been approved by]]></Field>
+      <Field Name="STAFF_ORDER_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Staff key for user placing order]]></Field>
+      <Field Name="CRPRTID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[TID of CRPR]]></Field>
       <Field Name="TRBANK" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Bank account in the GL]]></Field>
       <Field Name="CHQ_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Actual cheque number (written back)]]></Field>
       <Field Name="ORDER_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="5" SqlType="varchar"><![CDATA[Authorising person]]></Field>
@@ -806,6 +811,9 @@ Also used for the cost base for depreciation]]></Field>
       <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
     </Fields>
     <Indexes>
+      <Index Name="Index_APPROVED_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>APPROVED_BY</Field>
+      </Index>
       <Index Name="Index_ATKEY" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>ATKEY</Field>
       </Index>
@@ -826,6 +834,9 @@ Also used for the cost base for depreciation]]></Field>
       </Index>
       <Index Name="Index_INVOICEGST" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>INVOICEGST</Field>
+      </Index>
+      <Index Name="Index_STAFF_ORDER_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>STAFF_ORDER_BY</Field>
       </Index>
       <Index Name="Index_SUBPROGRAM" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>SUBPROGRAM</Field>
@@ -863,6 +874,60 @@ Also used for the cost base for depreciation]]></Field>
       </Index>
       <Index Name="Index_FTC_CODE" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>FTC_CODE</Field>
+      </Index>
+      <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
+        <Field>TID</Field>
+      </Index>
+      <Index Name="Index_TRREF" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>TRREF</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="CRPR" Description="Creditor Purchase Requisitions">
+    <Fields>
+      <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[System transaction ID (internal)]]></Field>
+      <Field Name="CODE" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="CR:CRKEY"><![CDATA[Creditor key]]></Field>
+      <Field Name="TRTYPE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Transaction type.
+Must be :
+  O - Order]]></Field>
+      <Field Name="TRDATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Transaction date
+  Trtype = O: Order date]]></Field>
+      <Field Name="TRREF" IsKey="true" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Transaction reference
+  Trtype = 0: Order number]]></Field>
+      <Field Name="TRXLEDGER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="2" SqlType="varchar"><![CDATA[Ledger type GL or IV]]></Field>
+      <Field Name="TRXCODE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[GL code or IV code]]></Field>
+      <Field Name="SUBPROGRAM" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="KGLSUB:SUBPROGRAM"><![CDATA[Must already exist as a SUBPROGRAM]]></Field>
+      <Field Name="INITIATIVE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar" ForeignParent="KGLINIT:INITIATIVE"><![CDATA[Not mandatory]]></Field>
+      <Field Name="TRCOST" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Transaction unit cost
+ Trtype = O: Order unit cost]]></Field>
+      <Field Name="TRQTY" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction quantity
+ Trtype = O: Total qty ordered]]></Field>
+      <Field Name="TRDET" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Transaction description]]></Field>
+      <Field Name="TRORDER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Order number being satisfied]]></Field>
+      <Field Name="STAFF_ORDER_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Ordering person]]></Field>
+      <Field Name="APPROVED_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Order has been approved by]]></Field>
+      <Field Name="POCOMMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Purchase Order Comment]]></Field>
+      <Field Name="TRNETT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Amount before GST]]></Field>
+      <Field Name="LINE_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Line number in the batch]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_APPROVED_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>APPROVED_BY</Field>
+      </Index>
+      <Index Name="Index_CODE" IsPrimary="false" IsUnique="false" IsClustered="true">
+        <Field>CODE</Field>
+      </Index>
+      <Index Name="Index_INITIATIVE" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>INITIATIVE</Field>
+      </Index>
+      <Index Name="Index_STAFF_ORDER_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>STAFF_ORDER_BY</Field>
+      </Index>
+      <Index Name="Index_SUBPROGRAM" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SUBPROGRAM</Field>
       </Index>
       <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
         <Field>TID</Field>
@@ -6098,6 +6163,147 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
+  <Entity Name="RQ" Description="Purchase Requisition">
+    <Fields>
+      <Field Name="TRORDER" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Prime Key]]></Field>
+      <Field Name="CODE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="CR:CRKEY"><![CDATA[Creditor key]]></Field>
+      <Field Name="TRDATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[date raised]]></Field>
+      <Field Name="TRXLEDGER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="2" SqlType="varchar"><![CDATA[Ledger ie. GL]]></Field>
+      <Field Name="PRCOMMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Purchase Order Comment]]></Field>
+      <Field Name="ORDER_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[PR raised by staff member]]></Field>
+      <Field Name="STATUS" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Pending, Approved, Declined or Not Submitted]]></Field>
+      <Field Name="APPROVED_BY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Officer who Approved, Declined or Cancelled]]></Field>
+      <Field Name="APPROVED_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Date of Approval, Decline or Cancelled]]></Field>
+      <Field Name="DECLINED_COMMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Reason for Declining or Cancelling Requisition]]></Field>
+      <Field Name="PRINTED" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Purchase Order raised]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_APPROVED_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>APPROVED_BY</Field>
+      </Index>
+      <Index Name="Index_CODE" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>CODE</Field>
+      </Index>
+      <Index Name="Index_ORDER_BY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>ORDER_BY</Field>
+      </Index>
+      <Index Name="Index_TRORDER" IsPrimary="true" IsUnique="true" IsClustered="true">
+        <Field>TRORDER</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="RQGL" Description="Purchasing Group GL Codes">
+    <Fields>
+      <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int" />
+      <Field Name="RQPGKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="RQPG:RQPGKEY"><![CDATA[Purchasing Group]]></Field>
+      <Field Name="GLCODE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="GL:CODE"><![CDATA[GL Code]]></Field>
+      <Field Name="SUBPROGRAM" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="KGLSUB:SUBPROGRAM"><![CDATA[Must already exist as a SUBPROGRAM]]></Field>
+      <Field Name="INITIATIVE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar" ForeignParent="KGLINIT:INITIATIVE"><![CDATA[Not mandatory]]></Field>
+      <Field Name="PR_LIMIT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Group PR approval limit]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_GLCODE" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>GLCODE</Field>
+      </Index>
+      <Index Name="Index_GLCODE_SUBPROGRAM_INITIATIVE" IsPrimary="false" IsUnique="true" IsClustered="false">
+        <Field>GLCODE</Field>
+        <Field>SUBPROGRAM</Field>
+        <Field>INITIATIVE</Field>
+      </Index>
+      <Index Name="Index_INITIATIVE" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>INITIATIVE</Field>
+      </Index>
+      <Index Name="Index_RQPGKEY" IsPrimary="false" IsUnique="false" IsClustered="true">
+        <Field>RQPGKEY</Field>
+      </Index>
+      <Index Name="Index_SUBPROGRAM" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SUBPROGRAM</Field>
+      </Index>
+      <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
+        <Field>TID</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="RQPG" Description="Purchasing Group">
+    <Fields>
+      <Field Name="RQPGKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Key]]></Field>
+      <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Purchasing Group Description]]></Field>
+      <Field Name="SFKEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Authorising Officer]]></Field>
+      <Field Name="EMAIL" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Officer Email address]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last opertator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_RQPGKEY" IsPrimary="true" IsUnique="true" IsClustered="true">
+        <Field>RQPGKEY</Field>
+      </Index>
+      <Index Name="Index_SFKEY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SFKEY</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="RQREL" Description="Staff Purchasing Group Link">
+    <Fields>
+      <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int" />
+      <Field Name="RQPGKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="RQPG:RQPGKEY"><![CDATA[Purchasing Group]]></Field>
+      <Field Name="SFKEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Staff]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_RQPGKEY" IsPrimary="false" IsUnique="false" IsClustered="true">
+        <Field>RQPGKEY</Field>
+      </Index>
+      <Index Name="Index_SFKEY" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SFKEY</Field>
+      </Index>
+      <Index Name="Index_SFKEY_RQPGKEY" IsPrimary="false" IsUnique="true" IsClustered="false">
+        <Field>SFKEY</Field>
+        <Field>RQPGKEY</Field>
+      </Index>
+      <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
+        <Field>TID</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="RQT" Description="Purchase Requisition Transaction">
+    <Fields>
+      <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Prime Key]]></Field>
+      <Field Name="TRORDER" IsKey="false" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int" ForeignParent="RQ:TRORDER"><![CDATA[Requisition number being satisfied]]></Field>
+      <Field Name="TRDET" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Requisition detail]]></Field>
+      <Field Name="TRQTY" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Requisition quantity]]></Field>
+      <Field Name="TRCOST" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Requisition cost]]></Field>
+      <Field Name="TRAMT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Requisition trnett]]></Field>
+      <Field Name="TRXCODE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[GL code]]></Field>
+      <Field Name="SUBPROGRAM" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="KGLSUB:SUBPROGRAM"><![CDATA[Must already exist as a SUBPROGRAM]]></Field>
+      <Field Name="INITIATIVE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar" ForeignParent="KGLINIT:INITIATIVE"><![CDATA[Not mandatory]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_INITIATIVE" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>INITIATIVE</Field>
+      </Index>
+      <Index Name="Index_SUBPROGRAM" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SUBPROGRAM</Field>
+      </Index>
+      <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
+        <Field>TID</Field>
+      </Index>
+      <Index Name="Index_TRORDER" IsPrimary="false" IsUnique="false" IsClustered="true">
+        <Field>TRORDER</Field>
+      </Index>
+    </Indexes>
+  </Entity>
   <Entity Name="SA" Description="Fees">
     <Fields>
       <Field Name="SAKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
@@ -7253,6 +7459,9 @@ update rates from this date]]></Field>
       <Field Name="DF_NON_SCH_ED_B" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar" />
       <Field Name="ADDRESS_B" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="30" SqlType="varchar" />
       <Field Name="ADDRESS_C" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="30" SqlType="varchar" />
+      <Field Name="CNSE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Calculated Non School Education]]></Field>
+      <Field Name="CSE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Calculated School Education]]></Field>
+      <Field Name="FSE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Final Education Value]]></Field>
     </Fields>
     <Indexes>
       <Index Name="Index_ID" IsPrimary="true" IsUnique="true" IsClustered="true">
@@ -7383,6 +7592,7 @@ update rates from this date]]></Field>
       <Field Name="SCH_BMANAGER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[SFKEY of the staff member that is the School Business Manager]]></Field>
       <Field Name="SCH_VAC_CONTACT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[SFKEY of the staff member that is the School Vacation contact]]></Field>
       <Field Name="SCH_EMERG_CONTACT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[SFKEY of the staff member that is the School Emergency contact]]></Field>
+      <Field Name="SF_PURCH_MANAGER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="SF:SFKEY"><![CDATA[Staff code for Purchasing Manager]]></Field>
       <Field Name="SCH_COUNCIL_PRES" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int" ForeignParent="SAM:SAMKEY"><![CDATA[Link to the school council representative for the school]]></Field>
       <Field Name="SCH_MASTER_KEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Master key for the school]]></Field>
       <Field Name="PROFILE_UPDATED" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Flag to indicate if profile details have been updated during the day]]></Field>
@@ -7457,6 +7667,9 @@ update rates from this date]]></Field>
       </Index>
       <Index Name="Index_SF_OIC" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>SF_OIC</Field>
+      </Index>
+      <Index Name="Index_SF_PURCH_MANAGER" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SF_PURCH_MANAGER</Field>
       </Index>
       <Index Name="Index_SF_VAC_CONTACT" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>SF_VAC_CONTACT</Field>
@@ -7810,6 +8023,23 @@ update rates from this date]]></Field>
     <Indexes>
       <Index Name="Index_ROWID" IsPrimary="true" IsUnique="true" IsClustered="true">
         <Field>ROWID</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="SECMSG" Description="eCases Messages">
+    <Fields>
+      <Field Name="ID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Key]]></Field>
+      <Field Name="MESSAGE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="180" SqlType="varchar"><![CDATA[Message to send]]></Field>
+      <Field Name="LAST_EDITED" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Date the message was last edited]]></Field>
+      <Field Name="CREATOR" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Logon ID of CASES21 user that created the message]]></Field>
+      <Field Name="EXPIRY" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Date after which the message will no longer be displayed]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_ID" IsPrimary="true" IsUnique="true" IsClustered="true">
+        <Field>ID</Field>
       </Index>
     </Indexes>
   </Entity>
@@ -9100,6 +9330,26 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
+  <Entity Name="SPRETRY" Description="SMS Retries">
+    <Fields>
+      <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
+      <Field Name="CODE" IsKey="false" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int" ForeignParent="SPSMS:SPSMSKEY"><![CDATA[SMS Key]]></Field>
+      <Field Name="SPRECIP" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[SPRECIP TID key of recipient record that is being resent.]]></Field>
+      <Field Name="RETRY" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Original value for SPRECIP.SEND_DATE at the time of the error and the retry.]]></Field>
+      <Field Name="STATUS_MESSAGE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="100" SqlType="varchar"><![CDATA[Original value for SPRECIP.STATUS_MESSAGE at the time of failure and retry.]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_CODE" IsPrimary="false" IsUnique="false" IsClustered="true">
+        <Field>CODE</Field>
+      </Index>
+      <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
+        <Field>TID</Field>
+      </Index>
+    </Indexes>
+  </Entity>
   <Entity Name="SPSMS" Description="SMS messages">
     <Fields>
       <Field Name="SPSMSKEY" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Key]]></Field>
@@ -9993,6 +10243,7 @@ update rates from this date]]></Field>
       <Field Name="RECOMMEND_OTHER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Details of person making recommendation (if not staff member or family member)]]></Field>
       <Field Name="AWARD" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="KGW:AWARD"><![CDATA[Award code]]></Field>
       <Field Name="STMB_COMMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Any extra details]]></Field>
+      <Field Name="CREATOR" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
       <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
       <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
       <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
@@ -10792,6 +11043,7 @@ update rates from this date]]></Field>
       <Field Name="CAMPUS" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Campus number of cohort]]></Field>
       <Field Name="YEAR_SEMESTER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Year and semester YYYY.S eg 2005.1]]></Field>
       <Field Name="VDIMENSION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="KDI:KDIKEY"><![CDATA[Link to dimension]]></Field>
+      <Field Name="VDOMAIN" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="KDO:KDOKEY"><![CDATA[Link to domain]]></Field>
       <Field Name="NUMBER_AT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Number of students with each dimension score]]></Field>
       <Field Name="NUMBER_AT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Number of students with each dimension score]]></Field>
       <Field Name="NUMBER_AT03" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Number of students with each dimension score]]></Field>
@@ -10844,6 +11096,9 @@ update rates from this date]]></Field>
       </Index>
       <Index Name="Index_VDIMENSION" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>VDIMENSION</Field>
+      </Index>
+      <Index Name="Index_VDOMAIN" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>VDOMAIN</Field>
       </Index>
     </Indexes>
   </Entity>
@@ -12141,6 +12396,8 @@ update rates from this date]]></Field>
       <Field Name="COUNTRY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="6" SqlType="varchar" ForeignParent="KGT:COUNTRY"><![CDATA[Country (default '1101' code for Australia)]]></Field>
       <Field Name="DPID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Australia Post address identifier]]></Field>
       <Field Name="BARCODE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="37" SqlType="varchar"><![CDATA[Australia Post barcode numbers]]></Field>
+      <Field Name="LATITUDE" IsKey="false" IsNullable="true" IsIdentity="false" Type="double" TypeDescription="Floating Point Number" SqlType="float"><![CDATA[Latitude of address for Geospatial referencing]]></Field>
+      <Field Name="LONGITUDE" IsKey="false" IsNullable="true" IsIdentity="false" Type="double" TypeDescription="Floating Point Number" SqlType="float"><![CDATA[Longitude of address for Geospatial referencing]]></Field>
       <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
       <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
       <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>

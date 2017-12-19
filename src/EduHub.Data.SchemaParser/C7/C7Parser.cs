@@ -274,7 +274,7 @@ namespace EduHub.Data.SchemaParser.C7
             from comment in Parse.CharExcept(NewLineChars).Many()
             from fields in (((Parser<IC7Element>)CommentElementParser).Or(FieldElementParser))
                 .AtLeastOnce()
-            from attributes in CommentElementParser.Return(default((string Name, List<string> Values))).Or(CommaListParser("KEYS", "MOREINFO", "NODUPS")).Many()
+            from attributes in CommentElementParser.Return(default((string Name, List<string> Values))).Or(CommaListParser("KEYS", "MOREINFO", "NODUPS", "QUICKADD")).Many()
             select new C7Trans()
             {
                 Name = name,

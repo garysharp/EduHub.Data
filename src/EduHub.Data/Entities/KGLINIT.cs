@@ -15,6 +15,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<ARF> Cache_INITIATIVE_ARF_INITIATIVE;
         private IReadOnlyList<CRF> Cache_INITIATIVE_CRF_INITIATIVE;
+        private IReadOnlyList<CRPR> Cache_INITIATIVE_CRPR_INITIATIVE;
         private IReadOnlyList<DFF> Cache_INITIATIVE_DFF_INITIATIVE;
         private IReadOnlyList<DRF> Cache_INITIATIVE_DRF_INITIATIVE;
         private IReadOnlyList<GLBUDG> Cache_INITIATIVE_GLBUDG_INITIATIVE;
@@ -31,6 +32,8 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PEPUH> Cache_INITIATIVE_PEPUH_INITIATIVE;
         private IReadOnlyList<PI> Cache_INITIATIVE_PI_INITIATIVE;
         private IReadOnlyList<PN> Cache_INITIATIVE_PN_INITIATIVE;
+        private IReadOnlyList<RQGL> Cache_INITIATIVE_RQGL_INITIATIVE;
+        private IReadOnlyList<RQT> Cache_INITIATIVE_RQT_INITIATIVE;
         private IReadOnlyList<SA> Cache_INITIATIVE_SA_INITIATIVE;
         private IReadOnlyList<SDFC> Cache_INITIATIVE_SDFC_INITIATIVE;
         private IReadOnlyList<SGFC> Cache_INITIATIVE_SGFC_INITIATIVE;
@@ -119,6 +122,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_INITIATIVE_CRF_INITIATIVE;
+            }
+        }
+
+        /// <summary>
+        /// CRPR (Creditor Purchase Requisitions) related entities by [KGLINIT.INITIATIVE]-&gt;[CRPR.INITIATIVE]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<CRPR> INITIATIVE_CRPR_INITIATIVE
+        {
+            get
+            {
+                if (Cache_INITIATIVE_CRPR_INITIATIVE == null &&
+                    !Context.CRPR.TryFindByINITIATIVE(INITIATIVE, out Cache_INITIATIVE_CRPR_INITIATIVE))
+                {
+                    Cache_INITIATIVE_CRPR_INITIATIVE = new List<CRPR>().AsReadOnly();
+                }
+
+                return Cache_INITIATIVE_CRPR_INITIATIVE;
             }
         }
 
@@ -407,6 +428,42 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_INITIATIVE_PN_INITIATIVE;
+            }
+        }
+
+        /// <summary>
+        /// RQGL (Purchasing Group GL Codes) related entities by [KGLINIT.INITIATIVE]-&gt;[RQGL.INITIATIVE]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<RQGL> INITIATIVE_RQGL_INITIATIVE
+        {
+            get
+            {
+                if (Cache_INITIATIVE_RQGL_INITIATIVE == null &&
+                    !Context.RQGL.TryFindByINITIATIVE(INITIATIVE, out Cache_INITIATIVE_RQGL_INITIATIVE))
+                {
+                    Cache_INITIATIVE_RQGL_INITIATIVE = new List<RQGL>().AsReadOnly();
+                }
+
+                return Cache_INITIATIVE_RQGL_INITIATIVE;
+            }
+        }
+
+        /// <summary>
+        /// RQT (Purchase Requisition Transaction) related entities by [KGLINIT.INITIATIVE]-&gt;[RQT.INITIATIVE]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<RQT> INITIATIVE_RQT_INITIATIVE
+        {
+            get
+            {
+                if (Cache_INITIATIVE_RQT_INITIATIVE == null &&
+                    !Context.RQT.TryFindByINITIATIVE(INITIATIVE, out Cache_INITIATIVE_RQT_INITIATIVE))
+                {
+                    Cache_INITIATIVE_RQT_INITIATIVE = new List<RQT>().AsReadOnly();
+                }
+
+                return Cache_INITIATIVE_RQT_INITIATIVE;
             }
         }
 

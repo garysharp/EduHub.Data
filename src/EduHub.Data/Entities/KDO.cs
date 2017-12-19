@@ -15,6 +15,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<STVDI> Cache_KDOKEY_STVDI_VDOMAIN;
         private IReadOnlyList<STVDO> Cache_KDOKEY_STVDO_VDOMAIN;
+        private IReadOnlyList<SVAG> Cache_KDOKEY_SVAG_VDOMAIN;
 
         #endregion
 
@@ -106,6 +107,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_KDOKEY_STVDO_VDOMAIN;
+            }
+        }
+
+        /// <summary>
+        /// SVAG (VELS Aggregated Dimensions) related entities by [KDO.KDOKEY]-&gt;[SVAG.VDOMAIN]
+        /// Key of the domain
+        /// </summary>
+        public IReadOnlyList<SVAG> KDOKEY_SVAG_VDOMAIN
+        {
+            get
+            {
+                if (Cache_KDOKEY_SVAG_VDOMAIN == null &&
+                    !Context.SVAG.TryFindByVDOMAIN(KDOKEY, out Cache_KDOKEY_SVAG_VDOMAIN))
+                {
+                    Cache_KDOKEY_SVAG_VDOMAIN = new List<SVAG>().AsReadOnly();
+                }
+
+                return Cache_KDOKEY_SVAG_VDOMAIN;
             }
         }
 

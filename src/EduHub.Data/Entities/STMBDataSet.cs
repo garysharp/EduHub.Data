@@ -76,6 +76,9 @@ namespace EduHub.Data.Entities
                     case "STMB_COMMENT":
                         mapper[i] = (e, v) => e.STMB_COMMENT = v;
                         break;
+                    case "CREATOR":
+                        mapper[i] = (e, v) => e.CREATOR = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -355,6 +358,7 @@ BEGIN
         [RECOMMEND_OTHER] varchar(MAX) NULL,
         [AWARD] varchar(10) NULL,
         [STMB_COMMENT] varchar(MAX) NULL,
+        [CREATOR] varchar(128) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -484,7 +488,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
             {
             }
 
-            public override int FieldCount { get { return 15; } }
+            public override int FieldCount { get { return 16; } }
 
             public override object GetValue(int i)
             {
@@ -514,11 +518,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
                         return Current.AWARD;
                     case 11: // STMB_COMMENT
                         return Current.STMB_COMMENT;
-                    case 12: // LW_DATE
+                    case 12: // CREATOR
+                        return Current.CREATOR;
+                    case 13: // LW_DATE
                         return Current.LW_DATE;
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME;
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -549,11 +555,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
                         return Current.AWARD == null;
                     case 11: // STMB_COMMENT
                         return Current.STMB_COMMENT == null;
-                    case 12: // LW_DATE
+                    case 12: // CREATOR
+                        return Current.CREATOR == null;
+                    case 13: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -588,11 +596,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
                         return "AWARD";
                     case 11: // STMB_COMMENT
                         return "STMB_COMMENT";
-                    case 12: // LW_DATE
+                    case 12: // CREATOR
+                        return "CREATOR";
+                    case 13: // LW_DATE
                         return "LW_DATE";
-                    case 13: // LW_TIME
+                    case 14: // LW_TIME
                         return "LW_TIME";
-                    case 14: // LW_USER
+                    case 15: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -627,12 +637,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
                         return 10;
                     case "STMB_COMMENT":
                         return 11;
-                    case "LW_DATE":
+                    case "CREATOR":
                         return 12;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 13;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 14;
+                    case "LW_USER":
+                        return 15;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

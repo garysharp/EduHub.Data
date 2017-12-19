@@ -53,6 +53,10 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<AKK> Cache_SFKEY_AKK_STAFF;
         private IReadOnlyList<BKHR> Cache_SFKEY_BKHR_STAFF;
+        private IReadOnlyList<CRF> Cache_SFKEY_CRF_APPROVED_BY;
+        private IReadOnlyList<CRF> Cache_SFKEY_CRF_STAFF_ORDER_BY;
+        private IReadOnlyList<CRPR> Cache_SFKEY_CRPR_STAFF_ORDER_BY;
+        private IReadOnlyList<CRPR> Cache_SFKEY_CRPR_APPROVED_BY;
         private IReadOnlyList<CRTT> Cache_SFKEY_CRTT_STAFF;
         private IReadOnlyList<KCPC> Cache_SFKEY_KCPC_STAFF;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER;
@@ -61,6 +65,10 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<KGC> Cache_SFKEY_KGC_TEACHER_B;
         private IReadOnlyList<KSF> Cache_SFKEY_KSF_COORDINATOR;
         private IReadOnlyList<PGID> Cache_SFKEY_PGID_IMPORTED_BY;
+        private IReadOnlyList<RQ> Cache_SFKEY_RQ_ORDER_BY;
+        private IReadOnlyList<RQ> Cache_SFKEY_RQ_APPROVED_BY;
+        private IReadOnlyList<RQPG> Cache_SFKEY_RQPG_SFKEY;
+        private IReadOnlyList<RQREL> Cache_SFKEY_RQREL_SFKEY;
         private IReadOnlyList<SAD> Cache_SFKEY_SAD_AREA_DUTY_TEACHER;
         private IReadOnlyList<SAIM> Cache_SFKEY_SAIM_STAFF;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_PRINCIPAL;
@@ -77,6 +85,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_BMANAGER;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_VAC_CONTACT;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_EMERG_CONTACT;
+        private IReadOnlyList<SCI> Cache_SFKEY_SCI_SF_PURCH_MANAGER;
         private IReadOnlyList<SCL> Cache_SFKEY_SCL_TEACHER01;
         private IReadOnlyList<SCL> Cache_SFKEY_SCL_TEACHER02;
         private IReadOnlyList<SDPA> Cache_SFKEY_SDPA_TAKEN_BY;
@@ -1407,6 +1416,78 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// CRF (Creditor Financial Transaction) related entities by [SF.SFKEY]-&gt;[CRF.APPROVED_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<CRF> SFKEY_CRF_APPROVED_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_CRF_APPROVED_BY == null &&
+                    !Context.CRF.TryFindByAPPROVED_BY(SFKEY, out Cache_SFKEY_CRF_APPROVED_BY))
+                {
+                    Cache_SFKEY_CRF_APPROVED_BY = new List<CRF>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_CRF_APPROVED_BY;
+            }
+        }
+
+        /// <summary>
+        /// CRF (Creditor Financial Transaction) related entities by [SF.SFKEY]-&gt;[CRF.STAFF_ORDER_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<CRF> SFKEY_CRF_STAFF_ORDER_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_CRF_STAFF_ORDER_BY == null &&
+                    !Context.CRF.TryFindBySTAFF_ORDER_BY(SFKEY, out Cache_SFKEY_CRF_STAFF_ORDER_BY))
+                {
+                    Cache_SFKEY_CRF_STAFF_ORDER_BY = new List<CRF>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_CRF_STAFF_ORDER_BY;
+            }
+        }
+
+        /// <summary>
+        /// CRPR (Creditor Purchase Requisitions) related entities by [SF.SFKEY]-&gt;[CRPR.STAFF_ORDER_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<CRPR> SFKEY_CRPR_STAFF_ORDER_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_CRPR_STAFF_ORDER_BY == null &&
+                    !Context.CRPR.TryFindBySTAFF_ORDER_BY(SFKEY, out Cache_SFKEY_CRPR_STAFF_ORDER_BY))
+                {
+                    Cache_SFKEY_CRPR_STAFF_ORDER_BY = new List<CRPR>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_CRPR_STAFF_ORDER_BY;
+            }
+        }
+
+        /// <summary>
+        /// CRPR (Creditor Purchase Requisitions) related entities by [SF.SFKEY]-&gt;[CRPR.APPROVED_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<CRPR> SFKEY_CRPR_APPROVED_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_CRPR_APPROVED_BY == null &&
+                    !Context.CRPR.TryFindByAPPROVED_BY(SFKEY, out Cache_SFKEY_CRPR_APPROVED_BY))
+                {
+                    Cache_SFKEY_CRPR_APPROVED_BY = new List<CRPR>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_CRPR_APPROVED_BY;
+            }
+        }
+
+        /// <summary>
         /// CRTT (Creditor Trade Types) related entities by [SF.SFKEY]-&gt;[CRTT.STAFF]
         /// Staff member code
         /// </summary>
@@ -1547,6 +1628,78 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SFKEY_PGID_IMPORTED_BY;
+            }
+        }
+
+        /// <summary>
+        /// RQ (Purchase Requisition) related entities by [SF.SFKEY]-&gt;[RQ.ORDER_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<RQ> SFKEY_RQ_ORDER_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_RQ_ORDER_BY == null &&
+                    !Context.RQ.TryFindByORDER_BY(SFKEY, out Cache_SFKEY_RQ_ORDER_BY))
+                {
+                    Cache_SFKEY_RQ_ORDER_BY = new List<RQ>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_RQ_ORDER_BY;
+            }
+        }
+
+        /// <summary>
+        /// RQ (Purchase Requisition) related entities by [SF.SFKEY]-&gt;[RQ.APPROVED_BY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<RQ> SFKEY_RQ_APPROVED_BY
+        {
+            get
+            {
+                if (Cache_SFKEY_RQ_APPROVED_BY == null &&
+                    !Context.RQ.TryFindByAPPROVED_BY(SFKEY, out Cache_SFKEY_RQ_APPROVED_BY))
+                {
+                    Cache_SFKEY_RQ_APPROVED_BY = new List<RQ>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_RQ_APPROVED_BY;
+            }
+        }
+
+        /// <summary>
+        /// RQPG (Purchasing Group) related entities by [SF.SFKEY]-&gt;[RQPG.SFKEY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<RQPG> SFKEY_RQPG_SFKEY
+        {
+            get
+            {
+                if (Cache_SFKEY_RQPG_SFKEY == null &&
+                    !Context.RQPG.TryFindBySFKEY(SFKEY, out Cache_SFKEY_RQPG_SFKEY))
+                {
+                    Cache_SFKEY_RQPG_SFKEY = new List<RQPG>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_RQPG_SFKEY;
+            }
+        }
+
+        /// <summary>
+        /// RQREL (Staff Purchasing Group Link) related entities by [SF.SFKEY]-&gt;[RQREL.SFKEY]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<RQREL> SFKEY_RQREL_SFKEY
+        {
+            get
+            {
+                if (Cache_SFKEY_RQREL_SFKEY == null &&
+                    !Context.RQREL.TryFindBySFKEY(SFKEY, out Cache_SFKEY_RQREL_SFKEY))
+                {
+                    Cache_SFKEY_RQREL_SFKEY = new List<RQREL>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_RQREL_SFKEY;
             }
         }
 
@@ -1835,6 +1988,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SFKEY_SCI_SCH_EMERG_CONTACT;
+            }
+        }
+
+        /// <summary>
+        /// SCI (School Information) related entities by [SF.SFKEY]-&gt;[SCI.SF_PURCH_MANAGER]
+        /// Staff member code
+        /// </summary>
+        public IReadOnlyList<SCI> SFKEY_SCI_SF_PURCH_MANAGER
+        {
+            get
+            {
+                if (Cache_SFKEY_SCI_SF_PURCH_MANAGER == null &&
+                    !Context.SCI.TryFindBySF_PURCH_MANAGER(SFKEY, out Cache_SFKEY_SCI_SF_PURCH_MANAGER))
+                {
+                    Cache_SFKEY_SCI_SF_PURCH_MANAGER = new List<SCI>().AsReadOnly();
+                }
+
+                return Cache_SFKEY_SCI_SF_PURCH_MANAGER;
             }
         }
 

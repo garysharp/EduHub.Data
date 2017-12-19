@@ -18,7 +18,7 @@
 #>
 <#
     // Load Schema
-    var schema = LoadSchema(this.Host.ResolvePath(@"..\CASES21v58 Schema.xml"));
+    var schema = LoadSchema(this.Host.ResolvePath(@"..\CASES21v59 Schema.xml"));
 #>
 <#
     // Iterate Entities
