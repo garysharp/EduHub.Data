@@ -36,8 +36,8 @@ namespace EduHub.Data
 
             stream = Stream;
 
-            decoder = Encoding.UTF8.GetDecoder();
-            maxCharPerBuffer = Encoding.UTF8.GetMaxCharCount(BufferSize);
+            decoder = Encoding.Default.GetDecoder();
+            maxCharPerBuffer = Encoding.Default.GetMaxCharCount(BufferSize);
 
             byteBuffer = new byte[BufferSize];
             byteLength = 0;
