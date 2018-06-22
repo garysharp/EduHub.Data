@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides strongly-typed object model for eduHub Data Sets</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2016 Gary Sharp</copyright>
+    <copyright>Copyright 2018 Gary Sharp</copyright>
     <tags>eduHub</tags>
   </metadata>
 </package>
