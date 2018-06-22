@@ -709,7 +709,7 @@ WHERE
 	2 - COUNT(*)
 FROM sys.columns
 WHERE
-	object_id = OBJECT_ID(N'[dbo].[SVAG]') AND
+	object_id = OBJECT_ID(N'[dbo].[UM]') AND
 	name IN ('LATITUDE', 'LONGITUDE')";
 
             return new SqlCommand(sql, SqlConnection);
