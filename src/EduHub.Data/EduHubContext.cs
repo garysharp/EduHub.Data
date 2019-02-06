@@ -1,8 +1,9 @@
-﻿using EduHub.Data.SeamlessViews;
+﻿using EduHub.Data.Entities;
+using EduHub.Data.SeamlessViews;
+using EduHub.Data.WriteBack;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using EduHub.Data.Entities;
 
 namespace EduHub.Data
 {
@@ -666,7 +667,8 @@ namespace EduHub.Data
             _UM = new UMDataSet(this);
             _UM_TFR = new UM_TFRDataSet(this);
 
-            seamlessViews = new SeamlessViewsContext(this);
+            SeamlessViews = new SeamlessViewsContext(this);
+            WriteBack = new WriteBackContext(this);
         }
 
         /// <summary>

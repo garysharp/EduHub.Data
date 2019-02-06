@@ -1,5 +1,6 @@
 ﻿using EduHub.Data.Entities;
 using EduHub.Data.SeamlessViews;
+using EduHub.Data.WriteBack;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -13,7 +14,6 @@ namespace EduHub.Data
     public partial class EduHubContext
     {
         private static string defaultEduHubDirectory;
-        private readonly SeamlessViewsContext seamlessViews;
 
         /// <summary>
         /// Default directory used when creating a context if none is provided to the constructor
@@ -287,13 +287,12 @@ namespace EduHub.Data
         /// <summary>
         /// Seamless Views
         /// </summary>
-        public SeamlessViewsContext SeamlessViews
-        {
-            get
-            {
-                return seamlessViews;
-            }
-        }
+        public SeamlessViewsContext SeamlessViews { get; }
+
+        /// <summary>
+        /// Write-Back
+        /// </summary>
+        public WriteBackContext WriteBack { get; }
 
         /// <summary>
         /// Writes all available data sets to a SQL Server database table, connecting to the SQL Server using Integrated Authentication.

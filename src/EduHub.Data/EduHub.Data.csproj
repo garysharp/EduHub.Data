@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvReader.cs" />
+    <Compile Include="CsvWriter.cs" />
     <Compile Include="EduHubContext.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1998,6 +1999,21 @@
     <Compile Include="SeamlessViews\SeamlessViewsContext.cs" />
     <Compile Include="SeamlessViews\SeamlessViewsDataSetNotFoundException.cs" />
     <Compile Include="SqlHelpers.cs" />
+    <Compile Include="WriteBack\Entities\ATT_HALF_DAY.cs" />
+    <Compile Include="WriteBack\Entities\ATT_HALF_DAYDataSet.cs" />
+    <Compile Include="WriteBack\Entities\ATT_HALF_DAYWriter.cs" />
+    <Compile Include="WriteBack\Entities\IATT_HALF_DAYWriter.cs" />
+    <Compile Include="WriteBack\Entities\IWriteBackDataSet.cs" />
+    <Compile Include="WriteBack\Entities\IWriteBackResponse.cs" />
+    <Compile Include="WriteBack\Entities\WriteBackDataSet.cs" />
+    <Compile Include="WriteBack\Entities\WriteBackEntity.cs" />
+    <Compile Include="WriteBack\Entities\WriteBackResponse.cs" />
+    <Compile Include="WriteBack\Entities\IWriteBackResponseRecord.cs" />
+    <Compile Include="WriteBack\Entities\WriteBackResponseRecord.cs" />
+    <Compile Include="WriteBack\IWriteBackWriter.cs" />
+    <Compile Include="WriteBack\WriteBackCsvWriter.cs" />
+    <Compile Include="WriteBack\WriteBackWriter.cs" />
+    <Compile Include="WriteBack\WriteBackContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EduHub.Data.nuspec" />

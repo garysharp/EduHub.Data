@@ -15,6 +15,9 @@
 
             // Complex Sample (May only run successfully when AKC and AR datasets are manually added to Service C)
             ComplexSample.Run();
+
+            // Write-Back Sample
+            // WriteBackSample.Run();
         }
     }
 }

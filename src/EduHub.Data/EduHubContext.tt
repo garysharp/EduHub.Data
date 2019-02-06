@@ -16,11 +16,12 @@
 <#
     var schema = LoadSchema(this.Host.ResolvePath(@"CASES21v59 Schema.xml"));
 #>
+using EduHub.Data.Entities;
 using EduHub.Data.SeamlessViews;
+using EduHub.Data.WriteBack;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using EduHub.Data.Entities;
 
 namespace EduHub.Data
 {
@@ -80,7 +81,8 @@ namespace EduHub.Data
     }
 #>
 
-            seamlessViews = new SeamlessViewsContext(this);
+            SeamlessViews = new SeamlessViewsContext(this);
+            WriteBack = new WriteBackContext(this);
         }
 
         /// <summary>
