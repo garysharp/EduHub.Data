@@ -29,14 +29,11 @@ namespace EduHub.Data.Entities
             dataSet = DataSet;
             context = DataSet.Context;
 
-            // Create temporary file
-            filenameTemp = Path.GetTempFileName();
-
-            // Copy to temporary file (don't directly process eduHub files)
-            File.Copy(dataSet.Filename, filenameTemp, true);
-
-            // Open temporary file
-            stream = File.OpenRead(filenameTemp);
+            // Copy to memory stream (don't directly process eduHub files)
+            var stream = new MemoryStream();
+            using (var fileStream = new FileStream(dataSet.Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                fileStream.CopyTo(stream);
+            stream.Position = 0;
 
             // Initialize Csv Reader
             reader = new CsvReader(stream);

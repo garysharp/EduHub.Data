@@ -20,9 +20,10 @@ namespace EduHub.Data
         private int charLength;
         private int charPosition;
         private StringBuilder stringBuilder;
+        private readonly List<string> record;
 
         private int recordsRead;
-        private string[] header;
+        private readonly string[] header;
 
         public IReadOnlyList<string> Header { get { return header; } }
 
@@ -46,7 +47,11 @@ namespace EduHub.Data
 
             stringBuilder = new StringBuilder(80);
 
+            // Default record size = 23
+            record = new List<string>(23);
+
             header = ReadRecord().ToArray();
+
             recordsRead = 0;
         }
 
@@ -120,8 +125,8 @@ namespace EduHub.Data
                 return null;
             }
 
-            // Default record size = 23
-            var record = new List<string>(header?.Length ?? 23);
+            var record = this.record;
+            record.Clear();
 
             stringBuilder.Clear();
             bool escapedField = false;
