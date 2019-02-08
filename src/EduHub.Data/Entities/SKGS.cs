@@ -321,6 +321,12 @@ namespace EduHub.Data.Entities
         public string CLOSED { get; internal set; }
 
         /// <summary>
+        /// Concurrent enrolment Y/N
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string CONCURRENT_ENROL { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

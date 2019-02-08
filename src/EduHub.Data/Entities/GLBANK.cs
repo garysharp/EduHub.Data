@@ -72,6 +72,12 @@ namespace EduHub.Data.Entities
         public string COMMENTS { get; internal set; }
 
         /// <summary>
+        /// Comments for Commitment Summary
+        /// [Alphanumeric (250)]
+        /// </summary>
+        public string COMMENTS_COMMIT { get; internal set; }
+
+        /// <summary>
         /// All accounts in KBANK
         /// </summary>
         public decimal? TOTAL_BANK_BALANCE { get; internal set; }

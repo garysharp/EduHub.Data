@@ -62,6 +62,9 @@ namespace EduHub.Data.Entities
                     case "COMMENTS":
                         mapper[i] = (e, v) => e.COMMENTS = v;
                         break;
+                    case "COMMENTS_COMMIT":
+                        mapper[i] = (e, v) => e.COMMENTS_COMMIT = v;
+                        break;
                     case "TOTAL_BANK_BALANCE":
                         mapper[i] = (e, v) => e.TOTAL_BANK_BALANCE = v == null ? (decimal?)null : decimal.Parse(v);
                         break;
@@ -347,6 +350,7 @@ BEGIN
         [MATURITY_DATE] datetime NULL,
         [INTEREST_EARNED] money NULL,
         [COMMENTS] varchar(250) NULL,
+        [COMMENTS_COMMIT] varchar(250) NULL,
         [TOTAL_BANK_BALANCE] money NULL,
         [LY_BANK_BALANCE] money NULL,
         [CASH_GRANT] money NULL,
@@ -507,7 +511,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 42; } }
+            public override int FieldCount { get { return 43; } }
 
             public override object GetValue(int i)
             {
@@ -529,73 +533,75 @@ END");
                         return Current.INTEREST_EARNED;
                     case 7: // COMMENTS
                         return Current.COMMENTS;
-                    case 8: // TOTAL_BANK_BALANCE
+                    case 8: // COMMENTS_COMMIT
+                        return Current.COMMENTS_COMMIT;
+                    case 9: // TOTAL_BANK_BALANCE
                         return Current.TOTAL_BANK_BALANCE;
-                    case 9: // LY_BANK_BALANCE
+                    case 10: // LY_BANK_BALANCE
                         return Current.LY_BANK_BALANCE;
-                    case 10: // CASH_GRANT
+                    case 11: // CASH_GRANT
                         return Current.CASH_GRANT;
-                    case 11: // LY_CASH_GRANT
+                    case 12: // LY_CASH_GRANT
                         return Current.LY_CASH_GRANT;
-                    case 12: // OPERATING_RESERVE
+                    case 13: // OPERATING_RESERVE
                         return Current.OPERATING_RESERVE;
-                    case 13: // LY_OPERATING_RESERVE
+                    case 14: // LY_OPERATING_RESERVE
                         return Current.LY_OPERATING_RESERVE;
-                    case 14: // CURR01
+                    case 15: // CURR01
                         return Current.CURR01;
-                    case 15: // CURR02
+                    case 16: // CURR02
                         return Current.CURR02;
-                    case 16: // CURR03
+                    case 17: // CURR03
                         return Current.CURR03;
-                    case 17: // CURR04
+                    case 18: // CURR04
                         return Current.CURR04;
-                    case 18: // CURR05
+                    case 19: // CURR05
                         return Current.CURR05;
-                    case 19: // CURR06
+                    case 20: // CURR06
                         return Current.CURR06;
-                    case 20: // CURR07
+                    case 21: // CURR07
                         return Current.CURR07;
-                    case 21: // CURR08
+                    case 22: // CURR08
                         return Current.CURR08;
-                    case 22: // CURR09
+                    case 23: // CURR09
                         return Current.CURR09;
-                    case 23: // CURR10
+                    case 24: // CURR10
                         return Current.CURR10;
-                    case 24: // CURR11
+                    case 25: // CURR11
                         return Current.CURR11;
-                    case 25: // CURR12
+                    case 26: // CURR12
                         return Current.CURR12;
-                    case 26: // LASTYR01
+                    case 27: // LASTYR01
                         return Current.LASTYR01;
-                    case 27: // LASTYR02
+                    case 28: // LASTYR02
                         return Current.LASTYR02;
-                    case 28: // LASTYR03
+                    case 29: // LASTYR03
                         return Current.LASTYR03;
-                    case 29: // LASTYR04
+                    case 30: // LASTYR04
                         return Current.LASTYR04;
-                    case 30: // LASTYR05
+                    case 31: // LASTYR05
                         return Current.LASTYR05;
-                    case 31: // LASTYR06
+                    case 32: // LASTYR06
                         return Current.LASTYR06;
-                    case 32: // LASTYR07
+                    case 33: // LASTYR07
                         return Current.LASTYR07;
-                    case 33: // LASTYR08
+                    case 34: // LASTYR08
                         return Current.LASTYR08;
-                    case 34: // LASTYR09
+                    case 35: // LASTYR09
                         return Current.LASTYR09;
-                    case 35: // LASTYR10
+                    case 36: // LASTYR10
                         return Current.LASTYR10;
-                    case 36: // LASTYR11
+                    case 37: // LASTYR11
                         return Current.LASTYR11;
-                    case 37: // LASTYR12
+                    case 38: // LASTYR12
                         return Current.LASTYR12;
-                    case 38: // OPBAL
+                    case 39: // OPBAL
                         return Current.OPBAL;
-                    case 39: // LW_DATE
+                    case 40: // LW_DATE
                         return Current.LW_DATE;
-                    case 40: // LW_TIME
+                    case 41: // LW_TIME
                         return Current.LW_TIME;
-                    case 41: // LW_USER
+                    case 42: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -618,73 +624,75 @@ END");
                         return Current.INTEREST_EARNED == null;
                     case 7: // COMMENTS
                         return Current.COMMENTS == null;
-                    case 8: // TOTAL_BANK_BALANCE
+                    case 8: // COMMENTS_COMMIT
+                        return Current.COMMENTS_COMMIT == null;
+                    case 9: // TOTAL_BANK_BALANCE
                         return Current.TOTAL_BANK_BALANCE == null;
-                    case 9: // LY_BANK_BALANCE
+                    case 10: // LY_BANK_BALANCE
                         return Current.LY_BANK_BALANCE == null;
-                    case 10: // CASH_GRANT
+                    case 11: // CASH_GRANT
                         return Current.CASH_GRANT == null;
-                    case 11: // LY_CASH_GRANT
+                    case 12: // LY_CASH_GRANT
                         return Current.LY_CASH_GRANT == null;
-                    case 12: // OPERATING_RESERVE
+                    case 13: // OPERATING_RESERVE
                         return Current.OPERATING_RESERVE == null;
-                    case 13: // LY_OPERATING_RESERVE
+                    case 14: // LY_OPERATING_RESERVE
                         return Current.LY_OPERATING_RESERVE == null;
-                    case 14: // CURR01
+                    case 15: // CURR01
                         return Current.CURR01 == null;
-                    case 15: // CURR02
+                    case 16: // CURR02
                         return Current.CURR02 == null;
-                    case 16: // CURR03
+                    case 17: // CURR03
                         return Current.CURR03 == null;
-                    case 17: // CURR04
+                    case 18: // CURR04
                         return Current.CURR04 == null;
-                    case 18: // CURR05
+                    case 19: // CURR05
                         return Current.CURR05 == null;
-                    case 19: // CURR06
+                    case 20: // CURR06
                         return Current.CURR06 == null;
-                    case 20: // CURR07
+                    case 21: // CURR07
                         return Current.CURR07 == null;
-                    case 21: // CURR08
+                    case 22: // CURR08
                         return Current.CURR08 == null;
-                    case 22: // CURR09
+                    case 23: // CURR09
                         return Current.CURR09 == null;
-                    case 23: // CURR10
+                    case 24: // CURR10
                         return Current.CURR10 == null;
-                    case 24: // CURR11
+                    case 25: // CURR11
                         return Current.CURR11 == null;
-                    case 25: // CURR12
+                    case 26: // CURR12
                         return Current.CURR12 == null;
-                    case 26: // LASTYR01
+                    case 27: // LASTYR01
                         return Current.LASTYR01 == null;
-                    case 27: // LASTYR02
+                    case 28: // LASTYR02
                         return Current.LASTYR02 == null;
-                    case 28: // LASTYR03
+                    case 29: // LASTYR03
                         return Current.LASTYR03 == null;
-                    case 29: // LASTYR04
+                    case 30: // LASTYR04
                         return Current.LASTYR04 == null;
-                    case 30: // LASTYR05
+                    case 31: // LASTYR05
                         return Current.LASTYR05 == null;
-                    case 31: // LASTYR06
+                    case 32: // LASTYR06
                         return Current.LASTYR06 == null;
-                    case 32: // LASTYR07
+                    case 33: // LASTYR07
                         return Current.LASTYR07 == null;
-                    case 33: // LASTYR08
+                    case 34: // LASTYR08
                         return Current.LASTYR08 == null;
-                    case 34: // LASTYR09
+                    case 35: // LASTYR09
                         return Current.LASTYR09 == null;
-                    case 35: // LASTYR10
+                    case 36: // LASTYR10
                         return Current.LASTYR10 == null;
-                    case 36: // LASTYR11
+                    case 37: // LASTYR11
                         return Current.LASTYR11 == null;
-                    case 37: // LASTYR12
+                    case 38: // LASTYR12
                         return Current.LASTYR12 == null;
-                    case 38: // OPBAL
+                    case 39: // OPBAL
                         return Current.OPBAL == null;
-                    case 39: // LW_DATE
+                    case 40: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 40: // LW_TIME
+                    case 41: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 41: // LW_USER
+                    case 42: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -711,73 +719,75 @@ END");
                         return "INTEREST_EARNED";
                     case 7: // COMMENTS
                         return "COMMENTS";
-                    case 8: // TOTAL_BANK_BALANCE
+                    case 8: // COMMENTS_COMMIT
+                        return "COMMENTS_COMMIT";
+                    case 9: // TOTAL_BANK_BALANCE
                         return "TOTAL_BANK_BALANCE";
-                    case 9: // LY_BANK_BALANCE
+                    case 10: // LY_BANK_BALANCE
                         return "LY_BANK_BALANCE";
-                    case 10: // CASH_GRANT
+                    case 11: // CASH_GRANT
                         return "CASH_GRANT";
-                    case 11: // LY_CASH_GRANT
+                    case 12: // LY_CASH_GRANT
                         return "LY_CASH_GRANT";
-                    case 12: // OPERATING_RESERVE
+                    case 13: // OPERATING_RESERVE
                         return "OPERATING_RESERVE";
-                    case 13: // LY_OPERATING_RESERVE
+                    case 14: // LY_OPERATING_RESERVE
                         return "LY_OPERATING_RESERVE";
-                    case 14: // CURR01
+                    case 15: // CURR01
                         return "CURR01";
-                    case 15: // CURR02
+                    case 16: // CURR02
                         return "CURR02";
-                    case 16: // CURR03
+                    case 17: // CURR03
                         return "CURR03";
-                    case 17: // CURR04
+                    case 18: // CURR04
                         return "CURR04";
-                    case 18: // CURR05
+                    case 19: // CURR05
                         return "CURR05";
-                    case 19: // CURR06
+                    case 20: // CURR06
                         return "CURR06";
-                    case 20: // CURR07
+                    case 21: // CURR07
                         return "CURR07";
-                    case 21: // CURR08
+                    case 22: // CURR08
                         return "CURR08";
-                    case 22: // CURR09
+                    case 23: // CURR09
                         return "CURR09";
-                    case 23: // CURR10
+                    case 24: // CURR10
                         return "CURR10";
-                    case 24: // CURR11
+                    case 25: // CURR11
                         return "CURR11";
-                    case 25: // CURR12
+                    case 26: // CURR12
                         return "CURR12";
-                    case 26: // LASTYR01
+                    case 27: // LASTYR01
                         return "LASTYR01";
-                    case 27: // LASTYR02
+                    case 28: // LASTYR02
                         return "LASTYR02";
-                    case 28: // LASTYR03
+                    case 29: // LASTYR03
                         return "LASTYR03";
-                    case 29: // LASTYR04
+                    case 30: // LASTYR04
                         return "LASTYR04";
-                    case 30: // LASTYR05
+                    case 31: // LASTYR05
                         return "LASTYR05";
-                    case 31: // LASTYR06
+                    case 32: // LASTYR06
                         return "LASTYR06";
-                    case 32: // LASTYR07
+                    case 33: // LASTYR07
                         return "LASTYR07";
-                    case 33: // LASTYR08
+                    case 34: // LASTYR08
                         return "LASTYR08";
-                    case 34: // LASTYR09
+                    case 35: // LASTYR09
                         return "LASTYR09";
-                    case 35: // LASTYR10
+                    case 36: // LASTYR10
                         return "LASTYR10";
-                    case 36: // LASTYR11
+                    case 37: // LASTYR11
                         return "LASTYR11";
-                    case 37: // LASTYR12
+                    case 38: // LASTYR12
                         return "LASTYR12";
-                    case 38: // OPBAL
+                    case 39: // OPBAL
                         return "OPBAL";
-                    case 39: // LW_DATE
+                    case 40: // LW_DATE
                         return "LW_DATE";
-                    case 40: // LW_TIME
+                    case 41: // LW_TIME
                         return "LW_TIME";
-                    case 41: // LW_USER
+                    case 42: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -804,74 +814,76 @@ END");
                         return 6;
                     case "COMMENTS":
                         return 7;
-                    case "TOTAL_BANK_BALANCE":
+                    case "COMMENTS_COMMIT":
                         return 8;
-                    case "LY_BANK_BALANCE":
+                    case "TOTAL_BANK_BALANCE":
                         return 9;
-                    case "CASH_GRANT":
+                    case "LY_BANK_BALANCE":
                         return 10;
-                    case "LY_CASH_GRANT":
+                    case "CASH_GRANT":
                         return 11;
-                    case "OPERATING_RESERVE":
+                    case "LY_CASH_GRANT":
                         return 12;
-                    case "LY_OPERATING_RESERVE":
+                    case "OPERATING_RESERVE":
                         return 13;
-                    case "CURR01":
+                    case "LY_OPERATING_RESERVE":
                         return 14;
-                    case "CURR02":
+                    case "CURR01":
                         return 15;
-                    case "CURR03":
+                    case "CURR02":
                         return 16;
-                    case "CURR04":
+                    case "CURR03":
                         return 17;
-                    case "CURR05":
+                    case "CURR04":
                         return 18;
-                    case "CURR06":
+                    case "CURR05":
                         return 19;
-                    case "CURR07":
+                    case "CURR06":
                         return 20;
-                    case "CURR08":
+                    case "CURR07":
                         return 21;
-                    case "CURR09":
+                    case "CURR08":
                         return 22;
-                    case "CURR10":
+                    case "CURR09":
                         return 23;
-                    case "CURR11":
+                    case "CURR10":
                         return 24;
-                    case "CURR12":
+                    case "CURR11":
                         return 25;
-                    case "LASTYR01":
+                    case "CURR12":
                         return 26;
-                    case "LASTYR02":
+                    case "LASTYR01":
                         return 27;
-                    case "LASTYR03":
+                    case "LASTYR02":
                         return 28;
-                    case "LASTYR04":
+                    case "LASTYR03":
                         return 29;
-                    case "LASTYR05":
+                    case "LASTYR04":
                         return 30;
-                    case "LASTYR06":
+                    case "LASTYR05":
                         return 31;
-                    case "LASTYR07":
+                    case "LASTYR06":
                         return 32;
-                    case "LASTYR08":
+                    case "LASTYR07":
                         return 33;
-                    case "LASTYR09":
+                    case "LASTYR08":
                         return 34;
-                    case "LASTYR10":
+                    case "LASTYR09":
                         return 35;
-                    case "LASTYR11":
+                    case "LASTYR10":
                         return 36;
-                    case "LASTYR12":
+                    case "LASTYR11":
                         return 37;
-                    case "OPBAL":
+                    case "LASTYR12":
                         return 38;
-                    case "LW_DATE":
+                    case "OPBAL":
                         return 39;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 40;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 41;
+                    case "LW_USER":
+                        return 42;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

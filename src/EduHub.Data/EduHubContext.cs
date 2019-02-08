@@ -84,6 +84,7 @@ namespace EduHub.Data
         private readonly KEMADataSet _KEMA;
         private readonly KERRORDataSet _KERROR;
         private readonly KFTCDataSet _KFTC;
+        private readonly KFUNDDataSet _KFUND;
         private readonly KGCDataSet _KGC;
         private readonly KGCHIDataSet _KGCHI;
         private readonly KGCVDataSet _KGCV;
@@ -427,6 +428,7 @@ namespace EduHub.Data
             _KEMA = new KEMADataSet(this);
             _KERROR = new KERRORDataSet(this);
             _KFTC = new KFTCDataSet(this);
+            _KFUND = new KFUNDDataSet(this);
             _KGC = new KGCDataSet(this);
             _KGCHI = new KGCHIDataSet(this);
             _KGCV = new KGCVDataSet(this);
@@ -747,6 +749,7 @@ namespace EduHub.Data
             yield return KEMA;
             yield return KERROR;
             yield return KFTC;
+            yield return KFUND;
             yield return KGC;
             yield return KGCHI;
             yield return KGCV;
@@ -1342,6 +1345,11 @@ namespace EduHub.Data
         /// Fuel Tax Credit Rates
         /// </summary>
         public KFTCDataSet KFTC { get { return _KFTC; } }
+
+        /// <summary>
+        /// GL Bank Fund
+        /// </summary>
+        public KFUNDDataSet KFUND { get { return _KFUND; } }
 
         /// <summary>
         /// Home Groups

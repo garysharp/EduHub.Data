@@ -24,7 +24,9 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_FUND_ID = new Lazy<NullDictionary<short?, GLFBANK>>(() => this.ToNullDictionary(i => i.FUND_ID));
+            Index_FUND_ID = new Lazy<NullDictionary<short?, IReadOnlyList<GLFBANK>>>(() => this.ToGroupedNullDictionary(i => i.FUND_ID));
+            Index_FUND_ID_SUBPROGRAM = new Lazy<Dictionary<Tuple<short?, string>, GLFBANK>>(() => this.ToDictionary(i => Tuple.Create(i.FUND_ID, i.SUBPROGRAM)));
+            Index_SUBPROGRAM = new Lazy<NullDictionary<string, IReadOnlyList<GLFBANK>>>(() => this.ToGroupedNullDictionary(i => i.SUBPROGRAM));
             Index_TID = new Lazy<Dictionary<int, GLFBANK>>(() => this.ToDictionary(i => i.TID));
         }
 
@@ -66,6 +68,24 @@ namespace EduHub.Data.Entities
                     case "TRBATCH":
                         mapper[i] = (e, v) => e.TRBATCH = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "SUBPROGRAM":
+                        mapper[i] = (e, v) => e.SUBPROGRAM = v;
+                        break;
+                    case "COMMENCEMENT":
+                        mapper[i] = (e, v) => e.COMMENCEMENT = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "COMPLETION":
+                        mapper[i] = (e, v) => e.COMPLETION = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        break;
+                    case "PROJECT_COST":
+                        mapper[i] = (e, v) => e.PROJECT_COST = v == null ? (decimal?)null : decimal.Parse(v);
+                        break;
+                    case "VSBA_CO_CONTRIBUTION":
+                        mapper[i] = (e, v) => e.VSBA_CO_CONTRIBUTION = v == null ? (decimal?)null : decimal.Parse(v);
+                        break;
+                    case "VSBA_NOTIFIED":
+                        mapper[i] = (e, v) => e.VSBA_NOTIFIED = v;
+                        break;
                     case "TRAMT":
                         mapper[i] = (e, v) => e.TRAMT = v == null ? (decimal?)null : decimal.Parse(v);
                         break;
@@ -95,7 +115,7 @@ namespace EduHub.Data.Entities
         /// <returns>A merged <see cref="IEnumerable{GLFBANK}"/> of entities</returns>
         internal override IEnumerable<GLFBANK> ApplyDeltaEntities(IEnumerable<GLFBANK> Entities, List<GLFBANK> DeltaEntities)
         {
-            HashSet<short?> Index_FUND_ID = new HashSet<short?>(DeltaEntities.Select(i => i.FUND_ID));
+            HashSet<Tuple<short?, string>> Index_FUND_ID_SUBPROGRAM = new HashSet<Tuple<short?, string>>(DeltaEntities.Select(i => Tuple.Create(i.FUND_ID, i.SUBPROGRAM)));
             HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
             using (var deltaIterator = DeltaEntities.GetEnumerator())
@@ -112,7 +132,7 @@ namespace EduHub.Data.Entities
                             var entity = entityIterator.Current;
 
                             bool overwritten = false;
-                            overwritten = overwritten || Index_FUND_ID.Remove(entity.FUND_ID);
+                            overwritten = overwritten || Index_FUND_ID_SUBPROGRAM.Remove(Tuple.Create(entity.FUND_ID, entity.SUBPROGRAM));
                             overwritten = overwritten || Index_TID.Remove(entity.TID);
                             
                             if (entity.CODE.CompareTo(deltaClusteredKey) <= 0)
@@ -147,7 +167,9 @@ namespace EduHub.Data.Entities
         #region Index Fields
 
         private Lazy<Dictionary<string, IReadOnlyList<GLFBANK>>> Index_CODE;
-        private Lazy<NullDictionary<short?, GLFBANK>> Index_FUND_ID;
+        private Lazy<NullDictionary<short?, IReadOnlyList<GLFBANK>>> Index_FUND_ID;
+        private Lazy<Dictionary<Tuple<short?, string>, GLFBANK>> Index_FUND_ID_SUBPROGRAM;
+        private Lazy<NullDictionary<string, IReadOnlyList<GLFBANK>>> Index_SUBPROGRAM;
         private Lazy<Dictionary<int, GLFBANK>> Index_TID;
 
         #endregion
@@ -200,9 +222,9 @@ namespace EduHub.Data.Entities
         /// Find GLFBANK by FUND_ID field
         /// </summary>
         /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
-        /// <returns>Related GLFBANK entity</returns>
+        /// <returns>List of related GLFBANK entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public GLFBANK FindByFUND_ID(short? FUND_ID)
+        public IReadOnlyList<GLFBANK> FindByFUND_ID(short? FUND_ID)
         {
             return Index_FUND_ID.Value[FUND_ID];
         }
@@ -211,10 +233,10 @@ namespace EduHub.Data.Entities
         /// Attempt to find GLFBANK by FUND_ID field
         /// </summary>
         /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
-        /// <param name="Value">Related GLFBANK entity</param>
-        /// <returns>True if the related GLFBANK entity is found</returns>
+        /// <param name="Value">List of related GLFBANK entities</param>
+        /// <returns>True if the list of related GLFBANK entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByFUND_ID(short? FUND_ID, out GLFBANK Value)
+        public bool TryFindByFUND_ID(short? FUND_ID, out IReadOnlyList<GLFBANK> Value)
         {
             return Index_FUND_ID.Value.TryGetValue(FUND_ID, out Value);
         }
@@ -223,12 +245,99 @@ namespace EduHub.Data.Entities
         /// Attempt to find GLFBANK by FUND_ID field
         /// </summary>
         /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
+        /// <returns>List of related GLFBANK entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLFBANK> TryFindByFUND_ID(short? FUND_ID)
+        {
+            IReadOnlyList<GLFBANK> value;
+            if (Index_FUND_ID.Value.TryGetValue(FUND_ID, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLFBANK by FUND_ID and SUBPROGRAM fields
+        /// </summary>
+        /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
+        /// <returns>Related GLFBANK entity</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public GLFBANK FindByFUND_ID_SUBPROGRAM(short? FUND_ID, string SUBPROGRAM)
+        {
+            return Index_FUND_ID_SUBPROGRAM.Value[Tuple.Create(FUND_ID, SUBPROGRAM)];
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by FUND_ID and SUBPROGRAM fields
+        /// </summary>
+        /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
+        /// <param name="Value">Related GLFBANK entity</param>
+        /// <returns>True if the related GLFBANK entity is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByFUND_ID_SUBPROGRAM(short? FUND_ID, string SUBPROGRAM, out GLFBANK Value)
+        {
+            return Index_FUND_ID_SUBPROGRAM.Value.TryGetValue(Tuple.Create(FUND_ID, SUBPROGRAM), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by FUND_ID and SUBPROGRAM fields
+        /// </summary>
+        /// <param name="FUND_ID">FUND_ID value used to find GLFBANK</param>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
         /// <returns>Related GLFBANK entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public GLFBANK TryFindByFUND_ID(short? FUND_ID)
+        public GLFBANK TryFindByFUND_ID_SUBPROGRAM(short? FUND_ID, string SUBPROGRAM)
         {
             GLFBANK value;
-            if (Index_FUND_ID.Value.TryGetValue(FUND_ID, out value))
+            if (Index_FUND_ID_SUBPROGRAM.Value.TryGetValue(Tuple.Create(FUND_ID, SUBPROGRAM), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find GLFBANK by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
+        /// <returns>List of related GLFBANK entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLFBANK> FindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            return Index_SUBPROGRAM.Value[SUBPROGRAM];
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
+        /// <param name="Value">List of related GLFBANK entities</param>
+        /// <returns>True if the list of related GLFBANK entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySUBPROGRAM(string SUBPROGRAM, out IReadOnlyList<GLFBANK> Value)
+        {
+            return Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find GLFBANK by SUBPROGRAM field
+        /// </summary>
+        /// <param name="SUBPROGRAM">SUBPROGRAM value used to find GLFBANK</param>
+        /// <returns>List of related GLFBANK entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<GLFBANK> TryFindBySUBPROGRAM(string SUBPROGRAM)
+        {
+            IReadOnlyList<GLFBANK> value;
+            if (Index_SUBPROGRAM.Value.TryGetValue(SUBPROGRAM, out value))
             {
                 return value;
             }
@@ -305,6 +414,12 @@ BEGIN
         [LY_AMOUNT] money NULL,
         [LY_TIME_FRAME] varchar(1) NULL,
         [TRBATCH] smallint NULL,
+        [SUBPROGRAM] varchar(4) NULL,
+        [COMMENCEMENT] datetime NULL,
+        [COMPLETION] datetime NULL,
+        [PROJECT_COST] money NULL,
+        [VSBA_CO_CONTRIBUTION] money NULL,
+        [VSBA_NOTIFIED] varchar(3) NULL,
         [TRAMT] money NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
@@ -320,6 +435,15 @@ BEGIN
     CREATE NONCLUSTERED INDEX [GLFBANK_Index_FUND_ID] ON [dbo].[GLFBANK]
     (
             [FUND_ID] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLFBANK_Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK]
+    (
+            [FUND_ID] ASC,
+            [SUBPROGRAM] ASC
+    );
+    CREATE NONCLUSTERED INDEX [GLFBANK_Index_SUBPROGRAM] ON [dbo].[GLFBANK]
+    (
+            [SUBPROGRAM] ASC
     );
 END");
         }
@@ -338,6 +462,10 @@ END");
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID')
     ALTER INDEX [Index_FUND_ID] ON [dbo].[GLFBANK] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID_SUBPROGRAM')
+    ALTER INDEX [Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[GLFBANK] DISABLE;
 ");
@@ -355,6 +483,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID')
     ALTER INDEX [Index_FUND_ID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID_SUBPROGRAM')
+    ALTER INDEX [Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_SUBPROGRAM')
+    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
 ");
@@ -371,29 +503,48 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
             int parameterIndex = 0;
             StringBuilder builder = new StringBuilder();
 
-            List<short?> Index_FUND_ID = new List<short?>();
+            List<Tuple<short?, string>> Index_FUND_ID_SUBPROGRAM = new List<Tuple<short?, string>>();
             List<int> Index_TID = new List<int>();
 
             foreach (var entity in Entities)
             {
-                Index_FUND_ID.Add(entity.FUND_ID);
+                Index_FUND_ID_SUBPROGRAM.Add(Tuple.Create(entity.FUND_ID, entity.SUBPROGRAM));
                 Index_TID.Add(entity.TID);
             }
 
             builder.AppendLine("DELETE [dbo].[GLFBANK] WHERE");
 
 
-            // Index_FUND_ID
-            builder.Append("[FUND_ID] IN (");
-            for (int index = 0; index < Index_FUND_ID.Count; index++)
+            // Index_FUND_ID_SUBPROGRAM
+            builder.Append("(");
+            for (int index = 0; index < Index_FUND_ID_SUBPROGRAM.Count; index++)
             {
                 if (index != 0)
-                    builder.Append(", ");
+                    builder.Append(" OR ");
 
                 // FUND_ID
-                var parameterFUND_ID = $"@p{parameterIndex++}";
-                builder.Append(parameterFUND_ID);
-                command.Parameters.Add(parameterFUND_ID, SqlDbType.SmallInt).Value = (object)Index_FUND_ID[index] ?? DBNull.Value;
+                if (Index_FUND_ID_SUBPROGRAM[index].Item1 == null)
+                {
+                    builder.Append("([FUND_ID] IS NULL");
+                }
+                else
+                {
+                    var parameterFUND_ID = $"@p{parameterIndex++}";
+                    builder.Append("([FUND_ID]=").Append(parameterFUND_ID);
+                    command.Parameters.Add(parameterFUND_ID, SqlDbType.SmallInt).Value = Index_FUND_ID_SUBPROGRAM[index].Item1;
+                }
+
+                // SUBPROGRAM
+                if (Index_FUND_ID_SUBPROGRAM[index].Item2 == null)
+                {
+                    builder.Append(" AND [SUBPROGRAM] IS NULL)");
+                }
+                else
+                {
+                    var parameterSUBPROGRAM = $"@p{parameterIndex++}";
+                    builder.Append(" AND [SUBPROGRAM]=").Append(parameterSUBPROGRAM).Append(")");
+                    command.Parameters.Add(parameterSUBPROGRAM, SqlDbType.VarChar, 4).Value = Index_FUND_ID_SUBPROGRAM[index].Item2;
+                }
             }
             builder.AppendLine(") OR");
 
@@ -443,7 +594,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
             {
             }
 
-            public override int FieldCount { get { return 13; } }
+            public override int FieldCount { get { return 19; } }
 
             public override object GetValue(int i)
             {
@@ -467,13 +618,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
                         return Current.LY_TIME_FRAME;
                     case 8: // TRBATCH
                         return Current.TRBATCH;
-                    case 9: // TRAMT
+                    case 9: // SUBPROGRAM
+                        return Current.SUBPROGRAM;
+                    case 10: // COMMENCEMENT
+                        return Current.COMMENCEMENT;
+                    case 11: // COMPLETION
+                        return Current.COMPLETION;
+                    case 12: // PROJECT_COST
+                        return Current.PROJECT_COST;
+                    case 13: // VSBA_CO_CONTRIBUTION
+                        return Current.VSBA_CO_CONTRIBUTION;
+                    case 14: // VSBA_NOTIFIED
+                        return Current.VSBA_NOTIFIED;
+                    case 15: // TRAMT
                         return Current.TRAMT;
-                    case 10: // LW_DATE
+                    case 16: // LW_DATE
                         return Current.LW_DATE;
-                    case 11: // LW_TIME
+                    case 17: // LW_TIME
                         return Current.LW_TIME;
-                    case 12: // LW_USER
+                    case 18: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -498,13 +661,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
                         return Current.LY_TIME_FRAME == null;
                     case 8: // TRBATCH
                         return Current.TRBATCH == null;
-                    case 9: // TRAMT
+                    case 9: // SUBPROGRAM
+                        return Current.SUBPROGRAM == null;
+                    case 10: // COMMENCEMENT
+                        return Current.COMMENCEMENT == null;
+                    case 11: // COMPLETION
+                        return Current.COMPLETION == null;
+                    case 12: // PROJECT_COST
+                        return Current.PROJECT_COST == null;
+                    case 13: // VSBA_CO_CONTRIBUTION
+                        return Current.VSBA_CO_CONTRIBUTION == null;
+                    case 14: // VSBA_NOTIFIED
+                        return Current.VSBA_NOTIFIED == null;
+                    case 15: // TRAMT
                         return Current.TRAMT == null;
-                    case 10: // LW_DATE
+                    case 16: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 11: // LW_TIME
+                    case 17: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 12: // LW_USER
+                    case 18: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -533,13 +708,25 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
                         return "LY_TIME_FRAME";
                     case 8: // TRBATCH
                         return "TRBATCH";
-                    case 9: // TRAMT
+                    case 9: // SUBPROGRAM
+                        return "SUBPROGRAM";
+                    case 10: // COMMENCEMENT
+                        return "COMMENCEMENT";
+                    case 11: // COMPLETION
+                        return "COMPLETION";
+                    case 12: // PROJECT_COST
+                        return "PROJECT_COST";
+                    case 13: // VSBA_CO_CONTRIBUTION
+                        return "VSBA_CO_CONTRIBUTION";
+                    case 14: // VSBA_NOTIFIED
+                        return "VSBA_NOTIFIED";
+                    case 15: // TRAMT
                         return "TRAMT";
-                    case 10: // LW_DATE
+                    case 16: // LW_DATE
                         return "LW_DATE";
-                    case 11: // LW_TIME
+                    case 17: // LW_TIME
                         return "LW_TIME";
-                    case 12: // LW_USER
+                    case 18: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -568,14 +755,26 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
                         return 7;
                     case "TRBATCH":
                         return 8;
-                    case "TRAMT":
+                    case "SUBPROGRAM":
                         return 9;
-                    case "LW_DATE":
+                    case "COMMENCEMENT":
                         return 10;
-                    case "LW_TIME":
+                    case "COMPLETION":
                         return 11;
-                    case "LW_USER":
+                    case "PROJECT_COST":
                         return 12;
+                    case "VSBA_CO_CONTRIBUTION":
+                        return 13;
+                    case "VSBA_NOTIFIED":
+                        return 14;
+                    case "TRAMT":
+                        return 15;
+                    case "LW_DATE":
+                        return 16;
+                    case "LW_TIME":
+                        return 17;
+                    case "LW_USER":
+                        return 18;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

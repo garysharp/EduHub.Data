@@ -1057,10 +1057,10 @@ Must be :
       <Field Name="EMERG_LANG02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar" ForeignParent="KGL:KGLKEY"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_LANG03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar" ForeignParent="KGL:KGLKEY"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_LANG04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar" ForeignParent="KGL:KGLKEY"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
       <Field Name="ACC_DECLARATION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[School has received authority to react to accident? (Y/N) (default for each student)]]></Field>
       <Field Name="AMBULANCE_SUBSCRIBER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[(Was CALL_AMBULANCE) Family has ambulance subscription? (Y/N) (default for each student)]]></Field>
       <Field Name="MEDICARE_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Medicare No (default for each student)]]></Field>
@@ -1254,10 +1254,10 @@ Must be :
       <Field Name="EMERG_LANG02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_LANG03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_LANG04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
       <Field Name="ACC_DECLARATION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[School has received authority to react to accident? (Y/N) (default for each student)]]></Field>
       <Field Name="AMBULANCE_SUBSCRIBER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[(Was CALL_AMBULANCE) Family has ambulance subscription? (Y/N) (default for each student)]]></Field>
       <Field Name="MEDICARE_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Medicare No (default for each student)]]></Field>
@@ -1802,10 +1802,10 @@ bank accounts]]></Field>
       <Field Name="FIELD47" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="60" SqlType="varchar"><![CDATA[Data Fields]]></Field>
       <Field Name="FIELD48" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="60" SqlType="varchar"><![CDATA[Data Fields]]></Field>
       <Field Name="FIELD49" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="60" SqlType="varchar"><![CDATA[Data Fields]]></Field>
-      <Field Name="NOTES01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Notes field]]></Field>
-      <Field Name="NOTES02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Notes field]]></Field>
-      <Field Name="NOTES03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Notes field]]></Field>
-      <Field Name="NOTES04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Notes field]]></Field>
+      <Field Name="NOTES01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Notes field]]></Field>
+      <Field Name="NOTES02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Notes field]]></Field>
+      <Field Name="NOTES03" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Notes field]]></Field>
+      <Field Name="NOTES04" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Notes field]]></Field>
       <Field Name="ITEM_PIC" IsKey="false" IsNullable="true" IsIdentity="false" Type="byte[]" TypeDescription="Picture" TypeMaxLength="-1" SqlType="varbinary" />
       <Field Name="FDT_SOURCE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar"><![CDATA[School originated from]]></Field>
       <Field Name="FDT_DEST" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar"><![CDATA[School being transfered too.]]></Field>
@@ -2221,6 +2221,7 @@ bank accounts]]></Field>
       <Field Name="MATURITY_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Account maturity date (if applicable)]]></Field>
       <Field Name="INTEREST_EARNED" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Account interest earned for the School Year]]></Field>
       <Field Name="COMMENTS" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="250" SqlType="varchar"><![CDATA[Optional comments]]></Field>
+      <Field Name="COMMENTS_COMMIT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="250" SqlType="varchar"><![CDATA[Comments for Commitment Summary]]></Field>
       <Field Name="TOTAL_BANK_BALANCE" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[All accounts in KBANK]]></Field>
       <Field Name="LY_BANK_BALANCE" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money" />
       <Field Name="CASH_GRANT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[SRP cash grant]]></Field>
@@ -2704,13 +2705,19 @@ the EOY]]></Field>
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="CODE" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="GLBANK:GLCODE"><![CDATA[Owner account]]></Field>
-      <Field Name="FUND_ID" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Unique identifier per committed fund]]></Field>
+      <Field Name="FUND_ID" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint" ForeignParent="KFUND:FUND_ID"><![CDATA[Unique identifier per committed fund]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[Name of fund]]></Field>
       <Field Name="AMOUNT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Amount of this fund]]></Field>
       <Field Name="TIME_FRAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[L or G only]]></Field>
       <Field Name="LY_AMOUNT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Last year's amount]]></Field>
       <Field Name="LY_TIME_FRAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Last year's time frame]]></Field>
       <Field Name="TRBATCH" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Temp field for SP2]]></Field>
+      <Field Name="SUBPROGRAM" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar" ForeignParent="KGLSUB:SUBPROGRAM"><![CDATA[Subprogram (V60)]]></Field>
+      <Field Name="COMMENCEMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Commencement Date]]></Field>
+      <Field Name="COMPLETION" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Completion Date]]></Field>
+      <Field Name="PROJECT_COST" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Total cost of project]]></Field>
+      <Field Name="VSBA_CO_CONTRIBUTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Co-contribution required from School to VSBA]]></Field>
+      <Field Name="VSBA_NOTIFIED" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar"><![CDATA[VSBA Notified Y.N or N/A]]></Field>
       <Field Name="TRAMT" IsKey="false" IsNullable="true" IsIdentity="false" Type="decimal" TypeDescription="Currency" SqlType="money"><![CDATA[Temp field for SP2]]></Field>
       <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
       <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
@@ -2720,8 +2727,15 @@ the EOY]]></Field>
       <Index Name="Index_CODE" IsPrimary="false" IsUnique="false" IsClustered="true">
         <Field>CODE</Field>
       </Index>
-      <Index Name="Index_FUND_ID" IsPrimary="false" IsUnique="true" IsClustered="false">
+      <Index Name="Index_FUND_ID" IsPrimary="false" IsUnique="false" IsClustered="false">
         <Field>FUND_ID</Field>
+      </Index>
+      <Index Name="Index_FUND_ID_SUBPROGRAM" IsPrimary="false" IsUnique="true" IsClustered="false">
+        <Field>FUND_ID</Field>
+        <Field>SUBPROGRAM</Field>
+      </Index>
+      <Index Name="Index_SUBPROGRAM" IsPrimary="false" IsUnique="false" IsClustered="false">
+        <Field>SUBPROGRAM</Field>
       </Index>
       <Index Name="Index_TID" IsPrimary="true" IsUnique="true" IsClustered="false">
         <Field>TID</Field>
@@ -3598,6 +3612,21 @@ to 'Y' else null]]></Field>
     <Indexes>
       <Index Name="Index_KFTCKEY" IsPrimary="true" IsUnique="true" IsClustered="true">
         <Field>KFTCKEY</Field>
+      </Index>
+    </Indexes>
+  </Entity>
+  <Entity Name="KFUND" Description="GL Bank Fund">
+    <Fields>
+      <Field Name="FUND_ID" IsKey="true" IsNullable="false" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Fund ID, eg I]]></Field>
+      <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[eg, INCOME]]></Field>
+      <Field Name="ACTIVE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Allow account to be used(Y/N)]]></Field>
+      <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
+      <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
+      <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last operator]]></Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Index_FUND_ID" IsPrimary="true" IsUnique="true" IsClustered="true">
+        <Field>FUND_ID</Field>
       </Index>
     </Indexes>
   </Entity>
@@ -8123,8 +8152,8 @@ update rates from this date]]></Field>
       <Field Name="EMERG_LANG02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar" ForeignParent="KGL:KGLKEY"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Titlecase" TypeMaxLength="12" SqlType="varchar"><![CDATA[Relationship to staff member of each person to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Titlecase" TypeMaxLength="12" SqlType="varchar"><![CDATA[Relationship to staff member of each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
       <Field Name="GROUP_AVAILABILITY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Is this staff member prepared to be in any special groups? (Y/N)]]></Field>
       <Field Name="NORMAL_ALLOTMENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Normal timetable load for this staff member]]></Field>
       <Field Name="HRMS_UPDATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Y/N information regarding whether the employee records should be updated via HRMS import]]></Field>
@@ -8836,6 +8865,7 @@ update rates from this date]]></Field>
       <Field Name="SURNAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Campus Principal's surname]]></Field>
       <Field Name="FIRST_NAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Titlecase" TypeMaxLength="20" SqlType="varchar"><![CDATA[Campus Principal's first given name]]></Field>
       <Field Name="CLOSED" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[School closed? (Y/N)]]></Field>
+      <Field Name="CONCURRENT_ENROL" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[Concurrent enrolment Y/N]]></Field>
       <Field Name="LW_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Last write date]]></Field>
       <Field Name="LW_TIME" IsKey="false" IsNullable="true" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Last write time]]></Field>
       <Field Name="LW_USER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="128" SqlType="varchar"><![CDATA[Last write operator]]></Field>
@@ -9599,8 +9629,8 @@ update rates from this date]]></Field>
       <Field Name="EMERG_LANG02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar" ForeignParent="KGL:KGLKEY"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="11" SqlType="varchar"><![CDATA[Relationship to a student in this family of each person to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="11" SqlType="varchar"><![CDATA[Relationship to a student in this family of each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
       <Field Name="ACC_DECLARATION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[School has received authority to react to accident? (Y/N) (held on DF and copied here on creation)]]></Field>
       <Field Name="AMBULANCE_SUBSCRIBER" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[No longer used, the Ambulance field on DF should be used]]></Field>
       <Field Name="MEDICARE_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Medicare No (held on DF and copied here on creation)]]></Field>
@@ -9873,8 +9903,8 @@ update rates from this date]]></Field>
       <Field Name="EMERG_LANG02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[Language spoken by person(s) to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="11" SqlType="varchar"><![CDATA[Relationship to a student in this family of each person to contact in an emergency]]></Field>
       <Field Name="EMERG_RELATION02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="11" SqlType="varchar"><![CDATA[Relationship to a student in this family of each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
-      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" SqlType="text"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
+      <Field Name="EMERG_CONTACT02" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Memo" TypeMaxLength="-1" SqlType="varchar"><![CDATA[Contact details for each person to contact in an emergency]]></Field>
       <Field Name="ACC_DECLARATION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="1" SqlType="varchar"><![CDATA[School has received authority to react to accident? (Y/N) (held on DF and copied here on creation)]]></Field>
       <Field Name="MEDICARE_NO" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Medicare No (held on DF and copied here on creation)]]></Field>
       <Field Name="INTERNATIONAL_ST_ID" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[International Student Id (7 Numeric)]]></Field>

@@ -46,6 +46,7 @@ namespace EduHub.Data.WriteBack.Entities
         /// </summary>
         public string PmCode { get; }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"{StudentId},{AbsenceDate.ToString("yyyyMMdd")},{YearLevel},{AmCode},{PmCode}";

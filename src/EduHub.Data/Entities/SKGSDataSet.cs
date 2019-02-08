@@ -170,6 +170,9 @@ namespace EduHub.Data.Entities
                     case "CLOSED":
                         mapper[i] = (e, v) => e.CLOSED = v;
                         break;
+                    case "CONCURRENT_ENROL":
+                        mapper[i] = (e, v) => e.CONCURRENT_ENROL = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
                         break;
@@ -395,6 +398,7 @@ BEGIN
         [SURNAME] varchar(30) NULL,
         [FIRST_NAME] varchar(20) NULL,
         [CLOSED] varchar(1) NULL,
+        [CONCURRENT_ENROL] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -508,7 +512,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 47; } }
+            public override int FieldCount { get { return 48; } }
 
             public override object GetValue(int i)
             {
@@ -602,11 +606,13 @@ END");
                         return Current.FIRST_NAME;
                     case 43: // CLOSED
                         return Current.CLOSED;
-                    case 44: // LW_DATE
+                    case 44: // CONCURRENT_ENROL
+                        return Current.CONCURRENT_ENROL;
+                    case 45: // LW_DATE
                         return Current.LW_DATE;
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME;
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -703,11 +709,13 @@ END");
                         return Current.FIRST_NAME == null;
                     case 43: // CLOSED
                         return Current.CLOSED == null;
-                    case 44: // LW_DATE
+                    case 44: // CONCURRENT_ENROL
+                        return Current.CONCURRENT_ENROL == null;
+                    case 45: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -806,11 +814,13 @@ END");
                         return "FIRST_NAME";
                     case 43: // CLOSED
                         return "CLOSED";
-                    case 44: // LW_DATE
+                    case 44: // CONCURRENT_ENROL
+                        return "CONCURRENT_ENROL";
+                    case 45: // LW_DATE
                         return "LW_DATE";
-                    case 45: // LW_TIME
+                    case 46: // LW_TIME
                         return "LW_TIME";
-                    case 46: // LW_USER
+                    case 47: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -909,12 +919,14 @@ END");
                         return 42;
                     case "CLOSED":
                         return 43;
-                    case "LW_DATE":
+                    case "CONCURRENT_ENROL":
                         return 44;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 45;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 46;
+                    case "LW_USER":
+                        return 47;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

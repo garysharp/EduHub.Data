@@ -53,20 +53,39 @@ WHERE
         }
     }
 
+    partial class DF_TFRDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            const string sql = @"SELECT
+	4 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[DF_TFR]') AND
+	c.name LIKE 'EMERG_CONTACT0%' AND
+	t.name = 'varchar'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class DFDataSet
     {
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the SCH_ED_A_LU, NON_SCH_ED_A_LU, OCCUP_STATUS_A_LU, SCH_ED_B_LU, NON_SCH_ED_B_LU,
-            //  OCCUP_STATUS_B_LU, CNSE, CSE, and FSE columns. New to C21v58.
+            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
             const string sql = @"SELECT
-	9 - COUNT(*)
-FROM sys.columns
+	4 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DF]') AND
-	name IN ('SCH_ED_A_LU', 'NON_SCH_ED_A_LU', 'OCCUP_STATUS_A_LU', 'SCH_ED_B_LU',
-             'NON_SCH_ED_B_LU', 'OCCUP_STATUS_B_LU', 'CNSE', 'CSE', 'FSE')";
+	c.name LIKE 'EMERG_CONTACT0%' AND
+	t.name = 'varchar'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -106,6 +125,42 @@ WHERE
         }
     }
 
+    partial class FDT_IMPDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check that the NOTES columns have the right type. Modified in C21v60.
+            const string sql = @"SELECT
+	4 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[FDT_IMP]') AND
+	c.name LIKE 'NOTES0%' AND
+	t.name = 'varchar'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class GLBANKDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the COMMENTS_COMMIT column. New to C21v60.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[GLBANK]') AND
+	name = 'COMMENTS_COMMIT'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class GLDataSet
     {
         /// <inheritdoc />
@@ -118,6 +173,23 @@ FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[GL]') AND
 	name = 'BATCHABLE'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class GLFBANKDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the SUBPROGRAM column. New to C21v60.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[GLFBANK]') AND
+	name = 'SUBPROGRAM'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -299,24 +371,15 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the SF_Index_SMS_REPLY index. New to C21v58.
-
-            // Check for the existence of the DRIVERS_LIC_NO, DRIVERS_LIC_EXPIRY, VIT_EXPIRY,
-            //   WWCC_NUMBER, WWCC_EXPIRY and WWCC_TYPE columns. New to C21v58.
+            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
             const string sql = @"SELECT
-	(SELECT
-		1 - COUNT(*)
-	FROM sys.indexes
-	WHERE
-		object_id = OBJECT_ID(N'[dbo].[SF]') AND
-		name = 'SF_Index_SMS_REPLY')
-	+
-	(SELECT
-		7 - COUNT(*)
-	FROM sys.columns
-	WHERE
-		object_id = OBJECT_ID(N'[dbo].[SF]') AND
-		name IN ('DRIVERS_LIC_NO', 'DRIVERS_LIC_EXPIRY', 'VIT_EXPIRY', 'WWCC_NUMBER', 'WWCC_EXPIRY', 'WWCC_TYPE', 'SMS_REPLY'))";
+	2 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[SF]') AND
+	c.name LIKE 'EMERG_CONTACT0%' AND
+	t.name = 'varchar'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -334,6 +397,23 @@ FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SG]') AND
 	name = 'VET'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class SKGSDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the CONCURRENT_ENTROL column. New to C21v60.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[SKGS]') AND
+	name = 'CONCURRENT_ENROL'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -375,19 +455,39 @@ WHERE
         }
     }
 
+    partial class ST_TFRDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            const string sql = @"SELECT
+	2 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[ST_TFR]') AND
+	c.name LIKE 'EMERG_CONTACT0%' AND
+	t.name = 'varchar'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class STDataSet
     {
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the VET, USI, SCH_DEFINED01, SCH_DEFINED02 and TEACHER_RECOMMENDATION columns. New to C21v58.
+            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
             const string sql = @"SELECT
-	5 - COUNT(*)
-FROM sys.columns
+	2 - COUNT(*)
+FROM sys.columns c
+JOIN sys.types t ON c.system_type_id=t.system_type_id
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[ST]') AND
-	name IN
-        ('VET', 'USI', 'SCH_DEFINED01', 'SCH_DEFINED02', 'TEACHER_RECOMMENDATION')";
+	c.name LIKE 'EMERG_CONTACT0%' AND
+	t.name = 'varchar'";
 
             return new SqlCommand(sql, SqlConnection);
         }

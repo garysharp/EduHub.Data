@@ -27,6 +27,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<GLCF> Cache_SUBPROGRAM_GLCF_SUBPROGRAM;
         private IReadOnlyList<GLCFPREV> Cache_SUBPROGRAM_GLCFPREV_SUBPROGRAM;
         private IReadOnlyList<GLF> Cache_SUBPROGRAM_GLF_SUBPROGRAM;
+        private IReadOnlyList<GLFBANK> Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM;
         private IReadOnlyList<GLFPREV> Cache_SUBPROGRAM_GLFPREV_SUBPROGRAM;
         private IReadOnlyList<PC> Cache_SUBPROGRAM_PC_SUBPROGRAM;
         private IReadOnlyList<PD> Cache_SUBPROGRAM_PD_SUBPROGRAM;
@@ -284,6 +285,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SUBPROGRAM_GLF_SUBPROGRAM;
+            }
+        }
+
+        /// <summary>
+        /// GLFBANK (Financial Commitments) related entities by [KGLSUB.SUBPROGRAM]-&gt;[GLFBANK.SUBPROGRAM]
+        /// Type key, eg I
+        /// </summary>
+        public IReadOnlyList<GLFBANK> SUBPROGRAM_GLFBANK_SUBPROGRAM
+        {
+            get
+            {
+                if (Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM == null &&
+                    !Context.GLFBANK.TryFindBySUBPROGRAM(SUBPROGRAM, out Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM))
+                {
+                    Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM = new List<GLFBANK>().AsReadOnly();
+                }
+
+                return Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM;
             }
         }
 

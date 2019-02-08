@@ -479,6 +479,8 @@
 // EduHub.Data\src\EduHub.Data\Entities\KGCHIDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KGC.cs
 // EduHub.Data\src\EduHub.Data\Entities\KGCDataSet.cs
+// EduHub.Data\src\EduHub.Data\Entities\KFUND.cs
+// EduHub.Data\src\EduHub.Data\Entities\KFUNDDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KFTC.cs
 // EduHub.Data\src\EduHub.Data\Entities\KFTCDataSet.cs
 // EduHub.Data\src\EduHub.Data\Entities\KERROR.cs
