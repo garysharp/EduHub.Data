@@ -21,6 +21,9 @@ namespace EduHub.Data.SchemaParser
             // Augment with Database Information
             DbParser.AugmentSchemaFromCsv(csvDirectory, schema);
 
+            // Apply customizations
+            Customizations.ApplyVersion60Overrides(schema);
+
             // Validate schema
             SchemaTests.TestForeignKeys(schema);
 

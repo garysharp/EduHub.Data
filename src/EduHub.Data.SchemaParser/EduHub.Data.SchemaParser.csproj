@@ -73,6 +73,7 @@
     <Compile Include="C7\C7Task.cs" />
     <Compile Include="C7\C7Trans.cs" />
     <Compile Include="C7\IC7Entity.cs" />
+    <Compile Include="Customizations.cs" />
     <Compile Include="Db\DbParser.cs" />
     <Compile Include="Db\SysBuilder.cs" />
     <Compile Include="Db\SysColumn.cs" />

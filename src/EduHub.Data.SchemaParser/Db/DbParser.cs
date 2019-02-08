@@ -10,7 +10,6 @@ namespace EduHub.Data.SchemaParser.Db
 {
     public static class DbParser
     {
-
         public static void AugmentSchemaFromCsv(string CsvDirectory, EduHubSchema Schema)
         {
             var tables = new List<SysTable>();
@@ -48,8 +47,8 @@ namespace EduHub.Data.SchemaParser.Db
                         (ColumnName: "COLUMN_ID",       Mapper: (t, v) => t.column_id = int.Parse(v)),
                         (ColumnName: "USER_TYPE_ID",    Mapper: (t, v) => t.user_type_id = int.Parse(v)),
                         (ColumnName: "MAX_LENGTH",      Mapper: (t, v) => t.max_length = int.Parse(v)),
-                        (ColumnName: "IS_NULLABLE",     Mapper: (t, v) => t.is_nullable = v == "1"),
-                        (ColumnName: "IS_IDENTITY",     Mapper: (t, v) => t.is_identity = v == "1")
+                        (ColumnName: "IS_NULLABLE",     Mapper: (t, v) => t.is_nullable = v.AsBool()),
+                        (ColumnName: "IS_IDENTITY",     Mapper: (t, v) => t.is_identity = v.AsBool())
                         );
                 }
             }
@@ -64,8 +63,8 @@ namespace EduHub.Data.SchemaParser.Db
                         (ColumnName: "SYSIDXSTATS.NAME", Mapper: (t, v) => t.name = v),
                         (ColumnName: "INDEX_ID",         Mapper: (t, v) => t.index_id = int.Parse(v)),
                         (ColumnName: "SYSIDXSTATS.TYPE", Mapper: (t, v) => t.type = int.Parse(v)),
-                        (ColumnName: "IS_UNIQUE",        Mapper: (t, v) => t.is_unique = v == "1"),
-                        (ColumnName: "IS_PRIMARY_KEY",   Mapper: (t, v) => t.is_primary_key = v == "1")
+                        (ColumnName: "IS_UNIQUE",        Mapper: (t, v) => t.is_unique = v.AsBool()),
+                        (ColumnName: "IS_PRIMARY_KEY",   Mapper: (t, v) => t.is_primary_key = v.AsBool())
                         );
                 }
             }
@@ -412,5 +411,13 @@ namespace EduHub.Data.SchemaParser.Db
             }
         }
 
+        private static bool AsBool(this string Value)
+        {
+            return !string.IsNullOrWhiteSpace(Value) &&
+                (
+                "1".Equals(Value, StringComparison.Ordinal) ||
+                "True".Equals(Value, StringComparison.OrdinalIgnoreCase)
+                );
+        }
     }
 }

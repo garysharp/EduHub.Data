@@ -1,4 +1,5 @@
 ﻿using EduHub.Data.SchemaParser.C7;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -7,23 +8,38 @@ namespace EduHub.Data.SchemaParser.Models
 {
     public class EduHubSchema
     {
-        private List<EduHubEntity> entities;
+        private Dictionary<string, EduHubEntity> entities;
 
-        public IReadOnlyList<EduHubEntity> Entities { get; private set; }
+        public IEnumerable<EduHubEntity> Entities => entities.Values;
 
         internal EduHubSchema()
         {
         }
 
+        public EduHubEntity this[string Name]
+        {
+            get
+            {
+                return entities[Name];
+            }
+        }
+
+        public bool Contains(string Name)
+        {
+            return entities.ContainsKey(Name);
+        }
+
+        public bool Contains(EduHubEntity Entity)
+        {
+            return entities.ContainsValue(Entity);
+        }
+
         internal EduHubEntity AddEntity(EduHubEntity Entity)
         {
             if (entities == null)
-            {
-                entities = new List<EduHubEntity>();
-                Entities = entities.AsReadOnly();
-            }
+                entities = new Dictionary<string, EduHubEntity>(StringComparer.Ordinal);
 
-            entities.Add(Entity);
+            entities.Add(Entity.Name, Entity);
             return Entity;
         }
 
@@ -36,7 +52,7 @@ namespace EduHub.Data.SchemaParser.Models
 
         internal void RemoveEntity(string Name)
         {
-            entities.RemoveAll(e => e.Name == Name);
+            entities.Remove(Name);
         }
 
         public XElement ToXElement()

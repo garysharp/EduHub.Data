@@ -14,8 +14,8 @@ namespace EduHub.Data.SchemaParser.Models
         private List<EduHubField> fields;
         private List<EduHubIndex> indexes;
 
-        public IReadOnlyList<EduHubField> Fields { get; private set; }
-        public IReadOnlyList<EduHubIndex> Indexes { get; private set; }
+        public IReadOnlyList<EduHubField> Fields => fields.AsReadOnly();
+        public IReadOnlyList<EduHubIndex> Indexes => indexes.AsReadOnly();
 
         internal EduHubEntity(EduHubSchema Schema, string Name, string Description)
         {
@@ -24,10 +24,7 @@ namespace EduHub.Data.SchemaParser.Models
             this.Description = Description;
 
             fields = new List<EduHubField>();
-            Fields = fields.AsReadOnly();
-
             indexes = new List<EduHubIndex>();
-            Indexes = indexes.AsReadOnly();
         }
 
         internal void AddField(EduHubField Field)

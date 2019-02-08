@@ -11,7 +11,7 @@ namespace EduHub.Data.SchemaParser.Models
         public IReadOnlyList<EduHubField> Fields { get; private set; }
         public bool IsUnique { get; private set; }
         public bool IsClustered { get; private set; }
-        public bool IsPrimary { get; private set; }
+        public bool IsPrimary { get; internal set; }
 
         internal EduHubIndex(EduHubEntity Entity, string Name, IReadOnlyList<EduHubField> Fields, bool IsPrimary, bool IsUnique, bool IsClustered)
         {
