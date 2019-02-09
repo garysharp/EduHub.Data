@@ -25,6 +25,10 @@ namespace EduHub.Data.WriteBack
             if (File.Exists(DataSet.Filename))
                 File.Delete(DataSet.Filename);
 
+            // ensure directory exists
+            if (!Directory.Exists(Context.WriteBackDirectory))
+                Directory.CreateDirectory(Context.WriteBackDirectory);
+
             // write file
             using (var fileStream = new FileStream(DataSet.Filename, FileMode.Create, FileAccess.Write, FileShare.None))
             {
