@@ -6,12 +6,12 @@
     <title>eduHub Data</title>
     <authors>Gary Sharp</authors>
     <owners>Gary Sharp</owners>
-    <licenseUrl>https://github.com/garysharp/EduHub.Data/blob/master/COPYING</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/garysharp/EduHub.Data</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides strongly-typed object model for eduHub Data Sets</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2018 Gary Sharp</copyright>
+    <copyright>Copyright 2019 Gary Sharp</copyright>
     <tags>eduHub</tags>
   </metadata>
 </package>

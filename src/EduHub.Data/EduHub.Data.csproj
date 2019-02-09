@@ -2039,7 +2039,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CASES21 Schema.xml" />
+    <None Include="CASES21 Schema.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
