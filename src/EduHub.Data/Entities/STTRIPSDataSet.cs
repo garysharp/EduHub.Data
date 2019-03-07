@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -54,10 +55,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.STUDENT_ID = v;
                         break;
                     case "TRANSPORT_START_DATE":
-                        mapper[i] = (e, v) => e.TRANSPORT_START_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TRANSPORT_START_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRANSPORT_END_DATE":
-                        mapper[i] = (e, v) => e.TRANSPORT_END_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TRANSPORT_END_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRAVEL_IN_WHEELCHAIR":
                         mapper[i] = (e, v) => e.TRAVEL_IN_WHEELCHAIR = v;
@@ -147,7 +148,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PM_SETDOWN_ADD_DESCP = v;
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

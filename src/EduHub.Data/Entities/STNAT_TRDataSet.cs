@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -67,7 +68,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.ATTACHMENT = null; // eduHub is not encoding byte arrays
                         break;
                     case "ATTACH_DATE":
-                        mapper[i] = (e, v) => e.ATTACH_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.ATTACH_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "ADDED_BY":
                         mapper[i] = (e, v) => e.ADDED_BY = v;
@@ -79,10 +80,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.IMP_STATUS = v;
                         break;
                     case "IMP_DATE":
-                        mapper[i] = (e, v) => e.IMP_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.IMP_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

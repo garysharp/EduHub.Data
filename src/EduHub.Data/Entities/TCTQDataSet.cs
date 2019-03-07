@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -53,7 +54,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "TCTQKEY":
-                        mapper[i] = (e, v) => e.TCTQKEY = DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TCTQKEY = DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "QKEY":
                         mapper[i] = (e, v) => e.QKEY = v;
@@ -140,7 +141,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.OCCUR = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

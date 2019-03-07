@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -71,10 +72,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.C_AGE_1st_JULY = v;
                         break;
                     case "AUSSIE_SCHOOL":
-                        mapper[i] = (e, v) => e.AUSSIE_SCHOOL = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AUSSIE_SCHOOL = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "BIRTHDATE":
-                        mapper[i] = (e, v) => e.BIRTHDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.BIRTHDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "DISABILITY":
                         mapper[i] = (e, v) => e.DISABILITY = v;
@@ -83,7 +84,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.DISABILITY_ID = v;
                         break;
                     case "ENTRY":
-                        mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "STATUS":
                         mapper[i] = (e, v) => e.STATUS = v;
@@ -185,7 +186,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.C_SRP_STATUS = v;
                         break;
                     case "EXIT_DATE":
-                        mapper[i] = (e, v) => e.EXIT_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.EXIT_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "KCY_NUM_EQVT":
                         mapper[i] = (e, v) => e.KCY_NUM_EQVT = v == null ? (short?)null : short.Parse(v);
@@ -323,10 +324,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.C_YTD_APPROVED = v == null ? (double?)null : double.Parse(v);
                         break;
                     case "C_LAST_ABS_DAY":
-                        mapper[i] = (e, v) => e.C_LAST_ABS_DAY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.C_LAST_ABS_DAY = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "C_START_SCHOOL_YEAR":
-                        mapper[i] = (e, v) => e.C_START_SCHOOL_YEAR = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.C_START_SCHOOL_YEAR = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "C_ELIGIBLE_S_DAYS":
                         mapper[i] = (e, v) => e.C_ELIGIBLE_S_DAYS = v == null ? (short?)null : short.Parse(v);
@@ -410,7 +411,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.INTERNATIONAL_ST_ID = v;
                         break;
                     case "LCREATED":
-                        mapper[i] = (e, v) => e.LCREATED = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LCREATED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "VSN":
                         mapper[i] = (e, v) => e.VSN = v;

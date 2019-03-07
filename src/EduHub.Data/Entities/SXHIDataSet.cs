@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -54,7 +55,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.CREATION_USER = v;
                         break;
                     case "CREATION_DATE":
-                        mapper[i] = (e, v) => e.CREATION_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CREATION_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CREATION_TIME":
                         mapper[i] = (e, v) => e.CREATION_TIME = v == null ? (short?)null : short.Parse(v);
@@ -63,7 +64,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.OBSOLETE_USER = v;
                         break;
                     case "OBSOLETE_DATE":
-                        mapper[i] = (e, v) => e.OBSOLETE_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.OBSOLETE_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "OBSOLETE_TIME":
                         mapper[i] = (e, v) => e.OBSOLETE_TIME = v == null ? (short?)null : short.Parse(v);
@@ -105,7 +106,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.VISA_STAT_CODE = v;
                         break;
                     case "VISA_EXPIRY":
-                        mapper[i] = (e, v) => e.VISA_EXPIRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.VISA_EXPIRY = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "SGB_FUNDED":
                         mapper[i] = (e, v) => e.SGB_FUNDED = v;
@@ -129,10 +130,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.NEXT_SCHOOL = v;
                         break;
                     case "ENTRY":
-                        mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.ENTRY = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "EXIT_DATE":
-                        mapper[i] = (e, v) => e.EXIT_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.EXIT_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "INTERNATIONAL_ST_ID":
                         mapper[i] = (e, v) => e.INTERNATIONAL_ST_ID = v;
@@ -144,7 +145,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.GENDER = v;
                         break;
                     case "BIRTHDATE":
-                        mapper[i] = (e, v) => e.BIRTHDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.BIRTHDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "VSN":
                         mapper[i] = (e, v) => e.VSN = v;

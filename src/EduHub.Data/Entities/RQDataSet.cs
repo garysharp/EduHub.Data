@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -47,7 +48,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.CODE = v;
                         break;
                     case "TRDATE":
-                        mapper[i] = (e, v) => e.TRDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TRDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRXLEDGER":
                         mapper[i] = (e, v) => e.TRXLEDGER = v;
@@ -65,7 +66,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.APPROVED_BY = v;
                         break;
                     case "APPROVED_DATE":
-                        mapper[i] = (e, v) => e.APPROVED_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.APPROVED_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "DECLINED_COMMENT":
                         mapper[i] = (e, v) => e.DECLINED_COMMENT = v;
@@ -74,7 +75,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PRINTED = v;
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

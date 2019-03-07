@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -69,7 +70,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.GL_TRXLEDGER = v;
                         break;
                     case "TRDATE":
-                        mapper[i] = (e, v) => e.TRDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TRDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRTYPE":
                         mapper[i] = (e, v) => e.TRTYPE = v;
@@ -117,7 +118,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.AMEMO_COPY = v;
                         break;
                     case "NEXT_SVC_DATE":
-                        mapper[i] = (e, v) => e.NEXT_SVC_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.NEXT_SVC_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRCOST":
                         mapper[i] = (e, v) => e.TRCOST = v == null ? (decimal?)null : decimal.Parse(v);
@@ -162,7 +163,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.AFLAG = v;
                         break;
                     case "ADEPN_BEGIN":
-                        mapper[i] = (e, v) => e.ADEPN_BEGIN = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.ADEPN_BEGIN = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "ARATE":
                         mapper[i] = (e, v) => e.ARATE = v == null ? (double?)null : double.Parse(v);
@@ -204,7 +205,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TFLAG = v;
                         break;
                     case "TDEPN_BEGIN":
-                        mapper[i] = (e, v) => e.TDEPN_BEGIN = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.TDEPN_BEGIN = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "TRATE":
                         mapper[i] = (e, v) => e.TRATE = v == null ? (double?)null : double.Parse(v);
@@ -270,7 +271,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.LOCATION = v;
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

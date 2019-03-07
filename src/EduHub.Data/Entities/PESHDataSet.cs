@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -54,7 +55,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.SUPER_MEMBER = v;
                         break;
                     case "LASTPAYDATE":
-                        mapper[i] = (e, v) => e.LASTPAYDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LASTPAYDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AMOUNT_OPBAL":
                         mapper[i] = (e, v) => e.AMOUNT_OPBAL = v == null ? (decimal?)null : decimal.Parse(v);
@@ -141,13 +142,13 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.SUPER_PAID_YTD = v == null ? (decimal?)null : decimal.Parse(v);
                         break;
                     case "SUPER_PAID_TODATE":
-                        mapper[i] = (e, v) => e.SUPER_PAID_TODATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.SUPER_PAID_TODATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "SUPER_UNPAID_LYR":
                         mapper[i] = (e, v) => e.SUPER_UNPAID_LYR = v == null ? (decimal?)null : decimal.Parse(v);
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

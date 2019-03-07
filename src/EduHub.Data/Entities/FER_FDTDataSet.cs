@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -195,13 +196,13 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.CR_SECOND_NAME = v;
                         break;
                     case "CR_PAYG_BIRTHDATE":
-                        mapper[i] = (e, v) => e.CR_PAYG_BIRTHDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CR_PAYG_BIRTHDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CR_PAYG_STARTDATE":
-                        mapper[i] = (e, v) => e.CR_PAYG_STARTDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CR_PAYG_STARTDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CR_PAYG_TERMDATE":
-                        mapper[i] = (e, v) => e.CR_PAYG_TERMDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CR_PAYG_TERMDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CR_PAYG_ADDRESS01":
                         mapper[i] = (e, v) => e.CR_PAYG_ADDRESS01 = v;
@@ -231,7 +232,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.CR_BPAY_REFERENCE = v;
                         break;
                     case "CR_LASTPAYDATE":
-                        mapper[i] = (e, v) => e.CR_LASTPAYDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CR_LASTPAYDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PE_PEKEY":
                         mapper[i] = (e, v) => e.PE_PEKEY = v;
@@ -255,7 +256,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PE_PREVIOUS_NAME = v;
                         break;
                     case "PE_BIRTHDATE":
-                        mapper[i] = (e, v) => e.PE_BIRTHDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PE_BIRTHDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PE_GENDER":
                         mapper[i] = (e, v) => e.PE_GENDER = v;
@@ -300,10 +301,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PE_DRIVERS_LIC_NO = v;
                         break;
                     case "PE_SALREVDATE":
-                        mapper[i] = (e, v) => e.PE_SALREVDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PE_SALREVDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PE_SUSPEND_DATE":
-                        mapper[i] = (e, v) => e.PE_SUSPEND_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PE_SUSPEND_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PE_PENUMBER":
                         mapper[i] = (e, v) => e.PE_PENUMBER = v == null ? (int?)null : int.Parse(v);
@@ -381,13 +382,13 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PE_ESUPER_PERCENT = v == null ? (double?)null : double.Parse(v);
                         break;
                     case "PE_LASTPAYDATE":
-                        mapper[i] = (e, v) => e.PE_LASTPAYDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PE_LASTPAYDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PE_PEPS_TRCENTRE":
                         mapper[i] = (e, v) => e.PE_PEPS_TRCENTRE = v;
                         break;
                     case "PE_START_DATE_IMP":
-                        mapper[i] = (e, v) => e.PE_START_DATE_IMP = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PE_START_DATE_IMP = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PEPS_CODE":
                         mapper[i] = (e, v) => e.PEPS_CODE = v;
@@ -459,7 +460,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.PEPY_CODE = v;
                         break;
                     case "PEPY_TRANSDATE":
-                        mapper[i] = (e, v) => e.PEPY_TRANSDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PEPY_TRANSDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "PEPY_STAFF":
                         mapper[i] = (e, v) => e.PEPY_STAFF = v;
@@ -651,7 +652,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.AR_WARRANTY = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "AR_WARRANTYEXP":
-                        mapper[i] = (e, v) => e.AR_WARRANTYEXP = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_WARRANTYEXP = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_SERIAL":
                         mapper[i] = (e, v) => e.AR_SERIAL = v;
@@ -678,25 +679,25 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.AR_BRANCH = v;
                         break;
                     case "AR_LEASE_START_DATE":
-                        mapper[i] = (e, v) => e.AR_LEASE_START_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_LEASE_START_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_LEASE_END_DATE":
-                        mapper[i] = (e, v) => e.AR_LEASE_END_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_LEASE_END_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_LAST_ST_DATE":
-                        mapper[i] = (e, v) => e.AR_LAST_ST_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_LAST_ST_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_LAST_ADDN_DATE":
-                        mapper[i] = (e, v) => e.AR_LAST_ADDN_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_LAST_ADDN_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_EXPECTED_LIFE":
                         mapper[i] = (e, v) => e.AR_EXPECTED_LIFE = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "AR_LAST_SVC_DATE":
-                        mapper[i] = (e, v) => e.AR_LAST_SVC_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_LAST_SVC_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_NEXT_SVC_DATE":
-                        mapper[i] = (e, v) => e.AR_NEXT_SVC_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_NEXT_SVC_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_LAST_SVC_DETAILS":
                         mapper[i] = (e, v) => e.AR_LAST_SVC_DETAILS = v;
@@ -717,10 +718,10 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.AR_EXTRA_DETAILS = v;
                         break;
                     case "AR_PURDATE":
-                        mapper[i] = (e, v) => e.AR_PURDATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_PURDATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_PURDATE_IMP":
-                        mapper[i] = (e, v) => e.AR_PURDATE_IMP = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.AR_PURDATE_IMP = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "AR_ORIG_SUPPLIER":
                         mapper[i] = (e, v) => e.AR_ORIG_SUPPLIER = v;
@@ -738,19 +739,19 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.FDT_PROCESS_FLAG = v;
                         break;
                     case "FDT_DATE_EXP":
-                        mapper[i] = (e, v) => e.FDT_DATE_EXP = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.FDT_DATE_EXP = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "FDT_TIME_EXP":
                         mapper[i] = (e, v) => e.FDT_TIME_EXP = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "FDT_DATE_IMP":
-                        mapper[i] = (e, v) => e.FDT_DATE_IMP = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.FDT_DATE_IMP = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "FDT_TIME_IMP":
                         mapper[i] = (e, v) => e.FDT_TIME_IMP = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);

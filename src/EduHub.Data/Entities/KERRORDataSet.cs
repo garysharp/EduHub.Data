@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -75,7 +76,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.VALIDATION = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "PROCESSED":
-                        mapper[i] = (e, v) => e.PROCESSED = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.PROCESSED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "STATUS":
                         mapper[i] = (e, v) => e.STATUS = v;

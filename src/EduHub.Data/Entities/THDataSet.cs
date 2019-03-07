@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -340,28 +341,28 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.THVIEW_EXAM13 = v;
                         break;
                     case "CALENDAR_START01":
-                        mapper[i] = (e, v) => e.CALENDAR_START01 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_START01 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_START02":
-                        mapper[i] = (e, v) => e.CALENDAR_START02 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_START02 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_START03":
-                        mapper[i] = (e, v) => e.CALENDAR_START03 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_START03 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_START04":
-                        mapper[i] = (e, v) => e.CALENDAR_START04 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_START04 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_END01":
-                        mapper[i] = (e, v) => e.CALENDAR_END01 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_END01 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_END02":
-                        mapper[i] = (e, v) => e.CALENDAR_END02 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_END02 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_END03":
-                        mapper[i] = (e, v) => e.CALENDAR_END03 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_END03 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_END04":
-                        mapper[i] = (e, v) => e.CALENDAR_END04 = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.CALENDAR_END04 = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "CALENDAR_COLOUR":
                         mapper[i] = (e, v) => e.CALENDAR_COLOUR = v == null ? (int?)null : int.Parse(v);
@@ -397,7 +398,7 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.CALENDAR_VIEW = v;
                         break;
                     case "LW_DATE":
-                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.Parse(v);
+                        mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);
