@@ -21,6 +21,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<DRB> Cache_DRKEY_DRB_DR_CODE;
         private IReadOnlyList<DRF> Cache_DRKEY_DRF_CODE;
+        private IReadOnlyList<KNOTE_DR> Cache_DRKEY_KNOTE_DR_CODE;
         private IReadOnlyList<SDGM> Cache_DRKEY_SDGM_PERSON_LINK;
         private IReadOnlyList<SF> Cache_DRKEY_SF_DEBTOR_ID;
 
@@ -171,13 +172,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Facsimile
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string FAX { get; internal set; }
 
         /// <summary>
         /// Mobile number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string MOBILE { get; internal set; }
 
@@ -310,6 +311,12 @@ namespace EduHub.Data.Entities
         public string BPAY_REFERENCE { get; internal set; }
 
         /// <summary>
+        /// Y/N flag for Note
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string KNOTE_FLAG { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -387,6 +394,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_DRKEY_DRF_CODE;
+            }
+        }
+
+        /// <summary>
+        /// KNOTE_DR (Debtor Notes) related entities by [DR.DRKEY]-&gt;[KNOTE_DR.CODE]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<KNOTE_DR> DRKEY_KNOTE_DR_CODE
+        {
+            get
+            {
+                if (Cache_DRKEY_KNOTE_DR_CODE == null &&
+                    !Context.KNOTE_DR.TryFindByCODE(DRKEY, out Cache_DRKEY_KNOTE_DR_CODE))
+                {
+                    Cache_DRKEY_KNOTE_DR_CODE = new List<KNOTE_DR>().AsReadOnly();
+                }
+
+                return Cache_DRKEY_KNOTE_DR_CODE;
             }
         }
 

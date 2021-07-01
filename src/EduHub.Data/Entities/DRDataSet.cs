@@ -180,6 +180,9 @@ namespace EduHub.Data.Entities
                     case "BPAY_REFERENCE":
                         mapper[i] = (e, v) => e.BPAY_REFERENCE = v;
                         break;
+                    case "KNOTE_FLAG":
+                        mapper[i] = (e, v) => e.KNOTE_FLAG = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -384,8 +387,8 @@ BEGIN
         [BUSSTATE] varchar(3) NULL,
         [POSTCODE] varchar(4) NULL,
         [TELEPHONE] varchar(20) NULL,
-        [FAX] varchar(15) NULL,
-        [MOBILE] varchar(15) NULL,
+        [FAX] varchar(20) NULL,
+        [MOBILE] varchar(20) NULL,
         [BILLING_EMAIL] varchar(60) NULL,
         [MAILNAME] varchar(30) NULL,
         [MAILADD01] varchar(30) NULL,
@@ -408,6 +411,7 @@ BEGIN
         [TAX_INVOICE] varchar(1) NULL,
         [BPAY_SEQUENCE] int NULL,
         [BPAY_REFERENCE] varchar(20) NULL,
+        [KNOTE_FLAG] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -521,7 +525,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 50; } }
+            public override int FieldCount { get { return 51; } }
 
             public override object GetValue(int i)
             {
@@ -621,11 +625,13 @@ END");
                         return Current.BPAY_SEQUENCE;
                     case 46: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE;
-                    case 47: // LW_DATE
+                    case 47: // KNOTE_FLAG
+                        return Current.KNOTE_FLAG;
+                    case 48: // LW_DATE
                         return Current.LW_DATE;
-                    case 48: // LW_TIME
+                    case 49: // LW_TIME
                         return Current.LW_TIME;
-                    case 49: // LW_USER
+                    case 50: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -728,11 +734,13 @@ END");
                         return Current.BPAY_SEQUENCE == null;
                     case 46: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE == null;
-                    case 47: // LW_DATE
+                    case 47: // KNOTE_FLAG
+                        return Current.KNOTE_FLAG == null;
+                    case 48: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 48: // LW_TIME
+                    case 49: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 49: // LW_USER
+                    case 50: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -837,11 +845,13 @@ END");
                         return "BPAY_SEQUENCE";
                     case 46: // BPAY_REFERENCE
                         return "BPAY_REFERENCE";
-                    case 47: // LW_DATE
+                    case 47: // KNOTE_FLAG
+                        return "KNOTE_FLAG";
+                    case 48: // LW_DATE
                         return "LW_DATE";
-                    case 48: // LW_TIME
+                    case 49: // LW_TIME
                         return "LW_TIME";
-                    case 49: // LW_USER
+                    case 50: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -946,12 +956,14 @@ END");
                         return 45;
                     case "BPAY_REFERENCE":
                         return 46;
-                    case "LW_DATE":
+                    case "KNOTE_FLAG":
                         return 47;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 48;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 49;
+                    case "LW_USER":
+                        return 50;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

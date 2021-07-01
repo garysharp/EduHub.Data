@@ -114,6 +114,12 @@ namespace EduHub.Data.Entities
                     case "CHANGE_MADE":
                         mapper[i] = (e, v) => e.CHANGE_MADE = v;
                         break;
+                    case "GENDER_DESC_A":
+                        mapper[i] = (e, v) => e.GENDER_DESC_A = v;
+                        break;
+                    case "GENDER_DESC_B":
+                        mapper[i] = (e, v) => e.GENDER_DESC_B = v;
+                        break;
                     default:
                         mapper[i] = MapperNoOp;
                         break;
@@ -310,7 +316,9 @@ BEGIN
         [STATE] varchar(3) NULL,
         [POSTCODE] varchar(4) NULL,
         [TELEPHONE] varchar(20) NULL,
-        [CHANGE_MADE] varchar(80) NULL,
+        [CHANGE_MADE] varchar(230) NULL,
+        [GENDER_DESC_A] varchar(100) NULL,
+        [GENDER_DESC_B] varchar(100) NULL,
         CONSTRAINT [DFHI_Index_TID] PRIMARY KEY NONCLUSTERED (
             [TID] ASC
         )
@@ -421,7 +429,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 25; } }
+            public override int FieldCount { get { return 27; } }
 
             public override object GetValue(int i)
             {
@@ -477,6 +485,10 @@ END");
                         return Current.TELEPHONE;
                     case 24: // CHANGE_MADE
                         return Current.CHANGE_MADE;
+                    case 25: // GENDER_DESC_A
+                        return Current.GENDER_DESC_A;
+                    case 26: // GENDER_DESC_B
+                        return Current.GENDER_DESC_B;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
@@ -532,6 +544,10 @@ END");
                         return Current.TELEPHONE == null;
                     case 24: // CHANGE_MADE
                         return Current.CHANGE_MADE == null;
+                    case 25: // GENDER_DESC_A
+                        return Current.GENDER_DESC_A == null;
+                    case 26: // GENDER_DESC_B
+                        return Current.GENDER_DESC_B == null;
                     default:
                         return false;
                 }
@@ -591,6 +607,10 @@ END");
                         return "TELEPHONE";
                     case 24: // CHANGE_MADE
                         return "CHANGE_MADE";
+                    case 25: // GENDER_DESC_A
+                        return "GENDER_DESC_A";
+                    case 26: // GENDER_DESC_B
+                        return "GENDER_DESC_B";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
                 }
@@ -650,6 +670,10 @@ END");
                         return 23;
                     case "CHANGE_MADE":
                         return 24;
+                    case "GENDER_DESC_A":
+                        return 25;
+                    case "GENDER_DESC_B":
+                        return 26;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -312,6 +312,12 @@ namespace EduHub.Data.Entities
                     case "EMERG_CONTACT02":
                         mapper[i] = (e, v) => e.EMERG_CONTACT02 = v;
                         break;
+                    case "EMERG_CONTACT_MEMO01":
+                        mapper[i] = (e, v) => e.EMERG_CONTACT_MEMO01 = v;
+                        break;
+                    case "EMERG_CONTACT_MEMO02":
+                        mapper[i] = (e, v) => e.EMERG_CONTACT_MEMO02 = v;
+                        break;
                     case "GROUP_AVAILABILITY":
                         mapper[i] = (e, v) => e.GROUP_AVAILABILITY = v;
                         break;
@@ -2029,8 +2035,10 @@ BEGIN
         [EMERG_LANG02] varchar(7) NULL,
         [EMERG_RELATION01] varchar(12) NULL,
         [EMERG_RELATION02] varchar(12) NULL,
-        [EMERG_CONTACT01] varchar(MAX) NULL,
-        [EMERG_CONTACT02] varchar(MAX) NULL,
+        [EMERG_CONTACT01] varchar(20) NULL,
+        [EMERG_CONTACT02] varchar(20) NULL,
+        [EMERG_CONTACT_MEMO01] varchar(MAX) NULL,
+        [EMERG_CONTACT_MEMO02] varchar(MAX) NULL,
         [GROUP_AVAILABILITY] varchar(1) NULL,
         [NORMAL_ALLOTMENT] smallint NULL,
         [HRMS_UPDATE] varchar(1) NULL,
@@ -2421,7 +2429,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
             {
             }
 
-            public override int FieldCount { get { return 96; } }
+            public override int FieldCount { get { return 98; } }
 
             public override object GetValue(int i)
             {
@@ -2587,37 +2595,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return Current.EMERG_CONTACT01;
                     case 79: // EMERG_CONTACT02
                         return Current.EMERG_CONTACT02;
-                    case 80: // GROUP_AVAILABILITY
+                    case 80: // EMERG_CONTACT_MEMO01
+                        return Current.EMERG_CONTACT_MEMO01;
+                    case 81: // EMERG_CONTACT_MEMO02
+                        return Current.EMERG_CONTACT_MEMO02;
+                    case 82: // GROUP_AVAILABILITY
                         return Current.GROUP_AVAILABILITY;
-                    case 81: // NORMAL_ALLOTMENT
+                    case 83: // NORMAL_ALLOTMENT
                         return Current.NORMAL_ALLOTMENT;
-                    case 82: // HRMS_UPDATE
+                    case 84: // HRMS_UPDATE
                         return Current.HRMS_UPDATE;
-                    case 83: // HRMS_DATETIME
+                    case 85: // HRMS_DATETIME
                         return Current.HRMS_DATETIME;
-                    case 84: // DEBTOR_ID
+                    case 86: // DEBTOR_ID
                         return Current.DEBTOR_ID;
-                    case 85: // NOTES
+                    case 87: // NOTES
                         return Current.NOTES;
-                    case 86: // DRIVERS_LIC_NO
+                    case 88: // DRIVERS_LIC_NO
                         return Current.DRIVERS_LIC_NO;
-                    case 87: // DRIVERS_LIC_EXPIRY
+                    case 89: // DRIVERS_LIC_EXPIRY
                         return Current.DRIVERS_LIC_EXPIRY;
-                    case 88: // VIT_EXPIRY
+                    case 90: // VIT_EXPIRY
                         return Current.VIT_EXPIRY;
-                    case 89: // WWCC_NUMBER
+                    case 91: // WWCC_NUMBER
                         return Current.WWCC_NUMBER;
-                    case 90: // WWCC_EXPIRY
+                    case 92: // WWCC_EXPIRY
                         return Current.WWCC_EXPIRY;
-                    case 91: // WWCC_TYPE
+                    case 93: // WWCC_TYPE
                         return Current.WWCC_TYPE;
-                    case 92: // SMS_REPLY
+                    case 94: // SMS_REPLY
                         return Current.SMS_REPLY;
-                    case 93: // LW_DATE
+                    case 95: // LW_DATE
                         return Current.LW_DATE;
-                    case 94: // LW_TIME
+                    case 96: // LW_TIME
                         return Current.LW_TIME;
-                    case 95: // LW_USER
+                    case 97: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2786,37 +2798,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return Current.EMERG_CONTACT01 == null;
                     case 79: // EMERG_CONTACT02
                         return Current.EMERG_CONTACT02 == null;
-                    case 80: // GROUP_AVAILABILITY
+                    case 80: // EMERG_CONTACT_MEMO01
+                        return Current.EMERG_CONTACT_MEMO01 == null;
+                    case 81: // EMERG_CONTACT_MEMO02
+                        return Current.EMERG_CONTACT_MEMO02 == null;
+                    case 82: // GROUP_AVAILABILITY
                         return Current.GROUP_AVAILABILITY == null;
-                    case 81: // NORMAL_ALLOTMENT
+                    case 83: // NORMAL_ALLOTMENT
                         return Current.NORMAL_ALLOTMENT == null;
-                    case 82: // HRMS_UPDATE
+                    case 84: // HRMS_UPDATE
                         return Current.HRMS_UPDATE == null;
-                    case 83: // HRMS_DATETIME
+                    case 85: // HRMS_DATETIME
                         return Current.HRMS_DATETIME == null;
-                    case 84: // DEBTOR_ID
+                    case 86: // DEBTOR_ID
                         return Current.DEBTOR_ID == null;
-                    case 85: // NOTES
+                    case 87: // NOTES
                         return Current.NOTES == null;
-                    case 86: // DRIVERS_LIC_NO
+                    case 88: // DRIVERS_LIC_NO
                         return Current.DRIVERS_LIC_NO == null;
-                    case 87: // DRIVERS_LIC_EXPIRY
+                    case 89: // DRIVERS_LIC_EXPIRY
                         return Current.DRIVERS_LIC_EXPIRY == null;
-                    case 88: // VIT_EXPIRY
+                    case 90: // VIT_EXPIRY
                         return Current.VIT_EXPIRY == null;
-                    case 89: // WWCC_NUMBER
+                    case 91: // WWCC_NUMBER
                         return Current.WWCC_NUMBER == null;
-                    case 90: // WWCC_EXPIRY
+                    case 92: // WWCC_EXPIRY
                         return Current.WWCC_EXPIRY == null;
-                    case 91: // WWCC_TYPE
+                    case 93: // WWCC_TYPE
                         return Current.WWCC_TYPE == null;
-                    case 92: // SMS_REPLY
+                    case 94: // SMS_REPLY
                         return Current.SMS_REPLY == null;
-                    case 93: // LW_DATE
+                    case 95: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 94: // LW_TIME
+                    case 96: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 95: // LW_USER
+                    case 97: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2987,37 +3003,41 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return "EMERG_CONTACT01";
                     case 79: // EMERG_CONTACT02
                         return "EMERG_CONTACT02";
-                    case 80: // GROUP_AVAILABILITY
+                    case 80: // EMERG_CONTACT_MEMO01
+                        return "EMERG_CONTACT_MEMO01";
+                    case 81: // EMERG_CONTACT_MEMO02
+                        return "EMERG_CONTACT_MEMO02";
+                    case 82: // GROUP_AVAILABILITY
                         return "GROUP_AVAILABILITY";
-                    case 81: // NORMAL_ALLOTMENT
+                    case 83: // NORMAL_ALLOTMENT
                         return "NORMAL_ALLOTMENT";
-                    case 82: // HRMS_UPDATE
+                    case 84: // HRMS_UPDATE
                         return "HRMS_UPDATE";
-                    case 83: // HRMS_DATETIME
+                    case 85: // HRMS_DATETIME
                         return "HRMS_DATETIME";
-                    case 84: // DEBTOR_ID
+                    case 86: // DEBTOR_ID
                         return "DEBTOR_ID";
-                    case 85: // NOTES
+                    case 87: // NOTES
                         return "NOTES";
-                    case 86: // DRIVERS_LIC_NO
+                    case 88: // DRIVERS_LIC_NO
                         return "DRIVERS_LIC_NO";
-                    case 87: // DRIVERS_LIC_EXPIRY
+                    case 89: // DRIVERS_LIC_EXPIRY
                         return "DRIVERS_LIC_EXPIRY";
-                    case 88: // VIT_EXPIRY
+                    case 90: // VIT_EXPIRY
                         return "VIT_EXPIRY";
-                    case 89: // WWCC_NUMBER
+                    case 91: // WWCC_NUMBER
                         return "WWCC_NUMBER";
-                    case 90: // WWCC_EXPIRY
+                    case 92: // WWCC_EXPIRY
                         return "WWCC_EXPIRY";
-                    case 91: // WWCC_TYPE
+                    case 93: // WWCC_TYPE
                         return "WWCC_TYPE";
-                    case 92: // SMS_REPLY
+                    case 94: // SMS_REPLY
                         return "SMS_REPLY";
-                    case 93: // LW_DATE
+                    case 95: // LW_DATE
                         return "LW_DATE";
-                    case 94: // LW_TIME
+                    case 96: // LW_TIME
                         return "LW_TIME";
-                    case 95: // LW_USER
+                    case 97: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -3188,38 +3208,42 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SF]') AND 
                         return 78;
                     case "EMERG_CONTACT02":
                         return 79;
-                    case "GROUP_AVAILABILITY":
+                    case "EMERG_CONTACT_MEMO01":
                         return 80;
-                    case "NORMAL_ALLOTMENT":
+                    case "EMERG_CONTACT_MEMO02":
                         return 81;
-                    case "HRMS_UPDATE":
+                    case "GROUP_AVAILABILITY":
                         return 82;
-                    case "HRMS_DATETIME":
+                    case "NORMAL_ALLOTMENT":
                         return 83;
-                    case "DEBTOR_ID":
+                    case "HRMS_UPDATE":
                         return 84;
-                    case "NOTES":
+                    case "HRMS_DATETIME":
                         return 85;
-                    case "DRIVERS_LIC_NO":
+                    case "DEBTOR_ID":
                         return 86;
-                    case "DRIVERS_LIC_EXPIRY":
+                    case "NOTES":
                         return 87;
-                    case "VIT_EXPIRY":
+                    case "DRIVERS_LIC_NO":
                         return 88;
-                    case "WWCC_NUMBER":
+                    case "DRIVERS_LIC_EXPIRY":
                         return 89;
-                    case "WWCC_EXPIRY":
+                    case "VIT_EXPIRY":
                         return 90;
-                    case "WWCC_TYPE":
+                    case "WWCC_NUMBER":
                         return 91;
-                    case "SMS_REPLY":
+                    case "WWCC_EXPIRY":
                         return 92;
-                    case "LW_DATE":
+                    case "WWCC_TYPE":
                         return 93;
-                    case "LW_TIME":
+                    case "SMS_REPLY":
                         return 94;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 95;
+                    case "LW_TIME":
+                        return 96;
+                    case "LW_USER":
+                        return 97;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

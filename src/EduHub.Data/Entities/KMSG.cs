@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// eCases Messages
+    /// CASES21 MESSAGES
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SECMSG : EduHubEntity
+    public sealed partial class KMSG : EduHubEntity
     {
 
         /// <inheritdoc />
@@ -23,31 +23,36 @@ namespace EduHub.Data.Entities
         #region Field Properties
 
         /// <summary>
-        /// Key
+        /// Prime key
         /// </summary>
-        public int ID { get; internal set; }
+        public int KMSGKEY { get; internal set; }
 
         /// <summary>
-        /// Message to send
+        /// Send Date
+        /// </summary>
+        public DateTime? SEND_DATE { get; internal set; }
+
+        /// <summary>
+        /// Message Subject
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string SUBJECT { get; internal set; }
+
+        /// <summary>
+        /// Message Body
         /// [Memo]
         /// </summary>
         public string MESSAGE { get; internal set; }
 
         /// <summary>
-        /// Date the message was last edited
-        /// </summary>
-        public DateTime? LAST_EDITED { get; internal set; }
-
-        /// <summary>
-        /// Logon ID of CASES21 user that created the message
-        /// [Alphanumeric (128)]
-        /// </summary>
-        public string CREATOR { get; internal set; }
-
-        /// <summary>
-        /// Date after which the message will no longer be displayed
+        /// Expiry date
         /// </summary>
         public DateTime? EXPIRY { get; internal set; }
+
+        /// <summary>
+        /// Frequency (Number of days)
+        /// </summary>
+        public short? FREQUENCY { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -60,7 +65,7 @@ namespace EduHub.Data.Entities
         public short? LW_TIME { get; internal set; }
 
         /// <summary>
-        /// Last write operator
+        /// Last write user
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }

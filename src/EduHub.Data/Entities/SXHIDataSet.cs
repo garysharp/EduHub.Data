@@ -159,6 +159,21 @@ namespace EduHub.Data.Entities
                     case "CHANGE_MADE":
                         mapper[i] = (e, v) => e.CHANGE_MADE = v;
                         break;
+                    case "CRIS_ID":
+                        mapper[i] = (e, v) => e.CRIS_ID = v;
+                        break;
+                    case "LIVING_ARR":
+                        mapper[i] = (e, v) => e.LIVING_ARR = v;
+                        break;
+                    case "MEDICAL_ALERT":
+                        mapper[i] = (e, v) => e.MEDICAL_ALERT = v;
+                        break;
+                    case "FIRST_REG_NO":
+                        mapper[i] = (e, v) => e.FIRST_REG_NO = v;
+                        break;
+                    case "GENDER_DESC":
+                        mapper[i] = (e, v) => e.GENDER_DESC = v;
+                        break;
                     default:
                         mapper[i] = MapperNoOp;
                         break;
@@ -370,7 +385,12 @@ BEGIN
         [VSN] varchar(12) NULL,
         [VSR_TYPE] varchar(1) NULL,
         [PREVIOUS_TID] int NULL,
-        [CHANGE_MADE] varchar(80) NULL,
+        [CHANGE_MADE] varchar(230) NULL,
+        [CRIS_ID] varchar(9) NULL,
+        [LIVING_ARR] varchar(1) NULL,
+        [MEDICAL_ALERT] varchar(1) NULL,
+        [FIRST_REG_NO] varchar(15) NULL,
+        [GENDER_DESC] varchar(100) NULL,
         CONSTRAINT [SXHI_Index_TID] PRIMARY KEY CLUSTERED (
             [TID] ASC
         )
@@ -481,7 +501,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 40; } }
+            public override int FieldCount { get { return 45; } }
 
             public override object GetValue(int i)
             {
@@ -567,6 +587,16 @@ END");
                         return Current.PREVIOUS_TID;
                     case 39: // CHANGE_MADE
                         return Current.CHANGE_MADE;
+                    case 40: // CRIS_ID
+                        return Current.CRIS_ID;
+                    case 41: // LIVING_ARR
+                        return Current.LIVING_ARR;
+                    case 42: // MEDICAL_ALERT
+                        return Current.MEDICAL_ALERT;
+                    case 43: // FIRST_REG_NO
+                        return Current.FIRST_REG_NO;
+                    case 44: // GENDER_DESC
+                        return Current.GENDER_DESC;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
@@ -654,6 +684,16 @@ END");
                         return Current.PREVIOUS_TID == null;
                     case 39: // CHANGE_MADE
                         return Current.CHANGE_MADE == null;
+                    case 40: // CRIS_ID
+                        return Current.CRIS_ID == null;
+                    case 41: // LIVING_ARR
+                        return Current.LIVING_ARR == null;
+                    case 42: // MEDICAL_ALERT
+                        return Current.MEDICAL_ALERT == null;
+                    case 43: // FIRST_REG_NO
+                        return Current.FIRST_REG_NO == null;
+                    case 44: // GENDER_DESC
+                        return Current.GENDER_DESC == null;
                     default:
                         return false;
                 }
@@ -743,6 +783,16 @@ END");
                         return "PREVIOUS_TID";
                     case 39: // CHANGE_MADE
                         return "CHANGE_MADE";
+                    case 40: // CRIS_ID
+                        return "CRIS_ID";
+                    case 41: // LIVING_ARR
+                        return "LIVING_ARR";
+                    case 42: // MEDICAL_ALERT
+                        return "MEDICAL_ALERT";
+                    case 43: // FIRST_REG_NO
+                        return "FIRST_REG_NO";
+                    case 44: // GENDER_DESC
+                        return "GENDER_DESC";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
                 }
@@ -832,6 +882,16 @@ END");
                         return 38;
                     case "CHANGE_MADE":
                         return 39;
+                    case "CRIS_ID":
+                        return 40;
+                    case "LIVING_ARR":
+                        return 41;
+                    case "MEDICAL_ALERT":
+                        return 42;
+                    case "FIRST_REG_NO":
+                        return 43;
+                    case "GENDER_DESC":
+                        return 44;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -10,48 +10,51 @@ using System.Text;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// eCases Messages Data Set
+    /// CASES21 MESSAGES Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SECMSGDataSet : EduHubDataSet<SECMSG>
+    public sealed partial class KMSGDataSet : EduHubDataSet<KMSG>
     {
         /// <inheritdoc />
-        public override string Name { get { return "SECMSG"; } }
+        public override string Name { get { return "KMSG"; } }
 
         /// <inheritdoc />
         public override bool SupportsEntityLastModified { get { return true; } }
 
-        internal SECMSGDataSet(EduHubContext Context)
+        internal KMSGDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_ID = new Lazy<Dictionary<int, SECMSG>>(() => this.ToDictionary(i => i.ID));
+            Index_KMSGKEY = new Lazy<Dictionary<int, KMSG>>(() => this.ToDictionary(i => i.KMSGKEY));
         }
 
         /// <summary>
-        /// Matches CSV file headers to actions, used to deserialize <see cref="SECMSG" />
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KMSG" />
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
-        /// <returns>An array of actions which deserialize <see cref="SECMSG" /> fields for each CSV column header</returns>
-        internal override Action<SECMSG, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        /// <returns>An array of actions which deserialize <see cref="KMSG" /> fields for each CSV column header</returns>
+        internal override Action<KMSG, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
-            var mapper = new Action<SECMSG, string>[Headers.Count];
+            var mapper = new Action<KMSG, string>[Headers.Count];
 
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
-                    case "ID":
-                        mapper[i] = (e, v) => e.ID = int.Parse(v);
+                    case "KMSGKEY":
+                        mapper[i] = (e, v) => e.KMSGKEY = int.Parse(v);
+                        break;
+                    case "SEND_DATE":
+                        mapper[i] = (e, v) => e.SEND_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        break;
+                    case "SUBJECT":
+                        mapper[i] = (e, v) => e.SUBJECT = v;
                         break;
                     case "MESSAGE":
                         mapper[i] = (e, v) => e.MESSAGE = v;
                         break;
-                    case "LAST_EDITED":
-                        mapper[i] = (e, v) => e.LAST_EDITED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                        break;
-                    case "CREATOR":
-                        mapper[i] = (e, v) => e.CREATOR = v;
-                        break;
                     case "EXPIRY":
                         mapper[i] = (e, v) => e.EXPIRY = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        break;
+                    case "FREQUENCY":
+                        mapper[i] = (e, v) => e.FREQUENCY = v == null ? (short?)null : short.Parse(v);
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
@@ -72,14 +75,14 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Merges <see cref="SECMSG" /> delta entities
+        /// Merges <see cref="KMSG" /> delta entities
         /// </summary>
-        /// <param name="Entities">Iterator for base <see cref="SECMSG" /> entities</param>
-        /// <param name="DeltaEntities">List of delta <see cref="SECMSG" /> entities</param>
-        /// <returns>A merged <see cref="IEnumerable{SECMSG}"/> of entities</returns>
-        internal override IEnumerable<SECMSG> ApplyDeltaEntities(IEnumerable<SECMSG> Entities, List<SECMSG> DeltaEntities)
+        /// <param name="Entities">Iterator for base <see cref="KMSG" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KMSG" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KMSG}"/> of entities</returns>
+        internal override IEnumerable<KMSG> ApplyDeltaEntities(IEnumerable<KMSG> Entities, List<KMSG> DeltaEntities)
         {
-            HashSet<int> Index_ID = new HashSet<int>(DeltaEntities.Select(i => i.ID));
+            HashSet<int> Index_KMSGKEY = new HashSet<int>(DeltaEntities.Select(i => i.KMSGKEY));
 
             using (var deltaIterator = DeltaEntities.GetEnumerator())
             {
@@ -87,16 +90,16 @@ namespace EduHub.Data.Entities
                 {
                     while (deltaIterator.MoveNext())
                     {
-                        var deltaClusteredKey = deltaIterator.Current.ID;
+                        var deltaClusteredKey = deltaIterator.Current.KMSGKEY;
                         bool yieldEntity = false;
 
                         while (entityIterator.MoveNext())
                         {
                             var entity = entityIterator.Current;
 
-                            bool overwritten = Index_ID.Remove(entity.ID);
+                            bool overwritten = Index_KMSGKEY.Remove(entity.KMSGKEY);
                             
-                            if (entity.ID.CompareTo(deltaClusteredKey) <= 0)
+                            if (entity.KMSGKEY.CompareTo(deltaClusteredKey) <= 0)
                             {
                                 if (!overwritten)
                                 {
@@ -127,45 +130,45 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
-        private Lazy<Dictionary<int, SECMSG>> Index_ID;
+        private Lazy<Dictionary<int, KMSG>> Index_KMSGKEY;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SECMSG by ID field
+        /// Find KMSG by KMSGKEY field
         /// </summary>
-        /// <param name="ID">ID value used to find SECMSG</param>
-        /// <returns>Related SECMSG entity</returns>
+        /// <param name="KMSGKEY">KMSGKEY value used to find KMSG</param>
+        /// <returns>Related KMSG entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SECMSG FindByID(int ID)
+        public KMSG FindByKMSGKEY(int KMSGKEY)
         {
-            return Index_ID.Value[ID];
+            return Index_KMSGKEY.Value[KMSGKEY];
         }
 
         /// <summary>
-        /// Attempt to find SECMSG by ID field
+        /// Attempt to find KMSG by KMSGKEY field
         /// </summary>
-        /// <param name="ID">ID value used to find SECMSG</param>
-        /// <param name="Value">Related SECMSG entity</param>
-        /// <returns>True if the related SECMSG entity is found</returns>
+        /// <param name="KMSGKEY">KMSGKEY value used to find KMSG</param>
+        /// <param name="Value">Related KMSG entity</param>
+        /// <returns>True if the related KMSG entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByID(int ID, out SECMSG Value)
+        public bool TryFindByKMSGKEY(int KMSGKEY, out KMSG Value)
         {
-            return Index_ID.Value.TryGetValue(ID, out Value);
+            return Index_KMSGKEY.Value.TryGetValue(KMSGKEY, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SECMSG by ID field
+        /// Attempt to find KMSG by KMSGKEY field
         /// </summary>
-        /// <param name="ID">ID value used to find SECMSG</param>
-        /// <returns>Related SECMSG entity, or null if not found</returns>
+        /// <param name="KMSGKEY">KMSGKEY value used to find KMSG</param>
+        /// <returns>Related KMSG entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SECMSG TryFindByID(int ID)
+        public KMSG TryFindByKMSGKEY(int KMSGKEY)
         {
-            SECMSG value;
-            if (Index_ID.Value.TryGetValue(ID, out value))
+            KMSG value;
+            if (Index_KMSGKEY.Value.TryGetValue(KMSGKEY, out value))
             {
                 return value;
             }
@@ -180,7 +183,7 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SECMSG table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KMSG table, and if not found, creates the table and associated indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
         public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
@@ -188,26 +191,27 @@ namespace EduHub.Data.Entities
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SECMSG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KMSG]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-    CREATE TABLE [dbo].[SECMSG](
-        [ID] int IDENTITY NOT NULL,
+    CREATE TABLE [dbo].[KMSG](
+        [KMSGKEY] int IDENTITY NOT NULL,
+        [SEND_DATE] datetime NULL,
+        [SUBJECT] varchar(100) NULL,
         [MESSAGE] varchar(MAX) NULL,
-        [LAST_EDITED] datetime NULL,
-        [CREATOR] varchar(128) NULL,
         [EXPIRY] datetime NULL,
+        [FREQUENCY] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
-        CONSTRAINT [SECMSG_Index_ID] PRIMARY KEY CLUSTERED (
-            [ID] ASC
+        CONSTRAINT [KMSG_Index_KMSGKEY] PRIMARY KEY CLUSTERED (
+            [KMSGKEY] ASC
         )
     );
 END");
         }
 
         /// <summary>
-        /// Returns null as <see cref="SECMSGDataSet"/> has no non-clustered indexes.
+        /// Returns null as <see cref="KMSGDataSet"/> has no non-clustered indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
         /// <returns>null</returns>
@@ -217,7 +221,7 @@ END");
         }
 
         /// <summary>
-        /// Returns null as <see cref="SECMSGDataSet"/> has no non-clustered indexes.
+        /// Returns null as <see cref="KMSGDataSet"/> has no non-clustered indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
         /// <returns>null</returns>
@@ -227,37 +231,37 @@ END");
         }
 
         /// <summary>
-        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SECMSG"/> entities passed
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KMSG"/> entities passed
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <param name="Entities">The <see cref="SECMSG"/> entities to be deleted</param>
-        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SECMSG> Entities)
+        /// <param name="Entities">The <see cref="KMSG"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KMSG> Entities)
         {
             SqlCommand command = new SqlCommand();
             int parameterIndex = 0;
             StringBuilder builder = new StringBuilder();
 
-            List<int> Index_ID = new List<int>();
+            List<int> Index_KMSGKEY = new List<int>();
 
             foreach (var entity in Entities)
             {
-                Index_ID.Add(entity.ID);
+                Index_KMSGKEY.Add(entity.KMSGKEY);
             }
 
-            builder.AppendLine("DELETE [dbo].[SECMSG] WHERE");
+            builder.AppendLine("DELETE [dbo].[KMSG] WHERE");
 
 
-            // Index_ID
-            builder.Append("[ID] IN (");
-            for (int index = 0; index < Index_ID.Count; index++)
+            // Index_KMSGKEY
+            builder.Append("[KMSGKEY] IN (");
+            for (int index = 0; index < Index_KMSGKEY.Count; index++)
             {
                 if (index != 0)
                     builder.Append(", ");
 
-                // ID
-                var parameterID = $"@p{parameterIndex++}";
-                builder.Append(parameterID);
-                command.Parameters.Add(parameterID, SqlDbType.Int).Value = Index_ID[index];
+                // KMSGKEY
+                var parameterKMSGKEY = $"@p{parameterIndex++}";
+                builder.Append(parameterKMSGKEY);
+                command.Parameters.Add(parameterKMSGKEY, SqlDbType.Int).Value = Index_KMSGKEY[index];
             }
             builder.Append(");");
 
@@ -268,52 +272,54 @@ END");
         }
 
         /// <summary>
-        /// Provides a <see cref="IDataReader"/> for the SECMSG data set
+        /// Provides a <see cref="IDataReader"/> for the KMSG data set
         /// </summary>
-        /// <returns>A <see cref="IDataReader"/> for the SECMSG data set</returns>
-        public override EduHubDataSetDataReader<SECMSG> GetDataSetDataReader()
+        /// <returns>A <see cref="IDataReader"/> for the KMSG data set</returns>
+        public override EduHubDataSetDataReader<KMSG> GetDataSetDataReader()
         {
-            return new SECMSGDataReader(Load());
+            return new KMSGDataReader(Load());
         }
 
         /// <summary>
-        /// Provides a <see cref="IDataReader"/> for the SECMSG data set
+        /// Provides a <see cref="IDataReader"/> for the KMSG data set
         /// </summary>
-        /// <returns>A <see cref="IDataReader"/> for the SECMSG data set</returns>
-        public override EduHubDataSetDataReader<SECMSG> GetDataSetDataReader(List<SECMSG> Entities)
+        /// <returns>A <see cref="IDataReader"/> for the KMSG data set</returns>
+        public override EduHubDataSetDataReader<KMSG> GetDataSetDataReader(List<KMSG> Entities)
         {
-            return new SECMSGDataReader(new EduHubDataSetLoadedReader<SECMSG>(this, Entities));
+            return new KMSGDataReader(new EduHubDataSetLoadedReader<KMSG>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SECMSGDataReader : EduHubDataSetDataReader<SECMSG>
+        private class KMSGDataReader : EduHubDataSetDataReader<KMSG>
         {
-            public SECMSGDataReader(IEduHubDataSetReader<SECMSG> Reader)
+            public KMSGDataReader(IEduHubDataSetReader<KMSG> Reader)
                 : base (Reader)
             {
             }
 
-            public override int FieldCount { get { return 8; } }
+            public override int FieldCount { get { return 9; } }
 
             public override object GetValue(int i)
             {
                 switch (i)
                 {
-                    case 0: // ID
-                        return Current.ID;
-                    case 1: // MESSAGE
+                    case 0: // KMSGKEY
+                        return Current.KMSGKEY;
+                    case 1: // SEND_DATE
+                        return Current.SEND_DATE;
+                    case 2: // SUBJECT
+                        return Current.SUBJECT;
+                    case 3: // MESSAGE
                         return Current.MESSAGE;
-                    case 2: // LAST_EDITED
-                        return Current.LAST_EDITED;
-                    case 3: // CREATOR
-                        return Current.CREATOR;
                     case 4: // EXPIRY
                         return Current.EXPIRY;
-                    case 5: // LW_DATE
+                    case 5: // FREQUENCY
+                        return Current.FREQUENCY;
+                    case 6: // LW_DATE
                         return Current.LW_DATE;
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return Current.LW_TIME;
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -324,19 +330,21 @@ END");
             {
                 switch (i)
                 {
-                    case 1: // MESSAGE
+                    case 1: // SEND_DATE
+                        return Current.SEND_DATE == null;
+                    case 2: // SUBJECT
+                        return Current.SUBJECT == null;
+                    case 3: // MESSAGE
                         return Current.MESSAGE == null;
-                    case 2: // LAST_EDITED
-                        return Current.LAST_EDITED == null;
-                    case 3: // CREATOR
-                        return Current.CREATOR == null;
                     case 4: // EXPIRY
                         return Current.EXPIRY == null;
-                    case 5: // LW_DATE
+                    case 5: // FREQUENCY
+                        return Current.FREQUENCY == null;
+                    case 6: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -347,21 +355,23 @@ END");
             {
                 switch (ordinal)
                 {
-                    case 0: // ID
-                        return "ID";
-                    case 1: // MESSAGE
+                    case 0: // KMSGKEY
+                        return "KMSGKEY";
+                    case 1: // SEND_DATE
+                        return "SEND_DATE";
+                    case 2: // SUBJECT
+                        return "SUBJECT";
+                    case 3: // MESSAGE
                         return "MESSAGE";
-                    case 2: // LAST_EDITED
-                        return "LAST_EDITED";
-                    case 3: // CREATOR
-                        return "CREATOR";
                     case 4: // EXPIRY
                         return "EXPIRY";
-                    case 5: // LW_DATE
+                    case 5: // FREQUENCY
+                        return "FREQUENCY";
+                    case 6: // LW_DATE
                         return "LW_DATE";
-                    case 6: // LW_TIME
+                    case 7: // LW_TIME
                         return "LW_TIME";
-                    case 7: // LW_USER
+                    case 8: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -372,22 +382,24 @@ END");
             {
                 switch (name)
                 {
-                    case "ID":
+                    case "KMSGKEY":
                         return 0;
-                    case "MESSAGE":
+                    case "SEND_DATE":
                         return 1;
-                    case "LAST_EDITED":
+                    case "SUBJECT":
                         return 2;
-                    case "CREATOR":
+                    case "MESSAGE":
                         return 3;
                     case "EXPIRY":
                         return 4;
-                    case "LW_DATE":
+                    case "FREQUENCY":
                         return 5;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 6;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 7;
+                    case "LW_USER":
+                        return 8;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

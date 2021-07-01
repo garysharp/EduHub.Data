@@ -153,6 +153,12 @@ namespace EduHub.Data.Entities
                     case "DISABILITY_ADJUSTMENT":
                         mapper[i] = (e, v) => e.DISABILITY_ADJUSTMENT = v;
                         break;
+                    case "EXP_REG_MED":
+                        mapper[i] = (e, v) => e.EXP_REG_MED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        break;
+                    case "EXP_ASREQ_MED":
+                        mapper[i] = (e, v) => e.EXP_ASREQ_MED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -500,6 +506,8 @@ BEGIN
         [NORMAL_ALLOTMENT] smallint NULL,
         [GROUP_INDICATOR] varchar(1) NULL,
         [DISABILITY_ADJUSTMENT] varchar(MAX) NULL,
+        [EXP_REG_MED] datetime NULL,
+        [EXP_ASREQ_MED] datetime NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -637,7 +645,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
             {
             }
 
-            public override int FieldCount { get { return 40; } }
+            public override int FieldCount { get { return 42; } }
 
             public override object GetValue(int i)
             {
@@ -717,11 +725,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.GROUP_INDICATOR;
                     case 36: // DISABILITY_ADJUSTMENT
                         return Current.DISABILITY_ADJUSTMENT;
-                    case 37: // LW_DATE
+                    case 37: // EXP_REG_MED
+                        return Current.EXP_REG_MED;
+                    case 38: // EXP_ASREQ_MED
+                        return Current.EXP_ASREQ_MED;
+                    case 39: // LW_DATE
                         return Current.LW_DATE;
-                    case 38: // LW_TIME
+                    case 40: // LW_TIME
                         return Current.LW_TIME;
-                    case 39: // LW_USER
+                    case 41: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -804,11 +816,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.GROUP_INDICATOR == null;
                     case 36: // DISABILITY_ADJUSTMENT
                         return Current.DISABILITY_ADJUSTMENT == null;
-                    case 37: // LW_DATE
+                    case 37: // EXP_REG_MED
+                        return Current.EXP_REG_MED == null;
+                    case 38: // EXP_ASREQ_MED
+                        return Current.EXP_ASREQ_MED == null;
+                    case 39: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 38: // LW_TIME
+                    case 40: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 39: // LW_USER
+                    case 41: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -893,11 +909,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return "GROUP_INDICATOR";
                     case 36: // DISABILITY_ADJUSTMENT
                         return "DISABILITY_ADJUSTMENT";
-                    case 37: // LW_DATE
+                    case 37: // EXP_REG_MED
+                        return "EXP_REG_MED";
+                    case 38: // EXP_ASREQ_MED
+                        return "EXP_ASREQ_MED";
+                    case 39: // LW_DATE
                         return "LW_DATE";
-                    case 38: // LW_TIME
+                    case 40: // LW_TIME
                         return "LW_TIME";
-                    case 39: // LW_USER
+                    case 41: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -982,12 +1002,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return 35;
                     case "DISABILITY_ADJUSTMENT":
                         return 36;
-                    case "LW_DATE":
+                    case "EXP_REG_MED":
                         return 37;
-                    case "LW_TIME":
+                    case "EXP_ASREQ_MED":
                         return 38;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 39;
+                    case "LW_TIME":
+                        return 40;
+                    case "LW_USER":
+                        return 41;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

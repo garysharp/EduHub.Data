@@ -24,13 +24,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the PR_APPROVE column. New to C21v59.
+            // Check for the existence of the ARN column. New to C21v64.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[CR]') AND
-	name = 'PR_APPROVE'";
+	name = 'ARN'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -77,15 +77,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            // Check for the existence of the WWCC_NUMBER_A column. New to C21v64.
             const string sql = @"SELECT
-	4 - COUNT(*)
-FROM sys.columns c
-JOIN sys.types t ON c.system_type_id=t.system_type_id
+	1 - COUNT(*)
+FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DF]') AND
-	c.name LIKE 'EMERG_CONTACT0%' AND
-	t.name = 'varchar'";
+	name = 'WWCC_NUMBER_A'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -96,13 +94,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the REMARK and NOTES columns have the right type. Modified to C21v58.
+            // Check for the existence of the KNOTE_FLAG column. New to C21v64.
             const string sql = @"SELECT
-	2 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DR]') AND
-	name IN ('REMARK', 'NOTES') AND max_length = -1";
+	name = 'KNOTE_FLAG'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -298,6 +296,40 @@ WHERE
         }
     }
 
+    partial class KGCDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the SELF_DESCRIBED column. New to C21v64.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[KGC]') AND
+    name = 'SELF_DESCRIBED'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class KGHDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the SELF_DESCRIBED column. New to C21v64.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.columns
+WHERE
+	object_id = OBJECT_ID(N'[dbo].[KGH]') AND
+    name = 'SELF_DESCRIBED'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
     partial class KGLSUBDataSet
     {
         /// <inheritdoc />
@@ -354,13 +386,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the SF_PURCH_MANAGER column. New to C21v59.
+            // Check for the existence of the NCCD_SUMMARY_SAVED column. New to C21v64.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SCI]') AND
-	name = 'SF_PURCH_MANAGER'";
+	name = 'NCCD_SUMMARY_SAVED'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -371,15 +403,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            // Check for the existence of the EMERG_CONTACT_MEMO01 column. New to C21v64.
             const string sql = @"SELECT
-	2 - COUNT(*)
-FROM sys.columns c
-JOIN sys.types t ON c.system_type_id=t.system_type_id
+	1 - COUNT(*)
+FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SF]') AND
-	c.name LIKE 'EMERG_CONTACT0%' AND
-	t.name = 'varchar'";
+	name = 'EMERG_CONTACT_MEMO01'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -441,15 +471,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the SYMPTOMS, SMC_COMMENT, SMC_ACTION, ASTHMA_MGT_PLAN and
-            //  DISABILITY_ADJUSTMENT columns have the right type. Modified to C21v58.
+            // Check for the existence of the EXP_ASREQ_MED column. New to C21v64.
             const string sql = @"SELECT
-	5 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SMC]') AND
-	name IN ('SYMPTOMS', 'SMC_COMMENT', 'SMC_ACTION', 'ASTHMA_MGT_PLAN', 'DISABILITY_ADJUSTMENT') AND
-    max_length = -1";
+	name = 'EXP_ASREQ_MED'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -479,15 +507,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            // Check for the existence of the MYLNS_NUMERACY column. New to C21v64.
             const string sql = @"SELECT
-	2 - COUNT(*)
-FROM sys.columns c
-JOIN sys.types t ON c.system_type_id=t.system_type_id
+	1 - COUNT(*)
+FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[ST]') AND
-	c.name LIKE 'EMERG_CONTACT0%' AND
-	t.name = 'varchar'";
+	name = 'MYLNS_NUMERACY'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -600,13 +626,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the SCORE column has the right type. Modified to C21v58.
+            // Check for the existence of the Index_SKEY_VDIMENSION_VDOMAIN_YEAR_SEMESTER_SCORE index. New to C21v64.
             const string sql = @"SELECT
 	1 - COUNT(*)
-FROM sys.columns
+FROM sys.sysindexes
 WHERE
-	object_id = OBJECT_ID(N'[dbo].[STVDI]') AND
-	name = 'SCORE' AND max_length = 6";
+	id = OBJECT_ID(N'[dbo].[STVDI]') AND
+	name = 'STVDI_Index_SKEY_VDIMENSION_VDOMAIN_YEAR_SEMESTER_SCORE'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -617,13 +643,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the SCORE column has the right type. Modified to C21v58.
+            // Check for the existence of the Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE index. New to C21v64.
             const string sql = @"SELECT
 	1 - COUNT(*)
-FROM sys.columns
+FROM sys.sysindexes
 WHERE
-	object_id = OBJECT_ID(N'[dbo].[STVDO]') AND
-	name = 'SCORE' AND max_length = 6";
+	id = OBJECT_ID(N'[dbo].[STVDO]') AND
+	name = 'STVDO_Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -658,6 +684,23 @@ FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SVAG]') AND
 	name = 'VDOMAIN'";
+
+            return new SqlCommand(sql, SqlConnection);
+        }
+    }
+
+    partial class SXABDataSet
+    {
+        /// <inheritdoc />
+        public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
+        {
+            // Check for the existence of the Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE index. New to C21v64.
+            const string sql = @"SELECT
+	1 - COUNT(*)
+FROM sys.sysindexes
+WHERE
+	id = OBJECT_ID(N'[dbo].[SXAB]') AND
+	name = 'SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE'";
 
             return new SqlCommand(sql, SqlConnection);
         }

@@ -26,6 +26,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<CRFTC> Cache_CRKEY_CRFTC_CODE;
         private IReadOnlyList<CRPR> Cache_CRKEY_CRPR_CODE;
         private IReadOnlyList<CRTT> Cache_CRKEY_CRTT_CRKEY;
+        private IReadOnlyList<KNOTE_CR> Cache_CRKEY_KNOTE_CR_CODE;
         private IReadOnlyList<RQ> Cache_CRKEY_RQ_CODE;
 
         #endregion
@@ -168,13 +169,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Phone number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string TELEPHONE { get; internal set; }
 
         /// <summary>
         /// Facsimile number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string FAX { get; internal set; }
 
@@ -192,7 +193,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Mobile number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string MOBILE { get; internal set; }
 
@@ -407,6 +408,24 @@ namespace EduHub.Data.Entities
         public DateTime? LW_PRMSINFO_DATE { get; internal set; }
 
         /// <summary>
+        /// ATO Reference Number
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string ARN { get; internal set; }
+
+        /// <summary>
+        /// Flag that indicates if Creditor has records in KNOTE_CR (Y/N)- Trigger
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string KNOTE_FLAG { get; internal set; }
+
+        /// <summary>
+        /// AIMS system creditor key
+        /// [Uppercase Alphanumeric (20)]
+        /// </summary>
+        public string AIMSKEY { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }
@@ -577,6 +596,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_CRKEY_CRTT_CRKEY;
+            }
+        }
+
+        /// <summary>
+        /// KNOTE_CR (Creditor Notes) related entities by [CR.CRKEY]-&gt;[KNOTE_CR.CODE]
+        /// Prime Key
+        /// </summary>
+        public IReadOnlyList<KNOTE_CR> CRKEY_KNOTE_CR_CODE
+        {
+            get
+            {
+                if (Cache_CRKEY_KNOTE_CR_CODE == null &&
+                    !Context.KNOTE_CR.TryFindByCODE(CRKEY, out Cache_CRKEY_KNOTE_CR_CODE))
+                {
+                    Cache_CRKEY_KNOTE_CR_CODE = new List<KNOTE_CR>().AsReadOnly();
+                }
+
+                return Cache_CRKEY_KNOTE_CR_CODE;
             }
         }
 

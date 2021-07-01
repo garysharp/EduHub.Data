@@ -1011,7 +1011,7 @@ BEGIN
         [LAST_ABSENCE] datetime NULL,
         [YTD_ABSENCE] float NULL,
         [YTD_APPROVED] float NULL,
-        [MOBILE] varchar(15) NULL,
+        [MOBILE] varchar(20) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,

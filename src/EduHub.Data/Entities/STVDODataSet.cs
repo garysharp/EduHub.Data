@@ -28,6 +28,7 @@ namespace EduHub.Data.Entities
             Index_LW_DATE = new Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDO>>>(() => this.ToGroupedNullDictionary(i => i.LW_DATE));
             Index_ORIGINAL_SCHOOL = new Lazy<NullDictionary<string, IReadOnlyList<STVDO>>>(() => this.ToGroupedNullDictionary(i => i.ORIGINAL_SCHOOL));
             Index_SKEY = new Lazy<Dictionary<string, IReadOnlyList<STVDO>>>(() => this.ToGroupedDictionary(i => i.SKEY));
+            Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE = new Lazy<Dictionary<Tuple<string, string, string, string, string>, IReadOnlyList<STVDO>>>(() => this.ToGroupedDictionary(i => Tuple.Create(i.SKEY, i.VDIMENSION, i.YEAR_SEMESTER, i.VDOMAIN, i.SCORE)));
             Index_TID = new Lazy<Dictionary<int, STVDO>>(() => this.ToDictionary(i => i.TID));
             Index_VDIMENSION = new Lazy<NullDictionary<string, IReadOnlyList<STVDO>>>(() => this.ToGroupedNullDictionary(i => i.VDIMENSION));
             Index_VDOMAIN = new Lazy<NullDictionary<string, IReadOnlyList<STVDO>>>(() => this.ToGroupedNullDictionary(i => i.VDOMAIN));
@@ -149,6 +150,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<DateTime?, IReadOnlyList<STVDO>>> Index_LW_DATE;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDO>>> Index_ORIGINAL_SCHOOL;
         private Lazy<Dictionary<string, IReadOnlyList<STVDO>>> Index_SKEY;
+        private Lazy<Dictionary<Tuple<string, string, string, string, string>, IReadOnlyList<STVDO>>> Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE;
         private Lazy<Dictionary<int, STVDO>> Index_TID;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDO>>> Index_VDIMENSION;
         private Lazy<NullDictionary<string, IReadOnlyList<STVDO>>> Index_VDOMAIN;
@@ -316,6 +318,60 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<STVDO> value;
             if (Index_SKEY.Value.TryGetValue(SKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find STVDO by SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN and SCORE fields
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STVDO</param>
+        /// <param name="VDIMENSION">VDIMENSION value used to find STVDO</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find STVDO</param>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDO</param>
+        /// <param name="SCORE">SCORE value used to find STVDO</param>
+        /// <returns>List of related STVDO entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDO> FindBySKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE(string SKEY, string VDIMENSION, string YEAR_SEMESTER, string VDOMAIN, string SCORE)
+        {
+            return Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE.Value[Tuple.Create(SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN, SCORE)];
+        }
+
+        /// <summary>
+        /// Attempt to find STVDO by SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN and SCORE fields
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STVDO</param>
+        /// <param name="VDIMENSION">VDIMENSION value used to find STVDO</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find STVDO</param>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDO</param>
+        /// <param name="SCORE">SCORE value used to find STVDO</param>
+        /// <param name="Value">List of related STVDO entities</param>
+        /// <returns>True if the list of related STVDO entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE(string SKEY, string VDIMENSION, string YEAR_SEMESTER, string VDOMAIN, string SCORE, out IReadOnlyList<STVDO> Value)
+        {
+            return Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE.Value.TryGetValue(Tuple.Create(SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN, SCORE), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find STVDO by SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN and SCORE fields
+        /// </summary>
+        /// <param name="SKEY">SKEY value used to find STVDO</param>
+        /// <param name="VDIMENSION">VDIMENSION value used to find STVDO</param>
+        /// <param name="YEAR_SEMESTER">YEAR_SEMESTER value used to find STVDO</param>
+        /// <param name="VDOMAIN">VDOMAIN value used to find STVDO</param>
+        /// <param name="SCORE">SCORE value used to find STVDO</param>
+        /// <returns>List of related STVDO entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<STVDO> TryFindBySKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE(string SKEY, string VDIMENSION, string YEAR_SEMESTER, string VDOMAIN, string SCORE)
+        {
+            IReadOnlyList<STVDO> value;
+            if (Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE.Value.TryGetValue(Tuple.Create(SKEY, VDIMENSION, YEAR_SEMESTER, VDOMAIN, SCORE), out value))
             {
                 return value;
             }
@@ -499,6 +555,14 @@ BEGIN
     (
             [SKEY] ASC
     );
+    CREATE NONCLUSTERED INDEX [STVDO_Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE] ON [dbo].[STVDO]
+    (
+            [SKEY] ASC,
+            [VDIMENSION] ASC,
+            [YEAR_SEMESTER] ASC,
+            [VDOMAIN] ASC,
+            [SCORE] ASC
+    );
     CREATE NONCLUSTERED INDEX [STVDO_Index_VDIMENSION] ON [dbo].[STVDO]
     (
             [VDIMENSION] ASC
@@ -528,6 +592,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') A
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDO] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_ORIGINAL_SCHOOL')
     ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDO] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE')
+    ALTER INDEX [Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE] ON [dbo].[STVDO] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDO] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_VDIMENSION')
@@ -553,6 +619,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') A
     ALTER INDEX [Index_LW_DATE] ON [dbo].[STVDO] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_ORIGINAL_SCHOOL')
     ALTER INDEX [Index_ORIGINAL_SCHOOL] ON [dbo].[STVDO] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE')
+    ALTER INDEX [Index_SKEY_VDIMENSION_YEAR_SEMESTER_VDOMAIN_SCORE] ON [dbo].[STVDO] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_TID')
     ALTER INDEX [Index_TID] ON [dbo].[STVDO] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STVDO]') AND name = N'Index_VDIMENSION')

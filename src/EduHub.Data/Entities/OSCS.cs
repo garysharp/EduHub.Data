@@ -720,7 +720,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Mobile number
-        /// [Uppercase Alphanumeric (15)]
+        /// [Uppercase Alphanumeric (20)]
         /// </summary>
         public string MOBILE { get; internal set; }
 

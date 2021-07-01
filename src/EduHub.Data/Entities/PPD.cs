@@ -131,13 +131,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Contact Telephone Number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string PHONE { get; internal set; }
 
         /// <summary>
         /// Contact Facsimile Number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string FACSIMILE { get; internal set; }
 

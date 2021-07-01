@@ -84,6 +84,9 @@ namespace EduHub.Data.Entities
                     case "NEXT_HG":
                         mapper[i] = (e, v) => e.NEXT_HG = v;
                         break;
+                    case "SELF_DESCRIBED":
+                        mapper[i] = (e, v) => e.SELF_DESCRIBED = v == null ? (short?)null : short.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -536,6 +539,7 @@ BEGIN
         [MIN_AC_YR] varchar(4) NULL,
         [MAX_AC_YR] varchar(4) NULL,
         [NEXT_HG] varchar(3) NULL,
+        [SELF_DESCRIBED] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -697,7 +701,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
             {
             }
 
-            public override int FieldCount { get { return 16; } }
+            public override int FieldCount { get { return 17; } }
 
             public override object GetValue(int i)
             {
@@ -729,11 +733,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
                         return Current.MAX_AC_YR;
                     case 12: // NEXT_HG
                         return Current.NEXT_HG;
-                    case 13: // LW_DATE
+                    case 13: // SELF_DESCRIBED
+                        return Current.SELF_DESCRIBED;
+                    case 14: // LW_DATE
                         return Current.LW_DATE;
-                    case 14: // LW_TIME
+                    case 15: // LW_TIME
                         return Current.LW_TIME;
-                    case 15: // LW_USER
+                    case 16: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -768,11 +774,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
                         return Current.MAX_AC_YR == null;
                     case 12: // NEXT_HG
                         return Current.NEXT_HG == null;
-                    case 13: // LW_DATE
+                    case 13: // SELF_DESCRIBED
+                        return Current.SELF_DESCRIBED == null;
+                    case 14: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 14: // LW_TIME
+                    case 15: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 15: // LW_USER
+                    case 16: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -809,11 +817,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
                         return "MAX_AC_YR";
                     case 12: // NEXT_HG
                         return "NEXT_HG";
-                    case 13: // LW_DATE
+                    case 13: // SELF_DESCRIBED
+                        return "SELF_DESCRIBED";
+                    case 14: // LW_DATE
                         return "LW_DATE";
-                    case 14: // LW_TIME
+                    case 15: // LW_TIME
                         return "LW_TIME";
-                    case 15: // LW_USER
+                    case 16: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -850,12 +860,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
                         return 11;
                     case "NEXT_HG":
                         return 12;
-                    case "LW_DATE":
+                    case "SELF_DESCRIBED":
                         return 13;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 14;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 15;
+                    case "LW_USER":
+                        return 16;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

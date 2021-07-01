@@ -32,6 +32,7 @@ namespace EduHub.Data.Entities
             Index_ST_YEAR_LEVEL = new Lazy<NullDictionary<string, IReadOnlyList<SXAB>>>(() => this.ToGroupedNullDictionary(i => i.ST_YEAR_LEVEL));
             Index_STKEY = new Lazy<NullDictionary<string, IReadOnlyList<SXAB>>>(() => this.ToGroupedNullDictionary(i => i.STKEY));
             Index_STKEY_ABSENCE_DATE = new Lazy<Dictionary<Tuple<string, DateTime?>, SXAB>>(() => this.ToDictionary(i => Tuple.Create(i.STKEY, i.ABSENCE_DATE)));
+            Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE = new Lazy<Dictionary<Tuple<string, short?, short?, int?, DateTime?, DateTime?>, IReadOnlyList<SXAB>>>(() => this.ToGroupedDictionary(i => Tuple.Create(i.STKEY, i.AM_ACT_TYPE, i.PM_ACT_TYPE, i.TXHG_TID, i.ABSENCE_DATE, i.LW_DATE)));
             Index_SXAB_ID = new Lazy<Dictionary<int, SXAB>>(() => this.ToDictionary(i => i.SXAB_ID));
             Index_TXHG_TID = new Lazy<NullDictionary<int?, IReadOnlyList<SXAB>>>(() => this.ToGroupedNullDictionary(i => i.TXHG_TID));
         }
@@ -210,6 +211,7 @@ namespace EduHub.Data.Entities
         private Lazy<NullDictionary<string, IReadOnlyList<SXAB>>> Index_ST_YEAR_LEVEL;
         private Lazy<NullDictionary<string, IReadOnlyList<SXAB>>> Index_STKEY;
         private Lazy<Dictionary<Tuple<string, DateTime?>, SXAB>> Index_STKEY_ABSENCE_DATE;
+        private Lazy<Dictionary<Tuple<string, short?, short?, int?, DateTime?, DateTime?>, IReadOnlyList<SXAB>>> Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE;
         private Lazy<Dictionary<int, SXAB>> Index_SXAB_ID;
         private Lazy<NullDictionary<int?, IReadOnlyList<SXAB>>> Index_TXHG_TID;
 
@@ -557,6 +559,63 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
+        /// Find SXAB by STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE and LW_DATE fields
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAB</param>
+        /// <param name="AM_ACT_TYPE">AM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="PM_ACT_TYPE">PM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="TXHG_TID">TXHG_TID value used to find SXAB</param>
+        /// <param name="ABSENCE_DATE">ABSENCE_DATE value used to find SXAB</param>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAB</param>
+        /// <returns>List of related SXAB entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAB> FindBySTKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE(string STKEY, short? AM_ACT_TYPE, short? PM_ACT_TYPE, int? TXHG_TID, DateTime? ABSENCE_DATE, DateTime? LW_DATE)
+        {
+            return Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE.Value[Tuple.Create(STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE, LW_DATE)];
+        }
+
+        /// <summary>
+        /// Attempt to find SXAB by STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE and LW_DATE fields
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAB</param>
+        /// <param name="AM_ACT_TYPE">AM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="PM_ACT_TYPE">PM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="TXHG_TID">TXHG_TID value used to find SXAB</param>
+        /// <param name="ABSENCE_DATE">ABSENCE_DATE value used to find SXAB</param>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAB</param>
+        /// <param name="Value">List of related SXAB entities</param>
+        /// <returns>True if the list of related SXAB entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindBySTKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE(string STKEY, short? AM_ACT_TYPE, short? PM_ACT_TYPE, int? TXHG_TID, DateTime? ABSENCE_DATE, DateTime? LW_DATE, out IReadOnlyList<SXAB> Value)
+        {
+            return Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE.Value.TryGetValue(Tuple.Create(STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE, LW_DATE), out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find SXAB by STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE and LW_DATE fields
+        /// </summary>
+        /// <param name="STKEY">STKEY value used to find SXAB</param>
+        /// <param name="AM_ACT_TYPE">AM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="PM_ACT_TYPE">PM_ACT_TYPE value used to find SXAB</param>
+        /// <param name="TXHG_TID">TXHG_TID value used to find SXAB</param>
+        /// <param name="ABSENCE_DATE">ABSENCE_DATE value used to find SXAB</param>
+        /// <param name="LW_DATE">LW_DATE value used to find SXAB</param>
+        /// <returns>List of related SXAB entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<SXAB> TryFindBySTKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE(string STKEY, short? AM_ACT_TYPE, short? PM_ACT_TYPE, int? TXHG_TID, DateTime? ABSENCE_DATE, DateTime? LW_DATE)
+        {
+            IReadOnlyList<SXAB> value;
+            if (Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE.Value.TryGetValue(Tuple.Create(STKEY, AM_ACT_TYPE, PM_ACT_TYPE, TXHG_TID, ABSENCE_DATE, LW_DATE), out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Find SXAB by SXAB_ID field
         /// </summary>
         /// <param name="SXAB_ID">SXAB_ID value used to find SXAB</param>
@@ -722,6 +781,15 @@ BEGIN
             [STKEY] ASC,
             [ABSENCE_DATE] ASC
     );
+    CREATE NONCLUSTERED INDEX [SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB]
+    (
+            [STKEY] ASC,
+            [AM_ACT_TYPE] ASC,
+            [PM_ACT_TYPE] ASC,
+            [TXHG_TID] ASC,
+            [ABSENCE_DATE] ASC,
+            [LW_DATE] ASC
+    );
     CREATE NONCLUSTERED INDEX [SXAB_Index_TXHG_TID] ON [dbo].[SXAB]
     (
             [TXHG_TID] ASC
@@ -757,6 +825,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AN
     ALTER INDEX [Index_STKEY] ON [dbo].[SXAB] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_ABSENCE_DATE')
     ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
+    ALTER INDEX [Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_TXHG_TID')
     ALTER INDEX [Index_TXHG_TID] ON [dbo].[SXAB] DISABLE;
 ");
@@ -788,6 +858,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AN
     ALTER INDEX [Index_STKEY] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_ABSENCE_DATE')
     ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
+    ALTER INDEX [Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_TXHG_TID')
     ALTER INDEX [Index_TXHG_TID] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
 ");

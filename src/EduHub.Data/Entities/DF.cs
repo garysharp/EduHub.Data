@@ -132,9 +132,15 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Parent/guardian A telephone contact if not at home during business hours
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string BH_CONTACT_A { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian A telephone contact if not at home during business hours
+        /// [Memo]
+        /// </summary>
+        public string BH_CONTACT_A_MEMO { get; internal set; }
 
         /// <summary>
         /// Parent/guardian A at home after hours? (Y/N)
@@ -144,9 +150,15 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Parent/guardian A telephone contact if not at home after hours
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string AH_CONTACT_A { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian A telephone contact if not at home after hours
+        /// [Memo]
+        /// </summary>
+        public string AH_CONTACT_A_MEMO { get; internal set; }
 
         /// <summary>
         /// (Was M_E_MAIL) Parent/guardian A e-mail address
@@ -213,6 +225,23 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string E_MAIL_NOTIFY_A { get; internal set; }
+
+        /// <summary>
+        /// Working With Children Check card number
+        /// [Uppercase Alphanumeric (11)]
+        /// </summary>
+        public string WWCC_NUMBER_A { get; internal set; }
+
+        /// <summary>
+        /// WWCC expiry date
+        /// </summary>
+        public DateTime? WWCC_EXPIRY_A { get; internal set; }
+
+        /// <summary>
+        /// WWCC card Type E=Employee, V=Volunteer
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string WWCC_TYPE_A { get; internal set; }
 
         /// <summary>
         /// (Was FNAME) Parent/guardian B first given name
@@ -282,9 +311,15 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Parent/guardian B telephone contact if not at home during business hours
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string BH_CONTACT_B { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian B telephone contact if not at home during business hours
+        /// [Memo]
+        /// </summary>
+        public string BH_CONTACT_B_MEMO { get; internal set; }
 
         /// <summary>
         /// Parent/guardian B at home after hours? (Y/N)
@@ -294,9 +329,15 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Parent/guardian B telephone contact if not at home after hours
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string AH_CONTACT_B { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian B telephone contact if not at home after hours
+        /// [Memo]
+        /// </summary>
+        public string AH_CONTACT_B_MEMO { get; internal set; }
 
         /// <summary>
         /// (Was F_E_MAIL) Parent/guardian B e-mail address
@@ -363,6 +404,23 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string E_MAIL_NOTIFY_B { get; internal set; }
+
+        /// <summary>
+        /// Working With Children Check card number
+        /// [Uppercase Alphanumeric (11)]
+        /// </summary>
+        public string WWCC_NUMBER_B { get; internal set; }
+
+        /// <summary>
+        /// WWCC expiry date
+        /// </summary>
+        public DateTime? WWCC_EXPIRY_B { get; internal set; }
+
+        /// <summary>
+        /// WWCC card Type E=Employee, V=Volunteer
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string WWCC_TYPE_B { get; internal set; }
 
         /// <summary>
         /// Preferred language for notices
@@ -550,25 +608,25 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION01 { get; internal set; }
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION02 { get; internal set; }
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION03 { get; internal set; }
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION04 { get; internal set; }
 
@@ -598,27 +656,51 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT01 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT02 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT03 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT04 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO01 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO02 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO03 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO04 { get; internal set; }
 
         /// <summary>
         /// School has received authority to react to accident? (Y/N) (default for each student)
@@ -824,6 +906,18 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string FSE { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian A Self-described Gender
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC_A { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian B Self-described Gender
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC_B { get; internal set; }
 
         /// <summary>
         /// Last write date

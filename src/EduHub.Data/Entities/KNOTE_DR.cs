@@ -5,15 +5,15 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// SMS Recipients
+    /// Debtor Notes
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPREPLY : EduHubEntity
+    public sealed partial class KNOTE_DR : EduHubEntity
     {
 
         #region Navigation Property Cache
 
-        private SPSMS Cache_CODE_SPSMS;
+        private DR Cache_CODE_DR;
 
         #endregion
 
@@ -29,36 +29,26 @@ namespace EduHub.Data.Entities
         #region Field Properties
 
         /// <summary>
-        /// Transaction ID (internal)
+        /// Transaction ID
         /// </summary>
         public int TID { get; internal set; }
 
         /// <summary>
-        /// SMS Key
+        /// Debtor Key
+        /// [Uppercase Alphanumeric (10)]
         /// </summary>
-        public int CODE { get; internal set; }
+        public string CODE { get; internal set; }
 
         /// <summary>
-        /// TID From SPRECIP
+        /// Date
         /// </summary>
-        public int? SPRECIP_TID { get; internal set; }
+        public DateTime? NOTE_DATE { get; internal set; }
 
         /// <summary>
-        /// &lt;No documentation available&gt;
-        /// [Alphanumeric (255)]
+        /// Notes
+        /// [Memo]
         /// </summary>
-        public string MESSAGE { get; internal set; }
-
-        /// <summary>
-        /// phone number reply came from
-        /// [Alphanumeric (20)]
-        /// </summary>
-        public string PHONE_NUMBER { get; internal set; }
-
-        /// <summary>
-        /// date recieved by recipient (if read receipt required)
-        /// </summary>
-        public DateTime? RECEIVED_DATE { get; internal set; }
+        public string NOTE_MEMO { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -71,7 +61,7 @@ namespace EduHub.Data.Entities
         public short? LW_TIME { get; internal set; }
 
         /// <summary>
-        /// Last operator
+        /// Last user name
         /// [Uppercase Alphanumeric (128)]
         /// </summary>
         public string LW_USER { get; internal set; }
@@ -81,19 +71,19 @@ namespace EduHub.Data.Entities
         #region Navigation Properties
 
         /// <summary>
-        /// SPSMS (SMS messages) related entity by [SPREPLY.CODE]-&gt;[SPSMS.SPSMSKEY]
-        /// SMS Key
+        /// DR (Accounts Receivable) related entity by [KNOTE_DR.CODE]-&gt;[DR.DRKEY]
+        /// Debtor Key
         /// </summary>
-        public SPSMS CODE_SPSMS
+        public DR CODE_DR
         {
             get
             {
-                if (Cache_CODE_SPSMS == null)
+                if (Cache_CODE_DR == null)
                 {
-                    Cache_CODE_SPSMS = Context.SPSMS.FindBySPSMSKEY(CODE);
+                    Cache_CODE_DR = Context.DR.FindByDRKEY(CODE);
                 }
 
-                return Cache_CODE_SPSMS;
+                return Cache_CODE_DR;
             }
         }
 

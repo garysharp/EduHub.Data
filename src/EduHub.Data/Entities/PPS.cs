@@ -55,13 +55,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Supplier contact telephone or mobile number
-        /// [Uppercase Alphanumeric (15)]
+        /// [Uppercase Alphanumeric (20)]
         /// </summary>
         public string CONTACT_PHONE { get; internal set; }
 
         /// <summary>
         /// Supplier facsimile number
-        /// [Uppercase Alphanumeric (15)]
+        /// [Uppercase Alphanumeric (20)]
         /// </summary>
         public string FACSIMILE { get; internal set; }
 

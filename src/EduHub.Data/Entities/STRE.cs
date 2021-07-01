@@ -282,6 +282,12 @@ namespace EduHub.Data.Entities
         public string DF_LOTE_HOME_CODE_B { get; internal set; }
 
         /// <summary>
+        /// DHHS CRIS ID
+        /// [Uppercase Alphanumeric (9)]
+        /// </summary>
+        public string ST_CRIS_ID { get; internal set; }
+
+        /// <summary>
         /// Last write time
         /// </summary>
         public short? LW_TIME { get; internal set; }

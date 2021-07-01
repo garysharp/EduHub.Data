@@ -128,6 +128,11 @@ namespace EduHub.Data.Entities
         public string NEXT_HG { get; internal set; }
 
         /// <summary>
+        /// Number of self-described gender students in home group
+        /// </summary>
+        public short? SELF_DESCRIBED { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

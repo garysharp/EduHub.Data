@@ -275,6 +275,111 @@ namespace EduHub.Data.Entities
         public short? AGE_M20 { get; internal set; }
 
         /// <summary>
+        /// Number of self-described gender students in house
+        /// </summary>
+        public short? SELF_DESCRIBED { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S01 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S02 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S03 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S04 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S05 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S06 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S07 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S08 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S09 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S10 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S11 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S12 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S13 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S14 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S15 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S16 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S17 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S18 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S19 { get; internal set; }
+
+        /// <summary>
+        /// Number of self-described gender students aged x as at 31 dec
+        /// </summary>
+        public short? AGE_S20 { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

@@ -1,0 +1,3820 @@
+{
+  "FilesToGenerate": [
+    {
+      "Filename": "A_DECRYPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "A_DECRYP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AIMSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AIMS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKCTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKCT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKKDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKK.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AKT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ARDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "AR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ARFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ARF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BANKSIGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BANKSIG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BKHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BKH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BKHRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BKHR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BPAY_DATDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "BPAY_DAT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRFTCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRFTC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRPRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRPR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRTTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "CRTT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DF_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DF_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFHIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFHI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFVTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DFVT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DRBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DRB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DRFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "DRF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FDT_EXPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FDT_EXP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FDT_IMPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FDT_IMP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FER_FDTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FER_FDT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FINHISTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "FINHIST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLBANKDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLBANK.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLBUDGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLBUDG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLCFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLCF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLCFPREVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLCFPREV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFBANKDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFBANK.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFBUDGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFBUDG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFPREVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLFPREV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLPREVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "GLPREV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KABDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KABNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KABN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KADDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KADMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KADM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KAP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBANKDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBANK.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBPTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KBPT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCD_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCD_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCM_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCM_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCOHORTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCOHORT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCPCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCPC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCYDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KCY.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDELETEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDELETE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KDO.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KEMADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KEMA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KERRORDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KERROR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFTCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFTC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFUNDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFUND.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGCHIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGCHI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGCVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGCV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLINITDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLINIT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLPROGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLPROG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLSUBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLSUB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGLT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGO.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGO_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGO_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGSTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGWDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KGW.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KLOGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KLOG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KMSGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KMSG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNATTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNATT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNFSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNFS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNOTE_CRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNOTE_CR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNOTE_DRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KNOTE_DR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPCLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPCL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPCRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPCR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPECDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPEC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPRMSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KPRMS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KREPORTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KREPORT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KROLEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KROLE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSCOREDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSCORE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSKGSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSKGS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSTREETDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KSTREET.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTIEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTIE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTRCMPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTRCMP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KTT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KUPCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KUPC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "OSCSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "OSCS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEFHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEFH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PELADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PELA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PELDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PELD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPUDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPU.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPUHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPUH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPYDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PEPY.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PESHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PESH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PESPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PESP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PETPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PETP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PGIDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PGID.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PGLIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PGLI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PILIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PILI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PLT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PMLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PML.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PML_NEWDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PML_NEW.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PPDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PPD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PPSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PPS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PSADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PSA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PSFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PSF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PXDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PX.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PX_NEWDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "PX_NEW.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSACDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSAC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSADDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSAD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSATDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "QSAT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQGLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQGL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQPGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQPG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQRELDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQREL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "RQT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SABDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SABTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SABT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SACAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SACAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADWDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SADW.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAIIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAII.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAIMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAIM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAMADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAMA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SAP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCAMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCAM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ACLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ACL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ACVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ACV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_APPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_APP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ASEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ASE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ASTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_AST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ASVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ASV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CLVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CLV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CVTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_CVT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RFDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RFD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RPTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RPT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RTNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_RTN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_SCDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_SCD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_STDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_ST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_STEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_STE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_STVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_STV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_SVTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCEN_SVT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCSFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCSF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCSFAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SCSFAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDFCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDFC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDGMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDGM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDPADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SDPA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_ELOGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_ELOG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_LLOGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_LLOG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_MSGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_MSG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_URLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_URL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_USRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SEC_USR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SECMSGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SECMSG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFAQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFAQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFAVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFAV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFQADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SFQA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGAMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGAM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGFCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGFC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGHGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGHG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGMADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGMA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGSCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGSC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGSGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGSG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGTRXDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SGTRX.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SIDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SID.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SIDVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SIDV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SIRHDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SIRH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SK_HRMSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SK_HRMS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SK_HRMSTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SK_HRMST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SKGSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SKGS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SKGS_OLDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SKGS_OLD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMAQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMAQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMAVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMAV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMC_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMC_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMCDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMCD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMGROUPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SMGROUP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SP_RECIPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SP_RECIP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SP_REPLYDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SP_REPLY.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEMAILDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEMAIL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEMRGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEMRG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEPRINTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPEPRINT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPFSHAREDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPFSHARE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPFSTOREDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPFSTORE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPOUTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPOUT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPRECIPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPRECIP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPREPLYDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPREPLY.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPRETRYDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPRETRY.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPSMSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPSMS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPUDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPU.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPWWWDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SPWWW.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SRAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SRAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SSHGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SSHG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ST.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ST_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ST_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ST_TFRIODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "ST_TFRIO.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STARDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STAR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STAR_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STAR_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STBTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STBT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STMADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STMA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STMBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STMB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STNATDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STNAT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STNAT_TRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STNAT_TR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPO.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPS_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPS_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STPT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STRADataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STRA.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STREDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STRE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSUPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSUP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSUP_TRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STSUP_TR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STTRIPSDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STTRIPS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDI_TRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDI_TR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDO.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDO_TRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STVDO_TR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SUDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SU.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SUBLDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SUBL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SUPRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SUPR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SVAGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SVAG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXABDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXAB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXABCONVDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXABCONV.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXASDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXAS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXHIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "SXHI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCATDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCAT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTBDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTB.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTDDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTD.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TCTR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TECDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TEC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TETEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TETE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TETNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TETN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "THDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TH.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "THTNDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "THTN.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "THTQDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "THTQ.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRPMODEDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRPMODE.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRPROUTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRPROUT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRSTACCDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TRSTACC.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEFDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEF.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEIDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEI.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEPDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEP.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTESDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTES.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEXDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTEX.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTTGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TTTG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TXASDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TXAS.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TXHGDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "TXHG.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "UMDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "UM.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "UM_TFRDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "UM_TFR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    }
+  ]
+}

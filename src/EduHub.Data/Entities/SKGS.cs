@@ -21,6 +21,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<KGO_TFR> Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL;
         private SCI Cache_SCHOOL_SCI_SCHOOL_LINK;
         private IReadOnlyList<SCI> Cache_SCHOOL_SCI_DESTINATION_SCHOOL;
+        private IReadOnlyList<SKGS_OLD> Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL;
         private IReadOnlyList<SMC_TFR> Cache_SCHOOL_SMC_TFR_ORIG_SCHOOL;
         private IReadOnlyList<ST> Cache_SCHOOL_ST_PREVIOUS_SCHOOL;
         private IReadOnlyList<ST> Cache_SCHOOL_ST_NEXT_SCHOOL;
@@ -487,6 +488,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SCHOOL_SCI_DESTINATION_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// SKGS_OLD (Old SKGS Schools) related entities by [SKGS.SCHOOL]-&gt;[SKGS_OLD.NEW_SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<SKGS_OLD> SCHOOL_SKGS_OLD_NEW_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL == null &&
+                    !Context.SKGS_OLD.TryFindByNEW_SCHOOL(SCHOOL, out Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL))
+                {
+                    Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL = new List<SKGS_OLD>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL;
             }
         }
 

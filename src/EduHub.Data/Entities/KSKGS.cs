@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// eCases Messages
+    /// Holding Table for Incorrect Schools
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SECMSG : EduHubEntity
+    public sealed partial class KSKGS : EduHubEntity
     {
 
         /// <inheritdoc />
@@ -23,31 +23,39 @@ namespace EduHub.Data.Entities
         #region Field Properties
 
         /// <summary>
-        /// Key
+        /// Prime key
         /// </summary>
-        public int ID { get; internal set; }
+        public int KSKGSKEY { get; internal set; }
 
         /// <summary>
-        /// Message to send
-        /// [Memo]
+        /// School ID (Data recorded in Table name\Field name for Record key
+        /// [Uppercase Alphanumeric (8)]
         /// </summary>
-        public string MESSAGE { get; internal set; }
+        public string SCHOOL { get; internal set; }
 
         /// <summary>
-        /// Date the message was last edited
+        /// School Name
+        /// [Alphanumeric (40)]
         /// </summary>
-        public DateTime? LAST_EDITED { get; internal set; }
+        public string NAME { get; internal set; }
 
         /// <summary>
-        /// Logon ID of CASES21 user that created the message
-        /// [Alphanumeric (128)]
+        /// Message Body
+        /// [Alphanumeric (10)]
         /// </summary>
-        public string CREATOR { get; internal set; }
+        public string TABLE_NAME { get; internal set; }
 
         /// <summary>
-        /// Date after which the message will no longer be displayed
+        /// Expiry date
+        /// [Alphanumeric (30)]
         /// </summary>
-        public DateTime? EXPIRY { get; internal set; }
+        public string FIELD_NAME { get; internal set; }
+
+        /// <summary>
+        /// Prime key of Table name\field name
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string RECORD_KEY { get; internal set; }
 
         /// <summary>
         /// Last write date

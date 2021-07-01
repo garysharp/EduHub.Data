@@ -168,9 +168,21 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Change made to last record to produce this one
-        /// [Alphanumeric (80)]
+        /// [Alphanumeric (230)]
         /// </summary>
         public string CHANGE_MADE { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian A Self-described Gender
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC_A { get; internal set; }
+
+        /// <summary>
+        /// Parent/guardian B Self-described Gender
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC_B { get; internal set; }
 
         #endregion
 

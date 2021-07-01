@@ -256,6 +256,16 @@ namespace EduHub.Data.Entities
         public string DISABILITY_ADJUSTMENT { get; internal set; }
 
         /// <summary>
+        /// Regular Medication Expiry
+        /// </summary>
+        public DateTime? EXP_REG_MED { get; internal set; }
+
+        /// <summary>
+        /// As-Required Medication Expiry
+        /// </summary>
+        public DateTime? EXP_ASREQ_MED { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

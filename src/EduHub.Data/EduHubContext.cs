@@ -14,6 +14,7 @@ namespace EduHub.Data
     {
 #region Set Fields
         private readonly A_DECRYPDataSet _A_DECRYP;
+        private readonly AIMSDataSet _AIMS;
         private readonly AKBDataSet _AKB;
         private readonly AKCDataSet _AKC;
         private readonly AKCTDataSet _AKCT;
@@ -103,13 +104,17 @@ namespace EduHub.Data
         private readonly KGTDataSet _KGT;
         private readonly KGWDataSet _KGW;
         private readonly KLOGDataSet _KLOG;
+        private readonly KMSGDataSet _KMSG;
         private readonly KNDataSet _KN;
         private readonly KNATTDataSet _KNATT;
         private readonly KNFSDataSet _KNFS;
+        private readonly KNOTE_CRDataSet _KNOTE_CR;
+        private readonly KNOTE_DRDataSet _KNOTE_DR;
         private readonly KPCDataSet _KPC;
         private readonly KPCLDataSet _KPCL;
         private readonly KPCRDataSet _KPCR;
         private readonly KPECDataSet _KPEC;
+        private readonly KPHDataSet _KPH;
         private readonly KPNDataSet _KPN;
         private readonly KPRMSDataSet _KPRMS;
         private readonly KREPORTDataSet _KREPORT;
@@ -118,6 +123,7 @@ namespace EduHub.Data
         private readonly KSCDataSet _KSC;
         private readonly KSCOREDataSet _KSCORE;
         private readonly KSFDataSet _KSF;
+        private readonly KSKGSDataSet _KSKGS;
         private readonly KSQDataSet _KSQ;
         private readonly KSTREETDataSet _KSTREET;
         private readonly KTIEDataSet _KTIE;
@@ -240,6 +246,7 @@ namespace EduHub.Data
         private readonly SK_HRMSDataSet _SK_HRMS;
         private readonly SK_HRMSTDataSet _SK_HRMST;
         private readonly SKGSDataSet _SKGS;
+        private readonly SKGS_OLDDataSet _SKGS_OLD;
         private readonly SMDataSet _SM;
         private readonly SMAQDataSet _SMAQ;
         private readonly SMAVDataSet _SMAV;
@@ -358,6 +365,7 @@ namespace EduHub.Data
             this.EduHubSiteIdentifier = EduHubSiteIdentifier;
 
             _A_DECRYP = new A_DECRYPDataSet(this);
+            _AIMS = new AIMSDataSet(this);
             _AKB = new AKBDataSet(this);
             _AKC = new AKCDataSet(this);
             _AKCT = new AKCTDataSet(this);
@@ -447,13 +455,17 @@ namespace EduHub.Data
             _KGT = new KGTDataSet(this);
             _KGW = new KGWDataSet(this);
             _KLOG = new KLOGDataSet(this);
+            _KMSG = new KMSGDataSet(this);
             _KN = new KNDataSet(this);
             _KNATT = new KNATTDataSet(this);
             _KNFS = new KNFSDataSet(this);
+            _KNOTE_CR = new KNOTE_CRDataSet(this);
+            _KNOTE_DR = new KNOTE_DRDataSet(this);
             _KPC = new KPCDataSet(this);
             _KPCL = new KPCLDataSet(this);
             _KPCR = new KPCRDataSet(this);
             _KPEC = new KPECDataSet(this);
+            _KPH = new KPHDataSet(this);
             _KPN = new KPNDataSet(this);
             _KPRMS = new KPRMSDataSet(this);
             _KREPORT = new KREPORTDataSet(this);
@@ -462,6 +474,7 @@ namespace EduHub.Data
             _KSC = new KSCDataSet(this);
             _KSCORE = new KSCOREDataSet(this);
             _KSF = new KSFDataSet(this);
+            _KSKGS = new KSKGSDataSet(this);
             _KSQ = new KSQDataSet(this);
             _KSTREET = new KSTREETDataSet(this);
             _KTIE = new KTIEDataSet(this);
@@ -584,6 +597,7 @@ namespace EduHub.Data
             _SK_HRMS = new SK_HRMSDataSet(this);
             _SK_HRMST = new SK_HRMSTDataSet(this);
             _SKGS = new SKGSDataSet(this);
+            _SKGS_OLD = new SKGS_OLDDataSet(this);
             _SM = new SMDataSet(this);
             _SMAQ = new SMAQDataSet(this);
             _SMAV = new SMAVDataSet(this);
@@ -679,6 +693,7 @@ namespace EduHub.Data
         public IEnumerable<IEduHubDataSet> GetDataSets()
         {
             yield return A_DECRYP;
+            yield return AIMS;
             yield return AKB;
             yield return AKC;
             yield return AKCT;
@@ -768,13 +783,17 @@ namespace EduHub.Data
             yield return KGT;
             yield return KGW;
             yield return KLOG;
+            yield return KMSG;
             yield return KN;
             yield return KNATT;
             yield return KNFS;
+            yield return KNOTE_CR;
+            yield return KNOTE_DR;
             yield return KPC;
             yield return KPCL;
             yield return KPCR;
             yield return KPEC;
+            yield return KPH;
             yield return KPN;
             yield return KPRMS;
             yield return KREPORT;
@@ -783,6 +802,7 @@ namespace EduHub.Data
             yield return KSC;
             yield return KSCORE;
             yield return KSF;
+            yield return KSKGS;
             yield return KSQ;
             yield return KSTREET;
             yield return KTIE;
@@ -905,6 +925,7 @@ namespace EduHub.Data
             yield return SK_HRMS;
             yield return SK_HRMST;
             yield return SKGS;
+            yield return SKGS_OLD;
             yield return SM;
             yield return SMAQ;
             yield return SMAV;
@@ -995,6 +1016,11 @@ namespace EduHub.Data
         /// Decrypted data IMPORT
         /// </summary>
         public A_DECRYPDataSet A_DECRYP { get { return _A_DECRYP; } }
+
+        /// <summary>
+        /// AIMS Data
+        /// </summary>
+        public AIMSDataSet AIMS { get { return _AIMS; } }
 
         /// <summary>
         /// Assets - Sub-Category
@@ -1442,6 +1468,11 @@ namespace EduHub.Data
         public KLOGDataSet KLOG { get { return _KLOG; } }
 
         /// <summary>
+        /// CASES21 MESSAGES
+        /// </summary>
+        public KMSGDataSet KMSG { get { return _KMSG; } }
+
+        /// <summary>
         /// General Ledger Notes
         /// </summary>
         public KNDataSet KN { get { return _KN; } }
@@ -1455,6 +1486,16 @@ namespace EduHub.Data
         /// Family/Student ID Sequence Numbers
         /// </summary>
         public KNFSDataSet KNFS { get { return _KNFS; } }
+
+        /// <summary>
+        /// Creditor Notes
+        /// </summary>
+        public KNOTE_CRDataSet KNOTE_CR { get { return _KNOTE_CR; } }
+
+        /// <summary>
+        /// Debtor Notes
+        /// </summary>
+        public KNOTE_DRDataSet KNOTE_DR { get { return _KNOTE_DR; } }
 
         /// <summary>
         /// Contacts
@@ -1475,6 +1516,11 @@ namespace EduHub.Data
         /// Employee Categories
         /// </summary>
         public KPECDataSet KPEC { get { return _KPEC; } }
+
+        /// <summary>
+        /// Holding Table for Reformatting phone numbers
+        /// </summary>
+        public KPHDataSet KPH { get { return _KPH; } }
 
         /// <summary>
         /// Note Categories
@@ -1515,6 +1561,11 @@ namespace EduHub.Data
         /// Faculties
         /// </summary>
         public KSFDataSet KSF { get { return _KSF; } }
+
+        /// <summary>
+        /// Holding Table for Incorrect Schools
+        /// </summary>
+        public KSKGSDataSet KSKGS { get { return _KSKGS; } }
 
         /// <summary>
         /// Available Qualifications
@@ -2125,6 +2176,11 @@ namespace EduHub.Data
         /// Schools
         /// </summary>
         public SKGSDataSet SKGS { get { return _SKGS; } }
+
+        /// <summary>
+        /// Old SKGS Schools
+        /// </summary>
+        public SKGS_OLDDataSet SKGS_OLD { get { return _SKGS_OLD; } }
 
         /// <summary>
         /// Rooms

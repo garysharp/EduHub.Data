@@ -545,6 +545,30 @@ namespace EduHub.Data.Entities
         public string PREF_MAIL_MECH { get; internal set; }
 
         /// <summary>
+        /// NCCD Disability Summary export has been done this year
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string NCCD_SUMMARY_SAVED { get; internal set; }
+
+        /// <summary>
+        /// NCCD Student Disability export has been done this year
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string NCCD_STUDENT_SAVED { get; internal set; }
+
+        /// <summary>
+        /// NCCD Disability Summary export has been done this year
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string NCCD_SUMMARY_SAVED_AUG { get; internal set; }
+
+        /// <summary>
+        /// NCCD Student Disability export has been done this year
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string NCCD_STUDENT_SAVED_AUG { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

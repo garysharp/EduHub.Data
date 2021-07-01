@@ -53,6 +53,12 @@
     <Compile Include="EduHubContextBase.cs" />
     <Compile Include="EduHubDataSetNotFoundException.cs" />
     <Compile Include="EduHubSqlServerWriteMode.cs" />
+    <Compile Include="Entities\AIMS.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AIMSDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\CRPR.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -78,10 +84,40 @@
     <Compile Include="Entities\KFUNDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KMSG.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KMSGDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNOTE_CR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNOTE_CRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNOTE_DR.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KNOTE_DRDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KPH.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KPHDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\KSCORE.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KSCOREDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSKGS.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\KSKGSDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\KSTREET.cs">
@@ -160,6 +196,12 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\SGFCDataSet.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SKGS_OLD.cs">
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\SKGS_OLDDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\SPEMRG.cs">
@@ -332,11 +374,6 @@
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\EduHubEntity.cs" />
-    <Compile Include="Entities\EntityGenerator.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EntityGenerator.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entities\FDT_EXP.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -2024,6 +2061,7 @@
   <ItemGroup>
     <None Include="EduHub.Data.nuspec" />
     <None Include="packages.config" />
+    <None Include="T4.FileManager.VisualStudio.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -2035,11 +2073,18 @@
     </None>
     <None Include="Entities\EntityGenerator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EntityGenerator.cs</LastGenOutput>
+      <LastGenOutput>EntityGenerator.txt</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="CASES21 Schema.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Entities\EntityGenerator.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EntityGenerator.tt</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

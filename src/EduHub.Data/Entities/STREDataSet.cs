@@ -179,6 +179,9 @@ namespace EduHub.Data.Entities
                     case "DF_LOTE_HOME_CODE_B":
                         mapper[i] = (e, v) => e.DF_LOTE_HOME_CODE_B = v;
                         break;
+                    case "ST_CRIS_ID":
+                        mapper[i] = (e, v) => e.ST_CRIS_ID = v;
+                        break;
                     case "LW_TIME":
                         mapper[i] = (e, v) => e.LW_TIME = v == null ? (short?)null : short.Parse(v);
                         break;
@@ -1004,6 +1007,7 @@ BEGIN
         [ST_LOTE_HOME_CODE] varchar(7) NULL,
         [DF_LOTE_HOME_CODE_A] varchar(7) NULL,
         [DF_LOTE_HOME_CODE_B] varchar(7) NULL,
+        [ST_CRIS_ID] varchar(9) NULL,
         [LW_TIME] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_USER] varchar(128) NULL,
@@ -1229,7 +1233,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AN
             {
             }
 
-            public override int FieldCount { get { return 45; } }
+            public override int FieldCount { get { return 46; } }
 
             public override object GetValue(int i)
             {
@@ -1319,11 +1323,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AN
                         return Current.DF_LOTE_HOME_CODE_A;
                     case 41: // DF_LOTE_HOME_CODE_B
                         return Current.DF_LOTE_HOME_CODE_B;
-                    case 42: // LW_TIME
+                    case 42: // ST_CRIS_ID
+                        return Current.ST_CRIS_ID;
+                    case 43: // LW_TIME
                         return Current.LW_TIME;
-                    case 43: // LW_DATE
+                    case 44: // LW_DATE
                         return Current.LW_DATE;
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1414,11 +1420,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AN
                         return Current.DF_LOTE_HOME_CODE_A == null;
                     case 41: // DF_LOTE_HOME_CODE_B
                         return Current.DF_LOTE_HOME_CODE_B == null;
-                    case 42: // LW_TIME
+                    case 42: // ST_CRIS_ID
+                        return Current.ST_CRIS_ID == null;
+                    case 43: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 43: // LW_DATE
+                    case 44: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1513,11 +1521,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AN
                         return "DF_LOTE_HOME_CODE_A";
                     case 41: // DF_LOTE_HOME_CODE_B
                         return "DF_LOTE_HOME_CODE_B";
-                    case 42: // LW_TIME
+                    case 42: // ST_CRIS_ID
+                        return "ST_CRIS_ID";
+                    case 43: // LW_TIME
                         return "LW_TIME";
-                    case 43: // LW_DATE
+                    case 44: // LW_DATE
                         return "LW_DATE";
-                    case 44: // LW_USER
+                    case 45: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1612,12 +1622,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRE]') AN
                         return 40;
                     case "DF_LOTE_HOME_CODE_B":
                         return 41;
-                    case "LW_TIME":
+                    case "ST_CRIS_ID":
                         return 42;
-                    case "LW_DATE":
+                    case "LW_TIME":
                         return 43;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 44;
+                    case "LW_USER":
+                        return 45;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

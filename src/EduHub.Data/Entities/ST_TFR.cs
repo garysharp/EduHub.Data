@@ -482,27 +482,39 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION01 { get; internal set; }
 
         /// <summary>
         /// Relationship to a student in this family of each person to contact in an emergency
-        /// [Alphanumeric (11)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_RELATION02 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT01 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT02 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO01 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO02 { get; internal set; }
 
         /// <summary>
         /// School has received authority to react to accident? (Y/N) (held on DF and copied here on creation)
@@ -541,8 +553,8 @@ namespace EduHub.Data.Entities
         public string ACTIVITY_RESTRICTION { get; internal set; }
 
         /// <summary>
-        /// C = complete, I = Incomplete, N = Not Sighted
-        /// [Alphanumeric (1)]
+        /// 'C ' = complete, 'I ' = Incomplete no reason, 'N ' = Not Sighted/Provided, etc
+        /// [Alphanumeric (2)]
         /// </summary>
         public string IMMUNISE_CERT_STATUS { get; internal set; }
 
@@ -787,6 +799,46 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (6)]
         /// </summary>
         public string DISABILITY_ID { get; internal set; }
+
+        /// <summary>
+        /// DHHS CRIS ID
+        /// [Uppercase Alphanumeric (9)]
+        /// </summary>
+        public string CRIS_ID { get; internal set; }
+
+        /// <summary>
+        /// Time fraction of student's attendance
+        /// </summary>
+        public double? ACTUAL_TIME_FRACTION { get; internal set; }
+
+        /// <summary>
+        /// New time fraction of student's attendance
+        /// </summary>
+        public double? ACTUAL_TIME_FRACTION_NEW { get; internal set; }
+
+        /// <summary>
+        /// Caring responsibilities
+        /// [Alphanumeric (40)]
+        /// </summary>
+        public string YOUNG_CARER { get; internal set; }
+
+        /// <summary>
+        /// Student Gender Compliance
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC { get; internal set; }
+
+        /// <summary>
+        /// MYLNS Literacy (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string MYLNS_LITERACY { get; internal set; }
+
+        /// <summary>
+        /// MYLNS Numeracy (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string MYLNS_NUMERACY { get; internal set; }
 
         /// <summary>
         /// Unique Contact A DF Transfer ID

@@ -110,6 +110,12 @@ namespace EduHub.Data.Entities
         public string TFR_TYPE { get; internal set; }
 
         /// <summary>
+        /// Used for SDT - Flag a student status if 'LVNG' or 'ACTV'
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string STUDENT_LEAVING { get; internal set; }
+
+        /// <summary>
         /// Last Write Date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

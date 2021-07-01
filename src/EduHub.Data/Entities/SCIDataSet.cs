@@ -297,6 +297,18 @@ namespace EduHub.Data.Entities
                     case "PREF_MAIL_MECH":
                         mapper[i] = (e, v) => e.PREF_MAIL_MECH = v;
                         break;
+                    case "NCCD_SUMMARY_SAVED":
+                        mapper[i] = (e, v) => e.NCCD_SUMMARY_SAVED = v;
+                        break;
+                    case "NCCD_STUDENT_SAVED":
+                        mapper[i] = (e, v) => e.NCCD_STUDENT_SAVED = v;
+                        break;
+                    case "NCCD_SUMMARY_SAVED_AUG":
+                        mapper[i] = (e, v) => e.NCCD_SUMMARY_SAVED_AUG = v;
+                        break;
+                    case "NCCD_STUDENT_SAVED_AUG":
+                        mapper[i] = (e, v) => e.NCCD_STUDENT_SAVED_AUG = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -1463,6 +1475,10 @@ BEGIN
         [SCH_DEFINED01] varchar(20) NULL,
         [SCH_DEFINED02] varchar(20) NULL,
         [PREF_MAIL_MECH] varchar(1) NULL,
+        [NCCD_SUMMARY_SAVED] varchar(1) NULL,
+        [NCCD_STUDENT_SAVED] varchar(1) NULL,
+        [NCCD_SUMMARY_SAVED_AUG] varchar(1) NULL,
+        [NCCD_STUDENT_SAVED_AUG] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1760,7 +1776,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
             {
             }
 
-            public override int FieldCount { get { return 82; } }
+            public override int FieldCount { get { return 86; } }
 
             public override object GetValue(int i)
             {
@@ -1924,11 +1940,19 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SCH_DEFINED02;
                     case 78: // PREF_MAIL_MECH
                         return Current.PREF_MAIL_MECH;
-                    case 79: // LW_DATE
+                    case 79: // NCCD_SUMMARY_SAVED
+                        return Current.NCCD_SUMMARY_SAVED;
+                    case 80: // NCCD_STUDENT_SAVED
+                        return Current.NCCD_STUDENT_SAVED;
+                    case 81: // NCCD_SUMMARY_SAVED_AUG
+                        return Current.NCCD_SUMMARY_SAVED_AUG;
+                    case 82: // NCCD_STUDENT_SAVED_AUG
+                        return Current.NCCD_STUDENT_SAVED_AUG;
+                    case 83: // LW_DATE
                         return Current.LW_DATE;
-                    case 80: // LW_TIME
+                    case 84: // LW_TIME
                         return Current.LW_TIME;
-                    case 81: // LW_USER
+                    case 85: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2095,11 +2119,19 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return Current.SCH_DEFINED02 == null;
                     case 78: // PREF_MAIL_MECH
                         return Current.PREF_MAIL_MECH == null;
-                    case 79: // LW_DATE
+                    case 79: // NCCD_SUMMARY_SAVED
+                        return Current.NCCD_SUMMARY_SAVED == null;
+                    case 80: // NCCD_STUDENT_SAVED
+                        return Current.NCCD_STUDENT_SAVED == null;
+                    case 81: // NCCD_SUMMARY_SAVED_AUG
+                        return Current.NCCD_SUMMARY_SAVED_AUG == null;
+                    case 82: // NCCD_STUDENT_SAVED_AUG
+                        return Current.NCCD_STUDENT_SAVED_AUG == null;
+                    case 83: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 80: // LW_TIME
+                    case 84: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 81: // LW_USER
+                    case 85: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2268,11 +2300,19 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return "SCH_DEFINED02";
                     case 78: // PREF_MAIL_MECH
                         return "PREF_MAIL_MECH";
-                    case 79: // LW_DATE
+                    case 79: // NCCD_SUMMARY_SAVED
+                        return "NCCD_SUMMARY_SAVED";
+                    case 80: // NCCD_STUDENT_SAVED
+                        return "NCCD_STUDENT_SAVED";
+                    case 81: // NCCD_SUMMARY_SAVED_AUG
+                        return "NCCD_SUMMARY_SAVED_AUG";
+                    case 82: // NCCD_STUDENT_SAVED_AUG
+                        return "NCCD_STUDENT_SAVED_AUG";
+                    case 83: // LW_DATE
                         return "LW_DATE";
-                    case 80: // LW_TIME
+                    case 84: // LW_TIME
                         return "LW_TIME";
-                    case 81: // LW_USER
+                    case 85: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2441,12 +2481,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
                         return 77;
                     case "PREF_MAIL_MECH":
                         return 78;
-                    case "LW_DATE":
+                    case "NCCD_SUMMARY_SAVED":
                         return 79;
-                    case "LW_TIME":
+                    case "NCCD_STUDENT_SAVED":
                         return 80;
-                    case "LW_USER":
+                    case "NCCD_SUMMARY_SAVED_AUG":
                         return 81;
+                    case "NCCD_STUDENT_SAVED_AUG":
+                        return 82;
+                    case "LW_DATE":
+                        return 83;
+                    case "LW_TIME":
+                        return 84;
+                    case "LW_USER":
+                        return 85;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

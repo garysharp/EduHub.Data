@@ -101,7 +101,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Facsimile
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string DR_FAX { get; internal set; }
 
@@ -236,13 +236,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Phone number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string CR_TELEPHONE { get; internal set; }
 
         /// <summary>
         /// Facsimile number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string CR_FAX { get; internal set; }
 
@@ -260,7 +260,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Mobile number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string CR_MOBILE { get; internal set; }
 
@@ -408,6 +408,12 @@ namespace EduHub.Data.Entities
         public DateTime? CR_LASTPAYDATE { get; internal set; }
 
         /// <summary>
+        /// ATO Reference Number
+        /// [Alphanumeric (15)]
+        /// </summary>
+        public string CR_ARN { get; internal set; }
+
+        /// <summary>
         /// Employee key
         /// [Uppercase Alphanumeric (10)]
         /// </summary>
@@ -498,13 +504,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Home telephone number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string PE_HOMEPHONE { get; internal set; }
 
         /// <summary>
         /// Business phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string PE_BUS_PHONE { get; internal set; }
 
@@ -516,13 +522,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Fax number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string PE_FAX { get; internal set; }
 
         /// <summary>
         /// Mobile
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string PE_MOBILE { get; internal set; }
 
@@ -934,19 +940,19 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Business phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string KPC_BUS_PHONE { get; internal set; }
 
         /// <summary>
         /// Alternate/ home phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string KPC_HOME_PHONE { get; internal set; }
 
         /// <summary>
         /// Mobile phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string KPC_MOBILE { get; internal set; }
 

@@ -90,19 +90,19 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Business phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string BUS_PHONE { get; internal set; }
 
         /// <summary>
         /// Alternate/ home phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string HOME_PHONE { get; internal set; }
 
         /// <summary>
         /// Mobile phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string MOBILE { get; internal set; }
 

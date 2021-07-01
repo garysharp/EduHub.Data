@@ -180,6 +180,69 @@ namespace EduHub.Data.Entities
                     case "AGE_M20":
                         mapper[i] = (e, v) => e.AGE_M20 = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "SELF_DESCRIBED":
+                        mapper[i] = (e, v) => e.SELF_DESCRIBED = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S01":
+                        mapper[i] = (e, v) => e.AGE_S01 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S02":
+                        mapper[i] = (e, v) => e.AGE_S02 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S03":
+                        mapper[i] = (e, v) => e.AGE_S03 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S04":
+                        mapper[i] = (e, v) => e.AGE_S04 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S05":
+                        mapper[i] = (e, v) => e.AGE_S05 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S06":
+                        mapper[i] = (e, v) => e.AGE_S06 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S07":
+                        mapper[i] = (e, v) => e.AGE_S07 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S08":
+                        mapper[i] = (e, v) => e.AGE_S08 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S09":
+                        mapper[i] = (e, v) => e.AGE_S09 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S10":
+                        mapper[i] = (e, v) => e.AGE_S10 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S11":
+                        mapper[i] = (e, v) => e.AGE_S11 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S12":
+                        mapper[i] = (e, v) => e.AGE_S12 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S13":
+                        mapper[i] = (e, v) => e.AGE_S13 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S14":
+                        mapper[i] = (e, v) => e.AGE_S14 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S15":
+                        mapper[i] = (e, v) => e.AGE_S15 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S16":
+                        mapper[i] = (e, v) => e.AGE_S16 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S17":
+                        mapper[i] = (e, v) => e.AGE_S17 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S18":
+                        mapper[i] = (e, v) => e.AGE_S18 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S19":
+                        mapper[i] = (e, v) => e.AGE_S19 = v == null ? (short?)null : short.Parse(v);
+                        break;
+                    case "AGE_S20":
+                        mapper[i] = (e, v) => e.AGE_S20 = v == null ? (short?)null : short.Parse(v);
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -408,6 +471,27 @@ BEGIN
         [AGE_M18] smallint NULL,
         [AGE_M19] smallint NULL,
         [AGE_M20] smallint NULL,
+        [SELF_DESCRIBED] smallint NULL,
+        [AGE_S01] smallint NULL,
+        [AGE_S02] smallint NULL,
+        [AGE_S03] smallint NULL,
+        [AGE_S04] smallint NULL,
+        [AGE_S05] smallint NULL,
+        [AGE_S06] smallint NULL,
+        [AGE_S07] smallint NULL,
+        [AGE_S08] smallint NULL,
+        [AGE_S09] smallint NULL,
+        [AGE_S10] smallint NULL,
+        [AGE_S11] smallint NULL,
+        [AGE_S12] smallint NULL,
+        [AGE_S13] smallint NULL,
+        [AGE_S14] smallint NULL,
+        [AGE_S15] smallint NULL,
+        [AGE_S16] smallint NULL,
+        [AGE_S17] smallint NULL,
+        [AGE_S18] smallint NULL,
+        [AGE_S19] smallint NULL,
+        [AGE_S20] smallint NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -521,7 +605,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 50; } }
+            public override int FieldCount { get { return 71; } }
 
             public override object GetValue(int i)
             {
@@ -621,11 +705,53 @@ END");
                         return Current.AGE_M19;
                     case 46: // AGE_M20
                         return Current.AGE_M20;
-                    case 47: // LW_DATE
+                    case 47: // SELF_DESCRIBED
+                        return Current.SELF_DESCRIBED;
+                    case 48: // AGE_S01
+                        return Current.AGE_S01;
+                    case 49: // AGE_S02
+                        return Current.AGE_S02;
+                    case 50: // AGE_S03
+                        return Current.AGE_S03;
+                    case 51: // AGE_S04
+                        return Current.AGE_S04;
+                    case 52: // AGE_S05
+                        return Current.AGE_S05;
+                    case 53: // AGE_S06
+                        return Current.AGE_S06;
+                    case 54: // AGE_S07
+                        return Current.AGE_S07;
+                    case 55: // AGE_S08
+                        return Current.AGE_S08;
+                    case 56: // AGE_S09
+                        return Current.AGE_S09;
+                    case 57: // AGE_S10
+                        return Current.AGE_S10;
+                    case 58: // AGE_S11
+                        return Current.AGE_S11;
+                    case 59: // AGE_S12
+                        return Current.AGE_S12;
+                    case 60: // AGE_S13
+                        return Current.AGE_S13;
+                    case 61: // AGE_S14
+                        return Current.AGE_S14;
+                    case 62: // AGE_S15
+                        return Current.AGE_S15;
+                    case 63: // AGE_S16
+                        return Current.AGE_S16;
+                    case 64: // AGE_S17
+                        return Current.AGE_S17;
+                    case 65: // AGE_S18
+                        return Current.AGE_S18;
+                    case 66: // AGE_S19
+                        return Current.AGE_S19;
+                    case 67: // AGE_S20
+                        return Current.AGE_S20;
+                    case 68: // LW_DATE
                         return Current.LW_DATE;
-                    case 48: // LW_TIME
+                    case 69: // LW_TIME
                         return Current.LW_TIME;
-                    case 49: // LW_USER
+                    case 70: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -728,11 +854,53 @@ END");
                         return Current.AGE_M19 == null;
                     case 46: // AGE_M20
                         return Current.AGE_M20 == null;
-                    case 47: // LW_DATE
+                    case 47: // SELF_DESCRIBED
+                        return Current.SELF_DESCRIBED == null;
+                    case 48: // AGE_S01
+                        return Current.AGE_S01 == null;
+                    case 49: // AGE_S02
+                        return Current.AGE_S02 == null;
+                    case 50: // AGE_S03
+                        return Current.AGE_S03 == null;
+                    case 51: // AGE_S04
+                        return Current.AGE_S04 == null;
+                    case 52: // AGE_S05
+                        return Current.AGE_S05 == null;
+                    case 53: // AGE_S06
+                        return Current.AGE_S06 == null;
+                    case 54: // AGE_S07
+                        return Current.AGE_S07 == null;
+                    case 55: // AGE_S08
+                        return Current.AGE_S08 == null;
+                    case 56: // AGE_S09
+                        return Current.AGE_S09 == null;
+                    case 57: // AGE_S10
+                        return Current.AGE_S10 == null;
+                    case 58: // AGE_S11
+                        return Current.AGE_S11 == null;
+                    case 59: // AGE_S12
+                        return Current.AGE_S12 == null;
+                    case 60: // AGE_S13
+                        return Current.AGE_S13 == null;
+                    case 61: // AGE_S14
+                        return Current.AGE_S14 == null;
+                    case 62: // AGE_S15
+                        return Current.AGE_S15 == null;
+                    case 63: // AGE_S16
+                        return Current.AGE_S16 == null;
+                    case 64: // AGE_S17
+                        return Current.AGE_S17 == null;
+                    case 65: // AGE_S18
+                        return Current.AGE_S18 == null;
+                    case 66: // AGE_S19
+                        return Current.AGE_S19 == null;
+                    case 67: // AGE_S20
+                        return Current.AGE_S20 == null;
+                    case 68: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 48: // LW_TIME
+                    case 69: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 49: // LW_USER
+                    case 70: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -837,11 +1005,53 @@ END");
                         return "AGE_M19";
                     case 46: // AGE_M20
                         return "AGE_M20";
-                    case 47: // LW_DATE
+                    case 47: // SELF_DESCRIBED
+                        return "SELF_DESCRIBED";
+                    case 48: // AGE_S01
+                        return "AGE_S01";
+                    case 49: // AGE_S02
+                        return "AGE_S02";
+                    case 50: // AGE_S03
+                        return "AGE_S03";
+                    case 51: // AGE_S04
+                        return "AGE_S04";
+                    case 52: // AGE_S05
+                        return "AGE_S05";
+                    case 53: // AGE_S06
+                        return "AGE_S06";
+                    case 54: // AGE_S07
+                        return "AGE_S07";
+                    case 55: // AGE_S08
+                        return "AGE_S08";
+                    case 56: // AGE_S09
+                        return "AGE_S09";
+                    case 57: // AGE_S10
+                        return "AGE_S10";
+                    case 58: // AGE_S11
+                        return "AGE_S11";
+                    case 59: // AGE_S12
+                        return "AGE_S12";
+                    case 60: // AGE_S13
+                        return "AGE_S13";
+                    case 61: // AGE_S14
+                        return "AGE_S14";
+                    case 62: // AGE_S15
+                        return "AGE_S15";
+                    case 63: // AGE_S16
+                        return "AGE_S16";
+                    case 64: // AGE_S17
+                        return "AGE_S17";
+                    case 65: // AGE_S18
+                        return "AGE_S18";
+                    case 66: // AGE_S19
+                        return "AGE_S19";
+                    case 67: // AGE_S20
+                        return "AGE_S20";
+                    case 68: // LW_DATE
                         return "LW_DATE";
-                    case 48: // LW_TIME
+                    case 69: // LW_TIME
                         return "LW_TIME";
-                    case 49: // LW_USER
+                    case 70: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -946,12 +1156,54 @@ END");
                         return 45;
                     case "AGE_M20":
                         return 46;
-                    case "LW_DATE":
+                    case "SELF_DESCRIBED":
                         return 47;
-                    case "LW_TIME":
+                    case "AGE_S01":
                         return 48;
-                    case "LW_USER":
+                    case "AGE_S02":
                         return 49;
+                    case "AGE_S03":
+                        return 50;
+                    case "AGE_S04":
+                        return 51;
+                    case "AGE_S05":
+                        return 52;
+                    case "AGE_S06":
+                        return 53;
+                    case "AGE_S07":
+                        return 54;
+                    case "AGE_S08":
+                        return 55;
+                    case "AGE_S09":
+                        return 56;
+                    case "AGE_S10":
+                        return 57;
+                    case "AGE_S11":
+                        return 58;
+                    case "AGE_S12":
+                        return 59;
+                    case "AGE_S13":
+                        return 60;
+                    case "AGE_S14":
+                        return 61;
+                    case "AGE_S15":
+                        return 62;
+                    case "AGE_S16":
+                        return 63;
+                    case "AGE_S17":
+                        return 64;
+                    case "AGE_S18":
+                        return 65;
+                    case "AGE_S19":
+                        return 66;
+                    case "AGE_S20":
+                        return 67;
+                    case "LW_DATE":
+                        return 68;
+                    case "LW_TIME":
+                        return 69;
+                    case "LW_USER":
+                        return 70;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

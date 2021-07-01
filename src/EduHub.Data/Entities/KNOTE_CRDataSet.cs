@@ -10,32 +10,32 @@ using System.Text;
 namespace EduHub.Data.Entities
 {
     /// <summary>
-    /// SMS Recipients Data Set
+    /// Creditor Notes Data Set
     /// </summary>
     [GeneratedCode("EduHub Data", "0.9")]
-    public sealed partial class SPREPLYDataSet : EduHubDataSet<SPREPLY>
+    public sealed partial class KNOTE_CRDataSet : EduHubDataSet<KNOTE_CR>
     {
         /// <inheritdoc />
-        public override string Name { get { return "SPREPLY"; } }
+        public override string Name { get { return "KNOTE_CR"; } }
 
         /// <inheritdoc />
         public override bool SupportsEntityLastModified { get { return true; } }
 
-        internal SPREPLYDataSet(EduHubContext Context)
+        internal KNOTE_CRDataSet(EduHubContext Context)
             : base(Context)
         {
-            Index_CODE = new Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>>(() => this.ToGroupedDictionary(i => i.CODE));
-            Index_TID = new Lazy<Dictionary<int, SPREPLY>>(() => this.ToDictionary(i => i.TID));
+            Index_CODE = new Lazy<Dictionary<string, IReadOnlyList<KNOTE_CR>>>(() => this.ToGroupedDictionary(i => i.CODE));
+            Index_TID = new Lazy<Dictionary<int, KNOTE_CR>>(() => this.ToDictionary(i => i.TID));
         }
 
         /// <summary>
-        /// Matches CSV file headers to actions, used to deserialize <see cref="SPREPLY" />
+        /// Matches CSV file headers to actions, used to deserialize <see cref="KNOTE_CR" />
         /// </summary>
         /// <param name="Headers">The CSV column headers</param>
-        /// <returns>An array of actions which deserialize <see cref="SPREPLY" /> fields for each CSV column header</returns>
-        internal override Action<SPREPLY, string>[] BuildMapper(IReadOnlyList<string> Headers)
+        /// <returns>An array of actions which deserialize <see cref="KNOTE_CR" /> fields for each CSV column header</returns>
+        internal override Action<KNOTE_CR, string>[] BuildMapper(IReadOnlyList<string> Headers)
         {
-            var mapper = new Action<SPREPLY, string>[Headers.Count];
+            var mapper = new Action<KNOTE_CR, string>[Headers.Count];
 
             for (var i = 0; i < Headers.Count; i++) {
                 switch (Headers[i]) {
@@ -43,19 +43,13 @@ namespace EduHub.Data.Entities
                         mapper[i] = (e, v) => e.TID = int.Parse(v);
                         break;
                     case "CODE":
-                        mapper[i] = (e, v) => e.CODE = int.Parse(v);
+                        mapper[i] = (e, v) => e.CODE = v;
                         break;
-                    case "SPRECIP_TID":
-                        mapper[i] = (e, v) => e.SPRECIP_TID = v == null ? (int?)null : int.Parse(v);
+                    case "NOTE_DATE":
+                        mapper[i] = (e, v) => e.NOTE_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
-                    case "MESSAGE":
-                        mapper[i] = (e, v) => e.MESSAGE = v;
-                        break;
-                    case "PHONE_NUMBER":
-                        mapper[i] = (e, v) => e.PHONE_NUMBER = v;
-                        break;
-                    case "RECEIVED_DATE":
-                        mapper[i] = (e, v) => e.RECEIVED_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                    case "NOTE_MEMO":
+                        mapper[i] = (e, v) => e.NOTE_MEMO = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
@@ -76,12 +70,12 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Merges <see cref="SPREPLY" /> delta entities
+        /// Merges <see cref="KNOTE_CR" /> delta entities
         /// </summary>
-        /// <param name="Entities">Iterator for base <see cref="SPREPLY" /> entities</param>
-        /// <param name="DeltaEntities">List of delta <see cref="SPREPLY" /> entities</param>
-        /// <returns>A merged <see cref="IEnumerable{SPREPLY}"/> of entities</returns>
-        internal override IEnumerable<SPREPLY> ApplyDeltaEntities(IEnumerable<SPREPLY> Entities, List<SPREPLY> DeltaEntities)
+        /// <param name="Entities">Iterator for base <see cref="KNOTE_CR" /> entities</param>
+        /// <param name="DeltaEntities">List of delta <see cref="KNOTE_CR" /> entities</param>
+        /// <returns>A merged <see cref="IEnumerable{KNOTE_CR}"/> of entities</returns>
+        internal override IEnumerable<KNOTE_CR> ApplyDeltaEntities(IEnumerable<KNOTE_CR> Entities, List<KNOTE_CR> DeltaEntities)
         {
             HashSet<int> Index_TID = new HashSet<int>(DeltaEntities.Select(i => i.TID));
 
@@ -131,45 +125,45 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
-        private Lazy<Dictionary<int, IReadOnlyList<SPREPLY>>> Index_CODE;
-        private Lazy<Dictionary<int, SPREPLY>> Index_TID;
+        private Lazy<Dictionary<string, IReadOnlyList<KNOTE_CR>>> Index_CODE;
+        private Lazy<Dictionary<int, KNOTE_CR>> Index_TID;
 
         #endregion
 
         #region Index Methods
 
         /// <summary>
-        /// Find SPREPLY by CODE field
+        /// Find KNOTE_CR by CODE field
         /// </summary>
-        /// <param name="CODE">CODE value used to find SPREPLY</param>
-        /// <returns>List of related SPREPLY entities</returns>
+        /// <param name="CODE">CODE value used to find KNOTE_CR</param>
+        /// <returns>List of related KNOTE_CR entities</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SPREPLY> FindByCODE(int CODE)
+        public IReadOnlyList<KNOTE_CR> FindByCODE(string CODE)
         {
             return Index_CODE.Value[CODE];
         }
 
         /// <summary>
-        /// Attempt to find SPREPLY by CODE field
+        /// Attempt to find KNOTE_CR by CODE field
         /// </summary>
-        /// <param name="CODE">CODE value used to find SPREPLY</param>
-        /// <param name="Value">List of related SPREPLY entities</param>
-        /// <returns>True if the list of related SPREPLY entities is found</returns>
+        /// <param name="CODE">CODE value used to find KNOTE_CR</param>
+        /// <param name="Value">List of related KNOTE_CR entities</param>
+        /// <returns>True if the list of related KNOTE_CR entities is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByCODE(int CODE, out IReadOnlyList<SPREPLY> Value)
+        public bool TryFindByCODE(string CODE, out IReadOnlyList<KNOTE_CR> Value)
         {
             return Index_CODE.Value.TryGetValue(CODE, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SPREPLY by CODE field
+        /// Attempt to find KNOTE_CR by CODE field
         /// </summary>
-        /// <param name="CODE">CODE value used to find SPREPLY</param>
-        /// <returns>List of related SPREPLY entities, or null if not found</returns>
+        /// <param name="CODE">CODE value used to find KNOTE_CR</param>
+        /// <returns>List of related KNOTE_CR entities, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public IReadOnlyList<SPREPLY> TryFindByCODE(int CODE)
+        public IReadOnlyList<KNOTE_CR> TryFindByCODE(string CODE)
         {
-            IReadOnlyList<SPREPLY> value;
+            IReadOnlyList<KNOTE_CR> value;
             if (Index_CODE.Value.TryGetValue(CODE, out value))
             {
                 return value;
@@ -181,37 +175,37 @@ namespace EduHub.Data.Entities
         }
 
         /// <summary>
-        /// Find SPREPLY by TID field
+        /// Find KNOTE_CR by TID field
         /// </summary>
-        /// <param name="TID">TID value used to find SPREPLY</param>
-        /// <returns>Related SPREPLY entity</returns>
+        /// <param name="TID">TID value used to find KNOTE_CR</param>
+        /// <returns>Related KNOTE_CR entity</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPREPLY FindByTID(int TID)
+        public KNOTE_CR FindByTID(int TID)
         {
             return Index_TID.Value[TID];
         }
 
         /// <summary>
-        /// Attempt to find SPREPLY by TID field
+        /// Attempt to find KNOTE_CR by TID field
         /// </summary>
-        /// <param name="TID">TID value used to find SPREPLY</param>
-        /// <param name="Value">Related SPREPLY entity</param>
-        /// <returns>True if the related SPREPLY entity is found</returns>
+        /// <param name="TID">TID value used to find KNOTE_CR</param>
+        /// <param name="Value">Related KNOTE_CR entity</param>
+        /// <returns>True if the related KNOTE_CR entity is found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public bool TryFindByTID(int TID, out SPREPLY Value)
+        public bool TryFindByTID(int TID, out KNOTE_CR Value)
         {
             return Index_TID.Value.TryGetValue(TID, out Value);
         }
 
         /// <summary>
-        /// Attempt to find SPREPLY by TID field
+        /// Attempt to find KNOTE_CR by TID field
         /// </summary>
-        /// <param name="TID">TID value used to find SPREPLY</param>
-        /// <returns>Related SPREPLY entity, or null if not found</returns>
+        /// <param name="TID">TID value used to find KNOTE_CR</param>
+        /// <returns>Related KNOTE_CR entity, or null if not found</returns>
         /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
-        public SPREPLY TryFindByTID(int TID)
+        public KNOTE_CR TryFindByTID(int TID)
         {
-            SPREPLY value;
+            KNOTE_CR value;
             if (Index_TID.Value.TryGetValue(TID, out value))
             {
                 return value;
@@ -227,7 +221,7 @@ namespace EduHub.Data.Entities
         #region SQL Integration
 
         /// <summary>
-        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a SPREPLY table, and if not found, creates the table and associated indexes.
+        /// Returns a <see cref="SqlCommand"/> which checks for the existence of a KNOTE_CR table, and if not found, creates the table and associated indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
         public override SqlCommand GetSqlCreateTableCommand(SqlConnection SqlConnection)
@@ -235,23 +229,21 @@ namespace EduHub.Data.Entities
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+@"IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
 BEGIN
-    CREATE TABLE [dbo].[SPREPLY](
+    CREATE TABLE [dbo].[KNOTE_CR](
         [TID] int IDENTITY NOT NULL,
-        [CODE] int NOT NULL,
-        [SPRECIP_TID] int NULL,
-        [MESSAGE] varchar(255) NULL,
-        [PHONE_NUMBER] varchar(20) NULL,
-        [RECEIVED_DATE] datetime NULL,
+        [CODE] varchar(10) NOT NULL,
+        [NOTE_DATE] datetime NULL,
+        [NOTE_MEMO] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
-        CONSTRAINT [SPREPLY_Index_TID] PRIMARY KEY NONCLUSTERED (
+        CONSTRAINT [KNOTE_CR_Index_TID] PRIMARY KEY NONCLUSTERED (
             [TID] ASC
         )
     );
-    CREATE CLUSTERED INDEX [SPREPLY_Index_CODE] ON [dbo].[SPREPLY]
+    CREATE CLUSTERED INDEX [KNOTE_CR_Index_CODE] ON [dbo].[KNOTE_CR]
     (
             [CODE] ASC
     );
@@ -270,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPREPLY] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[KNOTE_CR] DISABLE;
 ");
         }
 
@@ -285,17 +277,17 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPREPLY] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'Index_TID')
+    ALTER INDEX [Index_TID] ON [dbo].[KNOTE_CR] REBUILD PARTITION = ALL;
 ");
         }
 
         /// <summary>
-        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="SPREPLY"/> entities passed
+        /// Returns a <see cref="SqlCommand"/> which deletes the <see cref="KNOTE_CR"/> entities passed
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <param name="Entities">The <see cref="SPREPLY"/> entities to be deleted</param>
-        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<SPREPLY> Entities)
+        /// <param name="Entities">The <see cref="KNOTE_CR"/> entities to be deleted</param>
+        public override SqlCommand GetSqlDeleteCommand(SqlConnection SqlConnection, IEnumerable<KNOTE_CR> Entities)
         {
             SqlCommand command = new SqlCommand();
             int parameterIndex = 0;
@@ -308,7 +300,7 @@ END");
                 Index_TID.Add(entity.TID);
             }
 
-            builder.AppendLine("DELETE [dbo].[SPREPLY] WHERE");
+            builder.AppendLine("DELETE [dbo].[KNOTE_CR] WHERE");
 
 
             // Index_TID
@@ -332,32 +324,32 @@ END");
         }
 
         /// <summary>
-        /// Provides a <see cref="IDataReader"/> for the SPREPLY data set
+        /// Provides a <see cref="IDataReader"/> for the KNOTE_CR data set
         /// </summary>
-        /// <returns>A <see cref="IDataReader"/> for the SPREPLY data set</returns>
-        public override EduHubDataSetDataReader<SPREPLY> GetDataSetDataReader()
+        /// <returns>A <see cref="IDataReader"/> for the KNOTE_CR data set</returns>
+        public override EduHubDataSetDataReader<KNOTE_CR> GetDataSetDataReader()
         {
-            return new SPREPLYDataReader(Load());
+            return new KNOTE_CRDataReader(Load());
         }
 
         /// <summary>
-        /// Provides a <see cref="IDataReader"/> for the SPREPLY data set
+        /// Provides a <see cref="IDataReader"/> for the KNOTE_CR data set
         /// </summary>
-        /// <returns>A <see cref="IDataReader"/> for the SPREPLY data set</returns>
-        public override EduHubDataSetDataReader<SPREPLY> GetDataSetDataReader(List<SPREPLY> Entities)
+        /// <returns>A <see cref="IDataReader"/> for the KNOTE_CR data set</returns>
+        public override EduHubDataSetDataReader<KNOTE_CR> GetDataSetDataReader(List<KNOTE_CR> Entities)
         {
-            return new SPREPLYDataReader(new EduHubDataSetLoadedReader<SPREPLY>(this, Entities));
+            return new KNOTE_CRDataReader(new EduHubDataSetLoadedReader<KNOTE_CR>(this, Entities));
         }
 
         // Modest implementation to primarily support SqlBulkCopy
-        private class SPREPLYDataReader : EduHubDataSetDataReader<SPREPLY>
+        private class KNOTE_CRDataReader : EduHubDataSetDataReader<KNOTE_CR>
         {
-            public SPREPLYDataReader(IEduHubDataSetReader<SPREPLY> Reader)
+            public KNOTE_CRDataReader(IEduHubDataSetReader<KNOTE_CR> Reader)
                 : base (Reader)
             {
             }
 
-            public override int FieldCount { get { return 9; } }
+            public override int FieldCount { get { return 7; } }
 
             public override object GetValue(int i)
             {
@@ -367,19 +359,15 @@ END");
                         return Current.TID;
                     case 1: // CODE
                         return Current.CODE;
-                    case 2: // SPRECIP_TID
-                        return Current.SPRECIP_TID;
-                    case 3: // MESSAGE
-                        return Current.MESSAGE;
-                    case 4: // PHONE_NUMBER
-                        return Current.PHONE_NUMBER;
-                    case 5: // RECEIVED_DATE
-                        return Current.RECEIVED_DATE;
-                    case 6: // LW_DATE
+                    case 2: // NOTE_DATE
+                        return Current.NOTE_DATE;
+                    case 3: // NOTE_MEMO
+                        return Current.NOTE_MEMO;
+                    case 4: // LW_DATE
                         return Current.LW_DATE;
-                    case 7: // LW_TIME
+                    case 5: // LW_TIME
                         return Current.LW_TIME;
-                    case 8: // LW_USER
+                    case 6: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -390,19 +378,15 @@ END");
             {
                 switch (i)
                 {
-                    case 2: // SPRECIP_TID
-                        return Current.SPRECIP_TID == null;
-                    case 3: // MESSAGE
-                        return Current.MESSAGE == null;
-                    case 4: // PHONE_NUMBER
-                        return Current.PHONE_NUMBER == null;
-                    case 5: // RECEIVED_DATE
-                        return Current.RECEIVED_DATE == null;
-                    case 6: // LW_DATE
+                    case 2: // NOTE_DATE
+                        return Current.NOTE_DATE == null;
+                    case 3: // NOTE_MEMO
+                        return Current.NOTE_MEMO == null;
+                    case 4: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 7: // LW_TIME
+                    case 5: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 8: // LW_USER
+                    case 6: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -417,19 +401,15 @@ END");
                         return "TID";
                     case 1: // CODE
                         return "CODE";
-                    case 2: // SPRECIP_TID
-                        return "SPRECIP_TID";
-                    case 3: // MESSAGE
-                        return "MESSAGE";
-                    case 4: // PHONE_NUMBER
-                        return "PHONE_NUMBER";
-                    case 5: // RECEIVED_DATE
-                        return "RECEIVED_DATE";
-                    case 6: // LW_DATE
+                    case 2: // NOTE_DATE
+                        return "NOTE_DATE";
+                    case 3: // NOTE_MEMO
+                        return "NOTE_MEMO";
+                    case 4: // LW_DATE
                         return "LW_DATE";
-                    case 7: // LW_TIME
+                    case 5: // LW_TIME
                         return "LW_TIME";
-                    case 8: // LW_USER
+                    case 6: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -444,20 +424,16 @@ END");
                         return 0;
                     case "CODE":
                         return 1;
-                    case "SPRECIP_TID":
+                    case "NOTE_DATE":
                         return 2;
-                    case "MESSAGE":
+                    case "NOTE_MEMO":
                         return 3;
-                    case "PHONE_NUMBER":
-                        return 4;
-                    case "RECEIVED_DATE":
-                        return 5;
                     case "LW_DATE":
-                        return 6;
+                        return 4;
                     case "LW_TIME":
-                        return 7;
+                        return 5;
                     case "LW_USER":
-                        return 8;
+                        return 6;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

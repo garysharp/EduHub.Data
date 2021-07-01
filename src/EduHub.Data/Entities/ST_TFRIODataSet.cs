@@ -82,6 +82,9 @@ namespace EduHub.Data.Entities
                     case "TFR_TYPE":
                         mapper[i] = (e, v) => e.TFR_TYPE = v;
                         break;
+                    case "STUDENT_LEAVING":
+                        mapper[i] = (e, v) => e.STUDENT_LEAVING = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -323,6 +326,7 @@ BEGIN
         [TFR_COMMENT] varchar(250) NULL,
         [YEAR_SEMESTER] varchar(6) NULL,
         [TFR_TYPE] varchar(2) NULL,
+        [STUDENT_LEAVING] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -460,7 +464,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
             {
             }
 
-            public override int FieldCount { get { return 17; } }
+            public override int FieldCount { get { return 18; } }
 
             public override object GetValue(int i)
             {
@@ -494,11 +498,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return Current.YEAR_SEMESTER;
                     case 13: // TFR_TYPE
                         return Current.TFR_TYPE;
-                    case 14: // LW_DATE
+                    case 14: // STUDENT_LEAVING
+                        return Current.STUDENT_LEAVING;
+                    case 15: // LW_DATE
                         return Current.LW_DATE;
-                    case 15: // LW_TIME
+                    case 16: // LW_TIME
                         return Current.LW_TIME;
-                    case 16: // LW_USER
+                    case 17: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -533,11 +539,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return Current.YEAR_SEMESTER == null;
                     case 13: // TFR_TYPE
                         return Current.TFR_TYPE == null;
-                    case 14: // LW_DATE
+                    case 14: // STUDENT_LEAVING
+                        return Current.STUDENT_LEAVING == null;
+                    case 15: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 15: // LW_TIME
+                    case 16: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 16: // LW_USER
+                    case 17: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -576,11 +584,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return "YEAR_SEMESTER";
                     case 13: // TFR_TYPE
                         return "TFR_TYPE";
-                    case 14: // LW_DATE
+                    case 14: // STUDENT_LEAVING
+                        return "STUDENT_LEAVING";
+                    case 15: // LW_DATE
                         return "LW_DATE";
-                    case 15: // LW_TIME
+                    case 16: // LW_TIME
                         return "LW_TIME";
-                    case 16: // LW_USER
+                    case 17: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -619,12 +629,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
                         return 12;
                     case "TFR_TYPE":
                         return 13;
-                    case "LW_DATE":
+                    case "STUDENT_LEAVING":
                         return 14;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 15;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 16;
+                    case "LW_USER":
+                        return 17;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

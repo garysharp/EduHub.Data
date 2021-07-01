@@ -232,6 +232,15 @@ namespace EduHub.Data.Entities
                     case "LW_PRMSINFO_DATE":
                         mapper[i] = (e, v) => e.LW_PRMSINFO_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
+                    case "ARN":
+                        mapper[i] = (e, v) => e.ARN = v;
+                        break;
+                    case "KNOTE_FLAG":
+                        mapper[i] = (e, v) => e.KNOTE_FLAG = v;
+                        break;
+                    case "AIMSKEY":
+                        mapper[i] = (e, v) => e.AIMSKEY = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -479,11 +488,11 @@ BEGIN
         [ADDRESS03] varchar(40) NULL,
         [STATE] varchar(4) NULL,
         [POSTCODE] varchar(4) NULL,
-        [TELEPHONE] varchar(15) NULL,
-        [FAX] varchar(15) NULL,
+        [TELEPHONE] varchar(20) NULL,
+        [FAX] varchar(20) NULL,
         [CR_EMAIL] varchar(60) NULL,
         [EMAIL_FOR_PAYMENTS] varchar(60) NULL,
-        [MOBILE] varchar(15) NULL,
+        [MOBILE] varchar(20) NULL,
         [COMMITMENT] money NULL,
         [STOP_FLAG] varchar(1) NULL,
         [ABN] varchar(15) NULL,
@@ -520,6 +529,9 @@ BEGIN
         [PR_APPROVE] varchar(1) NULL,
         [PRMS_FLAG] varchar(1) NULL,
         [LW_PRMSINFO_DATE] datetime NULL,
+        [ARN] varchar(15) NULL,
+        [KNOTE_FLAG] varchar(1) NULL,
+        [AIMSKEY] varchar(20) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -641,7 +653,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 67; } }
+            public override int FieldCount { get { return 70; } }
 
             public override object GetValue(int i)
             {
@@ -775,11 +787,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.PRMS_FLAG;
                     case 63: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE;
-                    case 64: // LW_DATE
+                    case 64: // ARN
+                        return Current.ARN;
+                    case 65: // KNOTE_FLAG
+                        return Current.KNOTE_FLAG;
+                    case 66: // AIMSKEY
+                        return Current.AIMSKEY;
+                    case 67: // LW_DATE
                         return Current.LW_DATE;
-                    case 65: // LW_TIME
+                    case 68: // LW_TIME
                         return Current.LW_TIME;
-                    case 66: // LW_USER
+                    case 69: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -916,11 +934,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.PRMS_FLAG == null;
                     case 63: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE == null;
-                    case 64: // LW_DATE
+                    case 64: // ARN
+                        return Current.ARN == null;
+                    case 65: // KNOTE_FLAG
+                        return Current.KNOTE_FLAG == null;
+                    case 66: // AIMSKEY
+                        return Current.AIMSKEY == null;
+                    case 67: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 65: // LW_TIME
+                    case 68: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 66: // LW_USER
+                    case 69: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1059,11 +1083,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return "PRMS_FLAG";
                     case 63: // LW_PRMSINFO_DATE
                         return "LW_PRMSINFO_DATE";
-                    case 64: // LW_DATE
+                    case 64: // ARN
+                        return "ARN";
+                    case 65: // KNOTE_FLAG
+                        return "KNOTE_FLAG";
+                    case 66: // AIMSKEY
+                        return "AIMSKEY";
+                    case 67: // LW_DATE
                         return "LW_DATE";
-                    case 65: // LW_TIME
+                    case 68: // LW_TIME
                         return "LW_TIME";
-                    case 66: // LW_USER
+                    case 69: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1202,12 +1232,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return 62;
                     case "LW_PRMSINFO_DATE":
                         return 63;
-                    case "LW_DATE":
+                    case "ARN":
                         return 64;
-                    case "LW_TIME":
+                    case "KNOTE_FLAG":
                         return 65;
-                    case "LW_USER":
+                    case "AIMSKEY":
                         return 66;
+                    case "LW_DATE":
+                        return 67;
+                    case "LW_TIME":
+                        return 68;
+                    case "LW_USER":
+                        return 69;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -144,13 +144,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Home telephone number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string HOMEPHONE { get; internal set; }
 
         /// <summary>
         /// Business phone
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string BUS_PHONE { get; internal set; }
 
@@ -162,13 +162,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Fax number
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string FAX { get; internal set; }
 
         /// <summary>
         /// Mobile
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string MOBILE { get; internal set; }
 

@@ -579,15 +579,27 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT01 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Memo]
+        /// [Alphanumeric (20)]
         /// </summary>
         public string EMERG_CONTACT02 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO01 { get; internal set; }
+
+        /// <summary>
+        /// Contact details for each person to contact in an emergency
+        /// [Memo]
+        /// </summary>
+        public string EMERG_CONTACT_MEMO02 { get; internal set; }
 
         /// <summary>
         /// Is this staff member prepared to be in any special groups? (Y/N)

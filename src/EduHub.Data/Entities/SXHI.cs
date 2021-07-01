@@ -251,9 +251,39 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Change made to last record to produce this one
-        /// [Alphanumeric (80)]
+        /// [Alphanumeric (230)]
         /// </summary>
         public string CHANGE_MADE { get; internal set; }
+
+        /// <summary>
+        /// DHHS CRIS ID
+        /// [Uppercase Alphanumeric (9)]
+        /// </summary>
+        public string CRIS_ID { get; internal set; }
+
+        /// <summary>
+        /// Student's living arrangement (At home with TWO parents/guardians,Home with ONE parent/guardian,Arranged by State - Out-of-home-care,Homeless,Independent)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string LIVING_ARR { get; internal set; }
+
+        /// <summary>
+        /// Medical alert flag (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string MEDICAL_ALERT { get; internal set; }
+
+        /// <summary>
+        /// Unique ID across state (School ID+REGISTRATION)
+        /// [Uppercase Alphanumeric (15)]
+        /// </summary>
+        public string FIRST_REG_NO { get; internal set; }
+
+        /// <summary>
+        /// Self-described Gender description
+        /// [Alphanumeric (100)]
+        /// </summary>
+        public string GENDER_DESC { get; internal set; }
 
         #endregion
 
