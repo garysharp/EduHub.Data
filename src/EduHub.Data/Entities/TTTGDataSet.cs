@@ -702,20 +702,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_R1ROOM')
-    ALTER INDEX [Index_R1ROOM] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_R2ROOM')
-    ALTER INDEX [Index_R2ROOM] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_T1TEACH')
-    ALTER INDEX [Index_T1TEACH] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_T2TEACH')
-    ALTER INDEX [Index_T2TEACH] ON [dbo].[TTTG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTTG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_IDENT')
+    ALTER INDEX [TTTG_Index_IDENT] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_R1ROOM')
+    ALTER INDEX [TTTG_Index_R1ROOM] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_R2ROOM')
+    ALTER INDEX [TTTG_Index_R2ROOM] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_SUBJ')
+    ALTER INDEX [TTTG_Index_SUBJ] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_T1TEACH')
+    ALTER INDEX [TTTG_Index_T1TEACH] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_T2TEACH')
+    ALTER INDEX [TTTG_Index_T2TEACH] ON [dbo].[TTTG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_TID')
+    ALTER INDEX [TTTG_Index_TID] ON [dbo].[TTTG] DISABLE;
 ");
         }
 
@@ -729,20 +729,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_R1ROOM')
-    ALTER INDEX [Index_R1ROOM] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_R2ROOM')
-    ALTER INDEX [Index_R2ROOM] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_T1TEACH')
-    ALTER INDEX [Index_T1TEACH] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_T2TEACH')
-    ALTER INDEX [Index_T2TEACH] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_IDENT')
+    ALTER INDEX [TTTG_Index_IDENT] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_R1ROOM')
+    ALTER INDEX [TTTG_Index_R1ROOM] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_R2ROOM')
+    ALTER INDEX [TTTG_Index_R2ROOM] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_SUBJ')
+    ALTER INDEX [TTTG_Index_SUBJ] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_T1TEACH')
+    ALTER INDEX [TTTG_Index_T1TEACH] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_T2TEACH')
+    ALTER INDEX [TTTG_Index_T2TEACH] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTTG]') AND name = N'TTTG_Index_TID')
+    ALTER INDEX [TTTG_Index_TID] ON [dbo].[TTTG] REBUILD PARTITION = ALL;
 ");
         }
 

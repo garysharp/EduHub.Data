@@ -322,10 +322,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TETELINK_ATTENDEE_TYPE')
-    ALTER INDEX [Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TETN] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'TETN_Index_TETELINK_ATTENDEE_TYPE')
+    ALTER INDEX [TETN_Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'TETN_Index_TID')
+    ALTER INDEX [TETN_Index_TID] ON [dbo].[TETN] DISABLE;
 ");
         }
 
@@ -339,10 +339,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TETELINK_ATTENDEE_TYPE')
-    ALTER INDEX [Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TETN] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'TETN_Index_TETELINK_ATTENDEE_TYPE')
+    ALTER INDEX [TETN_Index_TETELINK_ATTENDEE_TYPE] ON [dbo].[TETN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TETN]') AND name = N'TETN_Index_TID')
+    ALTER INDEX [TETN_Index_TID] ON [dbo].[TETN] REBUILD PARTITION = ALL;
 ");
         }
 

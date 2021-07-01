@@ -386,12 +386,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[RQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_CODE')
-    ALTER INDEX [Index_CODE] ON [dbo].[RQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_ORDER_BY')
-    ALTER INDEX [Index_ORDER_BY] ON [dbo].[RQ] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_APPROVED_BY')
+    ALTER INDEX [RQ_Index_APPROVED_BY] ON [dbo].[RQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_CODE')
+    ALTER INDEX [RQ_Index_CODE] ON [dbo].[RQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_ORDER_BY')
+    ALTER INDEX [RQ_Index_ORDER_BY] ON [dbo].[RQ] DISABLE;
 ");
         }
 
@@ -405,12 +405,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[RQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_CODE')
-    ALTER INDEX [Index_CODE] ON [dbo].[RQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'Index_ORDER_BY')
-    ALTER INDEX [Index_ORDER_BY] ON [dbo].[RQ] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_APPROVED_BY')
+    ALTER INDEX [RQ_Index_APPROVED_BY] ON [dbo].[RQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_CODE')
+    ALTER INDEX [RQ_Index_CODE] ON [dbo].[RQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQ]') AND name = N'RQ_Index_ORDER_BY')
+    ALTER INDEX [RQ_Index_ORDER_BY] ON [dbo].[RQ] REBUILD PARTITION = ALL;
 ");
         }
 

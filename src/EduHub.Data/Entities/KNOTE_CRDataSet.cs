@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[KNOTE_CR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'KNOTE_CR_Index_TID')
+    ALTER INDEX [KNOTE_CR_Index_TID] ON [dbo].[KNOTE_CR] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[KNOTE_CR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KNOTE_CR]') AND name = N'KNOTE_CR_Index_TID')
+    ALTER INDEX [KNOTE_CR_Index_TID] ON [dbo].[KNOTE_CR] REBUILD PARTITION = ALL;
 ");
         }
 

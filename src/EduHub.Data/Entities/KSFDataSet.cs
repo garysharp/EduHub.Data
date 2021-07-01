@@ -258,8 +258,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KSF]') AND name = N'Index_COORDINATOR')
-    ALTER INDEX [Index_COORDINATOR] ON [dbo].[KSF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KSF]') AND name = N'KSF_Index_COORDINATOR')
+    ALTER INDEX [KSF_Index_COORDINATOR] ON [dbo].[KSF] DISABLE;
 ");
         }
 
@@ -273,8 +273,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KSF]') AND name = N'Index_COORDINATOR')
-    ALTER INDEX [Index_COORDINATOR] ON [dbo].[KSF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KSF]') AND name = N'KSF_Index_COORDINATOR')
+    ALTER INDEX [KSF_Index_COORDINATOR] ON [dbo].[KSF] REBUILD PARTITION = ALL;
 ");
         }
 

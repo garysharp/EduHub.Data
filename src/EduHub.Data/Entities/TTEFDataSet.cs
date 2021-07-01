@@ -370,12 +370,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TTEF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[TTEF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTEF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_ROOM')
+    ALTER INDEX [TTEF_Index_ROOM] ON [dbo].[TTEF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_STAFF')
+    ALTER INDEX [TTEF_Index_STAFF] ON [dbo].[TTEF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_TID')
+    ALTER INDEX [TTEF_Index_TID] ON [dbo].[TTEF] DISABLE;
 ");
         }
 
@@ -389,12 +389,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_ROOM')
+    ALTER INDEX [TTEF_Index_ROOM] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_STAFF')
+    ALTER INDEX [TTEF_Index_STAFF] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEF]') AND name = N'TTEF_Index_TID')
+    ALTER INDEX [TTEF_Index_TID] ON [dbo].[TTEF] REBUILD PARTITION = ALL;
 ");
         }
 

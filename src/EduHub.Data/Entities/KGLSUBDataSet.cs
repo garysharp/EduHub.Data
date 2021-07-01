@@ -274,8 +274,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGLSUB]') AND name = N'Index_GL_PROGRAM')
-    ALTER INDEX [Index_GL_PROGRAM] ON [dbo].[KGLSUB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGLSUB]') AND name = N'KGLSUB_Index_GL_PROGRAM')
+    ALTER INDEX [KGLSUB_Index_GL_PROGRAM] ON [dbo].[KGLSUB] DISABLE;
 ");
         }
 
@@ -289,8 +289,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGLSUB]') AND name = N'Index_GL_PROGRAM')
-    ALTER INDEX [Index_GL_PROGRAM] ON [dbo].[KGLSUB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGLSUB]') AND name = N'KGLSUB_Index_GL_PROGRAM')
+    ALTER INDEX [KGLSUB_Index_GL_PROGRAM] ON [dbo].[KGLSUB] REBUILD PARTITION = ALL;
 ");
         }
 

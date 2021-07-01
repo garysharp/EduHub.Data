@@ -338,10 +338,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'Index_REFERENCE_NO')
-    ALTER INDEX [Index_REFERENCE_NO] ON [dbo].[DRB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DRB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'DRB_Index_REFERENCE_NO')
+    ALTER INDEX [DRB_Index_REFERENCE_NO] ON [dbo].[DRB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'DRB_Index_TID')
+    ALTER INDEX [DRB_Index_TID] ON [dbo].[DRB] DISABLE;
 ");
         }
 
@@ -355,10 +355,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'Index_REFERENCE_NO')
-    ALTER INDEX [Index_REFERENCE_NO] ON [dbo].[DRB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DRB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'DRB_Index_REFERENCE_NO')
+    ALTER INDEX [DRB_Index_REFERENCE_NO] ON [dbo].[DRB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRB]') AND name = N'DRB_Index_TID')
+    ALTER INDEX [DRB_Index_TID] ON [dbo].[DRB] REBUILD PARTITION = ALL;
 ");
         }
 

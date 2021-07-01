@@ -278,8 +278,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[FDT_EXP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'FDT_EXP_Index_TID')
+    ALTER INDEX [FDT_EXP_Index_TID] ON [dbo].[FDT_EXP] DISABLE;
 ");
         }
 
@@ -293,8 +293,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[FDT_EXP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[FDT_EXP]') AND name = N'FDT_EXP_Index_TID')
+    ALTER INDEX [FDT_EXP_Index_TID] ON [dbo].[FDT_EXP] REBUILD PARTITION = ALL;
 ");
         }
 

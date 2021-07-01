@@ -622,20 +622,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_PAY_STEP')
-    ALTER INDEX [Index_PAY_STEP] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_PAYITEM')
-    ALTER INDEX [Index_PAYITEM] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_SUPER_FUND')
-    ALTER INDEX [Index_SUPER_FUND] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_TRCENTRE')
-    ALTER INDEX [Index_TRCENTRE] ON [dbo].[PEPS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_INITIATIVE')
+    ALTER INDEX [PEPS_Index_INITIATIVE] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_PAY_STEP')
+    ALTER INDEX [PEPS_Index_PAY_STEP] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_PAYITEM')
+    ALTER INDEX [PEPS_Index_PAYITEM] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_SUBPROGRAM')
+    ALTER INDEX [PEPS_Index_SUBPROGRAM] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_SUPER_FUND')
+    ALTER INDEX [PEPS_Index_SUPER_FUND] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_TID')
+    ALTER INDEX [PEPS_Index_TID] ON [dbo].[PEPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_TRCENTRE')
+    ALTER INDEX [PEPS_Index_TRCENTRE] ON [dbo].[PEPS] DISABLE;
 ");
         }
 
@@ -649,20 +649,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_PAY_STEP')
-    ALTER INDEX [Index_PAY_STEP] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_PAYITEM')
-    ALTER INDEX [Index_PAYITEM] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_SUPER_FUND')
-    ALTER INDEX [Index_SUPER_FUND] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'Index_TRCENTRE')
-    ALTER INDEX [Index_TRCENTRE] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_INITIATIVE')
+    ALTER INDEX [PEPS_Index_INITIATIVE] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_PAY_STEP')
+    ALTER INDEX [PEPS_Index_PAY_STEP] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_PAYITEM')
+    ALTER INDEX [PEPS_Index_PAYITEM] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_SUBPROGRAM')
+    ALTER INDEX [PEPS_Index_SUBPROGRAM] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_SUPER_FUND')
+    ALTER INDEX [PEPS_Index_SUPER_FUND] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_TID')
+    ALTER INDEX [PEPS_Index_TID] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPS]') AND name = N'PEPS_Index_TRCENTRE')
+    ALTER INDEX [PEPS_Index_TRCENTRE] ON [dbo].[PEPS] REBUILD PARTITION = ALL;
 ");
         }
 

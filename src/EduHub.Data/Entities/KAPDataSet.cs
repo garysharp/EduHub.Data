@@ -270,8 +270,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KAP]') AND name = N'Index_PLACE_NAME')
-    ALTER INDEX [Index_PLACE_NAME] ON [dbo].[KAP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KAP]') AND name = N'KAP_Index_PLACE_NAME')
+    ALTER INDEX [KAP_Index_PLACE_NAME] ON [dbo].[KAP] DISABLE;
 ");
         }
 
@@ -285,8 +285,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KAP]') AND name = N'Index_PLACE_NAME')
-    ALTER INDEX [Index_PLACE_NAME] ON [dbo].[KAP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KAP]') AND name = N'KAP_Index_PLACE_NAME')
+    ALTER INDEX [KAP_Index_PLACE_NAME] ON [dbo].[KAP] REBUILD PARTITION = ALL;
 ");
         }
 

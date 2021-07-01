@@ -1102,22 +1102,22 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_DEPARTMENT')
-    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_HOMEKEY')
-    ALTER INDEX [Index_HOMEKEY] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVE_GROUP')
-    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVEKEY')
-    ALTER INDEX [Index_LEAVEKEY] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_PAYCODE')
-    ALTER INDEX [Index_PAYCODE] ON [dbo].[PE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_TAXCODE')
-    ALTER INDEX [Index_TAXCODE] ON [dbo].[PE] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_COUNTRY')
+    ALTER INDEX [PE_Index_COUNTRY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_DEPARTMENT')
+    ALTER INDEX [PE_Index_DEPARTMENT] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_HOMEKEY')
+    ALTER INDEX [PE_Index_HOMEKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_LEAVE_GROUP')
+    ALTER INDEX [PE_Index_LEAVE_GROUP] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_LEAVEKEY')
+    ALTER INDEX [PE_Index_LEAVEKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_MAILKEY')
+    ALTER INDEX [PE_Index_MAILKEY] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_PAYCODE')
+    ALTER INDEX [PE_Index_PAYCODE] ON [dbo].[PE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_TAXCODE')
+    ALTER INDEX [PE_Index_TAXCODE] ON [dbo].[PE] DISABLE;
 ");
         }
 
@@ -1131,22 +1131,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_DEPARTMENT')
-    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_HOMEKEY')
-    ALTER INDEX [Index_HOMEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVE_GROUP')
-    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_LEAVEKEY')
-    ALTER INDEX [Index_LEAVEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_PAYCODE')
-    ALTER INDEX [Index_PAYCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'Index_TAXCODE')
-    ALTER INDEX [Index_TAXCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_COUNTRY')
+    ALTER INDEX [PE_Index_COUNTRY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_DEPARTMENT')
+    ALTER INDEX [PE_Index_DEPARTMENT] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_HOMEKEY')
+    ALTER INDEX [PE_Index_HOMEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_LEAVE_GROUP')
+    ALTER INDEX [PE_Index_LEAVE_GROUP] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_LEAVEKEY')
+    ALTER INDEX [PE_Index_LEAVEKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_MAILKEY')
+    ALTER INDEX [PE_Index_MAILKEY] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_PAYCODE')
+    ALTER INDEX [PE_Index_PAYCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PE]') AND name = N'PE_Index_TAXCODE')
+    ALTER INDEX [PE_Index_TAXCODE] ON [dbo].[PE] REBUILD PARTITION = ALL;
 ");
         }
 

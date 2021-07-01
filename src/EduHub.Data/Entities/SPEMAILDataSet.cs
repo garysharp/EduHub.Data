@@ -290,8 +290,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'Index_REPORT')
-    ALTER INDEX [Index_REPORT] ON [dbo].[SPEMAIL] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'SPEMAIL_Index_REPORT')
+    ALTER INDEX [SPEMAIL_Index_REPORT] ON [dbo].[SPEMAIL] DISABLE;
 ");
         }
 
@@ -305,8 +305,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'Index_REPORT')
-    ALTER INDEX [Index_REPORT] ON [dbo].[SPEMAIL] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMAIL]') AND name = N'SPEMAIL_Index_REPORT')
+    ALTER INDEX [SPEMAIL_Index_REPORT] ON [dbo].[SPEMAIL] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -338,10 +338,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'Index_ABS_TYPE')
-    ALTER INDEX [Index_ABS_TYPE] ON [dbo].[STRA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STRA] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'STRA_Index_ABS_TYPE')
+    ALTER INDEX [STRA_Index_ABS_TYPE] ON [dbo].[STRA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'STRA_Index_TID')
+    ALTER INDEX [STRA_Index_TID] ON [dbo].[STRA] DISABLE;
 ");
         }
 
@@ -355,10 +355,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'Index_ABS_TYPE')
-    ALTER INDEX [Index_ABS_TYPE] ON [dbo].[STRA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STRA] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'STRA_Index_ABS_TYPE')
+    ALTER INDEX [STRA_Index_ABS_TYPE] ON [dbo].[STRA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STRA]') AND name = N'STRA_Index_TID')
+    ALTER INDEX [STRA_Index_TID] ON [dbo].[STRA] REBUILD PARTITION = ALL;
 ");
         }
 

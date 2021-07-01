@@ -562,10 +562,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[CR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'Index_PPDKEY')
-    ALTER INDEX [Index_PPDKEY] ON [dbo].[CR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_BSB')
+    ALTER INDEX [CR_Index_BSB] ON [dbo].[CR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_PPDKEY')
+    ALTER INDEX [CR_Index_PPDKEY] ON [dbo].[CR] DISABLE;
 ");
         }
 
@@ -579,10 +579,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[CR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'Index_PPDKEY')
-    ALTER INDEX [Index_PPDKEY] ON [dbo].[CR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_BSB')
+    ALTER INDEX [CR_Index_BSB] ON [dbo].[CR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_PPDKEY')
+    ALTER INDEX [CR_Index_PPDKEY] ON [dbo].[CR] REBUILD PARTITION = ALL;
 ");
         }
 

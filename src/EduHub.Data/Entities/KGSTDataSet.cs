@@ -278,8 +278,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'Index_GLGST_CODE')
-    ALTER INDEX [Index_GLGST_CODE] ON [dbo].[KGST] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'KGST_Index_GLGST_CODE')
+    ALTER INDEX [KGST_Index_GLGST_CODE] ON [dbo].[KGST] DISABLE;
 ");
         }
 
@@ -293,8 +293,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'Index_GLGST_CODE')
-    ALTER INDEX [Index_GLGST_CODE] ON [dbo].[KGST] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGST]') AND name = N'KGST_Index_GLGST_CODE')
+    ALTER INDEX [KGST_Index_GLGST_CODE] ON [dbo].[KGST] REBUILD PARTITION = ALL;
 ");
         }
 

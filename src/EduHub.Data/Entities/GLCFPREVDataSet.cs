@@ -690,16 +690,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLCFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLCFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLCFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLCFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLCFPREV] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_GST_TYPE')
+    ALTER INDEX [GLCFPREV_Index_GST_TYPE] ON [dbo].[GLCFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_INITIATIVE')
+    ALTER INDEX [GLCFPREV_Index_INITIATIVE] ON [dbo].[GLCFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_SUBPROGRAM')
+    ALTER INDEX [GLCFPREV_Index_SUBPROGRAM] ON [dbo].[GLCFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_TID')
+    ALTER INDEX [GLCFPREV_Index_TID] ON [dbo].[GLCFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_TRREF')
+    ALTER INDEX [GLCFPREV_Index_TRREF] ON [dbo].[GLCFPREV] DISABLE;
 ");
         }
 
@@ -713,16 +713,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_GST_TYPE')
+    ALTER INDEX [GLCFPREV_Index_GST_TYPE] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_INITIATIVE')
+    ALTER INDEX [GLCFPREV_Index_INITIATIVE] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_SUBPROGRAM')
+    ALTER INDEX [GLCFPREV_Index_SUBPROGRAM] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_TID')
+    ALTER INDEX [GLCFPREV_Index_TID] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCFPREV]') AND name = N'GLCFPREV_Index_TRREF')
+    ALTER INDEX [GLCFPREV_Index_TRREF] ON [dbo].[GLCFPREV] REBUILD PARTITION = ALL;
 ");
         }
 

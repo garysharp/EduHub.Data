@@ -350,10 +350,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[PEPM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPM] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'PEPM_Index_BSB')
+    ALTER INDEX [PEPM_Index_BSB] ON [dbo].[PEPM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'PEPM_Index_TID')
+    ALTER INDEX [PEPM_Index_TID] ON [dbo].[PEPM] DISABLE;
 ");
         }
 
@@ -367,10 +367,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'PEPM_Index_BSB')
+    ALTER INDEX [PEPM_Index_BSB] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPM]') AND name = N'PEPM_Index_TID')
+    ALTER INDEX [PEPM_Index_TID] ON [dbo].[PEPM] REBUILD PARTITION = ALL;
 ");
         }
 

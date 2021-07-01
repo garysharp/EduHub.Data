@@ -317,10 +317,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_ACCIDENTID_PREVENTION')
-    ALTER INDEX [Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SADP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'SADP_Index_ACCIDENTID_PREVENTION')
+    ALTER INDEX [SADP_Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'SADP_Index_TID')
+    ALTER INDEX [SADP_Index_TID] ON [dbo].[SADP] DISABLE;
 ");
         }
 
@@ -334,10 +334,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_ACCIDENTID_PREVENTION')
-    ALTER INDEX [Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SADP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'SADP_Index_ACCIDENTID_PREVENTION')
+    ALTER INDEX [SADP_Index_ACCIDENTID_PREVENTION] ON [dbo].[SADP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SADP]') AND name = N'SADP_Index_TID')
+    ALTER INDEX [SADP_Index_TID] ON [dbo].[SADP] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -354,10 +354,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KCPC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[KCPC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'KCPC_Index_CAMPUS')
+    ALTER INDEX [KCPC_Index_CAMPUS] ON [dbo].[KCPC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'KCPC_Index_STAFF')
+    ALTER INDEX [KCPC_Index_STAFF] ON [dbo].[KCPC] DISABLE;
 ");
         }
 
@@ -371,10 +371,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KCPC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[KCPC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'KCPC_Index_CAMPUS')
+    ALTER INDEX [KCPC_Index_CAMPUS] ON [dbo].[KCPC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCPC]') AND name = N'KCPC_Index_STAFF')
+    ALTER INDEX [KCPC_Index_STAFF] ON [dbo].[KCPC] REBUILD PARTITION = ALL;
 ");
         }
 

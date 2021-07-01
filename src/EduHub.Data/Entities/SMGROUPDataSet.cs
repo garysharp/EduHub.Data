@@ -361,12 +361,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_GROUPKEY_ROOM')
-    ALTER INDEX [Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[SMGROUP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SMGROUP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_GROUPKEY_ROOM')
+    ALTER INDEX [SMGROUP_Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_ROOM')
+    ALTER INDEX [SMGROUP_Index_ROOM] ON [dbo].[SMGROUP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_TID')
+    ALTER INDEX [SMGROUP_Index_TID] ON [dbo].[SMGROUP] DISABLE;
 ");
         }
 
@@ -380,12 +380,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]')
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_GROUPKEY_ROOM')
-    ALTER INDEX [Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_GROUPKEY_ROOM')
+    ALTER INDEX [SMGROUP_Index_GROUPKEY_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_ROOM')
+    ALTER INDEX [SMGROUP_Index_ROOM] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMGROUP]') AND name = N'SMGROUP_Index_TID')
+    ALTER INDEX [SMGROUP_Index_TID] ON [dbo].[SMGROUP] REBUILD PARTITION = ALL;
 ");
         }
 

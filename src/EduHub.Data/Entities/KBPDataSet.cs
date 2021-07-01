@@ -290,8 +290,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KBP]') AND name = N'Index_REFERENCE_NO')
-    ALTER INDEX [Index_REFERENCE_NO] ON [dbo].[KBP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KBP]') AND name = N'KBP_Index_REFERENCE_NO')
+    ALTER INDEX [KBP_Index_REFERENCE_NO] ON [dbo].[KBP] DISABLE;
 ");
         }
 
@@ -305,8 +305,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KBP]') AND name = N'Index_REFERENCE_NO')
-    ALTER INDEX [Index_REFERENCE_NO] ON [dbo].[KBP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KBP]') AND name = N'KBP_Index_REFERENCE_NO')
+    ALTER INDEX [KBP_Index_REFERENCE_NO] ON [dbo].[KBP] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -518,8 +518,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGH] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'KGH_Index_CAMPUS')
+    ALTER INDEX [KGH_Index_CAMPUS] ON [dbo].[KGH] DISABLE;
 ");
         }
 
@@ -533,8 +533,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGH] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGH]') AND name = N'KGH_Index_CAMPUS')
+    ALTER INDEX [KGH_Index_CAMPUS] ON [dbo].[KGH] REBUILD PARTITION = ALL;
 ");
         }
 

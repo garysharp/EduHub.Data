@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBUDG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFBUDG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBUDG]') AND name = N'GLFBUDG_Index_TID')
+    ALTER INDEX [GLFBUDG_Index_TID] ON [dbo].[GLFBUDG] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBUDG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFBUDG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBUDG]') AND name = N'GLFBUDG_Index_TID')
+    ALTER INDEX [GLFBUDG_Index_TID] ON [dbo].[GLFBUDG] REBUILD PARTITION = ALL;
 ");
         }
 

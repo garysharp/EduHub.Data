@@ -418,12 +418,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_AREA_DUTY_TEACHER')
-    ALTER INDEX [Index_AREA_DUTY_TEACHER] ON [dbo].[SAD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SAD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[SAD] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_AREA_DUTY_TEACHER')
+    ALTER INDEX [SAD_Index_AREA_DUTY_TEACHER] ON [dbo].[SAD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_CAMPUS')
+    ALTER INDEX [SAD_Index_CAMPUS] ON [dbo].[SAD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_ROOM')
+    ALTER INDEX [SAD_Index_ROOM] ON [dbo].[SAD] DISABLE;
 ");
         }
 
@@ -437,12 +437,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_AREA_DUTY_TEACHER')
-    ALTER INDEX [Index_AREA_DUTY_TEACHER] ON [dbo].[SAD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SAD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[SAD] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_AREA_DUTY_TEACHER')
+    ALTER INDEX [SAD_Index_AREA_DUTY_TEACHER] ON [dbo].[SAD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_CAMPUS')
+    ALTER INDEX [SAD_Index_CAMPUS] ON [dbo].[SAD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAD]') AND name = N'SAD_Index_ROOM')
+    ALTER INDEX [SAD_Index_ROOM] ON [dbo].[SAD] REBUILD PARTITION = ALL;
 ");
         }
 

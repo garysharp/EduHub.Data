@@ -498,16 +498,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[TXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_SCL_LINK')
-    ALTER INDEX [Index_SCL_LINK] ON [dbo].[TXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_SUBJECT')
-    ALTER INDEX [Index_SUBJECT] ON [dbo].[TXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[TXAS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_LOCATION')
+    ALTER INDEX [TXAS_Index_LOCATION] ON [dbo].[TXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_LW_DATE')
+    ALTER INDEX [TXAS_Index_LW_DATE] ON [dbo].[TXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_SCL_LINK')
+    ALTER INDEX [TXAS_Index_SCL_LINK] ON [dbo].[TXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_SUBJECT')
+    ALTER INDEX [TXAS_Index_SUBJECT] ON [dbo].[TXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_TEACHER')
+    ALTER INDEX [TXAS_Index_TEACHER] ON [dbo].[TXAS] DISABLE;
 ");
         }
 
@@ -521,16 +521,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_SCL_LINK')
-    ALTER INDEX [Index_SCL_LINK] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_SUBJECT')
-    ALTER INDEX [Index_SUBJECT] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_LOCATION')
+    ALTER INDEX [TXAS_Index_LOCATION] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_LW_DATE')
+    ALTER INDEX [TXAS_Index_LW_DATE] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_SCL_LINK')
+    ALTER INDEX [TXAS_Index_SCL_LINK] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_SUBJECT')
+    ALTER INDEX [TXAS_Index_SUBJECT] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXAS]') AND name = N'TXAS_Index_TEACHER')
+    ALTER INDEX [TXAS_Index_TEACHER] ON [dbo].[TXAS] REBUILD PARTITION = ALL;
 ");
         }
 

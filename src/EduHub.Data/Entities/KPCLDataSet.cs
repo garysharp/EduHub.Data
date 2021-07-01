@@ -318,10 +318,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT')
-    ALTER INDEX [Index_CONTACT] ON [dbo].[KPCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT_TYPE')
-    ALTER INDEX [Index_CONTACT_TYPE] ON [dbo].[KPCL] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'KPCL_Index_CONTACT')
+    ALTER INDEX [KPCL_Index_CONTACT] ON [dbo].[KPCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'KPCL_Index_CONTACT_TYPE')
+    ALTER INDEX [KPCL_Index_CONTACT_TYPE] ON [dbo].[KPCL] DISABLE;
 ");
         }
 
@@ -335,10 +335,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT')
-    ALTER INDEX [Index_CONTACT] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'Index_CONTACT_TYPE')
-    ALTER INDEX [Index_CONTACT_TYPE] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'KPCL_Index_CONTACT')
+    ALTER INDEX [KPCL_Index_CONTACT] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KPCL]') AND name = N'KPCL_Index_CONTACT_TYPE')
+    ALTER INDEX [KPCL_Index_CONTACT_TYPE] ON [dbo].[KPCL] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -310,8 +310,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPEPRINT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'SPEPRINT_Index_TID')
+    ALTER INDEX [SPEPRINT_Index_TID] ON [dbo].[SPEPRINT] DISABLE;
 ");
         }
 
@@ -325,8 +325,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPEPRINT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEPRINT]') AND name = N'SPEPRINT_Index_TID')
+    ALTER INDEX [SPEPRINT_Index_TID] ON [dbo].[SPEPRINT] REBUILD PARTITION = ALL;
 ");
         }
 

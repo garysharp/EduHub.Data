@@ -2080,11 +2080,11 @@
     <None Include="CASES21 Schema.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Entities\EntityGenerator.txt">
+    <None Include="Entities\EntityGenerator.txt">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityGenerator.tt</DependentUpon>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

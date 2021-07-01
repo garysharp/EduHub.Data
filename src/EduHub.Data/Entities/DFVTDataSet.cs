@@ -362,10 +362,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[DFVT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DFVT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'DFVT_Index_GST_TYPE')
+    ALTER INDEX [DFVT_Index_GST_TYPE] ON [dbo].[DFVT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'DFVT_Index_TID')
+    ALTER INDEX [DFVT_Index_TID] ON [dbo].[DFVT] DISABLE;
 ");
         }
 
@@ -379,10 +379,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[DFVT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DFVT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'DFVT_Index_GST_TYPE')
+    ALTER INDEX [DFVT_Index_GST_TYPE] ON [dbo].[DFVT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DFVT]') AND name = N'DFVT_Index_TID')
+    ALTER INDEX [DFVT_Index_TID] ON [dbo].[DFVT] REBUILD PARTITION = ALL;
 ");
         }
 

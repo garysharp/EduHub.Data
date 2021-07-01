@@ -370,12 +370,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_ACTION_TAKEN')
-    ALTER INDEX [Index_ACTION_TAKEN] ON [dbo].[SDPA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_TAKEN_BY')
-    ALTER INDEX [Index_TAKEN_BY] ON [dbo].[SDPA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SDPA] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_ACTION_TAKEN')
+    ALTER INDEX [SDPA_Index_ACTION_TAKEN] ON [dbo].[SDPA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_TAKEN_BY')
+    ALTER INDEX [SDPA_Index_TAKEN_BY] ON [dbo].[SDPA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_TID')
+    ALTER INDEX [SDPA_Index_TID] ON [dbo].[SDPA] DISABLE;
 ");
         }
 
@@ -389,12 +389,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_ACTION_TAKEN')
-    ALTER INDEX [Index_ACTION_TAKEN] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_TAKEN_BY')
-    ALTER INDEX [Index_TAKEN_BY] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_ACTION_TAKEN')
+    ALTER INDEX [SDPA_Index_ACTION_TAKEN] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_TAKEN_BY')
+    ALTER INDEX [SDPA_Index_TAKEN_BY] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDPA]') AND name = N'SDPA_Index_TID')
+    ALTER INDEX [SDPA_Index_TID] ON [dbo].[SDPA] REBUILD PARTITION = ALL;
 ");
         }
 

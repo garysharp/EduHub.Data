@@ -358,10 +358,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[UM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[UM] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'UM_Index_COUNTRY')
+    ALTER INDEX [UM_Index_COUNTRY] ON [dbo].[UM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'UM_Index_LW_DATE')
+    ALTER INDEX [UM_Index_LW_DATE] ON [dbo].[UM] DISABLE;
 ");
         }
 
@@ -375,10 +375,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[UM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[UM] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'UM_Index_COUNTRY')
+    ALTER INDEX [UM_Index_COUNTRY] ON [dbo].[UM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND name = N'UM_Index_LW_DATE')
+    ALTER INDEX [UM_Index_LW_DATE] ON [dbo].[UM] REBUILD PARTITION = ALL;
 ");
         }
 

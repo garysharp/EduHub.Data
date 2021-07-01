@@ -1821,48 +1821,48 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BILLINGKEY')
-    ALTER INDEX [Index_BILLINGKEY] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BIRTH_COUNTRY_A')
-    ALTER INDEX [Index_BIRTH_COUNTRY_A] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BIRTH_COUNTRY_B')
-    ALTER INDEX [Index_BIRTH_COUNTRY_B] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BPAY_REFERENCE')
-    ALTER INDEX [Index_BPAY_REFERENCE] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_DOCTOR')
-    ALTER INDEX [Index_DOCTOR] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG01')
-    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG02')
-    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG03')
-    ALTER INDEX [Index_EMERG_LANG03] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG04')
-    ALTER INDEX [Index_EMERG_LANG04] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_HOMEKEY')
-    ALTER INDEX [Index_HOMEKEY] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LOTE_HOME_CODE_A')
-    ALTER INDEX [Index_LOTE_HOME_CODE_A] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LOTE_HOME_CODE_B')
-    ALTER INDEX [Index_LOTE_HOME_CODE_B] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE')
-    ALTER INDEX [Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NATIVE_LANG_A')
-    ALTER INDEX [Index_NATIVE_LANG_A] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NATIVE_LANG_B')
-    ALTER INDEX [Index_NATIVE_LANG_B] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_OTHER_LANG_A')
-    ALTER INDEX [Index_OTHER_LANG_A] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_OTHER_LANG_B')
-    ALTER INDEX [Index_OTHER_LANG_B] ON [dbo].[DF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_PREF_NOTICE_LANG')
-    ALTER INDEX [Index_PREF_NOTICE_LANG] ON [dbo].[DF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BILLINGKEY')
+    ALTER INDEX [DF_Index_BILLINGKEY] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BIRTH_COUNTRY_A')
+    ALTER INDEX [DF_Index_BIRTH_COUNTRY_A] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BIRTH_COUNTRY_B')
+    ALTER INDEX [DF_Index_BIRTH_COUNTRY_B] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BPAY_REFERENCE')
+    ALTER INDEX [DF_Index_BPAY_REFERENCE] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_DOCTOR')
+    ALTER INDEX [DF_Index_DOCTOR] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG01')
+    ALTER INDEX [DF_Index_EMERG_LANG01] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG02')
+    ALTER INDEX [DF_Index_EMERG_LANG02] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG03')
+    ALTER INDEX [DF_Index_EMERG_LANG03] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG04')
+    ALTER INDEX [DF_Index_EMERG_LANG04] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_HOME_LANG')
+    ALTER INDEX [DF_Index_HOME_LANG] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_HOMEKEY')
+    ALTER INDEX [DF_Index_HOMEKEY] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LOTE_HOME_CODE_A')
+    ALTER INDEX [DF_Index_LOTE_HOME_CODE_A] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LOTE_HOME_CODE_B')
+    ALTER INDEX [DF_Index_LOTE_HOME_CODE_B] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LW_DATE')
+    ALTER INDEX [DF_Index_LW_DATE] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_MAILKEY')
+    ALTER INDEX [DF_Index_MAILKEY] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE')
+    ALTER INDEX [DF_Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NATIVE_LANG_A')
+    ALTER INDEX [DF_Index_NATIVE_LANG_A] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NATIVE_LANG_B')
+    ALTER INDEX [DF_Index_NATIVE_LANG_B] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_OTHER_LANG_A')
+    ALTER INDEX [DF_Index_OTHER_LANG_A] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_OTHER_LANG_B')
+    ALTER INDEX [DF_Index_OTHER_LANG_B] ON [dbo].[DF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_PREF_NOTICE_LANG')
+    ALTER INDEX [DF_Index_PREF_NOTICE_LANG] ON [dbo].[DF] DISABLE;
 ");
         }
 
@@ -1876,48 +1876,48 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BILLINGKEY')
-    ALTER INDEX [Index_BILLINGKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BIRTH_COUNTRY_A')
-    ALTER INDEX [Index_BIRTH_COUNTRY_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BIRTH_COUNTRY_B')
-    ALTER INDEX [Index_BIRTH_COUNTRY_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_BPAY_REFERENCE')
-    ALTER INDEX [Index_BPAY_REFERENCE] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_DOCTOR')
-    ALTER INDEX [Index_DOCTOR] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG01')
-    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG02')
-    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG03')
-    ALTER INDEX [Index_EMERG_LANG03] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_EMERG_LANG04')
-    ALTER INDEX [Index_EMERG_LANG04] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_HOMEKEY')
-    ALTER INDEX [Index_HOMEKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LOTE_HOME_CODE_A')
-    ALTER INDEX [Index_LOTE_HOME_CODE_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LOTE_HOME_CODE_B')
-    ALTER INDEX [Index_LOTE_HOME_CODE_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE')
-    ALTER INDEX [Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NATIVE_LANG_A')
-    ALTER INDEX [Index_NATIVE_LANG_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_NATIVE_LANG_B')
-    ALTER INDEX [Index_NATIVE_LANG_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_OTHER_LANG_A')
-    ALTER INDEX [Index_OTHER_LANG_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_OTHER_LANG_B')
-    ALTER INDEX [Index_OTHER_LANG_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'Index_PREF_NOTICE_LANG')
-    ALTER INDEX [Index_PREF_NOTICE_LANG] ON [dbo].[DF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BILLINGKEY')
+    ALTER INDEX [DF_Index_BILLINGKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BIRTH_COUNTRY_A')
+    ALTER INDEX [DF_Index_BIRTH_COUNTRY_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BIRTH_COUNTRY_B')
+    ALTER INDEX [DF_Index_BIRTH_COUNTRY_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_BPAY_REFERENCE')
+    ALTER INDEX [DF_Index_BPAY_REFERENCE] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_DOCTOR')
+    ALTER INDEX [DF_Index_DOCTOR] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG01')
+    ALTER INDEX [DF_Index_EMERG_LANG01] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG02')
+    ALTER INDEX [DF_Index_EMERG_LANG02] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG03')
+    ALTER INDEX [DF_Index_EMERG_LANG03] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_EMERG_LANG04')
+    ALTER INDEX [DF_Index_EMERG_LANG04] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_HOME_LANG')
+    ALTER INDEX [DF_Index_HOME_LANG] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_HOMEKEY')
+    ALTER INDEX [DF_Index_HOMEKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LOTE_HOME_CODE_A')
+    ALTER INDEX [DF_Index_LOTE_HOME_CODE_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LOTE_HOME_CODE_B')
+    ALTER INDEX [DF_Index_LOTE_HOME_CODE_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_LW_DATE')
+    ALTER INDEX [DF_Index_LW_DATE] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_MAILKEY')
+    ALTER INDEX [DF_Index_MAILKEY] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE')
+    ALTER INDEX [DF_Index_NAME_A_SURNAME_A_NAME_B_SURNAME_B_BPAY_SEQUENCE] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NATIVE_LANG_A')
+    ALTER INDEX [DF_Index_NATIVE_LANG_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_NATIVE_LANG_B')
+    ALTER INDEX [DF_Index_NATIVE_LANG_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_OTHER_LANG_A')
+    ALTER INDEX [DF_Index_OTHER_LANG_A] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_OTHER_LANG_B')
+    ALTER INDEX [DF_Index_OTHER_LANG_B] ON [dbo].[DF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND name = N'DF_Index_PREF_NOTICE_LANG')
+    ALTER INDEX [DF_Index_PREF_NOTICE_LANG] ON [dbo].[DF] REBUILD PARTITION = ALL;
 ");
         }
 

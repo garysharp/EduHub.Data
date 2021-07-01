@@ -489,12 +489,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP')
-    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PLT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_CODE')
+    ALTER INDEX [PLT_Index_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_GROUP')
+    ALTER INDEX [PLT_Index_LEAVE_GROUP] ON [dbo].[PLT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_GROUP_LEAVE_CODE')
+    ALTER INDEX [PLT_Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] DISABLE;
 ");
         }
 
@@ -508,12 +508,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP')
-    ALTER INDEX [Index_LEAVE_GROUP] ON [dbo].[PLT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'Index_LEAVE_GROUP_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_CODE')
+    ALTER INDEX [PLT_Index_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_GROUP')
+    ALTER INDEX [PLT_Index_LEAVE_GROUP] ON [dbo].[PLT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PLT]') AND name = N'PLT_Index_LEAVE_GROUP_LEAVE_CODE')
+    ALTER INDEX [PLT_Index_LEAVE_GROUP_LEAVE_CODE] ON [dbo].[PLT] REBUILD PARTITION = ALL;
 ");
         }
 

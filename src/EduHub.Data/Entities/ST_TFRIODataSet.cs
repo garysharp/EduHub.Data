@@ -357,10 +357,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_ST_TRANS_ID')
-    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ST_TFRIO] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'ST_TFRIO_Index_ST_TRANS_ID')
+    ALTER INDEX [ST_TFRIO_Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'ST_TFRIO_Index_TID')
+    ALTER INDEX [ST_TFRIO_Index_TID] ON [dbo].[ST_TFRIO] DISABLE;
 ");
         }
 
@@ -374,10 +374,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_ST_TRANS_ID')
-    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'ST_TFRIO_Index_ST_TRANS_ID')
+    ALTER INDEX [ST_TFRIO_Index_ST_TRANS_ID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFRIO]') AND name = N'ST_TFRIO_Index_TID')
+    ALTER INDEX [ST_TFRIO_Index_TID] ON [dbo].[ST_TFRIO] REBUILD PARTITION = ALL;
 ");
         }
 

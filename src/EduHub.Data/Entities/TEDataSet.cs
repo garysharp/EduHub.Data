@@ -678,22 +678,22 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_CATEGORY')
-    ALTER INDEX [Index_CATEGORY] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_END_FORM')
-    ALTER INDEX [Index_END_FORM] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_END_YEAR')
-    ALTER INDEX [Index_END_YEAR] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_START_FORM')
-    ALTER INDEX [Index_START_FORM] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_START_YEAR')
-    ALTER INDEX [Index_START_YEAR] ON [dbo].[TE] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TE] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_CAMPUS')
+    ALTER INDEX [TE_Index_CAMPUS] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_CATEGORY')
+    ALTER INDEX [TE_Index_CATEGORY] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_END_FORM')
+    ALTER INDEX [TE_Index_END_FORM] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_END_YEAR')
+    ALTER INDEX [TE_Index_END_YEAR] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_LOCATION')
+    ALTER INDEX [TE_Index_LOCATION] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_START_FORM')
+    ALTER INDEX [TE_Index_START_FORM] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_START_YEAR')
+    ALTER INDEX [TE_Index_START_YEAR] ON [dbo].[TE] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_SUBJ')
+    ALTER INDEX [TE_Index_SUBJ] ON [dbo].[TE] DISABLE;
 ");
         }
 
@@ -707,22 +707,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_CATEGORY')
-    ALTER INDEX [Index_CATEGORY] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_END_FORM')
-    ALTER INDEX [Index_END_FORM] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_END_YEAR')
-    ALTER INDEX [Index_END_YEAR] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_START_FORM')
-    ALTER INDEX [Index_START_FORM] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_START_YEAR')
-    ALTER INDEX [Index_START_YEAR] ON [dbo].[TE] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TE] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_CAMPUS')
+    ALTER INDEX [TE_Index_CAMPUS] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_CATEGORY')
+    ALTER INDEX [TE_Index_CATEGORY] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_END_FORM')
+    ALTER INDEX [TE_Index_END_FORM] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_END_YEAR')
+    ALTER INDEX [TE_Index_END_YEAR] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_LOCATION')
+    ALTER INDEX [TE_Index_LOCATION] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_START_FORM')
+    ALTER INDEX [TE_Index_START_FORM] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_START_YEAR')
+    ALTER INDEX [TE_Index_START_YEAR] ON [dbo].[TE] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TE]') AND name = N'TE_Index_SUBJ')
+    ALTER INDEX [TE_Index_SUBJ] ON [dbo].[TE] REBUILD PARTITION = ALL;
 ");
         }
 

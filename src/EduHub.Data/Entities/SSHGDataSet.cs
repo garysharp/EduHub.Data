@@ -514,18 +514,18 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_HOMEGROUP')
-    ALTER INDEX [Index_HOMEGROUP] ON [dbo].[SSHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SSHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[SSHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[SSHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TEACHING_HG')
-    ALTER INDEX [Index_TEACHING_HG] ON [dbo].[SSHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SSHG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_HOMEGROUP')
+    ALTER INDEX [SSHG_Index_HOMEGROUP] ON [dbo].[SSHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_LW_DATE')
+    ALTER INDEX [SSHG_Index_LW_DATE] ON [dbo].[SSHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_STUDENT')
+    ALTER INDEX [SSHG_Index_STUDENT] ON [dbo].[SSHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TEACHER')
+    ALTER INDEX [SSHG_Index_TEACHER] ON [dbo].[SSHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TEACHING_HG')
+    ALTER INDEX [SSHG_Index_TEACHING_HG] ON [dbo].[SSHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TID')
+    ALTER INDEX [SSHG_Index_TID] ON [dbo].[SSHG] DISABLE;
 ");
         }
 
@@ -539,18 +539,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_HOMEGROUP')
-    ALTER INDEX [Index_HOMEGROUP] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TEACHING_HG')
-    ALTER INDEX [Index_TEACHING_HG] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_HOMEGROUP')
+    ALTER INDEX [SSHG_Index_HOMEGROUP] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_LW_DATE')
+    ALTER INDEX [SSHG_Index_LW_DATE] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_STUDENT')
+    ALTER INDEX [SSHG_Index_STUDENT] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TEACHER')
+    ALTER INDEX [SSHG_Index_TEACHER] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TEACHING_HG')
+    ALTER INDEX [SSHG_Index_TEACHING_HG] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SSHG]') AND name = N'SSHG_Index_TID')
+    ALTER INDEX [SSHG_Index_TID] ON [dbo].[SSHG] REBUILD PARTITION = ALL;
 ");
         }
 

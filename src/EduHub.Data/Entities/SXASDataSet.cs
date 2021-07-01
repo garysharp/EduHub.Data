@@ -542,18 +542,18 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ACT_ABS_TYPE')
-    ALTER INDEX [Index_ACT_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_EXP_ABS_TYPE')
-    ALTER INDEX [Index_EXP_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ST_YEAR_LEVEL')
-    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_STKEY')
-    ALTER INDEX [Index_STKEY] ON [dbo].[SXAS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_TXAS_ID')
-    ALTER INDEX [Index_TXAS_ID] ON [dbo].[SXAS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_ACT_ABS_TYPE')
+    ALTER INDEX [SXAS_Index_ACT_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_EXP_ABS_TYPE')
+    ALTER INDEX [SXAS_Index_EXP_ABS_TYPE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_LW_DATE')
+    ALTER INDEX [SXAS_Index_LW_DATE] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_ST_YEAR_LEVEL')
+    ALTER INDEX [SXAS_Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_STKEY')
+    ALTER INDEX [SXAS_Index_STKEY] ON [dbo].[SXAS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_TXAS_ID')
+    ALTER INDEX [SXAS_Index_TXAS_ID] ON [dbo].[SXAS] DISABLE;
 ");
         }
 
@@ -567,18 +567,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ACT_ABS_TYPE')
-    ALTER INDEX [Index_ACT_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_EXP_ABS_TYPE')
-    ALTER INDEX [Index_EXP_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_ST_YEAR_LEVEL')
-    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_STKEY')
-    ALTER INDEX [Index_STKEY] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'Index_TXAS_ID')
-    ALTER INDEX [Index_TXAS_ID] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_ACT_ABS_TYPE')
+    ALTER INDEX [SXAS_Index_ACT_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_EXP_ABS_TYPE')
+    ALTER INDEX [SXAS_Index_EXP_ABS_TYPE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_LW_DATE')
+    ALTER INDEX [SXAS_Index_LW_DATE] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_ST_YEAR_LEVEL')
+    ALTER INDEX [SXAS_Index_ST_YEAR_LEVEL] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_STKEY')
+    ALTER INDEX [SXAS_Index_STKEY] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAS]') AND name = N'SXAS_Index_TXAS_ID')
+    ALTER INDEX [SXAS_Index_TXAS_ID] ON [dbo].[SXAS] REBUILD PARTITION = ALL;
 ");
         }
 

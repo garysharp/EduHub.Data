@@ -290,8 +290,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCD]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[KCD] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCD]') AND name = N'KCD_Index_LW_DATE')
+    ALTER INDEX [KCD_Index_LW_DATE] ON [dbo].[KCD] DISABLE;
 ");
         }
 
@@ -305,8 +305,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCD]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[KCD] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCD]') AND name = N'KCD_Index_LW_DATE')
+    ALTER INDEX [KCD_Index_LW_DATE] ON [dbo].[KCD] REBUILD PARTITION = ALL;
 ");
         }
 

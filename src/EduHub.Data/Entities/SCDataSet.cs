@@ -1462,48 +1462,48 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ01')
-    ALTER INDEX [Index_SUBJ01] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ02')
-    ALTER INDEX [Index_SUBJ02] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ03')
-    ALTER INDEX [Index_SUBJ03] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ04')
-    ALTER INDEX [Index_SUBJ04] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ05')
-    ALTER INDEX [Index_SUBJ05] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ06')
-    ALTER INDEX [Index_SUBJ06] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ07')
-    ALTER INDEX [Index_SUBJ07] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ08')
-    ALTER INDEX [Index_SUBJ08] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ09')
-    ALTER INDEX [Index_SUBJ09] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ10')
-    ALTER INDEX [Index_SUBJ10] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ11')
-    ALTER INDEX [Index_SUBJ11] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ12')
-    ALTER INDEX [Index_SUBJ12] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ13')
-    ALTER INDEX [Index_SUBJ13] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ14')
-    ALTER INDEX [Index_SUBJ14] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ15')
-    ALTER INDEX [Index_SUBJ15] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ16')
-    ALTER INDEX [Index_SUBJ16] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ17')
-    ALTER INDEX [Index_SUBJ17] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ18')
-    ALTER INDEX [Index_SUBJ18] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ19')
-    ALTER INDEX [Index_SUBJ19] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ20')
-    ALTER INDEX [Index_SUBJ20] ON [dbo].[SC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
-    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ01')
+    ALTER INDEX [SC_Index_SUBJ01] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ02')
+    ALTER INDEX [SC_Index_SUBJ02] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ03')
+    ALTER INDEX [SC_Index_SUBJ03] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ04')
+    ALTER INDEX [SC_Index_SUBJ04] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ05')
+    ALTER INDEX [SC_Index_SUBJ05] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ06')
+    ALTER INDEX [SC_Index_SUBJ06] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ07')
+    ALTER INDEX [SC_Index_SUBJ07] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ08')
+    ALTER INDEX [SC_Index_SUBJ08] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ09')
+    ALTER INDEX [SC_Index_SUBJ09] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ10')
+    ALTER INDEX [SC_Index_SUBJ10] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ11')
+    ALTER INDEX [SC_Index_SUBJ11] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ12')
+    ALTER INDEX [SC_Index_SUBJ12] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ13')
+    ALTER INDEX [SC_Index_SUBJ13] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ14')
+    ALTER INDEX [SC_Index_SUBJ14] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ15')
+    ALTER INDEX [SC_Index_SUBJ15] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ16')
+    ALTER INDEX [SC_Index_SUBJ16] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ17')
+    ALTER INDEX [SC_Index_SUBJ17] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ18')
+    ALTER INDEX [SC_Index_SUBJ18] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ19')
+    ALTER INDEX [SC_Index_SUBJ19] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ20')
+    ALTER INDEX [SC_Index_SUBJ20] ON [dbo].[SC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [SC_Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SC] DISABLE;
 ");
         }
 
@@ -1517,48 +1517,48 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ01')
-    ALTER INDEX [Index_SUBJ01] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ02')
-    ALTER INDEX [Index_SUBJ02] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ03')
-    ALTER INDEX [Index_SUBJ03] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ04')
-    ALTER INDEX [Index_SUBJ04] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ05')
-    ALTER INDEX [Index_SUBJ05] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ06')
-    ALTER INDEX [Index_SUBJ06] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ07')
-    ALTER INDEX [Index_SUBJ07] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ08')
-    ALTER INDEX [Index_SUBJ08] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ09')
-    ALTER INDEX [Index_SUBJ09] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ10')
-    ALTER INDEX [Index_SUBJ10] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ11')
-    ALTER INDEX [Index_SUBJ11] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ12')
-    ALTER INDEX [Index_SUBJ12] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ13')
-    ALTER INDEX [Index_SUBJ13] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ14')
-    ALTER INDEX [Index_SUBJ14] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ15')
-    ALTER INDEX [Index_SUBJ15] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ16')
-    ALTER INDEX [Index_SUBJ16] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ17')
-    ALTER INDEX [Index_SUBJ17] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ18')
-    ALTER INDEX [Index_SUBJ18] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ19')
-    ALTER INDEX [Index_SUBJ19] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJ20')
-    ALTER INDEX [Index_SUBJ20] ON [dbo].[SC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
-    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ01')
+    ALTER INDEX [SC_Index_SUBJ01] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ02')
+    ALTER INDEX [SC_Index_SUBJ02] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ03')
+    ALTER INDEX [SC_Index_SUBJ03] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ04')
+    ALTER INDEX [SC_Index_SUBJ04] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ05')
+    ALTER INDEX [SC_Index_SUBJ05] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ06')
+    ALTER INDEX [SC_Index_SUBJ06] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ07')
+    ALTER INDEX [SC_Index_SUBJ07] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ08')
+    ALTER INDEX [SC_Index_SUBJ08] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ09')
+    ALTER INDEX [SC_Index_SUBJ09] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ10')
+    ALTER INDEX [SC_Index_SUBJ10] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ11')
+    ALTER INDEX [SC_Index_SUBJ11] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ12')
+    ALTER INDEX [SC_Index_SUBJ12] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ13')
+    ALTER INDEX [SC_Index_SUBJ13] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ14')
+    ALTER INDEX [SC_Index_SUBJ14] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ15')
+    ALTER INDEX [SC_Index_SUBJ15] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ16')
+    ALTER INDEX [SC_Index_SUBJ16] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ17')
+    ALTER INDEX [SC_Index_SUBJ17] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ18')
+    ALTER INDEX [SC_Index_SUBJ18] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ19')
+    ALTER INDEX [SC_Index_SUBJ19] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJ20')
+    ALTER INDEX [SC_Index_SUBJ20] ON [dbo].[SC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SC]') AND name = N'SC_Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [SC_Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SC] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -341,10 +341,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'Index_TABLE_NAME')
-    ALTER INDEX [Index_TABLE_NAME] ON [dbo].[QSAC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'Index_TABLE_NAME_COLUMN_NAME')
-    ALTER INDEX [Index_TABLE_NAME_COLUMN_NAME] ON [dbo].[QSAC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'QSAC_Index_TABLE_NAME')
+    ALTER INDEX [QSAC_Index_TABLE_NAME] ON [dbo].[QSAC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'QSAC_Index_TABLE_NAME_COLUMN_NAME')
+    ALTER INDEX [QSAC_Index_TABLE_NAME_COLUMN_NAME] ON [dbo].[QSAC] DISABLE;
 ");
         }
 
@@ -358,10 +358,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'Index_TABLE_NAME')
-    ALTER INDEX [Index_TABLE_NAME] ON [dbo].[QSAC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'Index_TABLE_NAME_COLUMN_NAME')
-    ALTER INDEX [Index_TABLE_NAME_COLUMN_NAME] ON [dbo].[QSAC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'QSAC_Index_TABLE_NAME')
+    ALTER INDEX [QSAC_Index_TABLE_NAME] ON [dbo].[QSAC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAC]') AND name = N'QSAC_Index_TABLE_NAME_COLUMN_NAME')
+    ALTER INDEX [QSAC_Index_TABLE_NAME_COLUMN_NAME] ON [dbo].[QSAC] REBUILD PARTITION = ALL;
 ");
         }
 

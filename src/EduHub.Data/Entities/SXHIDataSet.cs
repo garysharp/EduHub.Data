@@ -414,8 +414,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'Index_SKEY')
-    ALTER INDEX [Index_SKEY] ON [dbo].[SXHI] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'SXHI_Index_SKEY')
+    ALTER INDEX [SXHI_Index_SKEY] ON [dbo].[SXHI] DISABLE;
 ");
         }
 
@@ -429,8 +429,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'Index_SKEY')
-    ALTER INDEX [Index_SKEY] ON [dbo].[SXHI] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXHI]') AND name = N'SXHI_Index_SKEY')
+    ALTER INDEX [SXHI_Index_SKEY] ON [dbo].[SXHI] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -642,20 +642,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_CKEY')
-    ALTER INDEX [Index_CKEY] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_MKEY')
-    ALTER INDEX [Index_MKEY] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STMA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_TTPERIOD')
-    ALTER INDEX [Index_TTPERIOD] ON [dbo].[STMA] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_CKEY')
+    ALTER INDEX [STMA_Index_CKEY] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_IDENT')
+    ALTER INDEX [STMA_Index_IDENT] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_LW_DATE')
+    ALTER INDEX [STMA_Index_LW_DATE] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_MKEY')
+    ALTER INDEX [STMA_Index_MKEY] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_SCHOOL_YEAR')
+    ALTER INDEX [STMA_Index_SCHOOL_YEAR] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_TID')
+    ALTER INDEX [STMA_Index_TID] ON [dbo].[STMA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_TTPERIOD')
+    ALTER INDEX [STMA_Index_TTPERIOD] ON [dbo].[STMA] DISABLE;
 ");
         }
 
@@ -669,20 +669,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_CKEY')
-    ALTER INDEX [Index_CKEY] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_MKEY')
-    ALTER INDEX [Index_MKEY] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STMA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'Index_TTPERIOD')
-    ALTER INDEX [Index_TTPERIOD] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_CKEY')
+    ALTER INDEX [STMA_Index_CKEY] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_IDENT')
+    ALTER INDEX [STMA_Index_IDENT] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_LW_DATE')
+    ALTER INDEX [STMA_Index_LW_DATE] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_MKEY')
+    ALTER INDEX [STMA_Index_MKEY] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_SCHOOL_YEAR')
+    ALTER INDEX [STMA_Index_SCHOOL_YEAR] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_TID')
+    ALTER INDEX [STMA_Index_TID] ON [dbo].[STMA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMA]') AND name = N'STMA_Index_TTPERIOD')
+    ALTER INDEX [STMA_Index_TTPERIOD] ON [dbo].[STMA] REBUILD PARTITION = ALL;
 ");
         }
 

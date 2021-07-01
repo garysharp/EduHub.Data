@@ -374,12 +374,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_DATE_IMPORTED')
-    ALTER INDEX [Index_DATE_IMPORTED] ON [dbo].[PGID] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_IMPORTED_BY')
-    ALTER INDEX [Index_IMPORTED_BY] ON [dbo].[PGID] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_SCHOOL_LINK')
-    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[PGID] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_DATE_IMPORTED')
+    ALTER INDEX [PGID_Index_DATE_IMPORTED] ON [dbo].[PGID] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_IMPORTED_BY')
+    ALTER INDEX [PGID_Index_IMPORTED_BY] ON [dbo].[PGID] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_SCHOOL_LINK')
+    ALTER INDEX [PGID_Index_SCHOOL_LINK] ON [dbo].[PGID] DISABLE;
 ");
         }
 
@@ -393,12 +393,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_DATE_IMPORTED')
-    ALTER INDEX [Index_DATE_IMPORTED] ON [dbo].[PGID] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_IMPORTED_BY')
-    ALTER INDEX [Index_IMPORTED_BY] ON [dbo].[PGID] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'Index_SCHOOL_LINK')
-    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[PGID] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_DATE_IMPORTED')
+    ALTER INDEX [PGID_Index_DATE_IMPORTED] ON [dbo].[PGID] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_IMPORTED_BY')
+    ALTER INDEX [PGID_Index_IMPORTED_BY] ON [dbo].[PGID] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PGID]') AND name = N'PGID_Index_SCHOOL_LINK')
+    ALTER INDEX [PGID_Index_SCHOOL_LINK] ON [dbo].[PGID] REBUILD PARTITION = ALL;
 ");
         }
 

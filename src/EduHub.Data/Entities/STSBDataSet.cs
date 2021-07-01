@@ -370,12 +370,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_FAMILY')
-    ALTER INDEX [Index_FAMILY] ON [dbo].[STSB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_SPLIT_ITEM')
-    ALTER INDEX [Index_SPLIT_ITEM] ON [dbo].[STSB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_FAMILY')
+    ALTER INDEX [STSB_Index_FAMILY] ON [dbo].[STSB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_SPLIT_ITEM')
+    ALTER INDEX [STSB_Index_SPLIT_ITEM] ON [dbo].[STSB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_TID')
+    ALTER INDEX [STSB_Index_TID] ON [dbo].[STSB] DISABLE;
 ");
         }
 
@@ -389,12 +389,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_FAMILY')
-    ALTER INDEX [Index_FAMILY] ON [dbo].[STSB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_SPLIT_ITEM')
-    ALTER INDEX [Index_SPLIT_ITEM] ON [dbo].[STSB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_FAMILY')
+    ALTER INDEX [STSB_Index_FAMILY] ON [dbo].[STSB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_SPLIT_ITEM')
+    ALTER INDEX [STSB_Index_SPLIT_ITEM] ON [dbo].[STSB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSB]') AND name = N'STSB_Index_TID')
+    ALTER INDEX [STSB_Index_TID] ON [dbo].[STSB] REBUILD PARTITION = ALL;
 ");
         }
 

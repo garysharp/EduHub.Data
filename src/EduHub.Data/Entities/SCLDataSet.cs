@@ -701,24 +701,24 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_QUILT')
-    ALTER INDEX [Index_QUILT] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_QUILT_SUBJECT_CLASS')
-    ALTER INDEX [Index_QUILT_SUBJECT_CLASS] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_ROOM01')
-    ALTER INDEX [Index_ROOM01] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_ROOM02')
-    ALTER INDEX [Index_ROOM02] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_SUBJECT')
-    ALTER INDEX [Index_SUBJECT] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_TEACHER01')
-    ALTER INDEX [Index_TEACHER01] ON [dbo].[SCL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_TEACHER02')
-    ALTER INDEX [Index_TEACHER02] ON [dbo].[SCL] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_CAMPUS')
+    ALTER INDEX [SCL_Index_CAMPUS] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_LW_DATE')
+    ALTER INDEX [SCL_Index_LW_DATE] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_QUILT')
+    ALTER INDEX [SCL_Index_QUILT] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_QUILT_SUBJECT_CLASS')
+    ALTER INDEX [SCL_Index_QUILT_SUBJECT_CLASS] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_ROOM01')
+    ALTER INDEX [SCL_Index_ROOM01] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_ROOM02')
+    ALTER INDEX [SCL_Index_ROOM02] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_SUBJECT')
+    ALTER INDEX [SCL_Index_SUBJECT] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_TEACHER01')
+    ALTER INDEX [SCL_Index_TEACHER01] ON [dbo].[SCL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_TEACHER02')
+    ALTER INDEX [SCL_Index_TEACHER02] ON [dbo].[SCL] DISABLE;
 ");
         }
 
@@ -732,24 +732,24 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_QUILT')
-    ALTER INDEX [Index_QUILT] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_QUILT_SUBJECT_CLASS')
-    ALTER INDEX [Index_QUILT_SUBJECT_CLASS] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_ROOM01')
-    ALTER INDEX [Index_ROOM01] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_ROOM02')
-    ALTER INDEX [Index_ROOM02] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_SUBJECT')
-    ALTER INDEX [Index_SUBJECT] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_TEACHER01')
-    ALTER INDEX [Index_TEACHER01] ON [dbo].[SCL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'Index_TEACHER02')
-    ALTER INDEX [Index_TEACHER02] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_CAMPUS')
+    ALTER INDEX [SCL_Index_CAMPUS] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_LW_DATE')
+    ALTER INDEX [SCL_Index_LW_DATE] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_QUILT')
+    ALTER INDEX [SCL_Index_QUILT] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_QUILT_SUBJECT_CLASS')
+    ALTER INDEX [SCL_Index_QUILT_SUBJECT_CLASS] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_ROOM01')
+    ALTER INDEX [SCL_Index_ROOM01] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_ROOM02')
+    ALTER INDEX [SCL_Index_ROOM02] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_SUBJECT')
+    ALTER INDEX [SCL_Index_SUBJECT] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_TEACHER01')
+    ALTER INDEX [SCL_Index_TEACHER01] ON [dbo].[SCL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCL]') AND name = N'SCL_Index_TEACHER02')
+    ALTER INDEX [SCL_Index_TEACHER02] ON [dbo].[SCL] REBUILD PARTITION = ALL;
 ");
         }
 

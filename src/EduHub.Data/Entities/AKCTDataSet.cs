@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKCT]') AND name = N'Index_DEPN_TMETHOD')
-    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKCT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKCT]') AND name = N'AKCT_Index_DEPN_TMETHOD')
+    ALTER INDEX [AKCT_Index_DEPN_TMETHOD] ON [dbo].[AKCT] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKCT]') AND name = N'Index_DEPN_TMETHOD')
-    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKCT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKCT]') AND name = N'AKCT_Index_DEPN_TMETHOD')
+    ALTER INDEX [AKCT_Index_DEPN_TMETHOD] ON [dbo].[AKCT] REBUILD PARTITION = ALL;
 ");
         }
 

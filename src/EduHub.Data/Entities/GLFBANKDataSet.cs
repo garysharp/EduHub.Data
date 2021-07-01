@@ -461,14 +461,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID')
-    ALTER INDEX [Index_FUND_ID] ON [dbo].[GLFBANK] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID_SUBPROGRAM')
-    ALTER INDEX [Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFBANK] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_FUND_ID')
+    ALTER INDEX [GLFBANK_Index_FUND_ID] ON [dbo].[GLFBANK] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_FUND_ID_SUBPROGRAM')
+    ALTER INDEX [GLFBANK_Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_SUBPROGRAM')
+    ALTER INDEX [GLFBANK_Index_SUBPROGRAM] ON [dbo].[GLFBANK] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_TID')
+    ALTER INDEX [GLFBANK_Index_TID] ON [dbo].[GLFBANK] DISABLE;
 ");
         }
 
@@ -482,14 +482,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]')
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID')
-    ALTER INDEX [Index_FUND_ID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_FUND_ID_SUBPROGRAM')
-    ALTER INDEX [Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_FUND_ID')
+    ALTER INDEX [GLFBANK_Index_FUND_ID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_FUND_ID_SUBPROGRAM')
+    ALTER INDEX [GLFBANK_Index_FUND_ID_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_SUBPROGRAM')
+    ALTER INDEX [GLFBANK_Index_SUBPROGRAM] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFBANK]') AND name = N'GLFBANK_Index_TID')
+    ALTER INDEX [GLFBANK_Index_TID] ON [dbo].[GLFBANK] REBUILD PARTITION = ALL;
 ");
         }
 

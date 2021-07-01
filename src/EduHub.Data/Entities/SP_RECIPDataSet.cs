@@ -361,12 +361,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_CODE_SFKEY')
-    ALTER INDEX [Index_CODE_SFKEY] ON [dbo].[SP_RECIP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[SP_RECIP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SP_RECIP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_CODE_SFKEY')
+    ALTER INDEX [SP_RECIP_Index_CODE_SFKEY] ON [dbo].[SP_RECIP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_SFKEY')
+    ALTER INDEX [SP_RECIP_Index_SFKEY] ON [dbo].[SP_RECIP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_TID')
+    ALTER INDEX [SP_RECIP_Index_TID] ON [dbo].[SP_RECIP] DISABLE;
 ");
         }
 
@@ -380,12 +380,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_CODE_SFKEY')
-    ALTER INDEX [Index_CODE_SFKEY] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_CODE_SFKEY')
+    ALTER INDEX [SP_RECIP_Index_CODE_SFKEY] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_SFKEY')
+    ALTER INDEX [SP_RECIP_Index_SFKEY] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SP_RECIP]') AND name = N'SP_RECIP_Index_TID')
+    ALTER INDEX [SP_RECIP_Index_TID] ON [dbo].[SP_RECIP] REBUILD PARTITION = ALL;
 ");
         }
 

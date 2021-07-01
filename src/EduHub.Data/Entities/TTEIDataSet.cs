@@ -274,8 +274,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEI]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTEI] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEI]') AND name = N'TTEI_Index_TID')
+    ALTER INDEX [TTEI_Index_TID] ON [dbo].[TTEI] DISABLE;
 ");
         }
 
@@ -289,8 +289,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEI]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TTEI] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TTEI]') AND name = N'TTEI_Index_TID')
+    ALTER INDEX [TTEI_Index_TID] ON [dbo].[TTEI] REBUILD PARTITION = ALL;
 ");
         }
 

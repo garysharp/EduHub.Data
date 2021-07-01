@@ -1589,50 +1589,50 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_CURRENT_QUILT')
-    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_DESTINATION_SCHOOL')
-    ALTER INDEX [Index_DESTINATION_SCHOOL] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_REL_INSTR')
-    ALTER INDEX [Index_REL_INSTR] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SAM_SCH_COUNCIL')
-    ALTER INDEX [Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_AOIC')
-    ALTER INDEX [Index_SCH_AOIC] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_BMANAGER')
-    ALTER INDEX [Index_SCH_BMANAGER] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_COUNCIL_PRES')
-    ALTER INDEX [Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_EMERG_CONTACT')
-    ALTER INDEX [Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_PRINCIPAL')
-    ALTER INDEX [Index_SCH_PRINCIPAL] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VAC_CONTACT')
-    ALTER INDEX [Index_SCH_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VPRIN')
-    ALTER INDEX [Index_SCH_VPRIN] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCHOOL_LINK')
-    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_2VPRIN')
-    ALTER INDEX [Index_SF_2VPRIN] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_3VPRIN')
-    ALTER INDEX [Index_SF_3VPRIN] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_APRIN')
-    ALTER INDEX [Index_SF_APRIN] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_BMANAGER')
-    ALTER INDEX [Index_SF_BMANAGER] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_EMERG_CONTACT')
-    ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
-    ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_PURCH_MANAGER')
-    ALTER INDEX [Index_SF_PURCH_MANAGER] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
-    ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
-    ALTER INDEX [Index_SF_VPRIN] ON [dbo].[SCI] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_CURRENT_QUILT')
+    ALTER INDEX [SCI_Index_CURRENT_QUILT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_DESTINATION_SCHOOL')
+    ALTER INDEX [SCI_Index_DESTINATION_SCHOOL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_LW_DATE')
+    ALTER INDEX [SCI_Index_LW_DATE] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_REL_INSTR')
+    ALTER INDEX [SCI_Index_REL_INSTR] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SAM_SCH_COUNCIL')
+    ALTER INDEX [SCI_Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_AOIC')
+    ALTER INDEX [SCI_Index_SCH_AOIC] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_BMANAGER')
+    ALTER INDEX [SCI_Index_SCH_BMANAGER] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_COUNCIL_PRES')
+    ALTER INDEX [SCI_Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_EMERG_CONTACT')
+    ALTER INDEX [SCI_Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_PRINCIPAL')
+    ALTER INDEX [SCI_Index_SCH_PRINCIPAL] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_VAC_CONTACT')
+    ALTER INDEX [SCI_Index_SCH_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_VPRIN')
+    ALTER INDEX [SCI_Index_SCH_VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCHOOL_LINK')
+    ALTER INDEX [SCI_Index_SCHOOL_LINK] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_2VPRIN')
+    ALTER INDEX [SCI_Index_SF_2VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_3VPRIN')
+    ALTER INDEX [SCI_Index_SF_3VPRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_APRIN')
+    ALTER INDEX [SCI_Index_SF_APRIN] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_BMANAGER')
+    ALTER INDEX [SCI_Index_SF_BMANAGER] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_EMERG_CONTACT')
+    ALTER INDEX [SCI_Index_SF_EMERG_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_OIC')
+    ALTER INDEX [SCI_Index_SF_OIC] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_PURCH_MANAGER')
+    ALTER INDEX [SCI_Index_SF_PURCH_MANAGER] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_VAC_CONTACT')
+    ALTER INDEX [SCI_Index_SF_VAC_CONTACT] ON [dbo].[SCI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_VPRIN')
+    ALTER INDEX [SCI_Index_SF_VPRIN] ON [dbo].[SCI] DISABLE;
 ");
         }
 
@@ -1646,50 +1646,50 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_CURRENT_QUILT')
-    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_DESTINATION_SCHOOL')
-    ALTER INDEX [Index_DESTINATION_SCHOOL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_REL_INSTR')
-    ALTER INDEX [Index_REL_INSTR] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SAM_SCH_COUNCIL')
-    ALTER INDEX [Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_AOIC')
-    ALTER INDEX [Index_SCH_AOIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_BMANAGER')
-    ALTER INDEX [Index_SCH_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_COUNCIL_PRES')
-    ALTER INDEX [Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_EMERG_CONTACT')
-    ALTER INDEX [Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_PRINCIPAL')
-    ALTER INDEX [Index_SCH_PRINCIPAL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VAC_CONTACT')
-    ALTER INDEX [Index_SCH_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCH_VPRIN')
-    ALTER INDEX [Index_SCH_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SCHOOL_LINK')
-    ALTER INDEX [Index_SCHOOL_LINK] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_2VPRIN')
-    ALTER INDEX [Index_SF_2VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_3VPRIN')
-    ALTER INDEX [Index_SF_3VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_APRIN')
-    ALTER INDEX [Index_SF_APRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_BMANAGER')
-    ALTER INDEX [Index_SF_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_EMERG_CONTACT')
-    ALTER INDEX [Index_SF_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_OIC')
-    ALTER INDEX [Index_SF_OIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_PURCH_MANAGER')
-    ALTER INDEX [Index_SF_PURCH_MANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VAC_CONTACT')
-    ALTER INDEX [Index_SF_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'Index_SF_VPRIN')
-    ALTER INDEX [Index_SF_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_CURRENT_QUILT')
+    ALTER INDEX [SCI_Index_CURRENT_QUILT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_DESTINATION_SCHOOL')
+    ALTER INDEX [SCI_Index_DESTINATION_SCHOOL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_LW_DATE')
+    ALTER INDEX [SCI_Index_LW_DATE] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_REL_INSTR')
+    ALTER INDEX [SCI_Index_REL_INSTR] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SAM_SCH_COUNCIL')
+    ALTER INDEX [SCI_Index_SAM_SCH_COUNCIL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_AOIC')
+    ALTER INDEX [SCI_Index_SCH_AOIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_BMANAGER')
+    ALTER INDEX [SCI_Index_SCH_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_COUNCIL_PRES')
+    ALTER INDEX [SCI_Index_SCH_COUNCIL_PRES] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_EMERG_CONTACT')
+    ALTER INDEX [SCI_Index_SCH_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_PRINCIPAL')
+    ALTER INDEX [SCI_Index_SCH_PRINCIPAL] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_VAC_CONTACT')
+    ALTER INDEX [SCI_Index_SCH_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCH_VPRIN')
+    ALTER INDEX [SCI_Index_SCH_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SCHOOL_LINK')
+    ALTER INDEX [SCI_Index_SCHOOL_LINK] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_2VPRIN')
+    ALTER INDEX [SCI_Index_SF_2VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_3VPRIN')
+    ALTER INDEX [SCI_Index_SF_3VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_APRIN')
+    ALTER INDEX [SCI_Index_SF_APRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_BMANAGER')
+    ALTER INDEX [SCI_Index_SF_BMANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_EMERG_CONTACT')
+    ALTER INDEX [SCI_Index_SF_EMERG_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_OIC')
+    ALTER INDEX [SCI_Index_SF_OIC] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_PURCH_MANAGER')
+    ALTER INDEX [SCI_Index_SF_PURCH_MANAGER] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_VAC_CONTACT')
+    ALTER INDEX [SCI_Index_SF_VAC_CONTACT] ON [dbo].[SCI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCI]') AND name = N'SCI_Index_SF_VPRIN')
+    ALTER INDEX [SCI_Index_SF_VPRIN] ON [dbo].[SCI] REBUILD PARTITION = ALL;
 ");
         }
 

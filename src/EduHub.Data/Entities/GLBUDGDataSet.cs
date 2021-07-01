@@ -578,10 +578,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_CODE')
-    ALTER INDEX [Index_CODE] ON [dbo].[GLBUDG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLBUDG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'GLBUDG_Index_CODE')
+    ALTER INDEX [GLBUDG_Index_CODE] ON [dbo].[GLBUDG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'GLBUDG_Index_INITIATIVE')
+    ALTER INDEX [GLBUDG_Index_INITIATIVE] ON [dbo].[GLBUDG] DISABLE;
 ");
         }
 
@@ -595,10 +595,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_CODE')
-    ALTER INDEX [Index_CODE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'GLBUDG_Index_CODE')
+    ALTER INDEX [GLBUDG_Index_CODE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBUDG]') AND name = N'GLBUDG_Index_INITIATIVE')
+    ALTER INDEX [GLBUDG_Index_INITIATIVE] ON [dbo].[GLBUDG] REBUILD PARTITION = ALL;
 ");
         }
 

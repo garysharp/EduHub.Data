@@ -306,10 +306,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'Index_SGLINK')
-    ALTER INDEX [Index_SGLINK] ON [dbo].[SGSG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGSG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'SGSG_Index_SGLINK')
+    ALTER INDEX [SGSG_Index_SGLINK] ON [dbo].[SGSG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'SGSG_Index_TID')
+    ALTER INDEX [SGSG_Index_TID] ON [dbo].[SGSG] DISABLE;
 ");
         }
 
@@ -323,10 +323,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'Index_SGLINK')
-    ALTER INDEX [Index_SGLINK] ON [dbo].[SGSG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGSG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'SGSG_Index_SGLINK')
+    ALTER INDEX [SGSG_Index_SGLINK] ON [dbo].[SGSG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGSG]') AND name = N'SGSG_Index_TID')
+    ALTER INDEX [SGSG_Index_TID] ON [dbo].[SGSG] REBUILD PARTITION = ALL;
 ");
         }
 

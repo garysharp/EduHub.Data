@@ -330,10 +330,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'Index_INCIDENT_KEY')
-    ALTER INDEX [Index_INCIDENT_KEY] ON [dbo].[SDP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'Index_STUDENT_KEY')
-    ALTER INDEX [Index_STUDENT_KEY] ON [dbo].[SDP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'SDP_Index_INCIDENT_KEY')
+    ALTER INDEX [SDP_Index_INCIDENT_KEY] ON [dbo].[SDP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'SDP_Index_STUDENT_KEY')
+    ALTER INDEX [SDP_Index_STUDENT_KEY] ON [dbo].[SDP] DISABLE;
 ");
         }
 
@@ -347,10 +347,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'Index_INCIDENT_KEY')
-    ALTER INDEX [Index_INCIDENT_KEY] ON [dbo].[SDP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'Index_STUDENT_KEY')
-    ALTER INDEX [Index_STUDENT_KEY] ON [dbo].[SDP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'SDP_Index_INCIDENT_KEY')
+    ALTER INDEX [SDP_Index_INCIDENT_KEY] ON [dbo].[SDP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDP]') AND name = N'SDP_Index_STUDENT_KEY')
+    ALTER INDEX [SDP_Index_STUDENT_KEY] ON [dbo].[SDP] REBUILD PARTITION = ALL;
 ");
         }
 

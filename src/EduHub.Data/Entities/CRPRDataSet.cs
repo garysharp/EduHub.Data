@@ -558,18 +558,18 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_STAFF_ORDER_BY')
-    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRPR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_APPROVED_BY')
+    ALTER INDEX [CRPR_Index_APPROVED_BY] ON [dbo].[CRPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_INITIATIVE')
+    ALTER INDEX [CRPR_Index_INITIATIVE] ON [dbo].[CRPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_STAFF_ORDER_BY')
+    ALTER INDEX [CRPR_Index_STAFF_ORDER_BY] ON [dbo].[CRPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_SUBPROGRAM')
+    ALTER INDEX [CRPR_Index_SUBPROGRAM] ON [dbo].[CRPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_TID')
+    ALTER INDEX [CRPR_Index_TID] ON [dbo].[CRPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_TRREF')
+    ALTER INDEX [CRPR_Index_TRREF] ON [dbo].[CRPR] DISABLE;
 ");
         }
 
@@ -583,18 +583,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_STAFF_ORDER_BY')
-    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_APPROVED_BY')
+    ALTER INDEX [CRPR_Index_APPROVED_BY] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_INITIATIVE')
+    ALTER INDEX [CRPR_Index_INITIATIVE] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_STAFF_ORDER_BY')
+    ALTER INDEX [CRPR_Index_STAFF_ORDER_BY] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_SUBPROGRAM')
+    ALTER INDEX [CRPR_Index_SUBPROGRAM] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_TID')
+    ALTER INDEX [CRPR_Index_TID] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRPR]') AND name = N'CRPR_Index_TRREF')
+    ALTER INDEX [CRPR_Index_TRREF] ON [dbo].[CRPR] REBUILD PARTITION = ALL;
 ");
         }
 

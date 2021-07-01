@@ -378,12 +378,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[BKHR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[BKHR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[BKHR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_STAFF')
+    ALTER INDEX [BKHR_Index_STAFF] ON [dbo].[BKHR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_STUDENT')
+    ALTER INDEX [BKHR_Index_STUDENT] ON [dbo].[BKHR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_TID')
+    ALTER INDEX [BKHR_Index_TID] ON [dbo].[BKHR] DISABLE;
 ");
         }
 
@@ -397,12 +397,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_STAFF')
+    ALTER INDEX [BKHR_Index_STAFF] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_STUDENT')
+    ALTER INDEX [BKHR_Index_STUDENT] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[BKHR]') AND name = N'BKHR_Index_TID')
+    ALTER INDEX [BKHR_Index_TID] ON [dbo].[BKHR] REBUILD PARTITION = ALL;
 ");
         }
 

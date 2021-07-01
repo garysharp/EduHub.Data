@@ -762,20 +762,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_GLPROGRAM')
-    ALTER INDEX [Index_GLPROGRAM] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFPREV] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLFPREV] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_FEE_CODE')
+    ALTER INDEX [GLFPREV_Index_FEE_CODE] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_GLPROGRAM')
+    ALTER INDEX [GLFPREV_Index_GLPROGRAM] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_GST_TYPE')
+    ALTER INDEX [GLFPREV_Index_GST_TYPE] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_INITIATIVE')
+    ALTER INDEX [GLFPREV_Index_INITIATIVE] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_SUBPROGRAM')
+    ALTER INDEX [GLFPREV_Index_SUBPROGRAM] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_TID')
+    ALTER INDEX [GLFPREV_Index_TID] ON [dbo].[GLFPREV] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_TRREF')
+    ALTER INDEX [GLFPREV_Index_TRREF] ON [dbo].[GLFPREV] DISABLE;
 ");
         }
 
@@ -789,20 +789,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]')
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_GLPROGRAM')
-    ALTER INDEX [Index_GLPROGRAM] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_FEE_CODE')
+    ALTER INDEX [GLFPREV_Index_FEE_CODE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_GLPROGRAM')
+    ALTER INDEX [GLFPREV_Index_GLPROGRAM] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_GST_TYPE')
+    ALTER INDEX [GLFPREV_Index_GST_TYPE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_INITIATIVE')
+    ALTER INDEX [GLFPREV_Index_INITIATIVE] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_SUBPROGRAM')
+    ALTER INDEX [GLFPREV_Index_SUBPROGRAM] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_TID')
+    ALTER INDEX [GLFPREV_Index_TID] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLFPREV]') AND name = N'GLFPREV_Index_TRREF')
+    ALTER INDEX [GLFPREV_Index_TRREF] ON [dbo].[GLFPREV] REBUILD PARTITION = ALL;
 ");
         }
 

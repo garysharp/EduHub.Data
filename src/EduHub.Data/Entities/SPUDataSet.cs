@@ -346,10 +346,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'Index_HOME_LANGUAGE')
-    ALTER INDEX [Index_HOME_LANGUAGE] ON [dbo].[SPU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'Index_MAILING_LIST')
-    ALTER INDEX [Index_MAILING_LIST] ON [dbo].[SPU] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'SPU_Index_HOME_LANGUAGE')
+    ALTER INDEX [SPU_Index_HOME_LANGUAGE] ON [dbo].[SPU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'SPU_Index_MAILING_LIST')
+    ALTER INDEX [SPU_Index_MAILING_LIST] ON [dbo].[SPU] DISABLE;
 ");
         }
 
@@ -363,10 +363,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'Index_HOME_LANGUAGE')
-    ALTER INDEX [Index_HOME_LANGUAGE] ON [dbo].[SPU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'Index_MAILING_LIST')
-    ALTER INDEX [Index_MAILING_LIST] ON [dbo].[SPU] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'SPU_Index_HOME_LANGUAGE')
+    ALTER INDEX [SPU_Index_HOME_LANGUAGE] ON [dbo].[SPU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPU]') AND name = N'SPU_Index_MAILING_LIST')
+    ALTER INDEX [SPU_Index_MAILING_LIST] ON [dbo].[SPU] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -1330,34 +1330,34 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT01KEY')
-    ALTER INDEX [Index_TT01KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT02KEY')
-    ALTER INDEX [Index_TT02KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT03KEY')
-    ALTER INDEX [Index_TT03KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT04KEY')
-    ALTER INDEX [Index_TT04KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT05KEY')
-    ALTER INDEX [Index_TT05KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT06KEY')
-    ALTER INDEX [Index_TT06KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT07KEY')
-    ALTER INDEX [Index_TT07KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT08KEY')
-    ALTER INDEX [Index_TT08KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT09KEY')
-    ALTER INDEX [Index_TT09KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT10KEY')
-    ALTER INDEX [Index_TT10KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT11KEY')
-    ALTER INDEX [Index_TT11KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT12KEY')
-    ALTER INDEX [Index_TT12KEY] ON [dbo].[TH] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT13KEY')
-    ALTER INDEX [Index_TT13KEY] ON [dbo].[TH] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_LW_DATE')
+    ALTER INDEX [TH_Index_LW_DATE] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT01KEY')
+    ALTER INDEX [TH_Index_TT01KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT02KEY')
+    ALTER INDEX [TH_Index_TT02KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT03KEY')
+    ALTER INDEX [TH_Index_TT03KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT04KEY')
+    ALTER INDEX [TH_Index_TT04KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT05KEY')
+    ALTER INDEX [TH_Index_TT05KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT06KEY')
+    ALTER INDEX [TH_Index_TT06KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT07KEY')
+    ALTER INDEX [TH_Index_TT07KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT08KEY')
+    ALTER INDEX [TH_Index_TT08KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT09KEY')
+    ALTER INDEX [TH_Index_TT09KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT10KEY')
+    ALTER INDEX [TH_Index_TT10KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT11KEY')
+    ALTER INDEX [TH_Index_TT11KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT12KEY')
+    ALTER INDEX [TH_Index_TT12KEY] ON [dbo].[TH] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT13KEY')
+    ALTER INDEX [TH_Index_TT13KEY] ON [dbo].[TH] DISABLE;
 ");
         }
 
@@ -1371,34 +1371,34 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT01KEY')
-    ALTER INDEX [Index_TT01KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT02KEY')
-    ALTER INDEX [Index_TT02KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT03KEY')
-    ALTER INDEX [Index_TT03KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT04KEY')
-    ALTER INDEX [Index_TT04KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT05KEY')
-    ALTER INDEX [Index_TT05KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT06KEY')
-    ALTER INDEX [Index_TT06KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT07KEY')
-    ALTER INDEX [Index_TT07KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT08KEY')
-    ALTER INDEX [Index_TT08KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT09KEY')
-    ALTER INDEX [Index_TT09KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT10KEY')
-    ALTER INDEX [Index_TT10KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT11KEY')
-    ALTER INDEX [Index_TT11KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT12KEY')
-    ALTER INDEX [Index_TT12KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'Index_TT13KEY')
-    ALTER INDEX [Index_TT13KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_LW_DATE')
+    ALTER INDEX [TH_Index_LW_DATE] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT01KEY')
+    ALTER INDEX [TH_Index_TT01KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT02KEY')
+    ALTER INDEX [TH_Index_TT02KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT03KEY')
+    ALTER INDEX [TH_Index_TT03KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT04KEY')
+    ALTER INDEX [TH_Index_TT04KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT05KEY')
+    ALTER INDEX [TH_Index_TT05KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT06KEY')
+    ALTER INDEX [TH_Index_TT06KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT07KEY')
+    ALTER INDEX [TH_Index_TT07KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT08KEY')
+    ALTER INDEX [TH_Index_TT08KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT09KEY')
+    ALTER INDEX [TH_Index_TT09KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT10KEY')
+    ALTER INDEX [TH_Index_TT10KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT11KEY')
+    ALTER INDEX [TH_Index_TT11KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT12KEY')
+    ALTER INDEX [TH_Index_TT12KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TH]') AND name = N'TH_Index_TT13KEY')
+    ALTER INDEX [TH_Index_TT13KEY] ON [dbo].[TH] REBUILD PARTITION = ALL;
 ");
         }
 

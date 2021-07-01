@@ -302,8 +302,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCC]') AND name = N'Index_CURRENT_QUILT')
-    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[KCC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCC]') AND name = N'KCC_Index_CURRENT_QUILT')
+    ALTER INDEX [KCC_Index_CURRENT_QUILT] ON [dbo].[KCC] DISABLE;
 ");
         }
 
@@ -317,8 +317,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCC]') AND name = N'Index_CURRENT_QUILT')
-    ALTER INDEX [Index_CURRENT_QUILT] ON [dbo].[KCC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCC]') AND name = N'KCC_Index_CURRENT_QUILT')
+    ALTER INDEX [KCC_Index_CURRENT_QUILT] ON [dbo].[KCC] REBUILD PARTITION = ALL;
 ");
         }
 

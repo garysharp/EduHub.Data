@@ -321,8 +321,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'Index_PRINT_ID')
-    ALTER INDEX [Index_PRINT_ID] ON [dbo].[SIRH] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'SIRH_Index_PRINT_ID')
+    ALTER INDEX [SIRH_Index_PRINT_ID] ON [dbo].[SIRH] DISABLE;
 ");
         }
 
@@ -336,8 +336,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'Index_PRINT_ID')
-    ALTER INDEX [Index_PRINT_ID] ON [dbo].[SIRH] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SIRH]') AND name = N'SIRH_Index_PRINT_ID')
+    ALTER INDEX [SIRH_Index_PRINT_ID] ON [dbo].[SIRH] REBUILD PARTITION = ALL;
 ");
         }
 

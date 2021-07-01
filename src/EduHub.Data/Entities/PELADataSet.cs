@@ -358,10 +358,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PELA] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'PELA_Index_LEAVE_CODE')
+    ALTER INDEX [PELA_Index_LEAVE_CODE] ON [dbo].[PELA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'PELA_Index_TID')
+    ALTER INDEX [PELA_Index_TID] ON [dbo].[PELA] DISABLE;
 ");
         }
 
@@ -375,10 +375,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PELA] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'PELA_Index_LEAVE_CODE')
+    ALTER INDEX [PELA_Index_LEAVE_CODE] ON [dbo].[PELA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELA]') AND name = N'PELA_Index_TID')
+    ALTER INDEX [PELA_Index_TID] ON [dbo].[PELA] REBUILD PARTITION = ALL;
 ");
         }
 

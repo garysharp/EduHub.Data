@@ -2349,62 +2349,62 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_BIRTH_COUNTRY')
-    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_DOCTOR')
-    ALTER INDEX [Index_DOCTOR] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG01')
-    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG02')
-    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT01')
-    ALTER INDEX [Index_EXIT_CAT01] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT02')
-    ALTER INDEX [Index_EXIT_CAT02] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST01')
-    ALTER INDEX [Index_EXIT_DEST01] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST02')
-    ALTER INDEX [Index_EXIT_DEST02] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMB')
-    ALTER INDEX [Index_FAMB] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMC')
-    ALTER INDEX [Index_FAMC] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMILY')
-    ALTER INDEX [Index_FAMILY] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_GROUP')
-    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOUSE')
-    ALTER INDEX [Index_HOUSE] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_INAC_ABS_CODE')
-    ALTER INDEX [Index_INAC_ABS_CODE] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LANGUAGE_PREVIOUS_SCHOOLING')
-    ALTER INDEX [Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LOTE_HOME_CODE')
-    ALTER INDEX [Index_LOTE_HOME_CODE] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_HG')
-    ALTER INDEX [Index_NEXT_HG] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_SCHOOL')
-    ALTER INDEX [Index_NEXT_SCHOOL] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_PREVIOUS_SCHOOL')
-    ALTER INDEX [Index_PREVIOUS_SCHOOL] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REGISTRATION')
-    ALTER INDEX [Index_REGISTRATION] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REL_INSTR')
-    ALTER INDEX [Index_REL_INSTR] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_RELIGION')
-    ALTER INDEX [Index_RELIGION] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_TAG')
-    ALTER INDEX [Index_TAG] ON [dbo].[ST] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_VISA_SUBCLASS')
-    ALTER INDEX [Index_VISA_SUBCLASS] ON [dbo].[ST] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_BIRTH_COUNTRY')
+    ALTER INDEX [ST_Index_BIRTH_COUNTRY] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_CAMPUS')
+    ALTER INDEX [ST_Index_CAMPUS] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_DOCTOR')
+    ALTER INDEX [ST_Index_DOCTOR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EMERG_LANG01')
+    ALTER INDEX [ST_Index_EMERG_LANG01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EMERG_LANG02')
+    ALTER INDEX [ST_Index_EMERG_LANG02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_CAT01')
+    ALTER INDEX [ST_Index_EXIT_CAT01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_CAT02')
+    ALTER INDEX [ST_Index_EXIT_CAT02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_DEST01')
+    ALTER INDEX [ST_Index_EXIT_DEST01] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_DEST02')
+    ALTER INDEX [ST_Index_EXIT_DEST02] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMB')
+    ALTER INDEX [ST_Index_FAMB] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMC')
+    ALTER INDEX [ST_Index_FAMC] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMILY')
+    ALTER INDEX [ST_Index_FAMILY] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOME_GROUP')
+    ALTER INDEX [ST_Index_HOME_GROUP] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOME_LANG')
+    ALTER INDEX [ST_Index_HOME_LANG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOUSE')
+    ALTER INDEX [ST_Index_HOUSE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_INAC_ABS_CODE')
+    ALTER INDEX [ST_Index_INAC_ABS_CODE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LANGUAGE_PREVIOUS_SCHOOLING')
+    ALTER INDEX [ST_Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LOTE_HOME_CODE')
+    ALTER INDEX [ST_Index_LOTE_HOME_CODE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LW_DATE')
+    ALTER INDEX [ST_Index_LW_DATE] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_NEXT_HG')
+    ALTER INDEX [ST_Index_NEXT_HG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_NEXT_SCHOOL')
+    ALTER INDEX [ST_Index_NEXT_SCHOOL] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_PREVIOUS_SCHOOL')
+    ALTER INDEX [ST_Index_PREVIOUS_SCHOOL] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_REGISTRATION')
+    ALTER INDEX [ST_Index_REGISTRATION] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_REL_INSTR')
+    ALTER INDEX [ST_Index_REL_INSTR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_RELIGION')
+    ALTER INDEX [ST_Index_RELIGION] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_SCHOOL_YEAR')
+    ALTER INDEX [ST_Index_SCHOOL_YEAR] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_TAG')
+    ALTER INDEX [ST_Index_TAG] ON [dbo].[ST] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_VISA_SUBCLASS')
+    ALTER INDEX [ST_Index_VISA_SUBCLASS] ON [dbo].[ST] DISABLE;
 ");
         }
 
@@ -2418,62 +2418,62 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_BIRTH_COUNTRY')
-    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_DOCTOR')
-    ALTER INDEX [Index_DOCTOR] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG01')
-    ALTER INDEX [Index_EMERG_LANG01] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EMERG_LANG02')
-    ALTER INDEX [Index_EMERG_LANG02] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT01')
-    ALTER INDEX [Index_EXIT_CAT01] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_CAT02')
-    ALTER INDEX [Index_EXIT_CAT02] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST01')
-    ALTER INDEX [Index_EXIT_DEST01] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_EXIT_DEST02')
-    ALTER INDEX [Index_EXIT_DEST02] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMB')
-    ALTER INDEX [Index_FAMB] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMC')
-    ALTER INDEX [Index_FAMC] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_FAMILY')
-    ALTER INDEX [Index_FAMILY] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_GROUP')
-    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_HOUSE')
-    ALTER INDEX [Index_HOUSE] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_INAC_ABS_CODE')
-    ALTER INDEX [Index_INAC_ABS_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LANGUAGE_PREVIOUS_SCHOOLING')
-    ALTER INDEX [Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LOTE_HOME_CODE')
-    ALTER INDEX [Index_LOTE_HOME_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_HG')
-    ALTER INDEX [Index_NEXT_HG] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_NEXT_SCHOOL')
-    ALTER INDEX [Index_NEXT_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_PREVIOUS_SCHOOL')
-    ALTER INDEX [Index_PREVIOUS_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REGISTRATION')
-    ALTER INDEX [Index_REGISTRATION] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_REL_INSTR')
-    ALTER INDEX [Index_REL_INSTR] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_RELIGION')
-    ALTER INDEX [Index_RELIGION] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_SCHOOL_YEAR')
-    ALTER INDEX [Index_SCHOOL_YEAR] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_TAG')
-    ALTER INDEX [Index_TAG] ON [dbo].[ST] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'Index_VISA_SUBCLASS')
-    ALTER INDEX [Index_VISA_SUBCLASS] ON [dbo].[ST] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_BIRTH_COUNTRY')
+    ALTER INDEX [ST_Index_BIRTH_COUNTRY] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_CAMPUS')
+    ALTER INDEX [ST_Index_CAMPUS] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_DOCTOR')
+    ALTER INDEX [ST_Index_DOCTOR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EMERG_LANG01')
+    ALTER INDEX [ST_Index_EMERG_LANG01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EMERG_LANG02')
+    ALTER INDEX [ST_Index_EMERG_LANG02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_CAT01')
+    ALTER INDEX [ST_Index_EXIT_CAT01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_CAT02')
+    ALTER INDEX [ST_Index_EXIT_CAT02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_DEST01')
+    ALTER INDEX [ST_Index_EXIT_DEST01] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_EXIT_DEST02')
+    ALTER INDEX [ST_Index_EXIT_DEST02] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMB')
+    ALTER INDEX [ST_Index_FAMB] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMC')
+    ALTER INDEX [ST_Index_FAMC] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_FAMILY')
+    ALTER INDEX [ST_Index_FAMILY] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOME_GROUP')
+    ALTER INDEX [ST_Index_HOME_GROUP] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOME_LANG')
+    ALTER INDEX [ST_Index_HOME_LANG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_HOUSE')
+    ALTER INDEX [ST_Index_HOUSE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_INAC_ABS_CODE')
+    ALTER INDEX [ST_Index_INAC_ABS_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LANGUAGE_PREVIOUS_SCHOOLING')
+    ALTER INDEX [ST_Index_LANGUAGE_PREVIOUS_SCHOOLING] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LOTE_HOME_CODE')
+    ALTER INDEX [ST_Index_LOTE_HOME_CODE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_LW_DATE')
+    ALTER INDEX [ST_Index_LW_DATE] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_NEXT_HG')
+    ALTER INDEX [ST_Index_NEXT_HG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_NEXT_SCHOOL')
+    ALTER INDEX [ST_Index_NEXT_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_PREVIOUS_SCHOOL')
+    ALTER INDEX [ST_Index_PREVIOUS_SCHOOL] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_REGISTRATION')
+    ALTER INDEX [ST_Index_REGISTRATION] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_REL_INSTR')
+    ALTER INDEX [ST_Index_REL_INSTR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_RELIGION')
+    ALTER INDEX [ST_Index_RELIGION] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_SCHOOL_YEAR')
+    ALTER INDEX [ST_Index_SCHOOL_YEAR] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_TAG')
+    ALTER INDEX [ST_Index_TAG] ON [dbo].[ST] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND name = N'ST_Index_VISA_SUBCLASS')
+    ALTER INDEX [ST_Index_VISA_SUBCLASS] ON [dbo].[ST] REBUILD PARTITION = ALL;
 ");
         }
 

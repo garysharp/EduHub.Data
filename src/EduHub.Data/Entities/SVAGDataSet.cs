@@ -526,12 +526,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
-    ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
-    ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDOMAIN')
-    ALTER INDEX [Index_VDOMAIN] ON [dbo].[SVAG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_COHORT')
+    ALTER INDEX [SVAG_Index_COHORT] ON [dbo].[SVAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_VDIMENSION')
+    ALTER INDEX [SVAG_Index_VDIMENSION] ON [dbo].[SVAG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_VDOMAIN')
+    ALTER INDEX [SVAG_Index_VDOMAIN] ON [dbo].[SVAG] DISABLE;
 ");
         }
 
@@ -545,12 +545,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_COHORT')
-    ALTER INDEX [Index_COHORT] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDIMENSION')
-    ALTER INDEX [Index_VDIMENSION] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'Index_VDOMAIN')
-    ALTER INDEX [Index_VDOMAIN] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_COHORT')
+    ALTER INDEX [SVAG_Index_COHORT] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_VDIMENSION')
+    ALTER INDEX [SVAG_Index_VDIMENSION] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SVAG]') AND name = N'SVAG_Index_VDOMAIN')
+    ALTER INDEX [SVAG_Index_VDOMAIN] ON [dbo].[SVAG] REBUILD PARTITION = ALL;
 ");
         }
 

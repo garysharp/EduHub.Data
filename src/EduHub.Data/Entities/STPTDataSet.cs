@@ -373,12 +373,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_SCHL_NUM')
-    ALTER INDEX [Index_SCHL_NUM] ON [dbo].[STPT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_STPTKEY_SCHL_NUM')
-    ALTER INDEX [Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STPT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_SCHL_NUM')
+    ALTER INDEX [STPT_Index_SCHL_NUM] ON [dbo].[STPT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_STPTKEY_SCHL_NUM')
+    ALTER INDEX [STPT_Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_TID')
+    ALTER INDEX [STPT_Index_TID] ON [dbo].[STPT] DISABLE;
 ");
         }
 
@@ -392,12 +392,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_SCHL_NUM')
-    ALTER INDEX [Index_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_STPTKEY_SCHL_NUM')
-    ALTER INDEX [Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_SCHL_NUM')
+    ALTER INDEX [STPT_Index_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_STPTKEY_SCHL_NUM')
+    ALTER INDEX [STPT_Index_STPTKEY_SCHL_NUM] ON [dbo].[STPT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPT]') AND name = N'STPT_Index_TID')
+    ALTER INDEX [STPT_Index_TID] ON [dbo].[STPT] REBUILD PARTITION = ALL;
 ");
         }
 

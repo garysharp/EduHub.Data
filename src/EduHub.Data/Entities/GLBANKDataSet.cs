@@ -409,8 +409,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'Index_GLBANKKEY')
-    ALTER INDEX [Index_GLBANKKEY] ON [dbo].[GLBANK] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'GLBANK_Index_GLBANKKEY')
+    ALTER INDEX [GLBANK_Index_GLBANKKEY] ON [dbo].[GLBANK] DISABLE;
 ");
         }
 
@@ -424,8 +424,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'Index_GLBANKKEY')
-    ALTER INDEX [Index_GLBANKKEY] ON [dbo].[GLBANK] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLBANK]') AND name = N'GLBANK_Index_GLBANKKEY')
+    ALTER INDEX [GLBANK_Index_GLBANKKEY] ON [dbo].[GLBANK] REBUILD PARTITION = ALL;
 ");
         }
 

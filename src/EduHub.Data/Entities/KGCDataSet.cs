@@ -590,20 +590,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_MAX_AC_YR')
-    ALTER INDEX [Index_MAX_AC_YR] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_MIN_AC_YR')
-    ALTER INDEX [Index_MIN_AC_YR] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_NEXT_HG')
-    ALTER INDEX [Index_NEXT_HG] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[KGC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_TEACHER_B')
-    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KGC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_CAMPUS')
+    ALTER INDEX [KGC_Index_CAMPUS] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_MAX_AC_YR')
+    ALTER INDEX [KGC_Index_MAX_AC_YR] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_MIN_AC_YR')
+    ALTER INDEX [KGC_Index_MIN_AC_YR] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_NEXT_HG')
+    ALTER INDEX [KGC_Index_NEXT_HG] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_ROOM')
+    ALTER INDEX [KGC_Index_ROOM] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_TEACHER')
+    ALTER INDEX [KGC_Index_TEACHER] ON [dbo].[KGC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_TEACHER_B')
+    ALTER INDEX [KGC_Index_TEACHER_B] ON [dbo].[KGC] DISABLE;
 ");
         }
 
@@ -617,20 +617,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_MAX_AC_YR')
-    ALTER INDEX [Index_MAX_AC_YR] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_MIN_AC_YR')
-    ALTER INDEX [Index_MIN_AC_YR] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_NEXT_HG')
-    ALTER INDEX [Index_NEXT_HG] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[KGC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'Index_TEACHER_B')
-    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_CAMPUS')
+    ALTER INDEX [KGC_Index_CAMPUS] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_MAX_AC_YR')
+    ALTER INDEX [KGC_Index_MAX_AC_YR] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_MIN_AC_YR')
+    ALTER INDEX [KGC_Index_MIN_AC_YR] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_NEXT_HG')
+    ALTER INDEX [KGC_Index_NEXT_HG] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_ROOM')
+    ALTER INDEX [KGC_Index_ROOM] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_TEACHER')
+    ALTER INDEX [KGC_Index_TEACHER] ON [dbo].[KGC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGC]') AND name = N'KGC_Index_TEACHER_B')
+    ALTER INDEX [KGC_Index_TEACHER_B] ON [dbo].[KGC] REBUILD PARTITION = ALL;
 ");
         }
 

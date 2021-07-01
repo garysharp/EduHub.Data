@@ -450,14 +450,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[SA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[SA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[SA] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[SA] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_GLCODE')
+    ALTER INDEX [SA_Index_GLCODE] ON [dbo].[SA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_GST_TYPE')
+    ALTER INDEX [SA_Index_GST_TYPE] ON [dbo].[SA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_INITIATIVE')
+    ALTER INDEX [SA_Index_INITIATIVE] ON [dbo].[SA] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_SUBPROGRAM')
+    ALTER INDEX [SA_Index_SUBPROGRAM] ON [dbo].[SA] DISABLE;
 ");
         }
 
@@ -471,14 +471,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[SA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[SA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[SA] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[SA] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_GLCODE')
+    ALTER INDEX [SA_Index_GLCODE] ON [dbo].[SA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_GST_TYPE')
+    ALTER INDEX [SA_Index_GST_TYPE] ON [dbo].[SA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_INITIATIVE')
+    ALTER INDEX [SA_Index_INITIATIVE] ON [dbo].[SA] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SA]') AND name = N'SA_Index_SUBPROGRAM')
+    ALTER INDEX [SA_Index_SUBPROGRAM] ON [dbo].[SA] REBUILD PARTITION = ALL;
 ");
         }
 

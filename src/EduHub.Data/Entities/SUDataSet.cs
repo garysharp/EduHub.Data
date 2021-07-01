@@ -450,14 +450,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FACULTY')
-    ALTER INDEX [Index_FACULTY] ON [dbo].[SU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_PROMOTE')
-    ALTER INDEX [Index_PROMOTE] ON [dbo].[SU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
-    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_FACULTY')
+    ALTER INDEX [SU_Index_FACULTY] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_FEE_CODE')
+    ALTER INDEX [SU_Index_FEE_CODE] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_PROMOTE')
+    ALTER INDEX [SU_Index_PROMOTE] ON [dbo].[SU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [SU_Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] DISABLE;
 ");
         }
 
@@ -471,14 +471,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FACULTY')
-    ALTER INDEX [Index_FACULTY] ON [dbo].[SU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_PROMOTE')
-    ALTER INDEX [Index_PROMOTE] ON [dbo].[SU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'Index_SUBJECT_ACADEMIC_YEAR')
-    ALTER INDEX [Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_FACULTY')
+    ALTER INDEX [SU_Index_FACULTY] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_FEE_CODE')
+    ALTER INDEX [SU_Index_FEE_CODE] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_PROMOTE')
+    ALTER INDEX [SU_Index_PROMOTE] ON [dbo].[SU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SU]') AND name = N'SU_Index_SUBJECT_ACADEMIC_YEAR')
+    ALTER INDEX [SU_Index_SUBJECT_ACADEMIC_YEAR] ON [dbo].[SU] REBUILD PARTITION = ALL;
 ");
         }
 

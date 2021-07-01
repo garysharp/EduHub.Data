@@ -401,10 +401,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'Index_STSUP_TRANS_ID')
-    ALTER INDEX [Index_STSUP_TRANS_ID] ON [dbo].[STSUP_TR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSUP_TR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'STSUP_TR_Index_STSUP_TRANS_ID')
+    ALTER INDEX [STSUP_TR_Index_STSUP_TRANS_ID] ON [dbo].[STSUP_TR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'STSUP_TR_Index_TID')
+    ALTER INDEX [STSUP_TR_Index_TID] ON [dbo].[STSUP_TR] DISABLE;
 ");
         }
 
@@ -418,10 +418,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'Index_STSUP_TRANS_ID')
-    ALTER INDEX [Index_STSUP_TRANS_ID] ON [dbo].[STSUP_TR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSUP_TR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'STSUP_TR_Index_STSUP_TRANS_ID')
+    ALTER INDEX [STSUP_TR_Index_STSUP_TRANS_ID] ON [dbo].[STSUP_TR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP_TR]') AND name = N'STSUP_TR_Index_TID')
+    ALTER INDEX [STSUP_TR_Index_TID] ON [dbo].[STSUP_TR] REBUILD PARTITION = ALL;
 ");
         }
 

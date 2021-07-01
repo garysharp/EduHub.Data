@@ -498,14 +498,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ADDRESSKEY')
-    ALTER INDEX [Index_ADDRESSKEY] ON [dbo].[SAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_NAME')
-    ALTER INDEX [Index_ASSOC_NAME] ON [dbo].[SAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_POSN')
-    ALTER INDEX [Index_ASSOC_POSN] ON [dbo].[SAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[SAM] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ADDRESSKEY')
+    ALTER INDEX [SAM_Index_ADDRESSKEY] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ASSOC_NAME')
+    ALTER INDEX [SAM_Index_ASSOC_NAME] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ASSOC_POSN')
+    ALTER INDEX [SAM_Index_ASSOC_POSN] ON [dbo].[SAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_MAILKEY')
+    ALTER INDEX [SAM_Index_MAILKEY] ON [dbo].[SAM] DISABLE;
 ");
         }
 
@@ -519,14 +519,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ADDRESSKEY')
-    ALTER INDEX [Index_ADDRESSKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_NAME')
-    ALTER INDEX [Index_ASSOC_NAME] ON [dbo].[SAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_ASSOC_POSN')
-    ALTER INDEX [Index_ASSOC_POSN] ON [dbo].[SAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'Index_MAILKEY')
-    ALTER INDEX [Index_MAILKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ADDRESSKEY')
+    ALTER INDEX [SAM_Index_ADDRESSKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ASSOC_NAME')
+    ALTER INDEX [SAM_Index_ASSOC_NAME] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_ASSOC_POSN')
+    ALTER INDEX [SAM_Index_ASSOC_POSN] ON [dbo].[SAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAM]') AND name = N'SAM_Index_MAILKEY')
+    ALTER INDEX [SAM_Index_MAILKEY] ON [dbo].[SAM] REBUILD PARTITION = ALL;
 ");
         }
 

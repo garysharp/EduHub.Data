@@ -430,8 +430,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SKGS_OLD]') AND name = N'Index_NEW_SCHOOL')
-    ALTER INDEX [Index_NEW_SCHOOL] ON [dbo].[SKGS_OLD] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SKGS_OLD]') AND name = N'SKGS_OLD_Index_NEW_SCHOOL')
+    ALTER INDEX [SKGS_OLD_Index_NEW_SCHOOL] ON [dbo].[SKGS_OLD] DISABLE;
 ");
         }
 
@@ -445,8 +445,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SKGS_OLD]') AND name = N'Index_NEW_SCHOOL')
-    ALTER INDEX [Index_NEW_SCHOOL] ON [dbo].[SKGS_OLD] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SKGS_OLD]') AND name = N'SKGS_OLD_Index_NEW_SCHOOL')
+    ALTER INDEX [SKGS_OLD_Index_NEW_SCHOOL] ON [dbo].[SKGS_OLD] REBUILD PARTITION = ALL;
 ");
         }
 

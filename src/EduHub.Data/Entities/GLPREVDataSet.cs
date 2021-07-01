@@ -638,8 +638,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLPREV]') AND name = N'Index_GL_TYPE')
-    ALTER INDEX [Index_GL_TYPE] ON [dbo].[GLPREV] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLPREV]') AND name = N'GLPREV_Index_GL_TYPE')
+    ALTER INDEX [GLPREV_Index_GL_TYPE] ON [dbo].[GLPREV] DISABLE;
 ");
         }
 
@@ -653,8 +653,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLPREV]') AND name = N'Index_GL_TYPE')
-    ALTER INDEX [Index_GL_TYPE] ON [dbo].[GLPREV] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLPREV]') AND name = N'GLPREV_Index_GL_TYPE')
+    ALTER INDEX [GLPREV_Index_GL_TYPE] ON [dbo].[GLPREV] REBUILD PARTITION = ALL;
 ");
         }
 

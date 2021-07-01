@@ -834,22 +834,22 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_BOX')
-    ALTER INDEX [Index_GST_BOX] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_SALE_PURCH')
-    ALTER INDEX [Index_GST_SALE_PURCH] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLCF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLCF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_BSB')
+    ALTER INDEX [GLCF_Index_BSB] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_BOX')
+    ALTER INDEX [GLCF_Index_GST_BOX] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_SALE_PURCH')
+    ALTER INDEX [GLCF_Index_GST_SALE_PURCH] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_TYPE')
+    ALTER INDEX [GLCF_Index_GST_TYPE] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_INITIATIVE')
+    ALTER INDEX [GLCF_Index_INITIATIVE] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_SUBPROGRAM')
+    ALTER INDEX [GLCF_Index_SUBPROGRAM] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_TID')
+    ALTER INDEX [GLCF_Index_TID] ON [dbo].[GLCF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_TRREF')
+    ALTER INDEX [GLCF_Index_TRREF] ON [dbo].[GLCF] DISABLE;
 ");
         }
 
@@ -863,22 +863,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_BOX')
-    ALTER INDEX [Index_GST_BOX] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_SALE_PURCH')
-    ALTER INDEX [Index_GST_SALE_PURCH] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_BSB')
+    ALTER INDEX [GLCF_Index_BSB] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_BOX')
+    ALTER INDEX [GLCF_Index_GST_BOX] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_SALE_PURCH')
+    ALTER INDEX [GLCF_Index_GST_SALE_PURCH] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_GST_TYPE')
+    ALTER INDEX [GLCF_Index_GST_TYPE] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_INITIATIVE')
+    ALTER INDEX [GLCF_Index_INITIATIVE] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_SUBPROGRAM')
+    ALTER INDEX [GLCF_Index_SUBPROGRAM] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_TID')
+    ALTER INDEX [GLCF_Index_TID] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[GLCF]') AND name = N'GLCF_Index_TRREF')
+    ALTER INDEX [GLCF_Index_TRREF] ON [dbo].[GLCF] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -358,12 +358,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GL_CODE')
-    ALTER INDEX [Index_GL_CODE] ON [dbo].[KUPC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GLPROGRAM01')
-    ALTER INDEX [Index_GLPROGRAM01] ON [dbo].[KUPC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GLPROGRAM02')
-    ALTER INDEX [Index_GLPROGRAM02] ON [dbo].[KUPC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GL_CODE')
+    ALTER INDEX [KUPC_Index_GL_CODE] ON [dbo].[KUPC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GLPROGRAM01')
+    ALTER INDEX [KUPC_Index_GLPROGRAM01] ON [dbo].[KUPC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GLPROGRAM02')
+    ALTER INDEX [KUPC_Index_GLPROGRAM02] ON [dbo].[KUPC] DISABLE;
 ");
         }
 
@@ -377,12 +377,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GL_CODE')
-    ALTER INDEX [Index_GL_CODE] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GLPROGRAM01')
-    ALTER INDEX [Index_GLPROGRAM01] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'Index_GLPROGRAM02')
-    ALTER INDEX [Index_GLPROGRAM02] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GL_CODE')
+    ALTER INDEX [KUPC_Index_GL_CODE] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GLPROGRAM01')
+    ALTER INDEX [KUPC_Index_GLPROGRAM01] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KUPC]') AND name = N'KUPC_Index_GLPROGRAM02')
+    ALTER INDEX [KUPC_Index_GLPROGRAM02] ON [dbo].[KUPC] REBUILD PARTITION = ALL;
 ");
         }
 

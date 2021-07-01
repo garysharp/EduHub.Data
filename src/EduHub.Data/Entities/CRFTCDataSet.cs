@@ -394,12 +394,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_FTC_CODE')
-    ALTER INDEX [Index_FTC_CODE] ON [dbo].[CRFTC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRFTC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRFTC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_FTC_CODE')
+    ALTER INDEX [CRFTC_Index_FTC_CODE] ON [dbo].[CRFTC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_TID')
+    ALTER INDEX [CRFTC_Index_TID] ON [dbo].[CRFTC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_TRREF')
+    ALTER INDEX [CRFTC_Index_TRREF] ON [dbo].[CRFTC] DISABLE;
 ");
         }
 
@@ -413,12 +413,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') A
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_FTC_CODE')
-    ALTER INDEX [Index_FTC_CODE] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_FTC_CODE')
+    ALTER INDEX [CRFTC_Index_FTC_CODE] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_TID')
+    ALTER INDEX [CRFTC_Index_TID] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRFTC]') AND name = N'CRFTC_Index_TRREF')
+    ALTER INDEX [CRFTC_Index_TRREF] ON [dbo].[CRFTC] REBUILD PARTITION = ALL;
 ");
         }
 

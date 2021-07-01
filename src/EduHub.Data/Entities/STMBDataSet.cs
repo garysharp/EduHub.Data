@@ -394,12 +394,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_AWARD')
-    ALTER INDEX [Index_AWARD] ON [dbo].[STMB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_B_CODE')
-    ALTER INDEX [Index_B_CODE] ON [dbo].[STMB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STMB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_AWARD')
+    ALTER INDEX [STMB_Index_AWARD] ON [dbo].[STMB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_B_CODE')
+    ALTER INDEX [STMB_Index_B_CODE] ON [dbo].[STMB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_TID')
+    ALTER INDEX [STMB_Index_TID] ON [dbo].[STMB] DISABLE;
 ");
         }
 
@@ -413,12 +413,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_AWARD')
-    ALTER INDEX [Index_AWARD] ON [dbo].[STMB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_B_CODE')
-    ALTER INDEX [Index_B_CODE] ON [dbo].[STMB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STMB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_AWARD')
+    ALTER INDEX [STMB_Index_AWARD] ON [dbo].[STMB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_B_CODE')
+    ALTER INDEX [STMB_Index_B_CODE] ON [dbo].[STMB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STMB]') AND name = N'STMB_Index_TID')
+    ALTER INDEX [STMB_Index_TID] ON [dbo].[STMB] REBUILD PARTITION = ALL;
 ");
         }
 

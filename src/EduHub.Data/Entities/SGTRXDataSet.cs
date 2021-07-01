@@ -278,8 +278,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGTRX]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGTRX] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGTRX]') AND name = N'SGTRX_Index_TID')
+    ALTER INDEX [SGTRX_Index_TID] ON [dbo].[SGTRX] DISABLE;
 ");
         }
 
@@ -293,8 +293,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGTRX]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGTRX] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGTRX]') AND name = N'SGTRX_Index_TID')
+    ALTER INDEX [SGTRX_Index_TID] ON [dbo].[SGTRX] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -473,16 +473,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[RQGL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_GLCODE_SUBPROGRAM_INITIATIVE')
-    ALTER INDEX [Index_GLCODE_SUBPROGRAM_INITIATIVE] ON [dbo].[RQGL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[RQGL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[RQGL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQGL] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_GLCODE')
+    ALTER INDEX [RQGL_Index_GLCODE] ON [dbo].[RQGL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_GLCODE_SUBPROGRAM_INITIATIVE')
+    ALTER INDEX [RQGL_Index_GLCODE_SUBPROGRAM_INITIATIVE] ON [dbo].[RQGL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_INITIATIVE')
+    ALTER INDEX [RQGL_Index_INITIATIVE] ON [dbo].[RQGL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_SUBPROGRAM')
+    ALTER INDEX [RQGL_Index_SUBPROGRAM] ON [dbo].[RQGL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_TID')
+    ALTER INDEX [RQGL_Index_TID] ON [dbo].[RQGL] DISABLE;
 ");
         }
 
@@ -496,16 +496,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_GLCODE_SUBPROGRAM_INITIATIVE')
-    ALTER INDEX [Index_GLCODE_SUBPROGRAM_INITIATIVE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_GLCODE')
+    ALTER INDEX [RQGL_Index_GLCODE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_GLCODE_SUBPROGRAM_INITIATIVE')
+    ALTER INDEX [RQGL_Index_GLCODE_SUBPROGRAM_INITIATIVE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_INITIATIVE')
+    ALTER INDEX [RQGL_Index_INITIATIVE] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_SUBPROGRAM')
+    ALTER INDEX [RQGL_Index_SUBPROGRAM] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQGL]') AND name = N'RQGL_Index_TID')
+    ALTER INDEX [RQGL_Index_TID] ON [dbo].[RQGL] REBUILD PARTITION = ALL;
 ");
         }
 

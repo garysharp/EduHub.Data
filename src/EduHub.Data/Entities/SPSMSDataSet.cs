@@ -278,8 +278,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'Index_REPLY_CODE')
-    ALTER INDEX [Index_REPLY_CODE] ON [dbo].[SPSMS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'SPSMS_Index_REPLY_CODE')
+    ALTER INDEX [SPSMS_Index_REPLY_CODE] ON [dbo].[SPSMS] DISABLE;
 ");
         }
 
@@ -293,8 +293,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'Index_REPLY_CODE')
-    ALTER INDEX [Index_REPLY_CODE] ON [dbo].[SPSMS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPSMS]') AND name = N'SPSMS_Index_REPLY_CODE')
+    ALTER INDEX [SPSMS_Index_REPLY_CODE] ON [dbo].[SPSMS] REBUILD PARTITION = ALL;
 ");
         }
 

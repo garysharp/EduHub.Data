@@ -286,8 +286,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'Index_KGCKEY')
-    ALTER INDEX [Index_KGCKEY] ON [dbo].[KGCHI] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'KGCHI_Index_KGCKEY')
+    ALTER INDEX [KGCHI_Index_KGCKEY] ON [dbo].[KGCHI] DISABLE;
 ");
         }
 
@@ -301,8 +301,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'Index_KGCKEY')
-    ALTER INDEX [Index_KGCKEY] ON [dbo].[KGCHI] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KGCHI]') AND name = N'KGCHI_Index_KGCKEY')
+    ALTER INDEX [KGCHI_Index_KGCKEY] ON [dbo].[KGCHI] REBUILD PARTITION = ALL;
 ");
         }
 

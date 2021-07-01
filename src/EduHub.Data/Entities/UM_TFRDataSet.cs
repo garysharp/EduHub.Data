@@ -377,10 +377,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[UM_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_UM_TRANS_ID')
-    ALTER INDEX [Index_UM_TRANS_ID] ON [dbo].[UM_TFR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'UM_TFR_Index_TID')
+    ALTER INDEX [UM_TFR_Index_TID] ON [dbo].[UM_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'UM_TFR_Index_UM_TRANS_ID')
+    ALTER INDEX [UM_TFR_Index_UM_TRANS_ID] ON [dbo].[UM_TFR] DISABLE;
 ");
         }
 
@@ -394,10 +394,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'Index_UM_TRANS_ID')
-    ALTER INDEX [Index_UM_TRANS_ID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'UM_TFR_Index_TID')
+    ALTER INDEX [UM_TFR_Index_TID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM_TFR]') AND name = N'UM_TFR_Index_UM_TRANS_ID')
+    ALTER INDEX [UM_TFR_Index_UM_TRANS_ID] ON [dbo].[UM_TFR] REBUILD PARTITION = ALL;
 ");
         }
 

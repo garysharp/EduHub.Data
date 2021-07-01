@@ -314,10 +314,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'Index_HOME_GROUP')
-    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[TXHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TXHG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'TXHG_Index_HOME_GROUP')
+    ALTER INDEX [TXHG_Index_HOME_GROUP] ON [dbo].[TXHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'TXHG_Index_LW_DATE')
+    ALTER INDEX [TXHG_Index_LW_DATE] ON [dbo].[TXHG] DISABLE;
 ");
         }
 
@@ -331,10 +331,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'Index_HOME_GROUP')
-    ALTER INDEX [Index_HOME_GROUP] ON [dbo].[TXHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[TXHG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'TXHG_Index_HOME_GROUP')
+    ALTER INDEX [TXHG_Index_HOME_GROUP] ON [dbo].[TXHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TXHG]') AND name = N'TXHG_Index_LW_DATE')
+    ALTER INDEX [TXHG_Index_LW_DATE] ON [dbo].[TXHG] REBUILD PARTITION = ALL;
 ");
         }
 

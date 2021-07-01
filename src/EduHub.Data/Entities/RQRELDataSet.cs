@@ -361,12 +361,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[RQREL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_SFKEY_RQPGKEY')
-    ALTER INDEX [Index_SFKEY_RQPGKEY] ON [dbo].[RQREL] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQREL] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_SFKEY')
+    ALTER INDEX [RQREL_Index_SFKEY] ON [dbo].[RQREL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_SFKEY_RQPGKEY')
+    ALTER INDEX [RQREL_Index_SFKEY_RQPGKEY] ON [dbo].[RQREL] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_TID')
+    ALTER INDEX [RQREL_Index_TID] ON [dbo].[RQREL] DISABLE;
 ");
         }
 
@@ -380,12 +380,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') A
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_SFKEY_RQPGKEY')
-    ALTER INDEX [Index_SFKEY_RQPGKEY] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_SFKEY')
+    ALTER INDEX [RQREL_Index_SFKEY] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_SFKEY_RQPGKEY')
+    ALTER INDEX [RQREL_Index_SFKEY_RQPGKEY] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQREL]') AND name = N'RQREL_Index_TID')
+    ALTER INDEX [RQREL_Index_TID] ON [dbo].[RQREL] REBUILD PARTITION = ALL;
 ");
         }
 

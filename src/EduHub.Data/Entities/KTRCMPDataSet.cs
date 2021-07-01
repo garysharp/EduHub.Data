@@ -351,10 +351,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'Index_COMPANY_CODE')
-    ALTER INDEX [Index_COMPANY_CODE] ON [dbo].[KTRCMP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'Index_COMPANY_NAME')
-    ALTER INDEX [Index_COMPANY_NAME] ON [dbo].[KTRCMP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'KTRCMP_Index_COMPANY_CODE')
+    ALTER INDEX [KTRCMP_Index_COMPANY_CODE] ON [dbo].[KTRCMP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'KTRCMP_Index_COMPANY_NAME')
+    ALTER INDEX [KTRCMP_Index_COMPANY_NAME] ON [dbo].[KTRCMP] DISABLE;
 ");
         }
 
@@ -368,10 +368,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'Index_COMPANY_CODE')
-    ALTER INDEX [Index_COMPANY_CODE] ON [dbo].[KTRCMP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'Index_COMPANY_NAME')
-    ALTER INDEX [Index_COMPANY_NAME] ON [dbo].[KTRCMP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'KTRCMP_Index_COMPANY_CODE')
+    ALTER INDEX [KTRCMP_Index_COMPANY_CODE] ON [dbo].[KTRCMP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KTRCMP]') AND name = N'KTRCMP_Index_COMPANY_NAME')
+    ALTER INDEX [KTRCMP_Index_COMPANY_NAME] ON [dbo].[KTRCMP] REBUILD PARTITION = ALL;
 ");
         }
 

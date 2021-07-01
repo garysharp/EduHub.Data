@@ -433,14 +433,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_MEETING_LOCATION')
-    ALTER INDEX [Index_MEETING_LOCATION] ON [dbo].[SCAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_MEETING_ROOM')
-    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SCAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_SCAMKEY_MEETING_DATE_MEETING_TIME')
-    ALTER INDEX [Index_SCAMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SCAM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SCAM] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_MEETING_LOCATION')
+    ALTER INDEX [SCAM_Index_MEETING_LOCATION] ON [dbo].[SCAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_MEETING_ROOM')
+    ALTER INDEX [SCAM_Index_MEETING_ROOM] ON [dbo].[SCAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_SCAMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [SCAM_Index_SCAMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SCAM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_TID')
+    ALTER INDEX [SCAM_Index_TID] ON [dbo].[SCAM] DISABLE;
 ");
         }
 
@@ -454,14 +454,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_MEETING_LOCATION')
-    ALTER INDEX [Index_MEETING_LOCATION] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_MEETING_ROOM')
-    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_SCAMKEY_MEETING_DATE_MEETING_TIME')
-    ALTER INDEX [Index_SCAMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_MEETING_LOCATION')
+    ALTER INDEX [SCAM_Index_MEETING_LOCATION] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_MEETING_ROOM')
+    ALTER INDEX [SCAM_Index_MEETING_ROOM] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_SCAMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [SCAM_Index_SCAMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SCAM]') AND name = N'SCAM_Index_TID')
+    ALTER INDEX [SCAM_Index_TID] ON [dbo].[SCAM] REBUILD PARTITION = ALL;
 ");
         }
 

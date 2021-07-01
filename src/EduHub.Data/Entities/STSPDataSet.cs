@@ -494,12 +494,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_REF_TEACHERA')
-    ALTER INDEX [Index_REF_TEACHERA] ON [dbo].[STSP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_REF_TEACHERB')
-    ALTER INDEX [Index_REF_TEACHERB] ON [dbo].[STSP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_REF_TEACHERA')
+    ALTER INDEX [STSP_Index_REF_TEACHERA] ON [dbo].[STSP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_REF_TEACHERB')
+    ALTER INDEX [STSP_Index_REF_TEACHERB] ON [dbo].[STSP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_TID')
+    ALTER INDEX [STSP_Index_TID] ON [dbo].[STSP] DISABLE;
 ");
         }
 
@@ -513,12 +513,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_REF_TEACHERA')
-    ALTER INDEX [Index_REF_TEACHERA] ON [dbo].[STSP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_REF_TEACHERB')
-    ALTER INDEX [Index_REF_TEACHERB] ON [dbo].[STSP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_REF_TEACHERA')
+    ALTER INDEX [STSP_Index_REF_TEACHERA] ON [dbo].[STSP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_REF_TEACHERB')
+    ALTER INDEX [STSP_Index_REF_TEACHERB] ON [dbo].[STSP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSP]') AND name = N'STSP_Index_TID')
+    ALTER INDEX [STSP_Index_TID] ON [dbo].[STSP] REBUILD PARTITION = ALL;
 ");
         }
 

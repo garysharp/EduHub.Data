@@ -1050,28 +1050,28 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
-    ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_DEL_CODE')
-    ALTER INDEX [Index_DEL_CODE] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
-    ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_STAFF_ORDER_BY')
-    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_APPROVED_BY')
+    ALTER INDEX [CRF_Index_APPROVED_BY] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_ATKEY')
+    ALTER INDEX [CRF_Index_ATKEY] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_BSB')
+    ALTER INDEX [CRF_Index_BSB] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_DEL_CODE')
+    ALTER INDEX [CRF_Index_DEL_CODE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_GST_TYPE')
+    ALTER INDEX [CRF_Index_GST_TYPE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_INITIATIVE')
+    ALTER INDEX [CRF_Index_INITIATIVE] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_INVOICEGST')
+    ALTER INDEX [CRF_Index_INVOICEGST] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_STAFF_ORDER_BY')
+    ALTER INDEX [CRF_Index_STAFF_ORDER_BY] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_SUBPROGRAM')
+    ALTER INDEX [CRF_Index_SUBPROGRAM] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_TID')
+    ALTER INDEX [CRF_Index_TID] ON [dbo].[CRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_TRREF')
+    ALTER INDEX [CRF_Index_TRREF] ON [dbo].[CRF] DISABLE;
 ");
         }
 
@@ -1085,28 +1085,28 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_APPROVED_BY')
-    ALTER INDEX [Index_APPROVED_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_ATKEY')
-    ALTER INDEX [Index_ATKEY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_DEL_CODE')
-    ALTER INDEX [Index_DEL_CODE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_INVOICEGST')
-    ALTER INDEX [Index_INVOICEGST] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_STAFF_ORDER_BY')
-    ALTER INDEX [Index_STAFF_ORDER_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_APPROVED_BY')
+    ALTER INDEX [CRF_Index_APPROVED_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_ATKEY')
+    ALTER INDEX [CRF_Index_ATKEY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_BSB')
+    ALTER INDEX [CRF_Index_BSB] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_DEL_CODE')
+    ALTER INDEX [CRF_Index_DEL_CODE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_GST_TYPE')
+    ALTER INDEX [CRF_Index_GST_TYPE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_INITIATIVE')
+    ALTER INDEX [CRF_Index_INITIATIVE] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_INVOICEGST')
+    ALTER INDEX [CRF_Index_INVOICEGST] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_STAFF_ORDER_BY')
+    ALTER INDEX [CRF_Index_STAFF_ORDER_BY] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_SUBPROGRAM')
+    ALTER INDEX [CRF_Index_SUBPROGRAM] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_TID')
+    ALTER INDEX [CRF_Index_TID] ON [dbo].[CRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRF]') AND name = N'CRF_Index_TRREF')
+    ALTER INDEX [CRF_Index_TRREF] ON [dbo].[CRF] REBUILD PARTITION = ALL;
 ");
         }
 

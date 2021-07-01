@@ -438,8 +438,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'Index_DRTABLEA')
-    ALTER INDEX [Index_DRTABLEA] ON [dbo].[DR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
+    ALTER INDEX [DR_Index_DRTABLEA] ON [dbo].[DR] DISABLE;
 ");
         }
 
@@ -453,8 +453,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'Index_DRTABLEA')
-    ALTER INDEX [Index_DRTABLEA] ON [dbo].[DR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
+    ALTER INDEX [DR_Index_DRTABLEA] ON [dbo].[DR] REBUILD PARTITION = ALL;
 ");
         }
 

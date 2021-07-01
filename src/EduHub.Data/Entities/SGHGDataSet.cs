@@ -306,10 +306,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'Index_KGCLINK')
-    ALTER INDEX [Index_KGCLINK] ON [dbo].[SGHG] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGHG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'SGHG_Index_KGCLINK')
+    ALTER INDEX [SGHG_Index_KGCLINK] ON [dbo].[SGHG] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'SGHG_Index_TID')
+    ALTER INDEX [SGHG_Index_TID] ON [dbo].[SGHG] DISABLE;
 ");
         }
 
@@ -323,10 +323,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'Index_KGCLINK')
-    ALTER INDEX [Index_KGCLINK] ON [dbo].[SGHG] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGHG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'SGHG_Index_KGCLINK')
+    ALTER INDEX [SGHG_Index_KGCLINK] ON [dbo].[SGHG] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGHG]') AND name = N'SGHG_Index_TID')
+    ALTER INDEX [SGHG_Index_TID] ON [dbo].[SGHG] REBUILD PARTITION = ALL;
 ");
         }
 

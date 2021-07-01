@@ -438,14 +438,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[SDFC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[SDFC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[SDFC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[SDFC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_GLCODE')
+    ALTER INDEX [SDFC_Index_GLCODE] ON [dbo].[SDFC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_GST_TYPE')
+    ALTER INDEX [SDFC_Index_GST_TYPE] ON [dbo].[SDFC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_INITIATIVE')
+    ALTER INDEX [SDFC_Index_INITIATIVE] ON [dbo].[SDFC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_SUBPROGRAM')
+    ALTER INDEX [SDFC_Index_SUBPROGRAM] ON [dbo].[SDFC] DISABLE;
 ");
         }
 
@@ -459,14 +459,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_GLCODE')
+    ALTER INDEX [SDFC_Index_GLCODE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_GST_TYPE')
+    ALTER INDEX [SDFC_Index_GST_TYPE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_INITIATIVE')
+    ALTER INDEX [SDFC_Index_INITIATIVE] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SDFC]') AND name = N'SDFC_Index_SUBPROGRAM')
+    ALTER INDEX [SDFC_Index_SUBPROGRAM] ON [dbo].[SDFC] REBUILD PARTITION = ALL;
 ");
         }
 

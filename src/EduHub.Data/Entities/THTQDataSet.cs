@@ -854,28 +854,28 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_EXTRA_ROOM')
-    ALTER INDEX [Index_EXTRA_ROOM] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_EXTRA_TEACH')
-    ALTER INDEX [Index_EXTRA_TEACH] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_GKEY')
-    ALTER INDEX [Index_GKEY] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_R1ROOM')
-    ALTER INDEX [Index_R1ROOM] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_R2ROOM')
-    ALTER INDEX [Index_R2ROOM] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_T1TEACH')
-    ALTER INDEX [Index_T1TEACH] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_T2TEACH')
-    ALTER INDEX [Index_T2TEACH] ON [dbo].[THTQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[THTQ] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_EXTRA_ROOM')
+    ALTER INDEX [THTQ_Index_EXTRA_ROOM] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_EXTRA_TEACH')
+    ALTER INDEX [THTQ_Index_EXTRA_TEACH] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_GKEY')
+    ALTER INDEX [THTQ_Index_GKEY] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_IDENT')
+    ALTER INDEX [THTQ_Index_IDENT] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_LW_DATE')
+    ALTER INDEX [THTQ_Index_LW_DATE] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_R1ROOM')
+    ALTER INDEX [THTQ_Index_R1ROOM] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_R2ROOM')
+    ALTER INDEX [THTQ_Index_R2ROOM] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_SUBJ')
+    ALTER INDEX [THTQ_Index_SUBJ] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_T1TEACH')
+    ALTER INDEX [THTQ_Index_T1TEACH] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_T2TEACH')
+    ALTER INDEX [THTQ_Index_T2TEACH] ON [dbo].[THTQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_TID')
+    ALTER INDEX [THTQ_Index_TID] ON [dbo].[THTQ] DISABLE;
 ");
         }
 
@@ -889,28 +889,28 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_EXTRA_ROOM')
-    ALTER INDEX [Index_EXTRA_ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_EXTRA_TEACH')
-    ALTER INDEX [Index_EXTRA_TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_GKEY')
-    ALTER INDEX [Index_GKEY] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_IDENT')
-    ALTER INDEX [Index_IDENT] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_R1ROOM')
-    ALTER INDEX [Index_R1ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_R2ROOM')
-    ALTER INDEX [Index_R2ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_T1TEACH')
-    ALTER INDEX [Index_T1TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_T2TEACH')
-    ALTER INDEX [Index_T2TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_EXTRA_ROOM')
+    ALTER INDEX [THTQ_Index_EXTRA_ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_EXTRA_TEACH')
+    ALTER INDEX [THTQ_Index_EXTRA_TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_GKEY')
+    ALTER INDEX [THTQ_Index_GKEY] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_IDENT')
+    ALTER INDEX [THTQ_Index_IDENT] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_LW_DATE')
+    ALTER INDEX [THTQ_Index_LW_DATE] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_R1ROOM')
+    ALTER INDEX [THTQ_Index_R1ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_R2ROOM')
+    ALTER INDEX [THTQ_Index_R2ROOM] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_SUBJ')
+    ALTER INDEX [THTQ_Index_SUBJ] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_T1TEACH')
+    ALTER INDEX [THTQ_Index_T1TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_T2TEACH')
+    ALTER INDEX [THTQ_Index_T2TEACH] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[THTQ]') AND name = N'THTQ_Index_TID')
+    ALTER INDEX [THTQ_Index_TID] ON [dbo].[THTQ] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -433,14 +433,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_DATE')
-    ALTER INDEX [Index_MEETING_DATE] ON [dbo].[SGM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_ROOM')
-    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SGM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_SGMKEY_MEETING_DATE_MEETING_TIME')
-    ALTER INDEX [Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGM] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_MEETING_DATE')
+    ALTER INDEX [SGM_Index_MEETING_DATE] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_MEETING_ROOM')
+    ALTER INDEX [SGM_Index_MEETING_ROOM] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_SGMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [SGM_Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_TID')
+    ALTER INDEX [SGM_Index_TID] ON [dbo].[SGM] DISABLE;
 ");
         }
 
@@ -454,14 +454,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_DATE')
-    ALTER INDEX [Index_MEETING_DATE] ON [dbo].[SGM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_MEETING_ROOM')
-    ALTER INDEX [Index_MEETING_ROOM] ON [dbo].[SGM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_SGMKEY_MEETING_DATE_MEETING_TIME')
-    ALTER INDEX [Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_MEETING_DATE')
+    ALTER INDEX [SGM_Index_MEETING_DATE] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_MEETING_ROOM')
+    ALTER INDEX [SGM_Index_MEETING_ROOM] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_SGMKEY_MEETING_DATE_MEETING_TIME')
+    ALTER INDEX [SGM_Index_SGMKEY_MEETING_DATE_MEETING_TIME] ON [dbo].[SGM] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SGM]') AND name = N'SGM_Index_TID')
+    ALTER INDEX [SGM_Index_TID] ON [dbo].[SGM] REBUILD PARTITION = ALL;
 ");
         }
 

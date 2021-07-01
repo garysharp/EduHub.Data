@@ -449,14 +449,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_PEKEY_LEAVE_CODE')
-    ALTER INDEX [Index_PEKEY_LEAVE_CODE] ON [dbo].[PELD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_PLTKEY')
-    ALTER INDEX [Index_PLTKEY] ON [dbo].[PELD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PELD] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_LEAVE_CODE')
+    ALTER INDEX [PELD_Index_LEAVE_CODE] ON [dbo].[PELD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_PEKEY_LEAVE_CODE')
+    ALTER INDEX [PELD_Index_PEKEY_LEAVE_CODE] ON [dbo].[PELD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_PLTKEY')
+    ALTER INDEX [PELD_Index_PLTKEY] ON [dbo].[PELD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_TID')
+    ALTER INDEX [PELD_Index_TID] ON [dbo].[PELD] DISABLE;
 ");
         }
 
@@ -470,14 +470,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_LEAVE_CODE')
-    ALTER INDEX [Index_LEAVE_CODE] ON [dbo].[PELD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_PEKEY_LEAVE_CODE')
-    ALTER INDEX [Index_PEKEY_LEAVE_CODE] ON [dbo].[PELD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_PLTKEY')
-    ALTER INDEX [Index_PLTKEY] ON [dbo].[PELD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PELD] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_LEAVE_CODE')
+    ALTER INDEX [PELD_Index_LEAVE_CODE] ON [dbo].[PELD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_PEKEY_LEAVE_CODE')
+    ALTER INDEX [PELD_Index_PEKEY_LEAVE_CODE] ON [dbo].[PELD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_PLTKEY')
+    ALTER INDEX [PELD_Index_PLTKEY] ON [dbo].[PELD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PELD]') AND name = N'PELD_Index_TID')
+    ALTER INDEX [PELD_Index_TID] ON [dbo].[PELD] REBUILD PARTITION = ALL;
 ");
         }
 

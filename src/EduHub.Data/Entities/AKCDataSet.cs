@@ -814,28 +814,28 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_APTE_GLCODE')
-    ALTER INDEX [Index_APTE_GLCODE] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_AMETHOD')
-    ALTER INDEX [Index_DEPN_AMETHOD] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_TMETHOD')
-    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROC')
-    ALTER INDEX [Index_GL_DISP_PROC] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROF')
-    ALTER INDEX [Index_GL_DISP_PROF] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_ASS')
-    ALTER INDEX [Index_GL_REVALS_ASS] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_BS')
-    ALTER INDEX [Index_GL_REVALS_BS] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_PL')
-    ALTER INDEX [Index_GL_REVALS_PL] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_ASS')
-    ALTER INDEX [Index_GLCODE_ASS] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_EXP')
-    ALTER INDEX [Index_GLCODE_EXP] ON [dbo].[AKC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_PRV')
-    ALTER INDEX [Index_GLCODE_PRV] ON [dbo].[AKC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_APTE_GLCODE')
+    ALTER INDEX [AKC_Index_APTE_GLCODE] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_DEPN_AMETHOD')
+    ALTER INDEX [AKC_Index_DEPN_AMETHOD] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_DEPN_TMETHOD')
+    ALTER INDEX [AKC_Index_DEPN_TMETHOD] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_DISP_PROC')
+    ALTER INDEX [AKC_Index_GL_DISP_PROC] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_DISP_PROF')
+    ALTER INDEX [AKC_Index_GL_DISP_PROF] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_ASS')
+    ALTER INDEX [AKC_Index_GL_REVALS_ASS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_BS')
+    ALTER INDEX [AKC_Index_GL_REVALS_BS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_PL')
+    ALTER INDEX [AKC_Index_GL_REVALS_PL] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_ASS')
+    ALTER INDEX [AKC_Index_GLCODE_ASS] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_EXP')
+    ALTER INDEX [AKC_Index_GLCODE_EXP] ON [dbo].[AKC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_PRV')
+    ALTER INDEX [AKC_Index_GLCODE_PRV] ON [dbo].[AKC] DISABLE;
 ");
         }
 
@@ -849,28 +849,28 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_APTE_GLCODE')
-    ALTER INDEX [Index_APTE_GLCODE] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_AMETHOD')
-    ALTER INDEX [Index_DEPN_AMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_DEPN_TMETHOD')
-    ALTER INDEX [Index_DEPN_TMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROC')
-    ALTER INDEX [Index_GL_DISP_PROC] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_DISP_PROF')
-    ALTER INDEX [Index_GL_DISP_PROF] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_ASS')
-    ALTER INDEX [Index_GL_REVALS_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_BS')
-    ALTER INDEX [Index_GL_REVALS_BS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GL_REVALS_PL')
-    ALTER INDEX [Index_GL_REVALS_PL] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_ASS')
-    ALTER INDEX [Index_GLCODE_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_EXP')
-    ALTER INDEX [Index_GLCODE_EXP] ON [dbo].[AKC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'Index_GLCODE_PRV')
-    ALTER INDEX [Index_GLCODE_PRV] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_APTE_GLCODE')
+    ALTER INDEX [AKC_Index_APTE_GLCODE] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_DEPN_AMETHOD')
+    ALTER INDEX [AKC_Index_DEPN_AMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_DEPN_TMETHOD')
+    ALTER INDEX [AKC_Index_DEPN_TMETHOD] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_DISP_PROC')
+    ALTER INDEX [AKC_Index_GL_DISP_PROC] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_DISP_PROF')
+    ALTER INDEX [AKC_Index_GL_DISP_PROF] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_ASS')
+    ALTER INDEX [AKC_Index_GL_REVALS_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_BS')
+    ALTER INDEX [AKC_Index_GL_REVALS_BS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GL_REVALS_PL')
+    ALTER INDEX [AKC_Index_GL_REVALS_PL] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_ASS')
+    ALTER INDEX [AKC_Index_GLCODE_ASS] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_EXP')
+    ALTER INDEX [AKC_Index_GLCODE_EXP] ON [dbo].[AKC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AKC]') AND name = N'AKC_Index_GLCODE_PRV')
+    ALTER INDEX [AKC_Index_GLCODE_PRV] ON [dbo].[AKC] REBUILD PARTITION = ALL;
 ");
         }
 

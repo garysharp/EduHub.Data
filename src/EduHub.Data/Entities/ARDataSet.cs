@@ -1353,36 +1353,36 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_AMETHOD')
-    ALTER INDEX [Index_AMETHOD] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ARNUMBER')
-    ALTER INDEX [Index_ARNUMBER] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ASSET_TYPE')
-    ALTER INDEX [Index_ASSET_TYPE] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_BRANCH')
-    ALTER INDEX [Index_BRANCH] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CATEGORY')
-    ALTER INDEX [Index_CATEGORY] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_COMPONENT_OF')
-    ALTER INDEX [Index_COMPONENT_OF] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CURR_SUPPLIER')
-    ALTER INDEX [Index_CURR_SUPPLIER] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_DEPARTMENT')
-    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ORIG_SUPPLIER')
-    ALTER INDEX [Index_ORIG_SUPPLIER] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_PTE_GLCODE')
-    ALTER INDEX [Index_PTE_GLCODE] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_RELEASE_TYPE')
-    ALTER INDEX [Index_RELEASE_TYPE] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_TAX_CATEGORY')
-    ALTER INDEX [Index_TAX_CATEGORY] ON [dbo].[AR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_TMETHOD')
-    ALTER INDEX [Index_TMETHOD] ON [dbo].[AR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_AMETHOD')
+    ALTER INDEX [AR_Index_AMETHOD] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ARNUMBER')
+    ALTER INDEX [AR_Index_ARNUMBER] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ASSET_TYPE')
+    ALTER INDEX [AR_Index_ASSET_TYPE] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_BRANCH')
+    ALTER INDEX [AR_Index_BRANCH] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CAMPUS')
+    ALTER INDEX [AR_Index_CAMPUS] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CATEGORY')
+    ALTER INDEX [AR_Index_CATEGORY] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_COMPONENT_OF')
+    ALTER INDEX [AR_Index_COMPONENT_OF] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CURR_SUPPLIER')
+    ALTER INDEX [AR_Index_CURR_SUPPLIER] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_DEPARTMENT')
+    ALTER INDEX [AR_Index_DEPARTMENT] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_LOCATION')
+    ALTER INDEX [AR_Index_LOCATION] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ORIG_SUPPLIER')
+    ALTER INDEX [AR_Index_ORIG_SUPPLIER] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_PTE_GLCODE')
+    ALTER INDEX [AR_Index_PTE_GLCODE] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_RELEASE_TYPE')
+    ALTER INDEX [AR_Index_RELEASE_TYPE] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_TAX_CATEGORY')
+    ALTER INDEX [AR_Index_TAX_CATEGORY] ON [dbo].[AR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_TMETHOD')
+    ALTER INDEX [AR_Index_TMETHOD] ON [dbo].[AR] DISABLE;
 ");
         }
 
@@ -1396,36 +1396,36 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_AMETHOD')
-    ALTER INDEX [Index_AMETHOD] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ARNUMBER')
-    ALTER INDEX [Index_ARNUMBER] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ASSET_TYPE')
-    ALTER INDEX [Index_ASSET_TYPE] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_BRANCH')
-    ALTER INDEX [Index_BRANCH] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CATEGORY')
-    ALTER INDEX [Index_CATEGORY] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_COMPONENT_OF')
-    ALTER INDEX [Index_COMPONENT_OF] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_CURR_SUPPLIER')
-    ALTER INDEX [Index_CURR_SUPPLIER] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_DEPARTMENT')
-    ALTER INDEX [Index_DEPARTMENT] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_ORIG_SUPPLIER')
-    ALTER INDEX [Index_ORIG_SUPPLIER] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_PTE_GLCODE')
-    ALTER INDEX [Index_PTE_GLCODE] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_RELEASE_TYPE')
-    ALTER INDEX [Index_RELEASE_TYPE] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_TAX_CATEGORY')
-    ALTER INDEX [Index_TAX_CATEGORY] ON [dbo].[AR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'Index_TMETHOD')
-    ALTER INDEX [Index_TMETHOD] ON [dbo].[AR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_AMETHOD')
+    ALTER INDEX [AR_Index_AMETHOD] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ARNUMBER')
+    ALTER INDEX [AR_Index_ARNUMBER] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ASSET_TYPE')
+    ALTER INDEX [AR_Index_ASSET_TYPE] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_BRANCH')
+    ALTER INDEX [AR_Index_BRANCH] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CAMPUS')
+    ALTER INDEX [AR_Index_CAMPUS] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CATEGORY')
+    ALTER INDEX [AR_Index_CATEGORY] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_COMPONENT_OF')
+    ALTER INDEX [AR_Index_COMPONENT_OF] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_CURR_SUPPLIER')
+    ALTER INDEX [AR_Index_CURR_SUPPLIER] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_DEPARTMENT')
+    ALTER INDEX [AR_Index_DEPARTMENT] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_LOCATION')
+    ALTER INDEX [AR_Index_LOCATION] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_ORIG_SUPPLIER')
+    ALTER INDEX [AR_Index_ORIG_SUPPLIER] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_PTE_GLCODE')
+    ALTER INDEX [AR_Index_PTE_GLCODE] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_RELEASE_TYPE')
+    ALTER INDEX [AR_Index_RELEASE_TYPE] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_TAX_CATEGORY')
+    ALTER INDEX [AR_Index_TAX_CATEGORY] ON [dbo].[AR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND name = N'AR_Index_TMETHOD')
+    ALTER INDEX [AR_Index_TMETHOD] ON [dbo].[AR] REBUILD PARTITION = ALL;
 ");
         }
 

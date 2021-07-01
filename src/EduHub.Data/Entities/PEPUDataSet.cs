@@ -510,16 +510,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PEPU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_PAYITEM')
-    ALTER INDEX [Index_PAYITEM] ON [dbo].[PEPU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PEPU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_SUPER_FUND')
-    ALTER INDEX [Index_SUPER_FUND] ON [dbo].[PEPU] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPU] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_INITIATIVE')
+    ALTER INDEX [PEPU_Index_INITIATIVE] ON [dbo].[PEPU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_PAYITEM')
+    ALTER INDEX [PEPU_Index_PAYITEM] ON [dbo].[PEPU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_SUBPROGRAM')
+    ALTER INDEX [PEPU_Index_SUBPROGRAM] ON [dbo].[PEPU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_SUPER_FUND')
+    ALTER INDEX [PEPU_Index_SUPER_FUND] ON [dbo].[PEPU] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_TID')
+    ALTER INDEX [PEPU_Index_TID] ON [dbo].[PEPU] DISABLE;
 ");
         }
 
@@ -533,16 +533,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_PAYITEM')
-    ALTER INDEX [Index_PAYITEM] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_SUPER_FUND')
-    ALTER INDEX [Index_SUPER_FUND] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_INITIATIVE')
+    ALTER INDEX [PEPU_Index_INITIATIVE] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_PAYITEM')
+    ALTER INDEX [PEPU_Index_PAYITEM] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_SUBPROGRAM')
+    ALTER INDEX [PEPU_Index_SUBPROGRAM] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_SUPER_FUND')
+    ALTER INDEX [PEPU_Index_SUPER_FUND] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPU]') AND name = N'PEPU_Index_TID')
+    ALTER INDEX [PEPU_Index_TID] ON [dbo].[PEPU] REBUILD PARTITION = ALL;
 ");
         }
 

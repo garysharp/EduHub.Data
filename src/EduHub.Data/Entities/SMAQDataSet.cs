@@ -318,10 +318,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'Index_QKEY')
-    ALTER INDEX [Index_QKEY] ON [dbo].[SMAQ] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SMAQ] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'SMAQ_Index_QKEY')
+    ALTER INDEX [SMAQ_Index_QKEY] ON [dbo].[SMAQ] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'SMAQ_Index_TID')
+    ALTER INDEX [SMAQ_Index_TID] ON [dbo].[SMAQ] DISABLE;
 ");
         }
 
@@ -335,10 +335,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'Index_QKEY')
-    ALTER INDEX [Index_QKEY] ON [dbo].[SMAQ] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SMAQ] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'SMAQ_Index_QKEY')
+    ALTER INDEX [SMAQ_Index_QKEY] ON [dbo].[SMAQ] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMAQ]') AND name = N'SMAQ_Index_TID')
+    ALTER INDEX [SMAQ_Index_TID] ON [dbo].[SMAQ] REBUILD PARTITION = ALL;
 ");
         }
 

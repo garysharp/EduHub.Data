@@ -386,12 +386,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TCTR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TEACH')
-    ALTER INDEX [Index_TEACH] ON [dbo].[TCTR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_ROOM')
+    ALTER INDEX [TCTR_Index_ROOM] ON [dbo].[TCTR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_TEACH')
+    ALTER INDEX [TCTR_Index_TEACH] ON [dbo].[TCTR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_TID')
+    ALTER INDEX [TCTR_Index_TID] ON [dbo].[TCTR] DISABLE;
 ");
         }
 
@@ -405,12 +405,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TEACH')
-    ALTER INDEX [Index_TEACH] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_ROOM')
+    ALTER INDEX [TCTR_Index_ROOM] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_TEACH')
+    ALTER INDEX [TCTR_Index_TEACH] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTR]') AND name = N'TCTR_Index_TID')
+    ALTER INDEX [TCTR_Index_TID] ON [dbo].[TCTR] REBUILD PARTITION = ALL;
 ");
         }
 

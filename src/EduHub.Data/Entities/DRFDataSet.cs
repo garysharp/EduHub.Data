@@ -814,22 +814,22 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TRBATCH')
-    ALTER INDEX [Index_TRBATCH] ON [dbo].[DRF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[DRF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_BSB')
+    ALTER INDEX [DRF_Index_BSB] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_FEE_CODE')
+    ALTER INDEX [DRF_Index_FEE_CODE] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_GST_TYPE')
+    ALTER INDEX [DRF_Index_GST_TYPE] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_INITIATIVE')
+    ALTER INDEX [DRF_Index_INITIATIVE] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_SUBPROGRAM')
+    ALTER INDEX [DRF_Index_SUBPROGRAM] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TID')
+    ALTER INDEX [DRF_Index_TID] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TRBATCH')
+    ALTER INDEX [DRF_Index_TRBATCH] ON [dbo].[DRF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TRREF')
+    ALTER INDEX [DRF_Index_TRREF] ON [dbo].[DRF] DISABLE;
 ");
         }
 
@@ -843,22 +843,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TRBATCH')
-    ALTER INDEX [Index_TRBATCH] ON [dbo].[DRF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_BSB')
+    ALTER INDEX [DRF_Index_BSB] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_FEE_CODE')
+    ALTER INDEX [DRF_Index_FEE_CODE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_GST_TYPE')
+    ALTER INDEX [DRF_Index_GST_TYPE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_INITIATIVE')
+    ALTER INDEX [DRF_Index_INITIATIVE] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_SUBPROGRAM')
+    ALTER INDEX [DRF_Index_SUBPROGRAM] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TID')
+    ALTER INDEX [DRF_Index_TID] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TRBATCH')
+    ALTER INDEX [DRF_Index_TRBATCH] ON [dbo].[DRF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DRF]') AND name = N'DRF_Index_TRREF')
+    ALTER INDEX [DRF_Index_TRREF] ON [dbo].[DRF] REBUILD PARTITION = ALL;
 ");
         }
 

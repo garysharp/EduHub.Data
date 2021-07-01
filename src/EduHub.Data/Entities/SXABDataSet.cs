@@ -809,26 +809,26 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_AM_ACT_TYPE')
-    ALTER INDEX [Index_AM_ACT_TYPE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_AM_EXP_TYPE')
-    ALTER INDEX [Index_AM_EXP_TYPE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_PM_ACT_TYPE')
-    ALTER INDEX [Index_PM_ACT_TYPE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_PM_EXP_TYPE')
-    ALTER INDEX [Index_PM_EXP_TYPE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_ST_YEAR_LEVEL')
-    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY')
-    ALTER INDEX [Index_STKEY] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_ABSENCE_DATE')
-    ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
-    ALTER INDEX [Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_TXHG_TID')
-    ALTER INDEX [Index_TXHG_TID] ON [dbo].[SXAB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_AM_ACT_TYPE')
+    ALTER INDEX [SXAB_Index_AM_ACT_TYPE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_AM_EXP_TYPE')
+    ALTER INDEX [SXAB_Index_AM_EXP_TYPE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_LW_DATE')
+    ALTER INDEX [SXAB_Index_LW_DATE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_PM_ACT_TYPE')
+    ALTER INDEX [SXAB_Index_PM_ACT_TYPE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_PM_EXP_TYPE')
+    ALTER INDEX [SXAB_Index_PM_EXP_TYPE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_ST_YEAR_LEVEL')
+    ALTER INDEX [SXAB_Index_ST_YEAR_LEVEL] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY')
+    ALTER INDEX [SXAB_Index_STKEY] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY_ABSENCE_DATE')
+    ALTER INDEX [SXAB_Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
+    ALTER INDEX [SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_TXHG_TID')
+    ALTER INDEX [SXAB_Index_TXHG_TID] ON [dbo].[SXAB] DISABLE;
 ");
         }
 
@@ -842,26 +842,26 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_AM_ACT_TYPE')
-    ALTER INDEX [Index_AM_ACT_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_AM_EXP_TYPE')
-    ALTER INDEX [Index_AM_EXP_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_PM_ACT_TYPE')
-    ALTER INDEX [Index_PM_ACT_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_PM_EXP_TYPE')
-    ALTER INDEX [Index_PM_EXP_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_ST_YEAR_LEVEL')
-    ALTER INDEX [Index_ST_YEAR_LEVEL] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY')
-    ALTER INDEX [Index_STKEY] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_ABSENCE_DATE')
-    ALTER INDEX [Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
-    ALTER INDEX [Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'Index_TXHG_TID')
-    ALTER INDEX [Index_TXHG_TID] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_AM_ACT_TYPE')
+    ALTER INDEX [SXAB_Index_AM_ACT_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_AM_EXP_TYPE')
+    ALTER INDEX [SXAB_Index_AM_EXP_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_LW_DATE')
+    ALTER INDEX [SXAB_Index_LW_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_PM_ACT_TYPE')
+    ALTER INDEX [SXAB_Index_PM_ACT_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_PM_EXP_TYPE')
+    ALTER INDEX [SXAB_Index_PM_EXP_TYPE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_ST_YEAR_LEVEL')
+    ALTER INDEX [SXAB_Index_ST_YEAR_LEVEL] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY')
+    ALTER INDEX [SXAB_Index_STKEY] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY_ABSENCE_DATE')
+    ALTER INDEX [SXAB_Index_STKEY_ABSENCE_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE')
+    ALTER INDEX [SXAB_Index_STKEY_AM_ACT_TYPE_PM_ACT_TYPE_TXHG_TID_ABSENCE_DATE_LW_DATE] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SXAB]') AND name = N'SXAB_Index_TXHG_TID')
+    ALTER INDEX [SXAB_Index_TXHG_TID] ON [dbo].[SXAB] REBUILD PARTITION = ALL;
 ");
         }
 

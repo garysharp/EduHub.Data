@@ -345,10 +345,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'Index_STPS_TRANS_ID')
-    ALTER INDEX [Index_STPS_TRANS_ID] ON [dbo].[STPS_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STPS_TFR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'STPS_TFR_Index_STPS_TRANS_ID')
+    ALTER INDEX [STPS_TFR_Index_STPS_TRANS_ID] ON [dbo].[STPS_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'STPS_TFR_Index_TID')
+    ALTER INDEX [STPS_TFR_Index_TID] ON [dbo].[STPS_TFR] DISABLE;
 ");
         }
 
@@ -362,10 +362,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]'
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'Index_STPS_TRANS_ID')
-    ALTER INDEX [Index_STPS_TRANS_ID] ON [dbo].[STPS_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STPS_TFR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'STPS_TFR_Index_STPS_TRANS_ID')
+    ALTER INDEX [STPS_TFR_Index_STPS_TRANS_ID] ON [dbo].[STPS_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STPS_TFR]') AND name = N'STPS_TFR_Index_TID')
+    ALTER INDEX [STPS_TFR_Index_TID] ON [dbo].[STPS_TFR] REBUILD PARTITION = ALL;
 ");
         }
 

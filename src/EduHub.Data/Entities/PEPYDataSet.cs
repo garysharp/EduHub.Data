@@ -318,10 +318,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'Index_PURPOSE')
-    ALTER INDEX [Index_PURPOSE] ON [dbo].[PEPY] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPY] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'PEPY_Index_PURPOSE')
+    ALTER INDEX [PEPY_Index_PURPOSE] ON [dbo].[PEPY] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'PEPY_Index_TID')
+    ALTER INDEX [PEPY_Index_TID] ON [dbo].[PEPY] DISABLE;
 ");
         }
 
@@ -335,10 +335,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'Index_PURPOSE')
-    ALTER INDEX [Index_PURPOSE] ON [dbo].[PEPY] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[PEPY] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'PEPY_Index_PURPOSE')
+    ALTER INDEX [PEPY_Index_PURPOSE] ON [dbo].[PEPY] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PEPY]') AND name = N'PEPY_Index_TID')
+    ALTER INDEX [PEPY_Index_TID] ON [dbo].[PEPY] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -1066,22 +1066,22 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ADULT_A_COUNTRY')
-    ALTER INDEX [Index_ADULT_A_COUNTRY] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ADULT_B_COUNTRY')
-    ALTER INDEX [Index_ADULT_B_COUNTRY] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_BIRTH_COUNTRY')
-    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_SIXMTH_CAT')
-    ALTER INDEX [Index_SIXMTH_CAT] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_SIXMTH_CAT_DEST')
-    ALTER INDEX [Index_SIXMTH_CAT_DEST] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ZEROMTH_CAT')
-    ALTER INDEX [Index_ZEROMTH_CAT] ON [dbo].[OSCS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ZEROMTH_CAT_DEST')
-    ALTER INDEX [Index_ZEROMTH_CAT_DEST] ON [dbo].[OSCS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ADULT_A_COUNTRY')
+    ALTER INDEX [OSCS_Index_ADULT_A_COUNTRY] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ADULT_B_COUNTRY')
+    ALTER INDEX [OSCS_Index_ADULT_B_COUNTRY] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_BIRTH_COUNTRY')
+    ALTER INDEX [OSCS_Index_BIRTH_COUNTRY] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_HOME_LANG')
+    ALTER INDEX [OSCS_Index_HOME_LANG] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_SIXMTH_CAT')
+    ALTER INDEX [OSCS_Index_SIXMTH_CAT] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_SIXMTH_CAT_DEST')
+    ALTER INDEX [OSCS_Index_SIXMTH_CAT_DEST] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ZEROMTH_CAT')
+    ALTER INDEX [OSCS_Index_ZEROMTH_CAT] ON [dbo].[OSCS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ZEROMTH_CAT_DEST')
+    ALTER INDEX [OSCS_Index_ZEROMTH_CAT_DEST] ON [dbo].[OSCS] DISABLE;
 ");
         }
 
@@ -1095,22 +1095,22 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ADULT_A_COUNTRY')
-    ALTER INDEX [Index_ADULT_A_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ADULT_B_COUNTRY')
-    ALTER INDEX [Index_ADULT_B_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_BIRTH_COUNTRY')
-    ALTER INDEX [Index_BIRTH_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_HOME_LANG')
-    ALTER INDEX [Index_HOME_LANG] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_SIXMTH_CAT')
-    ALTER INDEX [Index_SIXMTH_CAT] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_SIXMTH_CAT_DEST')
-    ALTER INDEX [Index_SIXMTH_CAT_DEST] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ZEROMTH_CAT')
-    ALTER INDEX [Index_ZEROMTH_CAT] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'Index_ZEROMTH_CAT_DEST')
-    ALTER INDEX [Index_ZEROMTH_CAT_DEST] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ADULT_A_COUNTRY')
+    ALTER INDEX [OSCS_Index_ADULT_A_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ADULT_B_COUNTRY')
+    ALTER INDEX [OSCS_Index_ADULT_B_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_BIRTH_COUNTRY')
+    ALTER INDEX [OSCS_Index_BIRTH_COUNTRY] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_HOME_LANG')
+    ALTER INDEX [OSCS_Index_HOME_LANG] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_SIXMTH_CAT')
+    ALTER INDEX [OSCS_Index_SIXMTH_CAT] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_SIXMTH_CAT_DEST')
+    ALTER INDEX [OSCS_Index_SIXMTH_CAT_DEST] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ZEROMTH_CAT')
+    ALTER INDEX [OSCS_Index_ZEROMTH_CAT] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[OSCS]') AND name = N'OSCS_Index_ZEROMTH_CAT_DEST')
+    ALTER INDEX [OSCS_Index_ZEROMTH_CAT_DEST] ON [dbo].[OSCS] REBUILD PARTITION = ALL;
 ");
         }
 

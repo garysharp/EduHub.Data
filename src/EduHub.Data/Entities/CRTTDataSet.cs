@@ -358,12 +358,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[CRTT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRTT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_TRADE_TYPE')
-    ALTER INDEX [Index_TRADE_TYPE] ON [dbo].[CRTT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_STAFF')
+    ALTER INDEX [CRTT_Index_STAFF] ON [dbo].[CRTT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_TID')
+    ALTER INDEX [CRTT_Index_TID] ON [dbo].[CRTT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_TRADE_TYPE')
+    ALTER INDEX [CRTT_Index_TRADE_TYPE] ON [dbo].[CRTT] DISABLE;
 ");
         }
 
@@ -377,12 +377,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_STAFF')
-    ALTER INDEX [Index_STAFF] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'Index_TRADE_TYPE')
-    ALTER INDEX [Index_TRADE_TYPE] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_STAFF')
+    ALTER INDEX [CRTT_Index_STAFF] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_TID')
+    ALTER INDEX [CRTT_Index_TID] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CRTT]') AND name = N'CRTT_Index_TRADE_TYPE')
+    ALTER INDEX [CRTT_Index_TRADE_TYPE] ON [dbo].[CRTT] REBUILD PARTITION = ALL;
 ");
         }
 

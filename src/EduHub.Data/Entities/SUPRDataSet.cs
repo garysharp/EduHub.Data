@@ -310,10 +310,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'Index_PREREQUISITE')
-    ALTER INDEX [Index_PREREQUISITE] ON [dbo].[SUPR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SUPR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'SUPR_Index_PREREQUISITE')
+    ALTER INDEX [SUPR_Index_PREREQUISITE] ON [dbo].[SUPR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'SUPR_Index_TID')
+    ALTER INDEX [SUPR_Index_TID] ON [dbo].[SUPR] DISABLE;
 ");
         }
 
@@ -327,10 +327,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'Index_PREREQUISITE')
-    ALTER INDEX [Index_PREREQUISITE] ON [dbo].[SUPR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SUPR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'SUPR_Index_PREREQUISITE')
+    ALTER INDEX [SUPR_Index_PREREQUISITE] ON [dbo].[SUPR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SUPR]') AND name = N'SUPR_Index_TID')
+    ALTER INDEX [SUPR_Index_TID] ON [dbo].[SUPR] REBUILD PARTITION = ALL;
 ");
         }
 

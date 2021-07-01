@@ -374,10 +374,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPS] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_POSTAL_COUNTRY')
-    ALTER INDEX [Index_POSTAL_COUNTRY] ON [dbo].[PPS] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'PPS_Index_COUNTRY')
+    ALTER INDEX [PPS_Index_COUNTRY] ON [dbo].[PPS] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'PPS_Index_POSTAL_COUNTRY')
+    ALTER INDEX [PPS_Index_POSTAL_COUNTRY] ON [dbo].[PPS] DISABLE;
 ");
         }
 
@@ -391,10 +391,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_COUNTRY')
-    ALTER INDEX [Index_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'Index_POSTAL_COUNTRY')
-    ALTER INDEX [Index_POSTAL_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'PPS_Index_COUNTRY')
+    ALTER INDEX [PPS_Index_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PPS]') AND name = N'PPS_Index_POSTAL_COUNTRY')
+    ALTER INDEX [PPS_Index_POSTAL_COUNTRY] ON [dbo].[PPS] REBUILD PARTITION = ALL;
 ");
         }
 

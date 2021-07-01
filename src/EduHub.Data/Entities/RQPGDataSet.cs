@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQPG]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[RQPG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQPG]') AND name = N'RQPG_Index_SFKEY')
+    ALTER INDEX [RQPG_Index_SFKEY] ON [dbo].[RQPG] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQPG]') AND name = N'Index_SFKEY')
-    ALTER INDEX [Index_SFKEY] ON [dbo].[RQPG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQPG]') AND name = N'RQPG_Index_SFKEY')
+    ALTER INDEX [RQPG_Index_SFKEY] ON [dbo].[RQPG] REBUILD PARTITION = ALL;
 ");
         }
 

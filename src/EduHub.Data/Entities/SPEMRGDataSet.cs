@@ -258,8 +258,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMRG]') AND name = N'Index_DESCRIPTION')
-    ALTER INDEX [Index_DESCRIPTION] ON [dbo].[SPEMRG] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMRG]') AND name = N'SPEMRG_Index_DESCRIPTION')
+    ALTER INDEX [SPEMRG_Index_DESCRIPTION] ON [dbo].[SPEMRG] DISABLE;
 ");
         }
 
@@ -273,8 +273,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMRG]') AND name = N'Index_DESCRIPTION')
-    ALTER INDEX [Index_DESCRIPTION] ON [dbo].[SPEMRG] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPEMRG]') AND name = N'SPEMRG_Index_DESCRIPTION')
+    ALTER INDEX [SPEMRG_Index_DESCRIPTION] ON [dbo].[SPEMRG] REBUILD PARTITION = ALL;
 ");
         }
 

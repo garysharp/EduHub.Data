@@ -298,8 +298,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'Index_SPOUTKEY')
-    ALTER INDEX [Index_SPOUTKEY] ON [dbo].[KERROR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'KERROR_Index_SPOUTKEY')
+    ALTER INDEX [KERROR_Index_SPOUTKEY] ON [dbo].[KERROR] DISABLE;
 ");
         }
 
@@ -313,8 +313,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'Index_SPOUTKEY')
-    ALTER INDEX [Index_SPOUTKEY] ON [dbo].[KERROR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KERROR]') AND name = N'KERROR_Index_SPOUTKEY')
+    ALTER INDEX [KERROR_Index_SPOUTKEY] ON [dbo].[KERROR] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -314,10 +314,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SABT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SABT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'SABT_Index_FEE_CODE')
+    ALTER INDEX [SABT_Index_FEE_CODE] ON [dbo].[SABT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'SABT_Index_TID')
+    ALTER INDEX [SABT_Index_TID] ON [dbo].[SABT] DISABLE;
 ");
         }
 
@@ -331,10 +331,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'Index_FEE_CODE')
-    ALTER INDEX [Index_FEE_CODE] ON [dbo].[SABT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SABT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'SABT_Index_FEE_CODE')
+    ALTER INDEX [SABT_Index_FEE_CODE] ON [dbo].[SABT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SABT]') AND name = N'SABT_Index_TID')
+    ALTER INDEX [SABT_Index_TID] ON [dbo].[SABT] REBUILD PARTITION = ALL;
 ");
         }
 

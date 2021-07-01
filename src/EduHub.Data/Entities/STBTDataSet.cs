@@ -1498,50 +1498,50 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_ROUTE')
-    ALTER INDEX [Index_AM1_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_SD_SITE')
-    ALTER INDEX [Index_AM1_SD_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_ROUTE')
-    ALTER INDEX [Index_AM2_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_SD_SITE')
-    ALTER INDEX [Index_AM2_SD_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_ROUTE')
-    ALTER INDEX [Index_AM3_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_SD_SITE')
-    ALTER INDEX [Index_AM3_SD_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_ROUTE')
-    ALTER INDEX [Index_AM4_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_SD_SITE')
-    ALTER INDEX [Index_AM4_SD_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_ROUTE')
-    ALTER INDEX [Index_AM5_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_SD_SITE')
-    ALTER INDEX [Index_AM5_SD_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_PU_SITE')
-    ALTER INDEX [Index_PM1_PU_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_ROUTE')
-    ALTER INDEX [Index_PM1_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_PU_SITE')
-    ALTER INDEX [Index_PM2_PU_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_ROUTE')
-    ALTER INDEX [Index_PM2_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_PU_SITE')
-    ALTER INDEX [Index_PM3_PU_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_ROUTE')
-    ALTER INDEX [Index_PM3_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_PU_SITE')
-    ALTER INDEX [Index_PM4_PU_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_ROUTE')
-    ALTER INDEX [Index_PM4_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_PU_SITE')
-    ALTER INDEX [Index_PM5_PU_SITE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_ROUTE')
-    ALTER INDEX [Index_PM5_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_ROUTE')
-    ALTER INDEX [Index_ROUTE] ON [dbo].[STBT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STBT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM1_ROUTE')
+    ALTER INDEX [STBT_Index_AM1_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM1_SD_SITE')
+    ALTER INDEX [STBT_Index_AM1_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM2_ROUTE')
+    ALTER INDEX [STBT_Index_AM2_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM2_SD_SITE')
+    ALTER INDEX [STBT_Index_AM2_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM3_ROUTE')
+    ALTER INDEX [STBT_Index_AM3_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM3_SD_SITE')
+    ALTER INDEX [STBT_Index_AM3_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM4_ROUTE')
+    ALTER INDEX [STBT_Index_AM4_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM4_SD_SITE')
+    ALTER INDEX [STBT_Index_AM4_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM5_ROUTE')
+    ALTER INDEX [STBT_Index_AM5_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM5_SD_SITE')
+    ALTER INDEX [STBT_Index_AM5_SD_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM1_PU_SITE')
+    ALTER INDEX [STBT_Index_PM1_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM1_ROUTE')
+    ALTER INDEX [STBT_Index_PM1_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM2_PU_SITE')
+    ALTER INDEX [STBT_Index_PM2_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM2_ROUTE')
+    ALTER INDEX [STBT_Index_PM2_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM3_PU_SITE')
+    ALTER INDEX [STBT_Index_PM3_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM3_ROUTE')
+    ALTER INDEX [STBT_Index_PM3_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM4_PU_SITE')
+    ALTER INDEX [STBT_Index_PM4_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM4_ROUTE')
+    ALTER INDEX [STBT_Index_PM4_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM5_PU_SITE')
+    ALTER INDEX [STBT_Index_PM5_PU_SITE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM5_ROUTE')
+    ALTER INDEX [STBT_Index_PM5_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_ROUTE')
+    ALTER INDEX [STBT_Index_ROUTE] ON [dbo].[STBT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_TID')
+    ALTER INDEX [STBT_Index_TID] ON [dbo].[STBT] DISABLE;
 ");
         }
 
@@ -1555,50 +1555,50 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_ROUTE')
-    ALTER INDEX [Index_AM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM1_SD_SITE')
-    ALTER INDEX [Index_AM1_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_ROUTE')
-    ALTER INDEX [Index_AM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM2_SD_SITE')
-    ALTER INDEX [Index_AM2_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_ROUTE')
-    ALTER INDEX [Index_AM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM3_SD_SITE')
-    ALTER INDEX [Index_AM3_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_ROUTE')
-    ALTER INDEX [Index_AM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM4_SD_SITE')
-    ALTER INDEX [Index_AM4_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_ROUTE')
-    ALTER INDEX [Index_AM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_AM5_SD_SITE')
-    ALTER INDEX [Index_AM5_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_PU_SITE')
-    ALTER INDEX [Index_PM1_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM1_ROUTE')
-    ALTER INDEX [Index_PM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_PU_SITE')
-    ALTER INDEX [Index_PM2_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM2_ROUTE')
-    ALTER INDEX [Index_PM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_PU_SITE')
-    ALTER INDEX [Index_PM3_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM3_ROUTE')
-    ALTER INDEX [Index_PM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_PU_SITE')
-    ALTER INDEX [Index_PM4_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM4_ROUTE')
-    ALTER INDEX [Index_PM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_PU_SITE')
-    ALTER INDEX [Index_PM5_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_PM5_ROUTE')
-    ALTER INDEX [Index_PM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_ROUTE')
-    ALTER INDEX [Index_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM1_ROUTE')
+    ALTER INDEX [STBT_Index_AM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM1_SD_SITE')
+    ALTER INDEX [STBT_Index_AM1_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM2_ROUTE')
+    ALTER INDEX [STBT_Index_AM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM2_SD_SITE')
+    ALTER INDEX [STBT_Index_AM2_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM3_ROUTE')
+    ALTER INDEX [STBT_Index_AM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM3_SD_SITE')
+    ALTER INDEX [STBT_Index_AM3_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM4_ROUTE')
+    ALTER INDEX [STBT_Index_AM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM4_SD_SITE')
+    ALTER INDEX [STBT_Index_AM4_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM5_ROUTE')
+    ALTER INDEX [STBT_Index_AM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_AM5_SD_SITE')
+    ALTER INDEX [STBT_Index_AM5_SD_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM1_PU_SITE')
+    ALTER INDEX [STBT_Index_PM1_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM1_ROUTE')
+    ALTER INDEX [STBT_Index_PM1_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM2_PU_SITE')
+    ALTER INDEX [STBT_Index_PM2_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM2_ROUTE')
+    ALTER INDEX [STBT_Index_PM2_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM3_PU_SITE')
+    ALTER INDEX [STBT_Index_PM3_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM3_ROUTE')
+    ALTER INDEX [STBT_Index_PM3_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM4_PU_SITE')
+    ALTER INDEX [STBT_Index_PM4_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM4_ROUTE')
+    ALTER INDEX [STBT_Index_PM4_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM5_PU_SITE')
+    ALTER INDEX [STBT_Index_PM5_PU_SITE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_PM5_ROUTE')
+    ALTER INDEX [STBT_Index_PM5_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_ROUTE')
+    ALTER INDEX [STBT_Index_ROUTE] ON [dbo].[STBT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STBT]') AND name = N'STBT_Index_TID')
+    ALTER INDEX [STBT_Index_TID] ON [dbo].[STBT] REBUILD PARTITION = ALL;
 ");
         }
 

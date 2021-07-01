@@ -490,16 +490,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_1ST')
-    ALTER INDEX [Index_FEE_CODE_1ST] ON [dbo].[SAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_2ND')
-    ALTER INDEX [Index_FEE_CODE_2ND] ON [dbo].[SAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_3RD')
-    ALTER INDEX [Index_FEE_CODE_3RD] ON [dbo].[SAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_4TH')
-    ALTER INDEX [Index_FEE_CODE_4TH] ON [dbo].[SAB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_KG')
-    ALTER INDEX [Index_FEE_CODE_KG] ON [dbo].[SAB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_1ST')
+    ALTER INDEX [SAB_Index_FEE_CODE_1ST] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_2ND')
+    ALTER INDEX [SAB_Index_FEE_CODE_2ND] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_3RD')
+    ALTER INDEX [SAB_Index_FEE_CODE_3RD] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_4TH')
+    ALTER INDEX [SAB_Index_FEE_CODE_4TH] ON [dbo].[SAB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_KG')
+    ALTER INDEX [SAB_Index_FEE_CODE_KG] ON [dbo].[SAB] DISABLE;
 ");
         }
 
@@ -513,16 +513,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_1ST')
-    ALTER INDEX [Index_FEE_CODE_1ST] ON [dbo].[SAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_2ND')
-    ALTER INDEX [Index_FEE_CODE_2ND] ON [dbo].[SAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_3RD')
-    ALTER INDEX [Index_FEE_CODE_3RD] ON [dbo].[SAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_4TH')
-    ALTER INDEX [Index_FEE_CODE_4TH] ON [dbo].[SAB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'Index_FEE_CODE_KG')
-    ALTER INDEX [Index_FEE_CODE_KG] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_1ST')
+    ALTER INDEX [SAB_Index_FEE_CODE_1ST] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_2ND')
+    ALTER INDEX [SAB_Index_FEE_CODE_2ND] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_3RD')
+    ALTER INDEX [SAB_Index_FEE_CODE_3RD] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_4TH')
+    ALTER INDEX [SAB_Index_FEE_CODE_4TH] ON [dbo].[SAB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SAB]') AND name = N'SAB_Index_FEE_CODE_KG')
+    ALTER INDEX [SAB_Index_FEE_CODE_KG] ON [dbo].[SAB] REBUILD PARTITION = ALL;
 ");
         }
 

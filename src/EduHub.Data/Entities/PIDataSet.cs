@@ -686,18 +686,18 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_AWARD')
-    ALTER INDEX [Index_AWARD] ON [dbo].[PI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_BASEITEM')
-    ALTER INDEX [Index_BASEITEM] ON [dbo].[PI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_CLR_GLCODE')
-    ALTER INDEX [Index_CLR_GLCODE] ON [dbo].[PI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_PAYG_BOX')
-    ALTER INDEX [Index_PAYG_BOX] ON [dbo].[PI] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PI] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_AWARD')
+    ALTER INDEX [PI_Index_AWARD] ON [dbo].[PI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_BASEITEM')
+    ALTER INDEX [PI_Index_BASEITEM] ON [dbo].[PI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_CLR_GLCODE')
+    ALTER INDEX [PI_Index_CLR_GLCODE] ON [dbo].[PI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_INITIATIVE')
+    ALTER INDEX [PI_Index_INITIATIVE] ON [dbo].[PI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_PAYG_BOX')
+    ALTER INDEX [PI_Index_PAYG_BOX] ON [dbo].[PI] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_SUBPROGRAM')
+    ALTER INDEX [PI_Index_SUBPROGRAM] ON [dbo].[PI] DISABLE;
 ");
         }
 
@@ -711,18 +711,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_AWARD')
-    ALTER INDEX [Index_AWARD] ON [dbo].[PI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_BASEITEM')
-    ALTER INDEX [Index_BASEITEM] ON [dbo].[PI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_CLR_GLCODE')
-    ALTER INDEX [Index_CLR_GLCODE] ON [dbo].[PI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_PAYG_BOX')
-    ALTER INDEX [Index_PAYG_BOX] ON [dbo].[PI] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PI] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_AWARD')
+    ALTER INDEX [PI_Index_AWARD] ON [dbo].[PI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_BASEITEM')
+    ALTER INDEX [PI_Index_BASEITEM] ON [dbo].[PI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_CLR_GLCODE')
+    ALTER INDEX [PI_Index_CLR_GLCODE] ON [dbo].[PI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_INITIATIVE')
+    ALTER INDEX [PI_Index_INITIATIVE] ON [dbo].[PI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_PAYG_BOX')
+    ALTER INDEX [PI_Index_PAYG_BOX] ON [dbo].[PI] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PI]') AND name = N'PI_Index_SUBPROGRAM')
+    ALTER INDEX [PI_Index_SUBPROGRAM] ON [dbo].[PI] REBUILD PARTITION = ALL;
 ");
         }
 

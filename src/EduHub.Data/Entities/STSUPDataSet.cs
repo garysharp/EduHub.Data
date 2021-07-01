@@ -366,10 +366,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'Index_SUPPORT_ROLE')
-    ALTER INDEX [Index_SUPPORT_ROLE] ON [dbo].[STSUP] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSUP] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'STSUP_Index_SUPPORT_ROLE')
+    ALTER INDEX [STSUP_Index_SUPPORT_ROLE] ON [dbo].[STSUP] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'STSUP_Index_TID')
+    ALTER INDEX [STSUP_Index_TID] ON [dbo].[STSUP] DISABLE;
 ");
         }
 
@@ -383,10 +383,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') A
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'Index_SUPPORT_ROLE')
-    ALTER INDEX [Index_SUPPORT_ROLE] ON [dbo].[STSUP] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STSUP] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'STSUP_Index_SUPPORT_ROLE')
+    ALTER INDEX [STSUP_Index_SUPPORT_ROLE] ON [dbo].[STSUP] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STSUP]') AND name = N'STSUP_Index_TID')
+    ALTER INDEX [STSUP_Index_TID] ON [dbo].[STSUP] REBUILD PARTITION = ALL;
 ");
         }
 

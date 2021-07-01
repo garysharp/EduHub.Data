@@ -394,12 +394,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_NEXT_YR')
-    ALTER INDEX [Index_NEXT_YR] ON [dbo].[KCY] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[KCY] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER_B')
-    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KCY] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_NEXT_YR')
+    ALTER INDEX [KCY_Index_NEXT_YR] ON [dbo].[KCY] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_TEACHER')
+    ALTER INDEX [KCY_Index_TEACHER] ON [dbo].[KCY] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_TEACHER_B')
+    ALTER INDEX [KCY_Index_TEACHER_B] ON [dbo].[KCY] DISABLE;
 ");
         }
 
@@ -413,12 +413,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_NEXT_YR')
-    ALTER INDEX [Index_NEXT_YR] ON [dbo].[KCY] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[KCY] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'Index_TEACHER_B')
-    ALTER INDEX [Index_TEACHER_B] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_NEXT_YR')
+    ALTER INDEX [KCY_Index_NEXT_YR] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_TEACHER')
+    ALTER INDEX [KCY_Index_TEACHER] ON [dbo].[KCY] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCY]') AND name = N'KCY_Index_TEACHER_B')
+    ALTER INDEX [KCY_Index_TEACHER_B] ON [dbo].[KCY] REBUILD PARTITION = ALL;
 ");
         }
 

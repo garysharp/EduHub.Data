@@ -546,14 +546,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SMC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SMC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_MED_CONDITION')
-    ALTER INDEX [Index_MED_CONDITION] ON [dbo].[SMC] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[SMC] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_CAMPUS')
+    ALTER INDEX [SMC_Index_CAMPUS] ON [dbo].[SMC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_LW_DATE')
+    ALTER INDEX [SMC_Index_LW_DATE] ON [dbo].[SMC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_MED_CONDITION')
+    ALTER INDEX [SMC_Index_MED_CONDITION] ON [dbo].[SMC] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_STUDENT')
+    ALTER INDEX [SMC_Index_STUDENT] ON [dbo].[SMC] DISABLE;
 ");
         }
 
@@ -567,14 +567,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SMC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_LW_DATE')
-    ALTER INDEX [Index_LW_DATE] ON [dbo].[SMC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_MED_CONDITION')
-    ALTER INDEX [Index_MED_CONDITION] ON [dbo].[SMC] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'Index_STUDENT')
-    ALTER INDEX [Index_STUDENT] ON [dbo].[SMC] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_CAMPUS')
+    ALTER INDEX [SMC_Index_CAMPUS] ON [dbo].[SMC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_LW_DATE')
+    ALTER INDEX [SMC_Index_LW_DATE] ON [dbo].[SMC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_MED_CONDITION')
+    ALTER INDEX [SMC_Index_MED_CONDITION] ON [dbo].[SMC] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND name = N'SMC_Index_STUDENT')
+    ALTER INDEX [SMC_Index_STUDENT] ON [dbo].[SMC] REBUILD PARTITION = ALL;
 ");
         }
 

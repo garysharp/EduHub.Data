@@ -266,8 +266,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRETRY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPRETRY] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRETRY]') AND name = N'SPRETRY_Index_TID')
+    ALTER INDEX [SPRETRY_Index_TID] ON [dbo].[SPRETRY] DISABLE;
 ");
         }
 
@@ -281,8 +281,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRETRY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPRETRY] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPRETRY]') AND name = N'SPRETRY_Index_TID')
+    ALTER INDEX [SPRETRY_Index_TID] ON [dbo].[SPRETRY] REBUILD PARTITION = ALL;
 ");
         }
 

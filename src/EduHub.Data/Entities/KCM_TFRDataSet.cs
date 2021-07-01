@@ -333,10 +333,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'Index_KCM_TRANS_ID')
-    ALTER INDEX [Index_KCM_TRANS_ID] ON [dbo].[KCM_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[KCM_TFR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'KCM_TFR_Index_KCM_TRANS_ID')
+    ALTER INDEX [KCM_TFR_Index_KCM_TRANS_ID] ON [dbo].[KCM_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'KCM_TFR_Index_TID')
+    ALTER INDEX [KCM_TFR_Index_TID] ON [dbo].[KCM_TFR] DISABLE;
 ");
         }
 
@@ -350,10 +350,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]')
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'Index_KCM_TRANS_ID')
-    ALTER INDEX [Index_KCM_TRANS_ID] ON [dbo].[KCM_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[KCM_TFR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'KCM_TFR_Index_KCM_TRANS_ID')
+    ALTER INDEX [KCM_TFR_Index_KCM_TRANS_ID] ON [dbo].[KCM_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCM_TFR]') AND name = N'KCM_TFR_Index_TID')
+    ALTER INDEX [KCM_TFR_Index_TID] ON [dbo].[KCM_TFR] REBUILD PARTITION = ALL;
 ");
         }
 

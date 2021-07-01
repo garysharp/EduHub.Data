@@ -266,8 +266,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAT]') AND name = N'Index_GROUPING')
-    ALTER INDEX [Index_GROUPING] ON [dbo].[QSAT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAT]') AND name = N'QSAT_Index_GROUPING')
+    ALTER INDEX [QSAT_Index_GROUPING] ON [dbo].[QSAT] DISABLE;
 ");
         }
 
@@ -281,8 +281,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAT]') AND name = N'Index_GROUPING')
-    ALTER INDEX [Index_GROUPING] ON [dbo].[QSAT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[QSAT]') AND name = N'QSAT_Index_GROUPING')
+    ALTER INDEX [QSAT_Index_GROUPING] ON [dbo].[QSAT] REBUILD PARTITION = ALL;
 ");
         }
 

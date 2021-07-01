@@ -414,8 +414,8 @@ END");
 @"<#
             foreach (EduHubIndex index in entity.Indexes.Where(i => !i.IsClustered))
             {
-#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= index.Name #>')
-    ALTER INDEX [<#= index.Name #>] ON [dbo].[<#= entity.Name #>] DISABLE;
+#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= entity.Name #>_<#= index.Name #>')
+    ALTER INDEX [<#= entity.Name #>_<#= index.Name #>] ON [dbo].[<#= entity.Name #>] DISABLE;
 <#
             }
 #>");
@@ -473,8 +473,8 @@ END");
 @"<#
             foreach (EduHubIndex index in entity.Indexes.Where(i => !i.IsClustered))
             {
-#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= index.Name #>')
-    ALTER INDEX [<#= index.Name #>] ON [dbo].[<#= entity.Name #>] REBUILD PARTITION = ALL;
+#>IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[<#= entity.Name #>]') AND name = N'<#= entity.Name #>_<#= index.Name #>')
+    ALTER INDEX [<#= entity.Name #>_<#= index.Name #>] ON [dbo].[<#= entity.Name #>] REBUILD PARTITION = ALL;
 <#
             }
 #>");

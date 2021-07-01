@@ -974,26 +974,26 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_AMETHOD')
-    ALTER INDEX [Index_AMETHOD] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_RELEASE_TYPE')
-    ALTER INDEX [Index_RELEASE_TYPE] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TMETHOD')
-    ALTER INDEX [Index_TMETHOD] ON [dbo].[ARF] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[ARF] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_AMETHOD')
+    ALTER INDEX [ARF_Index_AMETHOD] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_BSB')
+    ALTER INDEX [ARF_Index_BSB] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_GST_TYPE')
+    ALTER INDEX [ARF_Index_GST_TYPE] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_INITIATIVE')
+    ALTER INDEX [ARF_Index_INITIATIVE] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_LOCATION')
+    ALTER INDEX [ARF_Index_LOCATION] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_RELEASE_TYPE')
+    ALTER INDEX [ARF_Index_RELEASE_TYPE] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_SUBPROGRAM')
+    ALTER INDEX [ARF_Index_SUBPROGRAM] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TID')
+    ALTER INDEX [ARF_Index_TID] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TMETHOD')
+    ALTER INDEX [ARF_Index_TMETHOD] ON [dbo].[ARF] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TRREF')
+    ALTER INDEX [ARF_Index_TRREF] ON [dbo].[ARF] DISABLE;
 ");
         }
 
@@ -1007,26 +1007,26 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_AMETHOD')
-    ALTER INDEX [Index_AMETHOD] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_BSB')
-    ALTER INDEX [Index_BSB] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_GST_TYPE')
-    ALTER INDEX [Index_GST_TYPE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_LOCATION')
-    ALTER INDEX [Index_LOCATION] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_RELEASE_TYPE')
-    ALTER INDEX [Index_RELEASE_TYPE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TMETHOD')
-    ALTER INDEX [Index_TMETHOD] ON [dbo].[ARF] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'Index_TRREF')
-    ALTER INDEX [Index_TRREF] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_AMETHOD')
+    ALTER INDEX [ARF_Index_AMETHOD] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_BSB')
+    ALTER INDEX [ARF_Index_BSB] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_GST_TYPE')
+    ALTER INDEX [ARF_Index_GST_TYPE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_INITIATIVE')
+    ALTER INDEX [ARF_Index_INITIATIVE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_LOCATION')
+    ALTER INDEX [ARF_Index_LOCATION] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_RELEASE_TYPE')
+    ALTER INDEX [ARF_Index_RELEASE_TYPE] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_SUBPROGRAM')
+    ALTER INDEX [ARF_Index_SUBPROGRAM] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TID')
+    ALTER INDEX [ARF_Index_TID] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TMETHOD')
+    ALTER INDEX [ARF_Index_TMETHOD] ON [dbo].[ARF] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ARF]') AND name = N'ARF_Index_TRREF')
+    ALTER INDEX [ARF_Index_TRREF] ON [dbo].[ARF] REBUILD PARTITION = ALL;
 ");
         }
 

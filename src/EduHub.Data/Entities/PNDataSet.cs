@@ -606,20 +606,20 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_DD_GLCODE')
-    ALTER INDEX [Index_DD_GLCODE] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLBANK')
-    ALTER INDEX [Index_GLBANK] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLTAX')
-    ALTER INDEX [Index_GLTAX] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_PPDKEY')
-    ALTER INDEX [Index_PPDKEY] ON [dbo].[PN] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PN] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_DD_GLCODE')
+    ALTER INDEX [PN_Index_DD_GLCODE] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLBANK')
+    ALTER INDEX [PN_Index_GLBANK] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLCODE')
+    ALTER INDEX [PN_Index_GLCODE] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLTAX')
+    ALTER INDEX [PN_Index_GLTAX] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_INITIATIVE')
+    ALTER INDEX [PN_Index_INITIATIVE] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_PPDKEY')
+    ALTER INDEX [PN_Index_PPDKEY] ON [dbo].[PN] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_SUBPROGRAM')
+    ALTER INDEX [PN_Index_SUBPROGRAM] ON [dbo].[PN] DISABLE;
 ");
         }
 
@@ -633,20 +633,20 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_DD_GLCODE')
-    ALTER INDEX [Index_DD_GLCODE] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLBANK')
-    ALTER INDEX [Index_GLBANK] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLCODE')
-    ALTER INDEX [Index_GLCODE] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_GLTAX')
-    ALTER INDEX [Index_GLTAX] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_PPDKEY')
-    ALTER INDEX [Index_PPDKEY] ON [dbo].[PN] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[PN] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_DD_GLCODE')
+    ALTER INDEX [PN_Index_DD_GLCODE] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLBANK')
+    ALTER INDEX [PN_Index_GLBANK] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLCODE')
+    ALTER INDEX [PN_Index_GLCODE] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_GLTAX')
+    ALTER INDEX [PN_Index_GLTAX] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_INITIATIVE')
+    ALTER INDEX [PN_Index_INITIATIVE] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_PPDKEY')
+    ALTER INDEX [PN_Index_PPDKEY] ON [dbo].[PN] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[PN]') AND name = N'PN_Index_SUBPROGRAM')
+    ALTER INDEX [PN_Index_SUBPROGRAM] ON [dbo].[PN] REBUILD PARTITION = ALL;
 ");
         }
 

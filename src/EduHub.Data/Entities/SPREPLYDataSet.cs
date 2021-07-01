@@ -270,8 +270,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPREPLY] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'SPREPLY_Index_TID')
+    ALTER INDEX [SPREPLY_Index_TID] ON [dbo].[SPREPLY] DISABLE;
 ");
         }
 
@@ -285,8 +285,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[SPREPLY] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SPREPLY]') AND name = N'SPREPLY_Index_TID')
+    ALTER INDEX [SPREPLY_Index_TID] ON [dbo].[SPREPLY] REBUILD PARTITION = ALL;
 ");
         }
 

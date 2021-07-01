@@ -486,16 +486,16 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_ABSENCE_TYPE')
-    ALTER INDEX [Index_ABSENCE_TYPE] ON [dbo].[TCTB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TCTB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TCTB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[TCTB] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTB] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_ABSENCE_TYPE')
+    ALTER INDEX [TCTB_Index_ABSENCE_TYPE] ON [dbo].[TCTB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_ROOM')
+    ALTER INDEX [TCTB_Index_ROOM] ON [dbo].[TCTB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_SUBJ')
+    ALTER INDEX [TCTB_Index_SUBJ] ON [dbo].[TCTB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_TEACHER')
+    ALTER INDEX [TCTB_Index_TEACHER] ON [dbo].[TCTB] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_TID')
+    ALTER INDEX [TCTB_Index_TID] ON [dbo].[TCTB] DISABLE;
 ");
         }
 
@@ -509,16 +509,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_ABSENCE_TYPE')
-    ALTER INDEX [Index_ABSENCE_TYPE] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_ROOM')
-    ALTER INDEX [Index_ROOM] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_SUBJ')
-    ALTER INDEX [Index_SUBJ] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_TEACHER')
-    ALTER INDEX [Index_TEACHER] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_ABSENCE_TYPE')
+    ALTER INDEX [TCTB_Index_ABSENCE_TYPE] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_ROOM')
+    ALTER INDEX [TCTB_Index_ROOM] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_SUBJ')
+    ALTER INDEX [TCTB_Index_SUBJ] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_TEACHER')
+    ALTER INDEX [TCTB_Index_TEACHER] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTB]') AND name = N'TCTB_Index_TID')
+    ALTER INDEX [TCTB_Index_TID] ON [dbo].[TCTB] REBUILD PARTITION = ALL;
 ");
         }
 

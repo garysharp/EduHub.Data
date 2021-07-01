@@ -346,10 +346,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'Index_TRANSPORT_COMPANY_ID')
-    ALTER INDEX [Index_TRANSPORT_COMPANY_ID] ON [dbo].[TRPROUT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'Index_TRANSPORT_MODE_ID')
-    ALTER INDEX [Index_TRANSPORT_MODE_ID] ON [dbo].[TRPROUT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'TRPROUT_Index_TRANSPORT_COMPANY_ID')
+    ALTER INDEX [TRPROUT_Index_TRANSPORT_COMPANY_ID] ON [dbo].[TRPROUT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'TRPROUT_Index_TRANSPORT_MODE_ID')
+    ALTER INDEX [TRPROUT_Index_TRANSPORT_MODE_ID] ON [dbo].[TRPROUT] DISABLE;
 ");
         }
 
@@ -363,10 +363,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]')
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'Index_TRANSPORT_COMPANY_ID')
-    ALTER INDEX [Index_TRANSPORT_COMPANY_ID] ON [dbo].[TRPROUT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'Index_TRANSPORT_MODE_ID')
-    ALTER INDEX [Index_TRANSPORT_MODE_ID] ON [dbo].[TRPROUT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'TRPROUT_Index_TRANSPORT_COMPANY_ID')
+    ALTER INDEX [TRPROUT_Index_TRANSPORT_COMPANY_ID] ON [dbo].[TRPROUT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TRPROUT]') AND name = N'TRPROUT_Index_TRANSPORT_MODE_ID')
+    ALTER INDEX [TRPROUT_Index_TRANSPORT_MODE_ID] ON [dbo].[TRPROUT] REBUILD PARTITION = ALL;
 ");
         }
 

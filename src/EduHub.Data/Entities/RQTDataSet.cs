@@ -378,12 +378,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[RQT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[RQT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_INITIATIVE')
+    ALTER INDEX [RQT_Index_INITIATIVE] ON [dbo].[RQT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_SUBPROGRAM')
+    ALTER INDEX [RQT_Index_SUBPROGRAM] ON [dbo].[RQT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_TID')
+    ALTER INDEX [RQT_Index_TID] ON [dbo].[RQT] DISABLE;
 ");
         }
 
@@ -397,12 +397,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_INITIATIVE')
-    ALTER INDEX [Index_INITIATIVE] ON [dbo].[RQT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_SUBPROGRAM')
-    ALTER INDEX [Index_SUBPROGRAM] ON [dbo].[RQT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[RQT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_INITIATIVE')
+    ALTER INDEX [RQT_Index_INITIATIVE] ON [dbo].[RQT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_SUBPROGRAM')
+    ALTER INDEX [RQT_Index_SUBPROGRAM] ON [dbo].[RQT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[RQT]') AND name = N'RQT_Index_TID')
+    ALTER INDEX [RQT_Index_TID] ON [dbo].[RQT] REBUILD PARTITION = ALL;
 ");
         }
 

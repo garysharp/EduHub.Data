@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KREPORT]') AND name = N'Index_ROLE_CODE')
-    ALTER INDEX [Index_ROLE_CODE] ON [dbo].[KREPORT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KREPORT]') AND name = N'KREPORT_Index_ROLE_CODE')
+    ALTER INDEX [KREPORT_Index_ROLE_CODE] ON [dbo].[KREPORT] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KREPORT]') AND name = N'Index_ROLE_CODE')
-    ALTER INDEX [Index_ROLE_CODE] ON [dbo].[KREPORT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KREPORT]') AND name = N'KREPORT_Index_ROLE_CODE')
+    ALTER INDEX [KREPORT_Index_ROLE_CODE] ON [dbo].[KREPORT] REBUILD PARTITION = ALL;
 ");
         }
 

@@ -382,12 +382,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_QKEY')
-    ALTER INDEX [Index_QKEY] ON [dbo].[TCTD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TCTDKEY_TIME_TYPE_QKEY')
-    ALTER INDEX [Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTD] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_QKEY')
+    ALTER INDEX [TCTD_Index_QKEY] ON [dbo].[TCTD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_TCTDKEY_TIME_TYPE_QKEY')
+    ALTER INDEX [TCTD_Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_TID')
+    ALTER INDEX [TCTD_Index_TID] ON [dbo].[TCTD] DISABLE;
 ");
         }
 
@@ -401,12 +401,12 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AN
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_QKEY')
-    ALTER INDEX [Index_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TCTDKEY_TIME_TYPE_QKEY')
-    ALTER INDEX [Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_QKEY')
+    ALTER INDEX [TCTD_Index_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_TCTDKEY_TIME_TYPE_QKEY')
+    ALTER INDEX [TCTD_Index_TCTDKEY_TIME_TYPE_QKEY] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[TCTD]') AND name = N'TCTD_Index_TID')
+    ALTER INDEX [TCTD_Index_TID] ON [dbo].[TCTD] REBUILD PARTITION = ALL;
 ");
         }
 

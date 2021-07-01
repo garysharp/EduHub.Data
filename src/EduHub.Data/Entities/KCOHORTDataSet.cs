@@ -262,8 +262,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCOHORT]') AND name = N'Index_DESCRIPTION')
-    ALTER INDEX [Index_DESCRIPTION] ON [dbo].[KCOHORT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCOHORT]') AND name = N'KCOHORT_Index_DESCRIPTION')
+    ALTER INDEX [KCOHORT_Index_DESCRIPTION] ON [dbo].[KCOHORT] DISABLE;
 ");
         }
 
@@ -277,8 +277,8 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCOHORT]') AND name = N'Index_DESCRIPTION')
-    ALTER INDEX [Index_DESCRIPTION] ON [dbo].[KCOHORT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[KCOHORT]') AND name = N'KCOHORT_Index_DESCRIPTION')
+    ALTER INDEX [KCOHORT_Index_DESCRIPTION] ON [dbo].[KCOHORT] REBUILD PARTITION = ALL;
 ");
         }
 

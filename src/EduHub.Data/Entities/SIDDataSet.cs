@@ -338,10 +338,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SID] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'Index_INCIDENT_TYPE')
-    ALTER INDEX [Index_INCIDENT_TYPE] ON [dbo].[SID] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'SID_Index_CAMPUS')
+    ALTER INDEX [SID_Index_CAMPUS] ON [dbo].[SID] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'SID_Index_INCIDENT_TYPE')
+    ALTER INDEX [SID_Index_INCIDENT_TYPE] ON [dbo].[SID] DISABLE;
 ");
         }
 
@@ -355,10 +355,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'Index_CAMPUS')
-    ALTER INDEX [Index_CAMPUS] ON [dbo].[SID] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'Index_INCIDENT_TYPE')
-    ALTER INDEX [Index_INCIDENT_TYPE] ON [dbo].[SID] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'SID_Index_CAMPUS')
+    ALTER INDEX [SID_Index_CAMPUS] ON [dbo].[SID] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SID]') AND name = N'SID_Index_INCIDENT_TYPE')
+    ALTER INDEX [SID_Index_INCIDENT_TYPE] ON [dbo].[SID] REBUILD PARTITION = ALL;
 ");
         }
 

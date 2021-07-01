@@ -326,10 +326,10 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'Index_NOTE_TYPE')
-    ALTER INDEX [Index_NOTE_TYPE] ON [dbo].[STNAT] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STNAT] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'STNAT_Index_NOTE_TYPE')
+    ALTER INDEX [STNAT_Index_NOTE_TYPE] ON [dbo].[STNAT] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'STNAT_Index_TID')
+    ALTER INDEX [STNAT_Index_TID] ON [dbo].[STNAT] DISABLE;
 ");
         }
 
@@ -343,10 +343,10 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') A
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'Index_NOTE_TYPE')
-    ALTER INDEX [Index_NOTE_TYPE] ON [dbo].[STNAT] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[STNAT] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'STNAT_Index_NOTE_TYPE')
+    ALTER INDEX [STNAT_Index_NOTE_TYPE] ON [dbo].[STNAT] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[STNAT]') AND name = N'STNAT_Index_TID')
+    ALTER INDEX [STNAT_Index_TID] ON [dbo].[STNAT] REBUILD PARTITION = ALL;
 ");
         }
 

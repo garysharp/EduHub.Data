@@ -965,14 +965,14 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_HOME_GROUP_NEW')
-    ALTER INDEX [Index_HOME_GROUP_NEW] ON [dbo].[ST_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_SCHOOL_YEAR_NEW')
-    ALTER INDEX [Index_SCHOOL_YEAR_NEW] ON [dbo].[ST_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_ST_TRANS_ID')
-    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFR] DISABLE;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ST_TFR] DISABLE;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_HOME_GROUP_NEW')
+    ALTER INDEX [ST_TFR_Index_HOME_GROUP_NEW] ON [dbo].[ST_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_SCHOOL_YEAR_NEW')
+    ALTER INDEX [ST_TFR_Index_SCHOOL_YEAR_NEW] ON [dbo].[ST_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_ST_TRANS_ID')
+    ALTER INDEX [ST_TFR_Index_ST_TRANS_ID] ON [dbo].[ST_TFR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_TID')
+    ALTER INDEX [ST_TFR_Index_TID] ON [dbo].[ST_TFR] DISABLE;
 ");
         }
 
@@ -986,14 +986,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') 
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_HOME_GROUP_NEW')
-    ALTER INDEX [Index_HOME_GROUP_NEW] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_SCHOOL_YEAR_NEW')
-    ALTER INDEX [Index_SCHOOL_YEAR_NEW] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_ST_TRANS_ID')
-    ALTER INDEX [Index_ST_TRANS_ID] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
-IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'Index_TID')
-    ALTER INDEX [Index_TID] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_HOME_GROUP_NEW')
+    ALTER INDEX [ST_TFR_Index_HOME_GROUP_NEW] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_SCHOOL_YEAR_NEW')
+    ALTER INDEX [ST_TFR_Index_SCHOOL_YEAR_NEW] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_ST_TRANS_ID')
+    ALTER INDEX [ST_TFR_Index_ST_TRANS_ID] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST_TFR]') AND name = N'ST_TFR_Index_TID')
+    ALTER INDEX [ST_TFR_Index_TID] ON [dbo].[ST_TFR] REBUILD PARTITION = ALL;
 ");
         }
 
