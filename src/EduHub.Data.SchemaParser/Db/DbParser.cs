@@ -309,6 +309,12 @@ namespace EduHub.Data.SchemaParser.Db
                                 throw new InvalidOperationException("Unexpected index with no columns");
 
                             var indexName = $"Index_{string.Join("_", fields.Select(f => f.Name))}";
+                            
+                            if (fields.Count > 8)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Unsupported Index: [{entity.Name}]:{indexName}");
+                                continue;
+                            }
 
                             var index = new EduHubIndex(
                                 Entity: entity,

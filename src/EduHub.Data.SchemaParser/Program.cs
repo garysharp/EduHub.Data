@@ -22,7 +22,7 @@ namespace EduHub.Data.SchemaParser
             DbParser.AugmentSchemaFromCsv(csvDirectory, schema);
 
             // Apply customizations
-            Customizations.ApplyVersion60Overrides(schema);
+            Customizations.EnsureNavigationFieldIndexes(schema);
 
             // Validate schema
             SchemaTests.TestForeignKeys(schema);

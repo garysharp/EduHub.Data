@@ -20,6 +20,10 @@ namespace EduHub.Data.SchemaParser
 
                 if (!foreignIndex.IsUnique)
                     throw new InvalidOperationException("Foreign index is not unique");
+
+                var childIndex = childField.GetIndex();
+                if (childIndex == null)
+                    throw new InvalidOperationException("Child field is not indexed");
             }
         }
     }
