@@ -1,4 +1,4 @@
-﻿namespace EduHub.Data.Entities
+namespace EduHub.Data.Entities
 {
     public partial class KGLSUB
     {
