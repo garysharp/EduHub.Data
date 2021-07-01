@@ -1,9 +1,10 @@
-﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ template debug="true" hostSpecific="true" #>
 <#@ output extension=".cs" #>
-<#@ include file="..\..\packages\T4.TemplateFileManager.2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
 <#@ Assembly Name="System.Core" #>
 <#@ Assembly Name="System.Data" #>
 <#@ Assembly Name="System.Windows.Forms" #>
+<#@ Assembly Name="System.Xml" #>
+<#@ Assembly Name="System.Xml.Linq" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -12,9 +13,10 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Xml.Linq" #>
+<#@ include file="$(ProjectDir)\T4.FileManager.VisualStudio.ttinclude" #>
 <#
-    var manager = TemplateFileManager.Create(this);
-    manager.IsAutoIndentEnabled = false;
+    var manager = T4FileManager.Create(this);
+    manager.IsNetCorePlaceholderContentEnabled = false;
 #>
 <#
     // Load Schema
@@ -25,7 +27,7 @@
     foreach (EduHubEntity entity in schema.Entities)
     {
         // Write Entity DataSet Code
-        manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name));
+        manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name), null, "Entities");
 #>
 using System;
 using System.CodeDom.Compiler;
@@ -725,7 +727,7 @@ END");
         manager.EndBlock();
         
         // Write Entity Code
-        manager.StartNewFile(string.Format(@"{0}.cs", entity.Name));
+        manager.StartNewFile(string.Format(@"{0}.cs", entity.Name), null, "Entities");
 #>
 using System;
 using System.CodeDom.Compiler;
@@ -950,7 +952,7 @@ namespace EduHub.Data.Entities
 <#
         manager.EndBlock();
     }
-    manager.Process(true);
+    manager.Process();
 #>
 <#+
     public class EduHubSchema
@@ -1219,6 +1221,10 @@ namespace EduHub.Data.Entities
                         return "SqlDbType.SmallInt";
                     case "datetime":
                         return "SqlDbType.DateTime";
+                    case "money":
+                        return "SqlDbType.Money";
+                    case "float":
+                        return "SqlDbType.Float";
                     default:
                         throw new ArgumentException("Unsupported Type: " + SqlType);
                 }
