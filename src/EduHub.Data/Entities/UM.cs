@@ -22,15 +22,19 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<DF> Cache_UMKEY_DF_HOMEKEY;
         private IReadOnlyList<DF> Cache_UMKEY_DF_MAILKEY;
         private IReadOnlyList<DF> Cache_UMKEY_DF_BILLINGKEY;
+#if !EduHubScoped
         private IReadOnlyList<PE> Cache_UMKEY_PE_HOMEKEY;
         private IReadOnlyList<PE> Cache_UMKEY_PE_MAILKEY;
         private IReadOnlyList<PE> Cache_UMKEY_PE_LEAVEKEY;
+#endif
         private IReadOnlyList<SAM> Cache_UMKEY_SAM_ADDRESSKEY;
         private IReadOnlyList<SAM> Cache_UMKEY_SAM_MAILKEY;
         private IReadOnlyList<SF> Cache_UMKEY_SF_HOMEKEY;
         private IReadOnlyList<SF> Cache_UMKEY_SF_MAILKEY;
+#if !EduHubScoped
         private IReadOnlyList<STTRIPS> Cache_UMKEY_STTRIPS_AM_PICKUP_ADDRESS_ID;
         private IReadOnlyList<STTRIPS> Cache_UMKEY_STTRIPS_PM_SETDOWN_ADDRESS_ID;
+#endif
 
         #endregion
 
@@ -242,6 +246,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entities by [UM.UMKEY]-&gt;[PE.HOMEKEY]
         /// Address ID
@@ -296,6 +301,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SAM (School Association Members) related entities by [UM.UMKEY]-&gt;[SAM.ADDRESSKEY]
         /// Address ID
@@ -368,6 +374,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STTRIPS (Student Trips) related entities by [UM.UMKEY]-&gt;[STTRIPS.AM_PICKUP_ADDRESS_ID]
         /// Address ID
@@ -404,6 +411,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

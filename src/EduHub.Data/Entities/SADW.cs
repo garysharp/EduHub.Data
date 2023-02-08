@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SAD Cache_ACCIDENTID_SAD;
+#endif
 
         #endregion
 
@@ -100,6 +103,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAD (Accidents) related entity by [SADW.ACCIDENTID]-&gt;[SAD.SADKEY]
         /// Sequence no of accident
@@ -117,7 +121,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

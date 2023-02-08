@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<DRF> Cache_QBKEY_DRF_TRBATCH;
+#endif
 
         #endregion
 
@@ -121,6 +124,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// DRF (DR Transactions) related entities by [QB.QBKEY]-&gt;[DRF.TRBATCH]
         /// Batch number (Prime Key)
@@ -139,7 +143,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

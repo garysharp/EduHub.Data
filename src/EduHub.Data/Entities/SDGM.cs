@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SDG Cache_SDGMKEY_SDG;
+#endif
         private DR Cache_PERSON_LINK_DR;
 
         #endregion
@@ -82,6 +85,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDG (Sundry Debtor Fee Groups) related entity by [SDGM.SDGMKEY]-&gt;[SDG.SDGKEY]
         /// Group Code
@@ -99,6 +103,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// DR (Accounts Receivable) related entity by [SDGM.PERSON_LINK]-&gt;[DR.DRKEY]
         /// Code of this person in table SF or DF
@@ -124,3 +129,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

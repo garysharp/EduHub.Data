@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<STMB> Cache_AWARD_STMB_AWARD;
+#endif
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// STMB (Student Merit Behaviour Details) related entities by [KGW.AWARD]-&gt;[STMB.AWARD]
         /// Award code
@@ -78,7 +82,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

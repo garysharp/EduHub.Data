@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,15 +14,19 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PLG Cache_LEAVE_GROUP_PLG;
         private PLC Cache_LEAVE_CODE_PLC;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PELD> Cache_PLTKEY_PELD_PLTKEY;
         private IReadOnlyList<PILI> Cache_PLTKEY_PILI_PLTKEY;
+#endif
 
         #endregion
 
@@ -254,6 +259,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PLG (Leave Management Group) related entity by [PLT.LEAVE_GROUP]-&gt;[PLG.LEAVE_GROUP]
         /// Leave Group Identifier
@@ -296,10 +302,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PELD (Employee Leave Details) related entities by [PLT.PLTKEY]-&gt;[PELD.PLTKEY]
         /// Leave Type Key
@@ -336,7 +344,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

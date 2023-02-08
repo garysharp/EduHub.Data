@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private RQPG Cache_RQPGKEY_RQPG;
+#endif
         private SF Cache_SFKEY_SF;
 
         #endregion
@@ -66,6 +69,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// RQPG (Purchasing Group) related entity by [RQREL.RQPGKEY]-&gt;[RQPG.RQPGKEY]
         /// Purchasing Group
@@ -83,6 +87,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entity by [RQREL.SFKEY]-&gt;[SF.SFKEY]
         /// Staff
@@ -108,3 +113,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

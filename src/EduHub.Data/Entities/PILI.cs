@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PI Cache_PIKEY_PI;
         private PLT Cache_PLTKEY_PLT;
         private PLG Cache_LEAVE_GROUP_PLG;
         private PLC Cache_LEAVE_CODE_PLC;
+#endif
 
         #endregion
 
@@ -79,6 +82,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PI (Pay Items) related entity by [PILI.PIKEY]-&gt;[PI.PIKEY]
         /// PIKEY to PI table
@@ -159,7 +163,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

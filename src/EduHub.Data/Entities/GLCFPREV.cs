@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private GLPREV Cache_CODE_GLPREV;
+#endif
         private KGST Cache_GST_TYPE_KGST;
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
@@ -425,6 +428,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLPREV (Last Years General Ledger) related entity by [GLCFPREV.CODE]-&gt;[GLPREV.CODE]
         /// General Ledger Code
@@ -442,6 +446,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGST (GST Percentages) related entity by [GLCFPREV.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What type of GST
@@ -509,3 +514,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

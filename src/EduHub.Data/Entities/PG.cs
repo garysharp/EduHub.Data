@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PI> Cache_PAYG_BOX_PI_PAYG_BOX;
+#endif
 
         #endregion
 
@@ -59,6 +62,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PI (Pay Items) related entities by [PG.PAYG_BOX]-&gt;[PI.PAYG_BOX]
         /// PAYG Payment summary Box
@@ -77,7 +81,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

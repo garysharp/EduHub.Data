@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SABT> Cache_SABKEY_SABT_SABTKEY;
+#endif
 
         #endregion
 
@@ -245,6 +248,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SABT (Billing Template Transactions) related entities by [SAB.SABKEY]-&gt;[SABT.SABTKEY]
         /// Billing key
@@ -263,7 +267,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

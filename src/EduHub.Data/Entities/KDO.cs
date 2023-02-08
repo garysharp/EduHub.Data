@@ -15,7 +15,9 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<STVDI> Cache_KDOKEY_STVDI_VDOMAIN;
         private IReadOnlyList<STVDO> Cache_KDOKEY_STVDO_VDOMAIN;
+#if !EduHubScoped
         private IReadOnlyList<SVAG> Cache_KDOKEY_SVAG_VDOMAIN;
+#endif
 
         #endregion
 
@@ -110,6 +112,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SVAG (VELS Aggregated Dimensions) related entities by [KDO.KDOKEY]-&gt;[SVAG.VDOMAIN]
         /// Key of the domain
@@ -128,6 +131,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

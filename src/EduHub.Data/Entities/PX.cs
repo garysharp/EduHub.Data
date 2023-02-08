@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PE> Cache_PXKEY_PE_TAXCODE;
+#endif
 
         #endregion
 
@@ -376,6 +379,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entities by [PX.PXKEY]-&gt;[PE.TAXCODE]
         /// Tax scale number
@@ -394,7 +398,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

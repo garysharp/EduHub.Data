@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SPEMAIL Cache_CODE_SPEMAIL;
+#endif
 
         #endregion
 
@@ -141,6 +144,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SPEMAIL (Report email templates) related entity by [SPEPRINT.CODE]-&gt;[SPEMAIL.SPEMAILKEY]
         /// Email Key
@@ -158,7 +162,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

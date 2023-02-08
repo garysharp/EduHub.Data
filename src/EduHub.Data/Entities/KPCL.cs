@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KPC Cache_CONTACT_KPC;
         private KPCR Cache_CONTACT_TYPE_KPCR;
+#endif
 
         #endregion
 
@@ -83,6 +86,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KPC (Contacts) related entity by [KPCL.CONTACT]-&gt;[KPC.KPCKEY]
         /// Link code
@@ -125,7 +129,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

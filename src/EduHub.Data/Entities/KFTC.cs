@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<CRFTC> Cache_KFTCKEY_CRFTC_FTC_CODE;
+#endif
 
         #endregion
 
@@ -95,6 +98,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// CRFTC (Creditor Fuel Tax Credits) related entities by [KFTC.KFTCKEY]-&gt;[CRFTC.FTC_CODE]
         /// Prime Key
@@ -113,7 +117,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

@@ -18,13 +18,17 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<DF> Cache_COUNTRY_DF_BIRTH_COUNTRY_B;
         private IReadOnlyList<DR> Cache_COUNTRY_DR_BUSCOUNTRY;
         private IReadOnlyList<DR> Cache_COUNTRY_DR_MAILCOUNTRY;
+#if !EduHubScoped
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_ADULT_A_COUNTRY;
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_ADULT_B_COUNTRY;
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_BIRTH_COUNTRY;
         private IReadOnlyList<PE> Cache_COUNTRY_PE_COUNTRY;
+#endif
         private IReadOnlyList<PPD> Cache_COUNTRY_PPD_COUNTRY;
+#if !EduHubScoped
         private IReadOnlyList<PPS> Cache_COUNTRY_PPS_COUNTRY;
         private IReadOnlyList<PPS> Cache_COUNTRY_PPS_POSTAL_COUNTRY;
+#endif
         private IReadOnlyList<SF> Cache_COUNTRY_SF_BIRTH_COUNTRY;
         private IReadOnlyList<ST> Cache_COUNTRY_ST_BIRTH_COUNTRY;
         private IReadOnlyList<UM> Cache_COUNTRY_UM_COUNTRY;
@@ -188,6 +192,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// OSCS (CASES Past Students) related entities by [KGT.COUNTRY]-&gt;[OSCS.ADULT_A_COUNTRY]
         /// Country code
@@ -260,6 +265,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// PPD (PAYG Payer Details) related entities by [KGT.COUNTRY]-&gt;[PPD.COUNTRY]
         /// Country code
@@ -278,6 +284,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PPS (PAYG Supplier Details) related entities by [KGT.COUNTRY]-&gt;[PPS.COUNTRY]
         /// Country code
@@ -314,6 +321,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entities by [KGT.COUNTRY]-&gt;[SF.BIRTH_COUNTRY]
         /// Country code

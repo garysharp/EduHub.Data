@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SDGM> Cache_SDGKEY_SDGM_SDGMKEY;
+#endif
 
         #endregion
 
@@ -72,6 +75,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDGM (Adult Group Members) related entities by [SDG.SDGKEY]-&gt;[SDGM.SDGMKEY]
         /// Short name of Fee Group
@@ -90,7 +94,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

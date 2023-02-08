@@ -10,7 +10,7 @@ namespace EduHub.Data.SchemaParser.Db
         internal static List<T> ImportCsv<T>(CsvReader Reader, params (string ColumnName, Action<T, string> Mapper)[] Actions) where T : new()
         {
             var headers = Reader.Header.ToArray();
-            var mapper = Actions.Select(a => (ColumnIndex: Array.IndexOf(headers, a.ColumnName), Mapper: a.Mapper)).ToArray();
+            var mapper = Actions.Select(a => (ColumnIndex: headers.Select((o, i) => (o, i)).First(o => string.Equals(o.o, a.ColumnName, StringComparison.OrdinalIgnoreCase)).i, Mapper: a.Mapper)).ToArray();
             var results = new List<T>();
 
             while (true)

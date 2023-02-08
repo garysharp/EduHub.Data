@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PGID Cache_FILE_ID_PGID;
+#endif
         private GL Cache_CODE_GL;
 
         #endregion
@@ -170,6 +173,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PGID (General Ledger Import Details) related entity by [PGLI.FILE_ID]-&gt;[PGID.GLID]
         /// File from which this record was imported
@@ -187,6 +191,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GL (General Ledger) related entity by [PGLI.CODE]-&gt;[GL.CODE]
         /// General Ledger Code
@@ -208,3 +213,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

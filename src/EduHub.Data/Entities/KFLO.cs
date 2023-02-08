@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -19,7 +20,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<STFLO> Cache_KFLOKEY_STFLO_PROGRAM;
+#endif
 
         #endregion
 
@@ -114,6 +117,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// STFLO (Student Flexible Learning Options) related entities by [KFLO.KFLOKEY]-&gt;[STFLO.PROGRAM]
         /// Prime key
@@ -132,7 +136,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

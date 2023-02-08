@@ -21,10 +21,12 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<DRB> Cache_DRKEY_DRB_DR_CODE;
         private IReadOnlyList<DRF> Cache_DRKEY_DRF_CODE;
         private IReadOnlyList<KNOTE_DR> Cache_DRKEY_KNOTE_DR_CODE;
         private IReadOnlyList<SDGM> Cache_DRKEY_SDGM_PERSON_LINK;
+#endif
         private IReadOnlyList<SF> Cache_DRKEY_SF_DEBTOR_ID;
 
         #endregion
@@ -429,6 +431,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// DRB (BPAY Receipts for Sundry Debtors) related entities by [DR.DRKEY]-&gt;[DRB.DR_CODE]
         /// Prime Key
@@ -501,6 +504,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entities by [DR.DRKEY]-&gt;[SF.DEBTOR_ID]
         /// Prime Key

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PE Cache_CODE_PE;
         private PI Cache_PAYITEM_PI;
         private PS Cache_PAY_STEP_PS;
         private PF Cache_SUPER_FUND_PF;
         private PC Cache_TRCENTRE_PC;
+#endif
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
 
@@ -174,6 +177,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entity by [PEPS.CODE]-&gt;[PE.PEKEY]
         /// Employee code
@@ -275,6 +279,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entity by [PEPS.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
@@ -321,3 +326,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

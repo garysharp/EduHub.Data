@@ -77,7 +77,7 @@ M = Manually matched.]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="AKC" Description="Assets - Categories">
+  <Entity Name="AKC" Description="Assets - Categories" IsScoped="true">
     <Fields>
       <Field Name="CATEGORY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key (formerly GROUP)]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Description of category]]></Field>
@@ -248,7 +248,7 @@ M = Manually matched.]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="AR" Description="Assets">
+  <Entity Name="AR" Description="Assets" IsScoped="true">
     <Fields>
       <Field Name="ARKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="ARNUMBER" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Numeric SAMS number for DE&T export]]></Field>
@@ -662,7 +662,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="CR" Description="Accounts Payable">
+  <Entity Name="CR" Description="Accounts Payable" IsScoped="true">
     <Fields>
       <Field Name="CRKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Creditor title]]></Field>
@@ -753,7 +753,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="CRF" Description="Creditor Financial Transaction">
+  <Entity Name="CRF" Description="Creditor Financial Transaction" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[System transaction ID (internal)]]></Field>
       <Field Name="OTID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID of original order
@@ -1021,7 +1021,7 @@ Must be :
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="DF" Description="Families">
+  <Entity Name="DF" Description="Families" IsScoped="true">
     <Fields>
       <Field Name="DFKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Family ID]]></Field>
       <Field Name="NAME_A" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[(Was MNAME) Parent/guardian A first given name]]></Field>
@@ -1431,7 +1431,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="DFF" Description="Family Financial Transactions">
+  <Entity Name="DFF" Description="Family Financial Transactions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="CODE" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="DF:DFKEY"><![CDATA[Family key]]></Field>
@@ -1584,7 +1584,7 @@ delete flag on KEMA when only GL receipt]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="DFVT" Description="Family Voluntary Transactions">
+  <Entity Name="DFVT" Description="Family Voluntary Transactions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="FAMILY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="DF:DFKEY"><![CDATA[Family key]]></Field>
@@ -1620,7 +1620,7 @@ compatibility with mixed batches]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="DR" Description="Accounts Receivable">
+  <Entity Name="DR" Description="Accounts Receivable" IsScoped="true">
     <Fields>
       <Field Name="DRKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Debtor name]]></Field>
@@ -2210,7 +2210,7 @@ bank accounts]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="GL" Description="General Ledger">
+  <Entity Name="GL" Description="General Ledger" IsScoped="true">
     <Fields>
       <Field Name="CODE" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[General Ledger code (Prime Key)]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Account title]]></Field>
@@ -2378,7 +2378,7 @@ bank accounts]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="GLBUDG" Description="General Ledger Budgets">
+  <Entity Name="GLBUDG" Description="General Ledger Budgets" IsScoped="true">
     <Fields>
       <Field Name="BUDGETKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="15" SqlType="varchar"><![CDATA[Combination of subprog,prog,code,init]]></Field>
       <Field Name="SUBPROGRAM" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Must already exist as a SUBPROGRAM]]></Field>
@@ -2697,7 +2697,7 @@ Also used for the cost base for depreciation]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="GLF" Description="General Ledger Transactions">
+  <Entity Name="GLF" Description="General Ledger Transactions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="CODE" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="GL:CODE"><![CDATA[General Ledger Code]]></Field>
@@ -3094,7 +3094,7 @@ the eoy]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KAB" Description="BSB Numbers">
+  <Entity Name="KAB" Description="BSB Numbers" IsScoped="true">
     <Fields>
       <Field Name="BSB" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="BANK" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Bank name]]></Field>
@@ -3123,7 +3123,7 @@ the eoy]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KAD" Description="Delivery Addresses">
+  <Entity Name="KAD" Description="Delivery Addresses" IsScoped="true">
     <Fields>
       <Field Name="KADKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="ADDRESS01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Delivery address]]></Field>
@@ -3297,7 +3297,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCC" Description="Calendar Dates for Absences">
+  <Entity Name="KCC" Description="Calendar Dates for Absences" IsScoped="true">
     <Fields>
       <Field Name="KCCKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Date]]></Field>
       <Field Name="DAYTODAY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Titlecase" TypeMaxLength="10" SqlType="varchar"><![CDATA[Monday, Tuesday, etc]]></Field>
@@ -3326,7 +3326,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCD" Description="Doctors">
+  <Entity Name="KCD" Description="Doctors" IsScoped="true">
     <Fields>
       <Field Name="KCDKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Doctor code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Name of doctor or practice]]></Field>
@@ -3388,7 +3388,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCI" Description="Religious Instruction Curricula">
+  <Entity Name="KCI" Description="Religious Instruction Curricula" IsScoped="true">
     <Fields>
       <Field Name="KCIKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Religious Instruction Curriculum code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Religious Instruction Curriculum description]]></Field>
@@ -3402,7 +3402,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCM" Description="Medical Conditions">
+  <Entity Name="KCM" Description="Medical Conditions" IsScoped="true">
     <Fields>
       <Field Name="KCMKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Medical Condition code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Long description]]></Field>
@@ -3532,7 +3532,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCT" Description="Absence Types">
+  <Entity Name="KCT" Description="Absence Types" IsScoped="true">
     <Fields>
       <Field Name="KCTKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="short" TypeDescription="Integer" SqlType="smallint"><![CDATA[Absence type code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Description of absence type]]></Field>
@@ -3555,7 +3555,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCV" Description="Visa Subclasses">
+  <Entity Name="KCV" Description="Visa Subclasses" IsScoped="true">
     <Fields>
       <Field Name="VISA_SUBCLASS" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar"><![CDATA[Visa Subclass code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="52" SqlType="varchar"><![CDATA[Visa Subclass description]]></Field>
@@ -3575,7 +3575,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KCY" Description="Year Levels">
+  <Entity Name="KCY" Description="Year Levels" IsScoped="true">
     <Fields>
       <Field Name="KCYKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Year level code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Year level title]]></Field>
@@ -3627,7 +3627,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KDI" Description="Victorian Curriculum Strands">
+  <Entity Name="KDI" Description="Victorian Curriculum Strands" IsScoped="true">
     <Fields>
       <Field Name="KDIKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Key of Victorian Curriculum Strand]]></Field>
       <Field Name="KDOKEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Key of the domain that this dimension is linked to]]></Field>
@@ -3645,7 +3645,7 @@ eg. DF, DR]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KDO" Description="Curriculum Area">
+  <Entity Name="KDO" Description="Curriculum Area" IsScoped="true">
     <Fields>
       <Field Name="KDOKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Key of the domain]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="255" SqlType="varchar"><![CDATA[Description as per VACC]]></Field>
@@ -3779,7 +3779,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGC" Description="Home Groups">
+  <Entity Name="KGC" Description="Home Groups" IsScoped="true">
     <Fields>
       <Field Name="KGCKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar"><![CDATA[(Was FORM) Home Group code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Description]]></Field>
@@ -3867,7 +3867,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGD" Description="Year 9-12 Exit Destinations">
+  <Entity Name="KGD" Description="Year 9-12 Exit Destinations" IsScoped="true">
     <Fields>
       <Field Name="KGDKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Combination of KGG.KGGKEY and Destination]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[Description of destination]]></Field>
@@ -3880,7 +3880,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGG" Description="Year 9-12 Exit Categories">
+  <Entity Name="KGG" Description="Year 9-12 Exit Categories" IsScoped="true">
     <Fields>
       <Field Name="KGGKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="2" SqlType="varchar"><![CDATA[Category Code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[Description of category]]></Field>
@@ -3893,7 +3893,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGH" Description="Houses">
+  <Entity Name="KGH" Description="Houses" IsScoped="true">
     <Fields>
       <Field Name="KGHKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[(Was HOUSE) House code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[House description]]></Field>
@@ -3976,7 +3976,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGL" Description="Languages">
+  <Entity Name="KGL" Description="Languages" IsScoped="true">
     <Fields>
       <Field Name="KGLKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="7" SqlType="varchar"><![CDATA[Language code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="75" SqlType="varchar"><![CDATA[Long description]]></Field>
@@ -3998,7 +3998,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGLINIT" Description="General Ledger Initiatives">
+  <Entity Name="KGLINIT" Description="General Ledger Initiatives" IsScoped="true">
     <Fields>
       <Field Name="INITIATIVE" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar"><![CDATA[Type key, eg I]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[eg, INCOME]]></Field>
@@ -4013,7 +4013,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGLPROG" Description="General Ledger Programs">
+  <Entity Name="KGLPROG" Description="General Ledger Programs" IsScoped="true">
     <Fields>
       <Field Name="GLPROGRAM" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="3" SqlType="varchar"><![CDATA[Type key, eg I]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[eg, INCOME]]></Field>
@@ -4028,7 +4028,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGLSUB" Description="General Ledger Sub Programs">
+  <Entity Name="KGLSUB" Description="General Ledger Sub Programs" IsScoped="true">
     <Fields>
       <Field Name="SUBPROGRAM" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Type key, eg I]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[eg, INCOME]]></Field>
@@ -4050,7 +4050,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGLT" Description="General Ledger Account Types">
+  <Entity Name="KGLT" Description="General Ledger Account Types" IsScoped="true">
     <Fields>
       <Field Name="GL_TYPE" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Type key, eg I]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[eg, INCOME]]></Field>
@@ -4064,7 +4064,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGO" Description="Occupations">
+  <Entity Name="KGO" Description="Occupations" IsScoped="true">
     <Fields>
       <Field Name="KGOKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Occupation key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Occupation title]]></Field>
@@ -4104,7 +4104,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGR" Description="Religions">
+  <Entity Name="KGR" Description="Religions" IsScoped="true">
     <Fields>
       <Field Name="RELIGION" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Religion code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Religion description]]></Field>
@@ -4118,7 +4118,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGST" Description="GST Percentages">
+  <Entity Name="KGST" Description="GST Percentages" IsScoped="true">
     <Fields>
       <Field Name="KGSTKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Key]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Description]]></Field>
@@ -4141,7 +4141,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KGT" Description="Countries">
+  <Entity Name="KGT" Description="Countries" IsScoped="true">
     <Fields>
       <Field Name="COUNTRY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Country code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[Country description]]></Field>
@@ -4225,7 +4225,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KNATT" Description="Notes and Attachment Type">
+  <Entity Name="KNATT" Description="Notes and Attachment Type" IsScoped="true">
     <Fields>
       <Field Name="KNATTKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Note key]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="50" SqlType="varchar"><![CDATA[Note type description]]></Field>
@@ -4468,7 +4468,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KSA" Description="Areas of Teaching">
+  <Entity Name="KSA" Description="Areas of Teaching" IsScoped="true">
     <Fields>
       <Field Name="KSAKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Code to identify Area of Teaching]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Descriptive name]]></Field>
@@ -4482,7 +4482,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KSC" Description="Staff Positions">
+  <Entity Name="KSC" Description="Staff Positions" IsScoped="true">
     <Fields>
       <Field Name="KSCKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="6" SqlType="varchar"><![CDATA[Position code]]></Field>
       <Field Name="SF_POSITION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Description]]></Field>
@@ -4511,7 +4511,7 @@ to 'Y' else null]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="KSF" Description="Faculties">
+  <Entity Name="KSF" Description="Faculties" IsScoped="true">
     <Fields>
       <Field Name="KSFKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Faculty code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Faculty name]]></Field>
@@ -6041,7 +6041,7 @@ Employer ACN number (incl spaces)]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="PPD" Description="PAYG Payer Details">
+  <Entity Name="PPD" Description="PAYG Payer Details" IsScoped="true">
     <Fields>
       <Field Name="PPDKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Payer code]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Description]]></Field>
@@ -6598,7 +6598,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SA" Description="Fees">
+  <Entity Name="SA" Description="Fees" IsScoped="true">
     <Fields>
       <Field Name="SAKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Prime Key]]></Field>
       <Field Name="DESCRIPTION" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Fees table title]]></Field>
@@ -6924,7 +6924,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SAM" Description="School Association Members">
+  <Entity Name="SAM" Description="School Association Members" IsScoped="true">
     <Fields>
       <Field Name="SAMKEY" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Sequence no]]></Field>
       <Field Name="PERSON_TYPE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="2" SqlType="varchar"><![CDATA[(Was SOURCE) Table to which PERSON refers: NO=No existing record, SF=Staff member, DF=Family member, ST=Student, DN=Donor]]></Field>
@@ -7013,7 +7013,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SC" Description="Courses">
+  <Entity Name="SC" Description="Courses" IsScoped="true">
     <Fields>
       <Field Name="COURSE" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="5" SqlType="varchar"><![CDATA[Course code (same type as SU)]]></Field>
       <Field Name="NAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Course name]]></Field>
@@ -7816,7 +7816,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SCI" Description="School Information">
+  <Entity Name="SCI" Description="School Information" IsScoped="true">
     <Fields>
       <Field Name="SCIKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Sequence no]]></Field>
       <Field Name="CAMPUS_NAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[(Was DESCRIPTION) Campus name]]></Field>
@@ -7977,7 +7977,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SCL" Description="Subject Classes">
+  <Entity Name="SCL" Description="Subject Classes" IsScoped="true">
     <Fields>
       <Field Name="SCLKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="17" SqlType="varchar"><![CDATA[Class code]]></Field>
       <Field Name="QUILT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar" ForeignParent="TH:THKEY"><![CDATA[Applicable quilt]]></Field>
@@ -8341,7 +8341,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SF" Description="Staff">
+  <Entity Name="SF" Description="Staff" IsScoped="true">
     <Fields>
       <Field Name="SFKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Staff member code]]></Field>
       <Field Name="SURNAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Surname]]></Field>
@@ -8615,7 +8615,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SG" Description="Student Groupings">
+  <Entity Name="SG" Description="Student Groupings" IsScoped="true">
     <Fields>
       <Field Name="SGKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="12" SqlType="varchar"><![CDATA[Student Grouping code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[(Was PURPOSE) Name of Student Grouping]]></Field>
@@ -9099,7 +9099,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SKGS" Description="Schools">
+  <Entity Name="SKGS" Description="Schools" IsScoped="true">
     <Fields>
       <Field Name="SCHOOL" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar"><![CDATA[School ID]]></Field>
       <Field Name="NAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="40" SqlType="varchar"><![CDATA[School Name]]></Field>
@@ -9220,7 +9220,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SM" Description="Rooms">
+  <Entity Name="SM" Description="Rooms" IsScoped="true">
     <Fields>
       <Field Name="ROOM" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="4" SqlType="varchar"><![CDATA[Room code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Room name]]></Field>
@@ -9300,7 +9300,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SMC" Description="Student Medical Conditions">
+  <Entity Name="SMC" Description="Student Medical Conditions" IsScoped="true">
     <Fields>
       <Field Name="SMCKEY" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Sequence no]]></Field>
       <Field Name="STUDENT" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -9881,7 +9881,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="ST" Description="Students">
+  <Entity Name="ST" Description="Students" IsScoped="true">
     <Fields>
       <Field Name="STKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Student ID]]></Field>
       <Field Name="SURNAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Surname]]></Field>
@@ -10392,7 +10392,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STAR" Description="Student Access Restrictions">
+  <Entity Name="STAR" Description="Student Access Restrictions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student key]]></Field>
@@ -10602,7 +10602,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STMA" Description="Subject Selections &amp; Marks">
+  <Entity Name="STMA" Description="Subject Selections &amp; Marks" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -10696,7 +10696,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STNAT" Description="Student Notes and Attachments">
+  <Entity Name="STNAT" Description="Student Notes and Attachments" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Original student key]]></Field>
@@ -10754,7 +10754,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STPO" Description="Position or Group Memberships">
+  <Entity Name="STPO" Description="Position or Group Memberships" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="STPOKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -10785,7 +10785,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STPS" Description="Student Previous School">
+  <Entity Name="STPS" Description="Student Previous School" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Original student key]]></Field>
@@ -11083,7 +11083,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STSUP" Description="Support Persons">
+  <Entity Name="STSUP" Description="Support Persons" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Original student key]]></Field>
@@ -11239,7 +11239,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STVDI" Description="VELS Dimension Results">
+  <Entity Name="STVDI" Description="VELS Dimension Results" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -11318,7 +11318,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="STVDO" Description="VELS Domain Results">
+  <Entity Name="STVDO" Description="VELS Domain Results" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="SKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -11397,7 +11397,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SU" Description="Subjects">
+  <Entity Name="SU" Description="Subjects" IsScoped="true">
     <Fields>
       <Field Name="SUKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="5" SqlType="varchar"><![CDATA[Subject code]]></Field>
       <Field Name="FULLNAME" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Titlecase" TypeMaxLength="30" SqlType="varchar"><![CDATA[Subject name]]></Field>
@@ -11550,7 +11550,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SXAB" Description="Student Half-Day Absences">
+  <Entity Name="SXAB" Description="Student Half-Day Absences" IsScoped="true">
     <Fields>
       <Field Name="SXAB_ID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Unique record ID]]></Field>
       <Field Name="TXHG_TID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int" ForeignParent="TXHG:TXHG_ID"><![CDATA[TID of corresponding Home Group Daily Attendance record << may require referential integrity controls]]></Field>
@@ -11624,7 +11624,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SXABCONV" Description="Converted Student Half-Day Absences">
+  <Entity Name="SXABCONV" Description="Converted Student Half-Day Absences" IsScoped="true">
     <Fields>
       <Field Name="SXABCONV_ID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Unique record ID]]></Field>
       <Field Name="STKEY" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar" ForeignParent="ST:STKEY"><![CDATA[Student ID]]></Field>
@@ -11665,7 +11665,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="SXAS" Description="Student Scheduled Sessions">
+  <Entity Name="SXAS" Description="Student Scheduled Sessions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="TXAS_ID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int" ForeignParent="TXAS:TID"><![CDATA[ID of actual session]]></Field>
@@ -11766,7 +11766,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TC" Description="Calendar">
+  <Entity Name="TC" Description="Calendar" IsScoped="true">
     <Fields>
       <Field Name="TCKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[Calendar entry code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Title]]></Field>
@@ -11781,7 +11781,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TCAT" Description="Staff Absence Types">
+  <Entity Name="TCAT" Description="Staff Absence Types" IsScoped="true">
     <Fields>
       <Field Name="TCATKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Staff Absence Type Key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Staff Absence Type Title]]></Field>
@@ -11795,7 +11795,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TCTB" Description="Teacher Absences">
+  <Entity Name="TCTB" Description="Teacher Absences" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="TCTBKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime" ForeignParent="TC:TCKEY"><![CDATA[Absent date]]></Field>
@@ -11834,7 +11834,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TCTD" Description="Calendar Period Information">
+  <Entity Name="TCTD" Description="Calendar Period Information" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="TCTDKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime" ForeignParent="TC:TCKEY"><![CDATA[Owner relation]]></Field>
@@ -11865,7 +11865,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TCTQ" Description="Calendar Class Information">
+  <Entity Name="TCTQ" Description="Calendar Class Information" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="TCTQKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime" ForeignParent="TC:TCKEY"><![CDATA[(was TQTCKEY) Owner relation]]></Field>
@@ -11945,7 +11945,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TCTR" Description="Teacher Replacements">
+  <Entity Name="TCTR" Description="Teacher Replacements" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID]]></Field>
       <Field Name="TCTRKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime" ForeignParent="TC:TCKEY"><![CDATA[Replacement date]]></Field>
@@ -11977,7 +11977,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TE" Description="Calendar Events">
+  <Entity Name="TE" Description="Calendar Events" IsScoped="true">
     <Fields>
       <Field Name="TEKEY" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Event name]]></Field>
@@ -12037,7 +12037,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TEC" Description="Event Categories">
+  <Entity Name="TEC" Description="Event Categories" IsScoped="true">
     <Fields>
       <Field Name="CATEGORY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="10" SqlType="varchar"><![CDATA[Key]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Title]]></Field>
@@ -12103,7 +12103,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TH" Description="Timetable Quilt Headers">
+  <Entity Name="TH" Description="Timetable Quilt Headers" IsScoped="true">
     <Fields>
       <Field Name="THKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar"><![CDATA[Quilt code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Quilt title]]></Field>
@@ -12272,7 +12272,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="THTN" Description="Timetable Labels">
+  <Entity Name="THTN" Description="Timetable Labels" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="QKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar" ForeignParent="TH:THKEY"><![CDATA[Link to Timetable Quilt Header]]></Field>
@@ -12296,7 +12296,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="THTQ" Description="Timetable Quilt Entries">
+  <Entity Name="THTQ" Description="Timetable Quilt Entries" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="QKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar" ForeignParent="TH:THKEY"><![CDATA[Link to Timetable Quilt Header]]></Field>
@@ -12467,7 +12467,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TT" Description="Timetable Grid Templates">
+  <Entity Name="TT" Description="Timetable Grid Templates" IsScoped="true">
     <Fields>
       <Field Name="TTKEY" IsKey="true" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar"><![CDATA[Template code]]></Field>
       <Field Name="TITLE" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Template title]]></Field>
@@ -12701,7 +12701,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TTTG" Description="Grid Subjects">
+  <Entity Name="TTTG" Description="Grid Subjects" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="false" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="GKEY" IsKey="false" IsNullable="false" IsIdentity="false" Type="string" TypeDescription="Uppercase Alphanumeric" TypeMaxLength="8" SqlType="varchar" ForeignParent="TT:TTKEY"><![CDATA[Link to Timetable Grid Template]]></Field>
@@ -12776,7 +12776,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TXAS" Description="Actual Sessions">
+  <Entity Name="TXAS" Description="Actual Sessions" IsScoped="true">
     <Fields>
       <Field Name="TID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Transaction ID (internal)]]></Field>
       <Field Name="THTQ_TID" IsKey="false" IsNullable="true" IsIdentity="false" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[TID in corresponding THTQ record]]></Field>
@@ -12818,7 +12818,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="TXHG" Description="Home Group Daily Attendance Records">
+  <Entity Name="TXHG" Description="Home Group Daily Attendance Records" IsScoped="true">
     <Fields>
       <Field Name="TXHG_ID" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Unique ID for this record]]></Field>
       <Field Name="TXHG_DATE" IsKey="false" IsNullable="true" IsIdentity="false" Type="DateTime" TypeDescription="Date Time" SqlType="datetime"><![CDATA[The date to which this record applies]]></Field>
@@ -12841,7 +12841,7 @@ update rates from this date]]></Field>
       </Index>
     </Indexes>
   </Entity>
-  <Entity Name="UM" Description="Addresses">
+  <Entity Name="UM" Description="Addresses" IsScoped="true">
     <Fields>
       <Field Name="UMKEY" IsKey="true" IsNullable="false" IsIdentity="true" Type="int" TypeDescription="Integer" SqlType="int"><![CDATA[Address ID]]></Field>
       <Field Name="ADDRESS01" IsKey="false" IsNullable="true" IsIdentity="false" Type="string" TypeDescription="Alphanumeric" TypeMaxLength="30" SqlType="varchar"><![CDATA[Three address lines (third line used for overseas addresses)]]></Field>

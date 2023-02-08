@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<BKHR> Cache_BKHKEY_BKHR_BKHRKEY;
         private IReadOnlyList<SUBL> Cache_BKHKEY_SUBL_BOOK;
+#endif
 
         #endregion
 
@@ -148,6 +151,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// BKHR (Book Hire Records) related entities by [BKH.BKHKEY]-&gt;[BKHR.BKHRKEY]
         /// Book code
@@ -184,7 +188,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<AR> Cache_LOCATION_AR_LOCATION;
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_LOCATION_ARF_LOCATION;
+#endif
 
         #endregion
 
@@ -121,6 +124,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [AKL.LOCATION]-&gt;[ARF.LOCATION]
         /// Prime Key
@@ -139,7 +143,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,13 +14,17 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KREPORT Cache_REPORT_KREPORT;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SPEPRINT> Cache_SPEMAILKEY_SPEPRINT_CODE;
+#endif
 
         #endregion
 
@@ -120,6 +125,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KREPORT (Reports for emailing) related entity by [SPEMAIL.REPORT]-&gt;[KREPORT.KREPORTKEY]
         /// Report file name (without  extension)
@@ -141,10 +147,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SPEPRINT (Report file audit) related entities by [SPEMAIL.SPEMAILKEY]-&gt;[SPEPRINT.CODE]
         /// Key
@@ -163,7 +171,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

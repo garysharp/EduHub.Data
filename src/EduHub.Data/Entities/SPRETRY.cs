@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SPSMS Cache_CODE_SPSMS;
+#endif
 
         #endregion
 
@@ -74,6 +77,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SPSMS (SMS messages) related entity by [SPRETRY.CODE]-&gt;[SPSMS.SPSMSKEY]
         /// SMS Key
@@ -91,7 +95,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

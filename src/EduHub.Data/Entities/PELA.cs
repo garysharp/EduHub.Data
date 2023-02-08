@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PE Cache_PEKEY_PE;
         private PLC Cache_LEAVE_CODE_PLC;
+#endif
 
         #endregion
 
@@ -133,6 +136,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entity by [PELA.PEKEY]-&gt;[PE.PEKEY]
         /// Employee identification code
@@ -171,7 +175,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SAB Cache_SABTKEY_SAB;
+#endif
         private SA Cache_FEE_CODE_SA;
 
         #endregion
@@ -78,6 +81,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAB (Fees - Billing Templates) related entity by [SABT.SABTKEY]-&gt;[SAB.SABKEY]
         /// Key
@@ -95,6 +99,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SA (Fees) related entity by [SABT.FEE_CODE]-&gt;[SA.SAKEY]
         /// Fee code for the student
@@ -120,3 +125,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

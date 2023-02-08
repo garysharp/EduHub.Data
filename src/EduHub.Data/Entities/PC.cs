@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,9 +22,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEF> Cache_PCKEY_PEF_TRCENTRE;
         private IReadOnlyList<PEFH> Cache_PCKEY_PEFH_TRCENTRE;
         private IReadOnlyList<PEPS> Cache_PCKEY_PEPS_TRCENTRE;
+#endif
 
         #endregion
 
@@ -161,6 +164,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEF (Payroll Transactions) related entities by [PC.PCKEY]-&gt;[PEF.TRCENTRE]
         /// Cost centre key
@@ -215,7 +219,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

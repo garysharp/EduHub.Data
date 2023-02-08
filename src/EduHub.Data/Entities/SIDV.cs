@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SID Cache_INCIDENT_KEY_SID;
+#endif
 
         #endregion
 
@@ -94,6 +97,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SID (Disciplinary Incidents) related entity by [SIDV.INCIDENT_KEY]-&gt;[SID.SIDKEY]
         /// Number of the incident that the victim/recipient was involved in
@@ -111,7 +115,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

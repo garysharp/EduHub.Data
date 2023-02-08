@@ -30,9 +30,12 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<AKC> Cache_CODE_AKC_APTE_GLCODE;
         private IReadOnlyList<AR> Cache_CODE_AR_PTE_GLCODE;
         private IReadOnlyList<GLBUDG> Cache_CODE_GLBUDG_CODE;
+#if !EduHubScoped
         private IReadOnlyList<GLCF> Cache_CODE_GLCF_CODE;
+#endif
         private IReadOnlyList<GLF> Cache_CODE_GLF_CODE;
         private IReadOnlyList<KGST> Cache_CODE_KGST_GLGST_CODE;
+#if !EduHubScoped
         private IReadOnlyList<KUPC> Cache_CODE_KUPC_GL_CODE;
         private IReadOnlyList<PC> Cache_CODE_PC_GLCODE;
         private IReadOnlyList<PD> Cache_CODE_PD_GLCODE;
@@ -45,9 +48,12 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_CODE_PN_GLBANK;
         private IReadOnlyList<PN> Cache_CODE_PN_GLTAX;
         private IReadOnlyList<RQGL> Cache_CODE_RQGL_GLCODE;
+#endif
         private IReadOnlyList<SA> Cache_CODE_SA_GLCODE;
+#if !EduHubScoped
         private IReadOnlyList<SDFC> Cache_CODE_SDFC_GLCODE;
         private IReadOnlyList<SGFC> Cache_CODE_SGFC_GLCODE;
+#endif
 
         #endregion
 
@@ -802,6 +808,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLCF (GL Combined Financial Trans) related entities by [GL.CODE]-&gt;[GLCF.CODE]
         /// General Ledger code (Prime Key)
@@ -820,6 +827,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GLF (General Ledger Transactions) related entities by [GL.CODE]-&gt;[GLF.CODE]
         /// General Ledger code (Prime Key)
@@ -856,6 +864,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KUPC (User Program Codes) related entities by [GL.CODE]-&gt;[KUPC.GL_CODE]
         /// General Ledger code (Prime Key)
@@ -1072,6 +1081,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SA (Fees) related entities by [GL.CODE]-&gt;[SA.GLCODE]
         /// General Ledger code (Prime Key)
@@ -1090,6 +1100,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDFC (Sundry Debtor Fees) related entities by [GL.CODE]-&gt;[SDFC.GLCODE]
         /// General Ledger code (Prime Key)
@@ -1126,6 +1137,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

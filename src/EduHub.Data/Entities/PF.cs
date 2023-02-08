@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -19,9 +20,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEPS> Cache_PFKEY_PEPS_SUPER_FUND;
         private IReadOnlyList<PEPU> Cache_PFKEY_PEPU_SUPER_FUND;
         private IReadOnlyList<PEPUH> Cache_PFKEY_PEPUH_SUPER_FUND;
+#endif
 
         #endregion
 
@@ -117,6 +120,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEPS (Standard and Last Pays) related entities by [PF.PFKEY]-&gt;[PEPS.SUPER_FUND]
         /// Super fund key
@@ -171,7 +175,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

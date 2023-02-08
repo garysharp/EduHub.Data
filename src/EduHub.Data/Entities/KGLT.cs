@@ -14,7 +14,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<GL> Cache_GL_TYPE_GL_GL_TYPE;
+#if !EduHubScoped
         private IReadOnlyList<GLPREV> Cache_GL_TYPE_GLPREV_GL_TYPE;
+#endif
 
         #endregion
 
@@ -79,6 +81,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLPREV (Last Years General Ledger) related entities by [KGLT.GL_TYPE]-&gt;[GLPREV.GL_TYPE]
         /// Type key, eg I
@@ -97,6 +100,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

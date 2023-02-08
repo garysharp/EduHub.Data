@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,14 +14,18 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SID Cache_INCIDENT_KEY_SID;
+#endif
         private ST Cache_STUDENT_KEY_ST;
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SDPA> Cache_SDPKEY_SDPA_SDP_STUDENT;
+#endif
 
         #endregion
 
@@ -105,6 +110,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SID (Disciplinary Incidents) related entity by [SDP.INCIDENT_KEY]-&gt;[SID.SIDKEY]
         /// Number of the incident
@@ -126,6 +132,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entity by [SDP.STUDENT_KEY]-&gt;[ST.STKEY]
         /// Code of student who instigated the incident
@@ -151,6 +158,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDPA (Disciplinary Actions) related entities by [SDP.SDPKEY]-&gt;[SDPA.SDP_STUDENT]
         /// Sequence no
@@ -169,7 +177,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

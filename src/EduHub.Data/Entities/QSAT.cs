@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,13 +14,17 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private QSAG Cache_GROUPING_QSAG;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<QSAC> Cache_TABLE_NAME_QSAC_TABLE_NAME;
+#endif
 
         #endregion
 
@@ -84,6 +89,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// QSAG (Audit Group Tables) related entity by [QSAT.GROUPING]-&gt;[QSAG.QSAGKEY]
         /// Grouping on Tables
@@ -105,10 +111,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// QSAC (Audit Control) related entities by [QSAT.TABLE_NAME]-&gt;[QSAC.TABLE_NAME]
         /// Table ID
@@ -127,7 +135,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

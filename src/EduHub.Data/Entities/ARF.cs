@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -16,12 +17,16 @@ namespace EduHub.Data.Entities
         private AR Cache_CODE_AR;
         private KAB Cache_BSB_KAB;
         private KGST Cache_GST_TYPE_KGST;
+#if !EduHubScoped
         private KADM Cache_AMETHOD_KADM;
         private KADM Cache_TMETHOD_KADM;
+#endif
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
+#if !EduHubScoped
         private AKR Cache_RELEASE_TYPE_AKR;
         private AKL Cache_LOCATION_AKL;
+#endif
 
         #endregion
 
@@ -537,6 +542,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KADM (Asset Depreciation Methods) related entity by [ARF.AMETHOD]-&gt;[KADM.KADMKEY]
         /// Method of depreciation
@@ -579,6 +585,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entity by [ARF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
@@ -621,6 +628,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// AKR (Asset Release Types) related entity by [ARF.RELEASE_TYPE]-&gt;[AKR.AKRKEY]
         /// Asset Release Type
@@ -663,7 +671,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

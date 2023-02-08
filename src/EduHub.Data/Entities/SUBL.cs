@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private SU Cache_BLKEY_SU;
+#if !EduHubScoped
         private BKH Cache_BOOK_BKH;
+#endif
 
         #endregion
 
@@ -105,6 +108,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// BKH (Books for Hire) related entity by [SUBL.BOOK]-&gt;[BKH.BKHKEY]
         /// Book ISBN identifier
@@ -126,7 +130,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

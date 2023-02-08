@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,9 +14,13 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SDP Cache_SDP_STUDENT_SDP;
+#endif
         private SF Cache_TAKEN_BY_SF;
+#if !EduHubScoped
         private KAM Cache_ACTION_TAKEN_KAM;
+#endif
 
         #endregion
 
@@ -90,6 +95,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDP (Incident Instigators) related entity by [SDPA.SDP_STUDENT]-&gt;[SDP.SDPKEY]
         /// Number of the relevant Incident Instigator record
@@ -107,6 +113,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entity by [SDPA.TAKEN_BY]-&gt;[SF.SFKEY]
         /// Staff code of staff member responsible for this disciplinary action
@@ -128,6 +135,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KAM (Standard Disciplinary Actions) related entity by [SDPA.ACTION_TAKEN]-&gt;[KAM.KAMKEY]
         /// Code identifying type of disciplinary action
@@ -149,7 +157,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

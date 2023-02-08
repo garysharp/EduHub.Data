@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private QSAT Cache_TABLE_NAME_QSAT;
+#endif
 
         #endregion
 
@@ -106,6 +109,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// QSAT (Auditable Tables) related entity by [QSAC.TABLE_NAME]-&gt;[QSAT.TABLE_NAME]
         /// ID of table to audit
@@ -127,7 +131,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

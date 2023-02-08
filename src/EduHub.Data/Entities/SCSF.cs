@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SCSFAG> Cache_SCSFKEY_SCSFAG_SCSFKEY;
+#endif
 
         #endregion
 
@@ -94,6 +97,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SCSFAG (CSF Data Aggregates) related entities by [SCSF.SCSFKEY]-&gt;[SCSFAG.SCSFKEY]
         /// CSF Outcome Code
@@ -112,7 +116,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

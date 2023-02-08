@@ -26,16 +26,20 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<KGC> Cache_KGCKEY_KGC_NEXT_HG;
+#if !EduHubScoped
         private IReadOnlyList<KGCHI> Cache_KGCKEY_KGCHI_KGCKEY;
         private IReadOnlyList<SGHG> Cache_KGCKEY_SGHG_KGCLINK;
         private IReadOnlyList<SS> Cache_KGCKEY_SS_FROM_HOMEGROUP;
         private IReadOnlyList<SS> Cache_KGCKEY_SS_TO_HOMEGROUP;
         private IReadOnlyList<SSHG> Cache_KGCKEY_SSHG_HOMEGROUP;
         private IReadOnlyList<SSHG> Cache_KGCKEY_SSHG_TEACHING_HG;
+#endif
         private IReadOnlyList<ST> Cache_KGCKEY_ST_HOME_GROUP;
         private IReadOnlyList<ST> Cache_KGCKEY_ST_NEXT_HG;
+#if !EduHubScoped
         private IReadOnlyList<ST_TFR> Cache_KGCKEY_ST_TFR_HOME_GROUP_NEW;
         private IReadOnlyList<STRE> Cache_KGCKEY_STRE_ST_HOME_GROUP;
+#endif
         private IReadOnlyList<TE> Cache_KGCKEY_TE_START_FORM;
         private IReadOnlyList<TE> Cache_KGCKEY_TE_END_FORM;
         private IReadOnlyList<TXHG> Cache_KGCKEY_TXHG_HOME_GROUP;
@@ -321,6 +325,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KGCHI (Home Group History) related entities by [KGC.KGCKEY]-&gt;[KGCHI.KGCKEY]
         /// (Was FORM) Home Group code
@@ -429,6 +434,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entities by [KGC.KGCKEY]-&gt;[ST.HOME_GROUP]
         /// (Was FORM) Home Group code
@@ -465,6 +471,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ST_TFR (ST Transfer) related entities by [KGC.KGCKEY]-&gt;[ST_TFR.HOME_GROUP_NEW]
         /// (Was FORM) Home Group code
@@ -501,6 +508,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TE (Calendar Events) related entities by [KGC.KGCKEY]-&gt;[TE.START_FORM]
         /// (Was FORM) Home Group code

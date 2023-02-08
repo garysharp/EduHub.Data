@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,7 +22,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SSHG> Cache_SSKEY_SSHG_SUBJECT;
+#endif
 
         #endregion
 
@@ -159,6 +162,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SSHG (Specialist Subjects per Home Group) related entities by [SS.SSKEY]-&gt;[SSHG.SUBJECT]
         /// Subject code
@@ -177,7 +181,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

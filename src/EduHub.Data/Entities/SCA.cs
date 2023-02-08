@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<SAM> Cache_SCAKEY_SAM_ASSOC_NAME;
+#if !EduHubScoped
         private IReadOnlyList<SCAM> Cache_SCAKEY_SCAM_SCAMKEY;
+#endif
 
         #endregion
 
@@ -95,6 +98,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SCAM (School Association Meetings) related entities by [SCA.SCAKEY]-&gt;[SCAM.SCAMKEY]
         /// Short name of association
@@ -113,7 +117,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

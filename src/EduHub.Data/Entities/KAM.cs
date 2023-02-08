@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SDPA> Cache_KAMKEY_SDPA_ACTION_TAKEN;
+#endif
 
         #endregion
 
@@ -66,6 +69,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDPA (Disciplinary Actions) related entities by [KAM.KAMKEY]-&gt;[SDPA.ACTION_TAKEN]
         /// Code to identify standard disciplinary action
@@ -84,7 +88,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

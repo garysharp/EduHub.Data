@@ -34,8 +34,10 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<KCC> Cache_THKEY_KCC_CURRENT_QUILT;
         private IReadOnlyList<SCI> Cache_THKEY_SCI_CURRENT_QUILT;
         private IReadOnlyList<SCL> Cache_THKEY_SCL_QUILT;
+#if !EduHubScoped
         private IReadOnlyList<SFAQ> Cache_THKEY_SFAQ_QKEY;
         private IReadOnlyList<SMAQ> Cache_THKEY_SMAQ_QKEY;
+#endif
         private IReadOnlyList<TCTD> Cache_THKEY_TCTD_QKEY;
         private IReadOnlyList<TCTQ> Cache_THKEY_TCTQ_QKEY;
         private IReadOnlyList<THTN> Cache_THKEY_THTN_QKEY;
@@ -1071,6 +1073,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SFAQ (Staff Availability in Quilt) related entities by [TH.THKEY]-&gt;[SFAQ.QKEY]
         /// Quilt code
@@ -1107,6 +1110,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TCTD (Calendar Period Information) related entities by [TH.THKEY]-&gt;[TCTD.QKEY]
         /// Quilt code

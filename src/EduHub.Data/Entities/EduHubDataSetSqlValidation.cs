@@ -53,6 +53,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class DF_TFRDataSet
     {
         /// <inheritdoc />
@@ -70,6 +71,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class DFDataSet
     {
@@ -105,6 +107,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class DRFDataSet
     {
         /// <inheritdoc />
@@ -157,6 +160,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class GLDataSet
     {
@@ -175,6 +179,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class GLFBANKDataSet
     {
         /// <inheritdoc />
@@ -191,6 +196,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class GLFDataSet
     {
@@ -209,6 +215,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class KCM_TFRDataSet
     {
         /// <inheritdoc />
@@ -225,6 +232,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class KCMDataSet
     {
@@ -346,6 +354,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class QBDataSet
     {
         /// <inheritdoc />
@@ -379,6 +388,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class SCIDataSet
     {
@@ -495,6 +505,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class ST_TFRDataSet
     {
         /// <inheritdoc />
@@ -513,6 +524,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class STDataSet
     {
@@ -565,6 +577,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class STMBDataSet
     {
         /// <inheritdoc />
@@ -581,6 +594,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class STNATDataSet
     {
@@ -684,6 +698,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class SVAGDataSet
     {
         /// <inheritdoc />
@@ -700,6 +715,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class SXABDataSet
     {
@@ -820,6 +836,7 @@ WHERE
         }
     }
 
+#if !EduHubScoped
     partial class TETNDataSet
     {
         /// <inheritdoc />
@@ -836,6 +853,7 @@ WHERE
             return new SqlCommand(sql, SqlConnection);
         }
     }
+#endif
 
     partial class TTDataSet
     {

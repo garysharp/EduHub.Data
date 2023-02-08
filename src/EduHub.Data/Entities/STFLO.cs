@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private ST Cache_SKEY_ST;
+#if !EduHubScoped
         private KFLO Cache_PROGRAM_KFLO;
+#endif
 
         #endregion
 
@@ -98,6 +101,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KFLO (FLO Placement information) related entity by [STFLO.PROGRAM]-&gt;[KFLO.KFLOKEY]
         /// Program from what school
@@ -119,7 +123,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

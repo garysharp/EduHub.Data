@@ -26,8 +26,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<TETE> Cache_TEKEY_TETE_TETEKEY;
         private IReadOnlyList<TETN> Cache_TEKEY_TETN_TETNKEY;
+#endif
 
         #endregion
 
@@ -368,6 +370,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// TETE (Event Instances) related entities by [TE.TEKEY]-&gt;[TETE.TETEKEY]
         /// Key
@@ -404,6 +407,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

@@ -31,6 +31,17 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\EduHub.Data.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Scoped|AnyCPU'">
+    <OutputPath>bin\Scoped\</OutputPath>
+    <DefineConstants>TRACE;EduHubScoped</DefineConstants>
+    <DocumentationFile>bin\Scoped\EduHub.Data.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+	  <AssemblyName>EduHub.Data.Scoped</AssemblyName>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -2086,11 +2097,11 @@
     <None Include="CASES21 Schema.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Entities\EntityGenerator.txt">
+    <Content Include="Entities\EntityGenerator.txt">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityGenerator.tt</DependentUpon>
-    </None>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

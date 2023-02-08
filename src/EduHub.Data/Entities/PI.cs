@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PG Cache_PAYG_BOX_PG;
         private PI Cache_BASEITEM_PI;
         private PSA Cache_AWARD_PSA;
+#endif
         private GL Cache_CLR_GLCODE_GL;
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
@@ -24,6 +27,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEF> Cache_PIKEY_PEF_PAYITEM;
         private IReadOnlyList<PEFH> Cache_PIKEY_PEFH_PAYITEM;
         private IReadOnlyList<PEPS> Cache_PIKEY_PEPS_PAYITEM;
@@ -32,6 +36,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PETP> Cache_PIKEY_PETP_PAYITEM;
         private IReadOnlyList<PI> Cache_PIKEY_PI_BASEITEM;
         private IReadOnlyList<PILI> Cache_PIKEY_PILI_PIKEY;
+#endif
 
         #endregion
 
@@ -353,6 +358,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PG (PAYG Payment Summary Box) related entity by [PI.PAYG_BOX]-&gt;[PG.PAYG_BOX]
         /// PAYG Payment summary box no.
@@ -416,6 +422,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GL (General Ledger) related entity by [PI.CLR_GLCODE]-&gt;[GL.CODE]
         /// Clearing GL code (not used)
@@ -483,6 +490,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEF (Payroll Transactions) related entities by [PI.PIKEY]-&gt;[PEF.PAYITEM]
         /// Pay item key
@@ -627,7 +635,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

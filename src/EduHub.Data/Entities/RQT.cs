@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private RQ Cache_TRORDER_RQ;
+#endif
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
 
@@ -99,6 +102,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// RQ (Purchase Requisition) related entity by [RQT.TRORDER]-&gt;[RQ.TRORDER]
         /// Requisition number being satisfied
@@ -116,6 +120,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entity by [RQT.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// Must already exist as a SUBPROGRAM
@@ -162,3 +167,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

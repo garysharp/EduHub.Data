@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PLT Cache_PLTKEY_PLT;
         private PE Cache_PEKEY_PE;
         private PLC Cache_LEAVE_CODE_PLC;
+#endif
 
         #endregion
 
@@ -120,6 +123,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PLT (Leave Group Types) related entity by [PELD.PLTKEY]-&gt;[PLT.PLTKEY]
         /// PLT KEY
@@ -179,7 +183,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

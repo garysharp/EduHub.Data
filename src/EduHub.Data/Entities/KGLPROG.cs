@@ -14,10 +14,14 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<GLF> Cache_GLPROGRAM_GLF_GLPROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<GLFPREV> Cache_GLPROGRAM_GLFPREV_GLPROGRAM;
+#endif
         private IReadOnlyList<KGLSUB> Cache_GLPROGRAM_KGLSUB_GL_PROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<KUPC> Cache_GLPROGRAM_KUPC_GLPROGRAM01;
         private IReadOnlyList<KUPC> Cache_GLPROGRAM_KUPC_GLPROGRAM02;
+#endif
 
         #endregion
 
@@ -88,6 +92,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLFPREV (Last Years GL Financial Trans) related entities by [KGLPROG.GLPROGRAM]-&gt;[GLFPREV.GLPROGRAM]
         /// Type key, eg I
@@ -106,6 +111,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entities by [KGLPROG.GLPROGRAM]-&gt;[KGLSUB.GL_PROGRAM]
         /// Type key, eg I
@@ -124,6 +130,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KUPC (User Program Codes) related entities by [KGLPROG.GLPROGRAM]-&gt;[KUPC.GLPROGRAM01]
         /// Type key, eg I
@@ -160,6 +167,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

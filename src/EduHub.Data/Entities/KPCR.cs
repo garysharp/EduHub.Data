@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<KPCL> Cache_KPCRKEY_KPCL_CONTACT_TYPE;
+#endif
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KPCL (Contact Links) related entities by [KPCR.KPCRKEY]-&gt;[KPCL.CONTACT_TYPE]
         /// Contact relationship Key
@@ -78,7 +82,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

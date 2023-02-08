@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<TRPROUT> Cache_COMPANY_ID_TRPROUT_TRANSPORT_COMPANY_ID;
+#endif
 
         #endregion
 
@@ -125,6 +128,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// TRPROUT (Student Transport Routes) related entities by [KTRCMP.COMPANY_ID]-&gt;[TRPROUT.TRANSPORT_COMPANY_ID]
         /// Company ID
@@ -143,7 +147,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

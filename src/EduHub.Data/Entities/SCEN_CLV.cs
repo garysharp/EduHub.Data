@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -70,3 +71,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

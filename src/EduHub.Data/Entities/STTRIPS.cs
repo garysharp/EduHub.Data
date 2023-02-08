@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,12 +15,16 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private ST Cache_STUDENT_ID_ST;
+#if !EduHubScoped
         private TRPROUT Cache_AM_ROUTE_ID_TRPROUT;
         private TRPMODE Cache_AM_TRANSPORT_MODE_TRPMODE;
+#endif
         private UM Cache_AM_PICKUP_ADDRESS_ID_UM;
         private SCI Cache_AM_SETDOWN_CAMPUS_SCI;
+#if !EduHubScoped
         private TRPROUT Cache_PM_ROUTE_ID_TRPROUT;
         private TRPMODE Cache_PM_TRANSPORT_MODE_TRPMODE;
+#endif
         private SCI Cache_PM_PICKUP_CAMPUS_SCI;
         private UM Cache_PM_SETDOWN_ADDRESS_ID_UM;
 
@@ -256,6 +261,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TRPROUT (Student Transport Routes) related entity by [STTRIPS.AM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
         /// AM Route ID
@@ -298,6 +304,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// UM (Addresses) related entity by [STTRIPS.AM_PICKUP_ADDRESS_ID]-&gt;[UM.UMKEY]
         /// AM pickup address
@@ -340,6 +347,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TRPROUT (Student Transport Routes) related entity by [STTRIPS.PM_ROUTE_ID]-&gt;[TRPROUT.ROUTE_ID]
         /// &lt;No documentation available&gt;
@@ -382,6 +390,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STTRIPS.PM_PICKUP_CAMPUS]-&gt;[SCI.SCIKEY]
         /// &lt;No documentation available&gt;
@@ -428,3 +437,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

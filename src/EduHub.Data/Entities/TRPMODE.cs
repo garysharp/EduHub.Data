@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<STTRIPS> Cache_TRANSPORT_MODE_ID_STTRIPS_AM_TRANSPORT_MODE;
         private IReadOnlyList<STTRIPS> Cache_TRANSPORT_MODE_ID_STTRIPS_PM_TRANSPORT_MODE;
         private IReadOnlyList<TRPROUT> Cache_TRANSPORT_MODE_ID_TRPROUT_TRANSPORT_MODE_ID;
+#endif
 
         #endregion
 
@@ -61,6 +64,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// STTRIPS (Student Trips) related entities by [TRPMODE.TRANSPORT_MODE_ID]-&gt;[STTRIPS.AM_TRANSPORT_MODE]
         /// Transport Modes
@@ -115,7 +119,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

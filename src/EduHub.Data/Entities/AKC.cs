@@ -22,8 +22,10 @@ namespace EduHub.Data.Entities
         private GL Cache_GL_DISP_PROF_GL;
         private GL Cache_GL_DISP_PROC_GL;
         private GL Cache_APTE_GLCODE_GL;
+#if !EduHubScoped
         private KADM Cache_DEPN_AMETHOD_KADM;
         private KADM Cache_DEPN_TMETHOD_KADM;
+#endif
 
         #endregion
 
@@ -379,6 +381,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KADM (Asset Depreciation Methods) related entity by [AKC.DEPN_AMETHOD]-&gt;[KADM.KADMKEY]
         /// Default deprn method for accounts
@@ -421,6 +424,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties

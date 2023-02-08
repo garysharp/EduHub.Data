@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PI> Cache_PSAKEY_PI_AWARD;
+#endif
 
         #endregion
 
@@ -66,6 +69,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PI (Pay Items) related entities by [PSA.PSAKEY]-&gt;[PI.AWARD]
         /// oldname=PSKEY; * Award Code
@@ -84,7 +88,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

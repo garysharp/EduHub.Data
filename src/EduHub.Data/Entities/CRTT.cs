@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private CR Cache_CRKEY_CR;
+#if !EduHubScoped
         private KTT Cache_TRADE_TYPE_KTT;
+#endif
         private SF Cache_STAFF_SF;
 
         #endregion
@@ -90,6 +93,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KTT (Trade Type) related entity by [CRTT.TRADE_TYPE]-&gt;[KTT.KTTKEY]
         /// Trade type key
@@ -111,6 +115,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entity by [CRTT.STAFF]-&gt;[SF.SFKEY]
         /// Staff member adding record
@@ -136,3 +141,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

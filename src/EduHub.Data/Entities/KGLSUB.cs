@@ -19,14 +19,21 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_SUBPROGRAM_ARF_SUBPROGRAM;
+#endif
         private IReadOnlyList<CRF> Cache_SUBPROGRAM_CRF_SUBPROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<CRPR> Cache_SUBPROGRAM_CRPR_SUBPROGRAM;
+#endif
         private IReadOnlyList<DFF> Cache_SUBPROGRAM_DFF_SUBPROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<DRF> Cache_SUBPROGRAM_DRF_SUBPROGRAM;
         private IReadOnlyList<GLCF> Cache_SUBPROGRAM_GLCF_SUBPROGRAM;
         private IReadOnlyList<GLCFPREV> Cache_SUBPROGRAM_GLCFPREV_SUBPROGRAM;
+#endif
         private IReadOnlyList<GLF> Cache_SUBPROGRAM_GLF_SUBPROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<GLFBANK> Cache_SUBPROGRAM_GLFBANK_SUBPROGRAM;
         private IReadOnlyList<GLFPREV> Cache_SUBPROGRAM_GLFPREV_SUBPROGRAM;
         private IReadOnlyList<PC> Cache_SUBPROGRAM_PC_SUBPROGRAM;
@@ -40,9 +47,12 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PN> Cache_SUBPROGRAM_PN_SUBPROGRAM;
         private IReadOnlyList<RQGL> Cache_SUBPROGRAM_RQGL_SUBPROGRAM;
         private IReadOnlyList<RQT> Cache_SUBPROGRAM_RQT_SUBPROGRAM;
+#endif
         private IReadOnlyList<SA> Cache_SUBPROGRAM_SA_SUBPROGRAM;
+#if !EduHubScoped
         private IReadOnlyList<SDFC> Cache_SUBPROGRAM_SDFC_SUBPROGRAM;
         private IReadOnlyList<SGFC> Cache_SUBPROGRAM_SGFC_SUBPROGRAM;
+#endif
 
         #endregion
 
@@ -144,6 +154,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[ARF.SUBPROGRAM]
         /// Type key, eg I
@@ -162,6 +173,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CRF (Creditor Financial Transaction) related entities by [KGLSUB.SUBPROGRAM]-&gt;[CRF.SUBPROGRAM]
         /// Type key, eg I
@@ -180,6 +192,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// CRPR (Creditor Purchase Requisitions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[CRPR.SUBPROGRAM]
         /// Type key, eg I
@@ -198,6 +211,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// DFF (Family Financial Transactions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[DFF.SUBPROGRAM]
         /// Type key, eg I
@@ -216,6 +230,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// DRF (DR Transactions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[DRF.SUBPROGRAM]
         /// Type key, eg I
@@ -270,6 +285,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GLF (General Ledger Transactions) related entities by [KGLSUB.SUBPROGRAM]-&gt;[GLF.SUBPROGRAM]
         /// Type key, eg I
@@ -288,6 +304,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLFBANK (Financial Commitments) related entities by [KGLSUB.SUBPROGRAM]-&gt;[GLFBANK.SUBPROGRAM]
         /// Type key, eg I
@@ -522,6 +539,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SA (Fees) related entities by [KGLSUB.SUBPROGRAM]-&gt;[SA.SUBPROGRAM]
         /// Type key, eg I
@@ -540,6 +558,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDFC (Sundry Debtor Fees) related entities by [KGLSUB.SUBPROGRAM]-&gt;[SDFC.SUBPROGRAM]
         /// Type key, eg I
@@ -576,6 +595,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

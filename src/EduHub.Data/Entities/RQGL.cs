@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private RQPG Cache_RQPGKEY_RQPG;
+#endif
         private GL Cache_GLCODE_GL;
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
@@ -85,6 +88,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// RQPG (Purchasing Group) related entity by [RQGL.RQPGKEY]-&gt;[RQPG.RQPGKEY]
         /// Purchasing Group
@@ -102,6 +106,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GL (General Ledger) related entity by [RQGL.GLCODE]-&gt;[GL.CODE]
         /// GL Code
@@ -169,3 +174,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

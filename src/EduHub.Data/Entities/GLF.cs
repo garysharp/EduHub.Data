@@ -19,7 +19,9 @@ namespace EduHub.Data.Entities
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLPROG Cache_GLPROGRAM_KGLPROG;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
+#if !EduHubScoped
         private SGFC Cache_FEE_CODE_SGFC;
+#endif
 
         #endregion
 
@@ -511,6 +513,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SGFC (General Ledger Fees) related entity by [GLF.FEE_CODE]-&gt;[SGFC.SGFCKEY]
         /// Fee code
@@ -532,6 +535,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

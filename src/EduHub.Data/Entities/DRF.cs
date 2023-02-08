@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,10 +15,14 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private DR Cache_CODE_DR;
+#if !EduHubScoped
         private QB Cache_TRBATCH_QB;
+#endif
         private KGST Cache_GST_TYPE_KGST;
         private KAB Cache_BSB_KAB;
+#if !EduHubScoped
         private SDFC Cache_FEE_CODE_SDFC;
+#endif
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
 
@@ -399,6 +404,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// QB (Batch Headers) related entity by [DRF.TRBATCH]-&gt;[QB.QBKEY]
         /// BATCH NUMBER
@@ -420,6 +426,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGST (GST Percentages) related entity by [DRF.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// WHAT TYPE OF GST
@@ -462,6 +469,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDFC (Sundry Debtor Fees) related entity by [DRF.FEE_CODE]-&gt;[SDFC.SDFCKEY]
         /// Fee code
@@ -483,6 +491,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entity by [DRF.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// For every transaction there is a subprogram
@@ -529,3 +538,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

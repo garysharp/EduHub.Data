@@ -25,21 +25,27 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<DF> Cache_KGLKEY_DF_EMERG_LANG03;
         private IReadOnlyList<DF> Cache_KGLKEY_DF_EMERG_LANG04;
         private IReadOnlyList<DF> Cache_KGLKEY_DF_HOME_LANG;
+#if !EduHubScoped
         private IReadOnlyList<OSCS> Cache_KGLKEY_OSCS_HOME_LANG;
+#endif
         private IReadOnlyList<SF> Cache_KGLKEY_SF_LANG01;
         private IReadOnlyList<SF> Cache_KGLKEY_SF_LANG02;
         private IReadOnlyList<SF> Cache_KGLKEY_SF_EMERG_LANG01;
         private IReadOnlyList<SF> Cache_KGLKEY_SF_EMERG_LANG02;
+#if !EduHubScoped
         private IReadOnlyList<SPU> Cache_KGLKEY_SPU_HOME_LANGUAGE;
+#endif
         private IReadOnlyList<ST> Cache_KGLKEY_ST_HOME_LANG;
         private IReadOnlyList<ST> Cache_KGLKEY_ST_EMERG_LANG01;
         private IReadOnlyList<ST> Cache_KGLKEY_ST_EMERG_LANG02;
         private IReadOnlyList<ST> Cache_KGLKEY_ST_LANGUAGE_PREVIOUS_SCHOOLING;
         private IReadOnlyList<ST> Cache_KGLKEY_ST_LOTE_HOME_CODE;
+#if !EduHubScoped
         private IReadOnlyList<STRE> Cache_KGLKEY_STRE_ST_HOME_LANG;
         private IReadOnlyList<STRE> Cache_KGLKEY_STRE_ST_LOTE_HOME_CODE;
         private IReadOnlyList<STRE> Cache_KGLKEY_STRE_DF_LOTE_HOME_CODE_A;
         private IReadOnlyList<STRE> Cache_KGLKEY_STRE_DF_LOTE_HOME_CODE_B;
+#endif
 
         #endregion
 
@@ -332,6 +338,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// OSCS (CASES Past Students) related entities by [KGL.KGLKEY]-&gt;[OSCS.HOME_LANG]
         /// Language code
@@ -350,6 +357,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entities by [KGL.KGLKEY]-&gt;[SF.LANG01]
         /// Language code
@@ -422,6 +430,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SPU (Publications) related entities by [KGL.KGLKEY]-&gt;[SPU.HOME_LANGUAGE]
         /// Language code
@@ -440,6 +449,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entities by [KGL.KGLKEY]-&gt;[ST.HOME_LANG]
         /// Language code
@@ -530,6 +540,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STRE (Student Re-Enrolment) related entities by [KGL.KGLKEY]-&gt;[STRE.ST_HOME_LANG]
         /// Language code
@@ -602,6 +613,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

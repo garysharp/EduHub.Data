@@ -20,7 +20,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<GLFBUDG> Cache_BUDGETKEY_GLFBUDG_BKEY;
+#endif
 
         #endregion
 
@@ -463,6 +465,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLFBUDG (SP2 dummy table) related entities by [GLBUDG.BUDGETKEY]-&gt;[GLFBUDG.BKEY]
         /// Combination of subprog,prog,code,init
@@ -481,6 +484,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

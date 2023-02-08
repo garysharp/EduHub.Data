@@ -24,11 +24,13 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<AR> Cache_CRKEY_AR_ORIG_SUPPLIER;
         private IReadOnlyList<AR> Cache_CRKEY_AR_CURR_SUPPLIER;
         private IReadOnlyList<CRF> Cache_CRKEY_CRF_CODE;
+#if !EduHubScoped
         private IReadOnlyList<CRFTC> Cache_CRKEY_CRFTC_CODE;
         private IReadOnlyList<CRPR> Cache_CRKEY_CRPR_CODE;
         private IReadOnlyList<CRTT> Cache_CRKEY_CRTT_CRKEY;
         private IReadOnlyList<KNOTE_CR> Cache_CRKEY_KNOTE_CR_CODE;
         private IReadOnlyList<RQ> Cache_CRKEY_RQ_CODE;
+#endif
 
         #endregion
 
@@ -573,6 +575,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// CRFTC (Creditor Fuel Tax Credits) related entities by [CR.CRKEY]-&gt;[CRFTC.CODE]
         /// Prime Key
@@ -663,6 +666,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

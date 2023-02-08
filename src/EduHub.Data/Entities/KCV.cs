@@ -14,7 +14,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<ST> Cache_VISA_SUBCLASS_ST_VISA_SUBCLASS;
+#if !EduHubScoped
         private IReadOnlyList<STRE> Cache_VISA_SUBCLASS_STRE_ST_VISA_SUBCLASS;
+#endif
 
         #endregion
 
@@ -115,6 +117,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STRE (Student Re-Enrolment) related entities by [KCV.VISA_SUBCLASS]-&gt;[STRE.ST_VISA_SUBCLASS]
         /// Visa Subclass code
@@ -133,6 +136,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

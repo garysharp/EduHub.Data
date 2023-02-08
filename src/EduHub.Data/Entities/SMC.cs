@@ -21,7 +21,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SMCD> Cache_SMCKEY_SMCD_SMCDKEY;
+#endif
 
         #endregion
 
@@ -364,6 +366,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SMCD (Student Medication Doses) related entities by [SMC.SMCKEY]-&gt;[SMCD.SMCDKEY]
         /// Sequence no
@@ -382,6 +385,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

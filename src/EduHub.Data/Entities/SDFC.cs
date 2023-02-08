@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -22,7 +23,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<DRF> Cache_SDFCKEY_DRF_FEE_CODE;
+#endif
 
         #endregion
 
@@ -215,6 +218,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// DRF (DR Transactions) related entities by [SDFC.SDFCKEY]-&gt;[DRF.FEE_CODE]
         /// Prime Key
@@ -233,7 +237,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

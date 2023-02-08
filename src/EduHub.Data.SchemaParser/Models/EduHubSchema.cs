@@ -43,9 +43,9 @@ namespace EduHub.Data.SchemaParser.Models
             return Entity;
         }
 
-        internal EduHubEntity AddEntity(string Name, string Description)
+        internal EduHubEntity AddEntity(string Name, string Description, bool IsScoped)
         {
-            var entity = new EduHubEntity(this, Name, Description);
+            var entity = new EduHubEntity(this, Name, Description, IsScoped);
             AddEntity(entity);
             return entity;
         }
@@ -63,6 +63,14 @@ namespace EduHub.Data.SchemaParser.Models
 
         public static EduHubSchema FromC7Schema(IList<IC7Element> Elements)
         {
+            var scopedEntities = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "AKC", "AR", "CR", "CRF", "DF", "DFF", "DFVT", "DR", "GL", "GLBUDG", "GLF", "KAB", "KAD", "KCC", "KCD", "KCI", "KCM", "KCT", "KCV",
+                "KCY", "KDI", "KDO", "KGC", "KGD", "KGG", "KGH", "KGL", "KGLINIT", "KGLPROG", "KGLSUB", "KGLT", "KGO", "KGR", "KGST", "KGT", "KNATT",
+                "KSA", "KSC", "KSF", "PPD", "SA", "SAM", "SC", "SCI", "SCL", "SF", "SG", "SKGS", "SM", "SMC", "ST", "STAR", "STMA", "STNAT", "STPO",
+                "STPS", "STSUP", "STVDI", "STVDO", "SU", "SXAB", "SXABCONV", "SXAS", "TC", "TCAT", "TCTB", "TCTD", "TCTQ", "TCTR", "TE", "TEC", "TH",
+                "THTN", "THTQ", "TT", "TTTG", "TXAS", "TXHG", "UM",
+            };
             var schema = new EduHubSchema();
 
             foreach (var element in Elements)
@@ -70,7 +78,7 @@ namespace EduHub.Data.SchemaParser.Models
                 switch (element)
                 {
                     case IC7Entity c7entity:
-                        var entity = new EduHubEntity(schema, c7entity.Name, c7entity.Description.Trim());
+                        var entity = new EduHubEntity(schema, c7entity.Name, c7entity.Description.Trim(), scopedEntities.Contains(c7entity.Name));
                         entity.AddFields(c7entity.ToEduHubFields(entity));
                         schema.AddEntity(entity);
                         break;

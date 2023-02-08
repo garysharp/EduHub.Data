@@ -20,7 +20,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<CR> Cache_PPDKEY_CR_PPDKEY;
+#if !EduHubScoped
         private IReadOnlyList<PN> Cache_PPDKEY_PN_PPDKEY;
+#endif
 
         #endregion
 
@@ -210,6 +212,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PN (Payroll Groups) related entities by [PPD.PPDKEY]-&gt;[PN.PPDKEY]
         /// Payer code
@@ -228,6 +231,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

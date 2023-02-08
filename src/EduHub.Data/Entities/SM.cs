@@ -22,29 +22,37 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<KGC> Cache_ROOM_KGC_ROOM;
+#if !EduHubScoped
         private IReadOnlyList<SAD> Cache_ROOM_SAD_ROOM;
         private IReadOnlyList<SCAM> Cache_ROOM_SCAM_MEETING_ROOM;
+#endif
         private IReadOnlyList<SCL> Cache_ROOM_SCL_ROOM01;
         private IReadOnlyList<SCL> Cache_ROOM_SCL_ROOM02;
         private IReadOnlyList<SF> Cache_ROOM_SF_ROOM;
         private IReadOnlyList<SF> Cache_ROOM_SF_OTHER_LOCATION;
+#if !EduHubScoped
         private IReadOnlyList<SGM> Cache_ROOM_SGM_MEETING_ROOM;
         private IReadOnlyList<SMAQ> Cache_ROOM_SMAQ_SMAQKEY;
         private IReadOnlyList<SMAV> Cache_ROOM_SMAV_ROOM;
         private IReadOnlyList<SMGROUP> Cache_ROOM_SMGROUP_GROUPKEY;
         private IReadOnlyList<SMGROUP> Cache_ROOM_SMGROUP_ROOM;
+#endif
         private IReadOnlyList<TCTB> Cache_ROOM_TCTB_ROOM;
         private IReadOnlyList<TCTQ> Cache_ROOM_TCTQ_R1ROOM;
         private IReadOnlyList<TCTQ> Cache_ROOM_TCTQ_R2ROOM;
         private IReadOnlyList<TCTQ> Cache_ROOM_TCTQ_EXTRA_ROOM;
         private IReadOnlyList<TCTR> Cache_ROOM_TCTR_ROOM;
         private IReadOnlyList<TE> Cache_ROOM_TE_LOCATION;
+#if !EduHubScoped
         private IReadOnlyList<TETE> Cache_ROOM_TETE_LOCATION;
+#endif
         private IReadOnlyList<THTQ> Cache_ROOM_THTQ_R1ROOM;
         private IReadOnlyList<THTQ> Cache_ROOM_THTQ_R2ROOM;
         private IReadOnlyList<THTQ> Cache_ROOM_THTQ_EXTRA_ROOM;
+#if !EduHubScoped
         private IReadOnlyList<TTEF> Cache_ROOM_TTEF_ROOM;
         private IReadOnlyList<TTEX> Cache_ROOM_TTEX_EXAM_ROOM;
+#endif
         private IReadOnlyList<TTTG> Cache_ROOM_TTTG_R1ROOM;
         private IReadOnlyList<TTTG> Cache_ROOM_TTTG_R2ROOM;
         private IReadOnlyList<TXAS> Cache_ROOM_TXAS_LOCATION;
@@ -248,6 +256,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SAD (Accidents) related entities by [SM.ROOM]-&gt;[SAD.ROOM]
         /// Room code
@@ -284,6 +293,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCL (Subject Classes) related entities by [SM.ROOM]-&gt;[SCL.ROOM01]
         /// Room code
@@ -356,6 +366,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SGM (Special Group Meetings) related entities by [SM.ROOM]-&gt;[SGM.MEETING_ROOM]
         /// Room code
@@ -446,6 +457,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TCTB (Teacher Absences) related entities by [SM.ROOM]-&gt;[TCTB.ROOM]
         /// Room code
@@ -554,6 +566,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TETE (Event Instances) related entities by [SM.ROOM]-&gt;[TETE.LOCATION]
         /// Room code
@@ -572,6 +585,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// THTQ (Timetable Quilt Entries) related entities by [SM.ROOM]-&gt;[THTQ.R1ROOM]
         /// Room code
@@ -626,6 +640,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TTEF (Exam Staff) related entities by [SM.ROOM]-&gt;[TTEF.ROOM]
         /// Room code
@@ -662,6 +677,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TTTG (Grid Subjects) related entities by [SM.ROOM]-&gt;[TTTG.R1ROOM]
         /// Room code

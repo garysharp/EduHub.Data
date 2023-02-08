@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<GLF> Cache_SGFCKEY_GLF_FEE_CODE;
+#if !EduHubScoped
         private IReadOnlyList<GLFPREV> Cache_SGFCKEY_GLFPREV_FEE_CODE;
+#endif
 
         #endregion
 
@@ -234,6 +237,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLFPREV (Last Years GL Financial Trans) related entities by [SGFC.SGFCKEY]-&gt;[GLFPREV.FEE_CODE]
         /// Prime Key
@@ -252,7 +256,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

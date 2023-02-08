@@ -25,15 +25,21 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<KGC> Cache_KCYKEY_KGC_MIN_AC_YR;
         private IReadOnlyList<KGC> Cache_KCYKEY_KGC_MAX_AC_YR;
         private IReadOnlyList<SC> Cache_KCYKEY_SC_SUBJECT_ACADEMIC_YEAR;
+#if !EduHubScoped
         private IReadOnlyList<SCSFAG> Cache_KCYKEY_SCSFAG_ST_YEAR_LEVEL;
+#endif
         private IReadOnlyList<SG> Cache_KCYKEY_SG_CAND_FIRST_YR;
         private IReadOnlyList<SG> Cache_KCYKEY_SG_CAND_LAST_YR;
         private IReadOnlyList<SG> Cache_KCYKEY_SG_FUT_FIRST_YR;
         private IReadOnlyList<SG> Cache_KCYKEY_SG_FUT_LAST_YR;
         private IReadOnlyList<ST> Cache_KCYKEY_ST_SCHOOL_YEAR;
+#if !EduHubScoped
         private IReadOnlyList<ST_TFR> Cache_KCYKEY_ST_TFR_SCHOOL_YEAR_NEW;
+#endif
         private IReadOnlyList<STMA> Cache_KCYKEY_STMA_SCHOOL_YEAR;
+#if !EduHubScoped
         private IReadOnlyList<STRE> Cache_KCYKEY_STRE_ST_SCHOOL_YEAR;
+#endif
         private IReadOnlyList<SU> Cache_KCYKEY_SU_SUBJECT_ACADEMIC_YEAR;
         private IReadOnlyList<SXAB> Cache_KCYKEY_SXAB_ST_YEAR_LEVEL;
         private IReadOnlyList<SXABCONV> Cache_KCYKEY_SXABCONV_ST_YEAR_LEVEL;
@@ -297,6 +303,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SCSFAG (CSF Data Aggregates) related entities by [KCY.KCYKEY]-&gt;[SCSFAG.ST_YEAR_LEVEL]
         /// Year level code
@@ -315,6 +322,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SG (Student Groupings) related entities by [KCY.KCYKEY]-&gt;[SG.CAND_FIRST_YR]
         /// Year level code
@@ -405,6 +413,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ST_TFR (ST Transfer) related entities by [KCY.KCYKEY]-&gt;[ST_TFR.SCHOOL_YEAR_NEW]
         /// Year level code
@@ -423,6 +432,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STMA (Subject Selections &amp; Marks) related entities by [KCY.KCYKEY]-&gt;[STMA.SCHOOL_YEAR]
         /// Year level code
@@ -441,6 +451,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STRE (Student Re-Enrolment) related entities by [KCY.KCYKEY]-&gt;[STRE.ST_SCHOOL_YEAR]
         /// Year level code
@@ -459,6 +470,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SU (Subjects) related entities by [KCY.KCYKEY]-&gt;[SU.SUBJECT_ACADEMIC_YEAR]
         /// Year level code

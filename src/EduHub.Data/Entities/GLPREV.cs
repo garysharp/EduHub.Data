@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -19,8 +20,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<GLCFPREV> Cache_CODE_GLCFPREV_CODE;
         private IReadOnlyList<GLFPREV> Cache_CODE_GLFPREV_CODE;
+#endif
 
         #endregion
 
@@ -577,6 +580,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLCFPREV (Last Years GL Combined Financial Trans) related entities by [GLPREV.CODE]-&gt;[GLCFPREV.CODE]
         /// General Ledger code (Prime Key)
@@ -613,7 +617,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

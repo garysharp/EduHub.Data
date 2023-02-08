@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -15,11 +16,15 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<AKC> Cache_KADMKEY_AKC_DEPN_AMETHOD;
         private IReadOnlyList<AKC> Cache_KADMKEY_AKC_DEPN_TMETHOD;
+#if !EduHubScoped
         private IReadOnlyList<AKCT> Cache_KADMKEY_AKCT_DEPN_TMETHOD;
+#endif
         private IReadOnlyList<AR> Cache_KADMKEY_AR_AMETHOD;
         private IReadOnlyList<AR> Cache_KADMKEY_AR_TMETHOD;
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_KADMKEY_ARF_AMETHOD;
         private IReadOnlyList<ARF> Cache_KADMKEY_ARF_TMETHOD;
+#endif
 
         #endregion
 
@@ -121,6 +126,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// AKCT (Assets - Categories Tax) related entities by [KADM.KADMKEY]-&gt;[AKCT.DEPN_TMETHOD]
         /// Method Code
@@ -139,6 +145,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// AR (Assets) related entities by [KADM.KADMKEY]-&gt;[AR.AMETHOD]
         /// Method Code
@@ -175,6 +182,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [KADM.KADMKEY]-&gt;[ARF.AMETHOD]
         /// Method Code
@@ -211,7 +219,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

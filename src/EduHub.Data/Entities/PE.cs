@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -17,15 +18,18 @@ namespace EduHub.Data.Entities
         private UM Cache_HOMEKEY_UM;
         private UM Cache_MAILKEY_UM;
         private UM Cache_LEAVEKEY_UM;
+#if !EduHubScoped
         private PN Cache_PAYCODE_PN;
         private PX Cache_TAXCODE_PX;
         private PD Cache_DEPARTMENT_PD;
         private PLG Cache_LEAVE_GROUP_PLG;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEF> Cache_PEKEY_PEF_CODE;
         private IReadOnlyList<PEFH> Cache_PEKEY_PEFH_CODE;
         private IReadOnlyList<PELA> Cache_PEKEY_PELA_PEKEY;
@@ -39,6 +43,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<PESH> Cache_PEKEY_PESH_CODE;
         private IReadOnlyList<PESP> Cache_PEKEY_PESP_CODE;
         private IReadOnlyList<PETP> Cache_PEKEY_PETP_CODE;
+#endif
 
         #endregion
 
@@ -865,6 +870,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PN (Payroll Groups) related entity by [PE.PAYCODE]-&gt;[PN.PNKEY]
         /// Payroll group
@@ -949,10 +955,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEF (Payroll Transactions) related entities by [PE.PEKEY]-&gt;[PEF.CODE]
         /// Employee key
@@ -1187,7 +1195,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

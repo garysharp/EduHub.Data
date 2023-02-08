@@ -17,6 +17,7 @@
 <#
     var manager = T4FileManager.Create(this);
     manager.IsNetCorePlaceholderContentEnabled = false;
+    var isUnscoped = false;
 #>
 <#
     // Load Schema
@@ -28,6 +29,12 @@
     {
         // Write Entity DataSet Code
         manager.StartNewFile(string.Format(@"{0}DataSet.cs", entity.Name), null, "Entities");
+        if (!entity.IsScoped) {
+#>
+#if !EduHubScoped
+<#
+        }
+
 #>
 using System;
 using System.CodeDom.Compiler;
@@ -724,10 +731,20 @@ END");
     }
 }
 <#
+        if (!entity.IsScoped) {
+#>
+#endif
+<#
+        }
         manager.EndBlock();
         
         // Write Entity Code
         manager.StartNewFile(string.Format(@"{0}.cs", entity.Name), null, "Entities");
+        if (!entity.IsScoped) {
+#>
+#if !EduHubScoped
+<#
+        }
 #>
 using System;
 using System.CodeDom.Compiler;
@@ -749,12 +766,30 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
 <#
+            isUnscoped = false;
             foreach (var field in entity.NavigationFields)
             {
+                var parent = field.ForeignParent.Entity;
                 EduHubField parentField = field.ForeignParent;
                 EduHubIndex index = field.ForeignParentIndex;
+                if (parent.IsScoped && isUnscoped) {
+                    isUnscoped = false;
+#>
+#endif
+<#
+                } else if (!parent.IsScoped && !isUnscoped) {
+                    isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+                }
 #>
         private <#= index.FrameworkValueType #> Cache_<#= field.Name #>_<#= parentField.Entity.Name #>;
+<#
+            }
+            if (isUnscoped) {
+#>
+#endif
 <#
             }
 #>
@@ -771,12 +806,30 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
 <#
+            isUnscoped = false;
             foreach (EduHubField foreignField in entity.ForeignFields)
             {
+                var parent = foreignField.Entity;
                 EduHubField field = foreignField.ForeignParent;
                 EduHubIndex index = foreignField.Index;
+                if (parent.IsScoped && isUnscoped) {
+                    isUnscoped = false;
+#>
+#endif
+<#
+                } else if (!parent.IsScoped && !isUnscoped) {
+                    isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+                }
 #>
         private <#= index.FrameworkValueType #> Cache_<#= field.Name #>_<#= foreignField.Entity.Name #>_<#= foreignField.Name #>;
+<#
+            }
+            if (isUnscoped) {
+#>
+#endif
 <#
             }
 #>
@@ -831,10 +884,23 @@ namespace EduHub.Data.Entities
         #region Navigation Properties
 
 <#
+            isUnscoped = false;
             foreach (EduHubField field in entity.NavigationFields)
             {
+                var parent = field.ForeignParent.Entity;
                 EduHubField parentField = field.ForeignParent;
                 EduHubIndex index = field.ForeignParentIndex;
+                if (parent.IsScoped && isUnscoped) {
+                    isUnscoped = false;
+#>
+#endif
+<#
+                } else if (!parent.IsScoped && !isUnscoped) {
+                    isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+                }
 #>
         /// <summary>
         /// <#= parentField.Entity.Name #> (<#= parentField.Entity.Description #>) related entity by [<#= entity.Name #>.<#= field.Name #>]-&gt;[<#= parentField.Entity.Name #>.<#= parentField.Name #>]
@@ -866,6 +932,11 @@ namespace EduHub.Data.Entities
 
 <#
             }
+            if (isUnscoped) {
+#>
+#endif
+<#
+            }
 #>
         #endregion
 <#
@@ -879,10 +950,23 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
 <#
+            isUnscoped = false;
             foreach (EduHubField foreignField in entity.ForeignFields)
             {
+                var parent = foreignField.Entity;
                 EduHubField field = foreignField.ForeignParent;
                 EduHubIndex index = foreignField.Index;
+                if (parent.IsScoped && isUnscoped) {
+                    isUnscoped = false;
+#>
+#endif
+<#
+                } else if (!parent.IsScoped && !isUnscoped) {
+                    isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+                }
 #>
         /// <summary>
 <#
@@ -941,6 +1025,11 @@ namespace EduHub.Data.Entities
 
 <#
             }
+            if (isUnscoped) {
+#>
+#endif
+<#
+            }
 #>
         #endregion
 <#
@@ -950,6 +1039,11 @@ namespace EduHub.Data.Entities
     }
 }
 <#
+        if (!entity.IsScoped) {
+#>
+#endif
+<#
+        }
         manager.EndBlock();
     }
     manager.Process();
@@ -966,6 +1060,7 @@ namespace EduHub.Data.Entities
 
         public string Name;
         public string Description;
+        public bool IsScoped;
 
         public List<EduHubField> Fields;
         public List<EduHubIndex> Indexes;
@@ -1502,7 +1597,8 @@ namespace EduHub.Data.Entities
                 var entity = new EduHubEntity() {
                     Schema = schema,
                     Name = e.Attribute("Name").Value,
-                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
+                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
+                    IsScoped = e.Attribute("IsScoped") != null && string.Equals(e.Attribute("IsScoped").Value, "true", StringComparison.Ordinal)
                 };
                 // Load Fields
                 entity.Fields = e.Element("Fields").Elements("Field").Select(f => new EduHubField() {

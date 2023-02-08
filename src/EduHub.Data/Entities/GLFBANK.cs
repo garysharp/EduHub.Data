@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private GLBANK Cache_CODE_GLBANK;
         private KFUND Cache_FUND_ID_KFUND;
+#endif
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
 
         #endregion
@@ -136,6 +139,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLBANK (Bank Account Details) related entity by [GLFBANK.CODE]-&gt;[GLBANK.GLCODE]
         /// Owner account
@@ -174,6 +178,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGLSUB (General Ledger Sub Programs) related entity by [GLFBANK.SUBPROGRAM]-&gt;[KGLSUB.SUBPROGRAM]
         /// Subprogram (V60)
@@ -199,3 +204,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

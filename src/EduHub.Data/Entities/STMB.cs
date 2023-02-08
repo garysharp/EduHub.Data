@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,8 +15,10 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private ST Cache_SKEY_ST;
+#if !EduHubScoped
         private KCB Cache_B_CODE_KCB;
         private KGW Cache_AWARD_KGW;
+#endif
 
         #endregion
 
@@ -142,6 +145,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCB (Behaviour Classifications) related entity by [STMB.B_CODE]-&gt;[KCB.KCBKEY]
         /// Behaviour code
@@ -184,7 +188,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

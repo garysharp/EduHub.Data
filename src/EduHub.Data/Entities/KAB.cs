@@ -13,14 +13,20 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_BSB_ARF_BSB;
+#endif
         private IReadOnlyList<CR> Cache_BSB_CR_BSB;
         private IReadOnlyList<CRF> Cache_BSB_CRF_BSB;
         private IReadOnlyList<DFF> Cache_BSB_DFF_BSB;
+#if !EduHubScoped
         private IReadOnlyList<DRF> Cache_BSB_DRF_BSB;
         private IReadOnlyList<GLCF> Cache_BSB_GLCF_BSB;
+#endif
         private IReadOnlyList<GLF> Cache_BSB_GLF_BSB;
+#if !EduHubScoped
         private IReadOnlyList<PEPM> Cache_BSB_PEPM_BSB;
+#endif
 
         #endregion
 
@@ -79,6 +85,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [KAB.BSB]-&gt;[ARF.BSB]
         /// Prime Key
@@ -97,6 +104,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CR (Accounts Payable) related entities by [KAB.BSB]-&gt;[CR.BSB]
         /// Prime Key
@@ -151,6 +159,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// DRF (DR Transactions) related entities by [KAB.BSB]-&gt;[DRF.BSB]
         /// Prime Key
@@ -187,6 +196,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GLF (General Ledger Transactions) related entities by [KAB.BSB]-&gt;[GLF.BSB]
         /// Prime Key
@@ -205,6 +215,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PEPM (Pay Methods) related entities by [KAB.BSB]-&gt;[PEPM.BSB]
         /// Prime Key
@@ -223,6 +234,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

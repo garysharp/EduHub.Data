@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SAI Cache_INVOLVEMENTID_SAI;
+#endif
         private SF Cache_STAFF_SF;
 
         #endregion
@@ -94,6 +97,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAI (Accident Involvements/Sickbay Visits) related entity by [SAIM.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
         /// Sequence no of accident involvement
@@ -111,6 +115,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entity by [SAIM.STAFF]-&gt;[SF.SFKEY]
         /// Staff code of staff member administering medication (if any)
@@ -136,3 +141,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

@@ -14,17 +14,21 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private AKC Cache_CATEGORY_AKC;
+#if !EduHubScoped
         private AKT Cache_ASSET_TYPE_AKT;
         private AKR Cache_RELEASE_TYPE_AKR;
         private AKCT Cache_TAX_CATEGORY_AKCT;
         private AKL Cache_LOCATION_AKL;
         private AKD Cache_DEPARTMENT_AKD;
         private AKB Cache_BRANCH_AKB;
+#endif
         private CR Cache_ORIG_SUPPLIER_CR;
         private CR Cache_CURR_SUPPLIER_CR;
         private GL Cache_PTE_GLCODE_GL;
+#if !EduHubScoped
         private KADM Cache_AMETHOD_KADM;
         private KADM Cache_TMETHOD_KADM;
+#endif
         private AR Cache_COMPONENT_OF_AR;
         private SCI Cache_CAMPUS_SCI;
 
@@ -32,9 +36,13 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<AKK> Cache_ARKEY_AKK_CODE;
+#endif
         private IReadOnlyList<AR> Cache_ARKEY_AR_COMPONENT_OF;
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_ARKEY_ARF_CODE;
+#endif
         private IReadOnlyList<CRF> Cache_ARKEY_CRF_ATKEY;
 
         #endregion
@@ -677,6 +685,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// AKT (Asset Types) related entity by [AR.ASSET_TYPE]-&gt;[AKT.AKTKEY]
         /// Asset type
@@ -803,6 +812,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CR (Accounts Payable) related entity by [AR.ORIG_SUPPLIER]-&gt;[CR.CRKEY]
         /// Supplier
@@ -866,6 +876,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KADM (Asset Depreciation Methods) related entity by [AR.AMETHOD]-&gt;[KADM.KADMKEY]
         /// method
@@ -908,6 +919,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// AR (Assets) related entity by [AR.COMPONENT_OF]-&gt;[AR.ARKEY]
         /// Asset that this is a component of, or related to
@@ -954,6 +966,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// AKK (Asset Key Holders) related entities by [AR.ARKEY]-&gt;[AKK.CODE]
         /// Prime Key
@@ -972,6 +985,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// AR (Assets) related entities by [AR.ARKEY]-&gt;[AR.COMPONENT_OF]
         /// Prime Key
@@ -990,6 +1004,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [AR.ARKEY]-&gt;[ARF.CODE]
         /// Prime Key
@@ -1008,6 +1023,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CRF (Creditor Financial Transaction) related entities by [AR.ARKEY]-&gt;[CRF.ATKEY]
         /// Prime Key

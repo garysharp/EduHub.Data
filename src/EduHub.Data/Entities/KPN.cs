@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEPY> Cache_KPNKEY_PEPY_PURPOSE;
+#endif
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEPY (Employee History) related entities by [KPN.KPNKEY]-&gt;[PEPY.PURPOSE]
         /// Key
@@ -78,7 +82,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

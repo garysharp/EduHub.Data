@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,27 +15,49 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private ST Cache_STBTKEY_ST;
+#if !EduHubScoped
         private KCR Cache_ROUTE_KCR;
+#endif
         private SCI Cache_AM1_SD_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_AM1_ROUTE_KCR;
+#endif
         private SCI Cache_PM1_PU_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_PM1_ROUTE_KCR;
+#endif
         private SCI Cache_AM2_SD_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_AM2_ROUTE_KCR;
+#endif
         private SCI Cache_PM2_PU_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_PM2_ROUTE_KCR;
+#endif
         private SCI Cache_AM3_SD_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_AM3_ROUTE_KCR;
+#endif
         private SCI Cache_PM3_PU_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_PM3_ROUTE_KCR;
+#endif
         private SCI Cache_AM4_SD_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_AM4_ROUTE_KCR;
+#endif
         private SCI Cache_PM4_PU_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_PM4_ROUTE_KCR;
+#endif
         private SCI Cache_AM5_SD_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_AM5_ROUTE_KCR;
+#endif
         private SCI Cache_PM5_PU_SITE_SCI;
+#if !EduHubScoped
         private KCR Cache_PM5_ROUTE_KCR;
+#endif
 
         #endregion
 
@@ -419,6 +442,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route or stop used
@@ -440,6 +464,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.AM1_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 1
@@ -461,6 +486,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.AM1_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 1
@@ -482,6 +508,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.PM1_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 1
@@ -503,6 +530,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.PM1_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 1
@@ -524,6 +552,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.AM2_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 2
@@ -545,6 +574,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.AM2_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 2
@@ -566,6 +596,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.PM2_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 2
@@ -587,6 +618,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.PM2_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 2
@@ -608,6 +640,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.AM3_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 3
@@ -629,6 +662,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.AM3_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 3
@@ -650,6 +684,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.PM3_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 3
@@ -671,6 +706,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.PM3_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 3
@@ -692,6 +728,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.AM4_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 4
@@ -713,6 +750,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.AM4_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 4
@@ -734,6 +772,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.PM4_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 4
@@ -755,6 +794,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.PM4_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 4
@@ -776,6 +816,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.AM5_SD_SITE]-&gt;[SCI.SCIKEY]
         /// Set-down campus on Day 5
@@ -797,6 +838,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.AM5_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the morning on Day 5
@@ -818,6 +860,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [STBT.PM5_PU_SITE]-&gt;[SCI.SCIKEY]
         /// Pick-up campus on Day 5
@@ -839,6 +882,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCR (Transport Routes/Stops) related entity by [STBT.PM5_ROUTE]-&gt;[KCR.KCRKEY]
         /// Transport route/stop used in the afternoon on Day 5
@@ -860,7 +904,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

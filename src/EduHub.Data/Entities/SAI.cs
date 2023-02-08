@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,14 +14,18 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SAD Cache_ACCIDENTID_SAD;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SAII> Cache_SAIKEY_SAII_INVOLVEMENTID;
         private IReadOnlyList<SAIM> Cache_SAIKEY_SAIM_INVOLVEMENTID;
+#endif
 
         #endregion
 
@@ -261,6 +266,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAD (Accidents) related entity by [SAI.ACCIDENTID]-&gt;[SAD.SADKEY]
         /// Sequence no of accident
@@ -282,10 +288,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAII (Accident Involvement Injuries) related entities by [SAI.SAIKEY]-&gt;[SAII.INVOLVEMENTID]
         /// Record ID
@@ -322,7 +330,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

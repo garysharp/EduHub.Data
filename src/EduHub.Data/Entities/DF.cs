@@ -36,14 +36,20 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<DFB> Cache_DFKEY_DFB_FAM_CODE;
+#endif
         private IReadOnlyList<DFF> Cache_DFKEY_DFF_CODE;
+#if !EduHubScoped
         private IReadOnlyList<DFHI> Cache_DFKEY_DFHI_FKEY;
+#endif
         private IReadOnlyList<DFVT> Cache_DFKEY_DFVT_FAMILY;
         private IReadOnlyList<ST> Cache_DFKEY_ST_FAMILY;
         private IReadOnlyList<ST> Cache_DFKEY_ST_FAMB;
         private IReadOnlyList<ST> Cache_DFKEY_ST_FAMC;
+#if !EduHubScoped
         private IReadOnlyList<STSB> Cache_DFKEY_STSB_FAMILY;
+#endif
 
         #endregion
 
@@ -1339,6 +1345,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// DFB (BPAY Receipts) related entities by [DF.DFKEY]-&gt;[DFB.FAM_CODE]
         /// Family ID
@@ -1357,6 +1364,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// DFF (Family Financial Transactions) related entities by [DF.DFKEY]-&gt;[DFF.CODE]
         /// Family ID
@@ -1375,6 +1383,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// DFHI (Family History) related entities by [DF.DFKEY]-&gt;[DFHI.FKEY]
         /// Family ID
@@ -1393,6 +1402,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// DFVT (Family Voluntary Transactions) related entities by [DF.DFKEY]-&gt;[DFVT.FAMILY]
         /// Family ID
@@ -1465,6 +1475,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STSB (Family Invoice Allocations) related entities by [DF.DFKEY]-&gt;[STSB.FAMILY]
         /// Family ID
@@ -1483,6 +1494,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

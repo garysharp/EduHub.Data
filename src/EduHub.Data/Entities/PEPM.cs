@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PE Cache_CODE_PE;
+#endif
         private KAB Cache_BSB_KAB;
 
         #endregion
@@ -132,6 +135,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entity by [PEPM.CODE]-&gt;[PE.PEKEY]
         /// Employee code
@@ -149,6 +153,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KAB (BSB Numbers) related entity by [PEPM.BSB]-&gt;[KAB.BSB]
         /// Bank-state-branch as BBBBBB
@@ -174,3 +179,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

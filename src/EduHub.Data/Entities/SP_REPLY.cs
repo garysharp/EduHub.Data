@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,8 +15,10 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<SF> Cache_CODE_SF_SMS_REPLY;
+#if !EduHubScoped
         private IReadOnlyList<SP_RECIP> Cache_CODE_SP_RECIP_CODE;
         private IReadOnlyList<SPSMS> Cache_CODE_SPSMS_REPLY_CODE;
+#endif
 
         #endregion
 
@@ -80,6 +83,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SP_RECIP (SMS Reply Recipients) related entities by [SP_REPLY.CODE]-&gt;[SP_RECIP.CODE]
         /// SMS Reply Recipient Group key
@@ -116,7 +120,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

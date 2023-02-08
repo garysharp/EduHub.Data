@@ -13,8 +13,10 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SCA Cache_ASSOC_NAME_SCA;
         private SAP Cache_ASSOC_POSN_SAP;
+#endif
         private UM Cache_ADDRESSKEY_UM;
         private UM Cache_MAILKEY_UM;
 
@@ -22,7 +24,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SAMA> Cache_SAMKEY_SAMA_SAMAKEY;
+#endif
         private IReadOnlyList<SCI> Cache_SAMKEY_SCI_SAM_SCH_COUNCIL;
         private IReadOnlyList<SCI> Cache_SAMKEY_SCI_SCH_COUNCIL_PRES;
 
@@ -215,6 +219,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SCA (School Associations) related entity by [SAM.ASSOC_NAME]-&gt;[SCA.SCAKEY]
         /// Association name
@@ -257,6 +262,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// UM (Addresses) related entity by [SAM.ADDRESSKEY]-&gt;[UM.UMKEY]
         /// Actual address
@@ -303,6 +309,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAMA (Association Member Attendances) related entities by [SAM.SAMKEY]-&gt;[SAMA.SAMAKEY]
         /// Sequence no
@@ -321,6 +328,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entities by [SAM.SAMKEY]-&gt;[SCI.SAM_SCH_COUNCIL]
         /// Sequence no

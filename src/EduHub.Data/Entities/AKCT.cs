@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KADM Cache_DEPN_TMETHOD_KADM;
+#endif
 
         #endregion
 
@@ -77,6 +80,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KADM (Asset Depreciation Methods) related entity by [AKCT.DEPN_TMETHOD]-&gt;[KADM.KADMKEY]
         /// Default deprn method for taxation
@@ -98,6 +102,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
@@ -124,3 +129,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

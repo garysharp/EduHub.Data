@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,15 +14,19 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private TRPMODE Cache_TRANSPORT_MODE_ID_TRPMODE;
         private KTRCMP Cache_TRANSPORT_COMPANY_ID_KTRCMP;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<STTRIPS> Cache_ROUTE_ID_STTRIPS_AM_ROUTE_ID;
         private IReadOnlyList<STTRIPS> Cache_ROUTE_ID_STTRIPS_PM_ROUTE_ID;
+#endif
 
         #endregion
 
@@ -129,6 +134,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// TRPMODE (Transport Modes) related entity by [TRPROUT.TRANSPORT_MODE_ID]-&gt;[TRPMODE.TRANSPORT_MODE_ID]
         /// Transport Modes
@@ -171,10 +177,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// STTRIPS (Student Trips) related entities by [TRPROUT.ROUTE_ID]-&gt;[STTRIPS.AM_ROUTE_ID]
         /// Route_ID - System Generated
@@ -211,7 +219,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

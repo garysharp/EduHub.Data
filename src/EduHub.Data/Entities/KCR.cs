@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_ROUTE;
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_AM1_ROUTE;
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_PM1_ROUTE;
@@ -24,6 +26,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_PM4_ROUTE;
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_AM5_ROUTE;
         private IReadOnlyList<STBT> Cache_KCRKEY_STBT_PM5_ROUTE;
+#endif
 
         #endregion
 
@@ -177,6 +180,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// STBT (Student Transport Usage) related entities by [KCR.KCRKEY]-&gt;[STBT.ROUTE]
         /// Route/Stop code
@@ -375,7 +379,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private CR Cache_CODE_CR;
+#if !EduHubScoped
         private KFTC Cache_FTC_CODE_KFTC;
+#endif
 
         #endregion
 
@@ -136,6 +139,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KFTC (Fuel Tax Credit Rates) related entity by [CRFTC.FTC_CODE]-&gt;[KFTC.KFTCKEY]
         /// Fuel Tax Credit code
@@ -157,7 +161,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

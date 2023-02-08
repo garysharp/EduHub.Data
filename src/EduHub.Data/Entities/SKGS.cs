@@ -13,6 +13,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<DF_TFR> Cache_SCHOOL_DF_TFR_ORIG_SCHOOL;
         private IReadOnlyList<FDT_EXP> Cache_SCHOOL_FDT_EXP_DEST;
         private IReadOnlyList<FER_FDT> Cache_SCHOOL_FER_FDT_SOURCE;
@@ -20,17 +21,23 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<KCM_TFR> Cache_SCHOOL_KCM_TFR_ORIG_SCHOOL;
         private IReadOnlyList<KFLO> Cache_SCHOOL_KFLO_SCHOOL;
         private IReadOnlyList<KGO_TFR> Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL;
+#endif
         private SCI Cache_SCHOOL_SCI_SCHOOL_LINK;
         private IReadOnlyList<SCI> Cache_SCHOOL_SCI_DESTINATION_SCHOOL;
+#if !EduHubScoped
         private IReadOnlyList<SKGS_OLD> Cache_SCHOOL_SKGS_OLD_NEW_SCHOOL;
         private IReadOnlyList<SMC_TFR> Cache_SCHOOL_SMC_TFR_ORIG_SCHOOL;
+#endif
         private IReadOnlyList<ST> Cache_SCHOOL_ST_PREVIOUS_SCHOOL;
         private IReadOnlyList<ST> Cache_SCHOOL_ST_NEXT_SCHOOL;
+#if !EduHubScoped
         private IReadOnlyList<ST_TFR> Cache_SCHOOL_ST_TFR_ORIG_SCHOOL;
         private IReadOnlyList<ST_TFRIO> Cache_SCHOOL_ST_TFRIO_DEST_SCHOOL;
         private IReadOnlyList<STAR_TFR> Cache_SCHOOL_STAR_TFR_ORIG_SCHOOL;
         private IReadOnlyList<STNAT_TR> Cache_SCHOOL_STNAT_TR_ORIG_SCHOOL;
+#endif
         private IReadOnlyList<STPS> Cache_SCHOOL_STPS_SCHOOL;
+#if !EduHubScoped
         private IReadOnlyList<STPS_TFR> Cache_SCHOOL_STPS_TFR_ORIG_SCHOOL;
         private IReadOnlyList<STPT> Cache_SCHOOL_STPT_SCHL_NUM;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_ST_PREVIOUS_SCHOOL;
@@ -40,11 +47,16 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_STPT_SCHL_NUM04;
         private IReadOnlyList<STRE> Cache_SCHOOL_STRE_ST_NEXT_SCHOOL;
         private IReadOnlyList<STSUP_TR> Cache_SCHOOL_STSUP_TR_ORIG_SCHOOL;
+#endif
         private IReadOnlyList<STVDI> Cache_SCHOOL_STVDI_ORIGINAL_SCHOOL;
+#if !EduHubScoped
         private IReadOnlyList<STVDI_TR> Cache_SCHOOL_STVDI_TR_ORIG_SCHOOL;
+#endif
         private IReadOnlyList<STVDO> Cache_SCHOOL_STVDO_ORIGINAL_SCHOOL;
+#if !EduHubScoped
         private IReadOnlyList<STVDO_TR> Cache_SCHOOL_STVDO_TR_ORIG_SCHOOL;
         private IReadOnlyList<UM_TFR> Cache_SCHOOL_UM_TFR_ORIG_SCHOOL;
+#endif
 
         #endregion
 
@@ -348,6 +360,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// DF_TFR (DF Transfer) related entities by [SKGS.SCHOOL]-&gt;[DF_TFR.ORIG_SCHOOL]
         /// School ID
@@ -474,6 +487,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [SKGS.SCHOOL]-&gt;[SCI.SCHOOL_LINK]
         /// School ID
@@ -510,6 +524,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SKGS_OLD (Old SKGS Schools) related entities by [SKGS.SCHOOL]-&gt;[SKGS_OLD.NEW_SCHOOL]
         /// School ID
@@ -546,6 +561,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entities by [SKGS.SCHOOL]-&gt;[ST.PREVIOUS_SCHOOL]
         /// School ID
@@ -582,6 +598,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ST_TFR (ST Transfer) related entities by [SKGS.SCHOOL]-&gt;[ST_TFR.ORIG_SCHOOL]
         /// School ID
@@ -654,6 +671,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STPS (Student Previous School) related entities by [SKGS.SCHOOL]-&gt;[STPS.SCHOOL]
         /// School ID
@@ -672,6 +690,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STPS_TFR (STPS Transfer) related entities by [SKGS.SCHOOL]-&gt;[STPS_TFR.ORIG_SCHOOL]
         /// School ID
@@ -834,6 +853,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STVDI (VELS Dimension Results) related entities by [SKGS.SCHOOL]-&gt;[STVDI.ORIGINAL_SCHOOL]
         /// School ID
@@ -852,6 +872,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STVDI_TR (STVDI Transfer) related entities by [SKGS.SCHOOL]-&gt;[STVDI_TR.ORIG_SCHOOL]
         /// School ID
@@ -870,6 +891,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STVDO (VELS Domain Results) related entities by [SKGS.SCHOOL]-&gt;[STVDO.ORIGINAL_SCHOOL]
         /// School ID
@@ -888,6 +910,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STVDO_TR (STVDO Transfer) related entities by [SKGS.SCHOOL]-&gt;[STVDO_TR.ORIG_SCHOOL]
         /// School ID
@@ -924,6 +947,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

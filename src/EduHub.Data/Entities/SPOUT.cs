@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<KERROR> Cache_SPOUTKEY_KERROR_SPOUTKEY;
+#endif
 
         #endregion
 
@@ -140,6 +143,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KERROR (Import or Update Errors) related entities by [SPOUT.SPOUTKEY]-&gt;[KERROR.SPOUTKEY]
         /// Unique identifier consisting of school number,user name and timestamp
@@ -158,7 +162,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

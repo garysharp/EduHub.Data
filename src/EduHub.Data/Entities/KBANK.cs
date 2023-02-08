@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PN> Cache_GLCODE_PN_DD_GLCODE;
+#endif
 
         #endregion
 
@@ -182,6 +185,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PN (Payroll Groups) related entities by [KBANK.GLCODE]-&gt;[PN.DD_GLCODE]
         /// General Ledger code (Prime Key)
@@ -200,7 +204,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

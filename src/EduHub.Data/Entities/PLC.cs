@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PELA> Cache_PLCKEY_PELA_LEAVE_CODE;
         private IReadOnlyList<PELD> Cache_PLCKEY_PELD_LEAVE_CODE;
         private IReadOnlyList<PILI> Cache_PLCKEY_PILI_LEAVE_CODE;
         private IReadOnlyList<PLT> Cache_PLCKEY_PLT_LEAVE_CODE;
+#endif
 
         #endregion
 
@@ -75,6 +78,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PELA (Employee Leave Audit) related entities by [PLC.PLCKEY]-&gt;[PELA.LEAVE_CODE]
         /// Leave Group Identifier
@@ -147,7 +151,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

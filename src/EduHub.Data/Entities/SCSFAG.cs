@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SCSF Cache_SCSFKEY_SCSF;
+#endif
         private KCY Cache_ST_YEAR_LEVEL_KCY;
 
         #endregion
@@ -258,6 +261,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SCSF (CSF Strands) related entity by [SCSFAG.SCSFKEY]-&gt;[SCSF.SCSFKEY]
         /// CSF Outcome Code (identifies KLA and Strand)
@@ -275,6 +279,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KCY (Year Levels) related entity by [SCSFAG.ST_YEAR_LEVEL]-&gt;[KCY.KCYKEY]
         /// Year level of assessed students
@@ -300,3 +305,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

@@ -24,6 +24,7 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<DFF> Cache_SAKEY_DFF_FEE_CODE;
         private IReadOnlyList<DR> Cache_SAKEY_DR_DRTABLEA;
+#if !EduHubScoped
         private IReadOnlyList<SAB> Cache_SAKEY_SAB_FEE_CODE_1ST;
         private IReadOnlyList<SAB> Cache_SAKEY_SAB_FEE_CODE_2ND;
         private IReadOnlyList<SAB> Cache_SAKEY_SAB_FEE_CODE_3RD;
@@ -31,6 +32,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SAB> Cache_SAKEY_SAB_FEE_CODE_KG;
         private IReadOnlyList<SABT> Cache_SAKEY_SABT_FEE_CODE;
         private IReadOnlyList<STSB> Cache_SAKEY_STSB_SPLIT_ITEM;
+#endif
         private IReadOnlyList<SU> Cache_SAKEY_SU_FEE_CODE;
 
         #endregion
@@ -277,6 +279,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SAB (Fees - Billing Templates) related entities by [SA.SAKEY]-&gt;[SAB.FEE_CODE_1ST]
         /// Prime Key
@@ -403,6 +406,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SU (Subjects) related entities by [SA.SAKEY]-&gt;[SU.FEE_CODE]
         /// Prime Key

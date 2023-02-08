@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<BANKSIG> Cache_GLCODE_BANKSIG_GLCODE;
         private IReadOnlyList<GLFBANK> Cache_GLCODE_GLFBANK_CODE;
+#endif
 
         #endregion
 
@@ -252,6 +255,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// BANKSIG (Bank Signatories) related entities by [GLBANK.GLCODE]-&gt;[BANKSIG.GLCODE]
         /// Prime Key
@@ -288,7 +292,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

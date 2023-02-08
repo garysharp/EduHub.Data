@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private GLBANK Cache_GLCODE_GLBANK;
+#endif
 
         #endregion
 
@@ -71,6 +74,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLBANK (Bank Account Details) related entity by [BANKSIG.GLCODE]-&gt;[GLBANK.GLCODE]
         /// General Ledger code (Prime Key)
@@ -88,7 +92,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

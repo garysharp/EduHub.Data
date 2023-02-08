@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,15 +14,19 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KCB Cache_INCIDENT_TYPE_KCB;
+#endif
         private SCI Cache_CAMPUS_SCI;
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SDP> Cache_SIDKEY_SDP_INCIDENT_KEY;
         private IReadOnlyList<SIDV> Cache_SIDKEY_SIDV_INCIDENT_KEY;
+#endif
 
         #endregion
 
@@ -118,6 +123,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KCB (Behaviour Classifications) related entity by [SID.INCIDENT_TYPE]-&gt;[KCB.KCBKEY]
         /// Type of incident
@@ -139,6 +145,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [SID.CAMPUS]-&gt;[SCI.SCIKEY]
         /// School campus at which incident took place
@@ -164,6 +171,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SDP (Incident Instigators) related entities by [SID.SIDKEY]-&gt;[SDP.INCIDENT_KEY]
         /// Sequence no
@@ -200,7 +208,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

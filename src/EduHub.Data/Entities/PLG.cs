@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PE> Cache_LEAVE_GROUP_PE_LEAVE_GROUP;
         private IReadOnlyList<PILI> Cache_LEAVE_GROUP_PILI_LEAVE_GROUP;
         private IReadOnlyList<PLT> Cache_LEAVE_GROUP_PLT_LEAVE_GROUP;
+#endif
 
         #endregion
 
@@ -78,6 +81,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entities by [PLG.LEAVE_GROUP]-&gt;[PE.LEAVE_GROUP]
         /// Leave Group Identifier
@@ -132,7 +136,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

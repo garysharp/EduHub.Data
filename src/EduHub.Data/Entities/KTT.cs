@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<CRTT> Cache_KTTKEY_CRTT_TRADE_TYPE;
+#endif
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// CRTT (Creditor Trade Types) related entities by [KTT.KTTKEY]-&gt;[CRTT.TRADE_TYPE]
         /// Trade type key
@@ -78,7 +82,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

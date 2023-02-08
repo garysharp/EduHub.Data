@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,9 +22,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SADP> Cache_SADKEY_SADP_ACCIDENTID;
         private IReadOnlyList<SADW> Cache_SADKEY_SADW_ACCIDENTID;
         private IReadOnlyList<SAI> Cache_SADKEY_SAI_ACCIDENTID;
+#endif
 
         #endregion
 
@@ -229,6 +232,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SADP (Accident Prevention Measures) related entities by [SAD.SADKEY]-&gt;[SADP.ACCIDENTID]
         /// Sequence no
@@ -283,7 +287,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

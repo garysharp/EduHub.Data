@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,12 +14,16 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private GLPREV Cache_CODE_GLPREV;
+#endif
         private KGST Cache_GST_TYPE_KGST;
         private KGLSUB Cache_SUBPROGRAM_KGLSUB;
         private KGLPROG Cache_GLPROGRAM_KGLPROG;
         private KGLINIT Cache_INITIATIVE_KGLINIT;
+#if !EduHubScoped
         private SGFC Cache_FEE_CODE_SGFC;
+#endif
 
         #endregion
 
@@ -389,6 +394,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLPREV (Last Years General Ledger) related entity by [GLFPREV.CODE]-&gt;[GLPREV.CODE]
         /// General Ledger Code
@@ -406,6 +412,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGST (GST Percentages) related entity by [GLFPREV.GST_TYPE]-&gt;[KGST.KGSTKEY]
         /// What type of GST
@@ -490,6 +497,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SGFC (General Ledger Fees) related entity by [GLFPREV.FEE_CODE]-&gt;[SGFC.SGFCKEY]
         /// Fee code
@@ -511,7 +519,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

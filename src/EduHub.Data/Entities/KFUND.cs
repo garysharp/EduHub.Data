@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<GLFBANK> Cache_FUND_ID_GLFBANK_FUND_ID;
+#endif
 
         #endregion
 
@@ -65,6 +68,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// GLFBANK (Financial Commitments) related entities by [KFUND.FUND_ID]-&gt;[GLFBANK.FUND_ID]
         /// Fund ID, eg I
@@ -83,7 +87,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

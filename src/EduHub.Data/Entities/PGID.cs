@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -19,7 +20,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PGLI> Cache_GLID_PGLI_FILE_ID;
+#endif
 
         #endregion
 
@@ -126,6 +129,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PGLI (General Ledger Import) related entities by [PGID.GLID]-&gt;[PGLI.FILE_ID]
         /// &lt;No documentation available&gt;
@@ -144,7 +148,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

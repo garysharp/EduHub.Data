@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PE> Cache_PDKEY_PE_DEPARTMENT;
+#endif
 
         #endregion
 
@@ -215,6 +218,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entities by [PD.PDKEY]-&gt;[PE.DEPARTMENT]
         /// Department code
@@ -233,7 +237,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

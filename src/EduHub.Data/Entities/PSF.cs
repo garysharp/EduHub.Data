@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private PS Cache_PSKEY_PS;
+#endif
 
         #endregion
 
@@ -80,6 +83,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PS (Pay Steps or Pay Class) related entity by [PSF.PSKEY]-&gt;[PS.PSKEY]
         /// Pay Step or Pay Class code
@@ -97,7 +101,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

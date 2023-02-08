@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -19,8 +20,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<RQGL> Cache_RQPGKEY_RQGL_RQPGKEY;
         private IReadOnlyList<RQREL> Cache_RQPGKEY_RQREL_RQPGKEY;
+#endif
 
         #endregion
 
@@ -104,6 +107,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// RQGL (Purchasing Group GL Codes) related entities by [RQPG.RQPGKEY]-&gt;[RQGL.RQPGKEY]
         /// Key
@@ -140,7 +144,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

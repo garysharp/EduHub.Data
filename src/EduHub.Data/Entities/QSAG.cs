@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<QSAT> Cache_QSAGKEY_QSAT_GROUPING;
+#endif
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// QSAT (Auditable Tables) related entities by [QSAG.QSAGKEY]-&gt;[QSAT.GROUPING]
         /// Group Table ID
@@ -78,7 +82,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

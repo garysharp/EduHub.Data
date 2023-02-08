@@ -45,25 +45,32 @@ namespace EduHub.Data.Entities
         private KGL Cache_EMERG_LANG01_KGL;
         private KGL Cache_EMERG_LANG02_KGL;
         private DR Cache_DEBTOR_ID_DR;
+#if !EduHubScoped
         private SP_REPLY Cache_SMS_REPLY_SP_REPLY;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<AKK> Cache_SFKEY_AKK_STAFF;
         private IReadOnlyList<BKHR> Cache_SFKEY_BKHR_STAFF;
+#endif
         private IReadOnlyList<CRF> Cache_SFKEY_CRF_APPROVED_BY;
         private IReadOnlyList<CRF> Cache_SFKEY_CRF_STAFF_ORDER_BY;
+#if !EduHubScoped
         private IReadOnlyList<CRPR> Cache_SFKEY_CRPR_STAFF_ORDER_BY;
         private IReadOnlyList<CRPR> Cache_SFKEY_CRPR_APPROVED_BY;
         private IReadOnlyList<CRTT> Cache_SFKEY_CRTT_STAFF;
         private IReadOnlyList<KCPC> Cache_SFKEY_KCPC_STAFF;
+#endif
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER;
         private IReadOnlyList<KCY> Cache_SFKEY_KCY_TEACHER_B;
         private IReadOnlyList<KGC> Cache_SFKEY_KGC_TEACHER;
         private IReadOnlyList<KGC> Cache_SFKEY_KGC_TEACHER_B;
         private IReadOnlyList<KSF> Cache_SFKEY_KSF_COORDINATOR;
+#if !EduHubScoped
         private IReadOnlyList<PGID> Cache_SFKEY_PGID_IMPORTED_BY;
         private IReadOnlyList<RQ> Cache_SFKEY_RQ_ORDER_BY;
         private IReadOnlyList<RQ> Cache_SFKEY_RQ_APPROVED_BY;
@@ -71,6 +78,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<RQREL> Cache_SFKEY_RQREL_SFKEY;
         private IReadOnlyList<SAD> Cache_SFKEY_SAD_AREA_DUTY_TEACHER;
         private IReadOnlyList<SAIM> Cache_SFKEY_SAIM_STAFF;
+#endif
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SCH_PRINCIPAL;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SF_OIC;
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SF_VPRIN;
@@ -88,17 +96,21 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SCI> Cache_SFKEY_SCI_SF_PURCH_MANAGER;
         private IReadOnlyList<SCL> Cache_SFKEY_SCL_TEACHER01;
         private IReadOnlyList<SCL> Cache_SFKEY_SCL_TEACHER02;
+#if !EduHubScoped
         private IReadOnlyList<SDPA> Cache_SFKEY_SDPA_TAKEN_BY;
         private IReadOnlyList<SFAQ> Cache_SFKEY_SFAQ_SFAQKEY;
         private IReadOnlyList<SFAV> Cache_SFKEY_SFAV_TEACH;
         private IReadOnlyList<SFQA> Cache_SFKEY_SFQA_TEACH;
+#endif
         private IReadOnlyList<SM> Cache_SFKEY_SM_STAFF_CODE;
+#if !EduHubScoped
         private IReadOnlyList<SMCD> Cache_SFKEY_SMCD_STAFF;
         private IReadOnlyList<SP_RECIP> Cache_SFKEY_SP_RECIP_SFKEY;
         private IReadOnlyList<SS> Cache_SFKEY_SS_DEFAULT_TEACHER;
         private IReadOnlyList<SSHG> Cache_SFKEY_SSHG_TEACHER;
         private IReadOnlyList<STSP> Cache_SFKEY_STSP_REF_TEACHERA;
         private IReadOnlyList<STSP> Cache_SFKEY_STSP_REF_TEACHERB;
+#endif
         private IReadOnlyList<TCTB> Cache_SFKEY_TCTB_TEACHER;
         private IReadOnlyList<TCTQ> Cache_SFKEY_TCTQ_T1TEACH;
         private IReadOnlyList<TCTQ> Cache_SFKEY_TCTQ_T2TEACH;
@@ -107,7 +119,9 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<THTQ> Cache_SFKEY_THTQ_T1TEACH;
         private IReadOnlyList<THTQ> Cache_SFKEY_THTQ_T2TEACH;
         private IReadOnlyList<THTQ> Cache_SFKEY_THTQ_EXTRA_TEACH;
+#if !EduHubScoped
         private IReadOnlyList<TTEF> Cache_SFKEY_TTEF_STAFF;
+#endif
         private IReadOnlyList<TTTG> Cache_SFKEY_TTTG_T1TEACH;
         private IReadOnlyList<TTTG> Cache_SFKEY_TTTG_T2TEACH;
         private IReadOnlyList<TXAS> Cache_SFKEY_TXAS_TEACHER;
@@ -1366,6 +1380,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SP_REPLY (SMS Reply Recipient Groups) related entity by [SF.SMS_REPLY]-&gt;[SP_REPLY.CODE]
         /// SMS Reply Recipient Group key
@@ -1387,10 +1402,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// AKK (Asset Key Holders) related entities by [SF.SFKEY]-&gt;[AKK.STAFF]
         /// Staff member code
@@ -1427,6 +1444,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CRF (Creditor Financial Transaction) related entities by [SF.SFKEY]-&gt;[CRF.APPROVED_BY]
         /// Staff member code
@@ -1463,6 +1481,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// CRPR (Creditor Purchase Requisitions) related entities by [SF.SFKEY]-&gt;[CRPR.STAFF_ORDER_BY]
         /// Staff member code
@@ -1535,6 +1554,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KCY (Year Levels) related entities by [SF.SFKEY]-&gt;[KCY.TEACHER]
         /// Staff member code
@@ -1625,6 +1645,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// PGID (General Ledger Import Details) related entities by [SF.SFKEY]-&gt;[PGID.IMPORTED_BY]
         /// Staff member code
@@ -1751,6 +1772,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entities by [SF.SFKEY]-&gt;[SCI.SCH_PRINCIPAL]
         /// Staff member code
@@ -2057,6 +2079,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDPA (Disciplinary Actions) related entities by [SF.SFKEY]-&gt;[SDPA.TAKEN_BY]
         /// Staff member code
@@ -2129,6 +2152,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SM (Rooms) related entities by [SF.SFKEY]-&gt;[SM.STAFF_CODE]
         /// Staff member code
@@ -2147,6 +2171,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SMCD (Student Medication Doses) related entities by [SF.SFKEY]-&gt;[SMCD.STAFF]
         /// Staff member code
@@ -2255,6 +2280,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TCTB (Teacher Absences) related entities by [SF.SFKEY]-&gt;[TCTB.TEACHER]
         /// Staff member code
@@ -2399,6 +2425,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TTEF (Exam Staff) related entities by [SF.SFKEY]-&gt;[TTEF.STAFF]
         /// Staff member code
@@ -2417,6 +2444,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TTTG (Grid Subjects) related entities by [SF.SFKEY]-&gt;[TTTG.T1TEACH]
         /// Staff member code

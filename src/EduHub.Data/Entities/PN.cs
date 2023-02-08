@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private PPD Cache_PPDKEY_PPD;
+#if !EduHubScoped
         private KBANK Cache_DD_GLCODE_KBANK;
+#endif
         private GL Cache_GLCODE_GL;
         private GL Cache_GLBANK_GL;
         private GL Cache_GLTAX_GL;
@@ -25,7 +28,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PE> Cache_PNKEY_PE_PAYCODE;
+#endif
 
         #endregion
 
@@ -188,6 +193,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KBANK (Bank Account) related entity by [PN.DD_GLCODE]-&gt;[KBANK.GLCODE]
         /// Direct Deposit GL Bank Account
@@ -209,6 +215,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GL (General Ledger) related entity by [PN.GLCODE]-&gt;[GL.CODE]
         /// Salary    expense code
@@ -318,6 +325,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PE (Employees) related entities by [PN.PNKEY]-&gt;[PE.PAYCODE]
         /// Payroll code
@@ -336,7 +344,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

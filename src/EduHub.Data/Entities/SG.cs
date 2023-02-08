@@ -26,6 +26,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SGAM> Cache_SGKEY_SGAM_SGAMKEY;
         private IReadOnlyList<SGHG> Cache_SGKEY_SGHG_SGHGKEY;
         private IReadOnlyList<SGM> Cache_SGKEY_SGM_SGMKEY;
@@ -35,6 +36,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SGSG> Cache_SGKEY_SGSG_SGLINK;
         private IReadOnlyList<SGTRX> Cache_SGKEY_SGTRX_SGTRXKEY;
         private IReadOnlyList<SPU> Cache_SGKEY_SPU_MAILING_LIST;
+#endif
         private IReadOnlyList<STPO> Cache_SGKEY_STPO_SGLINK;
 
         #endregion
@@ -580,6 +582,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SGAM (Adult Group Members) related entities by [SG.SGKEY]-&gt;[SGAM.SGAMKEY]
         /// Student Grouping code
@@ -742,6 +745,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STPO (Position or Group Memberships) related entities by [SG.SGKEY]-&gt;[STPO.SGLINK]
         /// Student Grouping code

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,13 +14,17 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KROLE Cache_ROLE_CODE_KROLE;
+#endif
 
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SPEMAIL> Cache_KREPORTKEY_SPEMAIL_REPORT;
+#endif
 
         #endregion
 
@@ -78,6 +83,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KROLE (Role Codes) related entity by [KREPORT.ROLE_CODE]-&gt;[KROLE.KROLEKEY]
         /// Role for the code
@@ -99,10 +105,12 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SPEMAIL (Report email templates) related entities by [KREPORT.KREPORTKEY]-&gt;[SPEMAIL.REPORT]
         /// Report name
@@ -121,7 +129,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

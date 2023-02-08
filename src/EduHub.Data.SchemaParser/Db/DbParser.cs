@@ -18,7 +18,7 @@ namespace EduHub.Data.SchemaParser.Db
                 using (var reader = new CsvReader(stream))
                 {
                     tables = SysBuilder.ImportCsv<SysTable>(reader,
-                        (ColumnName: "SYSSCHOBJS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "NAME", Mapper: (t, v) => t.name = v),
                         (ColumnName: "OBJECT_ID", Mapper: (t, v) => t.object_id = int.Parse(v))
                         );
                 }
@@ -30,7 +30,7 @@ namespace EduHub.Data.SchemaParser.Db
                 using (var reader = new CsvReader(stream))
                 {
                     types = SysBuilder.ImportCsv<SysType>(reader,
-                        (ColumnName: "SYSSCALARTYPES.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "NAME", Mapper: (t, v) => t.name = v),
                         (ColumnName: "USER_TYPE_ID", Mapper: (t, v) => t.user_type_id = int.Parse(v))
                         );
                 }
@@ -43,7 +43,7 @@ namespace EduHub.Data.SchemaParser.Db
                 {
                     columns = SysBuilder.ImportCsv<SysColumn>(reader,
                         (ColumnName: "OBJECT_ID",       Mapper: (t, v) => t.object_id = int.Parse(v)),
-                        (ColumnName: "SYSCOLPARS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "NAME", Mapper: (t, v) => t.name = v),
                         (ColumnName: "COLUMN_ID",       Mapper: (t, v) => t.column_id = int.Parse(v)),
                         (ColumnName: "USER_TYPE_ID",    Mapper: (t, v) => t.user_type_id = int.Parse(v)),
                         (ColumnName: "MAX_LENGTH",      Mapper: (t, v) => t.max_length = int.Parse(v)),
@@ -60,9 +60,9 @@ namespace EduHub.Data.SchemaParser.Db
                 {
                     indexes = SysBuilder.ImportCsv<SysIndex>(reader,
                         (ColumnName: "OBJECT_ID",        Mapper: (t, v) => t.object_id = int.Parse(v)),
-                        (ColumnName: "SYSIDXSTATS.NAME", Mapper: (t, v) => t.name = v),
+                        (ColumnName: "NAME", Mapper: (t, v) => t.name = v),
                         (ColumnName: "INDEX_ID",         Mapper: (t, v) => t.index_id = int.Parse(v)),
-                        (ColumnName: "SYSIDXSTATS.TYPE", Mapper: (t, v) => t.type = int.Parse(v)),
+                        (ColumnName: "TYPE", Mapper: (t, v) => t.type = int.Parse(v)),
                         (ColumnName: "IS_UNIQUE",        Mapper: (t, v) => t.is_unique = v.AsBool()),
                         (ColumnName: "IS_PRIMARY_KEY",   Mapper: (t, v) => t.is_primary_key = v.AsBool())
                         );

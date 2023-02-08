@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private KGC Cache_HOMEGROUP_KGC;
+#if !EduHubScoped
         private SS Cache_SUBJECT_SS;
+#endif
         private SF Cache_TEACHER_SF;
         private ST Cache_STUDENT_ST;
         private KGC Cache_TEACHING_HG_KGC;
@@ -114,6 +117,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SS (Specialist Subjects) related entity by [SSHG.SUBJECT]-&gt;[SS.SSKEY]
         /// Subject ID
@@ -131,6 +135,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SF (Staff) related entity by [SSHG.TEACHER]-&gt;[SF.SFKEY]
         /// Teacher ID
@@ -198,3 +203,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

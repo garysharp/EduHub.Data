@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<KREPORT> Cache_KROLEKEY_KREPORT_ROLE_CODE;
+#endif
 
         #endregion
 
@@ -66,6 +69,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KREPORT (Reports for emailing) related entities by [KROLE.KROLEKEY]-&gt;[KREPORT.ROLE_CODE]
         /// Code
@@ -84,7 +88,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

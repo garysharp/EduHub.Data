@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SVAG> Cache_COHORT_SVAG_COHORT;
+#endif
 
         #endregion
 
@@ -72,6 +75,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SVAG (VELS Aggregated Dimensions) related entities by [KCOHORT.COHORT]-&gt;[SVAG.COHORT]
         /// Unique ID for this record
@@ -90,7 +94,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

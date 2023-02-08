@@ -54,17 +54,23 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SF> Cache_SUKEY_SF_SUBJECT08;
         private IReadOnlyList<SF> Cache_SUKEY_SF_SUBJECT09;
         private IReadOnlyList<SF> Cache_SUKEY_SF_SUBJECT10;
+#if !EduHubScoped
         private IReadOnlyList<SGSC> Cache_SUKEY_SGSC_SULINK;
+#endif
         private IReadOnlyList<STMA> Cache_SUKEY_STMA_MKEY;
         private IReadOnlyList<SU> Cache_SUKEY_SU_PROMOTE;
+#if !EduHubScoped
         private IReadOnlyList<SUBL> Cache_SUKEY_SUBL_BLKEY;
         private IReadOnlyList<SUPR> Cache_SUKEY_SUPR_SUPRKEY;
         private IReadOnlyList<SUPR> Cache_SUKEY_SUPR_PREREQUISITE;
+#endif
         private IReadOnlyList<TCTB> Cache_SUKEY_TCTB_SUBJ;
         private IReadOnlyList<TCTQ> Cache_SUKEY_TCTQ_SUBJ;
         private IReadOnlyList<TE> Cache_SUKEY_TE_SUBJ;
         private IReadOnlyList<THTQ> Cache_SUKEY_THTQ_SUBJ;
+#if !EduHubScoped
         private IReadOnlyList<TTES> Cache_SUKEY_TTES_SUBJ;
+#endif
         private IReadOnlyList<TTTG> Cache_SUKEY_TTTG_SUBJ;
         private IReadOnlyList<TXAS> Cache_SUKEY_TXAS_SUBJECT;
 
@@ -852,6 +858,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SGSC (Subject/Class Eligibility Criteria) related entities by [SU.SUKEY]-&gt;[SGSC.SULINK]
         /// Subject code
@@ -870,6 +877,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STMA (Subject Selections &amp; Marks) related entities by [SU.SUKEY]-&gt;[STMA.MKEY]
         /// Subject code
@@ -906,6 +914,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SUBL (Subject Book List) related entities by [SU.SUKEY]-&gt;[SUBL.BLKEY]
         /// Subject code
@@ -960,6 +969,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TCTB (Teacher Absences) related entities by [SU.SUKEY]-&gt;[TCTB.SUBJ]
         /// Subject code
@@ -1032,6 +1042,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TTES (Exam Subjects) related entities by [SU.SUKEY]-&gt;[TTES.SUBJ]
         /// Subject code
@@ -1050,6 +1061,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TTTG (Grid Subjects) related entities by [SU.SUKEY]-&gt;[TTTG.SUBJ]
         /// Subject code

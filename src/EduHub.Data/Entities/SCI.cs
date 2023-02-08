@@ -40,19 +40,26 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<AR> Cache_SCIKEY_AR_CAMPUS;
+#if !EduHubScoped
         private IReadOnlyList<KCPC> Cache_SCIKEY_KCPC_CAMPUS;
+#endif
         private IReadOnlyList<KGC> Cache_SCIKEY_KGC_CAMPUS;
         private IReadOnlyList<KGH> Cache_SCIKEY_KGH_CAMPUS;
+#if !EduHubScoped
         private IReadOnlyList<SAD> Cache_SCIKEY_SAD_CAMPUS;
         private IReadOnlyList<SCAM> Cache_SCIKEY_SCAM_MEETING_LOCATION;
+#endif
         private IReadOnlyList<SCL> Cache_SCIKEY_SCL_CAMPUS;
         private IReadOnlyList<SF> Cache_SCIKEY_SF_CAMPUS;
         private IReadOnlyList<SG> Cache_SCIKEY_SG_FROM_CAMPUS;
         private IReadOnlyList<SG> Cache_SCIKEY_SG_TO_CAMPUS;
+#if !EduHubScoped
         private IReadOnlyList<SID> Cache_SCIKEY_SID_CAMPUS;
+#endif
         private IReadOnlyList<SM> Cache_SCIKEY_SM_CAMPUS;
         private IReadOnlyList<SMC> Cache_SCIKEY_SMC_CAMPUS;
         private IReadOnlyList<ST> Cache_SCIKEY_ST_CAMPUS;
+#if !EduHubScoped
         private IReadOnlyList<STBT> Cache_SCIKEY_STBT_AM1_SD_SITE;
         private IReadOnlyList<STBT> Cache_SCIKEY_STBT_PM1_PU_SITE;
         private IReadOnlyList<STBT> Cache_SCIKEY_STBT_AM2_SD_SITE;
@@ -66,6 +73,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<STRE> Cache_SCIKEY_STRE_ST_CAMPUS;
         private IReadOnlyList<STTRIPS> Cache_SCIKEY_STTRIPS_AM_SETDOWN_CAMPUS;
         private IReadOnlyList<STTRIPS> Cache_SCIKEY_STTRIPS_PM_PICKUP_CAMPUS;
+#endif
         private IReadOnlyList<STVDI> Cache_SCIKEY_STVDI_CAMPUS;
         private IReadOnlyList<STVDO> Cache_SCIKEY_STVDO_CAMPUS;
         private IReadOnlyList<TE> Cache_SCIKEY_TE_CAMPUS;
@@ -1051,6 +1059,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// KCPC (Creditor Purchasing Card) related entities by [SCI.SCIKEY]-&gt;[KCPC.CAMPUS]
         /// Sequence no
@@ -1069,6 +1078,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KGC (Home Groups) related entities by [SCI.SCIKEY]-&gt;[KGC.CAMPUS]
         /// Sequence no
@@ -1105,6 +1115,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SAD (Accidents) related entities by [SCI.SCIKEY]-&gt;[SAD.CAMPUS]
         /// Sequence no
@@ -1141,6 +1152,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCL (Subject Classes) related entities by [SCI.SCIKEY]-&gt;[SCL.CAMPUS]
         /// Sequence no
@@ -1213,6 +1225,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SID (Disciplinary Incidents) related entities by [SCI.SCIKEY]-&gt;[SID.CAMPUS]
         /// Sequence no
@@ -1231,6 +1244,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SM (Rooms) related entities by [SCI.SCIKEY]-&gt;[SM.CAMPUS]
         /// Sequence no
@@ -1285,6 +1299,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STBT (Student Transport Usage) related entities by [SCI.SCIKEY]-&gt;[STBT.AM1_SD_SITE]
         /// Sequence no
@@ -1519,6 +1534,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STVDI (VELS Dimension Results) related entities by [SCI.SCIKEY]-&gt;[STVDI.CAMPUS]
         /// Sequence no

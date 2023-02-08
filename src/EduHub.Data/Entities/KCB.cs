@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<SID> Cache_KCBKEY_SID_INCIDENT_TYPE;
         private IReadOnlyList<STMB> Cache_KCBKEY_STMB_B_CODE;
+#endif
 
         #endregion
 
@@ -67,6 +70,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SID (Disciplinary Incidents) related entities by [KCB.KCBKEY]-&gt;[SID.INCIDENT_TYPE]
         /// Behaviour code
@@ -103,7 +107,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

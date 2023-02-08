@@ -13,8 +13,10 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<OSCS> Cache_KGGKEY_OSCS_ZEROMTH_CAT;
         private IReadOnlyList<OSCS> Cache_KGGKEY_OSCS_SIXMTH_CAT;
+#endif
         private IReadOnlyList<ST> Cache_KGGKEY_ST_EXIT_CAT01;
         private IReadOnlyList<ST> Cache_KGGKEY_ST_EXIT_CAT02;
 
@@ -59,6 +61,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// OSCS (CASES Past Students) related entities by [KGG.KGGKEY]-&gt;[OSCS.ZEROMTH_CAT]
         /// Category Code
@@ -95,6 +98,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entities by [KGG.KGGKEY]-&gt;[ST.EXIT_CAT01]
         /// Category Code

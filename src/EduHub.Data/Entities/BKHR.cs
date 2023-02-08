@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private BKH Cache_BKHRKEY_BKH;
+#endif
         private ST Cache_STUDENT_ST;
         private SF Cache_STAFF_SF;
 
@@ -99,6 +102,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// BKH (Books for Hire) related entity by [BKHR.BKHRKEY]-&gt;[BKH.BKHKEY]
         /// Book code of book
@@ -116,6 +120,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// ST (Students) related entity by [BKHR.STUDENT]-&gt;[ST.STKEY]
         /// Student ID of student making loan
@@ -162,3 +167,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

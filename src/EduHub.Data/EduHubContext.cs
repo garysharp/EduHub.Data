@@ -13,53 +13,76 @@ namespace EduHub.Data
     public partial class EduHubContext
     {
 #region Set Fields
+#if !EduHubScoped
         private readonly A_DECRYPDataSet _A_DECRYP;
         private readonly AIMSDataSet _AIMS;
         private readonly AKBDataSet _AKB;
+#endif
         private readonly AKCDataSet _AKC;
+#if !EduHubScoped
         private readonly AKCTDataSet _AKCT;
         private readonly AKDDataSet _AKD;
         private readonly AKKDataSet _AKK;
         private readonly AKLDataSet _AKL;
         private readonly AKRDataSet _AKR;
         private readonly AKTDataSet _AKT;
+#endif
         private readonly ARDataSet _AR;
+#if !EduHubScoped
         private readonly ARFDataSet _ARF;
         private readonly BANKSIGDataSet _BANKSIG;
         private readonly BKHDataSet _BKH;
         private readonly BKHRDataSet _BKHR;
         private readonly BPAY_DATDataSet _BPAY_DAT;
+#endif
         private readonly CRDataSet _CR;
         private readonly CRFDataSet _CRF;
+#if !EduHubScoped
         private readonly CRFTCDataSet _CRFTC;
         private readonly CRPRDataSet _CRPR;
         private readonly CRTTDataSet _CRTT;
+#endif
         private readonly DFDataSet _DF;
+#if !EduHubScoped
         private readonly DF_TFRDataSet _DF_TFR;
         private readonly DFBDataSet _DFB;
+#endif
         private readonly DFFDataSet _DFF;
+#if !EduHubScoped
         private readonly DFHIDataSet _DFHI;
+#endif
         private readonly DFVTDataSet _DFVT;
         private readonly DRDataSet _DR;
+#if !EduHubScoped
         private readonly DRBDataSet _DRB;
         private readonly DRFDataSet _DRF;
         private readonly FDT_EXPDataSet _FDT_EXP;
         private readonly FDT_IMPDataSet _FDT_IMP;
         private readonly FER_FDTDataSet _FER_FDT;
         private readonly FINHISTDataSet _FINHIST;
+#endif
         private readonly GLDataSet _GL;
+#if !EduHubScoped
         private readonly GLBANKDataSet _GLBANK;
+#endif
         private readonly GLBUDGDataSet _GLBUDG;
+#if !EduHubScoped
         private readonly GLCFDataSet _GLCF;
         private readonly GLCFPREVDataSet _GLCFPREV;
+#endif
         private readonly GLFDataSet _GLF;
+#if !EduHubScoped
         private readonly GLFBANKDataSet _GLFBANK;
         private readonly GLFBUDGDataSet _GLFBUDG;
         private readonly GLFPREVDataSet _GLFPREV;
         private readonly GLPREVDataSet _GLPREV;
+#endif
         private readonly KABDataSet _KAB;
+#if !EduHubScoped
         private readonly KABNDataSet _KABN;
+#endif
         private readonly KADDataSet _KAD;
+#if !EduHubScoped
         private readonly KADMDataSet _KADM;
         private readonly KAMDataSet _KAM;
         private readonly KAPDataSet _KAP;
@@ -67,30 +90,41 @@ namespace EduHub.Data
         private readonly KBPDataSet _KBP;
         private readonly KBPTDataSet _KBPT;
         private readonly KCBDataSet _KCB;
+#endif
         private readonly KCCDataSet _KCC;
         private readonly KCDDataSet _KCD;
+#if !EduHubScoped
         private readonly KCD_TFRDataSet _KCD_TFR;
+#endif
         private readonly KCIDataSet _KCI;
         private readonly KCMDataSet _KCM;
+#if !EduHubScoped
         private readonly KCM_TFRDataSet _KCM_TFR;
         private readonly KCOHORTDataSet _KCOHORT;
         private readonly KCPCDataSet _KCPC;
         private readonly KCRDataSet _KCR;
+#endif
         private readonly KCTDataSet _KCT;
         private readonly KCVDataSet _KCV;
         private readonly KCYDataSet _KCY;
+#if !EduHubScoped
         private readonly KDELETEDataSet _KDELETE;
+#endif
         private readonly KDIDataSet _KDI;
         private readonly KDODataSet _KDO;
+#if !EduHubScoped
         private readonly KEMADataSet _KEMA;
         private readonly KEMAILDataSet _KEMAIL;
         private readonly KERRORDataSet _KERROR;
         private readonly KFLODataSet _KFLO;
         private readonly KFTCDataSet _KFTC;
         private readonly KFUNDDataSet _KFUND;
+#endif
         private readonly KGCDataSet _KGC;
+#if !EduHubScoped
         private readonly KGCHIDataSet _KGCHI;
         private readonly KGCVDataSet _KGCV;
+#endif
         private readonly KGDDataSet _KGD;
         private readonly KGGDataSet _KGG;
         private readonly KGHDataSet _KGH;
@@ -100,15 +134,20 @@ namespace EduHub.Data
         private readonly KGLSUBDataSet _KGLSUB;
         private readonly KGLTDataSet _KGLT;
         private readonly KGODataSet _KGO;
+#if !EduHubScoped
         private readonly KGO_TFRDataSet _KGO_TFR;
+#endif
         private readonly KGRDataSet _KGR;
         private readonly KGSTDataSet _KGST;
         private readonly KGTDataSet _KGT;
+#if !EduHubScoped
         private readonly KGWDataSet _KGW;
         private readonly KLOGDataSet _KLOG;
         private readonly KMSGDataSet _KMSG;
         private readonly KNDataSet _KN;
+#endif
         private readonly KNATTDataSet _KNATT;
+#if !EduHubScoped
         private readonly KNFSDataSet _KNFS;
         private readonly KNOTE_CRDataSet _KNOTE_CR;
         private readonly KNOTE_DRDataSet _KNOTE_DR;
@@ -121,10 +160,14 @@ namespace EduHub.Data
         private readonly KPRMSDataSet _KPRMS;
         private readonly KREPORTDataSet _KREPORT;
         private readonly KROLEDataSet _KROLE;
+#endif
         private readonly KSADataSet _KSA;
         private readonly KSCDataSet _KSC;
+#if !EduHubScoped
         private readonly KSCOREDataSet _KSCORE;
+#endif
         private readonly KSFDataSet _KSF;
+#if !EduHubScoped
         private readonly KSKGSDataSet _KSKGS;
         private readonly KSQDataSet _KSQ;
         private readonly KSTREETDataSet _KSTREET;
@@ -162,7 +205,9 @@ namespace EduHub.Data
         private readonly PMLDataSet _PML;
         private readonly PML_NEWDataSet _PML_NEW;
         private readonly PNDataSet _PN;
+#endif
         private readonly PPDDataSet _PPD;
+#if !EduHubScoped
         private readonly PPSDataSet _PPS;
         private readonly PSDataSet _PS;
         private readonly PSADataSet _PSA;
@@ -180,7 +225,9 @@ namespace EduHub.Data
         private readonly RQPGDataSet _RQPG;
         private readonly RQRELDataSet _RQREL;
         private readonly RQTDataSet _RQT;
+#endif
         private readonly SADataSet _SA;
+#if !EduHubScoped
         private readonly SABDataSet _SAB;
         private readonly SABTDataSet _SABT;
         private readonly SACAGDataSet _SACAG;
@@ -191,10 +238,14 @@ namespace EduHub.Data
         private readonly SAIDataSet _SAI;
         private readonly SAIIDataSet _SAII;
         private readonly SAIMDataSet _SAIM;
+#endif
         private readonly SAMDataSet _SAM;
+#if !EduHubScoped
         private readonly SAMADataSet _SAMA;
         private readonly SAPDataSet _SAP;
+#endif
         private readonly SCDataSet _SC;
+#if !EduHubScoped
         private readonly SCADataSet _SCA;
         private readonly SCAMDataSet _SCAM;
         private readonly SCEN_ACLDataSet _SCEN_ACL;
@@ -214,8 +265,10 @@ namespace EduHub.Data
         private readonly SCEN_STEDataSet _SCEN_STE;
         private readonly SCEN_STVDataSet _SCEN_STV;
         private readonly SCEN_SVTDataSet _SCEN_SVT;
+#endif
         private readonly SCIDataSet _SCI;
         private readonly SCLDataSet _SCL;
+#if !EduHubScoped
         private readonly SCSFDataSet _SCSF;
         private readonly SCSFAGDataSet _SCSFAG;
         private readonly SDFCDataSet _SDFC;
@@ -229,11 +282,15 @@ namespace EduHub.Data
         private readonly SEC_URLDataSet _SEC_URL;
         private readonly SEC_USRDataSet _SEC_USR;
         private readonly SECMSGDataSet _SECMSG;
+#endif
         private readonly SFDataSet _SF;
+#if !EduHubScoped
         private readonly SFAQDataSet _SFAQ;
         private readonly SFAVDataSet _SFAV;
         private readonly SFQADataSet _SFQA;
+#endif
         private readonly SGDataSet _SG;
+#if !EduHubScoped
         private readonly SGAMDataSet _SGAM;
         private readonly SGFCDataSet _SGFC;
         private readonly SGHGDataSet _SGHG;
@@ -247,12 +304,18 @@ namespace EduHub.Data
         private readonly SIRHDataSet _SIRH;
         private readonly SK_HRMSDataSet _SK_HRMS;
         private readonly SK_HRMSTDataSet _SK_HRMST;
+#endif
         private readonly SKGSDataSet _SKGS;
+#if !EduHubScoped
         private readonly SKGS_OLDDataSet _SKGS_OLD;
+#endif
         private readonly SMDataSet _SM;
+#if !EduHubScoped
         private readonly SMAQDataSet _SMAQ;
         private readonly SMAVDataSet _SMAV;
+#endif
         private readonly SMCDataSet _SMC;
+#if !EduHubScoped
         private readonly SMC_TFRDataSet _SMC_TFR;
         private readonly SMCDDataSet _SMCD;
         private readonly SMGROUPDataSet _SMGROUP;
@@ -273,40 +336,61 @@ namespace EduHub.Data
         private readonly SRAGDataSet _SRAG;
         private readonly SSDataSet _SS;
         private readonly SSHGDataSet _SSHG;
+#endif
         private readonly STDataSet _ST;
+#if !EduHubScoped
         private readonly ST_TFRDataSet _ST_TFR;
         private readonly ST_TFRIODataSet _ST_TFRIO;
+#endif
         private readonly STARDataSet _STAR;
+#if !EduHubScoped
         private readonly STAR_TFRDataSet _STAR_TFR;
         private readonly STBTDataSet _STBT;
         private readonly STFLODataSet _STFLO;
+#endif
         private readonly STMADataSet _STMA;
+#if !EduHubScoped
         private readonly STMBDataSet _STMB;
+#endif
         private readonly STNATDataSet _STNAT;
+#if !EduHubScoped
         private readonly STNAT_TRDataSet _STNAT_TR;
+#endif
         private readonly STPODataSet _STPO;
         private readonly STPSDataSet _STPS;
+#if !EduHubScoped
         private readonly STPS_TFRDataSet _STPS_TFR;
         private readonly STPTDataSet _STPT;
         private readonly STRADataSet _STRA;
         private readonly STREDataSet _STRE;
         private readonly STSBDataSet _STSB;
         private readonly STSPDataSet _STSP;
+#endif
         private readonly STSUPDataSet _STSUP;
+#if !EduHubScoped
         private readonly STSUP_TRDataSet _STSUP_TR;
         private readonly STTRIPSDataSet _STTRIPS;
+#endif
         private readonly STVDIDataSet _STVDI;
+#if !EduHubScoped
         private readonly STVDI_TRDataSet _STVDI_TR;
+#endif
         private readonly STVDODataSet _STVDO;
+#if !EduHubScoped
         private readonly STVDO_TRDataSet _STVDO_TR;
+#endif
         private readonly SUDataSet _SU;
+#if !EduHubScoped
         private readonly SUBLDataSet _SUBL;
         private readonly SUPRDataSet _SUPR;
         private readonly SVAGDataSet _SVAG;
+#endif
         private readonly SXABDataSet _SXAB;
         private readonly SXABCONVDataSet _SXABCONV;
         private readonly SXASDataSet _SXAS;
+#if !EduHubScoped
         private readonly SXHIDataSet _SXHI;
+#endif
         private readonly TCDataSet _TC;
         private readonly TCATDataSet _TCAT;
         private readonly TCTBDataSet _TCTB;
@@ -315,25 +399,33 @@ namespace EduHub.Data
         private readonly TCTRDataSet _TCTR;
         private readonly TEDataSet _TE;
         private readonly TECDataSet _TEC;
+#if !EduHubScoped
         private readonly TETEDataSet _TETE;
         private readonly TETNDataSet _TETN;
+#endif
         private readonly THDataSet _TH;
         private readonly THTNDataSet _THTN;
         private readonly THTQDataSet _THTQ;
+#if !EduHubScoped
         private readonly TRPMODEDataSet _TRPMODE;
         private readonly TRPROUTDataSet _TRPROUT;
         private readonly TRSTACCDataSet _TRSTACC;
+#endif
         private readonly TTDataSet _TT;
+#if !EduHubScoped
         private readonly TTEFDataSet _TTEF;
         private readonly TTEIDataSet _TTEI;
         private readonly TTEPDataSet _TTEP;
         private readonly TTESDataSet _TTES;
         private readonly TTEXDataSet _TTEX;
+#endif
         private readonly TTTGDataSet _TTTG;
         private readonly TXASDataSet _TXAS;
         private readonly TXHGDataSet _TXHG;
         private readonly UMDataSet _UM;
+#if !EduHubScoped
         private readonly UM_TFRDataSet _UM_TFR;
+#endif
 #endregion
 
         /// <summary>
@@ -367,53 +459,76 @@ namespace EduHub.Data
             this.EduHubDirectory = EduHubDirectory;
             this.EduHubSiteIdentifier = EduHubSiteIdentifier;
 
+#if !EduHubScoped
             _A_DECRYP = new A_DECRYPDataSet(this);
             _AIMS = new AIMSDataSet(this);
             _AKB = new AKBDataSet(this);
+#endif
             _AKC = new AKCDataSet(this);
+#if !EduHubScoped
             _AKCT = new AKCTDataSet(this);
             _AKD = new AKDDataSet(this);
             _AKK = new AKKDataSet(this);
             _AKL = new AKLDataSet(this);
             _AKR = new AKRDataSet(this);
             _AKT = new AKTDataSet(this);
+#endif
             _AR = new ARDataSet(this);
+#if !EduHubScoped
             _ARF = new ARFDataSet(this);
             _BANKSIG = new BANKSIGDataSet(this);
             _BKH = new BKHDataSet(this);
             _BKHR = new BKHRDataSet(this);
             _BPAY_DAT = new BPAY_DATDataSet(this);
+#endif
             _CR = new CRDataSet(this);
             _CRF = new CRFDataSet(this);
+#if !EduHubScoped
             _CRFTC = new CRFTCDataSet(this);
             _CRPR = new CRPRDataSet(this);
             _CRTT = new CRTTDataSet(this);
+#endif
             _DF = new DFDataSet(this);
+#if !EduHubScoped
             _DF_TFR = new DF_TFRDataSet(this);
             _DFB = new DFBDataSet(this);
+#endif
             _DFF = new DFFDataSet(this);
+#if !EduHubScoped
             _DFHI = new DFHIDataSet(this);
+#endif
             _DFVT = new DFVTDataSet(this);
             _DR = new DRDataSet(this);
+#if !EduHubScoped
             _DRB = new DRBDataSet(this);
             _DRF = new DRFDataSet(this);
             _FDT_EXP = new FDT_EXPDataSet(this);
             _FDT_IMP = new FDT_IMPDataSet(this);
             _FER_FDT = new FER_FDTDataSet(this);
             _FINHIST = new FINHISTDataSet(this);
+#endif
             _GL = new GLDataSet(this);
+#if !EduHubScoped
             _GLBANK = new GLBANKDataSet(this);
+#endif
             _GLBUDG = new GLBUDGDataSet(this);
+#if !EduHubScoped
             _GLCF = new GLCFDataSet(this);
             _GLCFPREV = new GLCFPREVDataSet(this);
+#endif
             _GLF = new GLFDataSet(this);
+#if !EduHubScoped
             _GLFBANK = new GLFBANKDataSet(this);
             _GLFBUDG = new GLFBUDGDataSet(this);
             _GLFPREV = new GLFPREVDataSet(this);
             _GLPREV = new GLPREVDataSet(this);
+#endif
             _KAB = new KABDataSet(this);
+#if !EduHubScoped
             _KABN = new KABNDataSet(this);
+#endif
             _KAD = new KADDataSet(this);
+#if !EduHubScoped
             _KADM = new KADMDataSet(this);
             _KAM = new KAMDataSet(this);
             _KAP = new KAPDataSet(this);
@@ -421,30 +536,41 @@ namespace EduHub.Data
             _KBP = new KBPDataSet(this);
             _KBPT = new KBPTDataSet(this);
             _KCB = new KCBDataSet(this);
+#endif
             _KCC = new KCCDataSet(this);
             _KCD = new KCDDataSet(this);
+#if !EduHubScoped
             _KCD_TFR = new KCD_TFRDataSet(this);
+#endif
             _KCI = new KCIDataSet(this);
             _KCM = new KCMDataSet(this);
+#if !EduHubScoped
             _KCM_TFR = new KCM_TFRDataSet(this);
             _KCOHORT = new KCOHORTDataSet(this);
             _KCPC = new KCPCDataSet(this);
             _KCR = new KCRDataSet(this);
+#endif
             _KCT = new KCTDataSet(this);
             _KCV = new KCVDataSet(this);
             _KCY = new KCYDataSet(this);
+#if !EduHubScoped
             _KDELETE = new KDELETEDataSet(this);
+#endif
             _KDI = new KDIDataSet(this);
             _KDO = new KDODataSet(this);
+#if !EduHubScoped
             _KEMA = new KEMADataSet(this);
             _KEMAIL = new KEMAILDataSet(this);
             _KERROR = new KERRORDataSet(this);
             _KFLO = new KFLODataSet(this);
             _KFTC = new KFTCDataSet(this);
             _KFUND = new KFUNDDataSet(this);
+#endif
             _KGC = new KGCDataSet(this);
+#if !EduHubScoped
             _KGCHI = new KGCHIDataSet(this);
             _KGCV = new KGCVDataSet(this);
+#endif
             _KGD = new KGDDataSet(this);
             _KGG = new KGGDataSet(this);
             _KGH = new KGHDataSet(this);
@@ -454,15 +580,20 @@ namespace EduHub.Data
             _KGLSUB = new KGLSUBDataSet(this);
             _KGLT = new KGLTDataSet(this);
             _KGO = new KGODataSet(this);
+#if !EduHubScoped
             _KGO_TFR = new KGO_TFRDataSet(this);
+#endif
             _KGR = new KGRDataSet(this);
             _KGST = new KGSTDataSet(this);
             _KGT = new KGTDataSet(this);
+#if !EduHubScoped
             _KGW = new KGWDataSet(this);
             _KLOG = new KLOGDataSet(this);
             _KMSG = new KMSGDataSet(this);
             _KN = new KNDataSet(this);
+#endif
             _KNATT = new KNATTDataSet(this);
+#if !EduHubScoped
             _KNFS = new KNFSDataSet(this);
             _KNOTE_CR = new KNOTE_CRDataSet(this);
             _KNOTE_DR = new KNOTE_DRDataSet(this);
@@ -475,10 +606,14 @@ namespace EduHub.Data
             _KPRMS = new KPRMSDataSet(this);
             _KREPORT = new KREPORTDataSet(this);
             _KROLE = new KROLEDataSet(this);
+#endif
             _KSA = new KSADataSet(this);
             _KSC = new KSCDataSet(this);
+#if !EduHubScoped
             _KSCORE = new KSCOREDataSet(this);
+#endif
             _KSF = new KSFDataSet(this);
+#if !EduHubScoped
             _KSKGS = new KSKGSDataSet(this);
             _KSQ = new KSQDataSet(this);
             _KSTREET = new KSTREETDataSet(this);
@@ -516,7 +651,9 @@ namespace EduHub.Data
             _PML = new PMLDataSet(this);
             _PML_NEW = new PML_NEWDataSet(this);
             _PN = new PNDataSet(this);
+#endif
             _PPD = new PPDDataSet(this);
+#if !EduHubScoped
             _PPS = new PPSDataSet(this);
             _PS = new PSDataSet(this);
             _PSA = new PSADataSet(this);
@@ -534,7 +671,9 @@ namespace EduHub.Data
             _RQPG = new RQPGDataSet(this);
             _RQREL = new RQRELDataSet(this);
             _RQT = new RQTDataSet(this);
+#endif
             _SA = new SADataSet(this);
+#if !EduHubScoped
             _SAB = new SABDataSet(this);
             _SABT = new SABTDataSet(this);
             _SACAG = new SACAGDataSet(this);
@@ -545,10 +684,14 @@ namespace EduHub.Data
             _SAI = new SAIDataSet(this);
             _SAII = new SAIIDataSet(this);
             _SAIM = new SAIMDataSet(this);
+#endif
             _SAM = new SAMDataSet(this);
+#if !EduHubScoped
             _SAMA = new SAMADataSet(this);
             _SAP = new SAPDataSet(this);
+#endif
             _SC = new SCDataSet(this);
+#if !EduHubScoped
             _SCA = new SCADataSet(this);
             _SCAM = new SCAMDataSet(this);
             _SCEN_ACL = new SCEN_ACLDataSet(this);
@@ -568,8 +711,10 @@ namespace EduHub.Data
             _SCEN_STE = new SCEN_STEDataSet(this);
             _SCEN_STV = new SCEN_STVDataSet(this);
             _SCEN_SVT = new SCEN_SVTDataSet(this);
+#endif
             _SCI = new SCIDataSet(this);
             _SCL = new SCLDataSet(this);
+#if !EduHubScoped
             _SCSF = new SCSFDataSet(this);
             _SCSFAG = new SCSFAGDataSet(this);
             _SDFC = new SDFCDataSet(this);
@@ -583,11 +728,15 @@ namespace EduHub.Data
             _SEC_URL = new SEC_URLDataSet(this);
             _SEC_USR = new SEC_USRDataSet(this);
             _SECMSG = new SECMSGDataSet(this);
+#endif
             _SF = new SFDataSet(this);
+#if !EduHubScoped
             _SFAQ = new SFAQDataSet(this);
             _SFAV = new SFAVDataSet(this);
             _SFQA = new SFQADataSet(this);
+#endif
             _SG = new SGDataSet(this);
+#if !EduHubScoped
             _SGAM = new SGAMDataSet(this);
             _SGFC = new SGFCDataSet(this);
             _SGHG = new SGHGDataSet(this);
@@ -601,12 +750,18 @@ namespace EduHub.Data
             _SIRH = new SIRHDataSet(this);
             _SK_HRMS = new SK_HRMSDataSet(this);
             _SK_HRMST = new SK_HRMSTDataSet(this);
+#endif
             _SKGS = new SKGSDataSet(this);
+#if !EduHubScoped
             _SKGS_OLD = new SKGS_OLDDataSet(this);
+#endif
             _SM = new SMDataSet(this);
+#if !EduHubScoped
             _SMAQ = new SMAQDataSet(this);
             _SMAV = new SMAVDataSet(this);
+#endif
             _SMC = new SMCDataSet(this);
+#if !EduHubScoped
             _SMC_TFR = new SMC_TFRDataSet(this);
             _SMCD = new SMCDDataSet(this);
             _SMGROUP = new SMGROUPDataSet(this);
@@ -627,40 +782,61 @@ namespace EduHub.Data
             _SRAG = new SRAGDataSet(this);
             _SS = new SSDataSet(this);
             _SSHG = new SSHGDataSet(this);
+#endif
             _ST = new STDataSet(this);
+#if !EduHubScoped
             _ST_TFR = new ST_TFRDataSet(this);
             _ST_TFRIO = new ST_TFRIODataSet(this);
+#endif
             _STAR = new STARDataSet(this);
+#if !EduHubScoped
             _STAR_TFR = new STAR_TFRDataSet(this);
             _STBT = new STBTDataSet(this);
             _STFLO = new STFLODataSet(this);
+#endif
             _STMA = new STMADataSet(this);
+#if !EduHubScoped
             _STMB = new STMBDataSet(this);
+#endif
             _STNAT = new STNATDataSet(this);
+#if !EduHubScoped
             _STNAT_TR = new STNAT_TRDataSet(this);
+#endif
             _STPO = new STPODataSet(this);
             _STPS = new STPSDataSet(this);
+#if !EduHubScoped
             _STPS_TFR = new STPS_TFRDataSet(this);
             _STPT = new STPTDataSet(this);
             _STRA = new STRADataSet(this);
             _STRE = new STREDataSet(this);
             _STSB = new STSBDataSet(this);
             _STSP = new STSPDataSet(this);
+#endif
             _STSUP = new STSUPDataSet(this);
+#if !EduHubScoped
             _STSUP_TR = new STSUP_TRDataSet(this);
             _STTRIPS = new STTRIPSDataSet(this);
+#endif
             _STVDI = new STVDIDataSet(this);
+#if !EduHubScoped
             _STVDI_TR = new STVDI_TRDataSet(this);
+#endif
             _STVDO = new STVDODataSet(this);
+#if !EduHubScoped
             _STVDO_TR = new STVDO_TRDataSet(this);
+#endif
             _SU = new SUDataSet(this);
+#if !EduHubScoped
             _SUBL = new SUBLDataSet(this);
             _SUPR = new SUPRDataSet(this);
             _SVAG = new SVAGDataSet(this);
+#endif
             _SXAB = new SXABDataSet(this);
             _SXABCONV = new SXABCONVDataSet(this);
             _SXAS = new SXASDataSet(this);
+#if !EduHubScoped
             _SXHI = new SXHIDataSet(this);
+#endif
             _TC = new TCDataSet(this);
             _TCAT = new TCATDataSet(this);
             _TCTB = new TCTBDataSet(this);
@@ -669,25 +845,33 @@ namespace EduHub.Data
             _TCTR = new TCTRDataSet(this);
             _TE = new TEDataSet(this);
             _TEC = new TECDataSet(this);
+#if !EduHubScoped
             _TETE = new TETEDataSet(this);
             _TETN = new TETNDataSet(this);
+#endif
             _TH = new THDataSet(this);
             _THTN = new THTNDataSet(this);
             _THTQ = new THTQDataSet(this);
+#if !EduHubScoped
             _TRPMODE = new TRPMODEDataSet(this);
             _TRPROUT = new TRPROUTDataSet(this);
             _TRSTACC = new TRSTACCDataSet(this);
+#endif
             _TT = new TTDataSet(this);
+#if !EduHubScoped
             _TTEF = new TTEFDataSet(this);
             _TTEI = new TTEIDataSet(this);
             _TTEP = new TTEPDataSet(this);
             _TTES = new TTESDataSet(this);
             _TTEX = new TTEXDataSet(this);
+#endif
             _TTTG = new TTTGDataSet(this);
             _TXAS = new TXASDataSet(this);
             _TXHG = new TXHGDataSet(this);
             _UM = new UMDataSet(this);
+#if !EduHubScoped
             _UM_TFR = new UM_TFRDataSet(this);
+#endif
 
             SeamlessViews = new SeamlessViewsContext(this);
             WriteBack = new WriteBackContext(this);
@@ -698,53 +882,76 @@ namespace EduHub.Data
         /// </summary>
         public IEnumerable<IEduHubDataSet> GetDataSets()
         {
+#if !EduHubScoped
             yield return A_DECRYP;
             yield return AIMS;
             yield return AKB;
+#endif
             yield return AKC;
+#if !EduHubScoped
             yield return AKCT;
             yield return AKD;
             yield return AKK;
             yield return AKL;
             yield return AKR;
             yield return AKT;
+#endif
             yield return AR;
+#if !EduHubScoped
             yield return ARF;
             yield return BANKSIG;
             yield return BKH;
             yield return BKHR;
             yield return BPAY_DAT;
+#endif
             yield return CR;
             yield return CRF;
+#if !EduHubScoped
             yield return CRFTC;
             yield return CRPR;
             yield return CRTT;
+#endif
             yield return DF;
+#if !EduHubScoped
             yield return DF_TFR;
             yield return DFB;
+#endif
             yield return DFF;
+#if !EduHubScoped
             yield return DFHI;
+#endif
             yield return DFVT;
             yield return DR;
+#if !EduHubScoped
             yield return DRB;
             yield return DRF;
             yield return FDT_EXP;
             yield return FDT_IMP;
             yield return FER_FDT;
             yield return FINHIST;
+#endif
             yield return GL;
+#if !EduHubScoped
             yield return GLBANK;
+#endif
             yield return GLBUDG;
+#if !EduHubScoped
             yield return GLCF;
             yield return GLCFPREV;
+#endif
             yield return GLF;
+#if !EduHubScoped
             yield return GLFBANK;
             yield return GLFBUDG;
             yield return GLFPREV;
             yield return GLPREV;
+#endif
             yield return KAB;
+#if !EduHubScoped
             yield return KABN;
+#endif
             yield return KAD;
+#if !EduHubScoped
             yield return KADM;
             yield return KAM;
             yield return KAP;
@@ -752,30 +959,41 @@ namespace EduHub.Data
             yield return KBP;
             yield return KBPT;
             yield return KCB;
+#endif
             yield return KCC;
             yield return KCD;
+#if !EduHubScoped
             yield return KCD_TFR;
+#endif
             yield return KCI;
             yield return KCM;
+#if !EduHubScoped
             yield return KCM_TFR;
             yield return KCOHORT;
             yield return KCPC;
             yield return KCR;
+#endif
             yield return KCT;
             yield return KCV;
             yield return KCY;
+#if !EduHubScoped
             yield return KDELETE;
+#endif
             yield return KDI;
             yield return KDO;
+#if !EduHubScoped
             yield return KEMA;
             yield return KEMAIL;
             yield return KERROR;
             yield return KFLO;
             yield return KFTC;
             yield return KFUND;
+#endif
             yield return KGC;
+#if !EduHubScoped
             yield return KGCHI;
             yield return KGCV;
+#endif
             yield return KGD;
             yield return KGG;
             yield return KGH;
@@ -785,15 +1003,20 @@ namespace EduHub.Data
             yield return KGLSUB;
             yield return KGLT;
             yield return KGO;
+#if !EduHubScoped
             yield return KGO_TFR;
+#endif
             yield return KGR;
             yield return KGST;
             yield return KGT;
+#if !EduHubScoped
             yield return KGW;
             yield return KLOG;
             yield return KMSG;
             yield return KN;
+#endif
             yield return KNATT;
+#if !EduHubScoped
             yield return KNFS;
             yield return KNOTE_CR;
             yield return KNOTE_DR;
@@ -806,10 +1029,14 @@ namespace EduHub.Data
             yield return KPRMS;
             yield return KREPORT;
             yield return KROLE;
+#endif
             yield return KSA;
             yield return KSC;
+#if !EduHubScoped
             yield return KSCORE;
+#endif
             yield return KSF;
+#if !EduHubScoped
             yield return KSKGS;
             yield return KSQ;
             yield return KSTREET;
@@ -847,7 +1074,9 @@ namespace EduHub.Data
             yield return PML;
             yield return PML_NEW;
             yield return PN;
+#endif
             yield return PPD;
+#if !EduHubScoped
             yield return PPS;
             yield return PS;
             yield return PSA;
@@ -865,7 +1094,9 @@ namespace EduHub.Data
             yield return RQPG;
             yield return RQREL;
             yield return RQT;
+#endif
             yield return SA;
+#if !EduHubScoped
             yield return SAB;
             yield return SABT;
             yield return SACAG;
@@ -876,10 +1107,14 @@ namespace EduHub.Data
             yield return SAI;
             yield return SAII;
             yield return SAIM;
+#endif
             yield return SAM;
+#if !EduHubScoped
             yield return SAMA;
             yield return SAP;
+#endif
             yield return SC;
+#if !EduHubScoped
             yield return SCA;
             yield return SCAM;
             yield return SCEN_ACL;
@@ -899,8 +1134,10 @@ namespace EduHub.Data
             yield return SCEN_STE;
             yield return SCEN_STV;
             yield return SCEN_SVT;
+#endif
             yield return SCI;
             yield return SCL;
+#if !EduHubScoped
             yield return SCSF;
             yield return SCSFAG;
             yield return SDFC;
@@ -914,11 +1151,15 @@ namespace EduHub.Data
             yield return SEC_URL;
             yield return SEC_USR;
             yield return SECMSG;
+#endif
             yield return SF;
+#if !EduHubScoped
             yield return SFAQ;
             yield return SFAV;
             yield return SFQA;
+#endif
             yield return SG;
+#if !EduHubScoped
             yield return SGAM;
             yield return SGFC;
             yield return SGHG;
@@ -932,12 +1173,18 @@ namespace EduHub.Data
             yield return SIRH;
             yield return SK_HRMS;
             yield return SK_HRMST;
+#endif
             yield return SKGS;
+#if !EduHubScoped
             yield return SKGS_OLD;
+#endif
             yield return SM;
+#if !EduHubScoped
             yield return SMAQ;
             yield return SMAV;
+#endif
             yield return SMC;
+#if !EduHubScoped
             yield return SMC_TFR;
             yield return SMCD;
             yield return SMGROUP;
@@ -958,40 +1205,61 @@ namespace EduHub.Data
             yield return SRAG;
             yield return SS;
             yield return SSHG;
+#endif
             yield return ST;
+#if !EduHubScoped
             yield return ST_TFR;
             yield return ST_TFRIO;
+#endif
             yield return STAR;
+#if !EduHubScoped
             yield return STAR_TFR;
             yield return STBT;
             yield return STFLO;
+#endif
             yield return STMA;
+#if !EduHubScoped
             yield return STMB;
+#endif
             yield return STNAT;
+#if !EduHubScoped
             yield return STNAT_TR;
+#endif
             yield return STPO;
             yield return STPS;
+#if !EduHubScoped
             yield return STPS_TFR;
             yield return STPT;
             yield return STRA;
             yield return STRE;
             yield return STSB;
             yield return STSP;
+#endif
             yield return STSUP;
+#if !EduHubScoped
             yield return STSUP_TR;
             yield return STTRIPS;
+#endif
             yield return STVDI;
+#if !EduHubScoped
             yield return STVDI_TR;
+#endif
             yield return STVDO;
+#if !EduHubScoped
             yield return STVDO_TR;
+#endif
             yield return SU;
+#if !EduHubScoped
             yield return SUBL;
             yield return SUPR;
             yield return SVAG;
+#endif
             yield return SXAB;
             yield return SXABCONV;
             yield return SXAS;
+#if !EduHubScoped
             yield return SXHI;
+#endif
             yield return TC;
             yield return TCAT;
             yield return TCTB;
@@ -1000,26 +1268,35 @@ namespace EduHub.Data
             yield return TCTR;
             yield return TE;
             yield return TEC;
+#if !EduHubScoped
             yield return TETE;
             yield return TETN;
+#endif
             yield return TH;
             yield return THTN;
             yield return THTQ;
+#if !EduHubScoped
             yield return TRPMODE;
             yield return TRPROUT;
             yield return TRSTACC;
+#endif
             yield return TT;
+#if !EduHubScoped
             yield return TTEF;
             yield return TTEI;
             yield return TTEP;
             yield return TTES;
             yield return TTEX;
+#endif
             yield return TTTG;
             yield return TXAS;
             yield return TXHG;
             yield return UM;
+#if !EduHubScoped
             yield return UM_TFR;
+#endif
         }
+#if !EduHubScoped
 
         /// <summary>
         /// Decrypted data IMPORT
@@ -1035,11 +1312,13 @@ namespace EduHub.Data
         /// Assets - Sub-Category
         /// </summary>
         public AKBDataSet AKB { get { return _AKB; } }
+#endif
 
         /// <summary>
         /// Assets - Categories
         /// </summary>
         public AKCDataSet AKC { get { return _AKC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Assets - Categories Tax
@@ -1070,11 +1349,13 @@ namespace EduHub.Data
         /// Asset Types
         /// </summary>
         public AKTDataSet AKT { get { return _AKT; } }
+#endif
 
         /// <summary>
         /// Assets
         /// </summary>
         public ARDataSet AR { get { return _AR; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Asset Financial Transactions
@@ -1100,6 +1381,7 @@ namespace EduHub.Data
         /// BPay Data
         /// </summary>
         public BPAY_DATDataSet BPAY_DAT { get { return _BPAY_DAT; } }
+#endif
 
         /// <summary>
         /// Accounts Payable
@@ -1110,6 +1392,7 @@ namespace EduHub.Data
         /// Creditor Financial Transaction
         /// </summary>
         public CRFDataSet CRF { get { return _CRF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Creditor Fuel Tax Credits
@@ -1125,11 +1408,13 @@ namespace EduHub.Data
         /// Creditor Trade Types
         /// </summary>
         public CRTTDataSet CRTT { get { return _CRTT; } }
+#endif
 
         /// <summary>
         /// Families
         /// </summary>
         public DFDataSet DF { get { return _DF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// DF Transfer
@@ -1140,16 +1425,19 @@ namespace EduHub.Data
         /// BPAY Receipts
         /// </summary>
         public DFBDataSet DFB { get { return _DFB; } }
+#endif
 
         /// <summary>
         /// Family Financial Transactions
         /// </summary>
         public DFFDataSet DFF { get { return _DFF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Family History
         /// </summary>
         public DFHIDataSet DFHI { get { return _DFHI; } }
+#endif
 
         /// <summary>
         /// Family Voluntary Transactions
@@ -1160,6 +1448,7 @@ namespace EduHub.Data
         /// Accounts Receivable
         /// </summary>
         public DRDataSet DR { get { return _DR; } }
+#if !EduHubScoped
 
         /// <summary>
         /// BPAY Receipts for Sundry Debtors
@@ -1190,21 +1479,25 @@ namespace EduHub.Data
         /// Financial History
         /// </summary>
         public FINHISTDataSet FINHIST { get { return _FINHIST; } }
+#endif
 
         /// <summary>
         /// General Ledger
         /// </summary>
         public GLDataSet GL { get { return _GL; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Bank Account Details
         /// </summary>
         public GLBANKDataSet GLBANK { get { return _GLBANK; } }
+#endif
 
         /// <summary>
         /// General Ledger Budgets
         /// </summary>
         public GLBUDGDataSet GLBUDG { get { return _GLBUDG; } }
+#if !EduHubScoped
 
         /// <summary>
         /// GL Combined Financial Trans
@@ -1215,11 +1508,13 @@ namespace EduHub.Data
         /// Last Years GL Combined Financial Trans
         /// </summary>
         public GLCFPREVDataSet GLCFPREV { get { return _GLCFPREV; } }
+#endif
 
         /// <summary>
         /// General Ledger Transactions
         /// </summary>
         public GLFDataSet GLF { get { return _GLF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Financial Commitments
@@ -1240,21 +1535,25 @@ namespace EduHub.Data
         /// Last Years General Ledger
         /// </summary>
         public GLPREVDataSet GLPREV { get { return _GLPREV; } }
+#endif
 
         /// <summary>
         /// BSB Numbers
         /// </summary>
         public KABDataSet KAB { get { return _KAB; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Restricted ABN Numbers
         /// </summary>
         public KABNDataSet KABN { get { return _KABN; } }
+#endif
 
         /// <summary>
         /// Delivery Addresses
         /// </summary>
         public KADDataSet KAD { get { return _KAD; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Asset Depreciation Methods
@@ -1290,6 +1589,7 @@ namespace EduHub.Data
         /// Behaviour Classifications
         /// </summary>
         public KCBDataSet KCB { get { return _KCB; } }
+#endif
 
         /// <summary>
         /// Calendar Dates for Absences
@@ -1300,11 +1600,13 @@ namespace EduHub.Data
         /// Doctors
         /// </summary>
         public KCDDataSet KCD { get { return _KCD; } }
+#if !EduHubScoped
 
         /// <summary>
         /// KCD Transfer
         /// </summary>
         public KCD_TFRDataSet KCD_TFR { get { return _KCD_TFR; } }
+#endif
 
         /// <summary>
         /// Religious Instruction Curricula
@@ -1315,6 +1617,7 @@ namespace EduHub.Data
         /// Medical Conditions
         /// </summary>
         public KCMDataSet KCM { get { return _KCM; } }
+#if !EduHubScoped
 
         /// <summary>
         /// KCM Transfer
@@ -1335,6 +1638,7 @@ namespace EduHub.Data
         /// Transport Routes/Stops
         /// </summary>
         public KCRDataSet KCR { get { return _KCR; } }
+#endif
 
         /// <summary>
         /// Absence Types
@@ -1350,11 +1654,13 @@ namespace EduHub.Data
         /// Year Levels
         /// </summary>
         public KCYDataSet KCY { get { return _KCY; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Data deleted from DataMirror monitored tables
         /// </summary>
         public KDELETEDataSet KDELETE { get { return _KDELETE; } }
+#endif
 
         /// <summary>
         /// Victorian Curriculum Strands
@@ -1365,6 +1671,7 @@ namespace EduHub.Data
         /// Curriculum Area
         /// </summary>
         public KDODataSet KDO { get { return _KDO; } }
+#if !EduHubScoped
 
         /// <summary>
         /// CSEF Receipt details
@@ -1395,11 +1702,13 @@ namespace EduHub.Data
         /// GL Bank Fund
         /// </summary>
         public KFUNDDataSet KFUND { get { return _KFUND; } }
+#endif
 
         /// <summary>
         /// Home Groups
         /// </summary>
         public KGCDataSet KGC { get { return _KGC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Home Group History
@@ -1410,6 +1719,7 @@ namespace EduHub.Data
         /// eMaze Calendar Framework
         /// </summary>
         public KGCVDataSet KGCV { get { return _KGCV; } }
+#endif
 
         /// <summary>
         /// Year 9-12 Exit Destinations
@@ -1455,11 +1765,13 @@ namespace EduHub.Data
         /// Occupations
         /// </summary>
         public KGODataSet KGO { get { return _KGO; } }
+#if !EduHubScoped
 
         /// <summary>
         /// KGO Transfer
         /// </summary>
         public KGO_TFRDataSet KGO_TFR { get { return _KGO_TFR; } }
+#endif
 
         /// <summary>
         /// Religions
@@ -1475,6 +1787,7 @@ namespace EduHub.Data
         /// Countries
         /// </summary>
         public KGTDataSet KGT { get { return _KGT; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Awards and Prizes
@@ -1495,11 +1808,13 @@ namespace EduHub.Data
         /// General Ledger Notes
         /// </summary>
         public KNDataSet KN { get { return _KN; } }
+#endif
 
         /// <summary>
         /// Notes and Attachment Type
         /// </summary>
         public KNATTDataSet KNATT { get { return _KNATT; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Family/Student ID Sequence Numbers
@@ -1560,6 +1875,7 @@ namespace EduHub.Data
         /// Role Codes
         /// </summary>
         public KROLEDataSet KROLE { get { return _KROLE; } }
+#endif
 
         /// <summary>
         /// Areas of Teaching
@@ -1570,16 +1886,19 @@ namespace EduHub.Data
         /// Staff Positions
         /// </summary>
         public KSCDataSet KSC { get { return _KSC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Scores
         /// </summary>
         public KSCOREDataSet KSCORE { get { return _KSCORE; } }
+#endif
 
         /// <summary>
         /// Faculties
         /// </summary>
         public KSFDataSet KSF { get { return _KSF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Holding Table for Incorrect Schools
@@ -1765,11 +2084,13 @@ namespace EduHub.Data
         /// Payroll Groups
         /// </summary>
         public PNDataSet PN { get { return _PN; } }
+#endif
 
         /// <summary>
         /// PAYG Payer Details
         /// </summary>
         public PPDDataSet PPD { get { return _PPD; } }
+#if !EduHubScoped
 
         /// <summary>
         /// PAYG Supplier Details
@@ -1855,11 +2176,13 @@ namespace EduHub.Data
         /// Purchase Requisition Transaction
         /// </summary>
         public RQTDataSet RQT { get { return _RQT; } }
+#endif
 
         /// <summary>
         /// Fees
         /// </summary>
         public SADataSet SA { get { return _SA; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Fees - Billing Templates
@@ -1910,11 +2233,13 @@ namespace EduHub.Data
         /// Sickbay Medication Administrations
         /// </summary>
         public SAIMDataSet SAIM { get { return _SAIM; } }
+#endif
 
         /// <summary>
         /// School Association Members
         /// </summary>
         public SAMDataSet SAM { get { return _SAM; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Association Member Attendances
@@ -1925,11 +2250,13 @@ namespace EduHub.Data
         /// School Association Positions
         /// </summary>
         public SAPDataSet SAP { get { return _SAP; } }
+#endif
 
         /// <summary>
         /// Courses
         /// </summary>
         public SCDataSet SC { get { return _SC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// School Associations
@@ -2025,6 +2352,7 @@ namespace EduHub.Data
         /// Census Student Validation Type Data
         /// </summary>
         public SCEN_SVTDataSet SCEN_SVT { get { return _SCEN_SVT; } }
+#endif
 
         /// <summary>
         /// School Information
@@ -2035,6 +2363,7 @@ namespace EduHub.Data
         /// Subject Classes
         /// </summary>
         public SCLDataSet SCL { get { return _SCL; } }
+#if !EduHubScoped
 
         /// <summary>
         /// CSF Strands
@@ -2100,11 +2429,13 @@ namespace EduHub.Data
         /// eCases Messages
         /// </summary>
         public SECMSGDataSet SECMSG { get { return _SECMSG; } }
+#endif
 
         /// <summary>
         /// Staff
         /// </summary>
         public SFDataSet SF { get { return _SF; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Staff Availability in Quilt
@@ -2120,11 +2451,13 @@ namespace EduHub.Data
         /// Staff Qualifications
         /// </summary>
         public SFQADataSet SFQA { get { return _SFQA; } }
+#endif
 
         /// <summary>
         /// Student Groupings
         /// </summary>
         public SGDataSet SG { get { return _SG; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Adult Group Members
@@ -2190,21 +2523,25 @@ namespace EduHub.Data
         /// HRMS Temp Import Table
         /// </summary>
         public SK_HRMSTDataSet SK_HRMST { get { return _SK_HRMST; } }
+#endif
 
         /// <summary>
         /// Schools
         /// </summary>
         public SKGSDataSet SKGS { get { return _SKGS; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Old SKGS Schools
         /// </summary>
         public SKGS_OLDDataSet SKGS_OLD { get { return _SKGS_OLD; } }
+#endif
 
         /// <summary>
         /// Rooms
         /// </summary>
         public SMDataSet SM { get { return _SM; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Room Availability in Quilt
@@ -2215,11 +2552,13 @@ namespace EduHub.Data
         /// Room Availablity Extras
         /// </summary>
         public SMAVDataSet SMAV { get { return _SMAV; } }
+#endif
 
         /// <summary>
         /// Student Medical Conditions
         /// </summary>
         public SMCDataSet SMC { get { return _SMC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// SMC Transfer
@@ -2320,11 +2659,13 @@ namespace EduHub.Data
         /// Specialist Subjects per Home Group
         /// </summary>
         public SSHGDataSet SSHG { get { return _SSHG; } }
+#endif
 
         /// <summary>
         /// Students
         /// </summary>
         public STDataSet ST { get { return _ST; } }
+#if !EduHubScoped
 
         /// <summary>
         /// ST Transfer
@@ -2335,11 +2676,13 @@ namespace EduHub.Data
         /// Student Data Transfer Table
         /// </summary>
         public ST_TFRIODataSet ST_TFRIO { get { return _ST_TFRIO; } }
+#endif
 
         /// <summary>
         /// Student Access Restrictions
         /// </summary>
         public STARDataSet STAR { get { return _STAR; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STAR Transfer
@@ -2355,26 +2698,31 @@ namespace EduHub.Data
         /// Student Flexible Learning Options
         /// </summary>
         public STFLODataSet STFLO { get { return _STFLO; } }
+#endif
 
         /// <summary>
         /// Subject Selections &amp; Marks
         /// </summary>
         public STMADataSet STMA { get { return _STMA; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Student Merit Behaviour Details
         /// </summary>
         public STMBDataSet STMB { get { return _STMB; } }
+#endif
 
         /// <summary>
         /// Student Notes and Attachments
         /// </summary>
         public STNATDataSet STNAT { get { return _STNAT; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STNAT Transfer
         /// </summary>
         public STNAT_TRDataSet STNAT_TR { get { return _STNAT_TR; } }
+#endif
 
         /// <summary>
         /// Position or Group Memberships
@@ -2385,6 +2733,7 @@ namespace EduHub.Data
         /// Student Previous School
         /// </summary>
         public STPSDataSet STPS { get { return _STPS; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STPS Transfer
@@ -2415,11 +2764,13 @@ namespace EduHub.Data
         /// Suspension Details
         /// </summary>
         public STSPDataSet STSP { get { return _STSP; } }
+#endif
 
         /// <summary>
         /// Support Persons
         /// </summary>
         public STSUPDataSet STSUP { get { return _STSUP; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STSUP Transfer
@@ -2430,31 +2781,37 @@ namespace EduHub.Data
         /// Student Trips
         /// </summary>
         public STTRIPSDataSet STTRIPS { get { return _STTRIPS; } }
+#endif
 
         /// <summary>
         /// VELS Dimension Results
         /// </summary>
         public STVDIDataSet STVDI { get { return _STVDI; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STVDI Transfer
         /// </summary>
         public STVDI_TRDataSet STVDI_TR { get { return _STVDI_TR; } }
+#endif
 
         /// <summary>
         /// VELS Domain Results
         /// </summary>
         public STVDODataSet STVDO { get { return _STVDO; } }
+#if !EduHubScoped
 
         /// <summary>
         /// STVDO Transfer
         /// </summary>
         public STVDO_TRDataSet STVDO_TR { get { return _STVDO_TR; } }
+#endif
 
         /// <summary>
         /// Subjects
         /// </summary>
         public SUDataSet SU { get { return _SU; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Subject Book List
@@ -2470,6 +2827,7 @@ namespace EduHub.Data
         /// VELS Aggregated Dimensions
         /// </summary>
         public SVAGDataSet SVAG { get { return _SVAG; } }
+#endif
 
         /// <summary>
         /// Student Half-Day Absences
@@ -2485,11 +2843,13 @@ namespace EduHub.Data
         /// Student Scheduled Sessions
         /// </summary>
         public SXASDataSet SXAS { get { return _SXAS; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Student History
         /// </summary>
         public SXHIDataSet SXHI { get { return _SXHI; } }
+#endif
 
         /// <summary>
         /// Calendar
@@ -2530,6 +2890,7 @@ namespace EduHub.Data
         /// Event Categories
         /// </summary>
         public TECDataSet TEC { get { return _TEC; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Event Instances
@@ -2540,6 +2901,7 @@ namespace EduHub.Data
         /// Event Attendees
         /// </summary>
         public TETNDataSet TETN { get { return _TETN; } }
+#endif
 
         /// <summary>
         /// Timetable Quilt Headers
@@ -2555,6 +2917,7 @@ namespace EduHub.Data
         /// Timetable Quilt Entries
         /// </summary>
         public THTQDataSet THTQ { get { return _THTQ; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Transport Modes
@@ -2570,11 +2933,13 @@ namespace EduHub.Data
         /// STACC Holding Table
         /// </summary>
         public TRSTACCDataSet TRSTACC { get { return _TRSTACC; } }
+#endif
 
         /// <summary>
         /// Timetable Grid Templates
         /// </summary>
         public TTDataSet TT { get { return _TT; } }
+#if !EduHubScoped
 
         /// <summary>
         /// Exam Staff
@@ -2600,6 +2965,7 @@ namespace EduHub.Data
         /// Exam Grid
         /// </summary>
         public TTEXDataSet TTEX { get { return _TTEX; } }
+#endif
 
         /// <summary>
         /// Grid Subjects
@@ -2620,10 +2986,12 @@ namespace EduHub.Data
         /// Addresses
         /// </summary>
         public UMDataSet UM { get { return _UM; } }
+#if !EduHubScoped
 
         /// <summary>
         /// UM Transfer
         /// </summary>
         public UM_TFRDataSet UM_TFR { get { return _UM_TFR; } }
+#endif
     }
 }

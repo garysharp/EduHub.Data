@@ -15,7 +15,9 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<SG> Cache_KCTKEY_SG_ABS_TYPE;
         private IReadOnlyList<ST> Cache_KCTKEY_ST_INAC_ABS_CODE;
+#if !EduHubScoped
         private IReadOnlyList<STRA> Cache_KCTKEY_STRA_ABS_TYPE;
+#endif
         private IReadOnlyList<SXAB> Cache_KCTKEY_SXAB_AM_EXP_TYPE;
         private IReadOnlyList<SXAB> Cache_KCTKEY_SXAB_AM_ACT_TYPE;
         private IReadOnlyList<SXAB> Cache_KCTKEY_SXAB_PM_EXP_TYPE;
@@ -158,6 +160,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STRA (Multiple Day Absences) related entities by [KCT.KCTKEY]-&gt;[STRA.ABS_TYPE]
         /// Absence type code
@@ -176,6 +179,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SXAB (Student Half-Day Absences) related entities by [KCT.KCTKEY]-&gt;[SXAB.AM_EXP_TYPE]
         /// Absence type code

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SAI Cache_INVOLVEMENTID_SAI;
+#endif
 
         #endregion
 
@@ -84,6 +87,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SAI (Accident Involvements/Sickbay Visits) related entity by [SAII.INVOLVEMENTID]-&gt;[SAI.SAIKEY]
         /// Sequence no of accident involvement
@@ -101,7 +105,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

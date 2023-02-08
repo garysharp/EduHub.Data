@@ -43,11 +43,13 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<TH> Cache_TTKEY_TH_TT12KEY;
         private IReadOnlyList<TH> Cache_TTKEY_TH_TT13KEY;
         private IReadOnlyList<THTQ> Cache_TTKEY_THTQ_GKEY;
+#if !EduHubScoped
         private IReadOnlyList<TTEF> Cache_TTKEY_TTEF_GKEY;
         private IReadOnlyList<TTEI> Cache_TTKEY_TTEI_GKEY;
         private IReadOnlyList<TTEP> Cache_TTKEY_TTEP_GKEY;
         private IReadOnlyList<TTES> Cache_TTKEY_TTES_GKEY;
         private IReadOnlyList<TTEX> Cache_TTKEY_TTEX_GKEY;
+#endif
         private IReadOnlyList<TTTG> Cache_TTKEY_TTTG_GKEY;
 
         #endregion
@@ -879,6 +881,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// TTEF (Exam Staff) related entities by [TT.TTKEY]-&gt;[TTEF.GKEY]
         /// Template code
@@ -969,6 +972,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// TTTG (Grid Subjects) related entities by [TT.TTKEY]-&gt;[TTTG.GKEY]
         /// Template code

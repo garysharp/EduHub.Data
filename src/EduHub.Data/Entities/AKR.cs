@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         private IReadOnlyList<AR> Cache_AKRKEY_AR_RELEASE_TYPE;
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_AKRKEY_ARF_RELEASE_TYPE;
+#endif
 
         #endregion
 
@@ -79,6 +82,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [AKR.AKRKEY]-&gt;[ARF.RELEASE_TYPE]
         /// Asset Release Type
@@ -97,7 +101,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

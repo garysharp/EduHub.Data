@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private KCOHORT Cache_COHORT_KCOHORT;
+#endif
         private KDI Cache_VDIMENSION_KDI;
         private KDO Cache_VDOMAIN_KDO;
 
@@ -285,6 +288,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// KCOHORT (Cohorts for data aggregation) related entity by [SVAG.COHORT]-&gt;[KCOHORT.COHORT]
         /// Link to cohort
@@ -306,6 +310,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// KDI (Victorian Curriculum Strands) related entity by [SVAG.VDIMENSION]-&gt;[KDI.KDIKEY]
         /// Link to dimension
@@ -352,3 +357,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

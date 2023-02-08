@@ -43,33 +43,49 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<BKHR> Cache_STKEY_BKHR_STUDENT;
+#endif
         private IReadOnlyList<DFF> Cache_STKEY_DFF_TRSTUD;
         private IReadOnlyList<DFF> Cache_STKEY_DFF_STUDENT;
+#if !EduHubScoped
         private IReadOnlyList<SDP> Cache_STKEY_SDP_STUDENT_KEY;
+#endif
         private IReadOnlyList<SMC> Cache_STKEY_SMC_STUDENT;
+#if !EduHubScoped
         private IReadOnlyList<SSHG> Cache_STKEY_SSHG_STUDENT;
+#endif
         private IReadOnlyList<STAR> Cache_STKEY_STAR_SKEY;
+#if !EduHubScoped
         private IReadOnlyList<STBT> Cache_STKEY_STBT_STBTKEY;
         private IReadOnlyList<STFLO> Cache_STKEY_STFLO_SKEY;
+#endif
         private IReadOnlyList<STMA> Cache_STKEY_STMA_SKEY;
+#if !EduHubScoped
         private IReadOnlyList<STMB> Cache_STKEY_STMB_SKEY;
+#endif
         private IReadOnlyList<STNAT> Cache_STKEY_STNAT_SKEY;
         private IReadOnlyList<STPO> Cache_STKEY_STPO_STPOKEY;
         private IReadOnlyList<STPS> Cache_STKEY_STPS_SKEY;
+#if !EduHubScoped
         private IReadOnlyList<STPT> Cache_STKEY_STPT_STPTKEY;
         private IReadOnlyList<STRA> Cache_STKEY_STRA_STKEY;
         private IReadOnlyList<STRE> Cache_STKEY_STRE_SKEY;
         private IReadOnlyList<STSB> Cache_STKEY_STSB_SKEY;
         private IReadOnlyList<STSP> Cache_STKEY_STSP_SPKEY;
+#endif
         private IReadOnlyList<STSUP> Cache_STKEY_STSUP_SKEY;
+#if !EduHubScoped
         private IReadOnlyList<STTRIPS> Cache_STKEY_STTRIPS_STUDENT_ID;
+#endif
         private IReadOnlyList<STVDI> Cache_STKEY_STVDI_SKEY;
         private IReadOnlyList<STVDO> Cache_STKEY_STVDO_SKEY;
         private IReadOnlyList<SXAB> Cache_STKEY_SXAB_STKEY;
         private IReadOnlyList<SXABCONV> Cache_STKEY_SXABCONV_STKEY;
         private IReadOnlyList<SXAS> Cache_STKEY_SXAS_STKEY;
+#if !EduHubScoped
         private IReadOnlyList<SXHI> Cache_STKEY_SXHI_SKEY;
+#endif
 
         #endregion
 
@@ -1849,6 +1865,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// BKHR (Book Hire Records) related entities by [ST.STKEY]-&gt;[BKHR.STUDENT]
         /// Student ID
@@ -1867,6 +1884,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// DFF (Family Financial Transactions) related entities by [ST.STKEY]-&gt;[DFF.TRSTUD]
         /// Student ID
@@ -1903,6 +1921,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDP (Incident Instigators) related entities by [ST.STKEY]-&gt;[SDP.STUDENT_KEY]
         /// Student ID
@@ -1921,6 +1940,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SMC (Student Medical Conditions) related entities by [ST.STKEY]-&gt;[SMC.STUDENT]
         /// Student ID
@@ -1939,6 +1959,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SSHG (Specialist Subjects per Home Group) related entities by [ST.STKEY]-&gt;[SSHG.STUDENT]
         /// Student ID
@@ -1957,6 +1978,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STAR (Student Access Restrictions) related entities by [ST.STKEY]-&gt;[STAR.SKEY]
         /// Student ID
@@ -1975,6 +1997,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STBT (Student Transport Usage) related entities by [ST.STKEY]-&gt;[STBT.STBTKEY]
         /// Student ID
@@ -2011,6 +2034,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STMA (Subject Selections &amp; Marks) related entities by [ST.STKEY]-&gt;[STMA.SKEY]
         /// Student ID
@@ -2029,6 +2053,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STMB (Student Merit Behaviour Details) related entities by [ST.STKEY]-&gt;[STMB.SKEY]
         /// Student ID
@@ -2047,6 +2072,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STNAT (Student Notes and Attachments) related entities by [ST.STKEY]-&gt;[STNAT.SKEY]
         /// Student ID
@@ -2101,6 +2127,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STPT (Student Part-Time Enrolments) related entities by [ST.STKEY]-&gt;[STPT.STPTKEY]
         /// Student ID
@@ -2191,6 +2218,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STSUP (Support Persons) related entities by [ST.STKEY]-&gt;[STSUP.SKEY]
         /// Student ID
@@ -2209,6 +2237,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// STTRIPS (Student Trips) related entities by [ST.STKEY]-&gt;[STTRIPS.STUDENT_ID]
         /// Student ID
@@ -2227,6 +2256,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// STVDI (VELS Dimension Results) related entities by [ST.STKEY]-&gt;[STVDI.SKEY]
         /// Student ID
@@ -2317,6 +2347,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SXHI (Student History) related entities by [ST.STKEY]-&gt;[SXHI.SKEY]
         /// Student ID
@@ -2335,6 +2366,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

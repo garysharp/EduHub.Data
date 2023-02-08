@@ -15,7 +15,9 @@ namespace EduHub.Data.Entities
 
         private IReadOnlyList<STVDI> Cache_KDIKEY_STVDI_VDIMENSION;
         private IReadOnlyList<STVDO> Cache_KDIKEY_STVDO_VDIMENSION;
+#if !EduHubScoped
         private IReadOnlyList<SVAG> Cache_KDIKEY_SVAG_VDIMENSION;
+#endif
 
         #endregion
 
@@ -122,6 +124,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SVAG (VELS Aggregated Dimensions) related entities by [KDI.KDIKEY]-&gt;[SVAG.VDIMENSION]
         /// Key of Victorian Curriculum Strand
@@ -140,6 +143,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }

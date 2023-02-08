@@ -32,10 +32,27 @@ namespace EduHub.Data
     {
 #region Set Fields
 <#
+    var isUnscoped = false;
     foreach (EduHubEntity entity in schema.Entities)
     {
+        if (entity.IsScoped && isUnscoped) {
+            isUnscoped = false;
+#>
+#endif
+<#
+        } else if (!entity.IsScoped && !isUnscoped) {
+            isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+        }
 #>
         private readonly <#=entity.Name#>DataSet _<#=entity.Name#>;
+<#
+    }
+    if (isUnscoped) {
+#>
+#endif
 <#
     }
 #>
@@ -73,10 +90,27 @@ namespace EduHub.Data
             this.EduHubSiteIdentifier = EduHubSiteIdentifier;
 
 <#
+    isUnscoped = false;
     foreach (EduHubEntity entity in schema.Entities)
     {
+        if (entity.IsScoped && isUnscoped) {
+            isUnscoped = false;
+#>
+#endif
+<#
+        } else if (!entity.IsScoped && !isUnscoped) {
+            isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+        }
 #>
             _<#=entity.Name#> = new <#=entity.Name#>DataSet(this);
+<#
+    }
+    if (isUnscoped) {
+#>
+#endif
 <#
     }
 #>
@@ -91,23 +125,57 @@ namespace EduHub.Data
         public IEnumerable<IEduHubDataSet> GetDataSets()
         {
 <#
+    isUnscoped = false;
     foreach (EduHubEntity entity in schema.Entities)
     {
+        if (entity.IsScoped && isUnscoped) {
+            isUnscoped = false;
+#>
+#endif
+<#
+        } else if (!entity.IsScoped && !isUnscoped) {
+            isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+        }
 #>
             yield return <#=entity.Name#>;
+<#
+    }
+    if (isUnscoped) {
+#>
+#endif
 <#
     }
 #>
         }
 <#
+    isUnscoped = false;
     foreach (EduHubEntity entity in schema.Entities)
     {
+        if (entity.IsScoped && isUnscoped) {
+            isUnscoped = false;
+#>
+#endif
+<#
+        } else if (!entity.IsScoped && !isUnscoped) {
+            isUnscoped = true;
+#>
+#if !EduHubScoped
+<#
+        }
 #>
 
         /// <summary>
         /// <#=entity.Description#>
         /// </summary>
         public <#=entity.Name#>DataSet <#=entity.Name#> { get { return _<#=entity.Name#>; } }
+<#
+    }
+    if (isUnscoped) {
+#>
+#endif
 <#
     }
 #>
@@ -125,6 +193,7 @@ namespace EduHub.Data
 
         public string Name;
         public string Description;
+        public bool IsScoped;
     }
 
     static EduHubSchema LoadSchema(string Filename)
@@ -137,7 +206,8 @@ namespace EduHub.Data
                 {
                     Schema = schema,
                     Name = e.Attribute("Name").Value,
-                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
+                    Description = e.Attribute("Description").Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"),
+                    IsScoped = e.Attribute("IsScoped") != null && string.Equals(e.Attribute("IsScoped").Value, "true", StringComparison.Ordinal)
                 }).ToList();
 
         return schema;

@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SPOUT Cache_SPOUTKEY_SPOUT;
+#endif
 
         #endregion
 
@@ -125,6 +128,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SPOUT (Stored Procedure Return Values) related entity by [KERROR.SPOUTKEY]-&gt;[SPOUT.SPOUTKEY]
         /// Unique user session ID
@@ -146,7 +150,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

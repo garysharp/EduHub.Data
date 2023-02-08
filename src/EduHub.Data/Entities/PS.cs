@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<PEF> Cache_PSKEY_PEF_PAY_STEP;
         private IReadOnlyList<PEFH> Cache_PSKEY_PEFH_PAY_STEP;
         private IReadOnlyList<PEPS> Cache_PSKEY_PEPS_PAY_STEP;
         private IReadOnlyList<PSF> Cache_PSKEY_PSF_PSKEY;
+#endif
 
         #endregion
 
@@ -114,6 +117,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// PEF (Payroll Transactions) related entities by [PS.PSKEY]-&gt;[PEF.PAY_STEP]
         /// Pay Step or Pay Class code
@@ -186,7 +190,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

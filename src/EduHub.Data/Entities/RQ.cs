@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,7 +22,9 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<RQT> Cache_TRORDER_RQT_TRORDER;
+#endif
 
         #endregion
 
@@ -186,6 +189,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// RQT (Purchase Requisition Transaction) related entities by [RQ.TRORDER]-&gt;[RQT.TRORDER]
         /// Prime Key
@@ -204,7 +208,9 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
 }
+#endif

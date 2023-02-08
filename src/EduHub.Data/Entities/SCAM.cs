@@ -1,3 +1,4 @@
+#if !EduHubScoped
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+#if !EduHubScoped
         private SCA Cache_SCAMKEY_SCA;
+#endif
         private SCI Cache_MEETING_LOCATION_SCI;
         private SM Cache_MEETING_ROOM_SM;
 
@@ -94,6 +97,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// SCA (School Associations) related entity by [SCAM.SCAMKEY]-&gt;[SCA.SCAKEY]
         /// Short name of association
@@ -111,6 +115,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SCI (School Information) related entity by [SCAM.MEETING_LOCATION]-&gt;[SCI.SCIKEY]
         /// (Was MEET_LOCATION) Campus where meeting is held
@@ -157,3 +162,4 @@ namespace EduHub.Data.Entities
 
     }
 }
+#endif

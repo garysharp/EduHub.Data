@@ -19,19 +19,27 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         private IReadOnlyList<ARF> Cache_KGSTKEY_ARF_GST_TYPE;
+#endif
         private IReadOnlyList<CRF> Cache_KGSTKEY_CRF_GST_TYPE;
         private IReadOnlyList<CRF> Cache_KGSTKEY_CRF_INVOICEGST;
         private IReadOnlyList<DFF> Cache_KGSTKEY_DFF_GST_TYPE;
         private IReadOnlyList<DFVT> Cache_KGSTKEY_DFVT_GST_TYPE;
+#if !EduHubScoped
         private IReadOnlyList<DRF> Cache_KGSTKEY_DRF_GST_TYPE;
         private IReadOnlyList<GLCF> Cache_KGSTKEY_GLCF_GST_TYPE;
         private IReadOnlyList<GLCFPREV> Cache_KGSTKEY_GLCFPREV_GST_TYPE;
+#endif
         private IReadOnlyList<GLF> Cache_KGSTKEY_GLF_GST_TYPE;
+#if !EduHubScoped
         private IReadOnlyList<GLFPREV> Cache_KGSTKEY_GLFPREV_GST_TYPE;
+#endif
         private IReadOnlyList<SA> Cache_KGSTKEY_SA_GST_TYPE;
+#if !EduHubScoped
         private IReadOnlyList<SDFC> Cache_KGSTKEY_SDFC_GST_TYPE;
         private IReadOnlyList<SGFC> Cache_KGSTKEY_SGFC_GST_TYPE;
+#endif
 
         #endregion
 
@@ -138,6 +146,7 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+#if !EduHubScoped
         /// <summary>
         /// ARF (Asset Financial Transactions) related entities by [KGST.KGSTKEY]-&gt;[ARF.GST_TYPE]
         /// Key
@@ -156,6 +165,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// CRF (Creditor Financial Transaction) related entities by [KGST.KGSTKEY]-&gt;[CRF.GST_TYPE]
         /// Key
@@ -228,6 +238,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// DRF (DR Transactions) related entities by [KGST.KGSTKEY]-&gt;[DRF.GST_TYPE]
         /// Key
@@ -282,6 +293,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// GLF (General Ledger Transactions) related entities by [KGST.KGSTKEY]-&gt;[GLF.GST_TYPE]
         /// Key
@@ -300,6 +312,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// GLFPREV (Last Years GL Financial Trans) related entities by [KGST.KGSTKEY]-&gt;[GLFPREV.GST_TYPE]
         /// Key
@@ -318,6 +331,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         /// <summary>
         /// SA (Fees) related entities by [KGST.KGSTKEY]-&gt;[SA.GST_TYPE]
         /// Key
@@ -336,6 +350,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#if !EduHubScoped
         /// <summary>
         /// SDFC (Sundry Debtor Fees) related entities by [KGST.KGSTKEY]-&gt;[SDFC.GST_TYPE]
         /// Key
@@ -372,6 +387,7 @@ namespace EduHub.Data.Entities
             }
         }
 
+#endif
         #endregion
 
     }
